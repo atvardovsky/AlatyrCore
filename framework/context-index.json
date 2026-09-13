@@ -90,8 +90,8 @@
         "ALATYR-SAFETY-002",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 915,
-      "content_digest": "sha256:b62e52dc011972e004682a1a7b067880a5948cc370e691b051aafe27d1512b9d"
+      "estimated_words": 923,
+      "content_digest": "sha256:3ef293d90155c52b8973ef2afc71898b979ab277c3975685f40fbf046358b0c5"
     },
     {
       "id": "framework.section.infrastructure",

@@ -44,6 +44,7 @@ class ContextPlanRequest:
     fact_ids: tuple[str, ...] = ()
     assistant_surface: str | None = None
     max_words: int | None = None
+    max_characters: int | None = None
 
 
 class ContextPlanningError(ValueError):
@@ -169,10 +170,10 @@ def _load_router(target: Path) -> dict[str, Any]:
     router = _load_json(
         target, ".ai/assistant/context-router.json", "context router"
     )
-    if router.get("schema_version") not in {10, 11} or router.get("router_kind") != "target-context-router":
+    if router.get("schema_version") not in {10, 11, 12} or router.get("router_kind") != "target-context-router":
         raise ContextPlanningError(
             "CONTEXT_ROUTER_UNSUPPORTED",
-            "target context router must use supported schema 10 or 11 and target-context-router",
+            "target context router must use supported schema 10, 11, or 12 and target-context-router",
             upgrade_required=True,
             actions=("run the Alatyr framework-update assessment",),
         )
@@ -367,11 +368,11 @@ def _select_path(
 def _synthetic_file_item(
     target: Path, relpath: str, item_id: str, reason: str
 ) -> CatalogItem:
-    path = _target_path(target, relpath, "graph-selected context")
+    path = _target_path(target, relpath, "selected target context")
     if not path.is_file():
         raise ContextPlanningError(
             "CANONICAL_OWNER_UNAVAILABLE",
-            f"graph-selected canonical context is not a file: {relpath}",
+            f"selected target context is not a file: {relpath}",
             status="blocked",
             details={"path": relpath},
         )
@@ -381,19 +382,20 @@ def _synthetic_file_item(
     except (OSError, UnicodeError) as exc:
         raise ContextPlanningError(
             "CANONICAL_OWNER_UNREADABLE",
-            f"graph-selected canonical context cannot be read as UTF-8: {relpath}",
+            f"selected target context cannot be read as UTF-8: {relpath}",
             status="blocked",
         ) from exc
     return CatalogItem(
         item_id=item_id,
         kind="content",
         path=relpath,
-        summary="graph-selected canonical target context",
+        summary="directly selected target context",
         selectors={},
         load_when=(reason,),
         semantic_refs=(),
         owner_refs=(),
         estimated_words=len(re.findall(r"\S+", text)),
+        estimated_characters=len(text),
         content_digest="sha256:" + hashlib.sha256(raw).hexdigest(),
     )
 
@@ -412,6 +414,35 @@ def _select_synthetic(
         )
     selected[item.item_id] = item
     reasons.setdefault(item.item_id, set()).add(reason)
+
+
+def _select_profile_required_path(
+    target: Path,
+    relpath: str,
+    catalogs: _Catalogs,
+    selected: dict[str, CatalogItem],
+    reasons: dict[str, set[str]],
+) -> None:
+    normalized = _normalize_relative(relpath, "profile required context")
+    if normalized in catalogs.by_path:
+        _select_path(
+            normalized, "profile-required-context", catalogs, selected, reasons
+        )
+        return
+    if normalized == ".ai" or normalized.startswith(".ai/"):
+        _select_path(
+            normalized, "profile-required-context", catalogs, selected, reasons
+        )
+        return
+    synthetic = _synthetic_file_item(
+        target,
+        normalized,
+        "target.required." + hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
+        "profile-required-context",
+    )
+    _select_synthetic(
+        synthetic, "profile-required-context", selected, reasons
+    )
 
 
 def _load_reverse_index(target: Path, graph: ImpactGraph) -> tuple[dict[str, Any], str]:
@@ -770,10 +801,16 @@ def _conditional_dependency_evidence(
 
 def _resolve_surface(
     target: Path, router: dict[str, Any], requested: str | None
-) -> tuple[str, dict[str, str]]:
+) -> tuple[str, dict[str, Any]]:
     delivery = router.get("cache_aware_delivery")
     index_path = delivery.get("provider_capability_index") if isinstance(delivery, dict) else None
     if not isinstance(index_path, str):
+        if requested is None:
+            return "generic", {
+                "state": "unavailable",
+                "reason": "assistant capability records are not installed",
+                "record": None,
+            }
         raise ContextPlanningError(
             "ASSISTANT_CAPABILITY_INDEX_UNAVAILABLE",
             "router does not identify the assistant capability index",
@@ -812,6 +849,7 @@ def _resolve_surface(
         )
     _require_concrete(record, record_path)
     return surface, {
+        "state": "available",
         "index": index_path,
         "index_digest": file_digest(
             _target_path(target, index_path, "assistant capability index")
@@ -989,7 +1027,9 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
                 f"profile required context must contain paths: {request.profile}",
                 upgrade_required=True,
             )
-        _select_path(relpath, "profile-required-context", catalogs, selected, reasons)
+        _select_profile_required_path(
+            target, relpath, catalogs, selected, reasons
+        )
     flow = operation.get("flow")
     if not isinstance(flow, str):
         raise ContextPlanningError(
@@ -1027,6 +1067,39 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             details={"requested": request.max_words, "configured": configured_words},
         )
     max_words = request.max_words or configured_words
+    configured_characters = budget.get("max_total_characters")
+    if router.get("schema_version") == 12 and (
+        not isinstance(configured_characters, int)
+        or isinstance(configured_characters, bool)
+        or configured_characters < 1
+    ):
+        raise ContextPlanningError(
+            "CONTEXT_BUDGET_INVALID",
+            "schema-12 target router character budget is invalid",
+            upgrade_required=True,
+        )
+    if request.max_characters is not None and request.max_characters < 1:
+        raise ContextPlanningError(
+            "INVALID_CONTEXT_BUDGET", "--max-characters must be positive",
+            status="invalid-request",
+        )
+    if (
+        request.max_characters is not None
+        and isinstance(configured_characters, int)
+        and request.max_characters > configured_characters
+    ):
+        raise ContextPlanningError(
+            "CONTEXT_BUDGET_OVERRIDE_TOO_LARGE",
+            "requested character budget exceeds the target router limit",
+            status="invalid-request",
+            details={
+                "requested": request.max_characters,
+                "configured": configured_characters,
+            },
+        )
+    max_characters = request.max_characters or (
+        configured_characters if isinstance(configured_characters, int) else None
+    )
     if len(selected) > configured_files:
         raise ContextPlanningError(
             "CONTEXT_FILE_BUDGET_EXCEEDED",
@@ -1048,7 +1121,10 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             selected_items=selected.values(),
             semantic_terms=terms,
             max_words=max_words,
+            max_characters=max_characters,
             assistant_surface=surface,
+            assistant_capability_record=surface_evidence.get("record"),
+            assistant_capability_state=str(surface_evidence["state"]),
             selection_reasons=normalized_reasons,
             expansion_triggers=(
                 "changed paths or facts selected bounded consistency relationships",
@@ -1057,14 +1133,19 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         )
     except ContextCatalogError as exc:
         if "exceeds budget" in str(exc):
+            dimension = "CHARACTER" if "characters" in str(exc) else "WORD"
             raise ContextPlanningError(
-                "CONTEXT_WORD_BUDGET_EXCEEDED",
+                f"CONTEXT_{dimension}_BUDGET_EXCEEDED",
                 str(exc),
                 status="blocked",
                 details={
                     "max_words": max_words,
+                    "max_characters": max_characters,
                     "selected_content_words": sum(
                         item.estimated_words for item in selected.values()
+                    ),
+                    "selected_content_characters": sum(
+                        item.estimated_characters for item in selected.values()
                     ),
                 },
                 actions=("record a context expansion or split the task without omitting owners",),
@@ -1087,6 +1168,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "fact_ids": list(request.fact_ids),
             "assistant_surface": surface,
             "max_words": max_words,
+            "max_characters": max_characters,
         },
         "routing_sources": {
             "context_router": ".ai/assistant/context-router.json",
@@ -1136,6 +1218,7 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
             "fact_ids": list(request.fact_ids),
             "assistant_surface": request.assistant_surface,
             "max_words": request.max_words,
+            "max_characters": request.max_characters,
         },
         "errors": [
             {

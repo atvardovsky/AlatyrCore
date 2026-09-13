@@ -27,6 +27,7 @@ def main() -> int:
     parser.add_argument("--fact-id", action="append", default=[])
     parser.add_argument("--assistant-surface")
     parser.add_argument("--max-words", type=int)
+    parser.add_argument("--max-characters", type=int)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -38,6 +39,7 @@ def main() -> int:
         fact_ids=tuple(args.fact_id),
         assistant_surface=args.assistant_surface,
         max_words=args.max_words,
+        max_characters=args.max_characters,
     )
     result = plan_target_context(request)
     if args.output and _inside_target(args.output, args.target):

@@ -196,7 +196,7 @@
     },
     {
       "id": "ROUTER",
-      "code_count": 71
+      "code_count": 73
     },
     {
       "id": "ROUTING",
@@ -9062,6 +9062,15 @@
       ]
     },
     {
+      "code": "ROUTER_BUDGET_FIRST_USE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
       "code": "ROUTER_BUDGET_ON_EXCEED",
       "levels": [
         "error"
@@ -9297,6 +9306,15 @@
     },
     {
       "code": "ROUTER_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_MANIFEST_BUDGET_DRIFT",
       "levels": [
         "error"
       ],

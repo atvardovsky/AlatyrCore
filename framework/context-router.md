@@ -69,7 +69,7 @@ A target context router should define:
 - framework, project, and assistant recursive context-index roots
 - maximum recursive navigation depth and fail-closed index behavior
 - semantic-codebook index, preload term IDs, namespace boundary, version and
-  digest behavior, conditional shard loading, and canonical-prose fallback
+digest behavior, conditional shard loading, and canonical-prose fallback
 - bootstrap budget plus profile total, portable, and reserved target-context
   budgets
 - context receipt fields
@@ -105,8 +105,10 @@ A target context router should define:
 
 Schema 10 adds explicit task classification to schema 9's recursive-index,
 semantic-codebook, profile, overlay, and budget behavior. Schema 11 separates
-the routine bootstrap projection from lazy integrity and recovery evidence and
-binds exact semantic obligations to context-packet schema 3. Schema changes
+the routine bootstrap projection from lazy integrity and recovery evidence.
+Schema 12 binds word and character evidence to context-packet schema 4 and adds
+deterministic character ceilings beside word and file limits so dense JSON,
+code, and text without whitespace cannot bypass context budgets. Schema changes
 that move owned fields between the index and descriptors must advance the
 target adapter schema and template version. Every indexed descriptor must
 exist in the selected support profile; disabled optional modules must not
@@ -234,15 +236,24 @@ The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
 renaming.
 
-Budgets are routing controls, not safety limits. Schema 8 preserves schema 7's
+When human and machine representations share the same path terms, select one
+representation by task purpose. Prefer `machine` for deterministic lookup and
+validation, `human` for explanation or review, and load both only for an
+explicit drift comparison. An unresolved representation selector must fail
+closed to the canonical owner rather than loading every match.
+
+Budgets are routing controls, not safety limits. Schema 12 preserves schema 11's
 separate maximum total profile words, portable framework/adapter words, and
-capacity reserved for target-owned facts. Values must be positive, portable plus reserved must
-not exceed total, and source templates should retain meaningful target
-headroom. A target may tune them from measured evidence.
+capacity reserved for target-owned facts, and adds bootstrap, first-use, and
+total-profile character ceilings. Character counts are deterministic payload
+estimates, not provider token or billing telemetry. Values must be positive,
+portable plus reserved must not exceed total, and source templates should
+retain meaningful target headroom. A target may tune them from measured
+evidence.
 
 Keep a soft bootstrap threshold below its hard maximum so growth is visible
 before failure. When required owner, safety, approval, or validation context
-exceeds a budget, load it and record the reason, boundary, added files,
+exceeds either budget dimension, load it and record the reason, boundary, added files,
 measured or explicitly estimated volume, and intentionally omitted context.
 Static source estimates are benchmark evidence, not a claim about hidden
 client context, billed tokens, exact semantic delivery, or an actual assistant
@@ -260,6 +271,13 @@ only when corresponding host or provider evidence exists. These packet fields
 route canonical owners; they do not create a second policy owner or prove that
 the model understood the delivered material.
 
+Recursive catalogs index the installed framework, project-support, and
+assistant contours. When a concrete target file outside `.ai/` is explicitly
+declared as required context by the selected profile, a deterministic planner
+may bind that file directly by target-relative path, measured size, and content
+digest. It must not use this exception for missing `.ai/` support surfaces or
+for unrecognized task paths.
+
 Prompt or context caching reduces repeated provider computation, latency, or
 billed input cost when the exact provider and client support it. It does not
 remove cached tokens from the context window and does not justify broader
@@ -269,7 +287,7 @@ when current client evidence says they are exposed. Record cache reads or exact
 savings only from observed host/provider telemetry. Otherwise record caching
 as unknown or unavailable and continue through bounded context routing.
 
-Context-packet schema 3 places resolved semantic definitions before selected
+Context-packet schema 4 places resolved semantic definitions before selected
 task items, records each item's semantic and owner references, emits the union
 as a required obligation set, and records stable-prefix and dynamic-tail
 digests. Those digests prove deterministic packet identity, not a provider

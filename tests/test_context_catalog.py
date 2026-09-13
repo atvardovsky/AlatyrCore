@@ -22,6 +22,7 @@ from context_catalog import (
     catalog_content_stats,
     file_digest,
     load_codebook,
+    preload_term_ids,
     validate_context_catalog,
     word_count,
 )
@@ -53,6 +54,39 @@ def entry(root: Path, item_id: str, kind: str, path: str) -> dict[str, object]:
 
 
 class ContextCatalogTests(unittest.TestCase):
+    def test_semantic_index_owns_ordered_preload_projection(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            index = Path(directory) / "index.json"
+            write_json(
+                index,
+                {
+                    "shards": [
+                        {"preload": True, "term_ids": ["alatyr:first@1"]},
+                        {"preload": False, "term_ids": ["alatyr:lazy@1"]},
+                        {"preload": True, "term_ids": ["alatyr:second@1"]},
+                    ]
+                },
+            )
+
+            self.assertEqual(
+                preload_term_ids(index),
+                ["alatyr:first@1", "alatyr:second@1"],
+            )
+
+    def test_rule_registry_representations_are_distinguishable(self) -> None:
+        outputs = build_framework_catalog_contents()
+        core = json.loads(outputs["catalog/core/context-index.json"])
+        entries = {entry["path"]: entry for entry in core["entries"]}
+
+        self.assertEqual(
+            entries["rule-registry.json"]["selectors"]["representation"],
+            ["machine"],
+        )
+        self.assertEqual(
+            entries["rule-registry.md"]["selectors"]["representation"],
+            ["human"],
+        )
+
     def test_catalog_content_stats_reads_source_once(self) -> None:
         path = Path("entry-packet.json")
         raw = b'{"value": true}\n'
@@ -150,14 +184,26 @@ class ContextCatalogTests(unittest.TestCase):
             (root / "bootstrap-index.json").write_text(
                 '{"generated": true}\n', encoding="utf-8"
             )
+            (root / "bootstrap-integrity.json").write_text(
+                '{"generated": true}\n', encoding="utf-8"
+            )
             (root / "context-router.json").write_text(
                 '{"schema_version": 8}\n', encoding="utf-8"
             )
             outputs = build_directory_catalog_contents(root, "assistant")
             root_index = json.loads(outputs["context-index.json"])
-            indexed_paths = {entry["path"] for entry in root_index["entries"]}
+            indexed = {entry["path"]: entry for entry in root_index["entries"]}
+            indexed_paths = set(indexed)
             self.assertIn("context-router.json", indexed_paths)
             self.assertNotIn("bootstrap-index.json", indexed_paths)
+            self.assertNotIn("bootstrap-integrity.json", indexed_paths)
+            self.assertEqual(
+                indexed["context-router.json"]["owner_refs"],
+                ["ALATYR-CONTEXT-001"],
+            )
+            self.assertNotIn(
+                "rule_ids", indexed["context-router.json"]["selectors"]
+            )
 
     def test_framework_projection_uses_projected_markdown_title(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -569,6 +615,7 @@ class ContextCatalogTests(unittest.TestCase):
             semantic_refs=("alatyr:owner",),
             owner_refs=("ALATYR-SOURCE-001",),
             estimated_words=10,
+            estimated_characters=4,
             content_digest="sha256:" + hashlib.sha256(b"rule").hexdigest(),
         )
         terms = {
@@ -585,16 +632,22 @@ class ContextCatalogTests(unittest.TestCase):
             selected_items=[item],
             semantic_terms=terms,
             max_words=20,
+            max_characters=100,
             selection_reasons={"rule": ["rule-id:ALATYR-SOURCE-001"]},
             task_classification="small-task",
             expansion_triggers=["owner conflict"],
             omitted_item_ids=["unrelated"],
         )
         self.assertEqual(packet["budget"]["total_words"], 14)
-        self.assertEqual(packet["schema_version"], 3)
+        self.assertEqual(packet["schema_version"], 4)
+        self.assertEqual(packet["budget"]["character_budget_state"], "enforced")
+        self.assertEqual(packet["receipt"]["planned"]["approximate_characters"], 29)
         self.assertEqual(
             packet["cache_delivery"]["capability_record"],
             ".ai/assistant/assistant-capabilities/generic.json",
+        )
+        self.assertEqual(
+            packet["cache_delivery"]["capability_evidence_state"], "available"
         )
         self.assertFalse(packet["cache_delivery"]["cache_hit_required"])
         self.assertFalse(packet["cache_delivery"]["context_window_reduction"])
@@ -616,6 +669,21 @@ class ContextCatalogTests(unittest.TestCase):
             packet["cache_delivery"]["stable_prefix_digest"],
             r"^sha256:[0-9a-f]{64}$",
         )
+
+        unavailable = build_context_packet(
+            profile="code-local",
+            operation="review",
+            selected_items=[item],
+            semantic_terms=terms,
+            max_words=20,
+            max_characters=100,
+            assistant_capability_state="unavailable",
+        )
+        self.assertEqual(
+            unavailable["cache_delivery"]["capability_evidence_state"],
+            "unavailable",
+        )
+        self.assertIsNone(unavailable["cache_delivery"]["capability_record"])
         with self.assertRaisesRegex(ContextCatalogError, "exceeds budget"):
             build_context_packet(
                 profile="code-local",
@@ -623,6 +691,16 @@ class ContextCatalogTests(unittest.TestCase):
                 selected_items=[item],
                 semantic_terms=terms,
                 max_words=13,
+                max_characters=100,
+            )
+        with self.assertRaisesRegex(ContextCatalogError, "characters"):
+            build_context_packet(
+                profile="code-local",
+                operation="review",
+                selected_items=[item],
+                semantic_terms=terms,
+                max_words=20,
+                max_characters=28,
             )
         with self.assertRaisesRegex(
             ContextCatalogError, "require path, when, and status"
@@ -633,6 +711,7 @@ class ContextCatalogTests(unittest.TestCase):
                 selected_items=[item],
                 semantic_terms=terms,
                 max_words=20,
+                max_characters=100,
                 conditional_dependencies=[{"path": "rule.md"}],
             )
 
@@ -657,6 +736,7 @@ class ContextCatalogTests(unittest.TestCase):
             selected_items=[],
             semantic_terms=terms,
             max_words=20,
+            max_characters=100,
             assistant_surface="codex",
         )
         second = build_context_packet(
@@ -665,6 +745,7 @@ class ContextCatalogTests(unittest.TestCase):
             selected_items=[],
             semantic_terms=dict(reversed(list(terms.items()))),
             max_words=20,
+            max_characters=100,
             assistant_surface="codex",
         )
 

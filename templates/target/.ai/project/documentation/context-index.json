@@ -21,9 +21,6 @@
         "path_terms": [
           "documentation",
           "catalog"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -44,9 +41,6 @@
         "path_terms": [
           "documentation",
           "profiles"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -66,9 +60,6 @@
       "selectors": {
         "path_terms": [
           "documentation"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

@@ -25,6 +25,7 @@ from types import SimpleNamespace
 from typing import Any
 
 from capability_catalog import load_modules, minimum_pack
+from conformance_artifacts import artifact_root, publish_support_profile
 from scaffold_target_structure import plan as scaffold_plan, profile_names
 from validate_target_adapter import AdapterValidatorConfig, Validator
 from parallel_execution import child_capacity, run_commands
@@ -34,6 +35,17 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "conformance" / "fixtures"
 SNAPSHOTS = ROOT / "conformance" / "golden" / "scaffolded-adapters"
 PLACEHOLDER_PATTERN = re.compile(r"\{[A-Z0-9_]+(?:_[A-Z0-9_]+)*\}")
+INTERACTION_SCENARIOS = {
+    "curated-cross-module": [
+        "architecture-knowledge",
+        "change-packages",
+        "debug-mode",
+        "durable-approvals",
+        "project-vocabulary",
+        "subagent-delegation",
+        "team-collaboration",
+    ],
+}
 
 REQUIRED_SCAFFOLD_FILES = [
     ".ai/alatyr.yaml",
@@ -275,6 +287,14 @@ def support_profile_scenarios() -> list[tuple[str, str, list[str]]]:
         for module_id, module in sorted(load_modules().items())
         if module.get("module_kind") != "source-repository"
     )
+    scenarios.extend(
+        (
+            f"interaction-{label}",
+            profile_for_pack[minimum_pack(modules)],
+            modules,
+        )
+        for label, modules in sorted(INTERACTION_SCENARIOS.items())
+    )
     return scenarios
 
 
@@ -324,6 +344,12 @@ def validate_support_profiles(
             )
             failures.append(f"{label} support profile failed validation: {details}")
         else:
+            if label in profile_names() and not publish_support_profile(label, repo):
+                message = f"{label} run-local scaffold artifact unavailable"
+                if artifact_root() is not None:
+                    failures.append(message)
+                else:
+                    print(f"INFO: {message}")
             print(
                 f"OK: {label} support profile scaffolded and passed structural validation"
             )

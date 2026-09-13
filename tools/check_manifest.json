@@ -854,6 +854,7 @@
         "templates/target/.ai/assistant/task-decomposition.json",
         "templates/target/.ai/assistant/templates/task-decomposition.md",
         "tests/test_context_receipt.py",
+        "tools/context_catalog.py",
         "tools/context_receipt.py",
         "tools/check_context_router.py",
         "tools/task_classification_contract.py"
@@ -867,6 +868,7 @@
         "templates/target/.ai/assistant/templates/task-decomposition.md"
       ],
       "implementation_paths": [
+        "tools/context_catalog.py",
         "tools/context_receipt.py",
         "tools/check_context_router.py",
         "tools/task_classification_contract.py"
@@ -2318,6 +2320,7 @@
       ],
       "implementation_paths": [
         "tools/capability_catalog.py",
+        "tools/conformance_artifacts.py",
         "tools/parallel_execution.py",
         "tools/run_conformance_scaffold.py",
         "tools/scaffold*.py",
@@ -2328,6 +2331,7 @@
         "conformance/fixtures/**",
         "templates/target/**",
         "tools/capability_catalog.py",
+        "tools/conformance_artifacts.py",
         "tools/parallel_execution.py",
         "tools/run_conformance_scaffold.py",
         "tools/scaffold*.py",
@@ -2349,6 +2353,7 @@
       ],
       "depends_on": [
         "capability-graph",
+        "conformance-scaffold",
         "scaffold-profiles",
         "target-adapter-validator"
       ],
@@ -2360,7 +2365,9 @@
       "implementation_paths": [
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
+        "tools/conformance_artifacts.py",
         "tools/context_catalog.py",
+        "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
@@ -2380,7 +2387,9 @@
         "templates/target/**",
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
+        "tools/conformance_artifacts.py",
         "tools/context_catalog.py",
+        "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
@@ -2419,7 +2428,9 @@
       "implementation_paths": [
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
+        "tools/conformance_artifacts.py",
         "tools/context_catalog.py",
+        "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
@@ -2439,7 +2450,9 @@
         "templates/target/**",
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
+        "tools/conformance_artifacts.py",
         "tools/context_catalog.py",
+        "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
@@ -2576,6 +2589,13 @@
       "contract_inputs": [
         "tools/check_manifest.json"
       ],
+      "observed_inputs": [
+        "tools/check_*.py",
+        "tools/tool_commands.json"
+      ],
+      "observed_inventory_paths": [
+        "**"
+      ],
       "implementation_paths": [
         "tools/check_all.py",
         "tools/check_check_manifest.py",
@@ -2595,7 +2615,9 @@
         "tools/plan_minimum_work.py",
         "tools/source_check_reuse.py",
         "tools/source_check_manifest.py",
-        "tools/check_manifest.json"
+        "tools/check_manifest.json",
+        "tools/check_*.py",
+        "tools/tool_commands.json"
       ],
       "resource_class": "light"
     },

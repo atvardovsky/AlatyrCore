@@ -95,7 +95,7 @@
         "alatyr:risk-by-fact@1": "sha256:f72a84e252abedc5d1797a7034556a2713cb1a8fb3ec8b609fbb6e0e573cd1db",
         "alatyr:protected-change@1": "sha256:45b9d377710693fa0711015ebfb4f4f17bc768fe2af71c6be6946181a7300427",
         "alatyr:logical-integrity@1": "sha256:79b27ecba6056a960c4fa09293476b2e146a2cfe93134d7e21e79ce001b564cb",
-        "alatyr:bounded-context-expansion@1": "sha256:8897651dbacd154c267b4cd89e9ebb7e9b22d2f160c94fce2778094c50cce772"
+        "alatyr:bounded-context-expansion@1": "sha256:93c2a8266aa54139e7accfd7ea04c062dc2a725073d72163709c87f09bb722fb"
       },
       "content_digest": "sha256:c483c0badb5db983d135a2ae84913da1c6c17293b36d49179b367c76581ac3c3"
     },

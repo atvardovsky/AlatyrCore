@@ -11,9 +11,11 @@ import locale
 import os
 import platform
 import signal
+import shutil
 import string
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version as package_version
@@ -60,6 +62,7 @@ RESOURCE_CLASS_WEIGHTS = {"light": 1, "standard": 1, "heavy": 2}
 TIMEOUT_EXIT_CODE = 124
 DEFAULT_JOBS = min(4, os.cpu_count() or 1)
 MAX_AUTO_JOBS = 8
+CRITICAL_RESERVATION_AFTER_SECONDS = 0.05
 
 
 @dataclass(frozen=True)
@@ -711,6 +714,9 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
         max(1, int(check.get("_child_capacity", 1)))
     )
     environment["ALATYR_CHECK_VERBOSE"] = "1" if check.get("_verbose") else "0"
+    artifact_root = check.get("_run_artifact_root")
+    if isinstance(artifact_root, str) and artifact_root:
+        environment["ALATYR_CONFORMANCE_ARTIFACT_ROOT"] = artifact_root
     process = subprocess.Popen(
         command,
         cwd=ROOT,
@@ -1027,6 +1033,12 @@ def render_report(
                 "queued_seconds": telemetry.get(check["id"], {}).get(
                     "queued_seconds", 0.0
                 ),
+                "scheduler_slots": telemetry.get(check["id"], {}).get(
+                    "scheduler_slots"
+                ),
+                "child_capacity": telemetry.get(check["id"], {}).get(
+                    "child_capacity"
+                ),
                 "completed_after_seconds": telemetry.get(check["id"], {}).get(
                     "completed_after_seconds", 0.0
                 ),
@@ -1047,6 +1059,8 @@ def render_report(
                 "duration_hint_seconds", observation.get("duration_seconds", 0.0)
             ),
             "queued_seconds": observation.get("queued_seconds", 0.0),
+            "scheduler_slots": observation.get("scheduler_slots"),
+            "child_capacity": observation.get("child_capacity"),
             "completed_after_seconds": observation.get("completed_after_seconds", 0.0),
             "timed_out": observation.get("timed_out", False),
             "selection_reasons": selected_metadata.get("reasons", []),
@@ -1215,6 +1229,38 @@ def resolve_report_path(path: Path, *, root: Path = ROOT) -> Path:
     if ignored.returncode != 0:
         raise ValueError("--report repository path must be ignored by Git")
     return resolved
+
+
+def _execution_summary(
+    observations: dict[str, dict[str, Any]],
+    *,
+    run_started: float,
+    jobs: int,
+    uses_historical_estimates: bool,
+) -> dict[str, Any]:
+    completed = [
+        observation.get("completed_after_seconds", 0.0)
+        for key, observation in observations.items()
+        if key != "_summary"
+    ]
+    return {
+        "wall_seconds": round(time.monotonic() - run_started, 6),
+        "sum_check_duration_seconds": round(
+            sum(
+                observation.get("duration_seconds", 0.0)
+                for key, observation in observations.items()
+                if key != "_summary"
+            ),
+            6,
+        ),
+        "critical_path_candidate_seconds": round(max(completed or [0.0]), 6),
+        "jobs": jobs,
+        "schedule": (
+            "historical-critical-path"
+            if uses_historical_estimates
+            else "dependency-critical-path"
+        ),
+    }
 
 
 def execute_checks(
@@ -1405,9 +1451,18 @@ def execute_checks(
         def submit_ready() -> bool:
             nonlocal running_weight
             available = jobs - running_weight
+            ready = ready_checks()
+            if (
+                ready
+                and resource_weight(ready[0]) > available
+                and time.monotonic() - queued_since[ready[0]["id"]]
+                >= CRITICAL_RESERVATION_AFTER_SECONDS
+            ):
+                # Bound backfill, then reserve capacity for the waiting critical path.
+                return False
             admitted: list[dict[str, Any]] = []
             reserved = 0
-            for check in ready_checks():
+            for check in ready:
                 minimum_weight = resource_weight(check)
                 if minimum_weight > available - reserved:
                     continue
@@ -1485,32 +1540,12 @@ def execute_checks(
                             "timed_out": False,
                         }
                     )
-        observations["_summary"] = {
-            "wall_seconds": round(time.monotonic() - run_started, 6),
-            "sum_check_duration_seconds": round(
-                sum(
-                    observation.get("duration_seconds", 0.0)
-                    for key, observation in observations.items()
-                    if key != "_summary"
-                ),
-                6,
-            ),
-            "critical_path_candidate_seconds": round(
-                max(
-                    [
-                        observation.get("completed_after_seconds", 0.0)
-                        for key, observation in observations.items()
-                        if key != "_summary"
-                    ]
-                    or [0.0]
-                ),
-                6,
-            ),
-            "jobs": jobs,
-            "schedule": (
-                "historical-critical-path" if estimates else "dependency-critical-path"
-            ),
-        }
+        observations["_summary"] = _execution_summary(
+            observations,
+            run_started=run_started,
+            jobs=jobs,
+            uses_historical_estimates=bool(estimates),
+        )
 
     return results, blocked
 
@@ -1923,14 +1958,20 @@ def main() -> int:
             current_environment=current_environment,
         )
         execution_started = time.monotonic()
-        results, blocked = execute_checks(
-            selected,
-            baseline,
-            jobs,
-            telemetry=telemetry,
-            initial_results=initial_results,
-            duration_estimates=duration_estimates,
-        )
+        artifact_root = Path(tempfile.mkdtemp(prefix="alatyr-check-artifacts-"))
+        try:
+            for check in selected:
+                check["_run_artifact_root"] = str(artifact_root)
+            results, blocked = execute_checks(
+                selected,
+                baseline,
+                jobs,
+                telemetry=telemetry,
+                initial_results=initial_results,
+                duration_estimates=duration_estimates,
+            )
+        finally:
+            shutil.rmtree(artifact_root, ignore_errors=True)
         execution_finished = time.monotonic()
         source_changes: list[str] = []
         telemetry.setdefault("_summary", {}).update(

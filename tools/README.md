@@ -267,24 +267,31 @@ declared trigger, the runner records the unmatched path and falls back to the
 full profile. The fallback is intentionally conservative, but the diagnostic
 shows which manifest route should be added when the cost spike is recurring.
 
-Each manifest check declares four separate concerns:
+Each manifest check declares six separate concerns:
 
 - `contract_inputs`: repository facts, templates, schemas, fixtures, or other
   artifacts whose content the check evaluates.
 - `implementation_paths`: the checker command and direct local helper modules
   whose behavior determines the result.
+- `observed_inputs`: dynamically discovered files whose contents affect the
+  result even though the checker does not own them.
+- `observed_inventory_paths`: path-only inventories observed by a checker.
+  Their names, kinds, and modes affect reuse; unrelated content does not.
 - `trigger_paths`: changed paths that select the check for a focused run. They
   must include every declared contract and implementation path; additional
   broad triggers are allowed only when they make selection safer.
 - `depends_on`: prerequisite checks that must pass before the check can run.
 
+Inventory-only observations affect fingerprints when the check is selected;
+they do not broaden focused selection by themselves.
+
 The manifest also declares `timeout_seconds` and `resource_class`. Optional
 `scheduler_slots` set the minimum parent capacity needed to start a check,
 `child_capacity_max` bounds the isolated child work it may receive, and
 `duration_hint_seconds` provides a finite static ordering fallback when no
-compatible historical timing exists. The scheduler admits the maximum safe
-ready set at minimum capacity before distributing surplus capacity, so an
-expandable check cannot serialize unrelated work. Resource and timing metadata
+compatible historical timing exists. The scheduler initially backfills safe
+ready work, then reserves capacity after a bounded wait for a blocked
+critical-path check before distributing surplus capacity. Resource and timing metadata
 can change execution order and bounded parallelism only; it cannot change
 selection, dependencies, or pass/fail semantics. Invalid or excessive values
 are rejected by the manifest contract. The configured timeout is per process
@@ -741,6 +748,20 @@ per-surface record paths are centralized in
 first when the capability contract changes, then rerun the source renderer and
 focused checks.
 
+`generic.json` is the canonical placeholder shape for every assistant surface.
+Regenerate repeated records and the compact index together instead of editing
+surface records independently:
+
+```sh
+python3 tools/render_assistant_capability_index.py --write-records --write
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\render_assistant_capability_index.py --write-records --write
+```
+
 ```sh
 python3 tools/check_assistant_capability_contract.py
 python3 tools/check_assistant_surface_audits.py
@@ -839,6 +860,20 @@ profile descriptors, recursive indexes, semantic codebook, operation catalog,
 and consistency graph; it does not introduce another routing policy. The JSON
 output contains paths, IDs, digests, reasons, impact evidence, and budget
 accounting, but no selected file contents.
+
+The executable planner requires a target installation whose selected support
+profile and modules provide operation routing and recursive catalogs. Changed-
+path or fact impact planning also requires the consistency graph. Assistant
+capability records enrich cache evidence when installed; without them the plan
+records cache capability as unavailable and preserves bounded routing. It
+returns structured unavailable evidence rather than inventing any other
+missing route.
+
+Router schemas 10 and 11 remain readable migration inputs and record character
+budget state as `unavailable-legacy`. Schema 12 requires the configured
+character ceiling and emits context-packet schema 4 with measured word and
+character evidence. `--max-words` and `--max-characters` may only narrow the
+installed limits.
 
 Unknown paths or facts, stale catalogs, unresolved placeholders, invalid
 operation/profile combinations, missing canonical owners, and budget overflow

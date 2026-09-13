@@ -5,12 +5,10 @@ Scope: AlatyrCore source repository only.
 Canonical portable rule: `ALATYR-DELEGATION-001` in
 `framework/subagent-delegation.md`.
 
-This source-contour policy applies when AlatyrCore itself is the active project
-being inspected or changed. It does not become a portable target rule, alter a
-generated target adapter, or govern a host repository merely because that
-repository installs, vendors, or depends on AlatyrCore. The host project's
-active adapter owns its worker policy; this document is passive dependency
-evidence outside the AlatyrCore source contour.
+This policy applies only while the AlatyrCore source repository is active. It
+neither becomes a portable target rule nor governs a repository that installs,
+vendors, or depends on AlatyrCore. The host's active adapter owns its worker
+policy; this document is passive dependency evidence outside this contour.
 
 ## Activation
 
@@ -46,6 +44,9 @@ For an explicit `repository-audit`, delegation evaluation is deterministic:
    `tools/source_worker_policy.json`.
 3. Verify whether the active runtime can launch and receive workers now.
 4. Select at least two independent read-only workstreams with bounded context.
+   Start from each workstream's compact required context. Load a canonical
+   owner from conditional context only when a named finding, rule ID, failed
+   check, or evidence conflict requires it.
    If all reusable candidates would exceed the aggregate context cap, select the
    largest valid subset and record omitted candidate IDs with budget reasons.
 5. Dispatch eligible packets, or record why each eligible packet stayed local.
@@ -72,27 +73,33 @@ are available but an eligible packet remains local, use one applicable policy
 reason ID and task-specific evidence; a generic statement that delegation was
 not useful is not sufficient.
 
-`tools/alatyr.py plan-work` accepts a provider-neutral current-session
-capability record plus workstream, kept-local, skip-reason, and concrete-reason
-inputs after the active assistant performs runtime verification. Capability
-evidence is bound to the caller-supplied opaque session ID, includes timezone-
-aware verification and expiry timestamps, and is rejected when stale,
-future-dated, expired, overlong, or bound to another session. Those inputs
-create reviewable preflight evidence; they do not probe a client, launch
-workers, claim past dispatch, or prove that a worker result was delivered.
+After runtime verification, `tools/alatyr.py plan-work` accepts a provider-
+neutral current-session capability record plus workstream, kept-local, skip-
+reason, and evidence inputs. Capability evidence binds to the caller's opaque
+session ID and verified/expiry timestamps; stale, future-dated, expired,
+overlong, or cross-session evidence is rejected. This creates reviewable
+preflight evidence, not proof of client probing, dispatch, or result delivery.
 Completion is not accepted from preflight evidence. It is validated through the
 execution-tree ledger and primary convergence record.
 
-Every packet must carry schema version 3, its parent, depth, remaining worker
+Every packet must carry schema version 4, its parent, depth, remaining worker
 budget, unique coverage key, workstream ID, role, objective, bounded and
-conditional context, non-goals, `inspect`-only action mode, no-write scope,
-semantic scope, changed fact IDs, canonical owner references, surface
-references, relationship references, overlap decision, independence evidence,
-and expected evidence. Task-specific packets are passed with repeatable
-`--worker-packet` arguments. Their bounded paths must be repository-relative,
-exist inside the repository, and not escape through a symlink. Workers may
-expand only through the packet's conditional context or return a child proposal
-for primary review. They never dispatch descendants.
+conditional context, maximum initial and result words, non-goals,
+`inspect`-only action mode, no-write scope, semantic scope, changed fact IDs,
+canonical owner references, surface references, relationship references,
+overlap decision, independence evidence, and expected evidence. Policy
+validation measures all required file content and rejects a built-in packet
+whose initial payload exceeds its declared limit. Task-specific packets are
+passed with repeatable `--worker-packet` arguments. Their bounded paths must be
+repository-relative, exist inside the repository, and not escape through a
+symlink. Workers may expand only through conditional context or return a child
+proposal for primary review. Expansion counts against the execution-tree
+aggregate context budget. `max_result_words` is an instruction ceiling.
+The primary must measure or conservatively estimate the returned result before
+integration and reject or request a narrower result when it exceeds the packet
+limit. The current source execution-tree schema does not independently prove
+result word count, so it must not be presented as machine-enforced evidence.
+Workers never dispatch descendants.
 
 When delegation runs, maintain an execution-tree ledger compatible with the
 source policy: schema version 1, `alatyr-delegation-execution-tree` kind,

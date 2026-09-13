@@ -280,10 +280,12 @@ telemetry; deterministic digests alone are only identity evidence.
 
 ## Context Budgets And Receipts
 
-The router should define maximum bootstrap files/words and default profile
-files, total words, portable words, and words reserved for target-owned facts.
-A target may tune them from measured repository evidence, but portable plus
-reserved capacity must not exceed the total.
+The router should define maximum bootstrap files, words, and characters plus
+default profile file, total-word, total-character, portable-word, and reserved
+target-word limits. A target may tune them from measured repository evidence,
+but portable plus reserved word capacity must not exceed the total word limit.
+Character ceilings are a separate deterministic guard for dense JSON, source,
+or text without normal whitespace; they do not claim provider-token accuracy.
 
 Record both a soft bootstrap threshold and a hard maximum. Rebaseline the
 static estimate when bootstrap files change. For an actual assistant run,
@@ -350,7 +352,7 @@ If sufficient context exceeds a budget, continue safely and record:
 - selected profile, task-scale overlay, and project areas
 - files loaded and why
 - boundary or conflict that required expansion
-- approximate context volume
+- approximate word and character volume
 - context intentionally not loaded
 - residual risk
 

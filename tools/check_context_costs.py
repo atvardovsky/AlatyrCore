@@ -35,6 +35,10 @@ def main() -> int:
         failures.append("bootstrap word count exceeds its budget")
     if bootstrap["words"] > bootstrap_budget["soft_max_words"]:
         failures.append("bootstrap word count exceeds its soft headroom budget")
+    if bootstrap["characters"] > bootstrap_budget["max_characters"]:
+        failures.append("bootstrap character count exceeds its budget")
+    if bootstrap["characters"] > bootstrap_budget["soft_max_characters"]:
+        failures.append("bootstrap character count exceeds its soft headroom budget")
 
     first_use = report["first_use"]
     first_use_budget = report["budgets"]["first_use"]
@@ -42,6 +46,8 @@ def main() -> int:
         failures.append("first-use declared file count exceeds its budget")
     if first_use["words"] > first_use_budget["max_words"]:
         failures.append("first-use word count exceeds its budget")
+    if first_use["characters"] > first_use_budget["max_characters"]:
+        failures.append("first-use character count exceeds its budget")
     for path in [
         "AGENTS.md",
         ".ai/assistant/bootstrap-index.json",
@@ -56,6 +62,7 @@ def main() -> int:
 
     profile_budget = report["budgets"]["profile_default"]
     max_total_words = profile_budget["max_total_words"]
+    max_total_characters = profile_budget["max_total_characters"]
     max_portable_words = profile_budget["max_portable_words"]
     reserved_target_words = profile_budget["reserved_target_words"]
     if max_portable_words + reserved_target_words > max_total_words:
@@ -67,6 +74,8 @@ def main() -> int:
             failures.append(f"profile {name} exceeds the portable word budget")
         if profile["target_words"] > reserved_target_words:
             failures.append(f"profile {name} exceeds the reserved target word budget")
+        if profile["characters"] > max_total_characters:
+            failures.append(f"profile {name} exceeds the total character budget")
         if profile["portable_words"] + profile["target_words"] != profile["words"]:
             failures.append(f"profile {name} context classification does not sum")
         if profile["missing_paths"]:
@@ -81,6 +90,8 @@ def main() -> int:
             failures.append(f"intent overlay {name} exceeds the portable word budget")
         if overlay["target_words"] > reserved_target_words:
             failures.append(f"intent overlay {name} exceeds the reserved target word budget")
+        if overlay["characters"] > max_total_characters:
+            failures.append(f"intent overlay {name} exceeds the total character budget")
         if overlay["missing_paths"]:
             failures.append(f"intent overlay {name} contains missing paths")
 
@@ -93,6 +104,8 @@ def main() -> int:
             failures.append(f"task-scale overlay {name} exceeds the portable word budget")
         if overlay["target_words"] > reserved_target_words:
             failures.append(f"task-scale overlay {name} exceeds the reserved target word budget")
+        if overlay["characters"] > max_total_characters:
+            failures.append(f"task-scale overlay {name} exceeds the total character budget")
         if overlay["missing_paths"]:
             failures.append(f"task-scale overlay {name} contains missing paths")
     pairwise = report["pairwise_compositions"]
@@ -109,6 +122,8 @@ def main() -> int:
         failures.append("pairwise context compositions contain unresolved references")
     if pairwise["max_words"] > max_total_words:
         failures.append("a pairwise context composition exceeds the hard word budget")
+    if pairwise["max_characters"] > max_total_characters:
+        failures.append("a pairwise context composition exceeds the hard character budget")
     small_task = report["task_scale_overlays"].get("small-task")
     if not isinstance(small_task, dict):
         failures.append("small-task route is missing from task-scale overlays")
@@ -129,6 +144,8 @@ def main() -> int:
         failures.append("consistency routing exceeds the portable-word budget")
     if consistency["target_words"] > reserved_target_words:
         failures.append("consistency routing exceeds the reserved target-word budget")
+    if consistency["characters"] > max_total_characters:
+        failures.append("consistency routing exceeds the total-character budget")
     if consistency["missing_paths"]:
         failures.append("consistency routing contains missing paths")
     if ".ai/project/source-of-truth-registry.md" not in consistency["resolved_paths"]:
@@ -238,6 +255,10 @@ def main() -> int:
                 failures.append(f"compact cost scenario {name} exceeds the reserved target budget")
             if scenario["words"] > max_total_words:
                 failures.append(f"compact cost scenario {name} exceeds the total budget")
+            if scenario["characters"] > max_total_characters:
+                failures.append(
+                    f"compact cost scenario {name} exceeds the total character budget"
+                )
         elif expected == "expansion-receipt-required":
             if scenario["words"] <= 0:
                 failures.append(f"expansion cost scenario {name} has no measured context")

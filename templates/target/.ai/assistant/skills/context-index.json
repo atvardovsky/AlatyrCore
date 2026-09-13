@@ -24,8 +24,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 89,
-      "content_digest": "sha256:4ed02b3ca2e99dca648d14ebf7c0428a39c0a0fe9ff17ed3276360d0c603f277"
+      "estimated_words": 85,
+      "content_digest": "sha256:285b0cae94405c36982bb7bd9a6e4abb8d622438c4613b8523ecc08201031851"
     },
     {
       "id": "assistant.section.skills-example",
@@ -39,8 +39,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 86,
-      "content_digest": "sha256:b7349707cf25d8a77c00b5dae78481c3ac7b938d11c119c26ff9e6d16b6a17e2"
+      "estimated_words": 82,
+      "content_digest": "sha256:94a9f57f737f2f479dfc4021c2aab74699c877b3b6284005e482d5fd99211b3c"
     },
     {
       "id": "assistant.section.skills-project-vocabulary",
@@ -54,8 +54,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 94,
-      "content_digest": "sha256:230bfe1e1271250ce2fee0cd4449c6241fc2e4e036b3cb9576b1efce01e20421"
+      "estimated_words": 88,
+      "content_digest": "sha256:584f222c7e90b21f776ecc4a4408f2d30a9fbb0259d797f252df792a46d8ecf0"
     },
     {
       "id": "assistant.section.skills-team-collaboration",
@@ -69,8 +69,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 91,
-      "content_digest": "sha256:f7036098cb99ee887bb8772772af6755398ae99ca751794aa972140242ad03fc"
+      "estimated_words": 86,
+      "content_digest": "sha256:80273b5be884db8529f19040697e7f8389524a20abe5a0c68d3cc3d4bc6b698a"
     },
     {
       "id": "assistant.section.skills-test-first-development",
@@ -84,8 +84,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 90,
-      "content_digest": "sha256:32ae482a20936aeb3e4892c8b48c8239871752e9adfb5f1a8f55d61e679b5c07"
+      "estimated_words": 86,
+      "content_digest": "sha256:44797360c96f5adeff6cae8a181ed4ff0087ba989dd82d0445e6d4c711c679b0"
     }
   ]
 }

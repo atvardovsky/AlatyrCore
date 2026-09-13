@@ -23,6 +23,31 @@ RESOURCE_CLASS_DEFAULT_SLOTS = {"light": 1, "standard": 1, "heavy": 2}
 MAX_SCHEDULER_CAPACITY = 64
 MAX_DURATION_HINT_SECONDS = 86400
 LOCAL_IMPORT_GRAPH = LocalPythonImportGraph(ROOT)
+TOP_LEVEL_FIELDS = {"schema_version", "manifest_kind", "defaults", "checks"}
+DEFAULT_FIELDS = {
+    "profiles",
+    "excluded_profiles",
+    "platforms",
+    "write_scope",
+    "depends_on",
+    "timeout_seconds",
+    "resource_class",
+    "scheduler_slots",
+    "child_capacity_max",
+    "duration_hint_seconds",
+    "always_for_changed",
+}
+CHECK_FIELDS = DEFAULT_FIELDS | {
+    "id",
+    "command",
+    "contract_inputs",
+    "implementation_paths",
+    "observed_inputs",
+    "observed_inventory_paths",
+    "trigger_paths",
+    "micro_trigger_paths",
+    "owned_paths",
+}
 
 
 def valid_manifest_path(value: str) -> bool:
@@ -54,6 +79,31 @@ def validate_optional_path_list(check_id: str, field: str, value: Any) -> list[s
     return validate_path_list(check_id, field, value)
 
 
+def validate_enum_list(
+    check_id: str,
+    field: str,
+    value: Any,
+    allowed: set[str],
+    *,
+    required: bool,
+) -> list[str]:
+    if (
+        not isinstance(value, list)
+        or (required and not value)
+        or not all(isinstance(item, str) for item in value)
+        or len(value) != len(set(value))
+        or not set(value) <= allowed
+    ):
+        raise ValueError(f"{check_id}.{field} is invalid")
+    return value
+
+
+def reject_unknown_fields(owner: str, value: dict[str, Any], allowed: set[str]) -> None:
+    unknown = sorted(set(value) - allowed)
+    if unknown:
+        raise ValueError(f"{owner} contains unknown fields: {unknown}")
+
+
 def load_manifest(
     manifest_path: Path | None = None,
     *,
@@ -63,6 +113,7 @@ def load_manifest(
     data = json.loads(manifest.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError("source check manifest must contain a JSON object")
+    reject_unknown_fields("source check manifest", data, TOP_LEVEL_FIELDS)
     if data.get("schema_version") != 2 or data.get("manifest_kind") != (
         "alatyr-source-checks"
     ):
@@ -71,12 +122,14 @@ def load_manifest(
     checks = data.get("checks")
     if not isinstance(defaults, dict) or not isinstance(checks, list) or not checks:
         raise ValueError("check manifest must define defaults and checks")
+    reject_unknown_fields("defaults", defaults, DEFAULT_FIELDS)
 
     normalized: list[dict[str, Any]] = []
     ids: set[str] = set()
     for index, raw in enumerate(checks):
         if not isinstance(raw, dict):
             raise ValueError(f"checks[{index}] must be an object")
+        reject_unknown_fields(f"checks[{index}]", raw, CHECK_FIELDS)
         check = {**defaults, **raw}
         check_id = check.get("id")
         command = check.get("command")
@@ -90,6 +143,14 @@ def load_manifest(
         )
         implementation_paths = validate_path_list(
             check_id, "implementation_paths", check.get("implementation_paths")
+        )
+        observed_inputs = validate_optional_path_list(
+            check_id, "observed_inputs", check.get("observed_inputs")
+        )
+        observed_inventory_paths = validate_optional_path_list(
+            check_id,
+            "observed_inventory_paths",
+            check.get("observed_inventory_paths"),
         )
         trigger_paths = validate_path_list(
             check_id, "trigger_paths", check.get("trigger_paths")
@@ -110,18 +171,16 @@ def load_manifest(
             raise ValueError(f"{check_id}.command has unsafe script path")
         if not (root / script).is_file():
             raise ValueError(f"{check_id}.command script does not exist: {script}")
-        if (
-            not isinstance(profiles, list)
-            or not profiles
-            or not set(profiles) <= ALLOWED_PROFILES
-        ):
-            raise ValueError(f"{check_id}.profiles is invalid")
-        if (
-            not isinstance(excluded_profiles, list)
-            or len(excluded_profiles) != len(set(excluded_profiles))
-            or not set(excluded_profiles) <= ALLOWED_PROFILES
-        ):
-            raise ValueError(f"{check_id}.excluded_profiles is invalid")
+        profiles = validate_enum_list(
+            check_id, "profiles", profiles, ALLOWED_PROFILES, required=True
+        )
+        excluded_profiles = validate_enum_list(
+            check_id,
+            "excluded_profiles",
+            excluded_profiles,
+            ALLOWED_PROFILES,
+            required=False,
+        )
         micro_trigger_paths = validate_optional_path_list(
             check_id, "micro_trigger_paths", check.get("micro_trigger_paths")
         )
@@ -129,12 +188,9 @@ def load_manifest(
             raise ValueError(
                 f"{check_id}.micro_trigger_paths is required for micro profile checks"
             )
-        if (
-            not isinstance(platforms, list)
-            or not platforms
-            or not set(platforms) <= ALLOWED_PLATFORMS
-        ):
-            raise ValueError(f"{check_id}.platforms is invalid")
+        platforms = validate_enum_list(
+            check_id, "platforms", platforms, ALLOWED_PLATFORMS, required=True
+        )
         if check.get("write_scope") not in ALLOWED_WRITE_SCOPES:
             raise ValueError(f"{check_id}.write_scope is invalid")
         if script not in implementation_paths:
@@ -147,8 +203,16 @@ def load_manifest(
                 f"{check_id} declarations overlap between contract_inputs and "
                 f"implementation_paths: {overlap}"
             )
+        observed_overlap = sorted(
+            set(observed_inputs) & set(contract_inputs + implementation_paths)
+        )
+        if observed_overlap:
+            raise ValueError(
+                f"{check_id}.observed_inputs overlap owned inputs: {observed_overlap}"
+            )
         undeclared_triggers = sorted(
-            set(contract_inputs + implementation_paths) - set(trigger_paths)
+            set(contract_inputs + implementation_paths + observed_inputs)
+            - set(trigger_paths)
         )
         if undeclared_triggers:
             raise ValueError(
@@ -162,7 +226,10 @@ def load_manifest(
             or timeout_seconds <= 0
         ):
             raise ValueError(f"{check_id}.timeout_seconds is invalid")
-        if check.get("resource_class") not in ALLOWED_RESOURCE_CLASSES:
+        resource_class = check.get("resource_class")
+        if not isinstance(resource_class, str) or resource_class not in (
+            ALLOWED_RESOURCE_CLASSES
+        ):
             raise ValueError(f"{check_id}.resource_class is invalid")
         for field in ("scheduler_slots", "child_capacity_max"):
             value = check.get(field)
@@ -175,7 +242,7 @@ def load_manifest(
                 raise ValueError(f"{check_id}.{field} is invalid")
         scheduler_slots = check.get(
             "scheduler_slots",
-            RESOURCE_CLASS_DEFAULT_SLOTS[check.get("resource_class", "standard")],
+            RESOURCE_CLASS_DEFAULT_SLOTS[resource_class],
         )
         child_capacity_max = check.get("child_capacity_max", scheduler_slots)
         if child_capacity_max < scheduler_slots:
@@ -200,6 +267,8 @@ def load_manifest(
         ids.add(check_id)
         check["contract_inputs"] = contract_inputs
         check["implementation_paths"] = implementation_paths
+        check["observed_inputs"] = observed_inputs
+        check["observed_inventory_paths"] = observed_inventory_paths
         check["trigger_paths"] = trigger_paths
         check["micro_trigger_paths"] = micro_trigger_paths
         check["excluded_profiles"] = excluded_profiles

@@ -23,9 +23,6 @@
           "adapter",
           "maintenance",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -48,9 +45,6 @@
           "adapter",
           "output",
           "contracts"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -73,10 +67,6 @@
           "infrastructure",
           "adaptation",
           "record"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -100,10 +90,6 @@
           "templates",
           "infrastructure",
           "inventory"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -127,10 +113,6 @@
           "templates",
           "infrastructure",
           "recommendation"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -154,11 +136,6 @@
           "templates",
           "architecture",
           "area"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -185,11 +162,6 @@
           "architecture",
           "discussion",
           "result"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -215,11 +187,6 @@
           "templates",
           "architecture",
           "pattern"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -245,9 +212,6 @@
           "templates",
           "ascii",
           "diagram"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -270,10 +234,6 @@
           "change",
           "package",
           "record"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [
@@ -298,10 +258,6 @@
           "change",
           "package",
           "report"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [
@@ -327,9 +283,6 @@
           "documentation",
           "profile",
           "review"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -350,9 +303,6 @@
         "path_terms": [
           "templates",
           "packet"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -361,8 +311,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 258,
-      "content_digest": "sha256:9c9f780d87eb21fa5e578d6b9ad1c43dffb81b47dc56dc976251985e8bee0cd5"
+      "estimated_words": 274,
+      "content_digest": "sha256:65d36e5cfba94ae9860f4cad95c5205c1822087040432c72f8baef1e8d339b5a"
     },
     {
       "id": "assistant.content.templates-contract-artifact-review-md",
@@ -375,9 +325,6 @@
           "contract",
           "artifact",
           "review"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -400,9 +347,6 @@
           "debug",
           "session",
           "record"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -424,9 +368,6 @@
           "templates",
           "debug",
           "summary"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -449,9 +390,6 @@
           "delayed",
           "outcome",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -474,10 +412,6 @@
           "delegation",
           "execution",
           "tree"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -503,12 +437,6 @@
           "knowledge",
           "sync",
           "report"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SAFETY-002",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -536,9 +464,6 @@
           "templates",
           "diagram",
           "presentation"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -560,9 +485,6 @@
           "templates",
           "effectiveness",
           "report"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -585,9 +507,6 @@
           "engineering",
           "evidence",
           "record"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -610,10 +529,6 @@
           "extension",
           "lifecycle",
           "record"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -637,10 +552,6 @@
           "templates",
           "extension",
           "review"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -664,9 +575,6 @@
           "templates",
           "installation",
           "note"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -690,9 +598,6 @@
           "task",
           "operation",
           "packet"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -714,9 +619,6 @@
           "templates",
           "migration",
           "note"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -739,10 +641,6 @@
           "native",
           "worker",
           "binding"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -767,9 +665,6 @@
           "operation",
           "completion",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -791,9 +686,6 @@
           "templates",
           "operation",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -816,9 +708,6 @@
           "post",
           "install",
           "message"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -841,9 +730,6 @@
           "post",
           "update",
           "message"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -866,9 +752,6 @@
           "pre",
           "change",
           "preview"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -891,11 +774,6 @@
           "project",
           "knowledge",
           "promotion"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -923,11 +801,6 @@
           "knowledge",
           "route",
           "shard"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -954,9 +827,6 @@
           "small",
           "task",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -979,9 +849,6 @@
           "subagent",
           "task",
           "packet"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -1003,10 +870,6 @@
           "templates",
           "task",
           "decomposition"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DECOMPOSITION-001"
         ]
       },
       "semantic_refs": [
@@ -1029,10 +892,6 @@
           "templates",
           "team",
           "checkpoint"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -1057,10 +916,6 @@
           "team",
           "collaboration",
           "review"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -1085,10 +940,6 @@
           "team",
           "decision",
           "record"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -1112,10 +963,6 @@
           "templates",
           "team",
           "handoff"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -1140,10 +987,6 @@
           "team",
           "identity",
           "example"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -1168,9 +1011,6 @@
           "test",
           "first",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -1193,9 +1033,6 @@
           "visual",
           "validation",
           "review"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -1218,11 +1055,6 @@
           "vocabulary",
           "term",
           "review"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -1249,10 +1081,6 @@
           "worker",
           "execution",
           "plan"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -1276,10 +1104,6 @@
           "templates",
           "worker",
           "result"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -1304,9 +1128,6 @@
           "workspace",
           "mode",
           "preflight"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -1329,9 +1150,6 @@
           "workspace",
           "mode",
           "suggestion"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

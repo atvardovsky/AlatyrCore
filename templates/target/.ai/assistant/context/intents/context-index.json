@@ -22,11 +22,6 @@
           "intents",
           "architecture",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -52,9 +47,6 @@
           "intents",
           "code",
           "documentation"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -77,12 +69,6 @@
           "dependency",
           "knowledge",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SAFETY-002",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -110,9 +96,6 @@
           "intents",
           "diagram",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -134,10 +117,6 @@
           "intents",
           "extension",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -162,9 +141,6 @@
           "test",
           "first",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -186,11 +162,6 @@
           "intents",
           "vocabulary",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -217,9 +188,6 @@
           "workspace",
           "mode",
           "request"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

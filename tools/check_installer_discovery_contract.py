@@ -22,6 +22,7 @@ PROSE_SURFACES = [
     ROOT / "INSTALL.md",
     ROOT / "installer" / "assistant-installation.flow.md",
     ROOT / "installer" / "readiness-checklist.md",
+    ROOT / "installer" / "installation-plan-core-template.md",
     ROOT / "installer" / "installation-plan-template.md",
 ]
 EXPECTED_STAGES = [

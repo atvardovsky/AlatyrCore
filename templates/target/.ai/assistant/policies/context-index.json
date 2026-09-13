@@ -22,11 +22,6 @@
           "policies",
           "action",
           "authorization"
-        ],
-        "rule_ids": [
-          "ALATYR-APPROVAL-001",
-          "ALATYR-AUTHORIZATION-001",
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -53,10 +48,6 @@
           "infrastructure",
           "source",
           "access"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -80,10 +71,6 @@
           "policies",
           "prompt",
           "injection"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [

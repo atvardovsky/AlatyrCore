@@ -233,6 +233,53 @@ class SourceCheckReuseTests(unittest.TestCase):
             check_input_fingerprint(check(), second)["sha256"],
         )
 
+    def test_input_fingerprint_tracks_observed_inventory_additions(self) -> None:
+        item = {**check(), "observed_inputs": ["tools/check_*.py"]}
+        first = {
+            "docs/example.md": SourceEntry("file", 0o644, "aaa"),
+            "tools/example.py": SourceEntry("file", 0o644, "bbb"),
+            "tools/check_existing.py": SourceEntry("file", 0o644, "ccc"),
+        }
+        second = {
+            **first,
+            "tools/check_new_probe.py": SourceEntry("file", 0o644, "ddd"),
+        }
+
+        first_fingerprint = check_input_fingerprint(item, first)
+        second_fingerprint = check_input_fingerprint(item, second)
+
+        self.assertNotEqual(first_fingerprint["sha256"], second_fingerprint["sha256"])
+        self.assertIn(
+            "tools/check_new_probe.py",
+            [entry["path"] for entry in second_fingerprint["entries"]],
+        )
+
+    def test_path_inventory_tracks_names_without_hashing_unrelated_content(self) -> None:
+        item = {**check(), "observed_inventory_paths": ["**"]}
+        first = {
+            "docs/example.md": SourceEntry("file", 0o644, "aaa"),
+            "tools/example.py": SourceEntry("file", 0o644, "bbb"),
+            "unrelated.txt": SourceEntry("file", 0o644, "ccc"),
+        }
+        content_only = {
+            **first,
+            "unrelated.txt": SourceEntry("file", 0o644, "changed"),
+        }
+        added = {
+            **first,
+            "new-file.txt": SourceEntry("file", 0o644, "ddd"),
+        }
+
+        first_digest = check_input_fingerprint(item, first)["sha256"]
+        self.assertEqual(
+            first_digest,
+            check_input_fingerprint(item, content_only)["sha256"],
+        )
+        self.assertNotEqual(
+            first_digest,
+            check_input_fingerprint(item, added)["sha256"],
+        )
+
     def test_snapshot_index_is_immutable_and_reuses_pattern_matches(self) -> None:
         snapshot = {
             "docs/example.md": SourceEntry("file", 0o644, "aaa"),

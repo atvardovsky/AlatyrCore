@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_kind": "target-bootstrap-integrity",
   "bootstrap": ".ai/assistant/bootstrap-index.json",
-  "bootstrap_digest": "sha256:c174a6a46a6b5a9c5cd9c3bf86c763cc6d292ef7ba5623d2f03c651afdd7baf2",
+  "bootstrap_digest": "sha256:26244e7b7b4d3fb061ade0253192152f7ca0e074b09e51bc6e4bb457156e97f5",
   "generated_by": {
     "schema_version": 1,
     "provenance_kind": "source-template",
@@ -11,17 +11,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:9638c007103df85d9e1b0bd66cf35c2dec3ad3a41bb7d555758eaabdb204284b",
+    "target_manifest_digest": "sha256:ca4597b79f01c3243c64d3c2ea3c9fe076e11d1ba75670cdf69c917e994104bd",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.63",
-    "adapter_schema_version": "52",
-    "template_version": "58"
+    "framework_version": "0.1.0-alpha.64",
+    "adapter_schema_version": "53",
+    "template_version": "59"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "9638c007103df85d9e1b0bd66cf35c2dec3ad3a41bb7d555758eaabdb204284b"
+      "sha256": "ca4597b79f01c3243c64d3c2ea3c9fe076e11d1ba75670cdf69c917e994104bd"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -29,19 +29,19 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "76e467639bb16dfb76dec0b7ff6fb6f6264b606214ce7602a75a6bcbdc8cdc5e"
+      "sha256": "45f67a38a48951551427134ce09966b4bb12871e7c53b866025df24bf7efcd7b"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "49f3541b045c22096bcd64f90da046c9ff678c6e77004c04547ff4c6c27ca1bd"
+      "sha256": "b161c7b3620ace2294fb64c3db891b333bd54c1d331c0ae21a40842f1b1e62b8"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
-      "sha256": "2087a63470798462dcff6e6bb6d2324c1476efee15a44d4fe8a2f43906936ab5"
+      "sha256": "7a03f3e8bbf596b093d75796fd20d8cca59cd859a07479d507656b5db031965e"
     }
   },
   "rule_selector": {
-    "registry_sha256": "2087a63470798462dcff6e6bb6d2324c1476efee15a44d4fe8a2f43906936ab5",
+    "registry_sha256": "7a03f3e8bbf596b093d75796fd20d8cca59cd859a07479d507656b5db031965e",
     "categories": {
       "CONTEXT": {
         "owner": ".ai/framework/context-profiles.md",

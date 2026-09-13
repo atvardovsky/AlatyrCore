@@ -21,9 +21,6 @@
         "path_terms": [
           "engineering",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -44,9 +41,6 @@
         "path_terms": [
           "engineering",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -70,8 +64,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 86,
-      "content_digest": "sha256:0432a3c0c75ca476c9cd89dfbb39cc47c0614452fdd5a01c4d6fdf380d032121"
+      "estimated_words": 82,
+      "content_digest": "sha256:e5db888cf9076653288ef72449e41c0e36c5c4bee460e36926119ddafd3464fb"
     }
   ]
 }

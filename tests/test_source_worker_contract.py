@@ -54,7 +54,7 @@ def capability_fixture() -> dict[str, object]:
 
 def packet_fixture() -> dict[str, object]:
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "packet_kind": "source-read-only-workstream",
         "parent_packet_id": None,
         "depth": 1,
@@ -65,6 +65,8 @@ def packet_fixture() -> dict[str, object]:
         "role_id": "read-only-auditor",
         "objective": "Inspect the source worker contract",
         "bounded_context": ["tools/source_worker_contract.py"],
+        "max_initial_words": 10000,
+        "max_result_words": 1600,
         "conditional_context": [],
         "non_goals": ["modify repository state"],
         "allowed_actions": ["inspect"],
@@ -347,6 +349,8 @@ class WorkerPacketTests(unittest.TestCase):
             "absolute context": {"bounded_context": ["/etc/passwd"]},
             "traversal context": {"bounded_context": ["../outside.md"]},
             "missing context": {"bounded_context": ["tools/not-present.py"]},
+            "invalid initial budget": {"max_initial_words": 0},
+            "invalid result budget": {"max_result_words": 0},
             "extra field": {"tools": ["shell"]},
             "recursive depth": {"depth": 2},
             "autonomous child": {"child_proposal_policy": "dispatch"},
@@ -360,6 +364,13 @@ class WorkerPacketTests(unittest.TestCase):
                 packet.update(updates)
                 with self.assertRaises(SourceWorkerContractError):
                     self.validate(packet)
+
+    def test_packet_rejects_bounded_context_over_budget(self) -> None:
+        packet = packet_fixture()
+        packet["max_initial_words"] = 1
+
+        with self.assertRaisesRegex(SourceWorkerContractError, "exceeds"):
+            self.validate(packet)
 
     def test_tree_policy_limits_and_stop_reasons_fail_closed(self) -> None:
         cases = {

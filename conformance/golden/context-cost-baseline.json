@@ -22,8 +22,10 @@
   },
   "budgets": {
     "bootstrap": {
+      "max_characters": 12000,
       "max_files": 2,
       "max_words": 900,
+      "soft_max_characters": 11000,
       "soft_max_words": 850
     },
     "first_use": {
@@ -31,6 +33,7 @@
         "host-preloaded instructions",
         "bootstrap index"
       ],
+      "max_characters": 12000,
       "max_files": 2,
       "max_words": 900
     },
@@ -38,6 +41,7 @@
     "profile_default": {
       "max_files": 12,
       "max_portable_words": 5600,
+      "max_total_characters": 80000,
       "max_total_words": 8000,
       "reserved_target_words": 2400
     }
@@ -631,10 +635,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 444447,
-      "characters": 444447,
+      "bytes": 445979,
+      "characters": 445979,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 111112,
+      "estimated_tokens_4_chars": 111495,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -671,7 +675,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 54700,
+      "portable_words": 54902,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -714,17 +718,17 @@
         ".ai/assistant/context/migration-routing.json",
         ".ai/alatyr.yaml"
       ],
-      "target_words": 701,
+      "target_words": 705,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 55401
+      "words": 55607
     },
     "initial": {
-      "bytes": 17732,
-      "characters": 17732,
+      "bytes": 17812,
+      "characters": 17812,
       "declared_files": 3,
-      "estimated_tokens_4_chars": 4433,
+      "estimated_tokens_4_chars": 4453,
       "missing_paths": [],
       "portable_paths": [],
       "portable_words": 0,
@@ -737,11 +741,11 @@
         ".ai/assistant/context/migration-routing.json",
         ".ai/alatyr.yaml"
       ],
-      "target_words": 701,
+      "target_words": 705,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 701
+      "words": 705
     },
     "initial_word_reduction_percent": 98.7
   },
@@ -1436,9 +1440,10 @@
   },
   "pairwise_compositions": {
     "compact_pairs": 76,
-    "composition_digest": "sha256:47a6a63ab17e74befb6f96a2731fa2e76136aea0f2af17cf099280ae667e910b",
+    "composition_digest": "sha256:369c74d87977ad5b747415240a1eb0782fa486c8b3019c8e7a5bcb96dfb0fbfb",
     "evaluated_pairs": 120,
     "expansion_receipt_pairs": 44,
+    "max_characters": 78284,
     "max_declared_files": 19,
     "max_words": 6980,
     "missing_path_pairs": [],
@@ -2189,10 +2194,10 @@
       "bytes": 8416,
       "characters": 8416,
       "conditional_context": {
-        "bytes": 119093,
-        "characters": 119093,
+        "bytes": 119223,
+        "characters": 119223,
         "declared_files": 9,
-        "estimated_tokens_4_chars": 29774,
+        "estimated_tokens_4_chars": 29806,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2201,7 +2206,7 @@
           ".ai/framework/support-information.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 10036,
+        "portable_words": 10054,
         "resolved_files": 9,
         "resolved_paths": [
           ".ai/framework/action-authorization.md",
@@ -2222,15 +2227,15 @@
         ],
         "target_words": 2912,
         "unresolved_references": [],
-        "words": 12948
+        "words": 12966
       },
       "declared_files": 5,
       "estimated_tokens_4_chars": 2104,
       "full_candidate_union": {
-        "bytes": 127509,
-        "characters": 127509,
+        "bytes": 127639,
+        "characters": 127639,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 31878,
+        "estimated_tokens_4_chars": 31910,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2239,7 +2244,7 @@
           ".ai/framework/support-information.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 10036,
+        "portable_words": 10054,
         "resolved_files": 13,
         "resolved_paths": [
           ".ai/assistant/context/profiles/framework-upgrade.json",
@@ -2270,7 +2275,7 @@
         "unresolved_references": [
           "{TARGET_UPGRADE_IMPACT_REPORT}"
         ],
-        "words": 13683
+        "words": 13701
       },
       "missing_paths": [],
       "portable_paths": [],
@@ -2424,10 +2429,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 708701,
-        "characters": 708701,
+        "bytes": 710283,
+        "characters": 710283,
         "declared_files": 60,
-        "estimated_tokens_4_chars": 177176,
+        "estimated_tokens_4_chars": 177571,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -2491,7 +2496,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 87661,
+        "portable_words": 87881,
         "resolved_files": 60,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -2558,20 +2563,20 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 87661
+        "words": 87881
       },
       "selected_route": {
-        "bytes": 29000,
-        "characters": 29000,
+        "bytes": 29116,
+        "characters": 29116,
         "declared_files": 3,
-        "estimated_tokens_4_chars": 7250,
+        "estimated_tokens_4_chars": 7279,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-index.json",
           ".ai/framework/catalog/core/context-index.json",
           ".ai/framework/logical-integrity.md"
         ],
-        "portable_words": 2469,
+        "portable_words": 2477,
         "resolved_files": 3,
         "resolved_paths": [
           ".ai/framework/context-index.json",
@@ -2581,20 +2586,20 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 2469
+        "words": 2477
       },
       "word_reduction_percent": 97.2
     },
     "semantic_codebook": {
-      "compact_definition_and_reference_words": 967,
-      "compact_serialized_characters": 25440,
+      "compact_definition_and_reference_words": 965,
+      "compact_serialized_characters": 25374,
       "estimated_token_reduction_percent": 77.4,
-      "expanded_characters": 112576,
-      "expanded_definition_words": 15028,
+      "expanded_characters": 112064,
+      "expanded_definition_words": 14960,
       "measurement_limit": "synthetic repeated-definition comparison; not provider telemetry or billing evidence",
-      "reference_count": 427,
+      "reference_count": 425,
       "resolved_term_count": 17,
-      "word_reduction_percent": 93.6
+      "word_reduction_percent": 93.5
     }
   },
   "schema_version": 2,

@@ -4,6 +4,35 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.64 - 2026-09-13
+
+- Added character ceilings beside file and word limits in context-router schema
+  12 so dense machine records cannot bypass bounded-context policy, and kept
+  all current profile, task, knowledge, and cost checks active for schema 12.
+  Context-packet schema 4 now carries the enforced character measurements,
+  explicit cache-capability availability, and digest-bound target files named
+  directly by a selected profile, while router schemas 10 and 11 remain
+  readable migration inputs. Target catalog selectors now distinguish rule
+  ownership from rule dependencies so owner closure remains unambiguous.
+- Reduced initial installation-plan and source-audit context through a compact
+  core plan, bounded worker packets, and conditional canonical-owner loading.
+- Hardened source-check selection and reuse with strict manifest fields,
+  explicit content and path-inventory observations, inventory-sensitive
+  fingerprints, and bounded critical-path capacity reservation with scheduler
+  telemetry.
+- Reused hash-bound scaffold artifacts between dependent conformance checks
+  within one source-check run, verified their produced content and producer
+  inputs, required reuse when orchestrated, and added curated cross-module
+  interaction coverage without accepting stale or cross-run artifacts.
+- Centralized semantic preload projection and assistant capability-record
+  maintenance in their canonical generators, and distinguished machine versus
+  human rule-registry representations in recursive context indexes.
+- Added an explicit complexity-debt ceiling and review ownership for source
+  tooling with an enforced review milestone, while retaining the existing
+  validator boundaries to avoid a risky bulk refactor.
+- Added the missing reviewed checkpoint for `0.1.0-alpha.63`, increased adapter
+  schema version to `53`, and increased target template version to `59`.
+
 ## 0.1.0-alpha.63 - 2026-09-10
 
 - Defined ordered `kernel`, `core`, `standard`, and `full` support profiles,

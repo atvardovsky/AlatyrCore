@@ -76,8 +76,10 @@ cheap automatic routing. Resolve an exact operation ID or alias through
 `.ai/assistant/operation-catalog.json` only for the bare `Alatyr` entry,
 ambiguity, or operation/adapter repair.
 
-Use the router's total, portable, and reserved target-context budgets. Resolve
-and measure target-owned paths before accepting the adapter. When sufficient
+Use the router's file, word, deterministic character, portable, and reserved
+target-context budgets. Character limits protect dense structured data and
+text without whitespace; they are not provider token or billing telemetry.
+Resolve and measure target-owned paths before accepting the adapter. When sufficient
 context exceeds a budget, load required safety and owner evidence and record
 selected profiles and areas, loaded files and reasons, approximate volume,
 expansion triggers, intentional omissions, and residual risk. Source estimates

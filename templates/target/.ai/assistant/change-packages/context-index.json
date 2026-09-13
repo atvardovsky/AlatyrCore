@@ -21,10 +21,6 @@
         "path_terms": [
           "change",
           "packages"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [

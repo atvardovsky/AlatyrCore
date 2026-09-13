@@ -21,11 +21,6 @@
         "path_terms": [
           "knowledge",
           "routes"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [

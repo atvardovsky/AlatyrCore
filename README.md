@@ -565,6 +565,14 @@ The [module profile](framework/module-profile.md) defines required and optional
 capabilities. The [context router](framework/context-router.md) keeps routine
 tasks from loading the complete framework or project corpus.
 
+Context limits are checked by file count, words, and characters. The character
+ceiling covers dense JSON and source text that a word-only estimate can
+undercount. Installation planning and source-repository audits also begin with
+small bounded packets, then load detailed policy only for a named boundary,
+conflict, or failed check. Deterministic source checks may reuse exact,
+hash-bound intermediate artifacts inside one validation run; semantic review
+and final evidence remain required where the changed facts demand them.
+
 Alatyr also orders reusable guidance before task-specific and volatile context
 so OpenAI, Anthropic, Google Gemini/Vertex AI, Azure OpenAI, Amazon Bedrock, or
 another selected provider can reuse a prompt prefix when the exact model and
@@ -574,7 +582,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.63`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.64`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

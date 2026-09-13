@@ -91,7 +91,6 @@ class CheckManifestContractTests(unittest.TestCase):
         self.assertEqual(
             dependencies,
             {
-                "tools/check_all.py",
                 "tools/evidence_contract.py",
                 "tools/source_check_manifest.py",
             },

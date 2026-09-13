@@ -29,7 +29,12 @@ class FindingSink(Protocol):
     def read_text(self, path: Path) -> str: ...
 
 
-def validate_budget_shape(sink: FindingSink, budgets: dict[str, Any]) -> None:
+def validate_budget_shape(
+    sink: FindingSink,
+    budgets: dict[str, Any],
+    *,
+    require_character_limits: bool = False,
+) -> None:
     bootstrap = budgets.get("bootstrap")
     profile = budgets.get("profile_default")
     if not isinstance(bootstrap, dict):
@@ -49,6 +54,31 @@ def validate_budget_shape(sink: FindingSink, budgets: dict[str, Any]) -> None:
                 f"context_budgets.bootstrap.{field} must be a positive integer",
                 SOURCE,
             )
+    if require_character_limits:
+        for field in ["max_characters", "soft_max_characters"]:
+            value = bootstrap.get(field)
+            if not isinstance(value, int) or value <= 0:
+                sink.error(
+                    "ROUTER_BUDGET_VALUE",
+                    f"context_budgets.bootstrap.{field} must be a positive integer",
+                    SOURCE,
+                )
+        first_use = budgets.get("first_use")
+        if not isinstance(first_use, dict):
+            sink.error(
+                "ROUTER_BUDGET_FIRST_USE",
+                "first_use budget must be an object",
+                SOURCE,
+            )
+        else:
+            for field in ["max_files", "max_words", "max_characters"]:
+                value = first_use.get(field)
+                if not isinstance(value, int) or value <= 0:
+                    sink.error(
+                        "ROUTER_BUDGET_VALUE",
+                        f"context_budgets.first_use.{field} must be a positive integer",
+                        SOURCE,
+                    )
     soft = bootstrap.get("soft_max_words")
     hard = bootstrap.get("max_words")
     if isinstance(soft, int) and isinstance(hard, int) and soft >= hard:
@@ -57,12 +87,26 @@ def validate_budget_shape(sink: FindingSink, budgets: dict[str, Any]) -> None:
             "bootstrap soft_max_words must be below max_words",
             SOURCE,
         )
+    soft_characters = bootstrap.get("soft_max_characters")
+    hard_characters = bootstrap.get("max_characters")
+    if (
+        require_character_limits
+        and isinstance(soft_characters, int)
+        and isinstance(hard_characters, int)
+        and soft_characters >= hard_characters
+    ):
+        sink.error(
+            "ROUTER_BUDGET_ORDER",
+            "bootstrap soft_max_characters must be below max_characters",
+            SOURCE,
+        )
 
     for field in [
         "max_files",
         "max_total_words",
         "max_portable_words",
         "reserved_target_words",
+        *(["max_total_characters"] if require_character_limits else []),
     ]:
         value = profile.get(field)
         if not isinstance(value, int) or value <= 0:
@@ -98,8 +142,9 @@ def validate_installed_costs(
     bootstrap_budget = budgets.get("bootstrap", {})
     profile_budget = budgets.get("profile_default", {})
 
-    def measure(references: list[str], label: str) -> tuple[int, int, int, int]:
+    def measure(references: list[str], label: str) -> tuple[int, int, int, int, int]:
         words = 0
+        characters = 0
         portable_words = 0
         target_words = 0
         concrete_files = 0
@@ -139,23 +184,32 @@ def validate_installed_costs(
             count = len(re.findall(r"\S+", text))
             concrete_files += 1
             words += count
+            characters += len(text)
             if reference.startswith(".ai/framework/"):
                 portable_words += count
             else:
                 target_words += count
-        return concrete_files, words, portable_words, target_words
+        return concrete_files, words, portable_words, target_words, characters
 
     bootstrap_refs = [
         *router.get("preloaded_context", []),
         *router.get("bootstrap_context", []),
     ]
-    bootstrap_files, bootstrap_words, _, _ = measure(bootstrap_refs, "bootstrap")
+    bootstrap_files, bootstrap_words, _, _, bootstrap_characters = measure(
+        bootstrap_refs, "bootstrap"
+    )
     max_bootstrap_files = bootstrap_budget.get("max_files")
     max_bootstrap_words = bootstrap_budget.get("max_words")
     if isinstance(max_bootstrap_files, int) and bootstrap_files > max_bootstrap_files:
         sink.error("ROUTER_BOOTSTRAP_COST", "bootstrap exceeds max_files", SOURCE)
     if isinstance(max_bootstrap_words, int) and bootstrap_words > max_bootstrap_words:
         sink.error("ROUTER_BOOTSTRAP_COST", "bootstrap exceeds max_words", SOURCE)
+    max_bootstrap_characters = bootstrap_budget.get("max_characters")
+    if (
+        isinstance(max_bootstrap_characters, int)
+        and bootstrap_characters > max_bootstrap_characters
+    ):
+        sink.error("ROUTER_BOOTSTRAP_COST", "bootstrap exceeds max_characters", SOURCE)
 
     profile_index = router.get("profile_index", {})
     profile_references: dict[str, list[str]] = {}
@@ -170,13 +224,14 @@ def validate_installed_costs(
             if isinstance(value, str) and value
         ]
         profile_references[name] = references
-        files, total_words, portable_words, target_words = measure(
+        files, total_words, portable_words, target_words, total_characters = measure(
             references, f"profile {name}"
         )
         max_files = profile_budget.get("max_files")
         max_total = profile_budget.get("max_total_words")
         max_portable = profile_budget.get("max_portable_words")
         reserved_target = profile_budget.get("reserved_target_words")
+        max_characters = profile_budget.get("max_total_characters")
         if isinstance(max_files, int) and len(dict.fromkeys(references)) > max_files:
             sink.error(
                 "ROUTER_PROFILE_COST",
@@ -201,10 +256,17 @@ def validate_installed_costs(
                 f"profile {name} measures {target_words} target words above reserved_target_words {reserved_target}",
                 SOURCE,
             )
+        if isinstance(max_characters, int) and total_characters > max_characters:
+            sink.error(
+                "ROUTER_PROFILE_COST",
+                f"profile {name} measures {total_characters} characters above "
+                f"max_total_characters {max_characters}",
+                SOURCE,
+            )
         sink.info(
             "ROUTER_PROFILE_COST_MEASURED",
             f"profile {name} measures total={total_words} portable={portable_words} "
-            f"target={target_words} words",
+            f"target={target_words} words characters={total_characters}",
             SOURCE,
         )
         if files == 0 and references:
@@ -245,9 +307,10 @@ def validate_installed_costs(
     max_total = profile_budget.get("max_total_words")
     max_portable = profile_budget.get("max_portable_words")
     reserved_target = profile_budget.get("reserved_target_words")
+    max_characters = profile_budget.get("max_total_characters")
     for name, references in profile_references.items():
         composed = list(dict.fromkeys([*references, *consistency_references]))
-        _, total_words, portable_words, target_words = measure(
+        _, total_words, portable_words, target_words, total_characters = measure(
             composed, f"profile {name} with consistency routing"
         )
         if isinstance(max_files, int) and len(composed) > max_files:
@@ -274,8 +337,18 @@ def validate_installed_costs(
                 f"profile {name} with consistency routing measures {target_words} target words above reserved_target_words {reserved_target}",
                 SOURCE,
             )
+        if isinstance(max_characters, int) and total_characters > max_characters:
+            sink.error(
+                "ROUTER_CONSISTENCY_COMPOSITION_COST",
+                f"profile {name} with consistency routing measures "
+                f"{total_characters} characters above max_total_characters "
+                f"{max_characters}",
+                SOURCE,
+            )
         sink.info(
             "ROUTER_CONSISTENCY_COMPOSITION_MEASURED",
-            f"profile {name} with consistency routing measures total={total_words} portable={portable_words} target={target_words} words",
+            f"profile {name} with consistency routing measures total={total_words} "
+            f"portable={portable_words} target={target_words} words "
+            f"characters={total_characters}",
             SOURCE,
         )

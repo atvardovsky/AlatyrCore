@@ -12,7 +12,7 @@ from source_check_manifest import transitive_local_tool_dependencies
 from source_state import SourceEntry
 
 
-FINGERPRINT_CONTRACT = "alatyr-source-check-inputs-v3"
+FINGERPRINT_CONTRACT = "alatyr-source-check-inputs-v5"
 REUSE_CONTRACT = "alatyr-source-check-reuse-v1"
 RUN_IDENTITY_CONTRACT = "alatyr-source-check-run-identity-v1"
 CHECK_CACHE_IDENTITY_CONTRACT = "alatyr-source-check-cache-identity-v1"
@@ -77,6 +77,7 @@ class SourceSnapshotIndex:
                 [
                     *check["contract_inputs"],
                     *check["implementation_paths"],
+                    *check.get("observed_inputs", []),
                     *sorted(transitive_dependencies),
                 ]
             )
@@ -97,6 +98,23 @@ class SourceSnapshotIndex:
             }
             for relpath in matched_paths
         ]
+        inventory_patterns = list(
+            dict.fromkeys(check.get("observed_inventory_paths", []))
+        )
+        inventory_entries = [
+            {
+                "path": relpath,
+                "kind": self._by_path[relpath].kind,
+                "mode": self._by_path[relpath].mode,
+            }
+            for relpath in sorted(
+                {
+                    relpath
+                    for pattern in inventory_patterns
+                    for relpath in self.matching_paths(pattern)
+                }
+            )
+        ]
         unsupported_inputs = [
             entry["path"] for entry in entries if entry["kind"] != "file"
         ]
@@ -105,6 +123,8 @@ class SourceSnapshotIndex:
             "check_id": check["id"],
             "patterns": patterns,
             "entries": entries,
+            "inventory_patterns": inventory_patterns,
+            "inventory_entries": inventory_entries,
         }
         return {
             **payload,

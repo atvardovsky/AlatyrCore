@@ -20,9 +20,6 @@
       "selectors": {
         "path_terms": [
           "debug"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -42,9 +39,6 @@
       "selectors": {
         "path_terms": [
           "debug"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -68,8 +62,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 84,
-      "content_digest": "sha256:e88426ea1e5cb58254e1fd2d7b3d88a3a56af21362b8f13edd4b648e518f933b"
+      "estimated_words": 80,
+      "content_digest": "sha256:2bcdfa695571782c734ed1316db5f78f0547b6908d25b0aef1049a69fae2f730"
     }
   ]
 }

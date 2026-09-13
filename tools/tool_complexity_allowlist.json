@@ -1,7 +1,10 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "allowlist_kind": "alatyr-source-tool-complexity-allowlist",
   "max_function_lines": 300,
+  "max_known_large_functions": 22,
+  "debt_owner": "AlatyrCore maintainers",
+  "review_by_version": "0.1.0-beta.1",
   "known_large_functions": [
     {
       "path": "tools/check_context_router.py",

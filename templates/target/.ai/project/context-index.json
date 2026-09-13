@@ -21,10 +21,6 @@
         "path_terms": [
           "consistency",
           "map"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [
@@ -46,9 +42,6 @@
       "selectors": {
         "path_terms": [
           "contour"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -69,9 +62,6 @@
         "path_terms": [
           "development",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -93,9 +83,6 @@
           "source",
           "truth",
           "registry"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -116,9 +103,6 @@
         "path_terms": [
           "support",
           "policy"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -140,10 +124,6 @@
           "team",
           "operating",
           "model"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -166,10 +146,6 @@
         "path_terms": [
           "team",
           "policy"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -195,8 +171,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 130,
-      "content_digest": "sha256:e33b685cadf24fc09902c8bf72b82045b5cadd561d89889e3168ba23c6d5d996"
+      "estimated_words": 118,
+      "content_digest": "sha256:2c8900b4b560439995b8435055b6b04e455ebea05778fab9c11ab45426c99425"
     },
     {
       "id": "project.section.consistency",
@@ -210,8 +186,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 114,
-      "content_digest": "sha256:3438922b9bed095311c496a18fbdacb16df0f39f22dd037a8c8084544c54d9d2"
+      "estimated_words": 109,
+      "content_digest": "sha256:5485eb2c9222d94a52a4eaeb2f94148a996e973efb70906705e22b6fc387b75a"
     },
     {
       "id": "project.section.debug",
@@ -225,8 +201,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 143,
-      "content_digest": "sha256:f20322183384083d66551fc6281b35397eb7140515a9f30b79891b130a55d05f"
+      "estimated_words": 135,
+      "content_digest": "sha256:bde128ca2bc9fa6558ca9e8bfc94a66e0ac97d7acfae7f12cb115ffd69e35273"
     },
     {
       "id": "project.section.dependencies",
@@ -240,8 +216,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 254,
-      "content_digest": "sha256:53ca76366cefe4c23c59d6eaeb28f378c0af025ae0ed78dc6bd984803238f45a"
+      "estimated_words": 232,
+      "content_digest": "sha256:1298e3168fd29ec7f780e0429207c200f9a190edebde53e8f6a2fc4e84e3e4be"
     },
     {
       "id": "project.section.documentation",
@@ -255,8 +231,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 152,
-      "content_digest": "sha256:df45875a76a7cc595a2e5b215535f5549cf789a4294c842bbbf2726c29a9f6b5"
+      "estimated_words": 140,
+      "content_digest": "sha256:c8ebf381d8a67849c500f1accbc8da5aefb04e4fca809e151979af9426f02850"
     },
     {
       "id": "project.section.engineering-evidence",
@@ -270,8 +246,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 146,
-      "content_digest": "sha256:8de0f58f5e93e2447ba125818b71a35cd8bea2d215da7e5114ac000637bcd56c"
+      "estimated_words": 138,
+      "content_digest": "sha256:906f1fe270ea3a6a3349186b11de2632ead160ef8d153418d9a230bc773b6087"
     },
     {
       "id": "project.section.knowledge",
@@ -285,8 +261,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 181,
-      "content_digest": "sha256:374a9ed35f1b9ef97122c234c0f72246ba7ed0f495540ddb7d042cf19b501b6a"
+      "estimated_words": 169,
+      "content_digest": "sha256:2a0b48037cdced392f9bb92f6755cef90c9dde169a5af4e65e88c47e888bebb5"
     },
     {
       "id": "project.section.support-generation",
@@ -300,8 +276,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 85,
-      "content_digest": "sha256:3df7225820b46a3824b75d1ec039279b477f141a391a5dd2bef93591af7f22bf"
+      "estimated_words": 81,
+      "content_digest": "sha256:6b9774653741530500ab96beeb8cc5e9b7539593fbd072622bac29d8e7e6fb24"
     },
     {
       "id": "project.section.testing",
@@ -315,8 +291,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 124,
-      "content_digest": "sha256:596f45aeb04dd0f587476c5670683dc5523fa673656b781e756f2e7c6df43a8e"
+      "estimated_words": 116,
+      "content_digest": "sha256:117dba17b66c68aebe6cd00528a75c081e8e657d087ad26c21b7d52f62e06768"
     },
     {
       "id": "project.section.vocabulary",
@@ -330,8 +306,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 213,
-      "content_digest": "sha256:a33f8ae0a6ccfd5f2aaec88c598206149f90c04bbb07f39f7fc15a9e30b2dac6"
+      "estimated_words": 189,
+      "content_digest": "sha256:9630cca5a6710365b886b113bf14619defcdace666f2b51a8e40df36b67efb51"
     },
     {
       "id": "project.section.workspace-modes",
@@ -345,8 +321,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 173,
-      "content_digest": "sha256:8ad0ded2ccfd921dada978f1f911b10d6ef80b7508e698ba9426178cd4ef749b"
+      "estimated_words": 165,
+      "content_digest": "sha256:f4683c5fee38d6ed17cb1899069fd27109d0f8be85df9cad9a36f81496fb6458"
     }
   ]
 }

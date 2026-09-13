@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from check_all import load_manifest, matches, routes
 from evidence_contract import CONTRACT_FILES, CONTRACT_PREFIXES
 from source_check_manifest import (
     SourcePathIndex,
@@ -16,6 +15,9 @@ from source_check_manifest import (
     declaration_matches_source,
     declared_implementation_path,
     direct_local_tool_dependencies,
+    load_manifest,
+    matches,
+    routes,
 )
 
 
@@ -59,10 +61,13 @@ def tool_command_routing_failures(checks: list[dict[str, Any]]) -> list[str]:
             failures.append("tool command manifest contains an invalid script entry")
             continue
         script = f"tools/{command['script']}"
-        if not any(declared_implementation_path(check, script) for check in checks):
+        implementation_owners = [
+            check for check in checks if declared_implementation_path(check, script)
+        ]
+        if not implementation_owners:
             failures.append(f"tool command script lacks implementation owner: {script}")
-        if not any(routes(check, script) for check in checks):
-            failures.append(f"tool command script lacks trigger route: {script}")
+            if not any(routes(check, script) for check in checks):
+                failures.append(f"tool command script lacks trigger route: {script}")
     return failures
 
 
@@ -94,7 +99,12 @@ def main() -> int:
             failures.append(
                 f"{check['id']} implementation_paths do not include its command script"
             )
-        for field in ["contract_inputs", "implementation_paths", "trigger_paths"]:
+        for field in [
+            "contract_inputs",
+            "implementation_paths",
+            "observed_inputs",
+            "trigger_paths",
+        ]:
             for path in check[field]:
                 if not declaration_matches_source(path, source_index):
                     failures.append(

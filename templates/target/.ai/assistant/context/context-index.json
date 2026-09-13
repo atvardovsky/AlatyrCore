@@ -21,10 +21,6 @@
         "path_terms": [
           "consistency",
           "routing"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [
@@ -47,9 +43,6 @@
         "path_terms": [
           "cost",
           "scenarios"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -70,9 +63,6 @@
         "path_terms": [
           "migration",
           "routing"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -94,11 +84,6 @@
           "project",
           "knowledge",
           "routing"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -126,8 +111,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 367,
-      "content_digest": "sha256:41e161595bcf8a1424f64ab4ffaca4b40ed68d438ff6ddb54a7926a298674163"
+      "estimated_words": 327,
+      "content_digest": "sha256:894576dee4f9cd1c9a5995415520b8afc4276bb43456e7d69716fab8f52f3091"
     },
     {
       "id": "assistant.section.context-profiles",
@@ -141,8 +126,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 364,
-      "content_digest": "sha256:7b14d72692ef8ccf7ab9119c0cf88909bab79873afeac39fb6c272ce7e5e011c"
+      "estimated_words": 332,
+      "content_digest": "sha256:7adeab1ad51c0941fa0c5383d37dab40e0c68464bf1903254a7311aa67824d86"
     },
     {
       "id": "assistant.section.context-task-scales",
@@ -156,8 +141,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 275,
-      "content_digest": "sha256:87ed0d3e6e8cd3c1bb8eb0781097750565ffa746c81c93b082d841734880e045"
+      "estimated_words": 250,
+      "content_digest": "sha256:9698956ab41822d6815099fee2d42e6deefe555ed67a5098c5d5ca3587531933"
     }
   ]
 }

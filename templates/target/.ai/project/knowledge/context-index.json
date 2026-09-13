@@ -20,11 +20,6 @@
       "selectors": {
         "path_terms": [
           "knowledge"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -48,11 +43,6 @@
       "selectors": {
         "path_terms": [
           "knowledge"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -80,8 +70,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 92,
-      "content_digest": "sha256:35268d65ff5fbe7b2018287e657a980e0af7f91054ab25214a4b0f35a702f947"
+      "estimated_words": 86,
+      "content_digest": "sha256:75b72f64a96072bf802121dfd9ed1eacca2d97d9e331887828a515164118b21b"
     },
     {
       "id": "project.section.knowledge-routes",
@@ -95,8 +85,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 92,
-      "content_digest": "sha256:13e0b3859f086aec982b9de6dfdf7ad9043f3864c7ff23b6b1144462e695cfaf"
+      "estimated_words": 86,
+      "content_digest": "sha256:b7bca1a23c36d9b01877621ec8bc335dec520a045b0a4e2d5c2aef060a7997e5"
     }
   ]
 }

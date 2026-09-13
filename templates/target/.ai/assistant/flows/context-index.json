@@ -23,9 +23,6 @@
           "adapter",
           "health",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -48,9 +45,6 @@
           "adapter",
           "recheck",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -73,10 +67,6 @@
           "infrastructure",
           "inventory",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -101,10 +91,6 @@
           "infrastructure",
           "recommendation",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -129,11 +115,6 @@
           "architecture",
           "assistance",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -161,9 +142,6 @@
           "driven",
           "change",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -186,10 +164,6 @@
           "change",
           "package",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [
@@ -214,9 +188,6 @@
           "debug",
           "mode",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -240,12 +211,6 @@
           "knowledge",
           "sync",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SAFETY-002",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -275,9 +240,6 @@
           "evidence",
           "capture",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -300,9 +262,6 @@
           "diagram",
           "discussion",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -325,9 +284,6 @@
           "documentation",
           "sync",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -351,9 +307,6 @@
           "evidence",
           "capture",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -376,10 +329,6 @@
           "extension",
           "lifecycle",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -405,9 +354,6 @@
           "task",
           "orchestration",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -431,10 +377,6 @@
           "integrity",
           "review",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [
@@ -459,9 +401,6 @@
           "operation",
           "routing",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -485,9 +424,6 @@
           "blueprint",
           "creation",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -510,11 +446,6 @@
           "project",
           "knowledge",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -541,11 +472,6 @@
           "project",
           "vocabulary",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -572,9 +498,6 @@
           "skill",
           "adaptation",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -597,10 +520,6 @@
           "subagent",
           "delegation",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -625,9 +544,6 @@
           "support",
           "generation",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -650,10 +566,6 @@
           "team",
           "decision",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -678,10 +590,6 @@
           "team",
           "handoff",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -706,10 +614,6 @@
           "team",
           "identity",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -734,10 +638,6 @@
           "team",
           "review",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -763,10 +663,6 @@
           "task",
           "coordination",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -792,9 +688,6 @@
           "first",
           "change",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -818,9 +711,6 @@
           "first",
           "configuration",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -843,9 +733,6 @@
           "workspace",
           "mode",
           "flow"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

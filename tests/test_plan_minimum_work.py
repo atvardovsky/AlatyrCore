@@ -61,7 +61,7 @@ def capability_record(max_parallelism: int = 2) -> dict[str, object]:
 
 def worker_packet(workstream_id: str, context: str) -> dict[str, object]:
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "packet_kind": "source-read-only-workstream",
         "parent_packet_id": None,
         "depth": 1,
@@ -72,6 +72,8 @@ def worker_packet(workstream_id: str, context: str) -> dict[str, object]:
         "role_id": "read-only-auditor",
         "objective": f"Inspect {workstream_id}",
         "bounded_context": [context],
+        "max_initial_words": 10000,
+        "max_result_words": 1600,
         "conditional_context": [],
         "non_goals": ["modify repository state"],
         "allowed_actions": ["inspect"],

@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["schema_version", "packet_kind", "profile", "operation", "selected_items", "semantic_terms", "required_obligations", "budget", "packet_digest"],
   "properties": {
-    "schema_version": {"const": 3},
+    "schema_version": {"const": 4},
     "packet_kind": {"const": "alatyr-context-packet"},
     "profile": {"type": "string", "minLength": 1},
     "operation": {"type": "string", "minLength": 1},
@@ -22,7 +22,30 @@
         "owner_rule_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
       }
     },
-    "cache_delivery": {"type": "object"},
+    "cache_delivery": {
+      "type": "object",
+      "required": ["schema_version", "assistant_surface", "capability_evidence_state", "capability_record", "stable_prefix_sections", "dynamic_tail_sections", "stable_prefix_digest", "dynamic_tail_digest", "cache_hit_required", "context_window_reduction", "fallback"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "assistant_surface": {"type": "string", "minLength": 1},
+        "capability_evidence_state": {"enum": ["available", "unavailable"]},
+        "capability_record": {"type": ["string", "null"]},
+        "stable_prefix_sections": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "dynamic_tail_sections": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "stable_prefix_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "dynamic_tail_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "cache_hit_required": {"const": false},
+        "context_window_reduction": {"const": false},
+        "fallback": {"const": "bounded-context-routing"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"capability_evidence_state": {"const": "available"}}},
+          "then": {"properties": {"capability_record": {"type": "string", "minLength": 1}}},
+          "else": {"properties": {"capability_record": {"type": "null"}}}
+        }
+      ]
+    },
     "routing": {
       "type": "object",
       "additionalProperties": false,
@@ -51,12 +74,17 @@
     "budget": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["max_words", "selected_content_words", "semantic_definition_words", "total_words"],
+      "required": ["max_words", "max_characters", "character_budget_state", "selected_content_words", "selected_content_characters", "semantic_definition_words", "semantic_definition_characters", "total_words", "total_characters"],
       "properties": {
         "max_words": {"type": "integer", "minimum": 1},
+        "max_characters": {"type": ["integer", "null"], "minimum": 1},
+        "character_budget_state": {"enum": ["enforced", "unavailable-legacy"]},
         "selected_content_words": {"type": "integer", "minimum": 0},
+        "selected_content_characters": {"type": "integer", "minimum": 0},
         "semantic_definition_words": {"type": "integer", "minimum": 0},
-        "total_words": {"type": "integer", "minimum": 0}
+        "semantic_definition_characters": {"type": "integer", "minimum": 0},
+        "total_words": {"type": "integer", "minimum": 0},
+        "total_characters": {"type": "integer", "minimum": 0}
       }
     },
     "receipt": {"type": "object"},

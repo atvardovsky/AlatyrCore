@@ -11,7 +11,12 @@ from typing import Any
 
 from render_framework_file_inventory import build_inventory
 from check_all import ALLOWED_PROFILES, load_manifest
-from context_catalog import ContextCatalogError, load_codebook, validate_context_catalog
+from context_catalog import (
+    ContextCatalogError,
+    load_codebook,
+    preload_term_ids,
+    validate_context_catalog,
+)
 from source_check_manifest import valid_manifest_path
 from task_classification_contract import (
     AMBIGUITY_READ_ONLY_MARKER,
@@ -458,14 +463,7 @@ def main() -> int:
     }:
         failures.append("source recursive context contract is invalid")
     semantic = source.get("semantic_codebook")
-    expected_preload = [
-        "alatyr:current-scope-authorization@1",
-        "alatyr:canonical-owner@1",
-        "alatyr:risk-by-fact@1",
-        "alatyr:protected-change@1",
-        "alatyr:logical-integrity@1",
-        "alatyr:bounded-context-expansion@1",
-    ]
+    expected_preload = preload_term_ids(ROOT / "framework/semantics/index.json")
     if (
         not isinstance(semantic, dict)
         or semantic.get("schema_version") != 2

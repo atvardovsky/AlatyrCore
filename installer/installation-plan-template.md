@@ -1,5 +1,9 @@
 # Alatyr Core Installation Plan
 
+This is the detailed capability checklist. Start the plan-and-approval stage
+with `installer/installation-plan-core-template.md` and load only the sections
+below that correspond to selected modules or unresolved target evidence.
+
 Installation id: `ALATYR-YYYYMMDD-short-name`
 
 Discovery category map: `installer/discovery-contract.json`

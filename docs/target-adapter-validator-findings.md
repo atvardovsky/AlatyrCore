@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1360
+Catalog entries: 1362
 
 ## Families
 
@@ -52,7 +52,7 @@ Catalog entries: 1360
 - `PROJECT`: 54 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
-- `ROUTER`: 71 codes.
+- `ROUTER`: 73 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
@@ -2022,6 +2022,8 @@ Catalog entries: 1360
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_BUDGET_BOOTSTRAP`
   Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
+- `ROUTER_BUDGET_FIRST_USE`
+  Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_BUDGET_ON_EXCEED`
   Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_BUDGET_ORDER`
@@ -2071,6 +2073,8 @@ Catalog entries: 1360
 - `ROUTER_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`, `tools/target_adapter_validation/code_documentation.py`, `tools/target_adapter_validation/dependency_knowledge.py`, `tools/target_adapter_validation/diagrams.py`, `tools/target_adapter_validation/extensions.py`, `tools/target_adapter_validation/project_vocabulary.py`, `tools/target_adapter_validation/team_collaboration.py`, `tools/target_adapter_validation/test_first_development.py`, `tools/target_adapter_validation/workspace_modes.py`, `tools/validate_target_adapter.py`.
 - `ROUTER_KIND`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_MANIFEST_BUDGET_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_MANIFEST_SCHEMA_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.

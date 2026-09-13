@@ -9,12 +9,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from context_catalog import file_digest, load_codebook, load_object
+from context_catalog import file_digest, load_codebook, load_object, preload_term_ids
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SEMANTICS = ROOT / "framework" / "semantics"
 OUTPUT = SEMANTICS / "index.json"
+ROUTER_PROJECTIONS = (
+    ROOT / "tools" / "source_context_router.json",
+    ROOT / "templates" / "target" / ".ai" / "assistant" / "context-router.json",
+)
 
 
 def build(semantics: Path = SEMANTICS) -> dict[str, Any]:
@@ -76,6 +80,36 @@ def render(semantics: Path = SEMANTICS) -> str:
     return json.dumps(build(semantics), indent=2, ensure_ascii=True) + "\n"
 
 
+def sync_router_preloads() -> int:
+    preload = preload_term_ids(OUTPUT)
+    changed = 0
+    for path in ROUTER_PROJECTIONS:
+        router = load_object(path)
+        semantic = router.get("semantic_codebook")
+        if not isinstance(semantic, dict):
+            raise ValueError(f"{path.relative_to(ROOT)} has no semantic_codebook")
+        if semantic.get("preload_terms") == preload:
+            continue
+        semantic["preload_terms"] = preload
+        path.write_text(
+            json.dumps(router, indent=2, ensure_ascii=True) + "\n",
+            encoding="utf-8",
+        )
+        changed += 1
+    return changed
+
+
+def stale_router_preloads() -> list[Path]:
+    preload = preload_term_ids(OUTPUT)
+    stale: list[Path] = []
+    for path in ROUTER_PROJECTIONS:
+        router = load_object(path)
+        semantic = router.get("semantic_codebook")
+        if not isinstance(semantic, dict) or semantic.get("preload_terms") != preload:
+            stale.append(path)
+    return stale
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
@@ -95,10 +129,19 @@ def main() -> int:
         except ValueError as exc:
             print(f"FAIL: {exc}", file=sys.stderr)
             return 1
+        stale = stale_router_preloads()
+        if stale:
+            print(
+                "FAIL: semantic preload projections are stale: "
+                + ", ".join(path.relative_to(ROOT).as_posix() for path in stale),
+                file=sys.stderr,
+            )
+            return 1
         print("OK: checked semantic codebook index and preload closure")
         return 0
     OUTPUT.write_text(expected, encoding="utf-8")
-    print(f"Wrote {OUTPUT.relative_to(ROOT)}")
+    synced = sync_router_preloads()
+    print(f"Wrote {OUTPUT.relative_to(ROOT)}; router_preloads_updated={synced}")
     return 0
 
 

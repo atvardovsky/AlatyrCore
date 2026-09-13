@@ -169,9 +169,15 @@ Classify every proposed target file:
    enables only its capability dependency closure and may raise the matched
    framework pack. Do not select every registered surface merely because its
    template exists.
-3. Fill `installer/readiness-checklist.md` for the target.
+3. Select and fill only the `installer/readiness-checklist.md` sections required
+   by the discovered baseline, chosen support profile, enabled capabilities,
+   crossed boundaries, and unresolved evidence. Record omitted sections and
+   their non-applicability reason; do not load or complete the whole checklist
+   merely because it exists.
 4. Prepare an installation plan from
-   `installer/installation-plan-template.md`.
+   `installer/installation-plan-core-template.md`. Load only selected sections
+   of `installer/installation-plan-template.md` for enabled optional
+   capabilities or unresolved target evidence.
 5. Record the current logical installation scope and the action phases
    authorized by the newest user request. Installation intent does not imply
    commit, push, release, deployment, or another live action. Apply

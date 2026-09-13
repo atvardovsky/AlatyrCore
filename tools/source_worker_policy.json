@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
@@ -182,7 +182,7 @@
     }
   },
   "worker_packet_contract": {
-    "schema_version": 3,
+    "schema_version": 4,
     "packet_kinds": ["source-read-only-workstream"],
     "required_fields": [
       "schema_version",
@@ -196,6 +196,8 @@
       "role_id",
       "objective",
       "bounded_context",
+      "max_initial_words",
+      "max_result_words",
       "conditional_context",
       "non_goals",
       "allowed_actions",
@@ -216,7 +218,7 @@
     "role_id": "read-only-auditor",
     "write_scope": "none",
     "child_proposal_policy": "propose-only",
-    "result_requirement": "Return findings with inspectable file, symbol, rule, or check evidence; do not decide integration or mutate repository state."
+    "result_requirement": "Return findings with inspectable file, symbol, rule, or check evidence within max_result_words; the primary measures or conservatively estimates the result before integration because the current execution-tree schema does not prove result length. Do not decide integration or mutate repository state."
   },
   "workstreams": {
     "framework-rules": {
@@ -241,11 +243,13 @@
       "overlap_decision": "disjoint",
       "required_context": [
         "framework/context-index.json",
-        "framework/rule-registry.json",
-        "framework/rule-ownership.md",
         "framework/semantics/index.json"
       ],
+      "max_initial_words": 4000,
+      "max_result_words": 1600,
       "conditional_context": [
+        "framework/rule-registry.json entry selected by a relevant rule ID",
+        "framework/rule-ownership.md entry selected by a relevant rule ID",
         "canonical owners selected by a relevant rule ID",
         "direct dependencies selected by framework metadata"
       ],
@@ -277,12 +281,14 @@
       ],
       "overlap_decision": "disjoint",
       "required_context": [
-        "INSTALL.md",
         "installer/context-router.json",
-        "installer/assistant-installation.flow.md",
         "templates/target/.ai/README.md"
       ],
+      "max_initial_words": 4000,
+      "max_result_words": 1600,
       "conditional_context": [
+        "INSTALL.md section selected by the installer stage or detected ambiguity",
+        "installer/assistant-installation.flow.md stage selected by the detected mismatch",
         "selected target template or bridge",
         "canonical framework owner for a detected mismatch"
       ],
@@ -315,11 +321,15 @@
       ],
       "overlap_decision": "disjoint",
       "required_context": [
-        "tools/check_manifest.json",
-        "tools/README.md",
+        "tools/source_context_router.json",
+        "tools/tool_commands.json",
         "docs/source-architecture.md"
       ],
+      "max_initial_words": 4000,
+      "max_result_words": 1600,
       "conditional_context": [
+        "selected tools/check_manifest.json entry",
+        "selected tools/README.md command section",
         "checker selected by a failed check ID",
         "implementation helper listed by the manifest route"
       ],
@@ -357,12 +367,14 @@
       ],
       "overlap_decision": "disjoint",
       "required_context": [
-        "README.md",
         "VERSION",
-        "CHANGELOG.md",
         "docs/release-process.md"
       ],
+      "max_initial_words": 4000,
+      "max_result_words": 1600,
       "conditional_context": [
+        "README.md section selected by a disputed public claim",
+        "current CHANGELOG.md release section selected by version evidence",
         "release note or migration evidence selected by a detected version mismatch",
         "canonical rule owner for a disputed public claim"
       ],

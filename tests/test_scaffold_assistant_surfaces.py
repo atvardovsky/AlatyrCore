@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from composition_model import CompositionRequest, resolve_composition  # noqa: E402
 from scaffold_target_structure import plan  # noqa: E402
 from scaffold_projection import path_available, portable_relative_path  # noqa: E402
+from render_assistant_capability_index import build_surface_record  # noqa: E402
 
 
 def scaffold_args(target: Path, *surfaces: str, profile: str = "full") -> SimpleNamespace:
@@ -35,6 +36,14 @@ def action_paths(actions: list[str]) -> set[str]:
 
 
 class ScaffoldAssistantSurfaceTests(unittest.TestCase):
+    def test_surface_capability_records_have_one_canonical_shape(self) -> None:
+        generic = build_surface_record("generic")
+        codex = build_surface_record("codex")
+
+        self.assertEqual(codex["assistant_surface"], "codex")
+        codex["assistant_surface"] = "generic"
+        self.assertEqual(codex, generic)
+
     def test_repository_paths_are_portable_across_windows_and_posix(self) -> None:
         windows_path = PureWindowsPath(
             ".ai\\assistant\\context\\profiles\\code-local.json"

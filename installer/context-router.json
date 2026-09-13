@@ -103,9 +103,9 @@
       "prohibited_actions": ["enable an optional module without target need owner and validation"]
     },
     "plan-and-approval": {
-      "required_context": ["installer/installation-plan-template.md"],
+      "required_context": ["installer/installation-plan-core-template.md"],
       "depends_on": ["scope-selection"],
-      "conditional_context": ["framework/change-risk-model.md when risk classification is ambiguous", "framework/approval-records.md when protected scope requires approval", "security owner when a safety boundary is crossed", "import policy for external AI infrastructure"],
+      "conditional_context": ["selected sections of installer/installation-plan-template.md for enabled optional capabilities", "framework/change-risk-model.md when risk classification is ambiguous", "framework/approval-records.md when protected scope requires approval", "security owner when a safety boundary is crossed", "import policy for external AI infrastructure"],
       "required_evidence": ["current-scope-authorization", "protected-scope-binding"],
       "required_outputs": ["installation-plan", "approval-disposition"],
       "completion_checks": ["bounded-plan", "approval-plan-binding"],

@@ -174,8 +174,10 @@ Before accepting a change, check:
   conformance fixture, or assistant capability fields change.
 - Update `tools/target_adapter_validation/assistant_capabilities.py` first when
   assistant capability schema versions, capability kinds, state vocabulary, or
-  per-surface record paths change; focused assistant-capability checks and the
-  target validator import that shared contract.
+  per-surface record paths change. Update the canonical `generic.json` shape,
+  then run `python3 tools/render_assistant_capability_index.py --write-records
+  --write`; focused assistant-capability checks and the target validator import
+  the shared contract.
 - `python3 tools/check_diagram_conformance_results.py` passes when captured
   diagram result, selected capability, loaded-context, read-only, ASCII
   readability, or residual-risk evidence changes.
@@ -348,7 +350,8 @@ Before accepting a change, check:
   CI jobs, test folders, fixture helpers, security policies, or diagram tools.
 - `installer/assistant-installation.flow.md`,
   `installer/readiness-checklist.md`, and
-  `installer/installation-plan-template.md` agree.
+  `installer/installation-plan-core-template.md` agree; detailed capability
+  questions remain owned by `installer/installation-plan-template.md`.
 - `templates/target` remains placeholder-based.
 - target manifest, context router, context profiles, approval templates,
   source-access policy, prompt-injection policy, help, help reference, output

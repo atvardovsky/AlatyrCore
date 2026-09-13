@@ -23,10 +23,6 @@
           "roles",
           "documentation",
           "worker"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -50,10 +46,6 @@
           "workers",
           "roles",
           "explorer"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -79,10 +71,6 @@
           "fast",
           "focused",
           "worker"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -106,10 +94,6 @@
           "workers",
           "roles",
           "implementer"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -133,10 +117,6 @@
           "workers",
           "roles",
           "reviewer"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -161,10 +141,6 @@
           "roles",
           "test",
           "runner"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [

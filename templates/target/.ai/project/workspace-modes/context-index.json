@@ -22,9 +22,6 @@
           "workspace",
           "modes",
           "catalog"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -45,9 +42,6 @@
         "path_terms": [
           "workspace",
           "modes"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -72,7 +66,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 75,
-      "content_digest": "sha256:799efc2a1f663e8fbb4555c49ddd36c6df81849a712494121b61fa205f9f28c0"
+      "content_digest": "sha256:bd3d3b3b6bb4390b328af7c9eda9a2388b096b8774873b7157930ca7f791b214"
     },
     {
       "id": "project.section.workspace-modes-root",
@@ -86,8 +80,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 121,
-      "content_digest": "sha256:71c876b6e02de148846d7c9b40d5b747502ddf1489f1484149b2f962fd1311ec"
+      "estimated_words": 113,
+      "content_digest": "sha256:9c9d1f7c9af34b7106c6c388d322733b9dfdd498bb13a277ed450d7f3d46420d"
     }
   ]
 }

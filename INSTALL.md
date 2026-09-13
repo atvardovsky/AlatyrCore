@@ -101,7 +101,9 @@ If a target fact is missing, mark it as missing. Do not invent it.
 ## Planning Rule
 
 Prepare an installation plan using
-`installer/installation-plan-template.md`.
+`installer/installation-plan-core-template.md`. Load only the selected sections
+of `installer/installation-plan-template.md` when enabled optional capabilities
+or unresolved target evidence require their detailed questions.
 
 The plan must identify:
 

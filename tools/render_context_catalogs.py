@@ -134,6 +134,10 @@ def _selectors(path: str, owner_refs: list[str]) -> dict[str, list[str]]:
         if len(part) > 2 and part not in {"json", "readme", "context", "index"}
     ]
     result: dict[str, list[str]] = {"path_terms": list(dict.fromkeys(terms))[:12]}
+    if path == "rule-registry.json":
+        result["representation"] = ["machine"]
+    elif path == "rule-registry.md":
+        result["representation"] = ["human"]
     if owner_refs:
         result["rule_ids"] = owner_refs
     return result
@@ -174,6 +178,7 @@ def _entry_from_file(
     relpath: str,
     owner_refs: list[str] | None = None,
     semantic_refs: list[str] | None = None,
+    selector_rule_ids: list[str] | None = None,
 ) -> dict[str, Any]:
     path = root / relpath
     owners = owner_refs or []
@@ -182,7 +187,9 @@ def _entry_from_file(
         "kind": kind,
         "path": relpath,
         "summary": _title(path),
-        "selectors": _selectors(relpath, owners),
+        "selectors": _selectors(
+            relpath, owners if selector_rule_ids is None else selector_rule_ids
+        ),
         "load_when": DEFAULT_LOAD_WHEN,
         "semantic_refs": sorted(set(semantic_refs or [])),
         "owner_refs": sorted(set(owners)),
@@ -437,13 +444,24 @@ def build_directory_catalog_contents(
             path
             for path in root.rglob("*")
             if path.is_file()
-            and path.name not in {INDEX_NAME, "bootstrap-index.json", ".gitignore"}
+            and path.name
+            not in {
+                INDEX_NAME,
+                "bootstrap-index.json",
+                "bootstrap-integrity.json",
+                ".gitignore",
+            }
         ]
     else:
         all_files = []
         for relpath in sorted(selected_files):
             path = root / relpath
-            if path.name in {INDEX_NAME, "bootstrap-index.json", ".gitignore"}:
+            if path.name in {
+                INDEX_NAME,
+                "bootstrap-index.json",
+                "bootstrap-integrity.json",
+                ".gitignore",
+            }:
                 continue
             if not path.is_file():
                 raise ValueError(
@@ -497,6 +515,7 @@ def build_directory_catalog_contents(
                         relpath=relpath,
                         owner_refs=owner_refs,
                         semantic_refs=semantic_refs,
+                        selector_rule_ids=[],
                     )
                 )
             else:
@@ -506,7 +525,7 @@ def build_directory_catalog_contents(
                         kind="content",
                         path=relpath,
                         summary=_title_from_text(override, path),
-                        selectors=_selectors(relpath, owner_refs),
+                        selectors=_selectors(relpath, []),
                         semantic_refs=semantic_refs,
                         owner_refs=owner_refs,
                         payload=override.encode("utf-8"),

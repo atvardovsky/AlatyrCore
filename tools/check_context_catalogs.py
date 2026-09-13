@@ -52,7 +52,7 @@ def main() -> int:
             TARGET / ".ai" / "assistant",
             _target_files(
                 TARGET / ".ai" / "assistant",
-                exclude={"bootstrap-index.json"},
+                exclude={"bootstrap-index.json", "bootstrap-integrity.json"},
             ),
         ),
     }

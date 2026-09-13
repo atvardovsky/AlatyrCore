@@ -21,9 +21,6 @@
         "path_terms": [
           "dependencies",
           "catalog"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -44,9 +41,6 @@
         "path_terms": [
           "dependencies",
           "deviations"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -68,11 +62,6 @@
           "dependencies",
           "knowledge",
           "lock"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -97,9 +86,6 @@
         "path_terms": [
           "dependencies",
           "policy"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -119,9 +105,6 @@
       "selectors": {
         "path_terms": [
           "dependencies"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -145,8 +128,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 85,
-      "content_digest": "sha256:38d3cdf22f299b7b6be6a31278a90d0e8decc899e893e8a91d4dd2fd98ca999b"
+      "estimated_words": 81,
+      "content_digest": "sha256:ba23faa8e917b0b64cfa690ad97663b4b2b683d14e97b2e655cee14ff2fab529"
     }
   ]
 }

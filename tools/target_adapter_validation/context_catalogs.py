@@ -22,6 +22,7 @@ CODEBOOK = ".ai/framework/semantics/index.json"
 PACKET_TEMPLATE = ".ai/assistant/templates/context-packet.json"
 DERIVED_ROUTING_REFERENCES = {
     ".ai/assistant/bootstrap-index.json",
+    ".ai/assistant/bootstrap-integrity.json",
     ".ai/support-state.json",
 }
 
@@ -109,6 +110,222 @@ def _validate_semantic_preload(
                 "CONTEXT_SEMANTIC_PRELOAD_DRIFT",
                 f"bootstrap semantic term differs from installed codebook: {term_id}",
                 ".ai/assistant/bootstrap-index.json",
+            )
+
+
+def _validate_context_packet_template(sink: FindingSink) -> None:
+    packet = sink.load_json_object(
+        sink.target_path(PACKET_TEMPLATE), "CONTEXT_PACKET_TEMPLATE"
+    )
+    if packet is None:
+        return
+    required_packet_fields = {
+        "schema_version",
+        "packet_kind",
+        "cache_delivery",
+        "profile",
+        "operation",
+        "task_classification",
+        "selected_items",
+        "routing",
+        "semantic_terms",
+        "required_obligations",
+        "budget",
+        "receipt",
+        "cost_claim",
+        "limitations",
+        "packet_digest",
+    }
+    if (
+        set(packet) != required_packet_fields
+        or packet.get("schema_version") != PACKET_SCHEMA_VERSION
+        or packet.get("packet_kind") != "alatyr-context-packet"
+    ):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet template has an unsupported contract",
+            PACKET_TEMPLATE,
+        )
+    _validate_packet_obligations(sink, packet)
+    _validate_packet_budget(sink, packet.get("budget"))
+    _validate_packet_routing(sink, packet.get("routing"))
+    _validate_packet_cache_delivery(sink, packet.get("cache_delivery"))
+    _validate_packet_receipt(sink, packet.get("receipt"))
+
+    cost_claim = packet.get("cost_claim")
+    if not isinstance(cost_claim, dict):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet template must include cost claim classification",
+            PACKET_TEMPLATE,
+        )
+    else:
+        if cost_claim.get("exact_billing_claim") is not False:
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet exact_billing_claim must default false",
+                PACKET_TEMPLATE,
+            )
+        if cost_claim.get("exact_context_delivery_claim") is not False:
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet exact_context_delivery_claim must default false",
+                PACKET_TEMPLATE,
+            )
+    limitations = packet.get("limitations")
+    if not isinstance(limitations, list) or not all(
+        isinstance(item, str) and item for item in limitations
+    ):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet template must state context/cost limitations",
+            PACKET_TEMPLATE,
+        )
+
+
+def _validate_packet_budget(sink: FindingSink, budget: Any) -> None:
+    required_fields = {
+        "max_words",
+        "max_characters",
+        "character_budget_state",
+        "selected_content_words",
+        "selected_content_characters",
+        "semantic_definition_words",
+        "semantic_definition_characters",
+        "total_words",
+        "total_characters",
+    }
+    if (
+        not isinstance(budget, dict)
+        or set(budget) != required_fields
+        or budget.get("character_budget_state") != "enforced"
+    ):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet budget must carry enforced word and character evidence",
+            PACKET_TEMPLATE,
+        )
+
+
+def _validate_packet_routing(sink: FindingSink, routing: Any) -> None:
+    if not isinstance(routing, dict) or set(routing) != {
+        "selection_basis",
+        "omitted_item_ids",
+        "conditional_dependencies",
+        "expansion_triggers",
+        "unresolved_selector_behavior",
+    }:
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet routing evidence is incomplete",
+            PACKET_TEMPLATE,
+        )
+    elif not isinstance(routing.get("conditional_dependencies"), list):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet conditional dependency evidence is incomplete",
+            PACKET_TEMPLATE,
+        )
+    elif "canonical owner" not in str(routing.get("unresolved_selector_behavior")):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "unresolved selectors must fall back to the canonical owner",
+            PACKET_TEMPLATE,
+        )
+
+
+def _validate_packet_cache_delivery(sink: FindingSink, cache_delivery: Any) -> None:
+    if not isinstance(cache_delivery, dict):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet template must include cache delivery evidence",
+            PACKET_TEMPLATE,
+        )
+        return
+    required_fields = {
+        "schema_version",
+        "assistant_surface",
+        "capability_evidence_state",
+        "capability_record",
+        "route",
+        "provider",
+        "model",
+        "provider_cache_mode",
+        "client_control_exposure",
+        "client_telemetry_exposure",
+        "stable_prefix_sections",
+        "dynamic_tail_sections",
+        "stable_prefix_digest",
+        "dynamic_tail_digest",
+        "cache_hit_required",
+        "context_window_reduction",
+        "fallback",
+    }
+    if set(cache_delivery) != required_fields:
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet cache delivery fields are incomplete",
+            PACKET_TEMPLATE,
+        )
+    if cache_delivery.get("capability_evidence_state") != "available":
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet template must bind an available assistant capability record",
+            PACKET_TEMPLATE,
+        )
+    if cache_delivery.get("cache_hit_required") is not False:
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet must not require a provider cache hit",
+            PACKET_TEMPLATE,
+        )
+    if cache_delivery.get("context_window_reduction") is not False:
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet must not claim context-window reduction",
+            PACKET_TEMPLATE,
+        )
+    if cache_delivery.get("fallback") != "bounded-context-routing":
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet must preserve bounded context routing fallback",
+            PACKET_TEMPLATE,
+        )
+
+
+def _validate_packet_receipt(sink: FindingSink, receipt: Any) -> None:
+    if not isinstance(receipt, dict):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet template must include context receipt evidence",
+            PACKET_TEMPLATE,
+        )
+        return
+    for field in [
+        "receipt_kind",
+        "measurement_state",
+        "planned",
+        "resolved",
+        "observed",
+        "semantic_guidance",
+        "task_classification",
+    ]:
+        if field not in receipt:
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                f"context packet receipt missing {field}",
+                PACKET_TEMPLATE,
+            )
+    for layer in ["planned", "resolved"]:
+        evidence = receipt.get(layer)
+        if not isinstance(evidence, dict) or not all(
+            field in evidence
+            for field in ["approximate_words", "approximate_characters"]
+        ):
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                f"context packet receipt {layer} evidence needs word and character estimates",
+                PACKET_TEMPLATE,
             )
 
 
@@ -213,165 +430,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
 
     _validate_semantic_preload(sink, router, terms)
 
-    packet = sink.load_json_object(
-        sink.target_path(PACKET_TEMPLATE), "CONTEXT_PACKET_TEMPLATE"
-    )
-    if packet is not None:
-        required_packet_fields = {
-            "schema_version",
-            "packet_kind",
-            "cache_delivery",
-            "profile",
-            "operation",
-            "task_classification",
-            "selected_items",
-            "routing",
-            "semantic_terms",
-            "required_obligations",
-            "budget",
-            "receipt",
-            "cost_claim",
-            "limitations",
-            "packet_digest",
-        }
-        if (
-            set(packet) != required_packet_fields
-            or packet.get("schema_version") != PACKET_SCHEMA_VERSION
-            or packet.get("packet_kind") != "alatyr-context-packet"
-        ):
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "context packet template has an unsupported contract",
-                PACKET_TEMPLATE,
-            )
-        _validate_packet_obligations(sink, packet)
-        cache_delivery = packet.get("cache_delivery")
-        routing = packet.get("routing")
-        if not isinstance(routing, dict) or set(routing) != {
-            "selection_basis",
-            "omitted_item_ids",
-            "conditional_dependencies",
-            "expansion_triggers",
-            "unresolved_selector_behavior",
-        }:
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "context packet routing evidence is incomplete",
-                PACKET_TEMPLATE,
-            )
-        elif not isinstance(routing.get("conditional_dependencies"), list):
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "context packet conditional dependency evidence is incomplete",
-                PACKET_TEMPLATE,
-            )
-        elif "canonical owner" not in str(routing.get("unresolved_selector_behavior")):
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "unresolved selectors must fall back to the canonical owner",
-                PACKET_TEMPLATE,
-            )
-        if not isinstance(cache_delivery, dict):
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "context packet template must include cache delivery evidence",
-                PACKET_TEMPLATE,
-            )
-        else:
-            required_cache_fields = {
-                "schema_version",
-                "assistant_surface",
-                "capability_record",
-                "route",
-                "provider",
-                "model",
-                "provider_cache_mode",
-                "client_control_exposure",
-                "client_telemetry_exposure",
-                "stable_prefix_sections",
-                "dynamic_tail_sections",
-                "stable_prefix_digest",
-                "dynamic_tail_digest",
-                "cache_hit_required",
-                "context_window_reduction",
-                "fallback",
-            }
-            if set(cache_delivery) != required_cache_fields:
-                sink.error(
-                    "CONTEXT_PACKET_TEMPLATE_INVALID",
-                    "context packet cache delivery fields are incomplete",
-                    PACKET_TEMPLATE,
-                )
-            if cache_delivery.get("cache_hit_required") is not False:
-                sink.error(
-                    "CONTEXT_PACKET_TEMPLATE_INVALID",
-                    "context packet must not require a provider cache hit",
-                    PACKET_TEMPLATE,
-                )
-            if cache_delivery.get("context_window_reduction") is not False:
-                sink.error(
-                    "CONTEXT_PACKET_TEMPLATE_INVALID",
-                    "context packet must not claim context-window reduction",
-                    PACKET_TEMPLATE,
-                )
-            if cache_delivery.get("fallback") != "bounded-context-routing":
-                sink.error(
-                    "CONTEXT_PACKET_TEMPLATE_INVALID",
-                    "context packet must preserve bounded context routing fallback",
-                    PACKET_TEMPLATE,
-                )
-        receipt = packet.get("receipt")
-        if not isinstance(receipt, dict):
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "context packet template must include context receipt evidence",
-                PACKET_TEMPLATE,
-            )
-        else:
-            for field in [
-                "receipt_kind",
-                "measurement_state",
-                "planned",
-                "resolved",
-                "observed",
-                "semantic_guidance",
-                "task_classification",
-            ]:
-                if field not in receipt:
-                    sink.error(
-                        "CONTEXT_PACKET_TEMPLATE_INVALID",
-                        f"context packet receipt missing {field}",
-                        PACKET_TEMPLATE,
-                    )
-        cost_claim = packet.get("cost_claim")
-        if not isinstance(cost_claim, dict):
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "context packet template must include cost claim classification",
-                PACKET_TEMPLATE,
-            )
-        else:
-            if cost_claim.get("exact_billing_claim") is not False:
-                sink.error(
-                    "CONTEXT_PACKET_TEMPLATE_INVALID",
-                    "context packet exact_billing_claim must default false",
-                    PACKET_TEMPLATE,
-                )
-            if cost_claim.get("exact_context_delivery_claim") is not False:
-                sink.error(
-                    "CONTEXT_PACKET_TEMPLATE_INVALID",
-                    "context packet exact_context_delivery_claim must default false",
-                    PACKET_TEMPLATE,
-                )
-        limitations = packet.get("limitations")
-        if not isinstance(limitations, list) or not all(
-            isinstance(item, str) and item for item in limitations
-        ):
-            sink.error(
-                "CONTEXT_PACKET_TEMPLATE_INVALID",
-                "context packet template must state context/cost limitations",
-                PACKET_TEMPLATE,
-            )
+    _validate_context_packet_template(sink)
 
     if len(resolutions) == len(CATALOG_ROOTS) and terms:
         sink.info(

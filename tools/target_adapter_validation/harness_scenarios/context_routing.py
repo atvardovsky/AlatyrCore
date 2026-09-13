@@ -73,6 +73,37 @@ def run(target: Path, failures: list[str]) -> None:
             "schema-7 router must load descriptor-backed canonical profiles"
         )
 
+    project_knowledge_descriptor = (
+        target
+        / ".ai"
+        / "assistant"
+        / "context"
+        / "project-knowledge-routing.json"
+    )
+    write_json(project_knowledge_descriptor, {})
+    write_json(
+        router_path,
+        {
+            "schema_version": 12,
+            "router_kind": "target-context-router",
+            "human_reference": ".ai/assistant/context-profiles.md",
+            "routing_order": ["docs-local"],
+        },
+    )
+    schema_twelve = validator(target)
+    schema_twelve.check_router()
+    schema_twelve_codes = {finding.code for finding in schema_twelve.findings}
+    for required in [
+        "ROUTER_PROFILE_INDEX",
+        "ROUTER_PROJECT_KNOWLEDGE_MISSING",
+        "ROUTER_TASK_CLASSIFICATION_MISSING",
+        "ROUTER_TASK_SCALE_OVERLAYS",
+    ]:
+        if required not in schema_twelve_codes:
+            failures.append(
+                f"schema-12 router must retain current-contract finding {required}"
+            )
+
     consistency_descriptor = (
         target
         / ".ai"
@@ -139,6 +170,34 @@ def run(target: Path, failures: list[str]) -> None:
         finding.code for finding in budget_validator.findings
     }:
         failures.append("portable context over-budget must produce ROUTER_PROFILE_COST")
+
+    dense_context_path = target / ".ai" / "framework" / "dense-context.json"
+    dense_context_path.write_text("x" * 101, encoding="utf-8")
+    dense_budget_validator = validator(target)
+    dense_budget_validator.check_installed_context_costs(
+        {"preloaded_context": [], "bootstrap_context": [], "profile_index": {}},
+        {
+            "docs-local": {
+                "required_context": [".ai/framework/dense-context.json"]
+            }
+        },
+        {
+            "bootstrap": {"max_files": 4, "max_words": 100},
+            "profile_default": {
+                "max_files": 4,
+                "max_total_words": 100,
+                "max_portable_words": 100,
+                "reserved_target_words": 100,
+                "max_total_characters": 100,
+            },
+        },
+    )
+    if "ROUTER_PROFILE_COST" not in {
+        finding.code for finding in dense_budget_validator.findings
+    }:
+        failures.append(
+            "dense no-whitespace context over character budget must be rejected"
+        )
 
     consistency_cost_descriptor = (
         target / ".ai" / "assistant" / "context" / "cost-consistency.json"

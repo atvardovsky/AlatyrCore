@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import ast
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -12,14 +13,49 @@ from typing import Any, Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWLIST = ROOT / "tools" / "tool_complexity_allowlist.json"
+VERSION_FILE = ROOT / "VERSION"
+VERSION_RE = re.compile(
+    r"^(?P<major>0|[1-9][0-9]*)\.(?P<minor>0|[1-9][0-9]*)\."
+    r"(?P<patch>0|[1-9][0-9]*)(?:-(?P<stage>alpha|beta|rc)\."
+    r"(?P<number>0|[1-9][0-9]*))?(?:\+[0-9A-Za-z.-]+)?$"
+)
+STAGE_ORDER = {"alpha": 0, "beta": 1, "rc": 2, None: 3}
+
+
+def version_key(value: str) -> tuple[int, int, int, int, int]:
+    match = VERSION_RE.fullmatch(value)
+    if match is None:
+        raise ValueError(f"unsupported source version: {value}")
+    return (
+        int(match.group("major")),
+        int(match.group("minor")),
+        int(match.group("patch")),
+        STAGE_ORDER[match.group("stage")],
+        int(match.group("number") or 0),
+    )
 
 
 def load_allowlist() -> tuple[int, dict[tuple[str, str], dict[str, Any]]]:
     data = json.loads(ALLOWLIST.read_text(encoding="utf-8"))
-    if data.get("schema_version") != 1 or data.get("allowlist_kind") != (
+    if data.get("schema_version") != 2 or data.get("allowlist_kind") != (
         "alatyr-source-tool-complexity-allowlist"
     ):
         raise ValueError("tool complexity allowlist has invalid contract")
+    expected_fields = {
+        "schema_version",
+        "allowlist_kind",
+        "max_function_lines",
+        "max_known_large_functions",
+        "debt_owner",
+        "review_by_version",
+        "known_large_functions",
+    }
+    unknown = sorted(set(data) - expected_fields)
+    missing = sorted(expected_fields - set(data))
+    if unknown or missing:
+        raise ValueError(
+            f"tool complexity allowlist fields drifted: missing={missing} unknown={unknown}"
+        )
     threshold = data.get("max_function_lines")
     if not isinstance(threshold, int) or isinstance(threshold, bool) or threshold <= 0:
         raise ValueError("max_function_lines must be a positive integer")
@@ -27,6 +63,26 @@ def load_allowlist() -> tuple[int, dict[tuple[str, str], dict[str, Any]]]:
     entries = data.get("known_large_functions")
     if not isinstance(entries, list):
         raise ValueError("known_large_functions must be a list")
+    maximum_entries = data.get("max_known_large_functions")
+    if (
+        not isinstance(maximum_entries, int)
+        or isinstance(maximum_entries, bool)
+        or maximum_entries < 0
+        or len(entries) > maximum_entries
+    ):
+        raise ValueError("known_large_functions exceeds its aggregate no-growth cap")
+    if not isinstance(data.get("debt_owner"), str) or not data["debt_owner"].strip():
+        raise ValueError("tool complexity debt_owner must be non-empty")
+    review_by = data.get("review_by_version")
+    if not isinstance(review_by, str):
+        raise ValueError("tool complexity review_by_version is invalid")
+    if version_key(VERSION_FILE.read_text(encoding="utf-8").strip()) >= version_key(
+        review_by
+    ):
+        raise ValueError(
+            "tool complexity review milestone has been reached; review or renew "
+            "the allowlist before release"
+        )
     for index, entry in enumerate(entries):
         if not isinstance(entry, dict):
             raise ValueError(f"known_large_functions[{index}] must be an object")

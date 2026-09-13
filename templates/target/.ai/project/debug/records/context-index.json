@@ -21,9 +21,6 @@
         "path_terms": [
           "debug",
           "records"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

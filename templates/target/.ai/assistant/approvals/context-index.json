@@ -23,11 +23,6 @@
           "approval",
           "record",
           "template"
-        ],
-        "rule_ids": [
-          "ALATYR-APPROVAL-001",
-          "ALATYR-AUTHORIZATION-001",
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -53,11 +48,6 @@
           "approvals",
           "approval",
           "template"
-        ],
-        "rule_ids": [
-          "ALATYR-APPROVAL-001",
-          "ALATYR-AUTHORIZATION-001",
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

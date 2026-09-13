@@ -21,9 +21,6 @@
         "path_terms": [
           "profiles",
           "infrastructure"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -47,9 +44,6 @@
           "profiles",
           "architecture",
           "change"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -77,9 +71,6 @@
           "profiles",
           "business",
           "change"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -106,9 +97,6 @@
           "profiles",
           "code",
           "local"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -133,9 +121,6 @@
           "profiles",
           "data",
           "change"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -162,9 +147,6 @@
           "profiles",
           "docs",
           "local"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -186,9 +168,6 @@
           "profiles",
           "framework",
           "upgrade"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -212,9 +191,6 @@
           "profiles",
           "security",
           "sensitive"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

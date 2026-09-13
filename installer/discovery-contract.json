@@ -6,6 +6,7 @@
     "INSTALL.md",
     "installer/assistant-installation.flow.md",
     "installer/readiness-checklist.md",
+    "installer/installation-plan-core-template.md",
     "installer/installation-plan-template.md"
   ],
   "usage": {

@@ -22,9 +22,6 @@
           "support",
           "generation",
           "registry"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

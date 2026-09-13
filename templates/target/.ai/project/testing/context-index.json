@@ -20,9 +20,6 @@
       "selectors": {
         "path_terms": [
           "testing"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -45,9 +42,6 @@
           "test",
           "first",
           "policy"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

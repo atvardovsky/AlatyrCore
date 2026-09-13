@@ -695,6 +695,8 @@ class CheckGraphTests(unittest.TestCase):
         self.assertFalse(report["checks"][1]["timed_out"])
         self.assertIsInstance(report["checks"][0]["duration_seconds"], float)
         self.assertIn("queued_seconds", report["checks"][0])
+        self.assertIn("scheduler_slots", report["checks"][0])
+        self.assertIn("child_capacity", report["checks"][0])
 
     def test_dynamic_scheduler_backfills_ready_dependents(self) -> None:
         events: list[tuple[str, str, float]] = []
@@ -768,6 +770,51 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(started, ["long", "short"])
         self.assertEqual(set(results), {"short", "long"})
         self.assertEqual(blocked, {})
+
+    def test_scheduler_bounds_backfill_before_reserving_critical_capacity(self) -> None:
+        started: list[str] = []
+        blocker_release = threading.Event()
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            check_id = item["id"]
+            started.append(check_id)
+            if check_id == "unlock":
+                time.sleep(0.01)
+            elif check_id == "blocker":
+                blocker_release.wait(timeout=0.15)
+            elif check_id.startswith("small"):
+                time.sleep(0.02)
+            elif check_id == "critical":
+                blocker_release.set()
+            return 0, "", "", [check_id]
+
+        selected = [
+            check("unlock"),
+            check("blocker"),
+            {**check("critical", "unlock"), "scheduler_slots": 2},
+            check("small-1", "unlock"),
+            check("small-2", "unlock"),
+            check("small-3", "unlock"),
+            check("small-4", "unlock"),
+        ]
+        execute_checks(
+            selected,
+            None,
+            2,
+            runner=runner,
+            duration_estimates={
+                "unlock": 1.0,
+                "critical": 100.0,
+                "blocker": 50.0,
+                "small-1": 1.0,
+                "small-2": 1.0,
+                "small-3": 1.0,
+                "small-4": 1.0,
+            },
+        )
+
+        self.assertLess(started.index("small-1"), started.index("critical"))
+        self.assertLess(started.index("critical"), started.index("small-4"))
 
     def test_scheduler_assigns_only_reserved_child_capacity(self) -> None:
         observed: dict[str, int] = {}

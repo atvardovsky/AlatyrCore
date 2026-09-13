@@ -23,6 +23,8 @@ from bootstrap_index import (
     build_bundle_from_target,
     render,
 )
+from conformance_artifacts import artifact_root, materialize_support_profile
+from context_planning import ContextPlanRequest, plan_target_context
 from agent_entry_packet import (
     PACKET_PATH,
     build_from_target as build_entry_packet,
@@ -486,7 +488,13 @@ def exercise_profile(
     if ".ai/assistant/templates/debug-session-record.json" not in routed_impact["routing"]["candidate_context"]:
         failures.append("upgrade impact did not route installed validator findings")
 
-    actions, blocked = scaffold_plan(
+    reused_actions = materialize_support_profile(support_profile, repo)
+    if reused_actions is None:
+        if artifact_root() is not None:
+            failures.append(
+                f"{support_profile} required run-local scaffold artifact is unavailable"
+            )
+        actions, blocked = scaffold_plan(
             SimpleNamespace(
                 target=repo,
                 write=True,
@@ -494,8 +502,11 @@ def exercise_profile(
                 profile=support_profile,
                 framework_pack="matched",
                 enable_module=[],
+                assistant_surface=[],
             )
         )
+    else:
+        actions, blocked = [f"reused {reused_actions} scaffold files"], []
     if not actions or blocked:
         failures.append(f"{support_profile} scaffold failed: {blocked}")
     resolve_adapter(repo, support_profile)
@@ -512,6 +523,28 @@ def exercise_profile(
         )
     mark_fixture_selected_assistant(repo)
     refresh_context_and_bootstrap(repo)
+
+    if support_profile in {"standard", "full"}:
+        context_plan = plan_target_context(
+            ContextPlanRequest(
+                target=repo,
+                profile="code-local",
+                operation="logical-integrity-review",
+            )
+        )
+        if context_plan.get("status") != "ready":
+            failures.append(
+                f"{support_profile} scaffold could not produce a current-schema "
+                f"context plan: {context_plan.get('error', context_plan)}"
+            )
+        else:
+            packet = context_plan.get("context_packet", {})
+            budget = packet.get("budget", {}) if isinstance(packet, dict) else {}
+            if budget.get("character_budget_state") != "enforced":
+                failures.append(
+                    f"{support_profile} scaffold context plan did not enforce the "
+                    "character budget"
+                )
 
     approval_validator = make_validator(repo, ROOT, diff_ref=base, approval=approval_path)
     approval_validator.check_approval_scope()

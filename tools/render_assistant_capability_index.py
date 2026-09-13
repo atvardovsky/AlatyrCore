@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import sys
 from pathlib import Path
@@ -20,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates/target/.ai/assistant"
 INDEX = TARGET / "assistant-capabilities.json"
 SURFACES = ROOT / "conformance/runs/assistant-surfaces.json"
+RECORDS = TARGET / "assistant-capabilities"
 
 
 def load_object(path: Path) -> dict[str, object]:
@@ -27,6 +29,35 @@ def load_object(path: Path) -> dict[str, object]:
     if not isinstance(data, dict):
         raise ValueError(f"{path} must contain an object")
     return data
+
+
+def surface_ids() -> list[str]:
+    values = load_object(SURFACES).get("surfaces")
+    if not isinstance(values, list):
+        raise ValueError("assistant surfaces must be a list")
+    ids = [item.get("id") if isinstance(item, dict) else None for item in values]
+    if not all(isinstance(surface_id, str) and surface_id for surface_id in ids):
+        raise ValueError("assistant surface has no valid ID")
+    return sorted(ids)
+
+
+def build_surface_record(surface_id: str) -> dict[str, object]:
+    template = load_object(RECORDS / "generic.json")
+    record = copy.deepcopy(template)
+    record["assistant_surface"] = surface_id
+    return record
+
+
+def write_surface_records() -> int:
+    written = 0
+    for surface_id in surface_ids():
+        path = RECORDS / f"{surface_id}.json"
+        expected = json.dumps(build_surface_record(surface_id), indent=2) + "\n"
+        actual = path.read_text(encoding="utf-8") if path.is_file() else ""
+        if actual != expected:
+            path.write_text(expected, encoding="utf-8")
+            written += 1
+    return written
 
 
 def build_index() -> dict[str, object]:
@@ -66,8 +97,14 @@ def main() -> int:
         description="Generate the assistant capability index from surface records."
     )
     parser.add_argument("--write", action="store_true")
+    parser.add_argument(
+        "--write-records",
+        action="store_true",
+        help="Regenerate every surface record from generic.json before the index.",
+    )
     args = parser.parse_args()
     try:
+        written_records = write_surface_records() if args.write_records else 0
         expected = json.dumps(build_index(), indent=2) + "\n"
         actual = INDEX.read_text(encoding="utf-8") if INDEX.is_file() else ""
     except (OSError, ValueError, json.JSONDecodeError) as exc:
@@ -75,7 +112,10 @@ def main() -> int:
         return 1
     if args.write:
         INDEX.write_text(expected, encoding="utf-8")
-        print(f"OK: rendered {INDEX.relative_to(ROOT)}")
+        print(
+            f"OK: rendered {INDEX.relative_to(ROOT)}; "
+            f"surface_records_updated={written_records}"
+        )
         return 0
     if actual != expected:
         print(

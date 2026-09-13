@@ -74,7 +74,7 @@
   },
   "rule_selector": ".ai/framework/rule-registry.json",
   "context_packet": {
-    "schema_version": 3,
+    "schema_version": 4,
     "template": ".ai/assistant/templates/context-packet.json",
     "receipt_required_for": [
       "budget exceeded",

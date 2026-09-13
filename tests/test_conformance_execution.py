@@ -20,9 +20,26 @@ from conformance_execution.contract import (  # noqa: E402
     write_execution_record,
 )
 from check_conformance_reports import validate_execution_record_file  # noqa: E402
+from run_conformance_scaffold import support_profile_scenarios  # noqa: E402
 
 
 class ConformanceExecutionTests(unittest.TestCase):
+    def test_scaffold_conformance_covers_curated_module_interactions(self) -> None:
+        scenarios = {label: modules for label, _profile, modules in support_profile_scenarios()}
+
+        self.assertEqual(
+            set(scenarios["interaction-curated-cross-module"]),
+            {
+                "architecture-knowledge",
+                "change-packages",
+                "debug-mode",
+                "durable-approvals",
+                "project-vocabulary",
+                "subagent-delegation",
+                "team-collaboration",
+            },
+        )
+
     def test_native_executor_records_complete_lifecycle(self) -> None:
         record = new_execution_record(
             executor_id="codex-cli",

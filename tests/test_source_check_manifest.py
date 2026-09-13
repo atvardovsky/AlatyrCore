@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
@@ -67,6 +68,120 @@ class SourceCheckManifestTests(unittest.TestCase):
             )
 
             with self.assertRaisesRegex(ValueError, "excluded_profiles"):
+                load_manifest(manifest, root=root)
+
+    def test_load_manifest_rejects_unknown_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            (tools / "example.py").write_text("print('ok')\n", encoding="utf-8")
+            manifest = tools / "check_manifest.json"
+            manifest.write_text(
+                """
+{
+  "schema_version": 2,
+  "manifest_kind": "alatyr-source-checks",
+  "defaults": {
+    "profiles": ["full"],
+    "platforms": ["all"],
+    "write_scope": "none",
+    "depends_on": [],
+    "timeout_seconds": 30,
+    "resource_class": "standard"
+  },
+  "checks": [
+    {
+      "id": "example",
+      "command": ["tools/example.py"],
+      "contract_inputs": ["tools/check_manifest.json"],
+      "implementation_paths": ["tools/example.py"],
+      "trigger_paths": ["tools/check_manifest.json", "tools/example.py"],
+      "always_for_change": true
+    }
+  ]
+}
+""".strip(),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "unknown fields.*always_for_change"):
+                load_manifest(manifest, root=root)
+
+    def test_load_manifest_rejects_non_string_enum_members_cleanly(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            (tools / "example.py").write_text("print('ok')\n", encoding="utf-8")
+            manifest = tools / "check_manifest.json"
+            manifest.write_text(
+                """
+{
+  "schema_version": 2,
+  "manifest_kind": "alatyr-source-checks",
+  "defaults": {
+    "profiles": ["full"],
+    "platforms": ["all"],
+    "write_scope": "none",
+    "depends_on": [],
+    "timeout_seconds": 30,
+    "resource_class": "standard"
+  },
+  "checks": [
+    {
+      "id": "example",
+      "command": ["tools/example.py"],
+      "profiles": [{}],
+      "contract_inputs": ["tools/check_manifest.json"],
+      "implementation_paths": ["tools/example.py"],
+      "trigger_paths": ["tools/check_manifest.json", "tools/example.py"]
+    }
+  ]
+}
+""".strip(),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "example.profiles is invalid"):
+                load_manifest(manifest, root=root)
+
+    def test_load_manifest_rejects_non_string_resource_class_cleanly(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            (tools / "example.py").write_text("print('ok')\n", encoding="utf-8")
+            manifest = tools / "check_manifest.json"
+            manifest.write_text(
+                """
+{
+  "schema_version": 2,
+  "manifest_kind": "alatyr-source-checks",
+  "defaults": {
+    "profiles": ["full"],
+    "platforms": ["all"],
+    "write_scope": "none",
+    "depends_on": [],
+    "timeout_seconds": 30,
+    "resource_class": "standard"
+  },
+  "checks": [
+    {
+      "id": "example",
+      "command": ["tools/example.py"],
+      "resource_class": {},
+      "contract_inputs": ["tools/check_manifest.json"],
+      "implementation_paths": ["tools/example.py"],
+      "trigger_paths": ["tools/check_manifest.json", "tools/example.py"]
+    }
+  ]
+}
+""".strip(),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "resource_class is invalid"):
                 load_manifest(manifest, root=root)
 
     def test_reverse_dependency_closure_reaches_transitive_importers(self) -> None:
@@ -249,7 +364,47 @@ class SourceCheckManifestTests(unittest.TestCase):
         self.assertEqual(checks[0]["id"], "example")
         self.assertEqual(checks[0]["always_for_changed"], False)
         self.assertEqual(checks[0]["excluded_profiles"], [])
+        self.assertEqual(checks[0]["observed_inputs"], [])
+        self.assertEqual(checks[0]["observed_inventory_paths"], [])
         self.assertEqual(checks[0]["resource_class"], "standard")
+
+    def test_load_manifest_normalizes_inventory_observations(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            (tools / "example.py").write_text("print('ok')\n", encoding="utf-8")
+            manifest = tools / "check_manifest.json"
+            payload = {
+                "schema_version": 2,
+                "manifest_kind": "alatyr-source-checks",
+                "defaults": {
+                    "profiles": ["full"],
+                    "platforms": ["all"],
+                    "write_scope": "none",
+                    "depends_on": [],
+                    "timeout_seconds": 30,
+                    "resource_class": "standard",
+                },
+                "checks": [
+                    {
+                        "id": "example",
+                        "command": ["tools/example.py"],
+                        "contract_inputs": ["tools/check_manifest.json"],
+                        "implementation_paths": ["tools/example.py"],
+                        "observed_inventory_paths": ["**"],
+                        "trigger_paths": [
+                            "tools/check_manifest.json",
+                            "tools/example.py",
+                        ],
+                    }
+                ],
+            }
+            manifest.write_text(json.dumps(payload), encoding="utf-8")
+
+            checks = load_manifest(manifest, root=root)
+
+        self.assertEqual(checks[0]["observed_inventory_paths"], ["**"])
 
     def test_valid_manifest_path_rejects_escaping_paths(self) -> None:
         self.assertTrue(valid_manifest_path("tools/example.py"))

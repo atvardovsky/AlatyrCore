@@ -160,7 +160,7 @@ CANONICAL_PROFILES = [
     "ai-infrastructure",
     "framework-upgrade",
 ]
-ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
+ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 
 KERNEL_REQUIRED_FILES = [
     "AGENTS.md",
@@ -359,10 +359,12 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("context_routing", "agent_entry_packet"),
     ("context_routing", "bootstrap_max_files"),
     ("context_routing", "bootstrap_max_words"),
+    ("context_routing", "bootstrap_max_characters"),
     ("context_routing", "profile_default_max_files"),
     ("context_routing", "profile_default_max_total_words"),
     ("context_routing", "profile_default_max_portable_words"),
     ("context_routing", "profile_default_reserved_target_words"),
+    ("context_routing", "profile_default_max_total_characters"),
     ("context_routing", "budget_behavior"),
     ("operations", "help"),
     ("operations", "gate_index"),
@@ -798,7 +800,7 @@ class ApprovalScope:
 def validate_router_manifest_schema(
     validator: "Validator",
     manifest: ManifestData | None,
-    schema_version: Any,
+    router: dict[str, Any],
 ) -> None:
     manifest_path = validator.target_path(".ai/alatyr.yaml")
     if manifest is None and validator.is_target_file(manifest_path):
@@ -808,6 +810,7 @@ def validate_router_manifest_schema(
     manifest_schema = manifest.scalars.get(
         ("context_routing", "router_schema_version")
     )
+    schema_version = router.get("schema_version")
     if (
         manifest_schema
         and not is_unresolved_value(manifest_schema.value)
@@ -818,6 +821,52 @@ def validate_router_manifest_schema(
             "manifest router_schema_version differs from context router",
             ".ai/alatyr.yaml",
         )
+    budget_fields = {
+        ("context_routing", "bootstrap_max_files"): ("bootstrap", "max_files"),
+        ("context_routing", "bootstrap_max_words"): ("bootstrap", "max_words"),
+        ("context_routing", "bootstrap_max_characters"): (
+            "bootstrap",
+            "max_characters",
+        ),
+        ("context_routing", "profile_default_max_files"): (
+            "profile_default",
+            "max_files",
+        ),
+        ("context_routing", "profile_default_max_total_words"): (
+            "profile_default",
+            "max_total_words",
+        ),
+        ("context_routing", "profile_default_max_portable_words"): (
+            "profile_default",
+            "max_portable_words",
+        ),
+        ("context_routing", "profile_default_reserved_target_words"): (
+            "profile_default",
+            "reserved_target_words",
+        ),
+        ("context_routing", "profile_default_max_total_characters"): (
+            "profile_default",
+            "max_total_characters",
+        ),
+    }
+    budgets = router.get("context_budgets")
+    if not isinstance(budgets, dict):
+        return
+    for manifest_key, (section, field) in budget_fields.items():
+        scalar = manifest.scalars.get(manifest_key)
+        section_budget = budgets.get(section)
+        expected = section_budget.get(field) if isinstance(section_budget, dict) else None
+        if (
+            scalar
+            and not is_unresolved_value(scalar.value)
+            and expected is not None
+            and scalar.value != str(expected)
+        ):
+            validator.error(
+                "ROUTER_MANIFEST_BUDGET_DRIFT",
+                f"manifest {dotted(manifest_key)} differs from context router",
+                ".ai/alatyr.yaml",
+            )
 
 
 class Validator:
@@ -1964,10 +2013,12 @@ class Validator:
             ("context_routing", "agent_entry_packet_schema_version"),
             ("context_routing", "bootstrap_max_files"),
             ("context_routing", "bootstrap_max_words"),
+            ("context_routing", "bootstrap_max_characters"),
             ("context_routing", "profile_default_max_files"),
             ("context_routing", "profile_default_max_total_words"),
             ("context_routing", "profile_default_max_portable_words"),
             ("context_routing", "profile_default_reserved_target_words"),
+            ("context_routing", "profile_default_max_total_characters"),
         ]
         numeric_values: dict[PathKey, int] = {}
         for key in numeric_context_fields:
@@ -1995,7 +2046,7 @@ class Validator:
         if router_schema not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2 through 11",
+                "context_routing.router_schema_version must be 2 through 12",
                 ".ai/alatyr.yaml",
             )
         expected_context_paths = {
@@ -2355,16 +2406,16 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to current routing schema 11",
+                "context router schema 1 should migrate to current routing schema 12",
                 ".ai/assistant/context-router.json",
             )
         elif schema_version not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2 through 11",
+                "context router schema_version should be 2 through 12",
                 ".ai/assistant/context-router.json",
             )
-        validate_router_manifest_schema(self, manifest, schema_version)
+        validate_router_manifest_schema(self, manifest, router)
         if router.get("human_reference") != ".ai/assistant/context-profiles.md":
             self.error(
                 "ROUTER_HUMAN_REFERENCE",
@@ -2401,7 +2452,7 @@ class Validator:
                 )
             required_bootstrap = (
                 REQUIRED_BOOTSTRAP
-                if schema_version in {5, 6, 7, 8, 9, 10, 11}
+                if schema_version in {5, 6, 7, 8, 9, 10, 11, 12}
                 else LEGACY_REQUIRED_BOOTSTRAP
             )
             for required in required_bootstrap:
@@ -2413,7 +2464,7 @@ class Validator:
                     )
             deferred = (
                 sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
-                if schema_version in {5, 6, 7, 8, 9, 10, 11}
+                if schema_version in {5, 6, 7, 8, 9, 10, 11, 12}
                 else []
             )
             if deferred:
@@ -2428,21 +2479,23 @@ class Validator:
             if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2 through 11 router must define context_budgets",
+                    "supported router schema must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version in {4, 5, 6, 7, 8, 9, 10, 11}:
-                self.check_router_budget_shape(budgets)
+            elif schema_version in {4, 5, 6, 7, 8, 9, 10, 11, 12}:
+                self.check_router_budget_shape(
+                    budgets, require_character_limits=schema_version == 12
+                )
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2 through 11 router must define context_receipt",
+                    "supported router schema must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4, 5, 6, 7, 8, 9, 10, 11} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -2453,7 +2506,7 @@ class Validator:
             ):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2 through 11 router must define migration-first routing",
+                    "supported router schema must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             elif isinstance(migration, dict):
@@ -2484,7 +2537,7 @@ class Validator:
                         for value in values:
                             self.check_router_path(value, "migration_routing", field)
 
-            if schema_version in {10, 11}:
+            if schema_version in {10, 11, 12}:
                 self.check_task_classification(router)
 
         self.check_router_routing_order(router)
@@ -2574,17 +2627,17 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
-        if schema_version in {10, 11}:
+        if schema_version in {10, 11, 12}:
             self.check_small_task_overlay(router)
 
-        if schema_version in {7, 8, 9, 10, 11}:
+        if schema_version in {7, 8, 9, 10, 11, 12}:
             knowledge_entry = router.get("project_knowledge_routing")
             if not isinstance(knowledge_entry, dict) and self.is_target_file(
                 ".ai/assistant/context/project-knowledge-routing.json"
             ):
                 self.error(
                     "ROUTER_PROJECT_KNOWLEDGE_MISSING",
-                    "schema 7 through 11 requires project_knowledge_routing",
+                    "schema 7 through 12 requires project_knowledge_routing",
                     ".ai/assistant/context-router.json",
                 )
             elif isinstance(knowledge_entry, dict):
@@ -2710,7 +2763,7 @@ class Validator:
                                 "conditional_context",
                             )
 
-        if schema_version in {4, 5, 6, 7, 8, 9, 10, 11} and isinstance(budgets, dict):
+        if schema_version in {4, 5, 6, 7, 8, 9, 10, 11, 12} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -2740,8 +2793,15 @@ class Validator:
                     )
             self.check_markdown_required_context_duplicates(profiles_path)
 
-    def check_router_budget_shape(self, budgets: dict[str, Any]) -> None:
-        validate_budget_shape(self, budgets)
+    def check_router_budget_shape(
+        self,
+        budgets: dict[str, Any],
+        *,
+        require_character_limits: bool = False,
+    ) -> None:
+        validate_budget_shape(
+            self, budgets, require_character_limits=require_character_limits
+        )
 
     def check_router_routing_order(self, router: dict[str, Any]) -> None:
         routing_order = expect_string_list(
@@ -2954,14 +3014,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10, 11}:
+        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3 through 11 router must define profile_index",
+                "schema 3 through 12 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}

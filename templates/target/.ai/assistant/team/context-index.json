@@ -22,10 +22,6 @@
           "team",
           "active",
           "work"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -49,10 +45,6 @@
           "team",
           "backend",
           "contract"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -75,10 +67,6 @@
         "path_terms": [
           "team",
           "overlay"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -103,10 +91,6 @@
           "task",
           "record",
           "template"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -130,10 +114,6 @@
           "team",
           "work",
           "registry"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [

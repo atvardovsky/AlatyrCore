@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 52,
+  "adapter_schema_version": 53,
   "files": [
     {
       "path": "framework/README.md",
@@ -79,7 +79,7 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "b62e52dc011972e004682a1a7b067880a5948cc370e691b051aafe27d1512b9d"
+      "sha256": "3ef293d90155c52b8973ef2afc71898b979ab277c3975685f40fbf046358b0c5"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -135,19 +135,19 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "d756cf3a981e2f5d8608b14788ec3d1b0199023df1754cc5f2cea568fa2bb4ac"
+      "sha256": "b69dd473ee159cb2ea6567b5941f6a3a45538d4ee15c47ad00d76e5d1b030df8"
     },
     {
       "path": "framework/context-profiles.md",
       "rule_ids": [
         "ALATYR-CONTEXT-001"
       ],
-      "sha256": "8897651dbacd154c267b4cd89e9ebb7e9b22d2f160c94fce2778094c50cce772"
+      "sha256": "93c2a8266aa54139e7accfd7ea04c062dc2a725073d72163709c87f09bb722fb"
     },
     {
       "path": "framework/context-router.md",
       "rule_ids": [],
-      "sha256": "ee64dab8f5f0417564ddbf5c7fae315eb9639de30ca942e96cc71a125a40a50f"
+      "sha256": "e14348a96ec3ad2776ef67335a9da07f8b27e2edfa19694a7e4837fef6183462"
     },
     {
       "path": "framework/contour.md",
@@ -290,12 +290,12 @@
     {
       "path": "framework/rule-registry.json",
       "rule_ids": [],
-      "sha256": "2087a63470798462dcff6e6bb6d2324c1476efee15a44d4fe8a2f43906936ab5"
+      "sha256": "7a03f3e8bbf596b093d75796fd20d8cca59cd859a07479d507656b5db031965e"
     },
     {
       "path": "framework/rule-registry.md",
       "rule_ids": [],
-      "sha256": "ae852d6f21bc1fd5a1498d30a478c7114d4342601a3a39db0e4baf99a957ac60"
+      "sha256": "ac6389e821f3ba0fcf19a7ccf42ea68705d6367c7f0dda5e0d72354e61dfd236"
     },
     {
       "path": "framework/scaffolding.md",
@@ -327,7 +327,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "49f3541b045c22096bcd64f90da046c9ff678c6e77004c04547ff4c6c27ca1bd"
+      "sha256": "b161c7b3620ace2294fb64c3db891b333bd54c1d331c0ae21a40842f1b1e62b8"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -404,8 +404,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.63",
+  "framework_version": "0.1.0-alpha.64",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 58
+  "template_version": 59
 }

@@ -13,6 +13,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from context_catalog import preload_term_ids
+
 from task_classification_contract import (
     AMBIGUITY_READ_ONLY_MARKER,
     DEFAULT_TASK_CLASS,
@@ -209,8 +211,8 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     if not isinstance(packet, dict):
         failures.append("context_packet must be an object")
         return
-    if packet.get("schema_version") != 3:
-        failures.append("context_packet.schema_version must be 3")
+    if packet.get("schema_version") != 4:
+        failures.append("context_packet.schema_version must be 4")
     if packet.get("template") != ".ai/assistant/templates/context-packet.json":
         failures.append("context_packet.template is invalid")
     required_for = packet.get("receipt_required_for")
@@ -257,6 +259,10 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     if not isinstance(cache_delivery, dict):
         failures.append("context packet template must include cache_delivery")
     else:
+        if cache_delivery.get("capability_evidence_state") != "available":
+            failures.append(
+                "context packet template must bind available capability evidence"
+            )
         if cache_delivery.get("cache_hit_required") is not False:
             failures.append("context caching must not be required for correctness")
         if cache_delivery.get("context_window_reduction") is not False:
@@ -441,8 +447,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 11:
-        failures.append("context-router.json schema_version must be 11")
+    if router.get("schema_version") != 12:
+        failures.append("context-router.json schema_version must be 12")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -472,7 +478,7 @@ def main() -> int:
         if not isinstance(bootstrap_budget, dict):
             failures.append("context_budgets.bootstrap must be an object")
             bootstrap_budget = {}
-        for field in ["max_files", "max_words"]:
+        for field in ["max_files", "max_words", "max_characters"]:
             if not isinstance(bootstrap_budget.get(field), int) or bootstrap_budget[field] <= 0:
                 failures.append(f"context_budgets.bootstrap.{field} must be positive")
         profile_budget = budgets.get("profile_default")
@@ -484,6 +490,7 @@ def main() -> int:
             "max_total_words",
             "max_portable_words",
             "reserved_target_words",
+            "max_total_characters",
         ]:
             if not isinstance(profile_budget.get(field), int) or profile_budget[field] <= 0:
                 failures.append(f"context_budgets.profile_default.{field} must be positive")
@@ -501,6 +508,26 @@ def main() -> int:
         hard = bootstrap_budget.get("max_words")
         if not isinstance(soft, int) or not isinstance(hard, int) or not 0 < soft < hard:
             failures.append("bootstrap soft_max_words must be positive and below max_words")
+        soft_characters = bootstrap_budget.get("soft_max_characters")
+        hard_characters = bootstrap_budget.get("max_characters")
+        if (
+            not isinstance(soft_characters, int)
+            or not isinstance(hard_characters, int)
+            or not 0 < soft_characters < hard_characters
+        ):
+            failures.append(
+                "bootstrap soft_max_characters must be positive and below max_characters"
+            )
+        first_use_budget = budgets.get("first_use")
+        if not isinstance(first_use_budget, dict):
+            failures.append("context_budgets.first_use must be an object")
+        else:
+            for field in ["max_files", "max_words", "max_characters"]:
+                value = first_use_budget.get(field)
+                if not isinstance(value, int) or value <= 0:
+                    failures.append(
+                        f"context_budgets.first_use.{field} must be positive"
+                    )
         if not isinstance(budgets.get("on_exceed"), str) or not budgets["on_exceed"]:
             failures.append("context_budgets.on_exceed must be a non-empty string")
 
@@ -564,14 +591,9 @@ def main() -> int:
             failures.append("semantic codebook framework namespace is invalid")
         if semantic.get("project_namespace") != "project:*":
             failures.append("semantic codebook project namespace is invalid")
-        expected_preload = [
-            "alatyr:current-scope-authorization@1",
-            "alatyr:canonical-owner@1",
-            "alatyr:risk-by-fact@1",
-            "alatyr:protected-change@1",
-            "alatyr:logical-integrity@1",
-            "alatyr:bounded-context-expansion@1",
-        ]
+        expected_preload = preload_term_ids(
+            ROOT / "framework/semantics/index.json"
+        )
         if semantic.get("preload_terms") != expected_preload:
             failures.append("semantic_codebook.preload_terms are invalid")
         if "canonical owner" not in str(semantic.get("fallback", "")):

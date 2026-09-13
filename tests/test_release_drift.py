@@ -122,7 +122,7 @@ class ReleaseBaselineTests(unittest.TestCase):
         if version == "0.1.0-alpha.62":
             self.skipTest("alpha.63 version transition has not been applied yet")
         baseline, _intervening = nearest_release_baseline(version)
-        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.62")
+        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.63")
 
     def test_unverified_historical_checkpoints_are_not_accepted(self) -> None:
         self.assertIsNone(release_checkpoint("0.1.0-alpha.34"))

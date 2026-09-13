@@ -1,9 +1,10 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "packet_kind": "alatyr-context-packet",
   "cache_delivery": {
     "schema_version": 1,
     "assistant_surface": "{SELECTED_ASSISTANT_SURFACE_OR_GENERIC}",
+    "capability_evidence_state": "available",
     "capability_record": ".ai/assistant/assistant-capabilities/{SELECTED_ASSISTANT_SURFACE_OR_GENERIC}.json",
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "provider": "{TARGET_MODEL_PROVIDER_OR_UNKNOWN}",
@@ -72,9 +73,14 @@
   },
   "budget": {
     "max_words": 1,
+    "max_characters": 1,
+    "character_budget_state": "enforced",
     "selected_content_words": 0,
+    "selected_content_characters": 0,
     "semantic_definition_words": 0,
-    "total_words": 0
+    "semantic_definition_characters": 0,
+    "total_words": 0,
+    "total_characters": 0
   },
   "receipt": {
     "schema_version": 1,
@@ -84,14 +90,16 @@
       "paths": [
         "{PLANNED_CONTEXT_PATH}"
       ],
-      "approximate_words": "{COUNT_OR_UNKNOWN}"
+      "approximate_words": "{COUNT_OR_UNKNOWN}",
+      "approximate_characters": "{COUNT_OR_UNKNOWN}"
     },
     "resolved": {
       "status": "{RECORDED_OR_UNAVAILABLE}",
       "paths": [
         "{RESOLVED_CONTEXT_PATH}"
       ],
-      "approximate_words": "{COUNT_OR_UNKNOWN}"
+      "approximate_words": "{COUNT_OR_UNKNOWN}",
+      "approximate_characters": "{COUNT_OR_UNKNOWN}"
     },
     "observed": {
       "evidence_level": "{EXACT_PARTIAL_OR_UNAVAILABLE}",

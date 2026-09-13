@@ -23,9 +23,6 @@
           "modes",
           "template",
           "mode"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -47,9 +44,6 @@
           "workspace",
           "modes",
           "template"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

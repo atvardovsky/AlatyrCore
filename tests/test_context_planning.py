@@ -467,6 +467,10 @@ class ContextPlanningTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(before, after)
         self.assertEqual(first["status"], "ready")
+        self.assertEqual(
+            first["context_packet"]["budget"]["character_budget_state"],
+            "unavailable-legacy",
+        )
         self.assertEqual(first["request"]["operation"], "product-change")
         self.assertEqual(
             first["impact"]["selected_node_ids"], ["fact.payment-retry"]
@@ -586,6 +590,75 @@ class ContextPlanningTests(unittest.TestCase):
             result["errors"][0]["code"], "CONTEXT_WORD_BUDGET_EXCEEDED"
         )
         self.assertIsNone(result["context_packet"])
+
+    def test_schema_twelve_planner_enforces_character_budget(self) -> None:
+        router_path = self.fixture.assistant / "context-router.json"
+        router = json.loads(router_path.read_text(encoding="utf-8"))
+        router["schema_version"] = 12
+        router["context_budgets"]["profile_default"][
+            "max_total_characters"
+        ] = 100000
+        write_json(router_path, router)
+
+        ready = plan_target_context(self.request())
+
+        self.assertEqual(ready["status"], "ready")
+        self.assertEqual(
+            ready["context_packet"]["budget"]["character_budget_state"],
+            "enforced",
+        )
+        self.assertGreater(
+            ready["context_packet"]["budget"]["total_characters"], 0
+        )
+
+        router["context_budgets"]["profile_default"][
+            "max_total_characters"
+        ] = 1
+        write_json(router_path, router)
+        blocked = plan_target_context(self.request())
+
+        self.assertEqual(blocked["status"], "blocked")
+        self.assertEqual(
+            blocked["errors"][0]["code"],
+            "CONTEXT_CHARACTER_BUDGET_EXCEEDED",
+        )
+
+    def test_profile_can_bind_declared_target_source_outside_support_catalogs(self) -> None:
+        profile_path = self.fixture.assistant / "context/profiles/code-local.json"
+        profile = json.loads(profile_path.read_text(encoding="utf-8"))
+        profile["required_context"].append("docs/billing.md")
+        write_json(profile_path, profile)
+        self.fixture.refresh_catalogs()
+
+        result = plan_target_context(self.request(changed_paths=()))
+
+        self.assertEqual(result["status"], "ready")
+        selected = {
+            item["path"]: item for item in result["context_packet"]["selected_items"]
+        }
+        self.assertIn("docs/billing.md", selected)
+        self.assertRegex(selected["docs/billing.md"]["content_digest"], r"^sha256:")
+
+    def test_missing_optional_capability_index_records_unavailable_cache_state(self) -> None:
+        router_path = self.fixture.assistant / "context-router.json"
+        router = json.loads(router_path.read_text(encoding="utf-8"))
+        router.pop("cache_aware_delivery")
+        write_json(router_path, router)
+
+        result = plan_target_context(self.request(changed_paths=()))
+
+        self.assertEqual(result["status"], "ready")
+        self.assertEqual(
+            result["context_packet"]["cache_delivery"]["capability_evidence_state"],
+            "unavailable",
+        )
+        self.assertIsNone(
+            result["context_packet"]["cache_delivery"]["capability_record"]
+        )
+        self.assertEqual(
+            result["routing_sources"]["assistant_capability"]["state"],
+            "unavailable",
+        )
 
     def test_stale_reverse_index_is_rejected(self) -> None:
         reverse_path = self.fixture.assistant / "consistency-reverse-index.json"

@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import Any
 
 
-POLICY_SCHEMA_VERSION = 4
+POLICY_SCHEMA_VERSION = 5
 CAPABILITY_SCHEMA_VERSION = 2
-PACKET_SCHEMA_VERSION = 3
+PACKET_SCHEMA_VERSION = 4
 EXECUTION_TREE_SCHEMA_VERSION = 1
 POLICY_KIND = "alatyr-source-worker-policy"
 CANONICAL_RULE = "ALATYR-DELEGATION-001"
@@ -49,6 +49,8 @@ PACKET_FIELDS = {
     "role_id",
     "objective",
     "bounded_context",
+    "max_initial_words",
+    "max_result_words",
     "conditional_context",
     "non_goals",
     "allowed_actions",
@@ -213,6 +215,8 @@ WORKSTREAM_FIELDS = {
     "independent",
     "independence_key",
     "required_context",
+    "max_initial_words",
+    "max_result_words",
     "conditional_context",
     "non_goals",
     "semantic_scope",
@@ -327,7 +331,7 @@ def validate_worker_packet(
         raise SourceWorkerContractError("worker packet must be an object")
     required = set(_string_list(contract.get("required_fields"), label="packet required_fields"))
     if required != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v3")
+        raise SourceWorkerContractError("packet required_fields do not match schema v4")
     _require_exact_fields(packet, required, "worker packet")
     if packet.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet schema_version is invalid")
@@ -389,6 +393,10 @@ def validate_worker_packet(
     bounded_paths = [
         _repository_path(path, "worker packet bounded_context") for path in bounded
     ]
+    max_initial_words = _positive_integer(
+        packet.get("max_initial_words"), "worker packet max_initial_words"
+    )
+    _positive_integer(packet.get("max_result_words"), "worker packet max_result_words")
     _string_list(
         packet.get("conditional_context"),
         label="worker packet conditional_context",
@@ -404,6 +412,15 @@ def validate_worker_packet(
         if missing:
             raise SourceWorkerContractError(
                 f"worker packet references missing bounded context: {missing}"
+            )
+        initial_words = sum(
+            len((root / path).read_text(encoding="utf-8").split())
+            for path in bounded_paths
+        )
+        if initial_words > max_initial_words:
+            raise SourceWorkerContractError(
+                "worker packet bounded context exceeds max_initial_words: "
+                f"{initial_words} > {max_initial_words}"
             )
     return packet
 
@@ -820,7 +837,7 @@ def validate_source_worker_policy(
         "worker_packet_contract",
     )
     if set(_string_list(packet_contract.get("required_fields"), label="packet required_fields")) != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v3")
+        raise SourceWorkerContractError("packet required_fields do not match schema v4")
     if packet_contract.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet contract schema_version is invalid")
     if packet_contract.get("packet_kinds") != ["source-read-only-workstream"]:
@@ -857,6 +874,16 @@ def validate_source_worker_policy(
             )
         packet = make_builtin_packet(policy, workstream_id)
         validate_worker_packet(packet, packet_contract, root=root)
+        if workstream["max_initial_words"] > tree_policy["max_context_words_total"]:
+            raise SourceWorkerContractError(
+                f"source worker workstream {workstream_id} initial budget exceeds "
+                "the aggregate context budget"
+            )
+        if workstream["max_result_words"] > tree_policy["max_context_words_total"]:
+            raise SourceWorkerContractError(
+                f"source worker workstream {workstream_id} result budget exceeds "
+                "the aggregate context budget"
+            )
         independence_key = packet["independence_key"]
         if independence_key in independence_keys:
             raise SourceWorkerContractError(
@@ -1321,6 +1348,8 @@ def make_builtin_packet(policy: dict[str, Any], workstream_id: str) -> dict[str,
         "role_id": contract["role_id"],
         "objective": workstream.get("objective"),
         "bounded_context": workstream.get("required_context"),
+        "max_initial_words": workstream.get("max_initial_words"),
+        "max_result_words": workstream.get("max_result_words"),
         "conditional_context": workstream.get("conditional_context"),
         "non_goals": workstream.get("non_goals"),
         "allowed_actions": contract["allowed_actions"],

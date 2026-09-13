@@ -13,7 +13,7 @@ from typing import Any, Iterable
 CONTEXT_INDEX_SCHEMA_VERSION = 1
 CODEBOOK_SCHEMA_VERSION = 2
 LEGACY_CODEBOOK_SCHEMA_VERSION = 1
-PACKET_SCHEMA_VERSION = 3
+PACKET_SCHEMA_VERSION = 4
 CONTEXT_INDEX_KIND = "alatyr-context-index"
 CODEBOOK_INDEX_KIND = "alatyr-semantic-codebook-index"
 CODEBOOK_SHARD_KIND = "alatyr-semantic-codebook-shard"
@@ -45,6 +45,7 @@ class CatalogItem:
     semantic_refs: tuple[str, ...]
     owner_refs: tuple[str, ...]
     estimated_words: int
+    estimated_characters: int
     content_digest: str
 
 
@@ -57,6 +58,7 @@ class CatalogResolution:
 @dataclass(frozen=True)
 class CatalogContentStats:
     words: int
+    characters: int
     digest: str
 
 
@@ -99,8 +101,10 @@ def catalog_content_stats(path: Path) -> CatalogContentStats:
     """Calculate normalized catalog metadata from one physical file read."""
 
     content = catalog_content_bytes(path)
+    text = content.decode("utf-8")
     return CatalogContentStats(
-        words=len(re.findall(r"\S+", content.decode("utf-8"))),
+        words=len(re.findall(r"\S+", text)),
+        characters=len(text),
         digest=f"sha256:{hashlib.sha256(content).hexdigest()}",
     )
 
@@ -289,8 +293,8 @@ def validate_context_catalog(
                 raise ContextCatalogError(f"{label}.content_digest must be sha256:<hex>")
             if not target.is_file():
                 raise ContextCatalogError(f"{label}.path does not exist: {relpath}")
+            content_stats = catalog_content_stats(target)
             if verify_content:
-                content_stats = catalog_content_stats(target)
                 if content_stats.words != estimated_words:
                     raise ContextCatalogError(f"{label}.estimated_words is stale")
                 if content_stats.digest != digest:
@@ -318,6 +322,7 @@ def validate_context_catalog(
                     semantic_refs=semantic_refs,
                     owner_refs=owner_refs,
                     estimated_words=estimated_words,
+                    estimated_characters=content_stats.characters,
                     content_digest=digest,
                 )
             )
@@ -538,6 +543,29 @@ def load_codebook(
     return resolved
 
 
+def preload_term_ids(index_path: Path) -> list[str]:
+    """Return the ordered preload projection owned by a semantic index."""
+
+    index = load_object(index_path)
+    shards = index.get("shards")
+    if not isinstance(shards, list):
+        raise ContextCatalogError("semantic codebook index must define shards")
+    preload: list[str] = []
+    for descriptor in shards:
+        if not isinstance(descriptor, dict) or descriptor.get("preload") is not True:
+            continue
+        preload.extend(
+            _string_list(
+                descriptor.get("term_ids"),
+                "semantic preload descriptor term_ids",
+                non_empty=True,
+            )
+        )
+    if not preload or len(preload) != len(set(preload)):
+        raise ContextCatalogError("semantic codebook preload must be non-empty and unique")
+    return preload
+
+
 def build_context_packet(
     *,
     profile: str,
@@ -545,7 +573,10 @@ def build_context_packet(
     selected_items: Iterable[CatalogItem],
     semantic_terms: dict[str, dict[str, Any]],
     max_words: int,
+    max_characters: int | None,
     assistant_surface: str = "generic",
+    assistant_capability_record: str | None = None,
+    assistant_capability_state: str = "available",
     selection_reasons: dict[str, list[str]] | None = None,
     task_classification: str = "standard-task",
     expansion_triggers: Iterable[str] = (),
@@ -553,6 +584,22 @@ def build_context_packet(
     conditional_dependencies: Iterable[dict[str, str]] = (),
 ) -> dict[str, Any]:
     """Build a deterministic packet projection from selected catalog items."""
+
+    if assistant_capability_state not in {"available", "unavailable"}:
+        raise ContextCatalogError(
+            "assistant capability state must be available or unavailable"
+        )
+    if assistant_capability_state == "available":
+        capability_record = assistant_capability_record or (
+            ".ai/assistant/assistant-capabilities/"
+            f"{assistant_surface}.json"
+        )
+    else:
+        if assistant_capability_record is not None:
+            raise ContextCatalogError(
+                "unavailable assistant capability cannot name a capability record"
+            )
+        capability_record = None
 
     items = sorted(selected_items, key=lambda item: item.item_id)
     required_refs = sorted({term for item in items for term in item.semantic_refs})
@@ -565,10 +612,27 @@ def build_context_packet(
         len(re.findall(r"\S+", semantic_terms[term_id]["definition"]))
         for term_id in ordered_term_ids
     )
+    selected_characters = sum(item.estimated_characters for item in items)
+    semantic_characters = sum(
+        len(semantic_terms[term_id]["definition"])
+        for term_id in ordered_term_ids
+    )
     total_words = selected_words + semantic_words
+    total_characters = selected_characters + semantic_characters
+    if max_characters is not None and (
+        not isinstance(max_characters, int)
+        or isinstance(max_characters, bool)
+        or max_characters < 1
+    ):
+        raise ContextCatalogError("context packet character budget must be positive")
     if total_words > max_words:
         raise ContextCatalogError(
             f"context packet uses {total_words} words and exceeds budget {max_words}"
+        )
+    if max_characters is not None and total_characters > max_characters:
+        raise ContextCatalogError(
+            f"context packet uses {total_characters} characters and exceeds "
+            f"budget {max_characters} characters"
         )
     semantic_payload = [
         {
@@ -651,10 +715,8 @@ def build_context_packet(
         "cache_delivery": {
             "schema_version": 1,
             "assistant_surface": assistant_surface,
-            "capability_record": (
-                ".ai/assistant/assistant-capabilities/"
-                f"{assistant_surface}.json"
-            ),
+            "capability_evidence_state": assistant_capability_state,
+            "capability_record": capability_record,
             "stable_prefix_sections": ["semantic_terms"],
             "dynamic_tail_sections": [
                 "profile",
@@ -688,9 +750,16 @@ def build_context_packet(
         },
         "budget": {
             "max_words": max_words,
+            "max_characters": max_characters,
+            "character_budget_state": (
+                "enforced" if max_characters is not None else "unavailable-legacy"
+            ),
             "selected_content_words": selected_words,
+            "selected_content_characters": selected_characters,
             "semantic_definition_words": semantic_words,
+            "semantic_definition_characters": semantic_characters,
             "total_words": total_words,
+            "total_characters": total_characters,
         },
         "receipt": {
             "schema_version": 1,
@@ -699,6 +768,7 @@ def build_context_packet(
             "planned": {
                 "paths": [item.path for item in items],
                 "approximate_words": total_words,
+                "approximate_characters": total_characters,
             },
             "resolved": {"status": "unavailable", "paths": []},
             "observed": {"evidence_level": "unavailable"},

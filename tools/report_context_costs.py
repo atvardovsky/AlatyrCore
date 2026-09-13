@@ -269,6 +269,7 @@ def pairwise_composition_summary(
     limits = {
         "declared_files": budget.get("max_files"),
         "words": budget.get("max_total_words"),
+        "characters": budget.get("max_total_characters"),
         "portable_words": budget.get("max_portable_words"),
         "target_words": budget.get("reserved_target_words"),
     }
@@ -300,6 +301,7 @@ def pairwise_composition_summary(
                         ),
                         "declared_files": measured["declared_files"],
                         "words": measured["words"],
+                        "characters": measured["characters"],
                         "portable_words": measured["portable_words"],
                         "target_words": measured["target_words"],
                         "missing_paths": measured["missing_paths"],
@@ -330,6 +332,7 @@ def pairwise_composition_summary(
         ],
         "max_declared_files": max(row["declared_files"] for row in rows),
         "max_words": max(row["words"] for row in rows),
+        "max_characters": max(row["characters"] for row in rows),
         "composition_digest": "sha256:" + hashlib.sha256(encoded).hexdigest(),
     }
 

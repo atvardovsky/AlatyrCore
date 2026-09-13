@@ -21,9 +21,6 @@
         "path_terms": [
           "gates",
           "checklist"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -46,9 +43,6 @@
           "code",
           "and",
           "tests"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -70,9 +64,6 @@
           "gates",
           "contract",
           "artifacts"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -93,9 +84,6 @@
         "path_terms": [
           "gates",
           "core"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -117,9 +105,6 @@
           "gates",
           "debug",
           "mode"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -141,12 +126,6 @@
           "gates",
           "dependency",
           "knowledge"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SAFETY-002",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -173,9 +152,6 @@
         "path_terms": [
           "gates",
           "documentation"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -197,9 +173,6 @@
           "gates",
           "engineering",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -220,10 +193,6 @@
         "path_terms": [
           "gates",
           "extensions"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -247,9 +216,6 @@
           "gates",
           "final",
           "evidence"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -269,9 +235,6 @@
       "selectors": {
         "path_terms": [
           "gates"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -293,11 +256,6 @@
           "gates",
           "project",
           "knowledge"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
         ]
       },
       "semantic_refs": [
@@ -323,11 +281,6 @@
           "gates",
           "security",
           "approval"
-        ],
-        "rule_ids": [
-          "ALATYR-APPROVAL-001",
-          "ALATYR-AUTHORIZATION-001",
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -353,10 +306,6 @@
           "gates",
           "semantic",
           "integrity"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [
@@ -380,9 +329,6 @@
           "gates",
           "support",
           "generation"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -404,10 +350,6 @@
           "gates",
           "team",
           "collaboration"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -432,9 +374,6 @@
           "test",
           "first",
           "development"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -456,9 +395,6 @@
           "gates",
           "visual",
           "validation"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [
@@ -480,9 +416,6 @@
           "gates",
           "workspace",
           "mode"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
         ]
       },
       "semantic_refs": [

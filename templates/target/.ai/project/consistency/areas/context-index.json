@@ -22,10 +22,6 @@
           "consistency",
           "areas",
           "template"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-INTEGRITY-001"
         ]
       },
       "semantic_refs": [

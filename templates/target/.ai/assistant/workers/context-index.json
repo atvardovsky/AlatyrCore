@@ -22,10 +22,6 @@
           "workers",
           "role",
           "catalog"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-DELEGATION-001"
         ]
       },
       "semantic_refs": [
@@ -51,8 +47,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 289,
-      "content_digest": "sha256:2c1ecc2a31035cf3d83e087ea118cee5c73c13ba0e02e0577b668bb64b72bb14"
+      "estimated_words": 259,
+      "content_digest": "sha256:709a6dccde6a5234254e32eb355d25312bc595cf9ab57e599c4a6734781afeab"
     }
   ]
 }

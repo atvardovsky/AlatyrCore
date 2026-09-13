@@ -138,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3516,
-      "content_digest": "sha256:8897651dbacd154c267b4cd89e9ebb7e9b22d2f160c94fce2778094c50cce772"
+      "estimated_words": 3543,
+      "content_digest": "sha256:93c2a8266aa54139e7accfd7ea04c062dc2a725073d72163709c87f09bb722fb"
     },
     {
       "id": "framework.core.context-router-md",
@@ -153,8 +153,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3011,
-      "content_digest": "sha256:ee64dab8f5f0417564ddbf5c7fae315eb9639de30ca942e96cc71a125a40a50f"
+      "estimated_words": 3168,
+      "content_digest": "sha256:e14348a96ec3ad2776ef67335a9da07f8b27e2edfa19694a7e4837fef6183462"
     },
     {
       "id": "framework.core.contour-md",
@@ -356,12 +356,15 @@
         "path_terms": [
           "rule",
           "registry"
+        ],
+        "representation": [
+          "machine"
         ]
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4154,
-      "content_digest": "sha256:2087a63470798462dcff6e6bb6d2324c1476efee15a44d4fe8a2f43906936ab5"
+      "estimated_words": 4172,
+      "content_digest": "sha256:7a03f3e8bbf596b093d75796fd20d8cca59cd859a07479d507656b5db031965e"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -372,12 +375,15 @@
         "path_terms": [
           "rule",
           "registry"
+        ],
+        "representation": [
+          "human"
         ]
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3346,
-      "content_digest": "sha256:ae852d6f21bc1fd5a1498d30a478c7114d4342601a3a39db0e4baf99a957ac60"
+      "estimated_words": 3364,
+      "content_digest": "sha256:ac6389e821f3ba0fcf19a7ccf42ea68705d6367c7f0dda5e0d72354e61dfd236"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -462,7 +468,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 286,
-      "content_digest": "sha256:49f3541b045c22096bcd64f90da046c9ff678c6e77004c04547ff4c6c27ca1bd"
+      "content_digest": "sha256:b161c7b3620ace2294fb64c3db891b333bd54c1d331c0ae21a40842f1b1e62b8"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

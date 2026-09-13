@@ -21,10 +21,6 @@
         "path_terms": [
           "extensions",
           "catalog"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -47,10 +43,6 @@
         "path_terms": [
           "extensions",
           "lock"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
@@ -72,10 +64,6 @@
       "selectors": {
         "path_terms": [
           "extensions"
-        ],
-        "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
         ]
       },
       "semantic_refs": [
