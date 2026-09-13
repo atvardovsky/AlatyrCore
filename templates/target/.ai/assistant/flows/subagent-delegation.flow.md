@@ -24,6 +24,11 @@ Selected task-scale overlay: `delegated-execution`
 - Execution-tree ledger template:
   `.ai/assistant/templates/delegation-execution-tree.json`
 - Result template: `.ai/assistant/templates/worker-result.md`
+- Machine result template: `.ai/assistant/templates/worker-result.json`
+- Branch envelope template:
+  `.ai/assistant/templates/delegation-branch-envelope.json`
+- Branch checkpoint template:
+  `.ai/assistant/templates/delegation-branch-checkpoint.json`
 - Parent operation or large-task packet: `{PARENT_OPERATION_OR_PACKET}`
 - Target validation: `{TARGET_VALIDATION}`
 
@@ -82,9 +87,13 @@ Selected task-scale overlay: `delegated-execution`
    acceptance, validation, capability, and authorization are resolved.
 5. Keep `L6` and `L7` work primary-only. Split evidence collection into
    separate `L1` subtasks when useful.
-6. Apply the target tree limits for depth, total delegates, children per
-   parent, aggregate context, retries, and parallel work. The primary owns all
-   dispatch. Workers may propose child packets but cannot launch them.
+6. Apply target limits for depth, delegates, children, context, results,
+   summaries, retries, and parallel work. The primary owns branch authorization.
+   A verified coordinator may use nested transport for read-only depth-two
+   children inside a hash-bound primary envelope; otherwise return proposals.
+   Bind the ledger to the canonical JSON digest of the resolved policy, bind
+   the envelope to the measured capability-evidence artifact digest, and
+   compare its expiry with the execution ledger's recorded timestamp.
 7. Assign one unique coverage key per packet and stop at evidence saturation.
    Reject duplicate or overlapping coverage unless the primary records a
    bounded reconciliation reason.
@@ -94,8 +103,9 @@ Selected task-scale overlay: `delegated-execution`
 1. Create one packet per delegate by instantiating
    `.ai/assistant/templates/subagent-task-packet.md` into a target-approved
    operation evidence path or inline completion evidence.
-2. Include only required context and name excluded context, files, actions,
-   tools, dependencies, acceptance criteria, validation, and return format.
+2. Inherit context by packet digest and send only the delta. Include required
+   and excluded context, files, actions, tools, dependencies, acceptance,
+   validation, result budget, summary budget, and return format.
 3. Keep the primary agent on the immediate critical path. Dispatch only
    independent sidecars or workstreams that materially reduce wall-clock time.
 4. Use parallel dispatch only for disjoint write scopes. Stop a packet when
@@ -108,10 +118,10 @@ Selected task-scale overlay: `delegated-execution`
 
 ## Result Review And Convergence
 
-1. Normalize the return by instantiating
-   `.ai/assistant/templates/worker-result.md` into per-operation result
-   evidence; record actual surface, role, model or unverified status, base
-   revision, files touched, tools used, validation, findings, boundary
+1. Normalize the return through the machine result and human view; record the
+   measured input-context, raw, and accepted-summary artifacts, SHA-256 identity, actual
+   surface, role, model or unverified status, base
+   revision, files touched, machine-readable tool IDs, validation, findings, boundary
    evidence, and residual risk.
 2. Reject output outside packet scope or output that changed a prohibited
    fact, action, permission, or surface.
@@ -127,8 +137,11 @@ Selected task-scale overlay: `delegated-execution`
 7. Retry only target-declared transient or locally repairable failures. Reject
    scope violations, return contradictions to the primary, and revalidate
    stale results against current repository state.
-8. Review child proposals as new primary-owned dispatch decisions. A worker
-   result cannot expand the tree by itself.
+8. Review child proposals as new primary-owned decisions. For recursive work,
+   verify the branch envelope and checkpoint, including accepted/rejected child
+   partitioning; a worker cannot expand either.
+   Load accepted summaries in routine primary context and raw child evidence
+   only for a named review trigger.
 
 ## Final Evidence
 
@@ -142,7 +155,8 @@ Report:
 - context, actions, tools, write scope, and isolation
 - delegate validation and primary review result
 - fallback, rejected output, rework, and residual risk
-- tree depth and budget use, coverage keys, child proposals, and stop reasons
+- tree depth and context/result/primary-summary budget use, coverage keys,
+  branch envelopes/checkpoints, child proposals, and stop reasons
 - measured latency or cost only when comparable evidence was captured
 
 ## Rejection Criteria

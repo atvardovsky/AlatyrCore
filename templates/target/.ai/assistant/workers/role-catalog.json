@@ -1,11 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "catalog_kind": "target-worker-role-catalog",
   "owner": "{TARGET_WORKER_ROLE_CATALOG_OWNER}",
   "delegation_policy": ".ai/assistant/delegation-policy.json",
   "decomposition_policy": ".ai/assistant/task-decomposition.json",
   "task_packet_template": ".ai/assistant/templates/subagent-task-packet.md",
   "result_template": ".ai/assistant/templates/worker-result.md",
+  "machine_result_template": ".ai/assistant/templates/worker-result.json",
   "roles": [
     {
       "id": "explorer",

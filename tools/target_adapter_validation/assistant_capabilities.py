@@ -8,7 +8,7 @@ from target_adapter_validation.values import is_resolved_string
 
 
 CAPABILITY_INDEX_SCHEMA_VERSION = 3
-SURFACE_CAPABILITY_SCHEMA_VERSION = 4
+SURFACE_CAPABILITY_SCHEMA_VERSION = 5
 
 CAPABILITY_INDEX_KIND = "target-assistant-capability-index"
 SURFACE_CAPABILITY_KIND = "target-assistant-surface-capabilities"

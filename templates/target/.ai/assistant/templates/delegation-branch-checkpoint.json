@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "checkpoint_kind": "alatyr-delegation-branch-checkpoint",
+  "checkpoint_id": "{CHECKPOINT_ID}",
+  "previous_checkpoint_id": "{PREVIOUS_CHECKPOINT_ID_OR_NONE}",
+  "operation_id": "{OPERATION_ID}",
+  "node_id": "{BRANCH_COORDINATOR_NODE_ID}",
+  "branch_envelope_sha256": "{LOWERCASE_SHA256}",
+  "base_revision": "{BASE_REVISION}",
+  "accepted_result_ids": ["{RESULT_ID_OR_NONE}"],
+  "accepted_result_sha256": ["{LOWERCASE_SHA256_OR_NONE}"],
+  "rejected_result_ids": ["{RESULT_ID_OR_NONE}"],
+  "completed_coverage_keys": ["{COVERAGE_KEY_OR_NONE}"],
+  "accepted_summary": {
+    "path": "{TARGET_RELATIVE_ACCEPTED_SUMMARY_PATH}",
+    "word_count": "{MEASURED_NON_NEGATIVE_INTEGER}",
+    "character_count": "{MEASURED_NON_NEGATIVE_INTEGER}",
+    "sha256": "{LOWERCASE_SHA256}"
+  },
+  "context_packet_sha256": "{LOWERCASE_SHA256_OR_NONE}",
+  "semantic_guidance_sha256": "{LOWERCASE_SHA256_OR_NONE}",
+  "evidence_manifest_sha256": "{LOWERCASE_SHA256}",
+  "validation_sha256": "{LOWERCASE_SHA256}",
+  "unresolved_escalations": ["{PRIMARY_HAND_BACK_OR_NONE}"],
+  "next_ready_action": "{BOUNDED_ACTION_OR_NONE}",
+  "stop_reason_id": "{NORMALIZED_STOP_REASON_ID}",
+  "checkpoint_sha256": "{SHA256_OF_CANONICAL_OBJECT_WITHOUT_THIS_FIELD}"
+}

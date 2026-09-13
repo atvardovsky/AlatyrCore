@@ -9,18 +9,39 @@
     "disjoint writes or read-only scope and current capability evidence exist"
   ],
   "required_context": [
-    ".ai/framework/subagent-delegation.md",
     ".ai/assistant/task-decomposition.json",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
-    ".ai/assistant/templates/worker-execution-plan.md",
-    ".ai/assistant/templates/delegation-execution-tree.json",
-    ".ai/assistant/templates/subagent-task-packet.md",
-    ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/assistant-capabilities.json"
   ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/subagent-delegation.md",
+      "when": "portable delegation semantics are ambiguous under repair or in conflict"
+    },
+    {
+      "path": ".ai/assistant/templates/worker-execution-plan.md",
+      "when": "planning a concrete delegated execution"
+    },
+    {
+      "path": ".ai/assistant/templates/delegation-branch-envelope.json",
+      "when": "verified nested capability permits a recursive read-only branch"
+    },
+    {
+      "path": ".ai/assistant/templates/delegation-branch-checkpoint.json",
+      "when": "checkpointing or resuming a recursive branch"
+    },
+    {
+      "path": ".ai/assistant/templates/worker-result.json",
+      "when": "normalizing or validating measured worker evidence"
+    }
+  ],
   "expand_when": [
+    "planning needs the selected assistant capability record and worker execution plan",
+    "dispatch needs only the instantiated packet selected role and referenced context packet",
+    "recursive dispatch needs the branch envelope template and verified nested capability",
+    "convergence needs only accepted summaries branch checkpoints and selected raw evidence",
     "subagent delegation flow semantics are ambiguous or under repair",
     "selected assistant capability record is required",
     "parent large-task operation packet exists",

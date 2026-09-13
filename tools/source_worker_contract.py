@@ -9,16 +9,18 @@ from pathlib import Path
 from typing import Any
 
 
-POLICY_SCHEMA_VERSION = 5
+POLICY_SCHEMA_VERSION = 6
 CAPABILITY_SCHEMA_VERSION = 2
-PACKET_SCHEMA_VERSION = 4
-EXECUTION_TREE_SCHEMA_VERSION = 1
+PACKET_SCHEMA_VERSION = 5
+EXECUTION_TREE_SCHEMA_VERSION = 2
 POLICY_KIND = "alatyr-source-worker-policy"
 CANONICAL_RULE = "ALATYR-DELEGATION-001"
 TREE_KIND = "alatyr-delegation-execution-tree"
 MAX_TOTAL_DELEGATES = 8
 MAX_CHILDREN_PER_PARENT = 4
 MAX_CONTEXT_WORDS_TOTAL = 24000
+MAX_RESULT_WORDS_TOTAL = 12000
+MAX_PRIMARY_SUMMARY_WORDS_TOTAL = 4000
 MAX_RETRIES_TOTAL = 2
 TASK_CLASSES = {"small-task", "standard-task", "large-or-resumable"}
 PREFLIGHT_DECISIONS = {
@@ -44,13 +46,17 @@ PACKET_FIELDS = {
     "depth",
     "remaining_worker_budget",
     "coverage_key",
-    "child_proposal_policy",
+    "child_dispatch_mode",
+    "branch_envelope_sha256",
     "workstream_id",
     "role_id",
     "objective",
     "bounded_context",
     "max_initial_words",
     "max_result_words",
+    "max_summary_words",
+    "parent_context_packet_sha256",
+    "context_delta",
     "conditional_context",
     "non_goals",
     "allowed_actions",
@@ -69,11 +75,13 @@ EXECUTION_TREE_FIELDS = {
     "schema_version",
     "tree_kind",
     "operation_id",
+    "recorded_at",
     "base_revision",
     "current_user_authorization",
     "task_profile",
     "policy_revision",
     "capability_evidence",
+    "capability_evidence_sha256",
     "aggregate_budget",
     "root_node_id",
     "nodes",
@@ -85,16 +93,21 @@ EXECUTION_TREE_BUDGET_FIELDS = {
     "max_parallel_delegates",
     "max_children_per_parent",
     "max_context_words_total",
+    "max_result_words_total",
+    "max_primary_summary_words_total",
     "max_retries_total",
     "used_total_delegates",
     "used_parallel_delegates",
     "used_context_words",
+    "used_result_words",
+    "used_primary_summary_words",
     "used_retries",
 }
 EXECUTION_TREE_NODE_FIELDS = {
     "node_id",
     "parent_node_id",
     "packet_id",
+    "parent_packet_id",
     "result_id",
     "depth",
     "status",
@@ -110,7 +123,20 @@ EXECUTION_TREE_NODE_FIELDS = {
     "relationship_refs",
     "allowed_actions",
     "write_scope",
+    "context_evidence",
     "context_words",
+    "max_result_words",
+    "max_summary_words",
+    "dispatch_group_id",
+    "branch_envelope",
+    "branch_envelope_sha256",
+    "branch_checkpoint",
+    "branch_checkpoint_sha256",
+    "result_evidence",
+    "accepted_summary_evidence",
+    "summary_covers_result_ids",
+    "satisfied_acceptance_ids",
+    "produced_evidence_ids",
     "attempt",
     "result_status",
     "stop_reason_id",
@@ -119,7 +145,10 @@ EXECUTION_TREE_NODE_FIELDS = {
 }
 EXECUTION_TREE_CONVERGENCE_FIELDS = {
     "status",
+    "required_acceptance_ids",
+    "required_evidence_ids",
     "reviewed_result_ids",
+    "indirect_result_ids",
     "rejected_result_ids",
     "combined_validation",
     "logical_integrity_review",
@@ -185,6 +214,7 @@ POLICY_FIELDS = {
     "runtime_capability_owner",
     "fallback_executor",
     "tree_policy",
+    "context_compaction",
     "stop_policy",
     "runtime_capability_contract",
     "activation",
@@ -202,6 +232,14 @@ STOP_REASON_IDS = {
     "maximum-depth-reached",
     "worker-budget-reached",
     "context-budget-reached",
+    "result-budget-reached",
+    "primary-context-budget-reached",
+    "checkpoint-required",
+    "checkpoint-invalid",
+    "context-digest-stale",
+    "evidence-digest-mismatch",
+    "branch-envelope-violation",
+    "validation-regression",
     "semantic-decision-required",
     "overlapping-scope",
     "primary-critical-path",
@@ -217,6 +255,7 @@ WORKSTREAM_FIELDS = {
     "required_context",
     "max_initial_words",
     "max_result_words",
+    "max_summary_words",
     "conditional_context",
     "non_goals",
     "semantic_scope",
@@ -331,19 +370,22 @@ def validate_worker_packet(
         raise SourceWorkerContractError("worker packet must be an object")
     required = set(_string_list(contract.get("required_fields"), label="packet required_fields"))
     if required != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v4")
+        raise SourceWorkerContractError("packet required_fields do not match schema v5")
     _require_exact_fields(packet, required, "worker packet")
     if packet.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet schema_version is invalid")
     if packet.get("packet_kind") not in contract["packet_kinds"]:
         raise SourceWorkerContractError("worker packet_kind is invalid")
-    if packet.get("parent_packet_id") is not None and not _nonempty_string(
-        packet.get("parent_packet_id")
-    ):
+    parent_packet_id = packet.get("parent_packet_id")
+    if parent_packet_id is not None and not _nonempty_string(parent_packet_id):
         raise SourceWorkerContractError("worker packet parent_packet_id is invalid")
     depth = packet.get("depth")
-    if not isinstance(depth, int) or isinstance(depth, bool) or depth != 1:
-        raise SourceWorkerContractError("source worker packet depth must be 1")
+    if not isinstance(depth, int) or isinstance(depth, bool) or depth not in {1, 2}:
+        raise SourceWorkerContractError("source worker packet depth must be 1 or 2")
+    if depth == 1 and parent_packet_id is not None:
+        raise SourceWorkerContractError("depth-1 source packet cannot have a parent packet")
+    if depth == 2 and parent_packet_id is None:
+        raise SourceWorkerContractError("depth-2 source packet requires a parent packet")
     remaining = packet.get("remaining_worker_budget")
     if not isinstance(remaining, int) or isinstance(remaining, bool) or remaining < 0:
         raise SourceWorkerContractError(
@@ -351,10 +393,23 @@ def validate_worker_packet(
         )
     if not _nonempty_string(packet.get("coverage_key")):
         raise SourceWorkerContractError("worker packet coverage_key is invalid")
-    if packet.get("child_proposal_policy") != contract["child_proposal_policy"]:
+    child_mode = packet.get("child_dispatch_mode")
+    if child_mode not in contract["child_dispatch_modes"]:
+        raise SourceWorkerContractError("worker packet child_dispatch_mode is invalid")
+    envelope_sha = packet.get("branch_envelope_sha256")
+    if child_mode == "primary-preauthorized-read-only" or depth == 2:
+        if not isinstance(envelope_sha, str) or len(envelope_sha) != 64 or any(
+            character not in "0123456789abcdef" for character in envelope_sha
+        ):
+            raise SourceWorkerContractError(
+                "recursive worker packet requires a lowercase branch envelope SHA-256"
+            )
+    elif envelope_sha is not None:
         raise SourceWorkerContractError(
-            "worker packet child_proposal_policy must be propose-only"
+            "non-recursive worker packet must not claim a branch envelope"
         )
+    if depth == 2 and child_mode != "none":
+        raise SourceWorkerContractError("depth-2 source packet cannot dispatch children")
     for field in [
         "workstream_id",
         "objective",
@@ -397,6 +452,27 @@ def validate_worker_packet(
         packet.get("max_initial_words"), "worker packet max_initial_words"
     )
     _positive_integer(packet.get("max_result_words"), "worker packet max_result_words")
+    max_summary_words = _positive_integer(
+        packet.get("max_summary_words"), "worker packet max_summary_words"
+    )
+    if max_summary_words > packet["max_result_words"]:
+        raise SourceWorkerContractError(
+            "worker packet max_summary_words exceeds max_result_words"
+        )
+    context_digest = packet.get("parent_context_packet_sha256")
+    if context_digest is not None and (
+        not isinstance(context_digest, str)
+        or len(context_digest) != 64
+        or any(character not in "0123456789abcdef" for character in context_digest)
+    ):
+        raise SourceWorkerContractError(
+            "worker packet parent_context_packet_sha256 is invalid"
+        )
+    context_delta = packet.get("context_delta")
+    if not isinstance(context_delta, dict) or set(context_delta) != {"add", "remove"}:
+        raise SourceWorkerContractError("worker packet context_delta is invalid")
+    _string_list(context_delta["add"], label="worker packet context_delta.add", nonempty=False)
+    _string_list(context_delta["remove"], label="worker packet context_delta.remove", nonempty=False)
     _string_list(
         packet.get("conditional_context"),
         label="worker packet conditional_context",
@@ -541,9 +617,9 @@ def _validate_tree_and_stop_policy(tree: Any, stop: Any) -> None:
     )
     expected = {
         "dispatch_owner": "primary-assistant",
-        "worker_child_behavior": "propose-only",
+        "worker_child_behavior": "primary-preauthorized-read-only",
         "default_max_depth": 1,
-        "hard_max_depth": 1,
+        "hard_max_depth": 2,
         "require_disjoint_coverage_keys": True,
     }
     for field, value in expected.items():
@@ -601,6 +677,27 @@ def _validate_tree_and_stop_policy(tree: Any, stop: Any) -> None:
         raise SourceWorkerContractError("stop_policy stop_reason_ids are incomplete")
 
 
+def _validate_context_compaction(contract: Any) -> None:
+    if not isinstance(contract, dict):
+        raise SourceWorkerContractError("context_compaction must be an object")
+    expected = {
+        "mode": "hierarchical-summary",
+        "raw_result_loading": "reference-only-unless-review-triggered",
+        "summary_propagation": "accepted-summary-only",
+        "digest_algorithm": "sha256",
+        "require_measured_result_artifacts": True,
+        "deduplicate_inherited_context": True,
+        "max_result_words_total": MAX_RESULT_WORDS_TOTAL,
+        "max_primary_summary_words_total": MAX_PRIMARY_SUMMARY_WORDS_TOTAL,
+    }
+    _require_exact_fields(contract, set(expected), "context_compaction")
+    for field, value in expected.items():
+        if contract.get(field) != value:
+            raise SourceWorkerContractError(
+                f"context_compaction requires {field}={value!r}"
+            )
+
+
 def _validate_execution_tree_contract(contract: Any) -> None:
     if not isinstance(contract, dict):
         raise SourceWorkerContractError("execution_tree_contract must be an object")
@@ -610,6 +707,7 @@ def _validate_execution_tree_contract(contract: Any) -> None:
             "schema_version",
             "tree_kind",
             "template_path",
+            "required_tree_fields",
             "required_budget_fields",
             "required_node_fields",
         },
@@ -623,6 +721,15 @@ def _validate_execution_tree_contract(contract: Any) -> None:
         "templates/target/.ai/assistant/templates/delegation-execution-tree.json"
     ):
         raise SourceWorkerContractError("execution tree template path is invalid")
+    if set(
+        _string_list(
+            contract.get("required_tree_fields"),
+            label="execution tree required_tree_fields",
+        )
+    ) != EXECUTION_TREE_FIELDS:
+        raise SourceWorkerContractError(
+            "execution tree required_tree_fields are incomplete"
+        )
     if set(
         _string_list(
             contract.get("required_budget_fields"),
@@ -805,6 +912,8 @@ def validate_source_worker_policy(
     tree_policy = policy.get("tree_policy")
     activation = policy.get("activation")
     _validate_tree_and_stop_policy(tree_policy, policy.get("stop_policy"))
+    context_compaction = policy.get("context_compaction")
+    _validate_context_compaction(context_compaction)
     _validate_activation(activation)
     minimum_packets = activation["minimum_independent_packets"]
     for field in [
@@ -831,13 +940,13 @@ def validate_source_worker_policy(
             "allowed_actions",
             "role_id",
             "write_scope",
-            "child_proposal_policy",
+            "child_dispatch_modes",
             "result_requirement",
         },
         "worker_packet_contract",
     )
     if set(_string_list(packet_contract.get("required_fields"), label="packet required_fields")) != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v4")
+        raise SourceWorkerContractError("packet required_fields do not match schema v5")
     if packet_contract.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet contract schema_version is invalid")
     if packet_contract.get("packet_kinds") != ["source-read-only-workstream"]:
@@ -848,10 +957,12 @@ def validate_source_worker_policy(
         raise SourceWorkerContractError("worker packet contract role_id is invalid")
     if packet_contract.get("write_scope") != "none":
         raise SourceWorkerContractError("worker packet contract must have no write scope")
-    if packet_contract.get("child_proposal_policy") != "propose-only":
-        raise SourceWorkerContractError(
-            "worker packet child_proposal_policy must be propose-only"
-        )
+    if packet_contract.get("child_dispatch_modes") != [
+        "none",
+        "propose-only",
+        "primary-preauthorized-read-only",
+    ]:
+        raise SourceWorkerContractError("worker packet child dispatch modes are invalid")
     if not _nonempty_string(packet_contract.get("result_requirement")):
         raise SourceWorkerContractError("worker packet result_requirement is invalid")
 
@@ -879,10 +990,17 @@ def validate_source_worker_policy(
                 f"source worker workstream {workstream_id} initial budget exceeds "
                 "the aggregate context budget"
             )
-        if workstream["max_result_words"] > tree_policy["max_context_words_total"]:
+        if workstream["max_result_words"] > context_compaction["max_result_words_total"]:
             raise SourceWorkerContractError(
                 f"source worker workstream {workstream_id} result budget exceeds "
-                "the aggregate context budget"
+                "the aggregate result budget"
+            )
+        if workstream["max_summary_words"] > context_compaction[
+            "max_primary_summary_words_total"
+        ]:
+            raise SourceWorkerContractError(
+                f"source worker workstream {workstream_id} summary budget exceeds "
+                "the aggregate primary-summary budget"
             )
         independence_key = packet["independence_key"]
         if independence_key in independence_keys:
@@ -925,407 +1043,20 @@ def load_source_worker_policy(path: Path, *, root: Path | None = None) -> dict[s
 def validate_delegation_execution_tree(
     tree: dict[str, Any],
     policy: dict[str, Any],
-) -> dict[str, Any]:
-    """Validate cumulative source delegation-tree evidence."""
-    validate_source_worker_policy(policy)
-    if not isinstance(tree, dict):
-        raise SourceWorkerContractError("delegation execution tree must be an object")
-    _require_exact_fields(tree, EXECUTION_TREE_FIELDS, "delegation execution tree")
-    if tree.get("schema_version") != EXECUTION_TREE_SCHEMA_VERSION:
-        raise SourceWorkerContractError("delegation execution tree schema_version is invalid")
-    if tree.get("tree_kind") != TREE_KIND:
-        raise SourceWorkerContractError("delegation execution tree kind is invalid")
-    for field in [
-        "operation_id",
-        "base_revision",
-        "task_profile",
-        "policy_revision",
-        "capability_evidence",
-        "root_node_id",
-    ]:
-        if not _nonempty_string(tree.get(field)):
-            raise SourceWorkerContractError(f"delegation execution tree has invalid {field}")
-    if not isinstance(tree.get("current_user_authorization"), dict):
-        raise SourceWorkerContractError(
-            "delegation execution tree requires current_user_authorization"
-        )
-
-    budget = tree.get("aggregate_budget")
-    if not isinstance(budget, dict):
-        raise SourceWorkerContractError("delegation execution tree aggregate_budget must be an object")
-    _require_exact_fields(budget, EXECUTION_TREE_BUDGET_FIELDS, "aggregate_budget")
-    policy_tree = policy["tree_policy"]
-    packet_contract = policy["worker_packet_contract"]
-    _validate_budget_value(
-        budget,
-        "max_total_delegates",
-        maximum=policy_tree["max_total_delegates"],
-    )
-    _validate_budget_value(
-        budget,
-        "max_children_per_parent",
-        maximum=policy_tree["max_children_per_parent"],
-    )
-    _validate_budget_value(
-        budget,
-        "max_context_words_total",
-        maximum=policy_tree["max_context_words_total"],
-    )
-    _validate_budget_value(
-        budget,
-        "max_retries_total",
-        maximum=policy_tree["max_retries_total"],
-        allow_zero=True,
-    )
-    _validate_budget_value(
-        budget,
-        "max_parallel_delegates",
-        maximum=policy_tree["max_parallel_delegates"],
-    )
-    if budget["max_parallel_delegates"] > budget["max_total_delegates"]:
-        raise SourceWorkerContractError(
-            "aggregate_budget.max_parallel_delegates exceeds max_total_delegates"
-        )
-    if budget["max_children_per_parent"] > budget["max_total_delegates"]:
-        raise SourceWorkerContractError(
-            "aggregate_budget.max_children_per_parent exceeds max_total_delegates"
-        )
-    for used, maximum in [
-        ("used_total_delegates", "max_total_delegates"),
-        ("used_parallel_delegates", "max_parallel_delegates"),
-        ("used_context_words", "max_context_words_total"),
-        ("used_retries", "max_retries_total"),
-    ]:
-        used_value = _nonnegative_integer(budget.get(used), f"aggregate_budget.{used}")
-        if used_value > budget[maximum]:
-            raise SourceWorkerContractError(
-                f"aggregate_budget.{used} exceeds {maximum}"
-            )
-
-    nodes = tree.get("nodes")
-    if not isinstance(nodes, list) or not nodes:
-        raise SourceWorkerContractError("delegation execution tree nodes must be a non-empty list")
-    node_by_id: dict[str, dict[str, Any]] = {}
-    children_by_parent: dict[str, list[str]] = {}
-    coverage_keys: set[str] = set()
-    semantic_scopes: dict[str, str] = {}
-    delegate_count = 0
-    context_words = 0
-    retries = 0
-    for raw_node in nodes:
-        node = _validate_execution_node(raw_node, policy_tree, packet_contract)
-        node_id = node["node_id"]
-        if node_id in node_by_id:
-            raise SourceWorkerContractError(f"duplicate delegation node {node_id}")
-        node_by_id[node_id] = node
-        parent_id = node.get("parent_node_id")
-        if parent_id is not None:
-            children_by_parent.setdefault(parent_id, []).append(node_id)
-            delegate_count += 1
-        if node["depth"] > 0:
-            coverage_key = node["coverage_key"]
-            if coverage_key in coverage_keys:
-                raise SourceWorkerContractError(
-                    f"duplicate delegation coverage key {coverage_key}"
-                )
-            coverage_keys.add(coverage_key)
-            semantic_scope = node["semantic_scope"]
-            previous = semantic_scopes.get(semantic_scope)
-            if previous is not None and node["overlap_decision"] != "primary-reconciled-overlap":
-                raise SourceWorkerContractError(
-                    f"semantic scope {semantic_scope} overlaps {previous} without primary reconciliation"
-                )
-            semantic_scopes[semantic_scope] = node_id
-        context_words += node["context_words"]
-        retries += node["attempt"]
-
-    root_node_id = tree["root_node_id"]
-    if root_node_id not in node_by_id:
-        raise SourceWorkerContractError("delegation execution tree root node is missing")
-    root_node = node_by_id[root_node_id]
-    if root_node["parent_node_id"] is not None or root_node["depth"] != 0:
-        raise SourceWorkerContractError("delegation execution tree root node is invalid")
-
-    for node_id, node in node_by_id.items():
-        parent_id = node.get("parent_node_id")
-        if parent_id is not None:
-            parent = node_by_id.get(parent_id)
-            if parent is None:
-                raise SourceWorkerContractError(f"delegation node {node_id} has missing parent")
-            if node["depth"] != parent["depth"] + 1:
-                raise SourceWorkerContractError(f"delegation node {node_id} has invalid depth")
-    _reject_parent_cycles(root_node_id, node_by_id)
-
-    for parent_id, child_ids in children_by_parent.items():
-        if len(child_ids) > policy_tree["max_children_per_parent"]:
-            raise SourceWorkerContractError(
-                f"delegation node {parent_id} exceeds child budget"
-            )
-
-    parallel_width = _parallel_width(node_by_id)
-    if delegate_count != budget["used_total_delegates"]:
-        raise SourceWorkerContractError("aggregate delegate usage does not match nodes")
-    if parallel_width != budget["used_parallel_delegates"]:
-        raise SourceWorkerContractError(
-            "aggregate parallel usage does not match tree width"
-        )
-    if context_words != budget["used_context_words"]:
-        raise SourceWorkerContractError("aggregate context usage does not match nodes")
-    if retries != budget["used_retries"]:
-        raise SourceWorkerContractError("aggregate retry usage does not match nodes")
-
-    _validate_execution_edges(tree.get("edges"), node_by_id)
-    terminal_result_ids = {
-        node["result_id"]
-        for node in node_by_id.values()
-        if node["status"] in TERMINAL_NODE_STATUSES
-    }
-    _validate_primary_convergence(tree.get("primary_convergence"), terminal_result_ids)
-    return tree
-
-
-def _validate_budget_value(
-    budget: dict[str, Any],
-    field: str,
     *,
-    maximum: int,
-    allow_zero: bool = False,
-) -> int:
-    minimum = 0 if allow_zero else 1
-    value = budget.get(field)
-    if not isinstance(value, int) or isinstance(value, bool) or value < minimum:
-        raise SourceWorkerContractError(
-            f"aggregate_budget.{field} must be an integer >= {minimum}"
-        )
-    if value > maximum:
-        raise SourceWorkerContractError(
-            f"aggregate_budget.{field} exceeds policy maximum {maximum}"
-        )
-    return value
-
-
-def _validate_execution_node(
-    raw_node: Any,
-    policy_tree: dict[str, Any],
-    packet_contract: dict[str, Any],
+    artifact_root: Path,
 ) -> dict[str, Any]:
-    if not isinstance(raw_node, dict):
-        raise SourceWorkerContractError("delegation execution node must be an object")
-    _require_exact_fields(raw_node, EXECUTION_TREE_NODE_FIELDS, "delegation execution node")
-    for field in [
-        "node_id",
-        "role_id",
-        "assistant_surface",
-        "dispatch_backend",
-        "implementation_level",
-        "coverage_key",
-        "semantic_scope",
-        "write_scope",
-    ]:
-        if not _nonempty_string(raw_node.get(field)):
-            raise SourceWorkerContractError(f"delegation execution node has invalid {field}")
-    parent_node_id = raw_node.get("parent_node_id")
-    if parent_node_id is not None and not _nonempty_string(parent_node_id):
-        raise SourceWorkerContractError("delegation execution node parent_node_id is invalid")
-    for field in ["packet_id", "result_id", "result_status", "stop_reason_id"]:
-        value = raw_node.get(field)
-        if value is not None and not _nonempty_string(value):
-            raise SourceWorkerContractError(f"delegation execution node has invalid {field}")
-    depth = _nonnegative_integer(raw_node.get("depth"), "delegation execution node.depth")
-    if depth > policy_tree["hard_max_depth"]:
-        raise SourceWorkerContractError("delegation execution node exceeds maximum depth")
-    if depth > 0:
-        if depth != 1:
-            raise SourceWorkerContractError("source execution worker nodes must be depth 1")
-        if raw_node.get("packet_id") is None:
-            raise SourceWorkerContractError("source execution worker node requires a packet_id")
-        if raw_node.get("role_id") != packet_contract["role_id"]:
-            raise SourceWorkerContractError("source execution worker node role violates packet contract")
-        if raw_node.get("allowed_actions") != packet_contract["allowed_actions"]:
-            raise SourceWorkerContractError("source execution worker node must be inspect-only")
-        if raw_node.get("write_scope") != packet_contract["write_scope"]:
-            raise SourceWorkerContractError("source execution worker node must have no write scope")
-    status = raw_node.get("status")
-    if status not in NODE_STATUSES:
-        raise SourceWorkerContractError("delegation execution node status is invalid")
-    if status in TERMINAL_NODE_STATUSES:
-        if raw_node.get("stop_reason_id") not in STOP_REASON_IDS:
-            raise SourceWorkerContractError("terminal delegation node requires a stop reason")
-        expected_result_status = RESULT_STATUS_BY_NODE_STATUS[status]
-        if raw_node.get("result_id") is None:
-            raise SourceWorkerContractError("terminal delegation node requires a result_id")
-        if raw_node.get("result_status") != expected_result_status:
-            raise SourceWorkerContractError(
-                "terminal delegation node result_status does not match status"
-            )
-    elif (
-        raw_node.get("result_id") is not None
-        or raw_node.get("result_status") is not None
-        or raw_node.get("stop_reason_id") is not None
-    ):
-        raise SourceWorkerContractError(
-            "non-terminal delegation node must not claim result or stop evidence"
-        )
-    _string_list(
-        raw_node.get("changed_fact_ids"),
-        label="delegation execution node.changed_fact_ids",
-        nonempty=False,
+    """Validate measured source delegation evidence through the shared contract."""
+    from delegation_evidence import (
+        DelegationEvidenceError,
+        validate_execution_tree,
     )
-    _string_list(
-        raw_node.get("canonical_owner_refs"),
-        label="delegation execution node.canonical_owner_refs",
-    )
-    _string_list(raw_node.get("surface_refs"), label="delegation execution node.surface_refs")
-    _string_list(
-        raw_node.get("relationship_refs"),
-        label="delegation execution node.relationship_refs",
-        nonempty=False,
-    )
-    _string_list(raw_node.get("allowed_actions"), label="delegation execution node.allowed_actions")
-    child_proposals = raw_node.get("child_proposals")
-    if not isinstance(child_proposals, list):
-        raise SourceWorkerContractError("delegation execution node child_proposals must be a list")
-    context_words = _nonnegative_integer(
-        raw_node.get("context_words"), "delegation execution node.context_words"
-    )
-    attempt = _nonnegative_integer(
-        raw_node.get("attempt"), "delegation execution node.attempt"
-    )
-    if raw_node.get("overlap_decision") not in OVERLAP_DECISIONS:
-        raise SourceWorkerContractError("delegation execution node overlap_decision is invalid")
-    raw_node["depth"] = depth
-    raw_node["context_words"] = context_words
-    raw_node["attempt"] = attempt
-    return raw_node
 
-
-def _parallel_width(node_by_id: dict[str, dict[str, Any]]) -> int:
-    width_by_depth: dict[int, int] = {}
-    for node in node_by_id.values():
-        if node["parent_node_id"] is None:
-            continue
-        depth = node["depth"]
-        width_by_depth[depth] = width_by_depth.get(depth, 0) + 1
-    return max(width_by_depth.values(), default=0)
-
-
-def _reject_parent_cycles(
-    root_node_id: str,
-    node_by_id: dict[str, dict[str, Any]],
-) -> None:
-    for node_id in node_by_id:
-        seen: set[str] = set()
-        current = node_id
-        while current is not None:
-            if current in seen:
-                raise SourceWorkerContractError("delegation execution tree contains a cycle")
-            seen.add(current)
-            parent = node_by_id[current]["parent_node_id"]
-            current = parent
-        if root_node_id not in seen:
-            raise SourceWorkerContractError(
-                f"delegation node {node_id} is not connected to the root"
-            )
-
-
-def _validate_execution_edges(
-    edges: Any,
-    node_by_id: dict[str, dict[str, Any]],
-) -> None:
-    if not isinstance(edges, list):
-        raise SourceWorkerContractError("delegation execution tree edges must be a list")
-    expected_edges = {
-        (node["parent_node_id"], node_id)
-        for node_id, node in node_by_id.items()
-        if node["parent_node_id"] is not None
-    }
-    if len(edges) != len(expected_edges):
-        raise SourceWorkerContractError(
-            "delegation execution tree must contain one edge per non-root node"
-        )
-    seen_edges: set[tuple[str, str]] = set()
-    seen_children: set[str] = set()
-    for edge in edges:
-        if not isinstance(edge, dict):
-            raise SourceWorkerContractError("delegation execution edge must be an object")
-        _require_exact_fields(edge, EXECUTION_TREE_EDGE_FIELDS, "delegation execution edge")
-        parent = edge.get("parent_node_id")
-        child = edge.get("child_node_id")
-        if (parent, child) in seen_edges or child in seen_children:
-            raise SourceWorkerContractError("duplicate delegation execution edge")
-        seen_edges.add((parent, child))
-        seen_children.add(child)
-        if parent not in node_by_id or child not in node_by_id:
-            raise SourceWorkerContractError("delegation execution edge references missing node")
-        if node_by_id[child].get("parent_node_id") != parent:
-            raise SourceWorkerContractError("delegation execution edge disagrees with child parent")
-        if edge.get("edge_kind") != "primary-approved-dispatch":
-            raise SourceWorkerContractError("delegation execution edge kind is invalid")
-    if seen_edges != expected_edges:
-        raise SourceWorkerContractError(
-            "delegation execution edges do not match tree topology"
-        )
-
-
-def _validate_primary_convergence(
-    convergence: Any,
-    terminal_result_ids: set[str],
-) -> None:
-    if not isinstance(convergence, dict):
-        raise SourceWorkerContractError("primary_convergence must be an object")
-    _require_exact_fields(
-        convergence,
-        EXECUTION_TREE_CONVERGENCE_FIELDS,
-        "primary_convergence",
-    )
-    if convergence.get("status") not in {
-        "pending",
-        "completed",
-        "blocked",
-        "cancelled",
-    }:
-        raise SourceWorkerContractError("primary_convergence status is invalid")
-    reviewed_result_ids = set(_string_list(
-        convergence.get("reviewed_result_ids"),
-        label="primary_convergence.reviewed_result_ids",
-        nonempty=False,
-    ))
-    rejected_result_ids = set(_string_list(
-        convergence.get("rejected_result_ids"),
-        label="primary_convergence.rejected_result_ids",
-        nonempty=False,
-    ))
-    unknown_reviewed = reviewed_result_ids - terminal_result_ids
-    if unknown_reviewed:
-        raise SourceWorkerContractError(
-            "primary_convergence reviewed unknown result IDs"
-        )
-    unknown_rejected = rejected_result_ids - terminal_result_ids
-    if unknown_rejected:
-        raise SourceWorkerContractError(
-            "primary_convergence rejected unknown result IDs"
-        )
-    if rejected_result_ids - reviewed_result_ids:
-        raise SourceWorkerContractError(
-            "primary_convergence rejected results must also be reviewed"
-        )
-    if (
-        convergence.get("status") == "completed"
-        and reviewed_result_ids != terminal_result_ids
-    ):
-        raise SourceWorkerContractError(
-            "completed primary_convergence must review every terminal result"
-        )
-    for field in ["combined_validation", "logical_integrity_review", "residual_risk"]:
-        if not _nonempty_string(convergence.get(field)):
-            raise SourceWorkerContractError(f"primary_convergence has invalid {field}")
-    final_stop = convergence.get("final_stop_reason_id")
-    if final_stop is not None and final_stop not in STOP_REASON_IDS:
-        raise SourceWorkerContractError("primary_convergence final stop reason is invalid")
-    if convergence.get("status") != "pending" and final_stop is None:
-        raise SourceWorkerContractError(
-            "terminal primary_convergence requires a final stop reason"
-        )
+    validate_source_worker_policy(policy)
+    try:
+        return validate_execution_tree(tree, policy, artifact_root=artifact_root)
+    except DelegationEvidenceError as exc:
+        raise SourceWorkerContractError(str(exc)) from exc
 
 
 def make_builtin_packet(policy: dict[str, Any], workstream_id: str) -> dict[str, Any]:
@@ -1343,13 +1074,17 @@ def make_builtin_packet(policy: dict[str, Any], workstream_id: str) -> dict[str,
             policy["tree_policy"]["max_total_delegates"] - 1, 0
         ),
         "coverage_key": workstream.get("independence_key"),
-        "child_proposal_policy": contract["child_proposal_policy"],
+        "child_dispatch_mode": "propose-only",
+        "branch_envelope_sha256": None,
         "workstream_id": workstream_id,
         "role_id": contract["role_id"],
         "objective": workstream.get("objective"),
         "bounded_context": workstream.get("required_context"),
         "max_initial_words": workstream.get("max_initial_words"),
         "max_result_words": workstream.get("max_result_words"),
+        "max_summary_words": workstream.get("max_summary_words"),
+        "parent_context_packet_sha256": None,
+        "context_delta": {"add": [], "remove": []},
         "conditional_context": workstream.get("conditional_context"),
         "non_goals": workstream.get("non_goals"),
         "allowed_actions": contract["allowed_actions"],

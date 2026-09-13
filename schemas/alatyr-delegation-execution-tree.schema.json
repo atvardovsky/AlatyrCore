@@ -8,11 +8,13 @@
     "schema_version",
     "tree_kind",
     "operation_id",
+    "recorded_at",
     "base_revision",
     "current_user_authorization",
     "task_profile",
     "policy_revision",
     "capability_evidence",
+    "capability_evidence_sha256",
     "aggregate_budget",
     "root_node_id",
     "nodes",
@@ -20,14 +22,16 @@
     "primary_convergence"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "tree_kind": {"const": "alatyr-delegation-execution-tree"},
     "operation_id": {"type": "string", "minLength": 1},
+    "recorded_at": {"type": "string", "minLength": 1},
     "base_revision": {"type": "string", "minLength": 1},
-    "current_user_authorization": {"type": "object"},
+    "current_user_authorization": {"$ref": "#/definitions/currentAuthorization"},
     "task_profile": {"type": "string", "minLength": 1},
-    "policy_revision": {"type": "string", "minLength": 1},
+    "policy_revision": {"$ref": "#/definitions/sha256"},
     "capability_evidence": {"type": "string", "minLength": 1},
+    "capability_evidence_sha256": {"$ref": "#/definitions/sha256"},
     "aggregate_budget": {"$ref": "#/definitions/aggregateBudget"},
     "root_node_id": {"type": "string", "minLength": 1},
     "nodes": {
@@ -47,6 +51,23 @@
       "items": {"type": "string", "minLength": 1},
       "uniqueItems": true
     },
+    "currentAuthorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "allowed_actions", "authorized_phases", "approval_record"],
+      "properties": {
+        "scope": {"type": "string", "minLength": 1},
+        "allowed_actions": {"$ref": "#/definitions/stringList"},
+        "authorized_phases": {
+          "type": "array",
+          "minItems": 1,
+          "contains": {"const": "inspect"},
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "approval_record": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
     "aggregateBudget": {
       "type": "object",
       "additionalProperties": false,
@@ -55,10 +76,14 @@
         "max_parallel_delegates",
         "max_children_per_parent",
         "max_context_words_total",
+        "max_result_words_total",
+        "max_primary_summary_words_total",
         "max_retries_total",
         "used_total_delegates",
         "used_parallel_delegates",
         "used_context_words",
+        "used_result_words",
+        "used_primary_summary_words",
         "used_retries"
       ],
       "properties": {
@@ -66,10 +91,14 @@
         "max_parallel_delegates": {"type": "integer", "minimum": 1, "maximum": 8},
         "max_children_per_parent": {"type": "integer", "minimum": 1, "maximum": 4},
         "max_context_words_total": {"type": "integer", "minimum": 1, "maximum": 24000},
+        "max_result_words_total": {"type": "integer", "minimum": 1, "maximum": 12000},
+        "max_primary_summary_words_total": {"type": "integer", "minimum": 1, "maximum": 4000},
         "max_retries_total": {"type": "integer", "minimum": 0, "maximum": 2},
         "used_total_delegates": {"type": "integer", "minimum": 0, "maximum": 8},
         "used_parallel_delegates": {"type": "integer", "minimum": 0, "maximum": 8},
         "used_context_words": {"type": "integer", "minimum": 0, "maximum": 24000},
+        "used_result_words": {"type": "integer", "minimum": 0, "maximum": 12000},
+        "used_primary_summary_words": {"type": "integer", "minimum": 0, "maximum": 4000},
         "used_retries": {"type": "integer", "minimum": 0, "maximum": 2}
       }
     },
@@ -80,6 +109,7 @@
         "node_id",
         "parent_node_id",
         "packet_id",
+        "parent_packet_id",
         "result_id",
         "depth",
         "status",
@@ -95,7 +125,20 @@
         "relationship_refs",
         "allowed_actions",
         "write_scope",
+        "context_evidence",
         "context_words",
+        "max_result_words",
+        "max_summary_words",
+        "dispatch_group_id",
+        "branch_envelope",
+        "branch_envelope_sha256",
+        "branch_checkpoint",
+        "branch_checkpoint_sha256",
+        "result_evidence",
+        "accepted_summary_evidence",
+        "summary_covers_result_ids",
+        "satisfied_acceptance_ids",
+        "produced_evidence_ids",
         "attempt",
         "result_status",
         "stop_reason_id",
@@ -106,6 +149,7 @@
         "node_id": {"type": "string", "minLength": 1},
         "parent_node_id": {"type": ["string", "null"], "minLength": 1},
         "packet_id": {"type": ["string", "null"], "minLength": 1},
+        "parent_packet_id": {"type": ["string", "null"], "minLength": 1},
         "result_id": {"type": ["string", "null"], "minLength": 1},
         "depth": {"type": "integer", "minimum": 0, "maximum": 2},
         "status": {
@@ -133,7 +177,20 @@
         "relationship_refs": {"$ref": "#/definitions/stringList"},
         "allowed_actions": {"$ref": "#/definitions/stringList"},
         "write_scope": {"type": "string", "minLength": 1},
+        "context_evidence": {"anyOf": [{"$ref": "#/definitions/artifactEvidence"}, {"type": "null"}]},
         "context_words": {"type": "integer", "minimum": 0, "maximum": 24000},
+        "max_result_words": {"type": "integer", "minimum": 0, "maximum": 12000},
+        "max_summary_words": {"type": "integer", "minimum": 0, "maximum": 4000},
+        "dispatch_group_id": {"type": ["string", "null"], "minLength": 1},
+        "branch_envelope": {"type": ["string", "null"], "minLength": 1},
+        "branch_envelope_sha256": {"anyOf": [{"$ref": "#/definitions/sha256"}, {"type": "null"}]},
+        "branch_checkpoint": {"type": ["string", "null"], "minLength": 1},
+        "branch_checkpoint_sha256": {"anyOf": [{"$ref": "#/definitions/sha256"}, {"type": "null"}]},
+        "result_evidence": {"anyOf": [{"$ref": "#/definitions/artifactEvidence"}, {"type": "null"}]},
+        "accepted_summary_evidence": {"anyOf": [{"$ref": "#/definitions/artifactEvidence"}, {"type": "null"}]},
+        "summary_covers_result_ids": {"$ref": "#/definitions/stringList"},
+        "satisfied_acceptance_ids": {"$ref": "#/definitions/stringList"},
+        "produced_evidence_ids": {"$ref": "#/definitions/stringList"},
         "attempt": {"type": "integer", "minimum": 0, "maximum": 2},
         "result_status": {"type": ["string", "null"], "minLength": 1},
         "stop_reason_id": {"type": ["string", "null"], "minLength": 1},
@@ -155,7 +212,7 @@
       "properties": {
         "parent_node_id": {"type": "string", "minLength": 1},
         "child_node_id": {"type": "string", "minLength": 1},
-        "edge_kind": {"const": "primary-approved-dispatch"}
+        "edge_kind": {"enum": ["primary-approved-dispatch", "primary-envelope-dispatch"]}
       }
     },
     "primaryConvergence": {
@@ -163,7 +220,10 @@
       "additionalProperties": false,
       "required": [
         "status",
+        "required_acceptance_ids",
+        "required_evidence_ids",
         "reviewed_result_ids",
+        "indirect_result_ids",
         "rejected_result_ids",
         "combined_validation",
         "logical_integrity_review",
@@ -172,12 +232,27 @@
       ],
       "properties": {
         "status": {"enum": ["pending", "completed", "blocked", "cancelled"]},
+        "required_acceptance_ids": {"$ref": "#/definitions/stringList"},
+        "required_evidence_ids": {"$ref": "#/definitions/stringList"},
         "reviewed_result_ids": {"$ref": "#/definitions/stringList"},
+        "indirect_result_ids": {"$ref": "#/definitions/stringList"},
         "rejected_result_ids": {"$ref": "#/definitions/stringList"},
         "combined_validation": {"type": "string", "minLength": 1},
         "logical_integrity_review": {"type": "string", "minLength": 1},
         "residual_risk": {"type": "string", "minLength": 1},
         "final_stop_reason_id": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "word_count", "character_count", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "word_count": {"type": "integer", "minimum": 0},
+        "character_count": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/definitions/sha256"}
       }
     }
   }

@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1362
+Catalog entries: 1373
 
 ## Families
 
@@ -28,7 +28,7 @@ Catalog entries: 1362
 - `CONSISTENCY`: 43 codes.
 - `CONTEXT`: 22 codes.
 - `DEBUG`: 140 codes.
-- `DELEGATION`: 86 codes.
+- `DELEGATION`: 97 codes.
 - `DEPENDENCY`: 63 codes.
 - `DEVELOPMENT`: 17 codes.
 - `DIAGRAM`: 32 codes.
@@ -888,6 +888,14 @@ Catalog entries: 1362
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_AI_ROUTER_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_BRANCH_CHECKPOINT_TEMPLATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_BRANCH_CHECKPOINT_TEMPLATE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_BRANCH_ENVELOPE_TEMPLATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_BRANCH_ENVELOPE_TEMPLATE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CAPABILITY_FIELDS`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CAPABILITY_INDEX_INVALID_JSON`
@@ -901,6 +909,10 @@ Catalog entries: 1362
 - `DELEGATION_CAPABILITY_VALUE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CONFLICT_GUARDS`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_CONTEXT_COMPACTION`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_CONTEXT_COMPACTION_LIMIT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_DECISION_MODE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
@@ -946,6 +958,8 @@ Catalog entries: 1362
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_NATIVE_ROUTE_UNSUPPORTED`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_OVERLAY_CONDITIONAL_CONTEXT`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_OVERLAY_CONTEXT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_OVERLAY_CONTRACT`
@@ -970,11 +984,17 @@ Catalog entries: 1362
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_PRIMARY_CONVERGENCE_TEMPLATE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_RECURSIVE_CHILD_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_REQUIRED_FILE_MISSING`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_REQUIRED_GUARDS`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_RESULT_GUARDS`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_RESULT_JSON_TEMPLATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_RESULT_JSON_TEMPLATE_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_RETRY_LIMIT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
@@ -1003,6 +1023,8 @@ Catalog entries: 1362
 - `DELEGATION_ROLE_CATALOG_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_ROLE_CATALOG_MACHINE_RESULT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_PATH`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.

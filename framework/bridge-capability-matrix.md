@@ -257,9 +257,9 @@ Each bridge should:
   isolation, or exceptions in bridge files
 - route enabled subagent delegation through the target policy and selected
   capability record; native, external, and suggestion-only routes use the same
-  worker orchestration, role, task, packet, result, and convergence contracts,
-  while unsupported surfaces continue locally without pretending a dispatch
-  or model override occurred
+  worker orchestration, role, task, packet, result, branch-envelope, checkpoint,
+  compact-summary, and convergence contracts, while unsupported surfaces
+  continue locally without pretending a dispatch or model override occurred
 - route extension lifecycle requests through the canonical target catalog,
   lock, intent, and flow; never let a bridge fetch, trust, activate, update, or
   remove an extension independently
@@ -320,7 +320,9 @@ During framework update or adapter recheck:
    bounded context routing remains active.
 9. When delegation is enabled, recheck the exact client/runtime, role bindings,
    native worker-definition format and paths, permissions, isolation,
-   background/nested behavior, and fallback. Remove stale generated native
+   background/nested behavior, hash-bound result delivery, artifact references,
+   branch envelopes, checkpoints, hierarchical summaries, cancellation, and
+   fallback. Remove stale generated native
    definitions when support is no longer accepted; never infer replacement
    paths from another assistant.
 10. Report bridge-specific limitations and residual risk.

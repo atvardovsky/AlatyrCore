@@ -32,8 +32,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 273,
-      "content_digest": "sha256:a589d2a2319eca1156d907c2211b394a6d6d57b1b88cb1eaac566096e8a5014b"
+      "estimated_words": 275,
+      "content_digest": "sha256:bfec8d624c6766312ccc943f19b096aa587601532fbb5bd2b88b7656f8de0d9c"
     },
     {
       "id": "assistant.section.workers-roles",

@@ -170,8 +170,10 @@ checks pass. Merely copying a module's files never enables it.
 - `subagent-delegation`: capability-gated decomposition into bounded,
   independently verifiable tasks, target-owned worker roles/prompts and
   assistant role/model/native bindings, deterministic readiness, normalized
-  results, bounded primary-owned delegation trees, explicit stop reasons,
-  disjoint writes, retry/conflict fallbacks, and primary convergence. It
+  measured results, bounded primary-owned delegation trees, optional
+  primary-issued read-only recursive branch envelopes, compact accepted
+  summaries, resumable checkpoints, explicit stop reasons, disjoint writes,
+  retry/conflict fallbacks, and primary convergence. It
   depends on `assistant-runtime-capabilities` and `installed-operations`;
   external dispatchers and additional assistant bridges remain separate
   optional capabilities.

@@ -53,7 +53,9 @@ sync, logical integrity review, and final evidence.
   convergence before non-trivial execution
 - optional capability-gated worker delegation with project-owned roles and
   prompts, deterministic task/packet/result contracts, verified per-surface
-  native/model bindings, write isolation, fallback, and primary convergence
+  native/model bindings, primary-issued read-only recursive envelopes,
+  measured compact summaries, resumable checkpoints, write isolation,
+  fallback, and primary convergence
 - optional team collaboration with target-owned actors, priorities, shared
   work registry, changed-fact overlap, claims, handoffs, decisions, review, and
   revision-bound merge readiness

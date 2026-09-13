@@ -186,8 +186,9 @@ Before upgrading framework files in a target project:
    assistant capability records, role catalog/prompts, role/model and native-
    definition bindings, client/runtime freshness, task-plan, packet, result,
    and overlay contracts, write isolation, retries/conflicts, fallbacks,
-   privacy, validation, primary-owned dispatch tree, depth/worker/context/retry
-   budgets, coverage keys, evidence-saturation, child-proposal boundary, stop
+   privacy, validation, primary-authorized dispatch tree, depth/worker/context/
+   result/summary/retry budgets, coverage keys, evidence saturation, recursive
+   branch envelopes and checkpoints, accepted-summary propagation, stop
    reasons, and primary convergence.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.

@@ -400,16 +400,19 @@ Classify every proposed target file:
     Add the target delegation policy, role catalog/prompts, orchestration
     prompt, delegated-execution overlay, delegation flow, native-binding
     authoring, execution-plan, delegation execution-tree, packet, and
-    normalized-result templates only when subagent delegation is enabled. Record
+    normalized-result, branch-envelope, and branch-checkpoint templates only
+    when subagent delegation is enabled. Record
     each surface's native, external, suggestion-only, or unsupported dispatch
     backend; any external dispatcher AI-infrastructure item; exact
     client/runtime, explicit/automatic dispatch, project worker-definition
     format and paths, model override, parallelism, background/nested behavior,
     actual-model evidence, verified role bindings, write/tool boundaries,
-    aggregate worker/context/retry budgets, semantic overlap decisions,
+    aggregate worker/context/result/summary/retry budgets, semantic overlap decisions,
     cancellation stop reasons, retry/conflict fallback, privacy, validation,
-    and primary convergence. Treat worker child packets as proposals for the
-    primary assistant only; workers must not dispatch descendants.
+    and primary convergence. Keep proposal-only fallback. Permit a verified
+    coordinator to dispatch read-only depth-two children only inside a hash-
+    bound primary envelope, and require measured result/summary artifacts plus
+    a branch checkpoint before convergence.
     Generate provider-native definitions only after support is verified and
     keep them as thin target bindings to portable worker contracts.
     For every selected surface, separately record model provider/model,

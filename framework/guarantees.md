@@ -365,7 +365,9 @@ defines:
 - delegation policy, target role catalog/prompts, task and normalized-result
   contracts, per-surface runtime/native-definition evidence, bounded
   role/model bindings, packet scope, write isolation, retry/conflict fallback,
-  validation, privacy, and primary convergence when worker execution is expected
+  primary-issued recursive branch envelopes, measured result/summary evidence,
+  resumable branch checkpoints, validation, privacy, and primary convergence
+  when worker execution is expected
 - change-package record, retention policy, semantic scope, companion decisions,
   and provenance policy when coherent material-change evidence is expected
 - target actors, local identity mapping, authority, priorities, task source,
@@ -394,6 +396,9 @@ The framework does not guarantee:
 - that an assistant can infer business policy without programmer input
 - that a client can launch subagents, select a requested model, report the
   actual model, or improve latency, quality, or cost through delegation
+- that a valid branch envelope, checkpoint, digest, measured result, or compact
+  summary proves a worker actually ran, stayed attentive, interpreted evidence
+  correctly, or reduced total provider-token use
 - that local commands exist in another project
 - that generated files can be produced without the target repository tooling
 - that architecture changes are safe without explicit approval and validation

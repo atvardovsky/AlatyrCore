@@ -23,17 +23,21 @@ or under repair.
 5. Dispatch through the verified native or approved external backend. A
    provider-specific worker definition is a thin binding to these
    project-owned contracts, not a new policy owner. The primary assistant owns
-   every dispatch; workers may propose children but never launch or authorize.
-6. Normalize every return by instantiating
-   `.ai/assistant/templates/worker-result.md` into per-operation result
-   evidence.
+   branch authorization. A verified coordinator may use nested transport only
+   for read-only depth-two packets inside the exact hash-bound envelope;
+   otherwise workers return proposals.
+6. Normalize every return through `.ai/assistant/templates/worker-result.json`
+   and its human view. Measure raw and accepted-summary artifacts, bind them by
+   SHA-256, and keep raw payloads lazy. For recursive work, validate the branch
+   envelope and create a resumable branch checkpoint.
    Reject scope violations, stale baselines, unsupported claims, and missing
    validation. Retry only under policy without expanding scope or authorization.
 7. Integrate accepted evidence or changes against current repository state.
    Re-run combined validation and primary-owned logical integrity,
    authorization, approval, commit, and publish gates.
 8. Stop when acceptance/evidence are covered or a depth, worker, context,
-   retry, overlap, capability, authority, or cost boundary is reached. Record
+   result, primary-summary, retry, overlap, capability, envelope, checkpoint,
+   validation, authority, or cost boundary is reached. Record
    the policy stop-reason ID for every branch.
 
 Do not claim parallelism, model identity, speed, cost, or quality unless the

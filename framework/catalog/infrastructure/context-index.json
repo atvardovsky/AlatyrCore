@@ -56,8 +56,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 725,
-      "content_digest": "sha256:d9b1b86c645e9b09924053a19f3a0489ec64d40095cfbc39341a4c4e6cc194ef"
+      "estimated_words": 728,
+      "content_digest": "sha256:63d6eb14e7d548c2aa1e82db9df2f72f4f5af6abf485911f2ef2e1942d5ce986"
     },
     {
       "id": "framework.infrastructure.dependency-knowledge-md",

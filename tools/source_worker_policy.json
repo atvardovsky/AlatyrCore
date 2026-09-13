@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
@@ -8,15 +8,25 @@
   "fallback_executor": "primary-assistant",
   "tree_policy": {
     "dispatch_owner": "primary-assistant",
-    "worker_child_behavior": "propose-only",
+    "worker_child_behavior": "primary-preauthorized-read-only",
     "default_max_depth": 1,
-    "hard_max_depth": 1,
+    "hard_max_depth": 2,
     "max_total_delegates": 8,
     "max_parallel_delegates": 2,
     "max_children_per_parent": 4,
     "max_context_words_total": 24000,
     "max_retries_total": 2,
     "require_disjoint_coverage_keys": true
+  },
+  "context_compaction": {
+    "mode": "hierarchical-summary",
+    "raw_result_loading": "reference-only-unless-review-triggered",
+    "summary_propagation": "accepted-summary-only",
+    "digest_algorithm": "sha256",
+    "require_measured_result_artifacts": true,
+    "deduplicate_inherited_context": true,
+    "max_result_words_total": 12000,
+    "max_primary_summary_words_total": 4000
   },
   "stop_policy": {
     "require_stop_reason": true,
@@ -28,6 +38,14 @@
       "maximum-depth-reached",
       "worker-budget-reached",
       "context-budget-reached",
+      "result-budget-reached",
+      "primary-context-budget-reached",
+      "checkpoint-required",
+      "checkpoint-invalid",
+      "context-digest-stale",
+      "evidence-digest-mismatch",
+      "branch-envelope-violation",
+      "validation-regression",
       "semantic-decision-required",
       "overlapping-scope",
       "primary-critical-path",
@@ -37,24 +55,46 @@
     ]
   },
   "execution_tree_contract": {
-    "schema_version": 1,
+    "schema_version": 2,
     "tree_kind": "alatyr-delegation-execution-tree",
     "template_path": "templates/target/.ai/assistant/templates/delegation-execution-tree.json",
+    "required_tree_fields": [
+      "schema_version",
+      "tree_kind",
+      "operation_id",
+      "recorded_at",
+      "base_revision",
+      "current_user_authorization",
+      "task_profile",
+      "policy_revision",
+      "capability_evidence",
+      "capability_evidence_sha256",
+      "aggregate_budget",
+      "root_node_id",
+      "nodes",
+      "edges",
+      "primary_convergence"
+    ],
     "required_budget_fields": [
       "max_total_delegates",
       "max_parallel_delegates",
       "max_children_per_parent",
       "max_context_words_total",
+      "max_result_words_total",
+      "max_primary_summary_words_total",
       "max_retries_total",
       "used_total_delegates",
       "used_parallel_delegates",
       "used_context_words",
+      "used_result_words",
+      "used_primary_summary_words",
       "used_retries"
     ],
     "required_node_fields": [
       "node_id",
       "parent_node_id",
       "packet_id",
+      "parent_packet_id",
       "result_id",
       "depth",
       "status",
@@ -70,7 +110,20 @@
       "relationship_refs",
       "allowed_actions",
       "write_scope",
+      "context_evidence",
       "context_words",
+      "max_result_words",
+      "max_summary_words",
+      "dispatch_group_id",
+      "branch_envelope",
+      "branch_envelope_sha256",
+      "branch_checkpoint",
+      "branch_checkpoint_sha256",
+      "result_evidence",
+      "accepted_summary_evidence",
+      "summary_covers_result_ids",
+      "satisfied_acceptance_ids",
+      "produced_evidence_ids",
       "attempt",
       "result_status",
       "stop_reason_id",
@@ -182,7 +235,7 @@
     }
   },
   "worker_packet_contract": {
-    "schema_version": 4,
+    "schema_version": 5,
     "packet_kinds": ["source-read-only-workstream"],
     "required_fields": [
       "schema_version",
@@ -191,13 +244,17 @@
       "depth",
       "remaining_worker_budget",
       "coverage_key",
-      "child_proposal_policy",
+      "child_dispatch_mode",
+      "branch_envelope_sha256",
       "workstream_id",
       "role_id",
       "objective",
       "bounded_context",
       "max_initial_words",
       "max_result_words",
+      "max_summary_words",
+      "parent_context_packet_sha256",
+      "context_delta",
       "conditional_context",
       "non_goals",
       "allowed_actions",
@@ -217,8 +274,12 @@
     ],
     "role_id": "read-only-auditor",
     "write_scope": "none",
-    "child_proposal_policy": "propose-only",
-    "result_requirement": "Return findings with inspectable file, symbol, rule, or check evidence within max_result_words; the primary measures or conservatively estimates the result before integration because the current execution-tree schema does not prove result length. Do not decide integration or mutate repository state."
+    "child_dispatch_modes": [
+      "none",
+      "propose-only",
+      "primary-preauthorized-read-only"
+    ],
+    "result_requirement": "Return a schema-1 normalized result with measured raw and accepted-summary artifacts. Keep raw payloads reference-only by default, bind summaries and child results by SHA-256, and create a branch checkpoint for recursive work. Do not decide integration or mutate repository state."
   },
   "workstreams": {
     "framework-rules": {
@@ -247,6 +308,7 @@
       ],
       "max_initial_words": 4000,
       "max_result_words": 1600,
+      "max_summary_words": 600,
       "conditional_context": [
         "framework/rule-registry.json entry selected by a relevant rule ID",
         "framework/rule-ownership.md entry selected by a relevant rule ID",
@@ -286,6 +348,7 @@
       ],
       "max_initial_words": 4000,
       "max_result_words": 1600,
+      "max_summary_words": 600,
       "conditional_context": [
         "INSTALL.md section selected by the installer stage or detected ambiguity",
         "installer/assistant-installation.flow.md stage selected by the detected mismatch",
@@ -327,6 +390,7 @@
       ],
       "max_initial_words": 4000,
       "max_result_words": 1600,
+      "max_summary_words": 600,
       "conditional_context": [
         "selected tools/check_manifest.json entry",
         "selected tools/README.md command section",
@@ -372,6 +436,7 @@
       ],
       "max_initial_words": 4000,
       "max_result_words": 1600,
+      "max_summary_words": 600,
       "conditional_context": [
         "README.md section selected by a disputed public claim",
         "current CHANGELOG.md release section selected by version evidence",

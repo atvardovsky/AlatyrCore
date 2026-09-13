@@ -10,17 +10,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:ca4597b79f01c3243c64d3c2ea3c9fe076e11d1ba75670cdf69c917e994104bd",
+    "target_manifest_digest": "sha256:7638ea63c380019430b862ccef0811d2f1ac34ce03bd4151f5bce645f5d2f2c2",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.64",
-    "adapter_schema_version": "53",
-    "template_version": "59"
+    "framework_version": "0.1.0-alpha.65",
+    "adapter_schema_version": "54",
+    "template_version": "60"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "ca4597b79f01c3243c64d3c2ea3c9fe076e11d1ba75670cdf69c917e994104bd"
+      "sha256": "7638ea63c380019430b862ccef0811d2f1ac34ce03bd4151f5bce645f5d2f2c2"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",

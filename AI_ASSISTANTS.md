@@ -217,19 +217,23 @@ and do not claim a cache hit, token saving, or smaller model context.
 
 When the target enables `subagent-delegation`, the primary assistant may keep
 its immediate critical-path action and dispatch independent, locally
-verifiable sidecars through the target delegation policy. Load only the
-worker orchestration prompt, role catalog, delegated-execution overlay,
-task/packet/result contracts, execution-tree ledger template, and selected
-assistant-capability record. The primary assistant retains task readiness,
+verifiable sidecars through the target delegation policy. Start with only the
+delegated-execution overlay, decomposition policy, worker orchestration prompt,
+role catalog, and selected assistant-capability record. Load the task packet,
+result, envelope, checkpoint, and execution-tree contracts only at their
+corresponding plan, dispatch, result-review, or convergence transition. The
+primary assistant retains task readiness,
 project decisions, approval, result review, integration, logical integrity, and
 final validation.
 
-Delegation is a primary-owned bounded tree. Workers may propose child packets,
-but they do not dispatch them autonomously. The primary maintains the execution
-tree ledger, enforces depth, total worker, child, retry, aggregate-context, and
-disjoint-coverage limits, records semantic-overlap decisions, and stops or
-cancels branches when required acceptance evidence is complete or coordination
-no longer pays for itself.
+Delegation is a primary-owned bounded tree. Workers normally propose child
+packets. When the exact runtime has verified nested-worker support, the primary
+may instead issue an immutable, hash-bound, inspect-only branch envelope that
+lets a coordinator dispatch depth-2 children without receiving new authority.
+The primary maintains the execution-tree ledger, enforces depth, total worker,
+child, retry, context, raw-result, and primary-summary budgets, records
+semantic-overlap decisions, and stops or cancels branches when required
+evidence is complete or coordination no longer pays for itself.
 
 This strategy applies equally to every surface in the canonical conformance
 registry. `Subagent` is a portable role: the selected surface may use native
@@ -243,10 +247,13 @@ path in that surface's capability record. Unsupported clients use suggestion-
 only or sequential-primary fallback.
 
 Completion evidence must include the execution-tree ledger or an equivalent
-inline record, packet/result IDs, aggregate budget use, stop and cancellation
-reasons, delegated validation, primary review, semantic-overlap reconciliation,
-and primary convergence. A provider-native worker summary is input evidence, not
-operation completion.
+inline record, unique packet/result IDs, aggregate budget use, measured and
+hash-bound raw results and accepted summaries, recursive envelopes and
+checkpoints where used, stop and cancellation reasons, delegated validation,
+primary review, semantic-overlap reconciliation, and primary convergence. Only
+accepted coordinator summaries enter routine primary context; descendant raw
+results remain referenced for conflict or audit expansion. A provider-native
+worker summary is input evidence, not operation completion.
 
 Do not assume a model can be selected because its name is known. Use a target-
 verified role/model binding and current client evidence, then fall back to

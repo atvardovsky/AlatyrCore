@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "operation": "worker-delegation",
   "purpose": "Exercise portable decomposition, rejection, and fallback decisions without invoking a provider runtime.",
   "cases": [
@@ -65,6 +65,34 @@
       "preconditions": ["delegate-local success exists"],
       "expected_role": "primary",
       "expected_outcome": "reject-result"
+    },
+    {
+      "id": "primary-enveloped-recursive-read-only",
+      "input": "A verified branch coordinator partitions inspection into two depth-two child packets.",
+      "preconditions": ["current nested capability evidence", "unexpired primary envelope", "read-only narrowed child scopes", "measured result and checkpoint artifacts"],
+      "expected_role": "explorer",
+      "expected_outcome": "eligible-recursive"
+    },
+    {
+      "id": "recursive-envelope-expansion",
+      "input": "A depth-two child requests a write, path, semantic scope, or budget outside its branch envelope.",
+      "preconditions": ["primary envelope exists", "child exceeds one immutable limit"],
+      "expected_role": "primary",
+      "expected_outcome": "reject-result"
+    },
+    {
+      "id": "recursive-summary-digest-mismatch",
+      "input": "A branch summary or child result differs from the content bound into the execution ledger.",
+      "preconditions": ["measured artifact hash differs", "recursive result claims completion"],
+      "expected_role": "primary",
+      "expected_outcome": "reject-result"
+    },
+    {
+      "id": "primary-summary-budget-exceeded",
+      "input": "Accepted branch summaries exceed the primary context budget even though worker context remains available.",
+      "preconditions": ["primary summary total exceeds target cap"],
+      "expected_role": "primary",
+      "expected_outcome": "sequential-primary-fallback"
     }
   ]
 }

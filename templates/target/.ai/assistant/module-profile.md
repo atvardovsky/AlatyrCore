@@ -511,6 +511,9 @@ Required files:
 - `.ai/assistant/templates/worker-execution-plan.md`
 - `.ai/assistant/templates/delegation-execution-tree.json`
 - `.ai/assistant/templates/worker-result.md`
+- `.ai/assistant/templates/worker-result.json`
+- `.ai/assistant/templates/delegation-branch-envelope.json`
+- `.ai/assistant/templates/delegation-branch-checkpoint.json`
 - `.ai/assistant/workers/role-catalog.json`
 - `.ai/assistant/workers/roles/explorer.md`
 - `.ai/assistant/workers/roles/implementer.md`

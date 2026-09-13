@@ -100,7 +100,7 @@
     },
     {
       "id": "DELEGATION",
-      "code_count": 86
+      "code_count": 97
     },
     {
       "id": "DEPENDENCY",
@@ -3943,6 +3943,42 @@
       ]
     },
     {
+      "code": "DELEGATION_BRANCH_CHECKPOINT_TEMPLATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_BRANCH_CHECKPOINT_TEMPLATE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_BRANCH_ENVELOPE_TEMPLATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_BRANCH_ENVELOPE_TEMPLATE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_CAPABILITY_FIELDS",
       "levels": [
         "error"
@@ -3998,6 +4034,24 @@
     },
     {
       "code": "DELEGATION_CONFLICT_GUARDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_CONTEXT_COMPACTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_CONTEXT_COMPACTION_LIMIT",
       "levels": [
         "error"
       ],
@@ -4204,6 +4258,15 @@
       ]
     },
     {
+      "code": "DELEGATION_OVERLAY_CONDITIONAL_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_OVERLAY_CONTEXT",
       "levels": [
         "error"
@@ -4314,6 +4377,15 @@
       ]
     },
     {
+      "code": "DELEGATION_RECURSIVE_CHILD_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_REQUIRED_FILE_MISSING",
       "levels": [
         "error"
@@ -4333,6 +4405,24 @@
     },
     {
       "code": "DELEGATION_RESULT_GUARDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_RESULT_JSON_TEMPLATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_RESULT_JSON_TEMPLATE_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -4459,6 +4549,15 @@
     },
     {
       "code": "DELEGATION_ROLE_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_CATALOG_MACHINE_RESULT",
       "levels": [
         "error"
       ],

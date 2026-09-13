@@ -2,16 +2,23 @@ from __future__ import annotations
 
 import copy
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 
+from jsonschema import Draft7Validator
+
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
+from delegation_evidence import (  # noqa: E402
+    DelegationEvidenceError,
+    validate_execution_tree,
+)
 from source_worker_contract import (  # noqa: E402
     SourceWorkerContractError,
     validate_decision_evidence,
@@ -54,19 +61,23 @@ def capability_fixture() -> dict[str, object]:
 
 def packet_fixture() -> dict[str, object]:
     return {
-        "schema_version": 4,
+        "schema_version": 5,
         "packet_kind": "source-read-only-workstream",
         "parent_packet_id": None,
         "depth": 1,
         "remaining_worker_budget": 7,
         "coverage_key": "source-worker-contract",
-        "child_proposal_policy": "propose-only",
+        "child_dispatch_mode": "propose-only",
+        "branch_envelope_sha256": None,
         "workstream_id": "source-contract",
         "role_id": "read-only-auditor",
         "objective": "Inspect the source worker contract",
         "bounded_context": ["tools/source_worker_contract.py"],
         "max_initial_words": 10000,
         "max_result_words": 1600,
+        "max_summary_words": 600,
+        "parent_context_packet_sha256": None,
+        "context_delta": {"add": [], "remove": []},
         "conditional_context": [],
         "non_goals": ["modify repository state"],
         "allowed_actions": ["inspect"],
@@ -83,116 +94,274 @@ def packet_fixture() -> dict[str, object]:
     }
 
 
-def execution_node(
-    node_id: str,
-    *,
-    parent_node_id: str | None,
-    depth: int,
-    status: str,
-    coverage_key: str,
-    semantic_scope: str,
-    context_words: int = 0,
-    stop_reason_id: str | None = None,
-) -> dict[str, object]:
+def canonical_digest(value: dict[str, object], excluded: str) -> str:
+    import hashlib
+
+    payload = {key: item for key, item in value.items() if key != excluded}
+    encoded = json.dumps(
+        payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def canonical_value_digest(value: object) -> str:
+    import hashlib
+
+    encoded = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def write_artifact(root: Path, relpath: str, text: str) -> dict[str, object]:
+    import hashlib
+
+    path = root / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    payload = path.read_bytes()
     return {
-        "node_id": node_id,
-        "parent_node_id": parent_node_id,
-        "packet_id": None if depth == 0 else f"packet-{node_id}",
-        "result_id": None if status in {"PLANNED", "READY", "RUNNING"} else f"result-{node_id}",
-        "depth": depth,
-        "status": status,
-        "role_id": "primary" if depth == 0 else "read-only-auditor",
-        "assistant_surface": "primary" if depth == 0 else "test-surface",
-        "dispatch_backend": "primary" if depth == 0 else "native-worker",
-        "implementation_level": "L1",
-        "coverage_key": coverage_key,
-        "semantic_scope": semantic_scope,
-        "changed_fact_ids": [],
-        "canonical_owner_refs": ["tools/source_worker_contract.py"],
-        "surface_refs": ["tools/source_worker_contract.py"],
-        "relationship_refs": [],
-        "allowed_actions": ["inspect"],
-        "write_scope": "none",
-        "context_words": context_words,
-        "attempt": 0,
-        "result_status": None if status in {"PLANNED", "READY", "RUNNING"} else "succeeded",
-        "stop_reason_id": stop_reason_id,
-        "child_proposals": [],
-        "overlap_decision": "not-applicable" if depth == 0 else "disjoint",
+        "path": relpath,
+        "word_count": len(text.split()),
+        "character_count": len(text),
+        "sha256": hashlib.sha256(payload).hexdigest(),
     }
 
 
-def execution_tree_fixture() -> dict[str, object]:
-    return {
+def recursive_execution_fixture(root: Path) -> dict[str, object]:
+    capability = write_artifact(
+        root,
+        "evidence/capability.json",
+        '{"status":"available","nested_dispatch":true}\n',
+    )
+    envelope = {
         "schema_version": 1,
+        "envelope_kind": "alatyr-delegation-branch-envelope",
+        "envelope_id": "envelope-1",
+        "operation_id": "op-1",
+        "root_packet_id": "packet-coordinator",
+        "parent_node_id": "coordinator",
+        "issued_by": "primary-assistant",
+        "base_revision": "base-revision",
+        "authorized_phases": ["inspect"],
+        "max_depth": 2,
+        "max_children": 2,
+        "max_context_words": 100,
+        "max_result_words": 100,
+        "max_summary_words": 50,
+        "max_retries": 0,
+        "allowed_actions": ["inspect"],
+        "write_scope": "none",
+        "allowed_tools": ["read"],
+        "allowed_surface_refs": ["tools/**"],
+        "semantic_scope": "source-worker-contract",
+        "coverage_prefix": "source-worker-contract/",
+        "context_packet_sha256": None,
+        "capability_evidence_sha256": capability["sha256"],
+        "required_validation": ["unit tests"],
+        "expires_at": "2099-01-01T00:00:00Z",
+        "envelope_sha256": "pending",
+    }
+    envelope["envelope_sha256"] = canonical_digest(envelope, "envelope_sha256")
+    envelope_path = root / "evidence/envelope.json"
+    envelope_path.parent.mkdir(parents=True, exist_ok=True)
+    envelope_path.write_text(json.dumps(envelope, indent=2) + "\n", encoding="utf-8")
+
+    def worker_result(node_id: str, depth: int, parent_packet: str | None, child_ids: list[str], child_digests: list[str]) -> tuple[dict[str, object], dict[str, object]]:
+        raw = write_artifact(root, f"evidence/{node_id}-raw.md", f"raw finding for {node_id}\n")
+        summary = write_artifact(root, f"evidence/{node_id}-summary.md", f"summary {node_id}\n")
+        result = {
+            "schema_version": 1,
+            "result_kind": "alatyr-normalized-worker-result",
+            "result_id": f"result-{node_id}",
+            "packet_id": f"packet-{node_id}",
+            "parent_packet_id": parent_packet,
+            "node_id": node_id,
+            "depth": depth,
+            "base_revision": "base-revision",
+            "status": "succeeded",
+            "measurement_state": "observed",
+            "input_context_packet_sha256": None,
+            "raw_payload": raw,
+            "accepted_summary": summary,
+            "summary_covers_result_ids": child_ids,
+            "child_result_sha256": child_digests,
+            "evidence_manifest": [],
+            "touched_surfaces": [],
+            "tools_used": ["read"],
+            "scope_violation": "none",
+            "authorization_concern": "none",
+            "validation": ["unit tests"],
+            "stop_reason_id": "scope-covered",
+            "subtree_sha256": "pending",
+        }
+        result["subtree_sha256"] = canonical_digest(result, "subtree_sha256")
+        result_path = root / f"evidence/{node_id}-result.json"
+        result_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+        return result, write_artifact(
+            root,
+            f"evidence/{node_id}-result.json",
+            result_path.read_text(encoding="utf-8"),
+        )
+
+    child_result, child_result_artifact = worker_result(
+        "child", 2, "packet-coordinator", [], []
+    )
+    coordinator_result, coordinator_result_artifact = worker_result(
+        "coordinator",
+        1,
+        None,
+        ["result-child"],
+        [child_result_artifact["sha256"]],
+    )
+    checkpoint = {
+        "schema_version": 1,
+        "checkpoint_kind": "alatyr-delegation-branch-checkpoint",
+        "checkpoint_id": "checkpoint-1",
+        "previous_checkpoint_id": None,
+        "operation_id": "op-1",
+        "node_id": "coordinator",
+        "branch_envelope_sha256": envelope["envelope_sha256"],
+        "base_revision": "base-revision",
+        "accepted_result_ids": ["result-child"],
+        "accepted_result_sha256": [child_result_artifact["sha256"]],
+        "rejected_result_ids": [],
+        "completed_coverage_keys": ["source-worker-contract/child"],
+        "accepted_summary": coordinator_result["accepted_summary"],
+        "context_packet_sha256": None,
+        "semantic_guidance_sha256": None,
+        "evidence_manifest_sha256": canonical_value_digest(
+            {"result-child": child_result["evidence_manifest"]}
+        ),
+        "validation_sha256": canonical_value_digest(
+            {"result-child": child_result["validation"]}
+        ),
+        "unresolved_escalations": [],
+        "next_ready_action": "primary convergence",
+        "stop_reason_id": "scope-covered",
+        "checkpoint_sha256": "pending",
+    }
+    checkpoint["checkpoint_sha256"] = canonical_digest(
+        checkpoint, "checkpoint_sha256"
+    )
+    checkpoint_path = root / "evidence/checkpoint.json"
+    checkpoint_path.write_text(json.dumps(checkpoint, indent=2) + "\n", encoding="utf-8")
+
+    def node(
+        node_id: str,
+        *,
+        parent: str | None,
+        depth: int,
+        context_words: int,
+        result: dict[str, object] | None,
+        result_artifact: dict[str, object] | None,
+    ) -> dict[str, object]:
+        is_root = depth == 0
+        context_evidence = None
+        if not is_root:
+            context_evidence = write_artifact(
+                root,
+                f"evidence/{node_id}-context.md",
+                ("context " * context_words).strip() + "\n",
+            )
+        return {
+            "node_id": node_id,
+            "parent_node_id": parent,
+            "packet_id": None if is_root else f"packet-{node_id}",
+            "parent_packet_id": None if depth < 2 else "packet-coordinator",
+            "result_id": None if is_root else f"result-{node_id}",
+            "depth": depth,
+            "status": "DONE",
+            "role_id": "primary" if is_root else "read-only-auditor",
+            "assistant_surface": "primary" if is_root else "test-surface",
+            "dispatch_backend": "primary" if is_root else "native-worker",
+            "implementation_level": "L1",
+            "coverage_key": "root" if is_root else f"source-worker-contract/{node_id}",
+            "semantic_scope": (
+                "primary-convergence"
+                if is_root
+                else "source-worker-contract"
+                if depth == 1
+                else "source-worker-contract/child"
+            ),
+            "changed_fact_ids": [],
+            "canonical_owner_refs": ["tools/source_worker_contract.py"],
+            "surface_refs": ["tools/source_worker_contract.py"],
+            "relationship_refs": [],
+            "allowed_actions": ["inspect"],
+            "write_scope": "none",
+            "context_evidence": context_evidence,
+            "context_words": context_words,
+            "max_result_words": 0 if is_root else 100,
+            "max_summary_words": 0 if is_root else 50,
+            "dispatch_group_id": None if is_root else ("group-1" if depth == 1 else "group-2"),
+            "branch_envelope": "evidence/envelope.json" if node_id == "coordinator" else None,
+            "branch_envelope_sha256": envelope["envelope_sha256"] if node_id == "coordinator" else None,
+            "branch_checkpoint": "evidence/checkpoint.json" if node_id == "coordinator" else None,
+            "branch_checkpoint_sha256": checkpoint["checkpoint_sha256"] if node_id == "coordinator" else None,
+            "result_evidence": result_artifact,
+            "accepted_summary_evidence": None if result is None else result["accepted_summary"],
+            "summary_covers_result_ids": [] if result is None else result["summary_covers_result_ids"],
+            "satisfied_acceptance_ids": [] if is_root else [f"accept-{node_id}"],
+            "produced_evidence_ids": [] if is_root else [f"evidence-{node_id}"],
+            "attempt": 0,
+            "result_status": None if is_root else "succeeded",
+            "stop_reason_id": "evidence-sufficient" if is_root else "scope-covered",
+            "child_proposals": [],
+            "overlap_decision": "not-applicable" if is_root else "disjoint",
+        }
+
+    raw_words = (
+        coordinator_result["raw_payload"]["word_count"]
+        + child_result["raw_payload"]["word_count"]
+    )
+    return {
+        "schema_version": 2,
         "tree_kind": "alatyr-delegation-execution-tree",
         "operation_id": "op-1",
+        "recorded_at": "2026-09-03T12:05:00Z",
         "base_revision": "base-revision",
         "current_user_authorization": {
-            "scope": "read-only audit",
+            "scope": "read-only",
+            "allowed_actions": ["read-only"],
             "authorized_phases": ["inspect"],
+            "approval_record": None,
         },
         "task_profile": "repository-audit",
-        "policy_revision": "policy-sha",
-        "capability_evidence": "capability-record",
+        "policy_revision": canonical_value_digest(policy_fixture()),
+        "capability_evidence": capability["path"],
+        "capability_evidence_sha256": capability["sha256"],
         "aggregate_budget": {
             "max_total_delegates": 8,
             "max_parallel_delegates": 2,
             "max_children_per_parent": 4,
             "max_context_words_total": 24000,
+            "max_result_words_total": 12000,
+            "max_primary_summary_words_total": 4000,
             "max_retries_total": 2,
             "used_total_delegates": 2,
-            "used_parallel_delegates": 2,
+            "used_parallel_delegates": 1,
             "used_context_words": 30,
+            "used_result_words": raw_words,
+            "used_primary_summary_words": coordinator_result["accepted_summary"]["word_count"],
             "used_retries": 0,
         },
         "root_node_id": "root",
         "nodes": [
-            execution_node(
-                "root",
-                parent_node_id=None,
-                depth=0,
-                status="DONE",
-                coverage_key="root",
-                semantic_scope="primary-convergence",
-                stop_reason_id="evidence-sufficient",
-            ),
-            execution_node(
-                "worker-1",
-                parent_node_id="root",
-                depth=1,
-                status="DONE",
-                coverage_key="coverage-1",
-                semantic_scope="scope-1",
-                context_words=10,
-                stop_reason_id="scope-covered",
-            ),
-            execution_node(
-                "worker-2",
-                parent_node_id="root",
-                depth=1,
-                status="DONE",
-                coverage_key="coverage-2",
-                semantic_scope="scope-2",
-                context_words=20,
-                stop_reason_id="scope-covered",
-            ),
+            node("root", parent=None, depth=0, context_words=0, result=None, result_artifact=None),
+            node("coordinator", parent="root", depth=1, context_words=10, result=coordinator_result, result_artifact=coordinator_result_artifact),
+            node("child", parent="coordinator", depth=2, context_words=20, result=child_result, result_artifact=child_result_artifact),
         ],
         "edges": [
-            {
-                "parent_node_id": "root",
-                "child_node_id": "worker-1",
-                "edge_kind": "primary-approved-dispatch",
-            },
-            {
-                "parent_node_id": "root",
-                "child_node_id": "worker-2",
-                "edge_kind": "primary-approved-dispatch",
-            },
+            {"parent_node_id": "root", "child_node_id": "coordinator", "edge_kind": "primary-approved-dispatch"},
+            {"parent_node_id": "coordinator", "child_node_id": "child", "edge_kind": "primary-envelope-dispatch"},
         ],
         "primary_convergence": {
             "status": "completed",
-            "reviewed_result_ids": ["result-root", "result-worker-1", "result-worker-2"],
+            "required_acceptance_ids": ["accept-coordinator", "accept-child"],
+            "required_evidence_ids": ["evidence-coordinator", "evidence-child"],
+            "reviewed_result_ids": ["result-coordinator"],
+            "indirect_result_ids": ["result-child"],
             "rejected_result_ids": [],
             "combined_validation": "passed",
             "logical_integrity_review": "passed",
@@ -352,8 +521,9 @@ class WorkerPacketTests(unittest.TestCase):
             "invalid initial budget": {"max_initial_words": 0},
             "invalid result budget": {"max_result_words": 0},
             "extra field": {"tools": ["shell"]},
-            "recursive depth": {"depth": 2},
-            "autonomous child": {"child_proposal_policy": "dispatch"},
+            "recursive depth without parent": {"depth": 2},
+            "autonomous child": {"child_dispatch_mode": "dispatch"},
+            "summary exceeds result": {"max_summary_words": 1601},
             "missing semantic scope": {"semantic_scope": ""},
             "missing canonical owner": {"canonical_owner_refs": []},
             "invalid overlap decision": {"overlap_decision": "assume-disjoint"},
@@ -375,7 +545,7 @@ class WorkerPacketTests(unittest.TestCase):
     def test_tree_policy_limits_and_stop_reasons_fail_closed(self) -> None:
         cases = {
             "autonomous dispatch": ("tree_policy", "worker_child_behavior", "dispatch"),
-            "recursive source depth": ("tree_policy", "hard_max_depth", 2),
+            "unbounded recursive source depth": ("tree_policy", "hard_max_depth", 3),
             "zero worker budget": ("tree_policy", "max_total_delegates", 0),
             "zero parallel budget": ("tree_policy", "max_parallel_delegates", 0),
             "worker budget below activation": ("tree_policy", "max_total_delegates", 1),
@@ -390,6 +560,21 @@ class WorkerPacketTests(unittest.TestCase):
                 policy[section][field] = value
             with self.assertRaises(SourceWorkerContractError):
                 validate_source_worker_policy(policy, root=ROOT)
+
+    def test_workstream_result_and_summary_use_their_own_aggregate_budgets(self) -> None:
+        cases = {
+            "result budget": ("max_result_words", 12001),
+            "summary budget": ("max_summary_words", 4001),
+        }
+        for label, (field, value) in cases.items():
+            with self.subTest(label=label):
+                policy = policy_fixture()
+                workstream = policy["workstreams"]["framework-rules"]
+                workstream[field] = value
+                if field == "max_summary_words":
+                    workstream["max_result_words"] = 5000
+                with self.assertRaises(SourceWorkerContractError):
+                    validate_source_worker_policy(policy, root=ROOT)
 
     def test_packet_context_cannot_escape_through_a_symlink(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -413,114 +598,339 @@ class WorkerPacketTests(unittest.TestCase):
 
 
 class DelegationExecutionTreeTests(unittest.TestCase):
-    def validate(self, tree: dict[str, object]) -> dict[str, object]:
-        return validate_delegation_execution_tree(tree, policy_fixture())
+    def validate(self, tree: dict[str, object], root: Path) -> dict[str, object]:
+        return validate_delegation_execution_tree(
+            tree, policy_fixture(), artifact_root=root
+        )
 
-    def test_execution_tree_records_cumulative_budget_and_convergence(self) -> None:
-        tree = execution_tree_fixture()
-        self.assertEqual(self.validate(tree), tree)
+    def rewrite_worker_result(
+        self,
+        tree: dict[str, object],
+        root: Path,
+        node_id: str,
+        mutate: object,
+    ) -> None:
+        node = next(item for item in tree["nodes"] if item["node_id"] == node_id)
+        result_path = root / node["result_evidence"]["path"]
+        result = json.loads(result_path.read_text(encoding="utf-8"))
+        mutate(result)
+        result["subtree_sha256"] = canonical_digest(result, "subtree_sha256")
+        result_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+        node["result_evidence"] = write_artifact(
+            root,
+            node["result_evidence"]["path"],
+            result_path.read_text(encoding="utf-8"),
+        )
 
-    def test_execution_tree_rejects_budget_and_topology_drift(self) -> None:
+    def test_recursive_tree_measures_compacted_primary_context(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            self.assertEqual(self.validate(tree, root), tree)
+            budget = tree["aggregate_budget"]
+            self.assertLess(
+                budget["used_primary_summary_words"],
+                budget["used_result_words"],
+            )
+
+    def test_recursive_evidence_matches_shipped_schemas(self) -> None:
+        schemas = {
+            "tree.json": "alatyr-delegation-execution-tree.schema.json",
+            "evidence/envelope.json": "alatyr-delegation-branch-envelope.schema.json",
+            "evidence/checkpoint.json": "alatyr-delegation-branch-checkpoint.schema.json",
+            "evidence/coordinator-result.json": "alatyr-worker-result.schema.json",
+            "evidence/child-result.json": "alatyr-worker-result.schema.json",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            (root / "tree.json").write_text(
+                json.dumps(tree, indent=2) + "\n", encoding="utf-8"
+            )
+            for evidence_path, schema_name in schemas.items():
+                record = json.loads((root / evidence_path).read_text(encoding="utf-8"))
+                schema = json.loads(
+                    (ROOT / "schemas" / schema_name).read_text(encoding="utf-8")
+                )
+                Draft7Validator(schema).validate(record)
+
+    def test_recursive_tree_rejects_artifact_and_budget_drift(self) -> None:
         cases = {
-            "worker write action": lambda item: item["nodes"][1].update(
+            "false result words": lambda item: item["aggregate_budget"].update(
+                {"used_result_words": 999}
+            ),
+            "false primary summary words": lambda item: item[
+                "aggregate_budget"
+            ].update({"used_primary_summary_words": 999}),
+            "duplicate packet": lambda item: item["nodes"][2].update(
+                {"packet_id": "packet-coordinator"}
+            ),
+            "wrong parent packet": lambda item: item["nodes"][2].update(
+                {"parent_packet_id": None}
+            ),
+            "unapproved recursive edge": lambda item: item["edges"][1].update(
+                {"edge_kind": "primary-approved-dispatch"}
+            ),
+            "missing indirect result": lambda item: item[
+                "primary_convergence"
+            ].update({"indirect_result_ids": []}),
+            "missing acceptance closure": lambda item: item[
+                "primary_convergence"
+            ].update({"required_acceptance_ids": ["missing"]}),
+            "recursive write": lambda item: item["nodes"][2].update(
                 {"allowed_actions": ["inspect", "modify"]}
             ),
-            "worker write scope": lambda item: item["nodes"][1].update(
-                {"write_scope": "tools/**"}
+            "coverage escape": lambda item: item["nodes"][2].update(
+                {"coverage_key": "outside"}
             ),
-            "worker role drift": lambda item: item["nodes"][1].update(
-                {"role_id": "implementer"}
+            "semantic scope escape": lambda item: item["nodes"][2].update(
+                {"semantic_scope": "unrelated-scope"}
             ),
-            "missing packet": lambda item: item["nodes"][1].update(
-                {"packet_id": None}
+            "surface escape": lambda item: item["nodes"][2].update(
+                {"surface_refs": ["docs/outside.md"]}
             ),
-            "terminal missing result": lambda item: item["nodes"][1].update(
-                {"result_id": None}
+            "expired branch envelope": lambda item: item.update(
+                {"recorded_at": "2100-01-01T00:00:00Z"}
             ),
-            "terminal wrong result status": lambda item: item["nodes"][1].update(
-                {"result_status": "failed"}
+            "stale capability binding": lambda item: item.update(
+                {"capability_evidence_sha256": "1" * 64}
             ),
-            "non-terminal result claim": lambda item: item["nodes"][1].update(
-                {
-                    "status": "RUNNING",
-                    "result_id": "result-worker-1",
-                    "result_status": "succeeded",
-                    "stop_reason_id": "scope-covered",
-                }
+            "stale policy binding": lambda item: item.update(
+                {"policy_revision": "1" * 64}
             ),
-            "duplicate coverage": lambda item: item["nodes"][2].update(
-                {"coverage_key": "coverage-1"}
+            "depth-one source write": lambda item: item["nodes"][1].update(
+                {"allowed_actions": ["modify"], "write_scope": "src/**"}
             ),
-            "semantic overlap": lambda item: item["nodes"][2].update(
-                {"semantic_scope": "scope-1"}
+            "unmeasured context reduction": lambda item: (
+                item["nodes"][1].update({"context_words": 0}),
+                item["aggregate_budget"].update({"used_context_words": 20}),
             ),
-            "missing stop reason": lambda item: item["nodes"][1].update(
-                {"stop_reason_id": None}
+            "schema-invalid overlap decision": lambda item: item["nodes"][1].update(
+                {"overlap_decision": "invented-overlap"}
             ),
-            "wrong aggregate context": lambda item: item["aggregate_budget"].update(
-                {"used_context_words": 31}
+            "unknown stop reason": lambda item: item["nodes"][2].update(
+                {"stop_reason_id": "invented-stop"}
             ),
-            "too many delegates": lambda item: item["aggregate_budget"].update(
-                {"used_total_delegates": 9}
+        }
+        for label, mutate in cases.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                tree = recursive_execution_fixture(root)
+                mutate(tree)
+                with self.assertRaises(SourceWorkerContractError):
+                    self.validate(tree, root)
+
+    def test_recursive_tree_rejects_tampered_result_content(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            (root / "evidence/child-summary.md").write_text(
+                "tampered summary\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(SourceWorkerContractError, "SHA-256"):
+                self.validate(tree, root)
+
+    def test_recursive_tree_rejects_tampered_capability_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            (root / tree["capability_evidence"]).write_text(
+                '{"status":"unavailable"}\n', encoding="utf-8"
+            )
+            with self.assertRaisesRegex(SourceWorkerContractError, "capability"):
+                self.validate(tree, root)
+
+    def test_tree_rejects_topology_and_convergence_drift(self) -> None:
+        cases = {
+            "branch evidence on leaf": lambda item: item["nodes"][2].update(
+                {"branch_envelope": "evidence/envelope.json"}
             ),
-            "wrong parallel usage": lambda item: item["aggregate_budget"].update(
-                {"used_parallel_delegates": 1}
+            "wrong depth-one edge kind": lambda item: item["edges"][0].update(
+                {"edge_kind": "primary-envelope-dispatch"}
             ),
-            "parallel cap exceeds policy": lambda item: item[
-                "aggregate_budget"
-            ].update({"max_parallel_delegates": 3}),
-            "missing parent": lambda item: item["nodes"][1].update(
-                {"parent_node_id": "missing"}
-            ),
-            "edge mismatch": lambda item: item["edges"][0].update(
-                {"parent_node_id": "worker-2"}
-            ),
-            "missing edge": lambda item: item["edges"].pop(),
-            "duplicate edge": lambda item: item["edges"].append(
-                copy.deepcopy(item["edges"][0])
-            ),
-            "invalid final stop": lambda item: item["primary_convergence"].update(
-                {"final_stop_reason_id": "not-a-stop"}
-            ),
-            "unreviewed terminal result": lambda item: item[
+            "unknown convergence status": lambda item: item[
                 "primary_convergence"
-            ].update({"reviewed_result_ids": ["result-root", "result-worker-1"]}),
-            "unknown reviewed result": lambda item: item[
-                "primary_convergence"
-            ].update(
+            ].update({"status": "apparently-finished"}),
+            "root convergence mismatch": lambda item: item["nodes"][0].update(
+                {"status": "BLOCKED"}
+            ),
+            "root stop mismatch": lambda item: item["nodes"][0].update(
+                {"stop_reason_id": "scope-covered"}
+            ),
+        }
+        for label, mutate in cases.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                tree = recursive_execution_fixture(root)
+                mutate(tree)
+                with self.assertRaises(SourceWorkerContractError):
+                    self.validate(tree, root)
+
+    def test_worker_result_rejects_scope_validation_and_artifact_aliases(self) -> None:
+        cases = {
+            "surface outside node": lambda result, tree: result.update(
+                {"touched_surfaces": ["docs/outside.md"]}
+            ),
+            "successful result without validation": lambda result, tree: result.update(
+                {"validation": []}
+            ),
+            "reused summary artifact": lambda result, tree: result.update(
                 {
-                    "reviewed_result_ids": [
-                        "result-root",
-                        "result-worker-1",
-                        "result-worker-2",
-                        "result-missing",
+                    "accepted_summary": tree["nodes"][2][
+                        "accepted_summary_evidence"
                     ]
-                }
-            ),
-            "unknown rejected result": lambda item: item[
-                "primary_convergence"
-            ].update({"rejected_result_ids": ["result-missing"]}),
-            "rejected result not reviewed": lambda item: item[
-                "primary_convergence"
-            ].update(
-                {
-                    "reviewed_result_ids": ["result-root", "result-worker-1"],
-                    "rejected_result_ids": ["result-worker-2"],
                 }
             ),
         }
         for label, mutate in cases.items():
-            with self.subTest(label=label):
-                tree = copy.deepcopy(execution_tree_fixture())
-                mutate(tree)
-                with self.assertRaises(SourceWorkerContractError):
-                    self.validate(tree)
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                tree = recursive_execution_fixture(root)
 
-    def test_execution_tree_allows_primary_reconciled_semantic_overlap(self) -> None:
-        tree = copy.deepcopy(execution_tree_fixture())
-        tree["nodes"][2]["semantic_scope"] = "scope-1"
-        tree["nodes"][2]["overlap_decision"] = "primary-reconciled-overlap"
-        self.validate(tree)
+                def apply(result: dict[str, object]) -> None:
+                    mutate(result, tree)
+
+                self.rewrite_worker_result(tree, root, "coordinator", apply)
+                if label == "reused summary artifact":
+                    tree["nodes"][1]["accepted_summary_evidence"] = tree[
+                        "nodes"
+                    ][2]["accepted_summary_evidence"]
+                with self.assertRaises(SourceWorkerContractError):
+                    self.validate(tree, root)
+
+    def test_recursive_worker_tools_stay_inside_branch_envelope(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            self.rewrite_worker_result(
+                tree,
+                root,
+                "child",
+                lambda result: result.update({"tools_used": ["shell"]}),
+            )
+            with self.assertRaisesRegex(SourceWorkerContractError, "tool outside"):
+                self.validate(tree, root)
+
+    def test_completed_convergence_rejects_unfinished_worker(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            coordinator = tree["nodes"][1]
+            tree["nodes"] = tree["nodes"][:2]
+            tree["edges"] = tree["edges"][:1]
+            for field in [
+                "branch_envelope", "branch_envelope_sha256",
+                "branch_checkpoint", "branch_checkpoint_sha256",
+                "result_evidence", "accepted_summary_evidence",
+            ]:
+                coordinator[field] = None
+            coordinator.update(
+                {
+                    "status": "RUNNING",
+                    "result_status": None,
+                    "stop_reason_id": None,
+                    "summary_covers_result_ids": [],
+                    "satisfied_acceptance_ids": [],
+                    "produced_evidence_ids": [],
+                }
+            )
+            tree["aggregate_budget"].update(
+                {
+                    "used_total_delegates": 1,
+                    "used_context_words": coordinator["context_words"],
+                    "used_result_words": 0,
+                    "used_primary_summary_words": 0,
+                }
+            )
+            tree["primary_convergence"].update(
+                {
+                    "required_acceptance_ids": [],
+                    "required_evidence_ids": [],
+                    "indirect_result_ids": [],
+                }
+            )
+            with self.assertRaisesRegex(SourceWorkerContractError, "unfinished"):
+                self.validate(tree, root)
+
+    def test_branch_checkpoint_rejects_invalid_history_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            checkpoint_path = root / tree["nodes"][1]["branch_checkpoint"]
+            checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+            checkpoint["previous_checkpoint_id"] = []
+            checkpoint_path.write_text(
+                json.dumps(checkpoint, indent=2) + "\n", encoding="utf-8"
+            )
+            with self.assertRaises(SourceWorkerContractError):
+                self.validate(tree, root)
+
+    def test_recursive_tree_rejects_malformed_resolved_policy_without_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            policy = policy_fixture()
+            policy["context_compaction"]["max_result_words_total"] = "unresolved"
+            with self.assertRaises(SourceWorkerContractError):
+                validate_delegation_execution_tree(
+                    tree, policy, artifact_root=root
+                )
+
+    def test_recursive_tree_requires_policy_authorized_child_dispatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            policy = policy_fixture()
+            policy["tree_policy"]["worker_child_behavior"] = "propose-only"
+            tree["policy_revision"] = canonical_value_digest(policy)
+            with self.assertRaisesRegex(DelegationEvidenceError, "does not authorize"):
+                validate_execution_tree(
+                    tree, policy, artifact_root=root
+                )
+
+    def test_schema_one_tree_is_legacy_not_acceptance_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            tree["schema_version"] = 1
+            with self.assertRaisesRegex(SourceWorkerContractError, "identity"):
+                self.validate(tree, root)
+
+    def test_portable_cli_accepts_valid_evidence_and_rejects_tampering(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = recursive_execution_fixture(root)
+            policy_path = root / "policy.json"
+            tree_path = root / "tree.json"
+            policy_path.write_text(
+                json.dumps(policy_fixture(), indent=2) + "\n", encoding="utf-8"
+            )
+            tree_path.write_text(json.dumps(tree, indent=2) + "\n", encoding="utf-8")
+            command = [
+                sys.executable,
+                str(ROOT / "tools" / "validate_delegation_execution_tree.py"),
+                "--target-root",
+                str(root),
+                "--policy",
+                str(policy_path),
+                "--tree",
+                str(tree_path),
+                "--artifact-root",
+                str(root),
+            ]
+            completed = subprocess.run(
+                command, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+
+            (root / "evidence/child-summary.md").write_text(
+                "tampered summary\n", encoding="utf-8"
+            )
+            completed = subprocess.run(
+                command, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(completed.returncode, 1)
+            self.assertIn("SHA-256", completed.stderr)
 
 
 class DecisionEvidenceTests(unittest.TestCase):

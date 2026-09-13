@@ -7,13 +7,14 @@
   "required": [
     "schema_version", "policy_kind", "state", "owner", "decision_mode",
     "default_preference", "max_parallel_delegates", "tree_policy",
-    "stop_policy", "decomposition_policy", "role_catalog",
+    "recursive_child_policy", "context_compaction", "stop_policy",
+    "decomposition_policy", "role_catalog",
     "enabled_role_ids", "requirements", "eligible_work", "prohibited_work",
     "retry_policy", "conflict_policy", "result_policy",
     "privacy_and_retention", "validation", "review_triggers"
   ],
   "properties": {
-    "schema_version": {"const": 4},
+    "schema_version": {"const": 5},
     "policy_kind": {"const": "target-subagent-delegation-policy"},
     "state": {"type": "string", "minLength": 1},
     "owner": {"type": "string", "minLength": 1},
@@ -31,14 +32,59 @@
       ],
       "properties": {
         "dispatch_owner": {"const": "primary-assistant"},
-        "worker_child_behavior": {"const": "propose-only"},
+        "worker_child_behavior": {
+          "anyOf": [
+            {"enum": ["propose-only", "primary-preauthorized-read-only"]},
+            {"$ref": "#/definitions/placeholder"}
+          ]
+        },
         "default_max_depth": {"const": 1},
-        "hard_max_depth": {"const": 2},
+        "hard_max_depth": {
+          "anyOf": [
+            {"type": "integer", "minimum": 1, "maximum": 2},
+            {"$ref": "#/definitions/placeholder"}
+          ]
+        },
         "max_total_delegates": {"$ref": "#/definitions/delegateLimit"},
         "max_children_per_parent": {"$ref": "#/definitions/childLimit"},
         "max_context_words_total": {"$ref": "#/definitions/contextLimit"},
         "max_retries_total": {"$ref": "#/definitions/retryLimit"},
         "require_disjoint_coverage_keys": {"const": true}
+      }
+    },
+    "recursive_child_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "require_verified_nested_capability", "require_primary_branch_envelope",
+        "allowed_actions", "write_scope", "must_narrow_parent_scope", "escalation"
+      ],
+      "properties": {
+        "require_verified_nested_capability": {"const": true},
+        "require_primary_branch_envelope": {"const": true},
+        "allowed_actions": {"const": ["inspect"]},
+        "write_scope": {"const": "none"},
+        "must_narrow_parent_scope": {"const": true},
+        "escalation": {"const": "return-to-primary"}
+      }
+    },
+    "context_compaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode", "raw_result_loading", "summary_propagation", "digest_algorithm",
+        "require_measured_result_artifacts", "deduplicate_inherited_context",
+        "max_result_words_total", "max_primary_summary_words_total"
+      ],
+      "properties": {
+        "mode": {"const": "hierarchical-summary"},
+        "raw_result_loading": {"const": "reference-only-unless-review-triggered"},
+        "summary_propagation": {"const": "accepted-summary-only"},
+        "digest_algorithm": {"const": "sha256"},
+        "require_measured_result_artifacts": {"const": true},
+        "deduplicate_inherited_context": {"const": true},
+        "max_result_words_total": {"$ref": "#/definitions/resultLimit"},
+        "max_primary_summary_words_total": {"$ref": "#/definitions/summaryLimit"}
       }
     },
     "stop_policy": {
@@ -50,7 +96,7 @@
         "evidence_saturation": {"const": "stop-when-acceptance-and-required-evidence-are-covered"},
         "stop_reason_ids": {
           "type": "array",
-          "minItems": 11,
+          "minItems": 20,
           "uniqueItems": true,
           "items": {"type": "string", "minLength": 1}
         }
@@ -92,6 +138,18 @@
     "contextLimit": {
       "anyOf": [
         {"type": "integer", "minimum": 1, "maximum": 24000},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    },
+    "resultLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 1, "maximum": 12000},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    },
+    "summaryLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 1, "maximum": 4000},
         {"$ref": "#/definitions/placeholder"}
       ]
     },

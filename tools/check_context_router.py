@@ -1245,6 +1245,11 @@ def main() -> int:
     )
     if not isinstance(delegated.get("budget_behavior"), str):
         failures.append("delegated execution overlay needs budget_behavior")
+    delegated_conditional_context = check_conditional_context(
+        delegated,
+        "task_scale_overlays.delegated-execution",
+        failures,
+    )
     if not isinstance(delegated_entry, dict) or delegated_entry.get("required_module") != "subagent-delegation":
         failures.append("delegated execution route must require subagent-delegation")
     package_entry = scale_index.get("change-package")
@@ -1399,6 +1404,7 @@ def main() -> int:
         extension_conditional_context,
         dependency_knowledge_conditional_context,
         workspace_mode_conditional_context,
+        delegated_conditional_context,
     ]:
         routed_framework_paths.update(
             value

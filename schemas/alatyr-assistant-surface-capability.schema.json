@@ -15,7 +15,7 @@
     "subagent_delegation"
   ],
   "properties": {
-    "schema_version": {"const": 4},
+    "schema_version": {"const": 5},
     "capability_kind": {"const": "target-assistant-surface-capabilities"},
     "assistant_surface": {"type": "string", "minLength": 1},
     "surface_state": {"$ref": "#/definitions/surfaceState"},
@@ -24,7 +24,7 @@
     "tool_permissions": {"$ref": "#/definitions/toolPermissions"},
     "context_caching": {"$ref": "#/definitions/contextCaching"},
     "diagram_discussion": {"type": "object"},
-    "subagent_delegation": {"type": "object"}
+    "subagent_delegation": {"$ref": "#/definitions/subagentDelegation"}
   },
   "definitions": {
     "stringArray": {
@@ -111,6 +111,55 @@
           }
         }
       ]
+    },
+    "subagentDelegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route", "dispatch_backend", "external_dispatcher", "client_product",
+        "runtime_variant", "native_subagents", "automatic_delegation",
+        "explicit_delegation", "project_worker_definitions",
+        "worker_definition_format", "worker_definition_paths",
+        "tool_restrictions", "write_isolation", "background_execution",
+        "nested_delegation", "nested_dispatch_envelope", "hash_bound_results",
+        "branch_checkpoints", "artifact_references",
+        "hierarchical_summary_delivery", "branch_cancellation", "model_override",
+        "parallel_dispatch", "actual_model_evidence", "role_bindings",
+        "verified_at", "client_version", "evidence", "expires_at",
+        "review_triggers"
+      ],
+      "properties": {
+        "route": {"type": "string", "minLength": 1},
+        "dispatch_backend": {"type": "string", "minLength": 1},
+        "external_dispatcher": {"type": "string", "minLength": 1},
+        "client_product": {"type": "string", "minLength": 1},
+        "runtime_variant": {"type": "string", "minLength": 1},
+        "native_subagents": {"type": "string", "minLength": 1},
+        "automatic_delegation": {"type": "string", "minLength": 1},
+        "explicit_delegation": {"type": "string", "minLength": 1},
+        "project_worker_definitions": {"type": "string", "minLength": 1},
+        "worker_definition_format": {"type": "string", "minLength": 1},
+        "worker_definition_paths": {"$ref": "#/definitions/stringArray"},
+        "tool_restrictions": {"type": "string", "minLength": 1},
+        "write_isolation": {"type": "string", "minLength": 1},
+        "background_execution": {"type": "string", "minLength": 1},
+        "nested_delegation": {"type": "string", "minLength": 1},
+        "nested_dispatch_envelope": {"type": "string", "minLength": 1},
+        "hash_bound_results": {"type": "string", "minLength": 1},
+        "branch_checkpoints": {"type": "string", "minLength": 1},
+        "artifact_references": {"type": "string", "minLength": 1},
+        "hierarchical_summary_delivery": {"type": "string", "minLength": 1},
+        "branch_cancellation": {"type": "string", "minLength": 1},
+        "model_override": {"type": "string", "minLength": 1},
+        "parallel_dispatch": {"type": "string", "minLength": 1},
+        "actual_model_evidence": {"type": "string", "minLength": 1},
+        "role_bindings": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+        "verified_at": {"type": "string", "minLength": 1},
+        "client_version": {"type": "string", "minLength": 1},
+        "evidence": {"type": "string", "minLength": 1},
+        "expires_at": {"type": "string", "minLength": 1},
+        "review_triggers": {"$ref": "#/definitions/stringArray"}
+      }
     },
     "contextCaching": {
       "allOf": [

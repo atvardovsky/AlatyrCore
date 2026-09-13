@@ -18,6 +18,16 @@ Actual role: `{ROLE_ID_OR_UNVERIFIED}`
 Actual model: `{MODEL_ID_OR_UNVERIFIED}`
 Capability evidence: `{CAPABILITY_RECORD_AND_REVISION}`
 Summary: `{BOUNDED_RESULT_SUMMARY}`
+Machine result: `{TARGET_RELATIVE_WORKER_RESULT_JSON}`
+Raw payload reference: `{TARGET_RELATIVE_RAW_PAYLOAD_OR_NONE}`
+Result words: `{MEASURED_RESULT_WORDS}`
+Result SHA-256: `{LOWERCASE_SHA256}`
+Accepted summary reference: `{TARGET_RELATIVE_ACCEPTED_SUMMARY}`
+Accepted summary words: `{MEASURED_SUMMARY_WORDS}`
+Accepted summary SHA-256: `{LOWERCASE_SHA256}`
+Input context packet SHA-256: `{LOWERCASE_SHA256_OR_NONE}`
+Child result SHA-256 values: `{LOWERCASE_SHA256_VALUES_OR_NONE}`
+Subtree SHA-256: `{LOWERCASE_SHA256}`
 Files or surfaces touched: `{TOUCHED_SURFACES_OR_NONE}`
 Commands or tools used: `{COMMANDS_TOOLS_AND_RESULTS_OR_NONE}`
 Validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
@@ -39,7 +49,11 @@ Suggested follow-up: `{NONE_OR_PRIMARY_OWNED_ACTION}`
 Proposed child packets: `{NONE_OR_BOUNDED_PROPOSALS_FOR_PRIMARY_REVIEW}`
 Stop reason ID: `{TARGET_STOP_REASON_ID}`
 Execution tree node: `{NODE_ID_AND_UPDATED_STATUS_OR_NOT_CAPTURED_WITH_REASON}`
+Branch checkpoint: `{TARGET_RELATIVE_CHECKPOINT_OR_NONE}`
 Residual risk: `{RESIDUAL_RISK}`
 
 This result is evidence for primary review. It is not approval, integration,
 commit, publication, or final operation completion.
+Routine parent context loads the accepted summary, not the raw payload. Load the
+raw payload only for a named conflict, failed validation, scope concern,
+semantic decision, or final-review requirement.

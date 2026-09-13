@@ -24,6 +24,9 @@ REQUIRED_PATHS = (
     ".ai/assistant/templates/worker-execution-plan.md",
     ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/worker-result.md",
+    ".ai/assistant/templates/worker-result.json",
+    ".ai/assistant/templates/delegation-branch-envelope.json",
+    ".ai/assistant/templates/delegation-branch-checkpoint.json",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/workers/roles/explorer.md",
     ".ai/assistant/workers/roles/implementer.md",
@@ -45,6 +48,9 @@ EXECUTION_PLAN_RELPATH = ".ai/assistant/templates/worker-execution-plan.md"
 EXECUTION_TREE_RELPATH = ".ai/assistant/templates/delegation-execution-tree.json"
 PACKET_TEMPLATE_RELPATH = ".ai/assistant/templates/subagent-task-packet.md"
 RESULT_TEMPLATE_RELPATH = ".ai/assistant/templates/worker-result.md"
+RESULT_JSON_RELPATH = ".ai/assistant/templates/worker-result.json"
+BRANCH_ENVELOPE_RELPATH = ".ai/assistant/templates/delegation-branch-envelope.json"
+BRANCH_CHECKPOINT_RELPATH = ".ai/assistant/templates/delegation-branch-checkpoint.json"
 
 CAPABILITY_FIELDS = {
     "route",
@@ -62,6 +68,12 @@ CAPABILITY_FIELDS = {
     "write_isolation",
     "background_execution",
     "nested_delegation",
+    "nested_dispatch_envelope",
+    "hash_bound_results",
+    "branch_checkpoints",
+    "artifact_references",
+    "hierarchical_summary_delivery",
+    "branch_cancellation",
     "model_override",
     "parallel_dispatch",
     "actual_model_evidence",
@@ -82,6 +94,12 @@ CAPABILITY_SUPPORT_FIELDS = {
     "tool_restrictions",
     "background_execution",
     "nested_delegation",
+    "nested_dispatch_envelope",
+    "hash_bound_results",
+    "branch_checkpoints",
+    "artifact_references",
+    "hierarchical_summary_delivery",
+    "branch_cancellation",
     "model_override",
     "parallel_dispatch",
     "actual_model_evidence",
@@ -127,6 +145,14 @@ REQUIRED_STOP_REASONS = {
     "maximum-depth-reached",
     "worker-budget-reached",
     "context-budget-reached",
+    "result-budget-reached",
+    "primary-context-budget-reached",
+    "checkpoint-required",
+    "checkpoint-invalid",
+    "context-digest-stale",
+    "evidence-digest-mismatch",
+    "branch-envelope-violation",
+    "validation-regression",
     "semantic-decision-required",
     "overlapping-scope",
     "primary-critical-path",
@@ -140,6 +166,8 @@ EXPECTED_RESULT_POLICY = {
     "require_primary_review": True,
     "require_actual_model_or_unverified_status": True,
     "require_normalized_worker_result": True,
+    "require_hash_bound_summary": True,
+    "require_branch_checkpoint_for_recursive_work": True,
 }
 CANONICAL_WORKER_REFERENCES = (
     ".ai/assistant/task-decomposition.json",
@@ -152,10 +180,6 @@ REQUIRED_WORKER_CONTEXT = {
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
-    ".ai/assistant/templates/worker-execution-plan.md",
-    ".ai/assistant/templates/delegation-execution-tree.json",
-    ".ai/assistant/templates/subagent-task-packet.md",
-    ".ai/assistant/templates/worker-result.md",
 }
 
 
@@ -221,10 +245,10 @@ def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
 
 
 def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
-    if policy.get("schema_version") != 4:
+    if policy.get("schema_version") != 5:
         self.error(
             "DELEGATION_POLICY_SCHEMA",
-            "delegation policy schema_version must be 4",
+            "delegation policy schema_version must be 5",
             POLICY_RELPATH,
         )
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
@@ -292,9 +316,7 @@ def _validate_tree_and_stop_policy(self: Any, policy: dict[str, Any]) -> None:
     tree = policy.get("tree_policy")
     expected = {
         "dispatch_owner": "primary-assistant",
-        "worker_child_behavior": "propose-only",
         "default_max_depth": 1,
-        "hard_max_depth": 2,
         "require_disjoint_coverage_keys": True,
     }
     if not isinstance(tree, dict):
@@ -311,6 +333,23 @@ def _validate_tree_and_stop_policy(self: Any, policy: dict[str, Any]) -> None:
                     f"tree_policy.{field} must be {expected_value!r}",
                     POLICY_RELPATH,
                 )
+        child_behavior = tree.get("worker_child_behavior")
+        if not is_placeholder(child_behavior) and child_behavior not in {
+            "propose-only",
+            "primary-preauthorized-read-only",
+        }:
+            self.error(
+                "DELEGATION_TREE_POLICY",
+                "tree_policy.worker_child_behavior is invalid",
+                POLICY_RELPATH,
+            )
+        hard_depth = tree.get("hard_max_depth")
+        if not is_placeholder(hard_depth) and hard_depth not in {1, 2}:
+            self.error(
+                "DELEGATION_TREE_POLICY",
+                "tree_policy.hard_max_depth must be 1 or 2",
+                POLICY_RELPATH,
+            )
         for field, minimum in {
             "max_total_delegates": 1,
             "max_children_per_parent": 1,
@@ -329,6 +368,53 @@ def _validate_tree_and_stop_policy(self: Any, policy: dict[str, Any]) -> None:
                     POLICY_RELPATH,
                 )
         _validate_tree_limit_caps(self, policy, tree)
+
+    expected_recursive = {
+        "require_verified_nested_capability": True,
+        "require_primary_branch_envelope": True,
+        "allowed_actions": ["inspect"],
+        "write_scope": "none",
+        "must_narrow_parent_scope": True,
+        "escalation": "return-to-primary",
+    }
+    if policy.get("recursive_child_policy") != expected_recursive:
+        self.error(
+            "DELEGATION_RECURSIVE_CHILD_POLICY",
+            "recursive child dispatch must remain primary-enveloped and read-only",
+            POLICY_RELPATH,
+        )
+    compaction = policy.get("context_compaction")
+    expected_compaction = {
+        "mode": "hierarchical-summary",
+        "raw_result_loading": "reference-only-unless-review-triggered",
+        "summary_propagation": "accepted-summary-only",
+        "digest_algorithm": "sha256",
+        "require_measured_result_artifacts": True,
+        "deduplicate_inherited_context": True,
+    }
+    if not isinstance(compaction, dict) or any(
+        compaction.get(field) != value
+        for field, value in expected_compaction.items()
+    ):
+        self.error(
+            "DELEGATION_CONTEXT_COMPACTION",
+            "delegation context compaction contract is incomplete",
+            POLICY_RELPATH,
+        )
+    elif any(
+        not is_placeholder(compaction.get(field))
+        and (
+            not isinstance(compaction.get(field), int)
+            or isinstance(compaction.get(field), bool)
+            or compaction.get(field) < 1
+        )
+        for field in ["max_result_words_total", "max_primary_summary_words_total"]
+    ):
+        self.error(
+            "DELEGATION_CONTEXT_COMPACTION_LIMIT",
+            "delegation result and summary limits must be positive integers",
+            POLICY_RELPATH,
+        )
 
     stop = policy.get("stop_policy")
     if (
@@ -502,12 +588,18 @@ def _load_and_validate_role_catalog(self: Any) -> list[Any]:
         )
         catalog_roles = []
     if isinstance(catalog, dict) and (
-        catalog.get("schema_version") != 1
+        catalog.get("schema_version") != 2
         or catalog.get("catalog_kind") != "target-worker-role-catalog"
     ):
         self.error(
             "DELEGATION_ROLE_CATALOG_SCHEMA",
             "worker role catalog identity or schema is invalid",
+            ROLE_CATALOG_RELPATH,
+        )
+    if isinstance(catalog, dict) and catalog.get("machine_result_template") != RESULT_JSON_RELPATH:
+        self.error(
+            "DELEGATION_ROLE_CATALOG_MACHINE_RESULT",
+            "worker role catalog must reference the normalized machine result template",
             ROLE_CATALOG_RELPATH,
         )
     if isinstance(catalog, dict) and catalog.get("decomposition_policy") != TASK_DECOMPOSITION_RELPATH:
@@ -1052,6 +1144,25 @@ def _validate_overlay(self: Any) -> None:
             "delegated execution overlay does not load the portable worker contracts",
             OVERLAY_RELPATH,
         )
+    conditional_context = overlay.get("conditional_context") if overlay else None
+    conditional_paths = {
+        item.get("path")
+        for item in conditional_context or []
+        if isinstance(item, dict)
+    }
+    required_conditional = {
+        ".ai/framework/subagent-delegation.md",
+        ".ai/assistant/templates/worker-execution-plan.md",
+        ".ai/assistant/templates/delegation-branch-envelope.json",
+        ".ai/assistant/templates/delegation-branch-checkpoint.json",
+        ".ai/assistant/templates/worker-result.json",
+    }
+    if not isinstance(conditional_context, list) or not required_conditional <= conditional_paths:
+        self.error(
+            "DELEGATION_OVERLAY_CONDITIONAL_CONTEXT",
+            "delegated execution overlay lacks lazy planning and recursive evidence context",
+            OVERLAY_RELPATH,
+        )
 
 
 def _validate_delegation_templates(self: Any) -> None:
@@ -1065,6 +1176,8 @@ def _validate_delegation_templates(self: Any) -> None:
             "Maximum total delegates:",
             "Maximum children per parent:",
             "Maximum total context words:",
+            "Maximum total result words:",
+            "Maximum primary summary words:",
             "Maximum retries:",
             "Semantic scope:",
             "Canonical owners:",
@@ -1081,14 +1194,16 @@ def _validate_delegation_templates(self: Any) -> None:
         "DELEGATION_PACKET_TEMPLATE",
         [
             "Execution tree ledger:",
-            "Child proposal policy: `propose-only`",
+            "Child dispatch mode:",
+            "Primary branch envelope:",
+            "Accepted summary word budget:",
             "Semantic scope:",
             "Canonical owner refs:",
             "Surface refs:",
             "Relationship refs:",
             "Overlap decision:",
             "Stop reason ID:",
-            "Child proposal handling:",
+            "Child handling:",
             "## Primary Review",
             "Execution tree update:",
         ],
@@ -1107,6 +1222,9 @@ def _validate_delegation_templates(self: Any) -> None:
             "Overlap decision:",
             "Stop reason ID:",
             "Execution tree node:",
+            "Machine result:",
+            "Accepted summary SHA-256:",
+            "Branch checkpoint:",
             "This result is evidence for primary review.",
         ],
     )
@@ -1119,18 +1237,24 @@ def _validate_delegation_templates(self: Any) -> None:
         "schema_version",
         "tree_kind",
         "operation_id",
+        "recorded_at",
         "base_revision",
         "current_user_authorization",
         "task_profile",
         "policy_revision",
         "capability_evidence",
+        "capability_evidence_sha256",
         "aggregate_budget",
         "root_node_id",
         "nodes",
         "edges",
         "primary_convergence",
     }
-    if set(tree) != required or tree.get("tree_kind") != "alatyr-delegation-execution-tree":
+    if (
+        set(tree) != required
+        or tree.get("schema_version") != 2
+        or tree.get("tree_kind") != "alatyr-delegation-execution-tree"
+    ):
         self.error(
             "DELEGATION_EXECUTION_TREE_TEMPLATE",
             "delegation execution tree template identity or fields are invalid",
@@ -1142,10 +1266,14 @@ def _validate_delegation_templates(self: Any) -> None:
         "max_parallel_delegates",
         "max_children_per_parent",
         "max_context_words_total",
+        "max_result_words_total",
+        "max_primary_summary_words_total",
         "max_retries_total",
         "used_total_delegates",
         "used_parallel_delegates",
         "used_context_words",
+        "used_result_words",
+        "used_primary_summary_words",
         "used_retries",
     }
     if not isinstance(budget, dict) or set(budget) != required_budget:
@@ -1160,6 +1288,7 @@ def _validate_delegation_templates(self: Any) -> None:
         "node_id",
         "parent_node_id",
         "packet_id",
+        "parent_packet_id",
         "result_id",
         "depth",
         "status",
@@ -1175,7 +1304,20 @@ def _validate_delegation_templates(self: Any) -> None:
         "relationship_refs",
         "allowed_actions",
         "write_scope",
+        "context_evidence",
         "context_words",
+        "max_result_words",
+        "max_summary_words",
+        "dispatch_group_id",
+        "branch_envelope",
+        "branch_envelope_sha256",
+        "branch_checkpoint",
+        "branch_checkpoint_sha256",
+        "result_evidence",
+        "accepted_summary_evidence",
+        "summary_covers_result_ids",
+        "satisfied_acceptance_ids",
+        "produced_evidence_ids",
         "attempt",
         "result_status",
         "stop_reason_id",
@@ -1191,7 +1333,10 @@ def _validate_delegation_templates(self: Any) -> None:
     convergence = tree.get("primary_convergence")
     required_convergence = {
         "status",
+        "required_acceptance_ids",
+        "required_evidence_ids",
         "reviewed_result_ids",
+        "indirect_result_ids",
         "rejected_result_ids",
         "combined_validation",
         "logical_integrity_review",
@@ -1204,6 +1349,82 @@ def _validate_delegation_templates(self: Any) -> None:
             "delegation execution tree template lacks primary convergence evidence",
             EXECUTION_TREE_RELPATH,
         )
+
+    json_templates = [
+        (
+            self.load_json_object(
+                self.target_path(RESULT_JSON_RELPATH),
+                "DELEGATION_RESULT_JSON_TEMPLATE",
+            ),
+            RESULT_JSON_RELPATH,
+            "DELEGATION_RESULT_JSON_TEMPLATE",
+            "result_kind",
+            "alatyr-normalized-worker-result",
+            {
+                "schema_version", "result_kind", "result_id", "packet_id",
+                "parent_packet_id", "node_id", "depth", "base_revision",
+                "status", "measurement_state", "input_context_packet_sha256",
+                "raw_payload", "accepted_summary", "summary_covers_result_ids",
+                "child_result_sha256", "evidence_manifest", "touched_surfaces",
+                "tools_used", "scope_violation", "authorization_concern", "validation",
+                "stop_reason_id", "subtree_sha256",
+            },
+        ),
+        (
+            self.load_json_object(
+                self.target_path(BRANCH_ENVELOPE_RELPATH),
+                "DELEGATION_BRANCH_ENVELOPE_TEMPLATE",
+            ),
+            BRANCH_ENVELOPE_RELPATH,
+            "DELEGATION_BRANCH_ENVELOPE_TEMPLATE",
+            "envelope_kind",
+            "alatyr-delegation-branch-envelope",
+            {
+                "schema_version", "envelope_kind", "envelope_id",
+                "operation_id", "root_packet_id", "parent_node_id",
+                "issued_by", "base_revision", "authorized_phases", "max_depth",
+                "max_children", "max_context_words", "max_result_words",
+                "max_summary_words", "max_retries", "allowed_actions",
+                "write_scope", "allowed_tools", "allowed_surface_refs",
+                "semantic_scope", "coverage_prefix", "context_packet_sha256",
+                "capability_evidence_sha256", "required_validation",
+                "expires_at", "envelope_sha256",
+            },
+        ),
+        (
+            self.load_json_object(
+                self.target_path(BRANCH_CHECKPOINT_RELPATH),
+                "DELEGATION_BRANCH_CHECKPOINT_TEMPLATE",
+            ),
+            BRANCH_CHECKPOINT_RELPATH,
+            "DELEGATION_BRANCH_CHECKPOINT_TEMPLATE",
+            "checkpoint_kind",
+            "alatyr-delegation-branch-checkpoint",
+            {
+                "schema_version", "checkpoint_kind", "checkpoint_id",
+                "previous_checkpoint_id", "operation_id", "node_id",
+                "branch_envelope_sha256", "base_revision",
+                "accepted_result_ids", "accepted_result_sha256",
+                "rejected_result_ids", "completed_coverage_keys",
+                "accepted_summary", "context_packet_sha256",
+                "semantic_guidance_sha256", "evidence_manifest_sha256",
+                "validation_sha256", "unresolved_escalations",
+                "next_ready_action", "stop_reason_id", "checkpoint_sha256",
+            },
+        ),
+    ]
+    for record, relpath, code, identity_field, identity, fields in json_templates:
+        if (
+            not isinstance(record, dict)
+            or record.get("schema_version") != 1
+            or record.get(identity_field) != identity
+            or set(record) != fields
+        ):
+            self.error(
+                code,
+                "delegation machine-evidence template identity or fields are invalid",
+                relpath,
+            )
 
 
 def _require_template_text(

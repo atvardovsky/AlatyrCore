@@ -11,11 +11,11 @@
     {
       "id": "alatyr:bounded-delegation@1",
       "version": 1,
-      "definition": "Delegate only bounded, dependency-aware work with explicit inputs, output contract, permissions, write isolation, validation, and lead-agent reconciliation; a worker cannot expand authority or approve, commit, publish, or perform live-external actions for the lead.",
+      "definition": "Delegate only bounded, dependency-aware work with explicit inputs, output contract, permissions, write isolation, validation, and lead-agent reconciliation; a worker may dispatch inspect-only descendants only inside an immutable primary-issued branch envelope and cannot expand authority or approve, modify, commit, publish, or perform live-external actions for the lead.",
       "owner_rule_id": "ALATYR-DELEGATION-001",
       "canonical_owner": "subagent-delegation.md",
       "scope": "worker and subagent execution",
-      "non_meanings": ["parallelize tightly coupled writes", "delegate final integration authority"],
+      "non_meanings": ["parallelize tightly coupled writes", "grant recursive authority", "delegate final integration authority"],
       "depends_on": ["alatyr:current-scope-authorization@1"],
       "replaced_by": null
     },

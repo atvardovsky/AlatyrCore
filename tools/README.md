@@ -16,6 +16,7 @@ Linux or macOS:
 python3 tools/alatyr.py --help
 python3 tools/alatyr.py plan-work --summary
 python3 tools/alatyr.py plan-work --source-profile repository-audit --summary
+python3 tools/alatyr.py validate-delegation-tree --target-root /path/to/target-repo --tree /path/to/execution-tree.json
 python3 tools/alatyr.py context-plan --target /path/to/target-repo --profile code-local --operation logical-integrity-review
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py compare-check-reports /tmp/base.json /tmp/candidate.json
@@ -46,6 +47,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 --help
 .\tools\alatyr.ps1 plan-work --summary
 .\tools\alatyr.ps1 plan-work --source-profile repository-audit --summary
+.\tools\alatyr.ps1 validate-delegation-tree --target-root C:\path\to\target-repo --tree C:\path\to\execution-tree.json
 .\tools\alatyr.ps1 check-source-focused
 .\tools\alatyr.ps1 compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 .\tools\alatyr.ps1 status --target C:\path\to\target-repo
@@ -74,6 +76,7 @@ Windows Command Prompt:
 tools\alatyr.cmd --help
 tools\alatyr.cmd plan-work --summary
 tools\alatyr.cmd plan-work --source-profile repository-audit --summary
+tools\alatyr.cmd validate-delegation-tree --target-root C:\path\to\target-repo --tree C:\path\to\execution-tree.json
 tools\alatyr.cmd check-source-focused
 tools\alatyr.cmd compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 tools\alatyr.cmd status --target C:\path\to\target-repo
@@ -104,6 +107,8 @@ The stable command set is:
   validation route, task class, context packet, decomposition and delegation
   assessment, micro escalation reasons, and optional hash-bound reuse
   candidates before checks run
+- `validate-delegation-tree`: no writes; recomputes recursive branch-envelope,
+  result, summary, checkpoint, aggregate-budget, and convergence evidence
 - `compare-check-reports`: no writes; compares two schema-2 source-check
   reports and labels source/manifest identity before interpreting timing
   deltas
@@ -949,10 +954,20 @@ wired consistently; it does not prove that a real task was split optimally.
 
 `check_subagent_delegation.py` validates the optional delegation rule, target
 policy, six-role catalog, orchestration prompt, deterministic task plan,
-bounded packet, normalized result, unsafe-decomposition fixtures, operation
-routing, and per-surface worker/model/native-definition capability fields. It
-proves structural coverage, not safe semantic decomposition or actual provider
-model availability.
+bounded packet, normalized machine result, primary branch envelope, resumable
+checkpoint, unsafe-decomposition fixtures, operation routing, and per-surface
+worker/model/native-definition capability fields. It proves structural
+coverage, not safe semantic decomposition or actual provider model
+availability.
+
+`validate_delegation_execution_tree.py` is the portable read-only evidence
+validator exposed as `alatyr validate-delegation-tree`. Given a resolved target
+policy and one execution tree, it recomputes referenced UTF-8 artifact sizes
+and SHA-256 digests, recursive scope and budget bounds, accepted summary
+coverage, checkpoints, and primary convergence. This proves that the recorded
+evidence is internally consistent; it does not prove that a provider launched
+the workers, that a summary is semantically correct, or that delegation was
+beneficial.
 
 ## Team Collaboration Check
 

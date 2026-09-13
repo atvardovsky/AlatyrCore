@@ -177,12 +177,15 @@ Constraints:
   delegation. Assign one implementation level, bounded context, dependency
   state, validation, allowed files or surfaces, and executor decision per
   subtask. Small local work may use one-node decomposition evidence.
-- For enabled subagent delegation, load the policy, delegated-execution
-  overlay, subagent delegation flow, role catalog/prompts, execution-tree
-  ledger, packet/result templates, and selected capability record. Workers may
-  propose child packets only. Enforce depth, total, parallel, context, retry,
-  cancellation, semantic-overlap reconciliation, and primary-convergence
-  evidence before integrating any result.
+- For enabled subagent delegation, start with the policy, delegated-execution
+  overlay, role catalog/prompt, and selected capability record. Load packet,
+  result, branch-envelope, checkpoint, and execution-tree contracts only at
+  the transition that consumes them. Workers normally propose child packets;
+  a resolved `primary-preauthorized-read-only` policy plus verified nested
+  capability and an immutable primary-issued envelope may authorize bounded
+  inspect-only depth-2 dispatch. Enforce depth, total, parallel, context,
+  result, summary, retry, cancellation, semantic-overlap reconciliation, and
+  primary-convergence evidence before integrating any result.
 - For enabled team collaboration, read the compact active-work index before
   state-changing operations. Expand `team-active` only for an explicit team
   request, task/branch match, possible logical overlap, or unresolved index,

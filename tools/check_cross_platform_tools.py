@@ -28,6 +28,7 @@ EXPECTED_COMMANDS = {
     "check-source",
     "check-source-focused",
     "plan-work",
+    "validate-delegation-tree",
     "context-plan",
     "compare-check-reports",
     "scaffold",

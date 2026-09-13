@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "capability_kind": "target-assistant-surface-capabilities",
   "assistant_surface": "cline",
   "surface_state": {
@@ -124,6 +124,12 @@
     "write_isolation": "{SHARED_WORKSPACE_NATIVE_ISOLATED_EXTERNAL_ISOLATED_UNSUPPORTED_OR_UNKNOWN}",
     "background_execution": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "nested_delegation": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "nested_dispatch_envelope": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "hash_bound_results": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "branch_checkpoints": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "artifact_references": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "hierarchical_summary_delivery": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "branch_cancellation": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "model_override": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "parallel_dispatch": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "actual_model_evidence": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",

@@ -1286,7 +1286,9 @@
         "tools/summarize_source_check_report.py",
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
-        "tools/report_adapter_health.py"
+        "tools/report_adapter_health.py",
+        "tools/delegation_evidence.py",
+        "tools/validate_delegation_execution_tree.py"
       ],
       "trigger_paths": [
         ".gitattributes",
@@ -1309,6 +1311,8 @@
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py",
+        "tools/delegation_evidence.py",
+        "tools/validate_delegation_execution_tree.py",
         "tools/runtime-compatibility.json",
         "tools/tool_commands.json"
       ]
@@ -1350,8 +1354,11 @@
         "framework/large-task-orchestration.md",
         "framework/subagent-delegation.md",
         "framework/task-decomposition.md",
+        "schemas/alatyr-delegation-branch-checkpoint.schema.json",
+        "schemas/alatyr-delegation-branch-envelope.schema.json",
         "schemas/alatyr-delegation-execution-tree.schema.json",
         "schemas/alatyr-delegation-policy.schema.json",
+        "schemas/alatyr-worker-result.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
@@ -1362,15 +1369,22 @@
         "templates/target/.ai/assistant/flows/subagent-delegation.flow.md",
         "templates/target/.ai/assistant/prompts/worker-orchestration.md",
         "templates/target/.ai/assistant/templates/native-worker-binding.md",
+        "templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json",
+        "templates/target/.ai/assistant/templates/delegation-branch-envelope.json",
         "templates/target/.ai/assistant/templates/delegation-execution-tree.json",
         "templates/target/.ai/assistant/templates/subagent-task-packet.md",
         "templates/target/.ai/assistant/templates/worker-execution-plan.md",
+        "templates/target/.ai/assistant/templates/worker-result.json",
         "templates/target/.ai/assistant/templates/worker-result.md",
-        "templates/target/.ai/assistant/workers/**"
+        "templates/target/.ai/assistant/workers/**",
+        "tools/source_worker_policy.json"
       ],
       "implementation_paths": [
+        "tools/delegation_evidence.py",
         "tools/check_subagent_delegation.py",
-        "tools/target_adapter_validation/**"
+        "tools/source_worker_contract.py",
+        "tools/target_adapter_validation/**",
+        "tools/validate_delegation_execution_tree.py"
       ],
       "trigger_paths": [
         "conformance/operations/worker-delegation.json",
@@ -1378,8 +1392,11 @@
         "framework/large-task-orchestration.md",
         "framework/subagent-delegation.md",
         "framework/task-decomposition.md",
+        "schemas/alatyr-delegation-branch-checkpoint.schema.json",
+        "schemas/alatyr-delegation-branch-envelope.schema.json",
         "schemas/alatyr-delegation-execution-tree.schema.json",
         "schemas/alatyr-delegation-policy.schema.json",
+        "schemas/alatyr-worker-result.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
@@ -1390,13 +1407,20 @@
         "templates/target/.ai/assistant/flows/subagent-delegation.flow.md",
         "templates/target/.ai/assistant/prompts/worker-orchestration.md",
         "templates/target/.ai/assistant/templates/native-worker-binding.md",
+        "templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json",
+        "templates/target/.ai/assistant/templates/delegation-branch-envelope.json",
         "templates/target/.ai/assistant/templates/delegation-execution-tree.json",
         "templates/target/.ai/assistant/templates/subagent-task-packet.md",
         "templates/target/.ai/assistant/templates/worker-execution-plan.md",
+        "templates/target/.ai/assistant/templates/worker-result.json",
         "templates/target/.ai/assistant/templates/worker-result.md",
         "templates/target/.ai/assistant/workers/**",
+        "tools/source_worker_contract.py",
+        "tools/source_worker_policy.json",
+        "tools/delegation_evidence.py",
         "tools/check_subagent_delegation.py",
-        "tools/target_adapter_validation/**"
+        "tools/target_adapter_validation/**",
+        "tools/validate_delegation_execution_tree.py"
       ]
     },
     {

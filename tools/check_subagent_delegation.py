@@ -25,6 +25,10 @@ DECOMPOSITION_POLICY = ASSISTANT / "task-decomposition.json"
 DECOMPOSITION_PLAN = ASSISTANT / "templates" / "task-decomposition.md"
 POLICY = ASSISTANT / "delegation-policy.json"
 POLICY_SCHEMA = ROOT / "schemas" / "alatyr-delegation-policy.schema.json"
+EXECUTION_TREE_SCHEMA = ROOT / "schemas" / "alatyr-delegation-execution-tree.schema.json"
+WORKER_RESULT_SCHEMA = ROOT / "schemas" / "alatyr-worker-result.schema.json"
+BRANCH_ENVELOPE_SCHEMA = ROOT / "schemas" / "alatyr-delegation-branch-envelope.schema.json"
+BRANCH_CHECKPOINT_SCHEMA = ROOT / "schemas" / "alatyr-delegation-branch-checkpoint.schema.json"
 ROLE_CATALOG = ASSISTANT / "workers" / "role-catalog.json"
 ROLE_DIR = ASSISTANT / "workers" / "roles"
 ORCHESTRATION = ASSISTANT / "prompts" / "worker-orchestration.md"
@@ -33,6 +37,9 @@ EXECUTION_TREE = ASSISTANT / "templates" / "delegation-execution-tree.json"
 NATIVE_BINDING = ASSISTANT / "templates" / "native-worker-binding.md"
 PACKET = ASSISTANT / "templates" / "subagent-task-packet.md"
 RESULT = ASSISTANT / "templates" / "worker-result.md"
+RESULT_JSON = ASSISTANT / "templates" / "worker-result.json"
+BRANCH_ENVELOPE = ASSISTANT / "templates" / "delegation-branch-envelope.json"
+BRANCH_CHECKPOINT = ASSISTANT / "templates" / "delegation-branch-checkpoint.json"
 FLOW = ASSISTANT / "flows" / "subagent-delegation.flow.md"
 OVERLAY = ASSISTANT / "context" / "task-scales" / "delegated-execution.json"
 ROUTER = ASSISTANT / "context-router.json"
@@ -42,6 +49,8 @@ CAPABILITY_INDEX = ASSISTANT / "assistant-capabilities.json"
 SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
 CONFORMANCE = ROOT / "conformance" / "operations" / "worker-delegation.json"
 BRIDGE_MANIFEST = ROOT / "tools" / "bridge_template_manifest.json"
+EVIDENCE_VALIDATOR = ROOT / "tools" / "delegation_evidence.py"
+EVIDENCE_CLI = ROOT / "tools" / "validate_delegation_execution_tree.py"
 
 ROLE_IDS = {
     "explorer",
@@ -61,6 +70,8 @@ POLICY_FIELDS = {
     "default_preference",
     "max_parallel_delegates",
     "tree_policy",
+    "recursive_child_policy",
+    "context_compaction",
     "stop_policy",
     "decomposition_policy",
     "role_catalog",
@@ -104,6 +115,12 @@ CAPABILITY_FIELDS = {
     "write_isolation",
     "background_execution",
     "nested_delegation",
+    "nested_dispatch_envelope",
+    "hash_bound_results",
+    "branch_checkpoints",
+    "artifact_references",
+    "hierarchical_summary_delivery",
+    "branch_cancellation",
     "model_override",
     "parallel_dispatch",
     "actual_model_evidence",
@@ -136,16 +153,18 @@ PROVIDER_TERMS = {
     "gpt-",
 }
 EXPECTED_DELEGATED_CONTEXT = {
-    ".ai/framework/subagent-delegation.md",
     ".ai/assistant/task-decomposition.json",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
-    ".ai/assistant/templates/worker-execution-plan.md",
-    ".ai/assistant/templates/delegation-execution-tree.json",
-    ".ai/assistant/templates/subagent-task-packet.md",
-    ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/assistant-capabilities.json",
+}
+EXPECTED_DELEGATED_CONDITIONAL_CONTEXT = {
+    ".ai/framework/subagent-delegation.md",
+    ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/delegation-branch-envelope.json",
+    ".ai/assistant/templates/delegation-branch-checkpoint.json",
+    ".ai/assistant/templates/worker-result.json",
 }
 
 
@@ -182,12 +201,16 @@ def resolved_int(value: object) -> int | None:
 
 def validate_role_catalog(catalog: dict[str, Any], failures: list[str]) -> None:
     if (
-        catalog.get("schema_version") != 1
+        catalog.get("schema_version") != 2
         or catalog.get("catalog_kind") != "target-worker-role-catalog"
     ):
         failures.append("worker role catalog identity is invalid")
     if catalog.get("result_template") != ".ai/assistant/templates/worker-result.md":
         failures.append("worker role catalog result template is invalid")
+    if catalog.get("machine_result_template") != (
+        ".ai/assistant/templates/worker-result.json"
+    ):
+        failures.append("worker role catalog machine result template is invalid")
     if catalog.get("decomposition_policy") != ".ai/assistant/task-decomposition.json":
         failures.append("worker role catalog decomposition policy is invalid")
     roles = catalog.get("roles")
@@ -254,6 +277,17 @@ def validate_delegated_overlay(
         set(overlay_context)
     ):
         failures.append("delegated execution overlay required_context is incomplete")
+    conditional = overlay.get("conditional_context")
+    conditional_paths = {
+        item.get("path")
+        for item in conditional or []
+        if isinstance(item, dict)
+    }
+    if (
+        not isinstance(conditional, list)
+        or not EXPECTED_DELEGATED_CONDITIONAL_CONTEXT <= conditional_paths
+    ):
+        failures.append("delegated execution overlay conditional_context is incomplete")
     task_scale_overlays = router.get("task_scale_overlays")
     route = (
         task_scale_overlays.get("delegated-execution")
@@ -358,12 +392,21 @@ def validate_static_contract_text(failures: list[str]) -> None:
         EXECUTION_TREE,
         [
             '"tree_kind": "alatyr-delegation-execution-tree"',
+            '"recorded_at"',
             '"current_user_authorization"',
             '"aggregate_budget"',
             '"max_total_delegates"',
             '"max_parallel_delegates"',
             '"max_children_per_parent"',
             '"used_context_words"',
+            '"used_result_words"',
+            '"used_primary_summary_words"',
+            '"capability_evidence_sha256"',
+            '"context_evidence"',
+            '"branch_envelope"',
+            '"branch_checkpoint"',
+            '"accepted_summary_evidence"',
+            '"indirect_result_ids"',
             '"semantic_scope"',
             '"changed_fact_ids"',
             '"canonical_owner_refs"',
@@ -381,7 +424,8 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "Parent packet ID:",
             "Depth:",
             "Coverage key:",
-            "Child proposal policy: `propose-only`",
+            "Child dispatch mode:",
+            "Primary branch envelope:",
             "Task ID:",
             "Execution plan ID:",
             "Base revision:",
@@ -398,7 +442,7 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "Capability evidence:",
             ".ai/assistant/templates/worker-result.md",
             "## Primary Review",
-            "Child proposal handling:",
+            "Child handling:",
             "Execution tree update:",
         ],
         failures,
@@ -425,6 +469,9 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "Authorization or approval concern:",
             "evidence for primary review",
             "Execution tree node:",
+            "Accepted summary SHA-256:",
+            "Commands or tools used:",
+            "Branch checkpoint:",
         ],
         failures,
     )
@@ -440,10 +487,36 @@ def validate_static_contract_text(failures: list[str]) -> None:
         ],
         failures,
     )
+    require_text(
+        EVIDENCE_VALIDATOR,
+        [
+            "def validate_execution_tree(",
+            "validate_branch_envelope(",
+            "validate_branch_checkpoint(",
+            "validate_worker_result(",
+            "capability evidence digest does not match content",
+            'result.get("tools_used")',
+            "used_primary_summary_words",
+            "primary convergence",
+        ],
+        failures,
+    )
+    require_text(
+        EVIDENCE_CLI,
+        [
+            "--target-root",
+            "--tree",
+            "--policy",
+            "--artifact-root",
+            "validate_execution_tree(tree, policy",
+        ],
+        failures,
+    )
 
 
 def main() -> int:
     failures: list[str] = []
+    shipped_schemas: list[dict[str, Any]] = []
     validate_static_contract_text(failures)
 
     portable_paths = [
@@ -459,6 +532,9 @@ def main() -> int:
         NATIVE_BINDING,
         PACKET,
         RESULT,
+        RESULT_JSON,
+        BRANCH_ENVELOPE,
+        BRANCH_CHECKPOINT,
         FLOW,
         OVERLAY,
     ]
@@ -478,6 +554,13 @@ def main() -> int:
     try:
         policy = load_object(POLICY)
         policy_schema = load_object(POLICY_SCHEMA)
+        shipped_schemas = [
+            policy_schema,
+            load_object(EXECUTION_TREE_SCHEMA),
+            load_object(WORKER_RESULT_SCHEMA),
+            load_object(BRANCH_ENVELOPE_SCHEMA),
+            load_object(BRANCH_CHECKPOINT_SCHEMA),
+        ]
         catalog = load_object(ROLE_CATALOG)
         overlay = load_object(OVERLAY)
         router = load_object(ROUTER)
@@ -490,13 +573,18 @@ def main() -> int:
         policy, policy_schema, catalog, overlay, router, capability_index, conformance, bridge_manifest = ({},) * 8
         surfaces = []
 
+    for schema in shipped_schemas:
+        try:
+            jsonschema.Draft7Validator.check_schema(schema)
+        except jsonschema.SchemaError as exc:
+            failures.append(f"invalid delegation schema: {exc.message}")
     failures.extend(policy_schema_failures(policy, policy_schema))
 
     missing_policy = sorted(POLICY_FIELDS - set(policy))
     if missing_policy:
         failures.append(f"delegation policy missing fields {missing_policy}")
-    if policy.get("schema_version") != 4:
-        failures.append("delegation policy schema_version must be 4")
+    if policy.get("schema_version") != 5:
+        failures.append("delegation policy schema_version must be 5")
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
         failures.append("delegation policy kind is incorrect")
     if capability_index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
@@ -511,15 +599,24 @@ def main() -> int:
     tree_policy = policy.get("tree_policy")
     expected_tree = {
         "dispatch_owner": "primary-assistant",
-        "worker_child_behavior": "propose-only",
         "default_max_depth": 1,
-        "hard_max_depth": 2,
         "require_disjoint_coverage_keys": True,
     }
     if not isinstance(tree_policy, dict) or any(
         tree_policy.get(key) != value for key, value in expected_tree.items()
     ):
         failures.append("delegation policy tree ownership and hard limits are invalid")
+    if isinstance(tree_policy, dict):
+        require_placeholder(
+            "delegation policy worker_child_behavior",
+            tree_policy.get("worker_child_behavior"),
+            failures,
+        )
+        require_placeholder(
+            "delegation policy hard_max_depth",
+            tree_policy.get("hard_max_depth"),
+            failures,
+        )
     if isinstance(tree_policy, dict):
         total = resolved_int(tree_policy.get("max_total_delegates"))
         children = resolved_int(tree_policy.get("max_children_per_parent"))
@@ -548,6 +645,14 @@ def main() -> int:
         "maximum-depth-reached",
         "worker-budget-reached",
         "context-budget-reached",
+        "result-budget-reached",
+        "primary-context-budget-reached",
+        "checkpoint-required",
+        "checkpoint-invalid",
+        "context-digest-stale",
+        "evidence-digest-mismatch",
+        "branch-envelope-violation",
+        "validation-regression",
         "semantic-decision-required",
         "overlapping-scope",
         "primary-critical-path",
@@ -561,6 +666,35 @@ def main() -> int:
         or set(stop_policy.get("stop_reason_ids", [])) != required_stop_reasons
     ):
         failures.append("delegation policy stop contract is incomplete")
+    recursive_child = policy.get("recursive_child_policy")
+    expected_recursive_child = {
+        "require_verified_nested_capability": True,
+        "require_primary_branch_envelope": True,
+        "allowed_actions": ["inspect"],
+        "write_scope": "none",
+        "must_narrow_parent_scope": True,
+        "escalation": "return-to-primary",
+    }
+    if recursive_child != expected_recursive_child:
+        failures.append("delegation recursive child policy is incomplete")
+    compaction = policy.get("context_compaction")
+    expected_compaction = {
+        "mode": "hierarchical-summary",
+        "raw_result_loading": "reference-only-unless-review-triggered",
+        "summary_propagation": "accepted-summary-only",
+        "digest_algorithm": "sha256",
+        "require_measured_result_artifacts": True,
+        "deduplicate_inherited_context": True,
+    }
+    if not isinstance(compaction, dict) or any(
+        compaction.get(key) != value for key, value in expected_compaction.items()
+    ):
+        failures.append("delegation context compaction policy is incomplete")
+    elif any(
+        not placeholder(compaction.get(field))
+        for field in ["max_result_words_total", "max_primary_summary_words_total"]
+    ):
+        failures.append("delegation context compaction limits must remain placeholders")
     for field in [
         "state",
         "owner",
@@ -609,6 +743,8 @@ def main() -> int:
         "require_primary_review": True,
         "require_actual_model_or_unverified_status": True,
         "require_normalized_worker_result": True,
+        "require_hash_bound_summary": True,
+        "require_branch_checkpoint_for_recursive_work": True,
     }
     if not isinstance(result_policy, dict) or any(
         result_policy.get(key) is not value
@@ -719,6 +855,10 @@ def main() -> int:
         "aggregate-budget-conflict": "reject",
         "cancelled-branch": "cancelled-by-primary",
         "missing-primary-convergence": "reject-result",
+        "primary-enveloped-recursive-read-only": "eligible-recursive",
+        "recursive-envelope-expansion": "reject-result",
+        "recursive-summary-digest-mismatch": "reject-result",
+        "primary-summary-budget-exceeded": "sequential-primary-fallback",
     }
     actual_cases = {
         case.get("id"): case.get("expected_outcome")

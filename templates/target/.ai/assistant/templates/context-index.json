@@ -402,6 +402,54 @@
       "content_digest": "sha256:3ce3fde5fef45b14321b217d79e985844bb6858ba3ffd025952a3f8f1b2c7b85"
     },
     {
+      "id": "assistant.content.templates-delegation-branch-checkpoint-json",
+      "kind": "content",
+      "path": "templates/delegation-branch-checkpoint.json",
+      "summary": "Delegation Branch Checkpoint",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "delegation",
+          "branch",
+          "checkpoint"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 53,
+      "content_digest": "sha256:5278fe663134692a0fa086d1ef14b418cba2b896bfaf4891f394d57bc6581317"
+    },
+    {
+      "id": "assistant.content.templates-delegation-branch-envelope-json",
+      "kind": "content",
+      "path": "templates/delegation-branch-envelope.json",
+      "summary": "Delegation Branch Envelope",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "delegation",
+          "branch",
+          "envelope"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 54,
+      "content_digest": "sha256:a96849c5a9ffdd9e43c0df27205c6a4ff16741264f1128de419348df9167889f"
+    },
+    {
       "id": "assistant.content.templates-delegation-execution-tree-json",
       "kind": "content",
       "path": "templates/delegation-execution-tree.json",
@@ -422,8 +470,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 131,
-      "content_digest": "sha256:7b98c713db48bafd4e56548d6fb7356b79a5b38cdd7660a02aeb2094c48db52e"
+      "estimated_words": 177,
+      "content_digest": "sha256:7396112235f8e1746cc95d8e792e913f1799ac57739c9de16c7841649aee7e35"
     },
     {
       "id": "assistant.content.templates-dependency-knowledge-sync-report-md",
@@ -857,8 +905,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 297,
-      "content_digest": "sha256:170051448ebfca049b2563367ea0b2e469a812f24573aab521b42e25ec3c65a8"
+      "estimated_words": 329,
+      "content_digest": "sha256:2e8d81451825b7ccf5ff1169a0d9e86fa0b7725de870487b170603dee9369e5d"
     },
     {
       "id": "assistant.content.templates-task-decomposition-md",
@@ -1091,8 +1139,31 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 241,
-      "content_digest": "sha256:55e3afba4c0c38741bca5e018acc3a74a2ac96b9876c0e6703d4c2511578101e"
+      "estimated_words": 282,
+      "content_digest": "sha256:763e75614c3f802a02a5826bf9080d02ffa38ea7589a72beea9a7c00e536127f"
+    },
+    {
+      "id": "assistant.content.templates-worker-result-json",
+      "kind": "content",
+      "path": "templates/worker-result.json",
+      "summary": "Worker Result",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "worker",
+          "result"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 77,
+      "content_digest": "sha256:7c4bed46efc541d3f000df2bfe1da585878e760441a34ef5eecb38126199f209"
     },
     {
       "id": "assistant.content.templates-worker-result-md",
@@ -1114,8 +1185,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 143,
-      "content_digest": "sha256:aae36059bdbeed1249c98bbabc7614c0af05bf5f63ee30f6d79dfb3fc3c3911a"
+      "estimated_words": 213,
+      "content_digest": "sha256:587ae963c39751fa3e9552abdc1e072526897ce98f6011ff7f22d220927f498e"
     },
     {
       "id": "assistant.content.templates-workspace-mode-preflight-md",

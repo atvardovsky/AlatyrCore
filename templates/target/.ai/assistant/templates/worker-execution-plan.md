@@ -13,17 +13,21 @@ Ledger template: `.ai/assistant/templates/delegation-execution-tree.json`
 
 ## Delegation Tree Budget
 
-Dispatch owner: `primary-assistant`
-Worker child behavior: `propose-only`
+Branch authorization owner: `primary-assistant`
+Worker child behavior: `{PROPOSE_ONLY_OR_PRIMARY_PREAUTHORIZED_READ_ONLY}`
 Maximum depth: `{TARGET_MAX_DEPTH_NOT_ABOVE_HARD_LIMIT}`
 Maximum total delegates: `{TARGET_MAX_TOTAL_DELEGATES}`
 Maximum parallel delegates: `{TARGET_MAX_PARALLEL_DELEGATES}`
 Maximum children per parent: `{TARGET_MAX_CHILDREN_PER_PARENT}`
 Maximum total context words: `{TARGET_MAX_CONTEXT_WORDS_TOTAL}`
+Maximum total result words: `{TARGET_MAX_RESULT_WORDS_TOTAL}`
+Maximum primary summary words: `{TARGET_MAX_PRIMARY_SUMMARY_WORDS_TOTAL}`
 Maximum retries: `{TARGET_MAX_RETRIES_TOTAL}`
 Used total delegates: `{CURRENT_USED_TOTAL_DELEGATES}`
 Used parallel delegates: `{CURRENT_USED_PARALLEL_DELEGATES}`
 Used context words: `{CURRENT_USED_CONTEXT_WORDS}`
+Used result words: `{CURRENT_USED_RESULT_WORDS}`
+Used primary summary words: `{CURRENT_USED_PRIMARY_SUMMARY_WORDS}`
 Used retries: `{CURRENT_USED_RETRIES}`
 
 ## Task Graph
@@ -52,6 +56,7 @@ Validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`
 Dispatch backend: `{NATIVE_EXTERNAL_SUGGESTION_ONLY_PRIMARY_OR_UNRESOLVED}`
 Packet ID: `{PACKET_ID_OR_NONE}`
 Result ID: `{RESULT_ID_OR_NONE}`
+Branch envelope/checkpoint: `{PATHS_DIGESTS_OR_NONE}`
 Blocker or readiness evidence: `{EVIDENCE}`
 
 ## Conflict Review
@@ -68,6 +73,9 @@ Cancelled branches: `{NONE_OR_PACKET_IDS_WITH_CANCELLED_BY_PRIMARY_STOP_REASON}`
 ## Primary Convergence
 
 Accepted results: `{RESULT_IDS_OR_NONE}`
+Indirect results covered by accepted summaries: `{RESULT_IDS_OR_NONE}`
+Primary-ingested summary words: `{MEASURED_WORDS}`
+Raw descendant results loaded by primary: `{NONE_OR_TRIGGER_AND_RESULT_IDS}`
 Rejected or retried results: `{RESULT_IDS_REASONS_OR_NONE}`
 Combined validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Logical integrity and approval reconciliation: `{RESULT}`

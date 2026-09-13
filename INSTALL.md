@@ -478,14 +478,16 @@ critical-path action and dispatch bounded independent sidecars under the target
 policy. Installation must record per-surface capability freshness, role/model
 bindings, exact client/runtime, explicit/automatic dispatch, project worker-
 definition format and paths, write and tool limits, background/nested behavior,
-execution-tree ledger, aggregate worker/context/retry budgets, semantic
-overlap decisions, cancellation stop reasons, retry/conflict fallback, privacy,
-validation, and primary convergence. Workers may propose child packets only;
-the primary assistant owns every dispatch and rechecks current authorization
+execution-tree ledger, aggregate worker/context/result/summary/retry budgets,
+semantic overlap decisions, cancellation stop reasons, retry/conflict fallback,
+privacy, validation, and primary convergence. The primary owns branch
+authorization. A verified coordinator may dispatch read-only depth-two
+children only inside its hash-bound branch envelope and must return a measured,
+hash-bound summary checkpoint. The primary rechecks current authorization
 before integration, commit, publication, or live effects. Create provider-
 native worker definitions only for a verified supported target surface. Keep
-them as thin bindings to the target-owned policy, role prompt, packet, result,
-execution tree, and validation. An unavailable requested model falls back; it
+them as thin bindings to the target-owned policy, role prompt, packet, machine
+result, branch envelope/checkpoint, execution tree, and validation. An unavailable requested model falls back; it
 is never silently reported as used.
 
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and

@@ -5,36 +5,30 @@ Scope: AlatyrCore source repository only.
 Canonical portable rule: `ALATYR-DELEGATION-001` in
 `framework/subagent-delegation.md`.
 
-This policy applies only while the AlatyrCore source repository is active. It
-neither becomes a portable target rule nor governs a repository that installs,
-vendors, or depends on AlatyrCore. The host's active adapter owns its worker
-policy; this document is passive dependency evidence outside this contour.
+This source-only policy does not govern an installer, host, vendor, or
+dependent repository. Each host adapter owns its worker policy; this document
+is passive dependency evidence outside this contour.
 
 ## Activation
 
-Select the source task profile before evaluating delegation. The machine-
-readable source policy is `tools/source_worker_policy.json`; this document
-explains how the active assistant applies it. The policy is provider-neutral
-and does not prove that the current client can launch workers.
+Select the source profile before evaluating delegation. The provider-neutral
+machine policy is `tools/source_worker_policy.json`; it does not prove current
+client capability.
 
-For ordinary source work, first classify the task. Small and standard tasks
-remain with the primary assistant unless an independently justified route says
-otherwise. For `large-or-resumable` work, identify at least two bounded,
-independent, read-only packets. Until those packets exist, record
-`workstream-identification-required`; do not treat a broad task description as
-a dispatchable packet. Use workers when the packets are likely to reduce
-wall-clock time or provide materially stronger review after accounting for
-preparation, review, and integration cost. Keep eligible work local only with
-a policy reason ID and concrete task evidence.
+Small and standard tasks stay primary-owned unless a justified route says
+otherwise. `large-or-resumable` work needs at least two bounded, independent,
+read-only packets; otherwise record `workstream-identification-required`.
+Dispatch only when expected time or review benefit exceeds preparation,
+review, and integration cost. Keeping eligible work local needs a policy
+reason ID and task evidence.
 
-The two-packet minimum is an activation threshold, not a preferred fan-out.
-The primary assistant owns the complete execution tree, ledger, and every
-dispatch. Source workers are depth-1 read-only auditors; they may propose
-narrower follow-up packets but cannot launch them. Apply the policy limits for
-parallel workers, total workers, children, aggregate context, and retries. Stop
-at evidence saturation or at the first depth, budget, overlap, capability,
-authority, cancellation, or cost boundary and record the corresponding
-normalized stop-reason ID.
+Two packets are an activation threshold, not a preferred fan-out. The primary
+owns the tree, ledger, branch authorization, decisions, and convergence.
+Read-only source workers normally return proposals. With verified nested
+transport, a depth-1 coordinator may dispatch depth-2 read-only children inside
+an unexpired hash-bound primary envelope. Enforce every worker, child, context,
+result, summary, retry, overlap, capability, authority, cancellation, and cost
+limit; stop at evidence saturation or the first boundary and record its reason.
 
 For an explicit `repository-audit`, delegation evaluation is deterministic:
 
@@ -53,17 +47,14 @@ For an explicit `repository-audit`, delegation evaluation is deterministic:
 6. Keep authoritative checks, conflict resolution, final synthesis, and final
    validation with the primary assistant.
 
-Runtime verification and multiple independent candidates do not make
-delegation optional by silence. Use the workers unless a concrete capability,
-dependency, overlap, coordination-cost, client-policy, or user-scope reason is
-recorded.
+With verified runtime capability and multiple independent candidates, use the
+workers unless a concrete policy reason is recorded.
 
 ## Capability And Decision Evidence
 
-The active assistant owns runtime capability verification because only the
-current client knows whether native workers, parallel execution, model routing,
-and result delivery are available. Do not hard-code a provider, client,
-backend, executable, or model in source policy.
+The active assistant verifies current native-worker, parallel, model-routing,
+and result-delivery capability. Source policy never hard-codes a provider,
+client, backend, executable, or model.
 
 Record the evaluation status, runtime capability status, selected workstream
 IDs, decision, reason, and `skip_reason_id`. The policy defines which decisions
@@ -82,9 +73,10 @@ preflight evidence, not proof of client probing, dispatch, or result delivery.
 Completion is not accepted from preflight evidence. It is validated through the
 execution-tree ledger and primary convergence record.
 
-Every packet must carry schema version 4, its parent, depth, remaining worker
+Every packet must carry schema version 5, its parent, depth, remaining worker
 budget, unique coverage key, workstream ID, role, objective, bounded and
-conditional context, maximum initial and result words, non-goals,
+conditional context, maximum initial, result, and summary words, inherited
+context-packet identity and delta, non-goals,
 `inspect`-only action mode, no-write scope, semantic scope, changed fact IDs,
 canonical owner references, surface references, relationship references,
 overlap decision, independence evidence, and expected evidence. Policy
@@ -92,22 +84,24 @@ validation measures all required file content and rejects a built-in packet
 whose initial payload exceeds its declared limit. Task-specific packets are
 passed with repeatable `--worker-packet` arguments. Their bounded paths must be
 repository-relative, exist inside the repository, and not escape through a
-symlink. Workers may expand only through conditional context or return a child
-proposal for primary review. Expansion counts against the execution-tree
-aggregate context budget. `max_result_words` is an instruction ceiling.
-The primary must measure or conservatively estimate the returned result before
-integration and reject or request a narrower result when it exceeds the packet
-limit. The current source execution-tree schema does not independently prove
-result word count, so it must not be presented as machine-enforced evidence.
-Workers never dispatch descendants.
+symlink. Workers may expand only through conditional context. Outside a primary
+branch envelope they return child proposals for review. Inside one, a
+coordinator may dispatch only a narrowed inspect-only depth-2 packet. Expansion
+counts against the execution-tree aggregate context budget. Each worker node
+binds its context-word count to a measured artifact. Every accepted result uses
+measured raw and accepted-summary artifacts, SHA-256 values, tool IDs,
+child-result identity, and a deterministic subtree digest. Recursive branches
+record a resumable checkpoint. Validate accepted execution evidence with
+`python3 tools/alatyr.py validate-delegation-tree ...`; schema-1 ledgers remain
+legacy structural records and are not acceptance evidence.
 
-When delegation runs, maintain an execution-tree ledger compatible with the
-source policy: schema version 1, `alatyr-delegation-execution-tree` kind,
-current authorization, base revision, policy revision, capability evidence,
-aggregate budget use, node and edge topology, semantic overlap decisions, stop
-and cancellation reasons, delegated validation, primary review, and primary
-convergence. Treat a missing or inconsistent ledger as an integration failure,
-even when individual worker packets look valid.
+Keep a schema-2 `alatyr-delegation-execution-tree` ledger. Record current
+authorization and time, base revision, the canonical policy digest, the hashed capability
+artifact, measured budgets, topology, overlap decisions, direct and indirect
+result coverage, stop or cancellation reasons, validation, primary review, and
+convergence. Routine primary context loads accepted summaries and the latest
+checkpoint, not descendant raw payloads. A missing or inconsistent ledger
+blocks integration.
 
 ## Model Routing
 

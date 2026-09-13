@@ -36,8 +36,9 @@ assistant continues locally.
 
 An enabled target owns a portable worker layer made of a delegation policy,
 role catalog, orchestration prompt, task graph, execution-tree ledger, bounded
-packet, normalized result, and primary convergence record. Provider-native agents, managed
-workers, external dispatchers, and suggestion-only handoffs are thin execution
+packet, primary-approved branch envelope, normalized result, branch checkpoint,
+and primary convergence record. Provider-native agents, managed workers,
+external dispatchers, and suggestion-only handoffs are thin execution
 bindings to that layer. They do not become policy or project-knowledge owners.
 
 ## Responsibility Boundary
@@ -54,6 +55,13 @@ A delegate is an execution surface, not a project owner, approver, decision
 authority, or automatically enrolled team actor. Delegation does not broaden
 allowed actions, tool permissions, network access, approval scope, or changed
 files.
+
+Separate dispatch authority from dispatch transport. The primary owns every
+branch envelope and all project decisions. A verified branch coordinator may
+use provider-native nested transport only for read-only children inside that
+immutable, hash-bound envelope. It cannot expand depth, actions, tools, paths,
+semantic scope, coverage, context, result, retry, validation, or expiry limits.
+Any requested expansion returns to the primary as a proposal.
 
 Delegation also does not broaden current user authorization. A worker inherits
 only the parent scope and authorized action phases. It must not commit, push,
@@ -105,18 +113,22 @@ through capability, authorization, approval, and cost gates.
 
 ## Delegation Tree And Stop Contract
 
-The primary assistant owns the complete delegation tree and every dispatch.
-A worker may return a bounded child-packet proposal, but it must not dispatch,
-authorize, or recursively create workers itself. The primary rechecks the
-proposal against current scope, dependencies, coverage, capability, and the
-remaining tree budget before deciding whether to dispatch it.
+The primary assistant owns the complete delegation tree and every branch
+authorization. In `propose-only` mode, a worker returns child proposals for
+primary dispatch. In `primary-preauthorized-read-only` mode, a verified branch
+coordinator may instantiate depth-two read-only children within a primary-
+issued envelope. It never gains authorization or decision authority. New
+scope, overlap, failed validation, stale context, malformed evidence, or budget
+pressure ends the branch and returns control to the primary.
 
 The execution-tree ledger is the required synchronization surface for enabled
 recursive delegation. It binds current-scope authorization, base revision,
-policy and capability evidence, aggregate worker budget, parent-child edges,
-packet and result IDs, semantic scope, changed fact IDs, canonical owners,
-surface references, relationship references, overlap decisions, child
-proposals, stop reasons, cancellation, and primary convergence evidence. A
+recorded execution time, canonical JSON policy digest, hash-bound capability evidence,
+aggregate worker budget, parent-child edges, packet and result IDs, semantic
+scope, changed fact IDs, canonical owners, surface references, relationship
+references, overlap decisions, child proposals, branch envelopes and
+checkpoints, measured result and accepted-summary artifacts, stop reasons,
+cancellation, and primary convergence evidence. A
 valid packet or result is not sufficient when the tree violates budget,
 coverage, semantic-overlap, authorization, or convergence rules.
 
@@ -136,9 +148,11 @@ workers merely because budget remains.
 
 Every completed, blocked, rejected, or undispatched branch records one
 normalized stop reason: scope covered, evidence sufficient, coordination cost
-exceeds benefit, maximum depth reached, worker/context/retry budget reached,
-semantic decision required, overlapping scope, primary critical path,
-capability unavailable, user restricted, or cancelled by the primary assistant.
+exceeds benefit, maximum depth reached, worker/context/result/retry or primary-
+context budget reached, checkpoint required or invalid, context or evidence
+digest mismatch, branch-envelope violation, validation regression, semantic
+decision required, overlapping scope, primary critical path, capability
+unavailable, user restricted, or cancelled by the primary assistant.
 Missing stop evidence is a failed delegation record, not permission to continue.
 
 ## Worker Role Catalog
@@ -231,12 +245,13 @@ Every dispatched task uses a bounded target packet that records:
 - goal, non-goals, expected output, and local acceptance criteria
 - semantic scope, changed facts, canonical owner references, surface
   references, relationship references, and overlap decision
-- required and excluded context
+- parent context-packet digest, context delta, and required or excluded context
 - allowed actions, tools, files, surfaces, and prohibited actions
 - selected assistant surface, role, model binding, and capability evidence
 - dependency state, concurrency/write-isolation decision, and fallback
 - validation to run and the result/evidence shape to return
-- child proposals as suggestions for primary review only
+- result and accepted-summary budgets
+- child proposals or one primary-approved read-only branch envelope
 
 Do not send the full project context by default. Do not split one semantic fact
 across independent delegates unless one primary-owned workstream performs
@@ -253,6 +268,23 @@ findings, follow-up, residual risk, depth, coverage key, semantic scope,
 changed fact IDs, canonical owner references, surface references, relationship
 references, overlap decision, execution-tree node status, child proposals, and
 a normalized stop reason.
+
+The execution node binds the delivered context to a measured UTF-8 artifact;
+its recorded context words must match that artifact. The machine result records
+observed raw-result and accepted-summary words and characters, content SHA-256
+values, input-context identity, tools used, child-result digests, evidence
+references, and a deterministic subtree digest. Tool IDs must remain inside a
+recursive branch envelope's allowed-tool selectors. Raw payloads remain lazy
+references. Routine parent context receives only the accepted summary. A digest
+proves identity and integrity, not correctness or comprehension.
+
+A recursive branch also emits a hash-bound checkpoint covering its envelope,
+accepted and rejected child results, completed coverage, compact conclusion,
+context identity, canonical JSON digests of accepted child evidence manifests
+and validation, unresolved escalation, next action, and stop reason. The
+newest accepted checkpoint plus delta replaces older branch prose when work
+resumes. Load raw child evidence only for a named conflict, scope concern,
+failed validation, semantic decision, or final-review requirement.
 
 Provider-native prose is not accepted directly as completion evidence. The
 primary assistant must normalize it first. A missing identity, stale baseline,
@@ -282,28 +314,30 @@ no coordination uncertainty.
 
 After a delegate returns, the primary assistant must:
 
-1. Verify packet identity, actual model/capability evidence when available,
+1. Verify packet identity, hash the recorded capability-evidence artifact,
+   verify actual model/capability evidence when available,
    execution-tree node status, touched surfaces, commands run, and unresolved
    findings.
 2. Reject out-of-scope, unsupported, unvalidated, or conflicting output.
 3. Review the patch or evidence against current repository state.
-4. Update the execution-tree ledger with accepted, rejected, cancelled, or
+4. Verify measured context, result, and summary artifacts, recursive envelope
+   and checkpoint digests, and direct versus indirect result coverage.
+5. Update the execution-tree ledger with accepted, rejected, cancelled, or
    undispatched branches and their stop reasons.
-5. Run or repeat target validation required by combined risk.
-6. Reconcile changed facts, approvals, companion surfaces, and workstreams.
-7. Record primary convergence over delegated outputs, semantic-overlap
+6. Run or repeat target validation required by combined risk.
+7. Reconcile changed facts, approvals, companion surfaces, and workstreams.
+8. Record primary convergence over delegated outputs, semantic-overlap
    decisions, aggregate budget use, validation, residual risk, and rejected
    child proposals.
-8. Report delegated and locally completed work without overstating model,
+9. Report delegated and locally completed work without overstating model,
    quality, latency, or cost evidence.
 
 A delegate result is evidence for primary review, not operation completion.
 
 Provider-native nested delegation never grants autonomous recursion. A target
-may use verified nested transport for a primary-approved child packet only
-when the policy permits depth `2`; the primary still owns dispatch. Every child
-packet may only narrow its parent's context, action ceiling, write scope, and
-authority.
+may use verified nested transport only when policy permits depth `2` and the
+primary has issued the exact branch envelope. Every child packet narrows its
+parent's context and remains inspect-only with no write scope.
 
 ## Cost And Performance Evidence
 
@@ -314,6 +348,9 @@ but should keep those goals separate. Record:
 - packet preparation and review overhead when measured
 - model or role actually used, or that it could not be verified
 - validation/rework outcome
+- aggregate worker context and raw-result words
+- accepted-summary words actually ingested by the primary
+- whether hierarchical compaction avoided loading descendant raw outputs
 - observed latency or cost only when comparable evidence exists
 
 Do not claim percentage savings from model labels or parallelism alone.

@@ -166,9 +166,11 @@ it. A worker receives a task packet after the primary assistant assigns the
 implementation level, context, scope, dependencies, and validation.
 
 When a worker identifies useful descendant work, it returns a bounded child
-proposal. The primary assistant alone decides whether to add and dispatch that
-task. Apply the target delegation-tree depth, total-worker, child, context,
-retry, parallelism, coverage, and stop limits. The minimum number of
+proposal unless the primary has issued a hash-bound, read-only branch envelope.
+Inside that envelope, a verified branch coordinator may use nested transport
+for depth-two inspection while the primary retains authority and convergence.
+Apply the target delegation-tree depth, total-worker, child, context, result,
+summary, retry, parallelism, coverage, and stop limits. The minimum number of
 independent candidates is an activation threshold, not a desired worker count.
 
 ## Quality Guard
@@ -198,7 +200,9 @@ For material work, final evidence should include:
 - context selected and intentionally omitted for each task
 - worker packet/result IDs and execution-tree ledger when delegation was used
 - delegation-tree depth, semantic coverage, overlap decisions, budget use,
-  child proposals, cancellation, and stop reasons
+  branch envelopes, accepted checkpoints, child proposals, cancellation, and
+  stop reasons
+- measured raw-result words and accepted-summary words loaded by the primary
 - validation and acceptance evidence per task
 - primary convergence result and residual risk
 

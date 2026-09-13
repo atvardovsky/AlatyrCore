@@ -227,9 +227,12 @@ Before accepting a change, check:
   implementation levels, executor selection, primary convergence, or worker
   eligibility contracts change.
 - `python3 tools/check_subagent_delegation.py` passes when delegation policy,
-  worker roles/prompts, task/packet/result contracts, lazy overlay,
+  worker roles/prompts, task/packet/result contracts, recursive envelopes,
+  branch checkpoints, compact-summary evidence, lazy overlay,
   model/native-definition capability evidence, bridge routing,
-  retry/conflict fallback, or primary convergence changes.
+  retry/conflict fallback, or primary convergence changes. Validate one
+  resolved evidence tree with `python3 tools/alatyr.py
+  validate-delegation-tree ...`.
 - `python3 tools/check_manifest_contract.py` passes when the target manifest
   template, versioning fields, path references, or adapter metadata contract
   changes.

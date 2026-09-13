@@ -5,7 +5,9 @@ Parent packet ID: `{PARENT_PACKET_ID_OR_NONE}`
 Depth: `{NON_NEGATIVE_INTEGER}`
 Remaining worker budget: `{NON_NEGATIVE_INTEGER}`
 Coverage key: `{UNIQUE_BOUNDED_COVERAGE_KEY}`
-Child proposal policy: `propose-only`
+Child dispatch mode: `{PROPOSE_ONLY_PRIMARY_PREAUTHORIZED_READ_ONLY_OR_NONE}`
+Primary branch envelope: `{DIGEST_BOUND_BRANCH_ENVELOPE_OR_NONE}`
+Branch envelope SHA-256: `{LOWERCASE_SHA256_OR_NONE}`
 Execution tree ledger: `{TARGET_APPROVED_OPERATION_LEDGER_PATH_OR_INLINE_EVIDENCE}`
 Ledger template: `.ai/assistant/templates/delegation-execution-tree.json`
 Task ID: `{TASK_ID}`
@@ -37,8 +39,13 @@ Base revision: `{BASE_REVISION}`
 
 Required context: `{REQUIRED_CONTEXT_PATHS_AND_REASONS}`
 Excluded context: `{EXCLUDED_CONTEXT_OR_NOT_NEEDED}`
+Parent context packet digest: `{PARENT_CONTEXT_PACKET_SHA256_OR_NONE}`
+Context delta add: `{NEW_CONTEXT_REFS_OR_NONE}`
+Context delta remove: `{INHERITED_CONTEXT_REFS_NOT_REQUIRED_OR_NONE}`
 Context budget: `{TARGET_PACKET_CONTEXT_BUDGET}`
 Tree context budget remaining: `{TARGET_TREE_CONTEXT_BUDGET_REMAINING}`
+Result word budget: `{TARGET_PACKET_RESULT_WORD_BUDGET}`
+Accepted summary word budget: `{TARGET_PACKET_SUMMARY_WORD_BUDGET}`
 
 ## Authority Boundary
 
@@ -67,6 +74,8 @@ Fallback: `{CONTINUE_PRIMARY_USE_STRONGER_VERIFIED_MODEL_OR_STOP}`
 
 Delegate validation: `{TARGET_FOCUSED_VALIDATION_OR_MANUAL_REVIEW}`
 Return format: `.ai/assistant/templates/worker-result.md`
+Machine result format: `.ai/assistant/templates/worker-result.json`
+Recursive checkpoint format: `.ai/assistant/templates/delegation-branch-checkpoint.json`
 
 ## Returned Result
 
@@ -81,7 +90,7 @@ Unexpected scope or conflicts: `{DETAILS_OR_NONE}`
 Residual risk: `{RESIDUAL_RISK}`
 Stop reason ID: `{TARGET_STOP_REASON_ID}`
 Proposed child packets: `{BOUNDED_CHILD_PACKET_PROPOSALS_OR_NONE}`
-Child proposal handling: `primary-review-only; delegates must not dispatch descendants`
+Child handling: `{PRIMARY_REVIEW_ONLY_OR_INSIDE_PRIMARY_PREAUTHORIZED_READ_ONLY_ENVELOPE}`
 
 ## Primary Review
 

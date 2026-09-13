@@ -397,17 +397,20 @@ Record where completed packets are stored, ignored, redacted, or removed.
 Include `.ai/assistant/delegation-policy.json`, the delegated-execution
 overlay, worker role catalog/prompts, orchestration prompt,
 `.ai/assistant/flows/subagent-delegation.flow.md`, native-binding authoring,
-execution-plan, delegation execution-tree, packet, and normalized-result
-templates only when the target enables subagent delegation. Record verified
+execution-plan, delegation execution-tree, packet, normalized-result, branch-
+envelope, and branch-checkpoint templates only when the target enables subagent
+delegation. Record verified
 surface capabilities and never infer model access or native definition support
 from framework examples. For each surface,
 select native, external, suggestion-only, or unsupported dispatch and bind an
 external route to an approved target AI-infrastructure item. Create native
 worker definitions only after verifying the exact target client; keep them as
 thin bindings and record their format and paths in that capability record.
-Workers may propose child packets only; the primary assistant owns dispatch,
-aggregate budget enforcement, semantic-overlap reconciliation, cancellation,
-validation, and final convergence.
+The primary owns branch authorization, aggregate budget enforcement, semantic-
+overlap reconciliation, cancellation, validation, and final convergence. A
+verified coordinator may dispatch read-only depth-two children only inside a
+hash-bound primary envelope and returns measured result and summary artifacts
+plus a resumable branch checkpoint.
 
 Include `.ai/assistant/change-packages/index.json`, the lazy change-package
 overlay, `.ai/assistant/flows/change-package.flow.md`, and machine/human report

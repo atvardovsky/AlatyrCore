@@ -20,6 +20,12 @@
       "write_scope": "none"
     },
     {
+      "name": "validate-delegation-tree",
+      "script": "validate_delegation_execution_tree.py",
+      "purpose": "validate measured recursive delegation evidence and compact summaries",
+      "write_scope": "none"
+    },
+    {
       "name": "context-plan",
       "script": "plan_target_context.py",
       "purpose": "plan bounded read-only context for an installed target task",

@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "policy_kind": "target-subagent-delegation-policy",
   "state": "{ENABLED_SUGGEST_ONLY_DISABLED_OR_BLOCKED}",
   "owner": "{TARGET_DELEGATION_POLICY_OWNER}",
@@ -8,14 +8,32 @@
   "max_parallel_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
   "tree_policy": {
     "dispatch_owner": "primary-assistant",
-    "worker_child_behavior": "propose-only",
+    "worker_child_behavior": "{PROPOSE_ONLY_OR_PRIMARY_PREAUTHORIZED_READ_ONLY}",
     "default_max_depth": 1,
-    "hard_max_depth": 2,
+    "hard_max_depth": "{ONE_OR_TWO_NOT_ABOVE_PORTABLE_HARD_LIMIT}",
     "max_total_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
     "max_children_per_parent": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
     "max_context_words_total": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
     "max_retries_total": "{POSITIVE_INTEGER_OR_ZERO}",
     "require_disjoint_coverage_keys": true
+  },
+  "recursive_child_policy": {
+    "require_verified_nested_capability": true,
+    "require_primary_branch_envelope": true,
+    "allowed_actions": ["inspect"],
+    "write_scope": "none",
+    "must_narrow_parent_scope": true,
+    "escalation": "return-to-primary"
+  },
+  "context_compaction": {
+    "mode": "hierarchical-summary",
+    "raw_result_loading": "reference-only-unless-review-triggered",
+    "summary_propagation": "accepted-summary-only",
+    "digest_algorithm": "sha256",
+    "require_measured_result_artifacts": true,
+    "deduplicate_inherited_context": true,
+    "max_result_words_total": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+    "max_primary_summary_words_total": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}"
   },
   "stop_policy": {
     "require_stop_reason": true,
@@ -27,6 +45,14 @@
       "maximum-depth-reached",
       "worker-budget-reached",
       "context-budget-reached",
+      "result-budget-reached",
+      "primary-context-budget-reached",
+      "checkpoint-required",
+      "checkpoint-invalid",
+      "context-digest-stale",
+      "evidence-digest-mismatch",
+      "branch-envelope-violation",
+      "validation-regression",
       "semantic-decision-required",
       "overlapping-scope",
       "primary-critical-path",
@@ -84,7 +110,9 @@
     "accept_unvalidated_changes": false,
     "require_primary_review": true,
     "require_actual_model_or_unverified_status": true,
-    "require_normalized_worker_result": true
+    "require_normalized_worker_result": true,
+    "require_hash_bound_summary": true,
+    "require_branch_checkpoint_for_recursive_work": true
   },
   "privacy_and_retention": "{TARGET_PACKET_AND_RESULT_PRIVACY_RETENTION_POLICY}",
   "validation": [

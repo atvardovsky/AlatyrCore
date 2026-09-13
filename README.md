@@ -441,6 +441,13 @@ support generation can coordinate target-declared deterministic derivatives,
 assistant proposals, and owner-maintained artifacts without turning generated
 output into a new source of truth. Optional
 modules are enabled only when the target project needs and can maintain them.
+When the exact assistant runtime supports nested workers, the delegation module
+can partition read-only discovery one level further inside a primary-issued,
+hash-bound branch envelope. Coordinators return measured compact summaries to
+the primary while descendant raw evidence stays available by reference. This
+is designed to reduce primary-context pressure and may reduce wall time for
+independent work; it can increase total worker-token use and never delegates
+project decisions, writes, approval, integration, or final validation.
 Workspace modes can additionally separate application, framework, library,
 skeleton, dependency, or workspace perspectives. The assistant proposes modes
 from repository evidence after installation, while users decide which modes
@@ -582,7 +589,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.64`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.65`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -602,6 +609,9 @@ Important limits:
 - Provider-neutral conformance contracts can prepare, import, collect, and
   validate evidence across supported surfaces, but only captured reviewed runs
   prove actual provider behavior.
+- Recursive delegation evidence can prove recorded envelope, digest, budget,
+  checkpoint, and summary consistency. It cannot prove that a provider ran the
+  workers, that their conclusions are correct, or that total cost decreased.
 - Context receipts separate planned and resolved source estimates from observed
   host/provider telemetry; estimates are not presented as actual token savings.
 - Provider cache support is recorded separately from assistant support. Alatyr

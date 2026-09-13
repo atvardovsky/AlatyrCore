@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "result_kind": "alatyr-normalized-worker-result",
+  "result_id": "{RESULT_ID}",
+  "packet_id": "{PACKET_ID}",
+  "parent_packet_id": "{PARENT_PACKET_ID_OR_NONE}",
+  "node_id": "{NODE_ID}",
+  "depth": "{ONE_OR_TWO}",
+  "base_revision": "{BASE_REVISION}",
+  "status": "{SUCCEEDED_FAILED_BLOCKED_CANCELLED_REQUIRES_REVIEW_OR_REJECTED}",
+  "measurement_state": "observed",
+  "input_context_packet_sha256": "{LOWERCASE_SHA256_OR_NONE}",
+  "raw_payload": {
+    "path": "{TARGET_RELATIVE_RAW_RESULT_PATH}",
+    "word_count": "{MEASURED_NON_NEGATIVE_INTEGER}",
+    "character_count": "{MEASURED_NON_NEGATIVE_INTEGER}",
+    "sha256": "{LOWERCASE_SHA256}"
+  },
+  "accepted_summary": {
+    "path": "{TARGET_RELATIVE_ACCEPTED_SUMMARY_PATH}",
+    "word_count": "{MEASURED_NON_NEGATIVE_INTEGER}",
+    "character_count": "{MEASURED_NON_NEGATIVE_INTEGER}",
+    "sha256": "{LOWERCASE_SHA256}"
+  },
+  "summary_covers_result_ids": ["{CHILD_RESULT_ID_OR_NONE}"],
+  "child_result_sha256": ["{CHILD_RESULT_SHA256_OR_NONE}"],
+  "evidence_manifest": [
+    {
+      "path": "{TARGET_RELATIVE_EVIDENCE_PATH}",
+      "revision": "{EVIDENCE_REVISION}",
+      "sha256": "{LOWERCASE_SHA256}",
+      "validation": "{VALIDATION_RESULT}"
+    }
+  ],
+  "touched_surfaces": ["{TARGET_RELATIVE_PATH_OR_NONE}"],
+  "tools_used": ["{TOOL_ID_OR_NONE}"],
+  "scope_violation": "{NONE_OR_DETAILS}",
+  "authorization_concern": "{NONE_OR_DETAILS}",
+  "validation": ["{VALIDATION_RESULT_OR_NOT_RUN_WITH_REASON}"],
+  "stop_reason_id": "{NORMALIZED_STOP_REASON_ID}",
+  "subtree_sha256": "{SHA256_OF_RESULT_AND_CHILD_DIGESTS}"
+}

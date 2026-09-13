@@ -58,7 +58,7 @@ plan exist.
 
 Static admission and actual support are separate. A selected target surface
 records instruction loading, skill source and activation, client permissions,
-provider context caching, diagram behavior, and delegation in its schema-4
+provider context caching, diagram behavior, and delegation in its schema-5
 capability record. That record
 also separates whether the surface is advertised, selected, supported,
 verified, and fresh for the target. Client permissions and auto-approval never
@@ -147,7 +147,9 @@ not copy actor, priority, task, identity, or review policy.
 When `subagent-delegation` is enabled, every supported surface uses the same
 target policy, role catalog and prompts, orchestration prompt, deterministic
 task plan, delegated-execution overlay, packet/result templates, and primary-
-convergence rule. The selected per-surface capability record states the exact
+convergence rule. A verified nested-worker runtime may also use the common
+primary-issued read-only branch-envelope, measured-result, compact-summary, and
+checkpoint contracts. The selected per-surface capability record states the exact
 client/runtime; native, approved external, suggestion-only, or unsupported
 backend; explicit/automatic invocation; project worker-definition format and
 paths; tool, isolation, background/nested, model, parallelism, and evidence
@@ -292,9 +294,10 @@ supported bridge capability entries.
 Maintainers can run `python3 tools/check_subagent_delegation.py` to validate
 the portable delegation rule, target policy, six-role catalog, orchestration
 prompt, task graph, packet/result contracts, lazy overlay, unsafe-decomposition
-fixtures, per-surface backend/native-definition capabilities, bridge routing,
+fixtures, recursive envelope/checkpoint contracts, measured compact-summary
+evidence, per-surface backend/native-definition capabilities, bridge routing,
 and primary convergence. Structural conformance does not prove safe semantic
-decomposition or actual provider/model availability.
+decomposition, actual provider/model availability, or lower total token use.
 
 Maintainers can run `python3 tools/check_architecture_knowledge.py` to validate
 the portable architecture rule, target catalog, operation, lazy route,

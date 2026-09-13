@@ -2,9 +2,26 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.65 - 2026-09-13
+
 - Corrected platform lifecycle smoke runs so run-local scaffold artifacts are
   mandatory only when the selected dependency graph includes their producer;
   full and release profiles retain fail-closed artifact reuse.
+- Added bounded recursive read-only delegation through immutable
+  primary-issued branch envelopes, while preserving primary ownership of
+  authorization, decisions, writes, integration, and final convergence.
+- Added measured and hash-bound worker input, raw-result, and accepted-summary
+  artifacts; content-bound capability evidence; machine-verifiable tool-use
+  boundaries; branch checkpoints; aggregate budgets; lazy descendant evidence;
+  expanded stop conditions; and exact capability fields for every supported
+  assistant surface.
+- Added a cross-platform read-only delegation-evidence validator and tests for
+  scope escape, budget drift, missing convergence evidence, and artifact
+  tampering.
+- Increased adapter schema version to `54` and target template version to `60`
+  for recursive delegation and evidence-contract changes.
 
 ## 0.1.0-alpha.64 - 2026-09-13
 
