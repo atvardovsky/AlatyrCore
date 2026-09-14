@@ -5,7 +5,7 @@
   "preload": false,
   "selectors": {
     "task_profiles": ["ai-infrastructure", "framework-upgrade"],
-    "operations": ["ai-infrastructure-adaptation", "ai-infrastructure-recommendation", "extension-management", "dependency-knowledge"]
+    "operations": ["ai-infrastructure-inventory", "ai-infrastructure-recommendation", "skill-adaptation", "extension-management", "dependency-knowledge"]
   },
   "terms": [
     {

@@ -36,6 +36,8 @@ DEFAULT_FIELDS = {
     "child_capacity_max",
     "duration_hint_seconds",
     "always_for_changed",
+    "produces_run_artifacts",
+    "artifact_dependencies",
 }
 CHECK_FIELDS = DEFAULT_FIELDS | {
     "id",
@@ -114,7 +116,7 @@ def load_manifest(
     if not isinstance(data, dict):
         raise ValueError("source check manifest must contain a JSON object")
     reject_unknown_fields("source check manifest", data, TOP_LEVEL_FIELDS)
-    if data.get("schema_version") != 2 or data.get("manifest_kind") != (
+    if data.get("schema_version") != 3 or data.get("manifest_kind") != (
         "alatyr-source-checks"
     ):
         raise ValueError("unsupported source check manifest")
@@ -156,6 +158,7 @@ def load_manifest(
             check_id, "trigger_paths", check.get("trigger_paths")
         )
         dependencies = check.get("depends_on")
+        artifact_dependencies = check.get("artifact_dependencies", [])
         if not isinstance(check_id, str) or not check_id or check_id in ids:
             raise ValueError(f"checks[{index}] has invalid or duplicate id")
         if not isinstance(command, list) or not command or not all(
@@ -193,7 +196,9 @@ def load_manifest(
         )
         if check.get("write_scope") not in ALLOWED_WRITE_SCOPES:
             raise ValueError(f"{check_id}.write_scope is invalid")
-        if script not in implementation_paths:
+        if not matches_any(
+            script, implementation_paths, dialect=PathDialect.SOURCE_HOST_V1
+        ):
             raise ValueError(
                 f"{check_id}.implementation_paths must include its command script"
             )
@@ -264,6 +269,20 @@ def load_manifest(
             isinstance(value, str) and value for value in dependencies
         ):
             raise ValueError(f"{check_id}.depends_on is invalid")
+        if (
+            not isinstance(artifact_dependencies, list)
+            or not all(
+                isinstance(value, str) and value for value in artifact_dependencies
+            )
+            or len(artifact_dependencies) != len(set(artifact_dependencies))
+        ):
+            raise ValueError(f"{check_id}.artifact_dependencies is invalid")
+        if not set(artifact_dependencies) <= set(dependencies):
+            raise ValueError(
+                f"{check_id}.artifact_dependencies must also be declared in depends_on"
+            )
+        if not isinstance(check.get("produces_run_artifacts", False), bool):
+            raise ValueError(f"{check_id}.produces_run_artifacts must be boolean")
         ids.add(check_id)
         check["contract_inputs"] = contract_inputs
         check["implementation_paths"] = implementation_paths
@@ -273,6 +292,10 @@ def load_manifest(
         check["micro_trigger_paths"] = micro_trigger_paths
         check["excluded_profiles"] = excluded_profiles
         check["always_for_changed"] = check.get("always_for_changed", False)
+        check["produces_run_artifacts"] = check.get(
+            "produces_run_artifacts", False
+        )
+        check["artifact_dependencies"] = artifact_dependencies
         normalized.append(check)
 
     by_id = {check["id"]: check for check in normalized}
@@ -280,6 +303,16 @@ def load_manifest(
         unknown = sorted(set(check["depends_on"]) - set(by_id))
         if unknown:
             raise ValueError(f"{check['id']} has unknown dependencies: {unknown}")
+        invalid_artifact_dependencies = sorted(
+            dependency
+            for dependency in check["artifact_dependencies"]
+            if not by_id[dependency]["produces_run_artifacts"]
+        )
+        if invalid_artifact_dependencies:
+            raise ValueError(
+                f"{check['id']} artifact dependencies do not declare produced "
+                f"run artifacts: {invalid_artifact_dependencies}"
+            )
 
     visiting: set[str] = set()
     visited: set[str] = set()

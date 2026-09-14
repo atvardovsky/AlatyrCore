@@ -494,6 +494,7 @@ def selection_report(
     profile: str,
     changed_from: str | None,
     plan: SelectionResult,
+    manifest_checks: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     broad_triggered: list[dict[str, Any]] = []
@@ -513,6 +514,19 @@ def selection_report(
         checks.append(entry)
         if entry["broad_trigger_patterns"] and entry["selection_reasons"]:
             broad_triggered.append(entry)
+    expected_acceptance_ids = {
+        check["id"]
+        for check in (manifest_checks or [])
+        if supports_profile(check, plan.effective_profile)
+        and supports_platform(check, plan.platform)
+    }
+    selected_ids = {check["id"] for check in plan.selected}
+    acceptance_scope_complete = (
+        profile in {"full", "release"}
+        and plan.effective_profile == profile
+        and bool(expected_acceptance_ids)
+        and selected_ids == expected_acceptance_ids
+    )
     return {
         "profile": profile,
         "effective_profile": plan.effective_profile,
@@ -525,6 +539,7 @@ def selection_report(
         "escalated_from_micro": plan.escalated_from_micro,
         "micro_escalation_reasons": plan.micro_escalation_reasons or [],
         "selected_check_ids": [check["id"] for check in plan.selected],
+        "acceptance_scope_complete": acceptance_scope_complete,
         "resource_class_counts": dict(sorted(resource_classes.items())),
         "checks": checks,
         "broad_trigger_diagnostics": {
@@ -769,6 +784,36 @@ def reusable_results(
     return results
 
 
+def require_executed_artifact_producers(
+    *,
+    selected: list[dict[str, Any]],
+    decisions: dict[str, dict[str, Any]],
+) -> None:
+    """Disable producer reuse when an executing consumer needs run-local output."""
+
+    by_id = {check["id"]: check for check in selected}
+    pending = [
+        check["id"]
+        for check in selected
+        if decisions.get(check["id"], {}).get("reusable") is not True
+    ]
+    visited: set[str] = set()
+    while pending:
+        check_id = pending.pop()
+        if check_id in visited:
+            continue
+        visited.add(check_id)
+        for producer_id in by_id[check_id].get("artifact_dependencies", []):
+            decision = decisions.get(producer_id)
+            if decision is not None and decision.get("reusable") is True:
+                decision["reusable"] = False
+                decision["reason"] = (
+                    f"executing {check_id} requires fresh run-local artifacts from "
+                    f"{producer_id}"
+                )
+                pending.append(producer_id)
+
+
 def effective_baseline(
     profile: str, changed_from: str | None, from_ref: str | None
 ) -> str | None:
@@ -802,6 +847,8 @@ def environment_report() -> dict[str, Any]:
             "PYTHONHASHSEED",
             "PYTHONIOENCODING",
             "TZ",
+            "GITHUB_REF_NAME",
+            "GITHUB_REF_TYPE",
         ]
     }
     return {
@@ -929,6 +976,7 @@ def render_report(
         "escalated_from_micro": False,
         "micro_escalation_reasons": [],
         "selected_check_ids": [check["id"] for check in selected],
+        "acceptance_scope_complete": False,
         "resource_class_counts": {},
         "checks": [],
         "broad_trigger_diagnostics": {
@@ -1114,6 +1162,30 @@ def render_report(
     reused_check_ids = [
         item["id"] for item in checks if item.get("status") == "reused-pass"
     ]
+    acceptance_scope_complete = (
+        resolved_selection.get("acceptance_scope_complete") is True
+    )
+    acceptance_eligible = (
+        successful and not reused_check_ids and acceptance_scope_complete
+    )
+    if not successful:
+        acceptance_reason = "run-not-successful"
+        acceptance_limitation = (
+            "incomplete, failed, or write-scope-changing runs are not acceptance evidence"
+        )
+    elif reused_check_ids:
+        acceptance_reason = "local-result-reuse"
+        acceptance_limitation = (
+            "reused local results are optimization evidence, not cold release evidence"
+        )
+    elif not acceptance_scope_complete:
+        acceptance_reason = "profile-not-acceptance-capable"
+        acceptance_limitation = (
+            "only a complete cold full or release profile is acceptance evidence"
+        )
+    else:
+        acceptance_reason = None
+        acceptance_limitation = None
     return {
         "schema_version": 3,
         "report_kind": "alatyr-source-check-run",
@@ -1132,14 +1204,11 @@ def render_report(
             ],
         },
         "acceptance_evidence": {
-            "eligible": successful and not reused_check_ids,
+            "eligible": acceptance_eligible,
             "mode": "cold-execution" if not reused_check_ids else "local-result-reuse",
             "reused_check_ids": reused_check_ids,
-            "limitation": (
-                None
-                if not reused_check_ids
-                else "reused local results are optimization evidence, not cold release evidence"
-            ),
+            "reason": acceptance_reason,
+            "limitation": acceptance_limitation,
         },
         "environment": resolved_environment,
         "source_write_scope": {
@@ -1588,6 +1657,55 @@ def print_check_result(
         print(line, file=sys.stderr)
 
 
+def store_cache_records(
+    run: CompletedSourceCheckRun, generated_report: dict[str, Any]
+) -> None:
+    """Store scheduling data always and reusable passes only in local mode."""
+
+    if run.cache is None:
+        return
+    if run.args.cache_mode == "local":
+        stored_checks = 0
+        for check in run.selected:
+            check_id = check["id"]
+            fingerprint = run.input_fingerprints.get(check_id, {})
+            observation = run.telemetry.get(check_id, {})
+            result = run.results.get(check_id)
+            if (
+                result is None
+                or result[0] != 0
+                or observation.get("reused") is True
+                or fingerprint.get("reuse_eligible") is not True
+            ):
+                continue
+            identity = check_cache_identity(
+                check=check,
+                command=result[3],
+                input_fingerprint=fingerprint,
+                environment=run.current_environment,
+                run_identity=run.run_identity,
+            )
+            run.cache.store(
+                "checks",
+                check_result_key(check_id, identity),
+                {
+                    "contract": CHECK_RESULT_CONTRACT,
+                    "identity": identity,
+                    "status": "passed",
+                    "timed_out": False,
+                },
+            )
+            stored_checks += 1
+        run.cache_events.append(f"checks:stored={stored_checks}")
+        run.cache.prune("checks", max_records=MAX_CHECK_CACHE_RECORDS)
+    run.cache.store(
+        "timing",
+        cache_key(run.args.profile, include_profile=False),
+        generated_report,
+    )
+    run.cache_events.append("timing:stored")
+
+
 def finalize_run(run: CompletedSourceCheckRun) -> int:
     """Verify write scope, publish evidence, and report the completed run."""
 
@@ -1676,53 +1794,7 @@ def finalize_run(run: CompletedSourceCheckRun) -> int:
 
     if run.cache is not None and generated_report is not None and not failures:
         try:
-            stored_checks = 0
-            for check in run.selected:
-                check_id = check["id"]
-                fingerprint = run.input_fingerprints.get(check_id, {})
-                observation = run.telemetry.get(check_id, {})
-                result = run.results.get(check_id)
-                if (
-                    result is None
-                    or result[0] != 0
-                    or observation.get("reused") is True
-                    or fingerprint.get("reuse_eligible") is not True
-                ):
-                    continue
-                identity = check_cache_identity(
-                    check=check,
-                    command=result[3],
-                    input_fingerprint=fingerprint,
-                    environment=run.current_environment,
-                    run_identity=run.run_identity,
-                )
-                run.cache.store(
-                    "checks",
-                    check_result_key(check_id, identity),
-                    {
-                        "contract": CHECK_RESULT_CONTRACT,
-                        "identity": identity,
-                        "status": "passed",
-                        "timed_out": False,
-                    },
-                )
-                stored_checks += 1
-            run.cache_events.append(f"checks:stored={stored_checks}")
-            run.cache.prune("checks", max_records=MAX_CHECK_CACHE_RECORDS)
-            run.cache.store(
-                "timing",
-                cache_key(run.args.profile, include_profile=False),
-                generated_report,
-            )
-            run.cache_events.append("timing:stored")
-            if (
-                run.args.cache_mode == "local"
-                and generated_report["acceptance_evidence"]["eligible"] is True
-            ):
-                run.cache.store(
-                    "results", cache_key(run.args.profile), generated_report
-                )
-                run.cache_events.append("results:stored")
+            store_cache_records(run, generated_report)
         except (OSError, ValueError) as exc:
             run.cache_events.append(f"store-skipped:{exc}")
 
@@ -1846,6 +1918,7 @@ def main() -> int:
             profile=args.profile,
             changed_from=changed_from,
             plan=plan,
+            manifest_checks=checks,
         )
         report_path = resolve_report_path(args.report) if args.report else None
         previous_report = load_reuse_report(args.reuse_report) if args.reuse_report else None
@@ -1948,6 +2021,7 @@ def main() -> int:
             )
         else:
             reuse = {}
+        require_executed_artifact_producers(selected=selected, decisions=reuse)
         initial_results = reusable_results(
             selected=selected,
             decisions=reuse,
@@ -1964,8 +2038,8 @@ def main() -> int:
         try:
             for check in selected:
                 check["_run_artifact_root"] = str(artifact_root)
-                check["_run_artifact_required"] = (
-                    "conformance-scaffold" in check.get("depends_on", [])
+                check["_run_artifact_required"] = bool(
+                    check.get("artifact_dependencies")
                 )
             results, blocked = execute_checks(
                 selected,

@@ -20,6 +20,7 @@ VERSION_RE = re.compile(
     r"(?P<number>0|[1-9][0-9]*))?(?:\+[0-9A-Za-z.-]+)?$"
 )
 STAGE_ORDER = {"alpha": 0, "beta": 1, "rc": 2, None: 3}
+MAX_ALLOWLIST_SLACK_LINES = 25
 
 
 def version_key(value: str) -> tuple[int, int, int, int, int]:
@@ -138,6 +139,24 @@ def python_paths() -> list[Path]:
     )
 
 
+def allowlist_cap_failure(
+    relpath: str, qualname: str, lines: int, allowed_max: int
+) -> str | None:
+    """Reject growth and stale caps without forcing exact-line churn."""
+
+    if lines > allowed_max:
+        return (
+            f"{relpath}:{qualname} grew from allowlisted "
+            f"{allowed_max} to {lines} lines"
+        )
+    if allowed_max - lines > MAX_ALLOWLIST_SLACK_LINES:
+        return (
+            f"{relpath}:{qualname} allowlist cap {allowed_max} is stale for "
+            f"{lines} lines; ratchet it to within {MAX_ALLOWLIST_SLACK_LINES} lines"
+        )
+    return None
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -175,11 +194,11 @@ def main() -> int:
                 )
                 continue
             observed_allowlist.add(key)
-            if lines > allowed["max_lines"]:
-                failures.append(
-                    f"{relpath}:{qualname} grew from allowlisted "
-                    f"{allowed['max_lines']} to {lines} lines"
-                )
+            cap_failure = allowlist_cap_failure(
+                relpath, qualname, lines, allowed["max_lines"]
+            )
+            if cap_failure:
+                failures.append(cap_failure)
 
     missing = sorted(set(allowlist) - observed_allowlist)
     for relpath, qualname in missing:

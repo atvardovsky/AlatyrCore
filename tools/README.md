@@ -178,7 +178,7 @@ validator remains the stable command and host interface.
 
 ## Source Validation Runner
 
-`check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs
+`check_all.py` loads the schema-version-3 `tools/check_manifest.json` and runs
 dependency-aware source validation. The default `full` profile remains the
 acceptance gate. `quick` checks routing, bootstrap, scaffold, and standing
 support-cost guardrails without running the source unit suite. `micro` is an
@@ -272,7 +272,7 @@ declared trigger, the runner records the unmatched path and falls back to the
 full profile. The fallback is intentionally conservative, but the diagnostic
 shows which manifest route should be added when the cost spike is recurring.
 
-Each manifest check declares six separate concerns:
+Each manifest check declares eight separate concerns:
 
 - `contract_inputs`: repository facts, templates, schemas, fixtures, or other
   artifacts whose content the check evaluates.
@@ -286,6 +286,11 @@ Each manifest check declares six separate concerns:
   must include every declared contract and implementation path; additional
   broad triggers are allowed only when they make selection safer.
 - `depends_on`: prerequisite checks that must pass before the check can run.
+- `produces_run_artifacts`: whether a check creates temporary evidence consumed
+  by another check in the same invocation.
+- `artifact_dependencies`: the subset of `depends_on` whose temporary outputs
+  must be produced in the current invocation; an executing consumer disables
+  cache reuse for those producers.
 
 Inventory-only observations affect fingerprints when the check is selected;
 they do not broaden focused selection by themselves.

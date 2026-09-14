@@ -8,6 +8,7 @@ import threading
 import time
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 
@@ -20,6 +21,7 @@ from check_all import (  # noqa: E402
     build_run_identity,
     default_changed_from,
     effective_baseline,
+    environment_report,
     execute_checks,
     historical_duration_estimates,
     load_manifest,
@@ -27,6 +29,7 @@ from check_all import (  # noqa: E402
     record_post_execution_verification,
     render_report,
     render_timed_report,
+    require_executed_artifact_producers,
     resolve_report_path,
     resolve_changed_from,
     resolve_job_count,
@@ -36,6 +39,7 @@ from check_all import (  # noqa: E402
     selection_report,
     select_check_plan,
     select_checks,
+    store_cache_records,
 )
 from source_state import snapshot_changes, source_snapshot  # noqa: E402
 
@@ -55,6 +59,38 @@ def check(check_id: str, *dependencies: str) -> dict[str, Any]:
 
 
 class CheckGraphTests(unittest.TestCase):
+    def test_timing_cache_never_stores_reusable_check_results(self) -> None:
+        class RecordingCache:
+            def __init__(self) -> None:
+                self.stores: list[tuple[str, str]] = []
+                self.prunes: list[str] = []
+
+            def store(self, namespace: str, key: str, payload: object) -> None:
+                self.stores.append((namespace, key))
+
+            def prune(self, namespace: str, *, max_records: int) -> tuple[object, ...]:
+                self.prunes.append(namespace)
+                return ()
+
+        cache = RecordingCache()
+        run = SimpleNamespace(
+            args=SimpleNamespace(cache_mode="timing", profile="fast"),
+            cache=cache,
+            selected=[check("example")],
+            input_fingerprints={"example": {"reuse_eligible": True}},
+            telemetry={"example": {"reused": False}},
+            results={"example": (0, "", "", ["python", "check.py"])},
+            current_environment={},
+            run_identity={},
+            cache_events=[],
+        )
+
+        store_cache_records(run, {"successful": True})
+
+        self.assertEqual([namespace for namespace, _key in cache.stores], ["timing"])
+        self.assertEqual(cache.prunes, [])
+        self.assertEqual(run.cache_events, ["timing:stored"])
+
     def test_historical_durations_require_matching_platform_and_python_family(self) -> None:
         report = {
             "schema_version": 3,
@@ -960,6 +996,43 @@ class CheckGraphTests(unittest.TestCase):
         )
         self.assertEqual(report["acceptance_evidence"]["reused_check_ids"], ["cached"])
 
+    def test_executing_consumer_forces_run_local_artifact_producer(self) -> None:
+        producer = {
+            **check("producer"),
+            "produces_run_artifacts": True,
+            "artifact_dependencies": [],
+        }
+        consumer = {
+            **check("consumer", "producer"),
+            "artifact_dependencies": ["producer"],
+        }
+        decisions = {
+            "producer": {"reusable": True, "reason": "cache hit"},
+            "consumer": {"reusable": False, "reason": "cache miss"},
+        }
+
+        require_executed_artifact_producers(
+            selected=[producer, consumer], decisions=decisions
+        )
+
+        self.assertFalse(decisions["producer"]["reusable"])
+        self.assertIn("consumer", decisions["producer"]["reason"])
+
+    def test_github_release_environment_changes_environment_identity(self) -> None:
+        from unittest.mock import patch
+
+        with patch.dict(
+            "os.environ",
+            {"GITHUB_REF_TYPE": "tag", "GITHUB_REF_NAME": "v1.2.3"},
+            clear=False,
+        ):
+            environment = environment_report()
+
+        self.assertEqual(environment["visible_environment"]["GITHUB_REF_TYPE"], "tag")
+        self.assertEqual(
+            environment["visible_environment"]["GITHUB_REF_NAME"], "v1.2.3"
+        )
+
     def test_process_timeout_is_a_typed_runner_failure(self) -> None:
         item = check("timed-process")
         item["command"] = ["-c", "print('partial', flush=True); import time; time.sleep(10)"]
@@ -1132,6 +1205,51 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(report["changed_paths"], ["area/matched/file.md"])
         self.assertEqual(report["checks"][0]["selection_reasons"], ["changed-path-trigger"])
         self.assertEqual(report["checks"][0]["matched_changed_paths"], ["area/matched/file.md"])
+
+    def test_only_complete_full_profile_is_acceptance_eligible(self) -> None:
+        item = {
+            **check("complete"),
+            "profiles": ["fast", "full"],
+            "platforms": ["all"],
+        }
+        full_plan = select_check_plan([item], "full", None, platform="linux")
+        full_selection = selection_report(
+            profile="full",
+            changed_from=None,
+            plan=full_plan,
+            manifest_checks=[item],
+        )
+        full_report = render_report(
+            profile="full",
+            selected=full_plan.selected,
+            results={"complete": (0, "", "", ["complete"])},
+            blocked={},
+            source_changes=[],
+            selection=full_selection,
+        )
+        fast_plan = select_check_plan([item], "fast", None, platform="linux")
+        fast_selection = selection_report(
+            profile="fast",
+            changed_from=None,
+            plan=fast_plan,
+            manifest_checks=[item],
+        )
+        fast_report = render_report(
+            profile="fast",
+            selected=fast_plan.selected,
+            results={"complete": (0, "", "", ["complete"])},
+            blocked={},
+            source_changes=[],
+            selection=fast_selection,
+        )
+
+        self.assertTrue(full_report["acceptance_evidence"]["eligible"])
+        self.assertIsNone(full_report["acceptance_evidence"]["reason"])
+        self.assertFalse(fast_report["acceptance_evidence"]["eligible"])
+        self.assertEqual(
+            fast_report["acceptance_evidence"]["reason"],
+            "profile-not-acceptance-capable",
+        )
 
     def test_live_manifest_declares_complete_trigger_inputs(self) -> None:
         for item in load_manifest():

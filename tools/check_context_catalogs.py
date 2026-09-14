@@ -16,6 +16,7 @@ FRAMEWORK = ROOT / "framework"
 TARGET = ROOT / "templates" / "target"
 CODEBOOK = FRAMEWORK / "semantics" / "index.json"
 CONTEXT_OWNER = FRAMEWORK / "context-profiles.md"
+OPERATION_CATALOG = TARGET / ".ai" / "assistant" / "operation-catalog.json"
 REQUIRED_PRELOAD_TERMS = {
     "alatyr:current-scope-authorization@1",
     "alatyr:canonical-owner@1",
@@ -24,6 +25,44 @@ REQUIRED_PRELOAD_TERMS = {
     "alatyr:logical-integrity@1",
     "alatyr:bounded-context-expansion@1",
 }
+
+
+def semantic_operation_selector_failures(
+    index: dict[str, object], *, root: Path, operation_ids: set[str]
+) -> list[str]:
+    """Return semantic shards whose selectors do not name real operations."""
+
+    failures: list[str] = []
+    shards = index.get("shards")
+    if not isinstance(shards, list):
+        return ["semantic codebook index shards must be a list"]
+    for descriptor in shards:
+        if not isinstance(descriptor, dict) or not isinstance(
+            descriptor.get("path"), str
+        ):
+            failures.append("semantic codebook index has an invalid shard descriptor")
+            continue
+        path = root / descriptor["path"]
+        try:
+            shard = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            failures.append(f"semantic operation selectors cannot read {path.name}: {exc}")
+            continue
+        selectors = shard.get("selectors")
+        operations = selectors.get("operations") if isinstance(selectors, dict) else None
+        if operations is None:
+            continue
+        if not isinstance(operations, list) or not all(
+            isinstance(operation, str) and operation for operation in operations
+        ):
+            failures.append(f"semantic shard {path.name} has invalid operation selectors")
+            continue
+        unknown = sorted(set(operations) - operation_ids)
+        if unknown:
+            failures.append(
+                f"semantic shard {path.name} names unknown operations: {unknown}"
+            )
+    return failures
 
 
 def _target_files(root: Path, *, exclude: set[str] | None = None) -> set[str]:
@@ -113,6 +152,7 @@ def main() -> int:
     if missing_preload:
         failures.append(f"semantic codebook misses required preload terms: {missing_preload}")
 
+    index: dict[str, object] = {}
     try:
         index = json.loads(CODEBOOK.read_text(encoding="utf-8"))
         preload_ids = {
@@ -136,6 +176,28 @@ def main() -> int:
             )
     except (OSError, json.JSONDecodeError, TypeError) as exc:
         failures.append(f"semantic codebook preload: {exc}")
+
+    try:
+        operation_catalog = json.loads(OPERATION_CATALOG.read_text(encoding="utf-8"))
+        operation_entries = operation_catalog.get("operations")
+        if not isinstance(operation_entries, list):
+            raise ValueError("target operation catalog operations must be a list")
+        operation_ids = {
+            entry["id"]
+            for entry in operation_entries
+            if isinstance(entry, dict)
+            and isinstance(entry.get("id"), str)
+            and entry["id"]
+        }
+        if len(operation_ids) != len(operation_entries):
+            raise ValueError("target operation catalog contains invalid or duplicate IDs")
+        failures.extend(
+            semantic_operation_selector_failures(
+                index, root=CODEBOOK.parent, operation_ids=operation_ids
+            )
+        )
+    except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
+        failures.append(f"semantic operation selector contract: {exc}")
 
     if failures:
         for failure in failures:

@@ -662,6 +662,7 @@ def build_plan(
         profile=selected_profile,
         changed_from=resolved_changed_from,
         plan=plan,
+        manifest_checks=checks,
     )
     heavy_checks = [
         check["id"] for check in selected if check.get("resource_class") == "heavy"

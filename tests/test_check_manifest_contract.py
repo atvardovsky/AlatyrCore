@@ -19,6 +19,7 @@ from check_check_manifest import (  # noqa: E402
     evidence_contract_routing_failures,
     tool_command_routing_failures,
 )
+from source_check_manifest import load_manifest as load_source_check_manifest  # noqa: E402
 
 
 def manifest_entry(**overrides: object) -> dict[str, object]:
@@ -40,7 +41,7 @@ class CheckManifestContractTests(unittest.TestCase):
             path.write_text(
                 json.dumps(
                     {
-                        "schema_version": 2,
+                        "schema_version": 3,
                         "manifest_kind": "alatyr-source-checks",
                         "defaults": {
                             "profiles": ["full"],
@@ -63,6 +64,77 @@ class CheckManifestContractTests(unittest.TestCase):
 
         self.assertEqual(checks[0]["contract_inputs"], ["tools/check_manifest.json"])
         self.assertEqual(checks[0]["implementation_paths"], ["tools/check_all.py"])
+        self.assertFalse(checks[0]["produces_run_artifacts"])
+        self.assertEqual(checks[0]["artifact_dependencies"], [])
+
+    def test_artifact_dependency_requires_a_declared_producer(self) -> None:
+        producer = manifest_entry(
+            id="producer",
+            produces_run_artifacts=False,
+        )
+        consumer = manifest_entry(
+            id="consumer",
+            depends_on=["producer"],
+            artifact_dependencies=["producer"],
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 3,
+                        "manifest_kind": "alatyr-source-checks",
+                        "defaults": {
+                            "profiles": ["full"],
+                            "platforms": ["all"],
+                            "write_scope": "none",
+                            "depends_on": [],
+                            "timeout_seconds": 30,
+                            "resource_class": "standard",
+                        },
+                        "checks": [producer, consumer],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with patch.object(check_all, "MANIFEST", path):
+                with self.assertRaisesRegex(
+                    ValueError, "do not declare produced run artifacts"
+                ):
+                    check_all.load_manifest()
+
+    def test_implementation_glob_may_cover_the_command_script(self) -> None:
+        item = manifest_entry(
+            implementation_paths=["tools/**"],
+            trigger_paths=["tools/check_manifest.json", "tools/**"],
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tools").mkdir()
+            (root / "tools" / "check_all.py").write_text("pass\n", encoding="utf-8")
+            path = root / "manifest.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 3,
+                        "manifest_kind": "alatyr-source-checks",
+                        "defaults": {
+                            "profiles": ["full"],
+                            "platforms": ["all"],
+                            "write_scope": "none",
+                            "depends_on": [],
+                            "timeout_seconds": 30,
+                            "resource_class": "standard",
+                        },
+                        "checks": [item],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            checks = load_source_check_manifest(path, root=root)
+
+        self.assertEqual(checks[0]["implementation_paths"], ["tools/**"])
 
     def test_rejects_legacy_owned_paths(self) -> None:
         with self.assertRaisesRegex(ValueError, "owned_paths is obsolete"):

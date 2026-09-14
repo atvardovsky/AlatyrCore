@@ -30,6 +30,7 @@ from render_context_catalogs import (
     build_directory_catalog_contents,
     build_framework_catalog_contents,
 )
+from check_context_catalogs import semantic_operation_selector_failures  # noqa: E402
 
 
 def write_json(path: Path, value: object) -> None:
@@ -54,6 +55,26 @@ def entry(root: Path, item_id: str, kind: str, path: str) -> dict[str, object]:
 
 
 class ContextCatalogTests(unittest.TestCase):
+    def test_semantic_operation_selectors_must_name_catalog_operations(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            write_json(
+                root / "change.json",
+                {
+                    "selectors": {
+                        "operations": ["product-change", "internal-module-name"]
+                    }
+                },
+            )
+            failures = semantic_operation_selector_failures(
+                {"shards": [{"path": "change.json"}]},
+                root=root,
+                operation_ids={"product-change"},
+            )
+
+        self.assertEqual(len(failures), 1)
+        self.assertIn("internal-module-name", failures[0])
+
     def test_semantic_index_owns_ordered_preload_projection(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             index = Path(directory) / "index.json"

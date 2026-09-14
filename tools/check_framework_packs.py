@@ -16,6 +16,7 @@ from framework_packaging import (
     project_registry,
     projected_framework_contents,
     resolve_framework_files,
+    validate_pack_catalog,
 )
 
 
@@ -33,7 +34,9 @@ REQUIRED_PROJECTED = {
 def main() -> int:
     failures: list[str] = []
     try:
-        catalog = json.loads(PACK_CATALOG.read_text(encoding="utf-8"))
+        catalog = validate_pack_catalog(
+            json.loads(PACK_CATALOG.read_text(encoding="utf-8"))
+        )
         if catalog.get("schema_version") != 1:
             failures.append("framework pack schema_version must be 1")
         if catalog.get("pack_kind") != "alatyr-framework-pack-catalog":

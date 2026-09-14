@@ -2,9 +2,32 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.66 - 2026-09-14
+
+- Made source-check acceptance evidence fail closed so only complete cold
+  `full` or `release` runs are eligible; reduced profiles now report a typed
+  limitation instead of appearing equivalent to acceptance validation.
+- Separated timing-only cache writes from reusable result records, included
+  release-ref and release-process inputs in cache identity, and declared
+  run-local artifact producers and consumers so cached prerequisites cannot
+  leave executing checks without fresh artifacts.
+- Replaced inert semantic-shard pack declarations with explicit rule-owner
+  projection, required semantic operation selectors to match installed
+  operation IDs, and regenerated the affected semantic and context indexes.
+- Ratcheted the framework-consistency complexity allowance to its current
+  function size and added bounded-slack enforcement so obsolete debt ceilings
+  cannot hide future growth.
+- Increased target template version to `61` for refreshed bootstrap, entry,
+  and support-state provenance after the source contract changes; adapter
+  schema version remains `54` because no installed manifest schema changed.
 - Corrected the cross-platform upgrade-assessment immutability check to ignore
   read-only Git metadata refreshes while still detecting and reporting changed
   target repository files.
+- Clarified that large-task delegation guidance remains provider-neutral and
+  capability-gated while the primary assistant retains authorization,
+  integration, and final validation.
 
 ## 0.1.0-alpha.65 - 2026-09-13
 

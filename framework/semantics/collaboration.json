@@ -5,7 +5,18 @@
   "preload": false,
   "selectors": {
     "task_profiles": ["code-local", "business-change", "architecture-change"],
-    "operations": ["large-task-orchestration", "team-collaboration", "workspace-mode"]
+    "operations": [
+      "large-task",
+      "team-identity",
+      "team-status",
+      "team-task",
+      "team-conflict-review",
+      "team-handoff",
+      "team-decision",
+      "team-review",
+      "team-merge-check",
+      "workspace-mode"
+    ]
   },
   "terms": [
     {

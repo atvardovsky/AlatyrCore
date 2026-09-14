@@ -28,6 +28,43 @@ PROJECTED_FILES = {
     "rule-registry.json",
     "rule-registry.md",
 }
+SEMANTIC_PROJECTION = {
+    "mode": "rule-owner-closure",
+    "index": "semantics/index.json",
+}
+
+
+def validate_pack_catalog(catalog: dict[str, Any]) -> dict[str, Any]:
+    """Validate declarations whose effects are otherwise easy to misread."""
+
+    if catalog.get("schema_version") != 1 or catalog.get("pack_kind") != (
+        "alatyr-framework-pack-catalog"
+    ):
+        raise ValueError("framework pack catalog has an invalid contract")
+    if catalog.get("semantic_projection") != SEMANTIC_PROJECTION:
+        raise ValueError("framework pack semantic projection contract drifted")
+    packs = catalog.get("packs")
+    if not isinstance(packs, dict) or not packs:
+        raise ValueError("framework pack catalog must define packs")
+    for name, entry in packs.items():
+        if not isinstance(name, str) or not name or not isinstance(entry, dict):
+            raise ValueError("framework pack catalog contains an invalid pack")
+        additional_files = entry.get("additional_files", [])
+        if not isinstance(additional_files, list):
+            raise ValueError(f"framework pack {name} has invalid additional_files")
+        inert_semantic_shards = sorted(
+            path
+            for path in additional_files
+            if isinstance(path, str)
+            and path.startswith("semantics/")
+            and path != SEMANTIC_PROJECTION["index"]
+        )
+        if inert_semantic_shards:
+            raise ValueError(
+                f"framework pack {name} declares semantic shards directly: "
+                f"{inert_semantic_shards}; semantic shards are projected from rule owners"
+            )
+    return catalog
 
 @lru_cache(maxsize=None)
 def load_object(path: Path) -> dict[str, Any]:
@@ -38,14 +75,12 @@ def load_object(path: Path) -> dict[str, Any]:
 
 
 def pack_names() -> list[str]:
-    packs = load_object(PACK_CATALOG).get("packs")
-    if not isinstance(packs, dict):
-        raise ValueError("framework pack catalog must define packs")
+    packs = validate_pack_catalog(load_object(PACK_CATALOG))["packs"]
     return list(packs)
 
 
 def _resolve_pack_contract(pack: str) -> tuple[set[str], set[str], bool]:
-    catalog = load_object(PACK_CATALOG)
+    catalog = validate_pack_catalog(load_object(PACK_CATALOG))
     packs = catalog.get("packs")
     if not isinstance(packs, dict) or pack not in packs:
         raise ValueError(f"unknown framework pack: {pack}")

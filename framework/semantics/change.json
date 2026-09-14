@@ -5,7 +5,7 @@
   "preload": false,
   "selectors": {
     "task_profiles": ["code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
-    "operations": ["product-change", "logical-integrity-review", "large-task-orchestration", "support-generation"]
+    "operations": ["product-change", "logical-integrity-review", "large-task", "support-generation"]
   },
   "terms": [
     {

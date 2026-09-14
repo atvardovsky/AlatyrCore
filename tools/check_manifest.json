@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "manifest_kind": "alatyr-source-checks",
   "defaults": {
     "profiles": [
@@ -945,6 +945,7 @@
         "framework/semantics/**",
         "schemas/alatyr-context-*.schema.json",
         "schemas/alatyr-semantic-codebook*.schema.json",
+        "templates/target/.ai/assistant/operation-catalog.json",
         "templates/target/.ai/assistant/**/context-index.json",
         "templates/target/.ai/project/**/context-index.json",
         "templates/target/.ai/assistant/templates/context-packet.json"
@@ -963,6 +964,7 @@
         "framework/semantics/**",
         "schemas/alatyr-context-*.schema.json",
         "schemas/alatyr-semantic-codebook*.schema.json",
+        "templates/target/.ai/assistant/operation-catalog.json",
         "templates/target/.ai/assistant/**",
         "templates/target/.ai/project/**",
         "templates/target/.ai/assistant/**/context-index.json",
@@ -2110,6 +2112,7 @@
         "TEMPLATE_VERSION",
         "VERSION",
         "docs/human/faq.md",
+        "docs/release-process.md",
         "docs/releases/**"
       ],
       "implementation_paths": [
@@ -2122,6 +2125,7 @@
         "TEMPLATE_VERSION",
         "VERSION",
         "docs/human/faq.md",
+        "docs/release-process.md",
         "docs/releases/**",
         "tools/check_versioning.py"
       ]
@@ -2338,6 +2342,7 @@
         "scaffold-profiles",
         "target-adapter-validator"
       ],
+      "produces_run_artifacts": true,
       "contract_inputs": [
         "conformance/fixtures/**",
         "templates/target/**"
@@ -2380,6 +2385,9 @@
         "conformance-scaffold",
         "scaffold-profiles",
         "target-adapter-validator"
+      ],
+      "artifact_dependencies": [
+        "conformance-scaffold"
       ],
       "contract_inputs": [
         "conformance/golden/lifecycle/**",
@@ -2771,13 +2779,13 @@
         "AI_ASSISTANTS.md",
         "INSTALL.md",
         "README.md",
+        "conformance/**",
+        "docs/**",
         "framework/**",
         "installer/**",
-      "templates/target/**",
-      "tools/check_bridge_templates.py",
-      "tools/check_framework_consistency.py",
-      "tools/framework_consistency/**"
-    ],
+        "templates/target/**",
+        "tools/**"
+      ],
       "always_for_changed": true,
       "depends_on": [
         "framework-metadata",
@@ -2790,15 +2798,15 @@
         "AI_ASSISTANTS.md",
         "INSTALL.md",
         "README.md",
+        "conformance/**",
+        "docs/**",
         "framework/**",
         "installer/**",
         "templates/target/**"
       ],
-    "implementation_paths": [
-      "tools/check_bridge_templates.py",
-      "tools/check_framework_consistency.py",
-      "tools/framework_consistency/**"
-    ],
+      "implementation_paths": [
+        "tools/**"
+      ],
       "resource_class": "heavy",
       "timeout_seconds": 300
     },

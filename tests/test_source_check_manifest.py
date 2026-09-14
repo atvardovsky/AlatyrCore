@@ -42,7 +42,7 @@ class SourceCheckManifestTests(unittest.TestCase):
             manifest.write_text(
                 """
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "manifest_kind": "alatyr-source-checks",
   "defaults": {
     "profiles": ["full"],
@@ -80,7 +80,7 @@ class SourceCheckManifestTests(unittest.TestCase):
             manifest.write_text(
                 """
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "manifest_kind": "alatyr-source-checks",
   "defaults": {
     "profiles": ["full"],
@@ -118,7 +118,7 @@ class SourceCheckManifestTests(unittest.TestCase):
             manifest.write_text(
                 """
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "manifest_kind": "alatyr-source-checks",
   "defaults": {
     "profiles": ["full"],
@@ -156,7 +156,7 @@ class SourceCheckManifestTests(unittest.TestCase):
             manifest.write_text(
                 """
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "manifest_kind": "alatyr-source-checks",
   "defaults": {
     "profiles": ["full"],
@@ -297,7 +297,7 @@ class SourceCheckManifestTests(unittest.TestCase):
             manifest.write_text(
                 """
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "manifest_kind": "alatyr-source-checks",
   "defaults": {
     "profiles": ["full"],
@@ -335,7 +335,7 @@ class SourceCheckManifestTests(unittest.TestCase):
             manifest.write_text(
                 """
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "manifest_kind": "alatyr-source-checks",
   "defaults": {
     "profiles": ["full"],
@@ -376,7 +376,7 @@ class SourceCheckManifestTests(unittest.TestCase):
             (tools / "example.py").write_text("print('ok')\n", encoding="utf-8")
             manifest = tools / "check_manifest.json"
             payload = {
-                "schema_version": 2,
+                "schema_version": 3,
                 "manifest_kind": "alatyr-source-checks",
                 "defaults": {
                     "profiles": ["full"],

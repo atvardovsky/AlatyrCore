@@ -33,7 +33,7 @@
     {
       "path": "tools/check_framework_consistency.py",
       "qualname": "main",
-      "max_lines": 2146,
+      "max_lines": 306,
       "reason": "legacy broad framework checker; replace with focused owners over time"
     },
     {

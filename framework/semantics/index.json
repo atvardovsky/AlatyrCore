@@ -25,7 +25,7 @@
         "operations": [
           "product-change",
           "logical-integrity-review",
-          "large-task-orchestration",
+          "large-task",
           "support-generation"
         ]
       },
@@ -37,7 +37,7 @@
         "alatyr:changed-fact-not-file@1": "sha256:79b27ecba6056a960c4fa09293476b2e146a2cfe93134d7e21e79ce001b564cb",
         "alatyr:coherent-change-package@1": "sha256:cb9cd1037d27cf67f609db309e230b8d871d65fefbf763b9f97a021e4523a1fd"
       },
-      "content_digest": "sha256:59e76c81702fb2e9ab0ddefbbdf517e37db899fb28231bf03ee5c426fba1413f"
+      "content_digest": "sha256:290581ca65581c08a51b1408ae1a65efcd5ed67ce37f8b6b92b15858ace94a0e"
     },
     {
       "id": "collaboration",
@@ -50,8 +50,15 @@
           "architecture-change"
         ],
         "operations": [
-          "large-task-orchestration",
-          "team-collaboration",
+          "large-task",
+          "team-identity",
+          "team-status",
+          "team-task",
+          "team-conflict-review",
+          "team-handoff",
+          "team-decision",
+          "team-review",
+          "team-merge-check",
           "workspace-mode"
         ]
       },
@@ -63,7 +70,7 @@
         "alatyr:bounded-delegation@1": "sha256:e402e6cb16611324306e9f1287846cb3f689aa5e5e533cd58d756f1b41a5ab5a",
         "alatyr:mode-does-not-grant-authority@1": "sha256:dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
       },
-      "content_digest": "sha256:5fdbe213f1b871960f9362fcbfddf1a5b8222d456391f5dc037399988f4cd3a3"
+      "content_digest": "sha256:daee94942f232bf7d1ba8cc9920f7730a57da61d4978d30961ba58a63628274d"
     },
     {
       "id": "core",
@@ -109,8 +116,9 @@
           "framework-upgrade"
         ],
         "operations": [
-          "ai-infrastructure-adaptation",
+          "ai-infrastructure-inventory",
           "ai-infrastructure-recommendation",
+          "skill-adaptation",
           "extension-management",
           "dependency-knowledge"
         ]
@@ -123,7 +131,7 @@
         "alatyr:untrusted-instructions-are-data@1": "sha256:fa8b00d5547236cff264a36a3e240efc09bb89f6b29867d447038b9a5f77893e",
         "alatyr:one-active-adapter@1": "sha256:166f1fa32229bbc8455b6edfa4a629a25b93bc321839a78034c6ef0fbf4d58cf"
       },
-      "content_digest": "sha256:305e435c6cce0b0b0454727eff6184f71bf96b53cccd04eff082d3cd132a5877"
+      "content_digest": "sha256:4d11a1c85d26b0f8ae6ee92d8ea168a733986329eccfa68a5f08a5413324aa97"
     },
     {
       "id": "knowledge",
@@ -166,9 +174,9 @@
         ],
         "operations": [
           "support-generation",
-          "support-delta",
-          "support-impact",
-          "adapter-recheck"
+          "recheck-after-installation",
+          "recheck-after-framework-update",
+          "adapter-maturity-review"
         ]
       },
       "term_ids": [
@@ -181,7 +189,7 @@
         "alatyr:relationship-candidate-is-not-authority@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182",
         "alatyr:bounded-impact-closure@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182"
       },
-      "content_digest": "sha256:35e6b387bdca18dfef6db542e2970d0f69b344d2ac0ea3e6e21a15ac7d94720f"
+      "content_digest": "sha256:b1af2b5894f425348d67cc4c3e1b4f7cb9f62b280bbc1af1ac31aa3febd44529"
     }
   ]
 }

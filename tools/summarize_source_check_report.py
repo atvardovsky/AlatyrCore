@@ -98,6 +98,7 @@ def render_summary(report: dict[str, Any], *, source_label: str) -> str:
         f"- Source tree dirty: `{source.get('source_tree_dirty')}`",
         f"- Overall result: `{'passed' if successful else 'failed'}`",
         f"- Acceptance evidence eligible: `{acceptance.get('eligible') is True}`",
+        f"- Acceptance evidence reason: `{acceptance.get('reason') or 'eligible'}`",
         f"- Source write scope preserved: `{write_scope.get('preserved') is True}`",
         f"- Wall time: {_duration(timing.get('wall_seconds'))}",
         f"- Selected checks: `{len(typed_checks)}`",

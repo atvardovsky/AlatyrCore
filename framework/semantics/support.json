@@ -5,7 +5,7 @@
   "preload": false,
   "selectors": {
     "task_profiles": ["code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
-    "operations": ["support-generation", "support-delta", "support-impact", "adapter-recheck"]
+    "operations": ["support-generation", "recheck-after-installation", "recheck-after-framework-update", "adapter-maturity-review"]
   },
   "terms": [
     {

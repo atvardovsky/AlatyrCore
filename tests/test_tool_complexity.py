@@ -10,10 +10,27 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_tool_complexity import iter_functions, load_allowlist, version_key  # noqa: E402
+from check_tool_complexity import (  # noqa: E402
+    allowlist_cap_failure,
+    iter_functions,
+    load_allowlist,
+    version_key,
+)
 
 
 class ToolComplexityTests(unittest.TestCase):
+    def test_allowlist_caps_reject_growth_and_excessive_slack(self) -> None:
+        self.assertIsNone(allowlist_cap_failure("tools/a.py", "main", 306, 306))
+        self.assertIsNone(allowlist_cap_failure("tools/a.py", "main", 306, 331))
+        self.assertIn(
+            "grew",
+            allowlist_cap_failure("tools/a.py", "main", 307, 306) or "",
+        )
+        self.assertIn(
+            "stale",
+            allowlist_cap_failure("tools/a.py", "main", 306, 332) or "",
+        )
+
     def test_allowlist_contract_loads_known_large_functions(self) -> None:
         threshold, allowlist = load_allowlist()
 
