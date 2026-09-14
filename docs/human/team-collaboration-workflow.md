@@ -5,6 +5,13 @@ assistants around project-owned actors, tasks, changed facts, decisions, and
 revision-bound evidence. It supplements the project's tracker, version control,
 review rules, and decision owners; it does not replace them.
 
+Project actors and temporary AI workers are different. An actor is a person or
+accepted project participant recorded for coordination. A worker, sometimes
+called a subagent, handles one bounded assignment under the main coordinating
+assistant. It does not claim team identity, become a project owner, or gain approval
+authority. Worker behavior is defined separately by
+[subagent delegation](../../framework/subagent-delegation.md).
+
 > This document is a human-oriented explanation. Canonical behavior is owned by
 > [team collaboration](../../framework/team-collaboration.md) and the
 > [rule registry](../../framework/rule-registry.md).

@@ -375,100 +375,60 @@ Conceptually:
 5. Reusable discoveries and corrections can be reviewed back into canonical
    project knowledge.
 
-The framework implements that model through these repository surfaces:
+The installed adapter connects this model to daily work:
 
-1. The target repository identifies canonical project sources, owners,
-   architecture states, validation, and known gaps.
-2. A repository-aware project adapter connects those facts to portable
-   AlatyrCore rules and supported assistant surfaces.
-3. A generated compact bootstrap index and router select the bounded task
-   profile, gate fragments, and project-area context for a question or change.
-   Lazy integrity evidence binds that projection to its sources without adding
-   provenance data to routine model context. Recursive contour indexes then
-   expose only matching branches instead of whole support directories.
-4. A small versioned semantic codebook resolves only the terms explicitly
-   required by selected context. Compact terms retain complete definitions,
-   owning-rule obligations, and canonical-owner fallback; they never replace
-   project facts or policy.
-5. The assistant explains the project or follows the matching workflow,
-   including approvals for protected changes.
-6. Deterministic checks validate structural contracts where possible; human
-   and assistant reasoning still decide semantic correctness.
-7. Before a material task ends, a proportional evidence gate preserves the
-   compact invariant, root cause, solution rationale, regression intent,
-   validation, and exact repository binding when that knowledge would
-   otherwise disappear with the session. Small self-explanatory changes may
-   skip it with a specific reason.
-8. A separate project-knowledge gate lets target decision owners accept,
-   narrow, reject, or defer reusable conclusions. Accepted facts remain in
-   canonical project sources; compact, freshness-checked route shards help a
-   later assistant find those owners without loading the full project memory.
+1. It identifies where the project owns important facts, decisions, and
+   validation.
+2. It selects only the information relevant to the current question or change.
+3. The assistant explains the project, investigates, or performs an authorized
+   change within those boundaries.
+4. Automated checks verify structures and recorded relationships where
+   possible; people and assistants still reason about meaning.
+5. Useful discoveries can be reviewed into project-owned knowledge instead of
+   disappearing with the conversation.
 
-The checked static surface registry covers generic and AGENTS-aware clients,
-Codex, JetBrains Junie, Cline, Kiro, Zed Agent, OpenCode, Yandex SourceCraft,
-Claude, Gemini, GigaCode, GitHub Copilot, Cursor, Devin/Cascade, Windsurf, and
-legacy Roo Code. This means AlatyrCore supplies a bridge and evidence contract,
-not that every client has been observed following it. Each installed project
-records the exact client, instruction precedence, skills, permissions,
-diagrams, and delegation before claiming runtime support. See
+AlatyrCore includes checked integration surfaces for a growing set of coding
+assistants. Support means that the repository provides an appropriate entry
+point and capability record; it does not prove that every client loads or
+follows instructions identically. Each installed project records which
+assistant behavior it has actually verified. See
 [assistant compatibility](docs/assistant-compatibility.md).
 
-The recursive indexes behave like site navigation: each root links to smaller
-sections, sections may link to deeper sections, and selecting a parent does not
-load every child. Entries carry stable identities, selectors, word estimates,
-and content digests. For non-trivial or expanded work, a deterministic context
-packet records the chosen index chain, content identities, resolved semantic
-definitions, budget, and fallback state. These records prove routing identity,
-not that a model understood or followed the content.
-
-A target-owned support policy classifies the adapter and assistant entry
-surfaces, while a canonical cross-platform support state records which of them
-changed. For projects that enable a consistency map, changed paths and fact IDs
-select only relevant relationship shards and concrete companion surfaces.
-Hashes and graph routes reduce repeated scanning; people and assistants still
-derive the invariant, decide whether a newly observed relationship is valid,
-and approve the coherent repair set. See
-[support information](framework/support-information.md).
+Project information is organized like navigation rather than one large manual.
+An assistant starts with a small index and follows only the branches relevant
+to the task. When a change affects related areas, recorded relationships help
+it find the additional sources that need review. The project team still decides
+whether those relationships and resulting changes are correct.
 
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
-large-task orchestration, capability-gated worker delegation with project-
-owned roles and provider-specific thin bindings, diagrams, and adapted AI
-infrastructure. A passive dependency-knowledge module can also bind
-framework or library documentation to exact installed package artifacts while
-keeping one active project adapter and project-owned deviations. Optional
-support generation can coordinate target-declared deterministic derivatives,
-assistant proposals, and owner-maintained artifacts without turning generated
-output into a new source of truth. Optional
-modules are enabled only when the target project needs and can maintain them.
-When the exact assistant runtime supports nested workers, the delegation module
-can partition read-only discovery one level further inside a primary-issued,
-hash-bound branch envelope. Coordinators return measured compact summaries to
-the primary while descendant raw evidence stays available by reference. This
-is designed to reduce primary-context pressure and may reduce wall time for
-independent work; it can increase total worker-token use and never delegates
-project decisions, writes, approval, integration, or final validation.
+large-task planning, worker delegation, diagrams, dependency knowledge, and
+adapted AI infrastructure. A project enables only the capabilities it needs and
+can maintain; generated assistance does not become a new source of truth.
+
+When the selected assistant supports workers, the optional
+[delegation module](docs/human/what-is-alatyr.md#how-large-tasks-stay-manageable)
+can divide independent, read-only investigation into smaller assignments. Each
+worker receives only the context needed for its assignment and returns a
+compact result for review by the main coordinating assistant. This is designed
+to keep large investigations from overloading one conversation and may reduce
+elapsed time, but it can increase total token use. Project decisions, writes,
+approval, integration, and final validation always remain with the main
+assistant.
+
 Workspace modes can additionally separate application, framework, library,
 skeleton, dependency, or workspace perspectives. The assistant proposes modes
 from repository evidence after installation, while users decide which modes
 are accepted. Each actual mode keeps bounded support in its own project-owned
 directory; optional root support holds only facts shared across modes.
 
-For selected tasks, the optional [Debug Mode](framework/debug-mode.md) can
-record normalized, non-canonical evidence about what the active executor found,
-which behavior came from deterministic Alatyr routing or checks, where human
-supervision changed the investigation, which validation expanded, and how the
-task concluded. Its versioned event model separates actor role, identity,
-runtime provenance, causality, correction disposition, and contribution so a task request or
-validation request is not misreported as a correction. Finalization closes the
-durable-evidence decision, evaluates reusable materiality, distinguishes exact
-from partial reproduction evidence, distinguishes phase completion from a full
-analysis-to-validation lifecycle, closes reusable knowledge candidates through
-reviewable dispositions, preserves reciprocal durable-evidence and repository-
-binding lineage, and opens continued work in a new linked record rather than
-rewriting completed evidence. Debug Mode is explicitly enabled per task or session, does not store
-raw conversations or private reasoning, and does not grant permission to edit
-code, commit, publish, or perform protected actions.
+For selected tasks, optional [Debug Mode](framework/debug-mode.md) can preserve
+a reviewable record of what the assistant found, which checks guided the work,
+where human supervision changed the direction, what validation ran, and how the
+task concluded. The record is evidence, not project authority. Debug Mode must
+be enabled for the task or session, does not store raw conversations or private
+reasoning, and does not grant permission to edit, commit, publish, or perform
+protected actions.
 
 ### Core Differentiators
 
@@ -513,10 +473,9 @@ and project-adapter surfaces the target can support. Existing instructions and
 protected changes remain subject to approval.
 
 Start with the [installation guide](INSTALL.md). The assistant uses
-`installer/context-router.json` to select the current installation stage and
-`framework/file-inventory.json` for deterministic copy and hash comparison.
-Read only selected or changed canonical framework owners; unchanged framework
-files do not need to be loaded as prose.
+the repository's stage routing and file inventory to inspect only the relevant
+installation material. Unchanged framework documents do not need to be loaded
+again as prose.
 
 Optional scaffolding can create placeholder structure, but it does not inspect
 the target, resolve project facts, approve changes, or complete installation.
@@ -561,24 +520,19 @@ The full installed-operation and assistant workflow is documented in
 Do not install every optional capability by default. Establish the smallest
 support profile that safely covers the target's current use of Alatyr, then
 enable optional modules only when the target needs and can maintain them. The
-source scaffolder exposes `kernel`, `core`, `standard`, and `full` support
-profiles, repeatable `--enable-module` capability staging, and
-dependency-closed `kernel`, `core`, `standard`, and `complete` framework packs.
-The `full` target profile carries the complete portable framework pack but does
-not install every optional module. Exhaustive template projection exists only
-for isolated source conformance fixtures.
+installation guide defines the available profiles and their dependencies.
+Starting small reduces maintenance and context cost without removing checks
+required by the selected profile.
 
 The [module profile](framework/module-profile.md) defines required and optional
 capabilities. The [context router](framework/context-router.md) keeps routine
 tasks from loading the complete framework or project corpus.
 
-Context limits are checked by file count, words, and characters. The character
-ceiling covers dense JSON and source text that a word-only estimate can
-undercount. Installation planning and source-repository audits also begin with
-small bounded packets, then load detailed policy only for a named boundary,
-conflict, or failed check. Deterministic source checks may reuse exact,
-hash-bound intermediate artifacts inside one validation run; semantic review
-and final evidence remain required where the changed facts demand them.
+Context limits keep routine tasks from loading the entire project-support
+layer. Installation planning and repository audits also begin with a bounded
+view, then expand for a specific boundary, conflict, or failed check. Faster
+routing does not remove semantic review or final evidence when the changed
+facts require them.
 
 Alatyr also orders reusable guidance before task-specific and volatile context
 so OpenAI, Anthropic, Google Gemini/Vertex AI, Azure OpenAI, Amazon Bedrock, or
@@ -663,21 +617,21 @@ rules remain in the referenced framework documents and
 
 ## For AI Assistants
 
-`AI_ASSISTANTS.md` is the dedicated assistant-facing description and route.
-For installation, treat `AGENTS.md` as host-preloaded context, read
-`installer/context-router.json`, and load only the selected stage's sources.
-Use `framework/file-inventory.json` for unchanged-file comparison and read only
-selected or changed canonical framework owners.
+Use the dedicated [AI assistant guide](AI_ASSISTANTS.md) for bootstrap,
+installation, context routing, rule ownership, and validation instructions.
+The main README intentionally explains the product for people instead of
+duplicating the assistant operating contract.
 
-Apply canonical rule references rather than copying policy text into bridge
-files: `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
-`ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-DECOMPOSITION-001`, `ALATYR-EVIDENCE-001`,
-`ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-KNOWLEDGE-001`, and
-`ALATYR-OPERATION-001`. Load
-`ALATYR-DEPENDENCY-001` only when the optional
-dependency-knowledge module or a dependency operation is selected.
-Load `ALATYR-MODE-001` only when workspace modes are enabled, mode selection is
-ambiguous, or a mode lifecycle operation is requested.
+<!--
+Machine-checked assistant rule references are intentionally kept out of the
+rendered human guide. Installation routing starts at installer/context-router.json
+and framework/file-inventory.json.
+Read only selected or changed canonical framework owners. Derived rules include
+ALATYR-ADAPTER-001,
+ALATYR-APPROVAL-001,
+ALATYR-SAFETY-001, ALATYR-SAFETY-002, ALATYR-INTEGRITY-001,
+ALATYR-DECOMPOSITION-001, ALATYR-EVIDENCE-001, ALATYR-OPERATION-001.
+-->
 
 ## Contributing
 

@@ -113,7 +113,27 @@ Operation routing is defined by
 defined by
 [framework guarantees and limits](../../framework/guarantees.md).
 
-## 6. Promote Reusable Knowledge
+## 6. Plan A Larger Investigation
+
+Ask:
+
+```text
+Break this change into the smallest safe assignments. Use workers only when
+they are supported and useful.
+```
+
+The assistant should keep the immediate blocking work in the main
+conversation, identify independent read-only investigation, and give each
+assignment only the context it needs. If worker support is unavailable or
+unverified, it should keep the work with the main assistant instead of
+pretending that delegation occurred.
+
+Worker results are evidence for the main assistant to review, not completed
+project decisions. Expected safeguards are defined by
+[task decomposition](../../framework/task-decomposition.md) and
+[subagent delegation](../../framework/subagent-delegation.md).
+
+## 7. Promote Reusable Knowledge
 
 After a material investigation, ask:
 
@@ -135,7 +155,7 @@ stale knowledge is a warning, and contradictions block a definitive answer.
 The canonical lifecycle is defined by
 [project knowledge promotion and delivery](../../framework/project-knowledge.md).
 
-## 7. Understand The Evidence Boundary
+## 8. Understand The Evidence Boundary
 
 A useful target answer should distinguish:
 

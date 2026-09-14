@@ -58,6 +58,26 @@ canonical owners, validation evidence, skipped checks, contradictions, and
 residual risk. This is intended to make review evidence easier to inspect; it
 does not replace reviewer judgment or approval authority.
 
+## Large Tasks Without One Giant Context
+
+A large investigation may span architecture, implementation, tests,
+documentation, and operational evidence. AlatyrCore can help the main
+coordinating assistant divide that investigation into bounded assignments and
+identify which assignments are independent.
+
+When the selected AI product supports temporary workers, eligible read-only
+assignments can run separately and return compact results. The primary
+assistant, as the main assistant is called in the technical documentation,
+reviews the results together, resolves overlap, and keeps ownership of every
+decision and state-changing action. When worker support is absent, unverified,
+or not cost-effective, the same plan can be completed sequentially by the main
+assistant.
+
+This is intended to preserve focus and may reduce elapsed time. It can also
+increase total token use, so improvement must be measured rather than assumed.
+See [task decomposition](../../framework/task-decomposition.md) and
+[subagent delegation](../../framework/subagent-delegation.md).
+
 ## Knowledge Preservation When People Leave
 
 Repository-owned project knowledge can help preserve decisions, ownership,
@@ -81,6 +101,11 @@ Thin assistant bridges can point different compatible AI tools to the same
 project-owned adapter. This is intended to reduce vendor-specific drift while
 still recording client-specific loading, permissions, presentation, and known
 limitations.
+
+Interchangeable assistants and temporary workers are different concepts. An
+interchangeable assistant is a product a developer may choose to use with the
+project. A temporary worker handles one bounded assignment under the main
+assistant and does not become a project member or decision owner.
 
 Source checks can validate bridge structure, but equivalent runtime behavior
 requires external evidence. See the

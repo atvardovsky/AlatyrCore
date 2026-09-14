@@ -56,6 +56,21 @@ assistant surfaces. Actual loading behavior and capabilities differ by client
 and must be recorded rather than assumed. See the
 [bridge capability matrix](../../framework/bridge-capability-matrix.md).
 
+## Can It Use Multiple AI Workers?
+
+Yes, when the selected AI product has verified worker support and the target
+project enables delegation. AlatyrCore can assign independent read-only
+investigation to temporary workers, sometimes called subagents. Each worker
+receives a bounded assignment rather than the full project context.
+
+The main coordinating assistant, called the primary assistant in the technical
+documentation, remains responsible for authorization, decisions, edits,
+integration, and final validation. Delegation is skipped when support is
+unknown, the task is too small, the work cannot be separated safely, or the
+coordination cost is likely to exceed the benefit. It may reduce pressure on
+the main conversation or reduce elapsed time, but it can increase total token
+use. See [subagent delegation](../../framework/subagent-delegation.md).
+
 ## Does It Guarantee That AI-Generated Changes Are Correct?
 
 No. AlatyrCore defines process commitments and deterministic structural checks
@@ -99,6 +114,7 @@ but remain evidence-limited in real-world use:
 
 - assistant behavior across client versions and instruction-loading models
 - broad multi-model and multi-project runtime conformance
+- recursive worker behavior across provider and client implementations
 - measured onboarding, rework, quality, and cost effects
 - long-term maintenance of large target adapters and optional modules
 - a complete runnable public demonstration target

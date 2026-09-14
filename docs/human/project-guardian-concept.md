@@ -78,6 +78,12 @@ See the
 the canonical compatibility model. Source checks can verify bridge structure;
 they do not prove that every external client behaves identically.
 
+Some compatible assistants can also use temporary workers for bounded,
+read-only investigation. Those workers remain part of one main assistant's task
+and do not become new project authorities. The project-owned sources and decision
+owners remain unchanged. See
+[subagent delegation](../../framework/subagent-delegation.md).
+
 ## Developers And Engineering Workflows
 
 Developers can use natural-language questions and tasks. A clear request can

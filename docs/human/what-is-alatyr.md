@@ -12,7 +12,8 @@ change a project with the project itself.
 
 - **Implemented framework contracts:** ownership separation, source-of-truth
   routing, architecture-state separation, conversational operation routing,
-  context profiles, validation evidence, and thin assistant bridges.
+  context profiles, task decomposition, optional worker delegation, validation
+  evidence, and thin assistant bridges.
 - **Target-dependent behavior:** useful project explanations and safe change
   guidance require a correctly adapted target repository with current facts,
   owners, validation, and supported assistant surfaces.
@@ -87,6 +88,27 @@ AlatyrCore is therefore not a hosted agent, daemon, or universal command. Its
 conversational interface is an assistant response pattern backed by an
 installed adapter, as defined by
 [operation help](../../framework/operation-help.md).
+
+## How Large Tasks Stay Manageable
+
+For a large request, the assistant can split the work into smaller assignments
+with their own goal, context, dependencies, and validation. Most assignments
+still run in the main coordinating assistant, called the primary assistant in
+the technical documentation. When the selected AI product has verified worker
+support and delegation is useful, independent read-only investigation can be
+given to temporary workers, sometimes called subagents.
+
+Workers do not receive the whole project by default. They inspect a bounded
+area and return a compact result. The primary assistant checks those results,
+resolves conflicts, and remains responsible for decisions, edits, integration,
+and final validation. If workers are unavailable or would cost more than they
+save, the primary assistant proceeds without them.
+
+This mechanism is designed to preserve attention in the main conversation; it
+does not prove lower cost, faster delivery, or correct conclusions. The full
+contracts are defined by
+[task decomposition](../../framework/task-decomposition.md) and
+[subagent delegation](../../framework/subagent-delegation.md).
 
 ## Value For Project Roles
 
