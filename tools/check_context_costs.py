@@ -14,6 +14,28 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "conformance" / "golden" / "context-cost-baseline.json"
 
 
+def check_compact_scale_route(
+    report: dict[str, object],
+    failures: list[str],
+    *,
+    route_id: str,
+    label: str,
+    max_files: int,
+    max_words: int,
+) -> None:
+    routes = report["task_scale_overlays"]
+    route = routes.get(route_id) if isinstance(routes, dict) else None
+    if not isinstance(route, dict):
+        failures.append(f"{label} route is missing from task-scale overlays")
+        return
+    if route["missing_paths"]:
+        failures.append(f"{label} route contains missing paths")
+    if route["declared_files"] > max_files:
+        failures.append(f"{label} route should stay within {max_files} files")
+    if route["words"] > max_words:
+        failures.append(f"{label} route should stay below {max_words} words")
+
+
 def main() -> int:
     failures: list[str] = []
     report = build_report()
@@ -124,16 +146,22 @@ def main() -> int:
         failures.append("a pairwise context composition exceeds the hard word budget")
     if pairwise["max_characters"] > max_total_characters:
         failures.append("a pairwise context composition exceeds the hard character budget")
-    small_task = report["task_scale_overlays"].get("small-task")
-    if not isinstance(small_task, dict):
-        failures.append("small-task route is missing from task-scale overlays")
-    else:
-        if small_task["missing_paths"]:
-            failures.append("small-task compact route contains missing paths")
-        if small_task["declared_files"] > 4:
-            failures.append("small-task compact route should stay within four files")
-        if small_task["words"] > 1200:
-            failures.append("small-task compact route should stay below 1200 words")
+    check_compact_scale_route(
+        report,
+        failures,
+        route_id="small-task",
+        label="small-task compact",
+        max_files=4,
+        max_words=1200,
+    )
+    check_compact_scale_route(
+        report,
+        failures,
+        route_id="session-continuity",
+        label="session-continuity",
+        max_files=4,
+        max_words=2000,
+    )
 
     consistency = report["consistency_routing"]
     if consistency["declared_files"] > profile_budget["max_files"]:

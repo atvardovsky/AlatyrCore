@@ -41,6 +41,15 @@ categories and support-profile selection matrix. Inspect target metadata and
 record category-based evidence before selecting a support profile or loading
 later stage-specific sources.
 
+After compaction, restart, resume, fork, handoff, client/model change, context
+reset, or uncertainty about retained context, use the router's
+`session_reentry` contract. Reload the installer router and current stage
+checkpoint, compare current target revision and worktree evidence, identify
+the next incomplete output, and reapply current-scope authorization from the
+newest request. Remain inspect-only on mismatch. Load only changed stage
+inputs or owners; do not reload the complete installation corpus solely
+because the session boundary occurred.
+
 For a new installation or upgrade, compare
 `framework/file-inventory.json`, file hashes, and rule registries first. Read
 changed or selected canonical sources and affected target surfaces only.
@@ -200,11 +209,12 @@ Classify every proposed target file:
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
    When an enabled module requires assistant capability evidence, create the
-   projected capability index and detailed schema-4 records for the generic
+   projected capability index and detailed schema-6 records for the generic
    fallback plus explicitly selected target surfaces. Omit unselected records;
    do not leave index references to files that were not installed.
    Resolve instruction loading, skill source and activation, client permission
-   mode, context caching, diagrams, and delegation from exact-client evidence.
+   mode, context caching, context compaction and recovery signals, diagrams,
+   and delegation from exact-client evidence.
    Record the selected model provider separately from the assistant surface;
    preserve bounded context routing when caching is unavailable or unverified.
    A selected but untested surface remains unknown; client permissions or

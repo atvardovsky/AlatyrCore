@@ -5,7 +5,8 @@ cross-boundary, or resumable work coherent without loading the whole project
 into one assistant context.
 
 It composes `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
-`ALATYR-APPROVAL-001`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`, and
+`ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`,
+`ALATYR-CONTINUITY-001`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
 `ALATYR-DECOMPOSITION-001`, and `ALATYR-EVIDENCE-001`. It does not replace
 their canonical owner documents.
 
@@ -45,6 +46,8 @@ The target adapter should provide a Markdown operation-packet template. One
 packet coordinates one operation and records:
 
 - operation identity, goal, non-goals, allowed actions, and current phase
+- current logical scope, authorization source/evidence state, recorded action
+  phases, and phases requiring revalidation after resume
 - selected task profiles, task-scale overlay, and project-area overlays
 - changed facts, canonical owners, risk, approval state, and affected surfaces
 - selected and skipped consistency relationships when the optional target map

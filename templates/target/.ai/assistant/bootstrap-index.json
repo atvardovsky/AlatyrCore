@@ -164,6 +164,10 @@
       "selector": "team-active",
       "descriptor": ".ai/assistant/team/context-overlay.json",
       "required_module": "team-collaboration"
+    },
+    "session-continuity": {
+      "selector": "session-continuity",
+      "descriptor": ".ai/assistant/context/task-scales/session-continuity.json"
     }
   },
   "task_classification": {

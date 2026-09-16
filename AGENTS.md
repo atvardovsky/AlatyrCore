@@ -68,6 +68,8 @@ policy wording.
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Approval and protected changes: `ALATYR-APPROVAL-001`
 - Current-scope action authorization: `ALATYR-AUTHORIZATION-001`
+- Session continuity across compaction, resume, and handoff:
+  `ALATYR-CONTINUITY-001`
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity evidence: `ALATYR-INTEGRITY-001`

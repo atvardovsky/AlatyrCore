@@ -22,6 +22,24 @@
     "reuse_rule": "recompute and compare the complete checkpoint identity; any mismatch denies reuse",
     "authority": "optimization only; a checkpoint never grants authorization approval or semantic authority"
   },
+  "session_reentry": {
+    "canonical_rule": "ALATYR-CONTINUITY-001",
+    "trigger": "compaction restart resume fork handoff client/model change context reset or uncertain retained context",
+    "load": [
+      "installer/context-router.json",
+      "current stage checkpoint when one exists",
+      "current target revision and worktree evidence"
+    ],
+    "verify": [
+      "checkpoint identity and completed-stage evidence",
+      "current stage and next incomplete output",
+      "target revision and changed paths",
+      "newest-request action authorization",
+      "approval scope when applicable"
+    ],
+    "fallback": "inspect-only reconstruction; reload only changed stage inputs or owners",
+    "full_corpus_reload": false
+  },
   "contracts": {
     "outputs": {
       "discovery-findings": "Read-only target findings grouped by discovery category.",

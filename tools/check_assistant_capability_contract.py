@@ -13,6 +13,7 @@ import jsonschema
 from target_adapter_validation.assistant_capabilities import (
     CACHE_FALLBACK,
     CAPABILITY_INDEX_SCHEMA_VERSION,
+    COMPACTION_FALLBACK,
     INDEX_STATE_EVIDENCE_STRING_FIELDS,
     INDEX_STATE_EVIDENCE_TRUE_FIELDS,
     SURFACE_STATE_FIELDS,
@@ -137,6 +138,7 @@ def main() -> int:
                 "skills",
                 "tool_permissions",
                 "context_caching",
+                "context_compaction",
             ]:
                 section = record.get(section_name)
                 if not isinstance(section, dict):
@@ -177,6 +179,27 @@ def main() -> int:
                     failures.append(
                         f"{surface_id} context-cache fallback must be {CACHE_FALLBACK}"
                     )
+            compaction = record.get("context_compaction")
+            if isinstance(compaction, dict):
+                for field in [
+                    "route",
+                    "automatic_compaction",
+                    "manual_compaction",
+                    "manual_trigger",
+                    "pre_boundary_signal",
+                    "post_boundary_signal",
+                    "summary_inspection",
+                    "project_instruction_reload",
+                ]:
+                    value = compaction.get(field)
+                    if not isinstance(value, str) or "{" not in value:
+                        failures.append(
+                            f"{surface_id} context_compaction.{field} must remain placeholder-based"
+                        )
+                if compaction.get("fallback") != COMPACTION_FALLBACK:
+                    failures.append(
+                        f"{surface_id} context-compaction fallback must be {COMPACTION_FALLBACK}"
+                    )
     except (OSError, ValueError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
         failures.append(str(exc))
 
@@ -186,7 +209,7 @@ def main() -> int:
         return 1
     print(
         "OK: checked assistant surface state plus instruction, skill, permission, "
-        f"context-cache, diagram, and delegation evidence for {len(records)} surfaces"
+        f"context-cache, context-compaction, diagram, and delegation evidence for {len(records)} surfaces"
     )
     return 0
 

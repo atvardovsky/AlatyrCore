@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "policy_kind": "target-session-continuity",
+  "canonical_rule": "ALATYR-CONTINUITY-001",
+  "canonical_owner": ".ai/framework/session-continuity.md",
+  "flow": ".ai/assistant/flows/session-continuity.flow.md",
+  "gate": ".ai/assistant/gates/session-continuity.md",
+  "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
+  "packet_schema": "alatyr-session-continuity-packet-v1",
+  "runtime_directory": ".ai/.runtime/continuity",
+  "boundary_kinds": [
+    "manual-compaction",
+    "automatic-compaction",
+    "session-resume",
+    "session-fork",
+    "assistant-handoff",
+    "client-change",
+    "provider-change",
+    "model-change",
+    "subagent-convergence",
+    "context-reset",
+    "unknown"
+  ],
+  "storage": {
+    "inspect_only": "host-native-or-in-memory; report when durable continuity is unavailable",
+    "authorized_local_write": "ignored target-local packet under runtime_directory",
+    "automatic_commit": false,
+    "redaction": "no raw conversation hidden reasoning secrets credentials or unnecessary source content"
+  },
+  "authority_order": [
+    "newest user instruction for current-scope authorization",
+    "current repository and Git evidence",
+    "target canonical project owners",
+    "current approval and validation evidence",
+    "continuity packet",
+    "compacted or generated summary"
+  ],
+  "resume": {
+    "initial_mode": "inspect-only-pending-current-scope-revalidation",
+    "restore_publish_or_live_external": false,
+    "full_corpus_reload": false,
+    "expand_only_on": [
+      "packet integrity failure",
+      "repository or changed-path drift",
+      "approval or validation drift",
+      "missing or changed canonical owner",
+      "scope or authorization ambiguity",
+      "failed focused validation"
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "packet_kind": "target-agent-entry-packet",
   "path": ".ai/assistant/entry-packet.json",
   "generated_by": {
@@ -10,33 +10,37 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:7638ea63c380019430b862ccef0811d2f1ac34ce03bd4151f5bce645f5d2f2c2",
+    "target_manifest_digest": "sha256:6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.66",
-    "adapter_schema_version": "54",
-    "template_version": "61"
+    "framework_version": "0.1.0-alpha.67",
+    "adapter_schema_version": "55",
+    "template_version": "62"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "7638ea63c380019430b862ccef0811d2f1ac34ce03bd4151f5bce645f5d2f2c2"
+      "sha256": "6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "45f67a38a48951551427134ce09966b4bb12871e7c53b866025df24bf7efcd7b"
+      "sha256": "c5965e4c50ec33b671981aa9ac83d8989d817be5468bb9968f60682c63b22e5a"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
-      "sha256": "9f666806856b50bf4c30e3cecc2a198decc252e555f6ccd95ed022549249e2b5"
+      "sha256": "58ad035c356568b332ab02c0408f7be048773841f419a45be4c69fa8ee101fde"
     },
     "action_authorization_policy": {
       "path": ".ai/assistant/policies/action-authorization.json",
-      "sha256": "de908ca79c427057ff96331ec469c7e8e94876fd58cf6375ef06e89bae69c5c0"
+      "sha256": "d528a86d592adbfbdc7ed6e74c6946a5d8b316666383c20569fe9fd48fe5227a"
+    },
+    "session_continuity_policy": {
+      "path": ".ai/assistant/policies/session-continuity.json",
+      "sha256": "22ebb01cd04c327019457592c16daf9d07282b4c64e0f00ed35afd69005829dd"
     },
     "support_policy": {
       "path": ".ai/project/support-policy.json",
-      "sha256": "df4deae31521bcb7f2e9c74e4e5fc3ed5fea5da5fd5c38303531c1da5b69057b"
+      "sha256": "ce8ae0131509201b8b00c3447da5304822cdb84c3089a0f037aad15eac6062d6"
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",
@@ -44,11 +48,11 @@
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",
-      "sha256": "bec971b1cfc0cb6c46f52ad4c9f0a0d388c7ca155cd33b137337ef70ee16f66f"
+      "sha256": "10516e2433cac000427dfe2371931b7257f2d9e25c2687b1c1a8318eb21025e2"
     },
     "operation_catalog": {
       "path": ".ai/assistant/operation-catalog.json",
-      "sha256": "7c96c34e40e85c5c613f50f63e2284215fcf10a2357b04126714e3074c180789"
+      "sha256": "aeb59a946a9fb142b305cd1b8747543770462e912a9564297e2ec12ac9126b90"
     }
   },
   "installation": {
@@ -146,6 +150,15 @@
       "publish",
       "live-external"
     ]
+  },
+  "session_continuity": {
+    "policy": ".ai/assistant/policies/session-continuity.json",
+    "overlay": "session-continuity",
+    "gate": ".ai/assistant/gates/session-continuity.md",
+    "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
+    "runtime_directory": ".ai/.runtime/continuity",
+    "resume_mode": "inspect-only-pending-current-scope-revalidation",
+    "authority_behavior": "revalidate-current-scope-before-mutation"
   },
   "support_delta_first": {
     "policy": ".ai/project/support-policy.json",

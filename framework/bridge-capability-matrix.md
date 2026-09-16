@@ -96,9 +96,10 @@ for selecting one assistant surface without loading the whole matrix. It maps
 surface IDs to separate target-owned records under
 `.ai/assistant/assistant-capabilities/`. The compact index must record the
 selected-surface evidence model and treat the per-surface records as
-authoritative. Each record must use capability schema 4 and constrained
+authoritative. Each record must use capability schema 6 and constrained
 values. It records the explicit surface state, instruction loading, skill
-routing, tool-permission separation, context caching, diagrams, and delegation
+routing, tool-permission separation, context caching, context compaction,
+diagrams, and delegation
 with client version, verification, expiry, or review-trigger freshness
 evidence. The
 source template generator also projects bridge-path ownership from the
@@ -121,6 +122,12 @@ Unknown, stale, expired, or unverified evidence is not support evidence. It
 should route to recheck or manual review before an assistant relies on native
 skills, workers, diagrams, permissions, context caching, or auto-loaded
 instructions.
+
+Context compaction is separate from context caching. Record automatic and
+manual compaction, its verified trigger, boundary signals, summary inspection,
+and project-instruction reload behavior. Unknown native behavior uses the
+portable `ALATYR-CONTINUITY-001` fallback; it does not justify a full-corpus
+reload or restoration of action authorization.
 
 ## Context Caching Portability
 

@@ -71,6 +71,8 @@ the primary-owned plan.
   `Alatyr discuss {QUESTION}`: route to `team-decision`.
 - `Alatyr review {TASK_ID}`: route to read-only `team-review`.
 - `Alatyr merge check {TASK_ID}`: route to read-only `team-merge-check`.
+- `Alatyr session checkpoint`, `Alatyr prepare compaction`, `Alatyr resume
+  session`, or `Alatyr continuity check`: route to `session-continuity`.
 - `Alatyr dependencies`, `Alatyr dependency status`, `Alatyr sync
   dependencies`, `Alatyr inspect dependency {PACKAGE}`, `Alatyr explain
   dependency {PACKAGE}`, or `Alatyr dependency impact {PACKAGE_OR_CHANGE}`:
@@ -95,6 +97,16 @@ doctor` without making changes.
 Flow: `.ai/assistant/flows/adapter-health.flow.md`
 Minimum input: optional health scope.
 Default allowed actions: `read-only`.
+
+Operation: `session-continuity`
+Use when: preparing a bounded checkpoint or resuming after compaction, context
+loss, fork, handoff, or client/model boundary.
+Flow: `.ai/assistant/flows/session-continuity.flow.md`
+Minimum input: task or packet identity and the observed or expected boundary.
+Default allowed actions: `read-only`; `adapter-only` permits an ephemeral,
+ignored packet only when current modification authorization allows it.
+Resume behavior: inspect-only until packet bindings and current-scope
+authorization are revalidated.
 
 Operation: `create-project-blueprint`
 Use when: creating, repairing, or rechecking blueprint-equivalent
@@ -505,10 +517,15 @@ Route to: `logical-integrity-review`.
 Alias: `change business rule` or `измени бизнес-правило`
 Route to: `product-change`.
 
-Alias: `plan large task`, `continue large task`, or `resume Alatyr task`
+Alias: `plan large task`, `continue large task`, or `resume large Alatyr task`
 Route to: `large-task`. Continue from an existing operation packet when its
 path or operation ID is known; otherwise create a packet only after the
 large-task activation gate passes.
+
+Alias: `Alatyr session checkpoint`, `Alatyr prepare compaction`, `Alatyr resume
+session`, or `Alatyr continuity check`
+Route to: `session-continuity`. This recovery route does not imply large-task
+classification and never restores modify, commit, publish, or live authority.
 
 Alias: `Enable Alatyr Debug Mode`, `Alatyr debug`, `Alatyr debug status`,
 `Alatyr debug checkpoint`, `Alatyr debug summary`, `Disable Alatyr Debug Mode`,

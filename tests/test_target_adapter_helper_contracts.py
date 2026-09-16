@@ -52,6 +52,7 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
             "ADAPTER_MANIFEST_SCHEMA",
             "DEBUG_SESSION_SCHEMA",
             "ENGINEERING_EVIDENCE_SCHEMA",
+            "PACKET_SCHEMA",
         }
         explicitly_external_functions = {
             "load_validator_config",

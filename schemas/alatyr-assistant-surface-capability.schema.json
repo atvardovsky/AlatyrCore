@@ -11,11 +11,12 @@
     "skills",
     "tool_permissions",
     "context_caching",
+    "context_compaction",
     "diagram_discussion",
     "subagent_delegation"
   ],
   "properties": {
-    "schema_version": {"const": 5},
+    "schema_version": {"const": 6},
     "capability_kind": {"const": "target-assistant-surface-capabilities"},
     "assistant_surface": {"type": "string", "minLength": 1},
     "surface_state": {"$ref": "#/definitions/surfaceState"},
@@ -23,6 +24,7 @@
     "skills": {"$ref": "#/definitions/skills"},
     "tool_permissions": {"$ref": "#/definitions/toolPermissions"},
     "context_caching": {"$ref": "#/definitions/contextCaching"},
+    "context_compaction": {"$ref": "#/definitions/contextCompaction"},
     "diagram_discussion": {"type": "object"},
     "subagent_delegation": {"$ref": "#/definitions/subagentDelegation"}
   },
@@ -191,6 +193,36 @@
             "stable_prefix_ordering": {"const": true},
             "context_window_reduction": {"const": false},
             "fallback": {"const": "bounded-context-routing"}
+          }
+        }
+      ]
+    },
+    "contextCompaction": {
+      "allOf": [
+        {"$ref": "#/definitions/evidence"},
+        {
+          "type": "object",
+          "required": [
+            "route",
+            "automatic_compaction",
+            "manual_compaction",
+            "manual_trigger",
+            "pre_boundary_signal",
+            "post_boundary_signal",
+            "summary_inspection",
+            "project_instruction_reload",
+            "fallback"
+          ],
+          "properties": {
+            "route": {"type": "string", "minLength": 1},
+            "automatic_compaction": {"type": "string", "minLength": 1},
+            "manual_compaction": {"type": "string", "minLength": 1},
+            "manual_trigger": {"type": "string", "minLength": 1},
+            "pre_boundary_signal": {"type": "string", "minLength": 1},
+            "post_boundary_signal": {"type": "string", "minLength": 1},
+            "summary_inspection": {"type": "string", "minLength": 1},
+            "project_instruction_reload": {"type": "string", "minLength": 1},
+            "fallback": {"const": "session-continuity"}
           }
         }
       ]

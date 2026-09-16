@@ -21,11 +21,16 @@ task, packet, and result contracts. Native worker definitions are thin target
 bindings whose verified format and paths belong to the selected capability
 record; no surface inherits support claims from another.
 
-Each schema-4 surface record also separates assistant client from model
+Each schema-6 surface record also separates assistant client from model
 provider and records context-cache mode, exposed controls and telemetry,
 retention/minimum-size evidence, freshness, stable-prefix ordering, and the
 bounded-context fallback. Unknown provider or client behavior remains unknown.
 Caching is optional and does not reduce context-window occupancy.
+
+The same record separately captures automatic/manual context compaction,
+verified triggers, boundary signals, summary inspection, and project-
+instruction reload behavior. Unknown native behavior uses the portable
+`session-continuity` fallback and must not restore authorization.
 
 ## Supported Assistant Surfaces
 

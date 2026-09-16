@@ -28,6 +28,10 @@
     {
       "pattern": ".ai/local/**",
       "reason": "per-user local state is ignored and must not enter committed support evidence"
+    },
+    {
+      "pattern": ".ai/.runtime/**",
+      "reason": "ephemeral continuity and validator runtime state must not enter committed support evidence"
     }
   ],
   "classifications": [

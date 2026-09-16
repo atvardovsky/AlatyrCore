@@ -34,8 +34,8 @@
         "ALATYR-AUTHORIZATION-001",
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 319,
-      "content_digest": "sha256:de908ca79c427057ff96331ec469c7e8e94876fd58cf6375ef06e89bae69c5c0"
+      "estimated_words": 332,
+      "content_digest": "sha256:d528a86d592adbfbdc7ed6e74c6946a5d8b316666383c20569fe9fd48fe5227a"
     },
     {
       "id": "assistant.content.policies-ai-infrastructure-source-access-md",
@@ -83,6 +83,27 @@
       ],
       "estimated_words": 345,
       "content_digest": "sha256:866e47b1f4682ff431cfe36e2088950b1e95cf52a0b75fe57c25409abfed3135"
+    },
+    {
+      "id": "assistant.content.policies-session-continuity-json",
+      "kind": "content",
+      "path": "policies/session-continuity.json",
+      "summary": "Session Continuity",
+      "selectors": {
+        "path_terms": [
+          "policies",
+          "session",
+          "continuity"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 129,
+      "content_digest": "sha256:22ebb01cd04c327019457592c16daf9d07282b4c64e0f00ed35afd69005829dd"
     }
   ]
 }

@@ -296,17 +296,19 @@ In a typical target repository:
 7. Create the `kernel` assistant surfaces: `.ai/assistant/contour.md`, a
    generated hash-bound bootstrap index, compact context router, recursive
    framework/project/assistant `context-index.json` trees, the projected
-   semantic codebook, context-packet template, routed gate fragments, selected
+   semantic codebook, context-packet template, session-continuity policy,
+   overlay, flow, gate, packet template, routed gate fragments, selected
    lazy profile descriptors, context profiles, module profile, maturity
    profile, and minimal workflows/gates. Add the operation catalog and compact
    operation index only with `standard` or an enabling module. Add the bridge
    capability matrix, projected assistant-capability index, and exactly the
-   generic plus explicitly selected schema-4 records only when an enabled
+   generic plus explicitly selected schema-6 records only when an enabled
    module requires those surfaces. For every selected
    assistant, record the exact runtime, instruction entry path, competing
    sources, toggle/configuration state, observed loading, skills, client
    permissions, model provider, context-cache mode and client exposure,
-   diagrams, delegation, and freshness evidence. Keep unknown
+   context-compaction behavior and recovery signals, diagrams, delegation,
+   and freshness evidence. Keep unknown
    runtime facts unknown and keep client permissions separate from Alatyr
    authorization. Keep the catalog outside routine routing and resolve exact
    aliases through the compact index. Include the
@@ -595,9 +597,9 @@ python3 tools/render_target_entry_packet.py --target /path/to/target-repo --chec
 
 On Windows use `tools\alatyr.cmd render-entry` or
 `tools\alatyr.ps1 render-entry` when the target exposes those wrappers. The
-entry packet records recovery routes, installed profile files, gate fragments,
-operation routes when installed, allowed-action modes, and support-delta entry
-points. It is not routine first-use context. If selected for recovery or audit
+entry packet records recovery routes, session-continuity handling, installed
+profile files, gate fragments, operation routes when installed, allowed-action
+modes, and support-delta entry points. It is not routine first-use context. If selected for recovery or audit
 and missing or stale, repair it before trusting help, module, or context-profile
 summaries.
 

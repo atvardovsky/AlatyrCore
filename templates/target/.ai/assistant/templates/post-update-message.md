@@ -48,6 +48,10 @@ Future assistant bootstrap:
 - Re-evaluate `.ai/assistant/policies/action-authorization.json` at every
   action-phase boundary. Never reuse edit, commit, push, or live-action intent
   from a completed or superseded scope.
+- After compaction, resume, fork, handoff, client/model change, or suspected
+  context loss, use the `session-continuity` overlay. Resume inspect-only and
+  verify packet, repository, context, and current-scope authorization before
+  mutation.
 
 Recommended follow-up:
 Use the installed Alatyr adapter in this repository.
@@ -68,6 +72,8 @@ assessment. Record candidate context intentionally omitted.
 Operation help:
 - Send `Alatyr` for compact relevant operations; use `Alatyr status` or
   `Alatyr doctor` for read-only health evidence.
+- Use `Alatyr session checkpoint` before an expected context boundary and
+  `Alatyr resume session` after one; neither shortcut restores action authority.
 - Exact IDs and aliases route through `.ai/assistant/operation-index.json`;
   bounded natural-language requests route automatically and operation IDs are
   optional. Load the full catalog only for ambiguity or repair.

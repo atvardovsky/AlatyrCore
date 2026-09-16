@@ -61,6 +61,9 @@ Default routing:
   source owners; hashes locate change and do not prove semantics.
 - Before edits, apply `.ai/assistant/policies/action-authorization.json` to the
   newest request and current logical scope.
+- After compaction, resume, fork, handoff, client/model change, or suspected
+  context loss, use the `session-continuity` overlay. Remain inspect-only until
+  packet integrity, current repository evidence, and current scope are checked.
 
 ## Quick Operations
 
@@ -77,6 +80,13 @@ Use when: the user asks for Alatyr status, doctor, or current adapter health.
 Flow: `.ai/assistant/flows/adapter-health.flow.md`
 Minimum input: optional health scope. Allowed actions are `read-only`.
 <!-- /alatyr:scaffold-fragment -->
+
+Operation: `session-continuity`
+Use when: preparing for compaction or resuming after context loss or handoff.
+Flow: `.ai/assistant/flows/session-continuity.flow.md`
+Minimum input: task or packet identity and observed boundary. Use
+`Alatyr session checkpoint`, `Alatyr resume session`, or
+`Alatyr continuity check`.
 
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/blueprint-driven-change.flow.md"]} -->
 Operation: `product-change`

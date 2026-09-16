@@ -33,6 +33,18 @@ def nested(value: Any, dotted_path: str) -> Any:
     return current
 
 
+def schema_property_const(schema: dict[str, Any], manifest_key: str) -> Any:
+    """Resolve a dotted manifest field through nested JSON Schema properties."""
+
+    current: Any = schema
+    for part in manifest_key.split("."):
+        if not isinstance(current, dict):
+            return None
+        properties = current.get("properties")
+        current = properties.get(part) if isinstance(properties, dict) else None
+    return current.get("const") if isinstance(current, dict) else None
+
+
 def load_object(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -65,11 +77,7 @@ def validate(catalog: dict[str, Any]) -> list[str]:
                 f"{contract_id} target manifest {manifest_key} differs from "
                 f"compatibility version {contract_version}"
             )
-        schema_contract = nested(
-            adapter_schema,
-            "properties." + manifest_key.replace(".contract_version", "")
-            + ".properties.contract_version.const",
-        )
+        schema_contract = schema_property_const(adapter_schema, manifest_key)
         if schema_contract != contract_version:
             failures.append(
                 f"{contract_id} adapter schema contract version differs from "
@@ -124,9 +132,12 @@ def validate(catalog: dict[str, Any]) -> list[str]:
             if isinstance(schema_path, str) and (ROOT / schema_path).is_file():
                 schema = load_object(ROOT / schema_path)
                 declared = nested(schema, "properties.schema_version")
-                declared_versions = (
-                    declared.get("enum") if isinstance(declared, dict) else None
-                )
+                declared_versions = None
+                if isinstance(declared, dict):
+                    if isinstance(declared.get("enum"), list):
+                        declared_versions = declared["enum"]
+                    elif isinstance(declared.get("const"), int):
+                        declared_versions = [declared["const"]]
                 if declared_versions != supported:
                     failures.append(
                         f"{label} schema versions {declared_versions} differ from "

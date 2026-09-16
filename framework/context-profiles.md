@@ -424,6 +424,15 @@ for initially selected owners or identities changed by later revalidation.
 Keep the identity set inside the selected knowledge route's packet limits and
 record omitted applicable identities and the expansion decision.
 
+## Session Continuity
+
+Context compaction, restart, fork, handoff, client/model change, and suspected
+context loss activate the lightweight `session-continuity` overlay independently
+of task size. Follow `ALATYR-CONTINUITY-001`: reload the compact bootstrap and
+bounded recovery evidence, compare current state, and reapply authorization.
+Do not promote a small task to large-task orchestration only because context was
+compacted, and do not reload the full corpus without a concrete drift trigger.
+
 ## Change-Package Tasks
 
 Use the optional `change-package` overlay only for a coherent material outcome,

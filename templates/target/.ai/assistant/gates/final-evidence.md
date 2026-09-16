@@ -14,6 +14,9 @@ Before completion, report:
 - context index chain, required obligation IDs, selected item IDs/digests,
   semantic term IDs/versions, packet digest or canonical-prose fallback, and
   budget expansions
+- after a continuity boundary, packet/repository verification, selectively
+  reloaded context, and current-scope authorization re-established after the
+  boundary
 - `durable_engineering_evidence`: captured/skipped/blocked,
   ID/path/repository binding, or reason
 - `validation_evidence_classes`: declared, locally observed, tool verified,

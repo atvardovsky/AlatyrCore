@@ -102,6 +102,7 @@ file or into assistant-specific bridges:
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Approval boundaries: `ALATYR-APPROVAL-001`
 - Current-scope action authorization: `ALATYR-AUTHORIZATION-001`
+- Session and context continuity: `ALATYR-CONTINUITY-001`
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity: `ALATYR-INTEGRITY-001`
@@ -163,6 +164,13 @@ is read-only unless that same request clearly asks for a state-changing phase.
 Implementation does not imply commit; commit does not imply push; tool access,
 allowed actions, protected approval, team assignment, and prior completed-task
 authorization do not grant a missing phase.
+
+After compaction, resume, fork, handoff, client/model change, or suspected
+context loss, select the installed `session-continuity` overlay. Treat summaries
+and packets as evidence, resume inspect-only, verify repository and routed
+context state, then re-evaluate the newest request before mutation. Do not
+promote ordinary continuation into the `large-task` operation unless its own
+activation criteria are met.
 
 Exact operation IDs and aliases come from the installed target's compact
 operation index and canonical catalog. Do not infer an operation from this

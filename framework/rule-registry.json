@@ -32,6 +32,12 @@
       "derived_surfaces": ["source and target assistant entry points", "installed-operation routing", "action-authorization policy", "operation request and preview", "core and final-evidence gates", "subagent and team boundaries", "target structural validation", "authorization conformance scenarios"]
     },
     {
+      "category": "CONTINUITY",
+      "owner": "framework/session-continuity.md",
+      "rule_ids": ["ALATYR-CONTINUITY-001"],
+      "derived_surfaces": ["session continuity overlay", "continuity packet and gate", "large-task resume", "installer stage re-entry", "assistant compaction capability records", "target structural validation"]
+    },
+    {
       "category": "SAFETY",
       "owner": "framework/security-safety-guidance.md",
       "rule_ids": ["ALATYR-SAFETY-001", "ALATYR-SAFETY-002"],
@@ -221,6 +227,14 @@
       "canonical_source": "framework/action-authorization.md",
       "summary": "Bind inspect, modify, commit, publish, and live-external phases to explicit current-scope user intent; default subject switches, backlog returns, reports, discussion, analysis, and ambiguous continuation to read-only; expire authorization when scope completes or changes; and keep allowed actions, protected approval, tool permission, routing, assignment, modes, delegation, and validator success from granting a missing phase.",
       "applies_to": ["all assistant operations", "state-changing actions", "commit", "publish", "live external actions"],
+      "enforcement": "required"
+    },
+    {
+      "id": "ALATYR-CONTINUITY-001",
+      "category": "CONTINUITY",
+      "canonical_source": "framework/session-continuity.md",
+      "summary": "Across compaction, restart, resume, fork, handoff, client/model change, context reset, or suspected context loss, treat summaries and continuity packets as evidence rather than authority; compare bounded packet, repository, owner, approval, and validation state; re-establish current-scope authorization from the newest user instruction; never restore publish or live-external authority; and reload only changed or uncertain context.",
+      "applies_to": ["all assistant operations crossing a context or session boundary"],
       "enforcement": "required"
     },
     {

@@ -815,9 +815,10 @@ class CheckGraphTests(unittest.TestCase):
             check_id = item["id"]
             started.append(check_id)
             if check_id == "unlock":
-                time.sleep(0.01)
+                # Dependency wait must not age the later capacity reservation.
+                time.sleep(0.08)
             elif check_id == "blocker":
-                blocker_release.wait(timeout=0.15)
+                blocker_release.wait(timeout=0.4)
             elif check_id.startswith("small"):
                 time.sleep(0.02)
             elif check_id == "critical":

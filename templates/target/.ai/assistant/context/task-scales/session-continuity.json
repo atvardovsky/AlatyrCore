@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "overlay": "session-continuity",
+  "use_when": [
+    "automatic or manual context compaction is observed or expected",
+    "a task resumes after a session process client provider or model boundary",
+    "a conversation fork assistant handoff context reset or subagent convergence may have shortened or replaced context"
+  ],
+  "operation_candidates": ["session-continuity"],
+  "required_context": [
+    ".ai/assistant/policies/session-continuity.json",
+    ".ai/assistant/gates/session-continuity.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/assistant/flows/session-continuity.flow.md",
+      "when": "preparing repairing or resuming a continuity packet"
+    },
+    {
+      "path": ".ai/assistant/templates/session-continuity-packet.json",
+      "when": "a persistent target-local packet is authorized"
+    },
+    {
+      "path": ".ai/framework/session-continuity.md",
+      "when": "authority precedence failure behavior or portable semantics are disputed"
+    },
+    {
+      "path": ".ai/assistant/assistant-capabilities.json",
+      "when": "the capability index is installed and native compaction signals hooks instruction reload or summary inspection are used or claimed; then select one exact surface record"
+    }
+  ],
+  "expand_when": [
+    "packet digest or schema is invalid",
+    "repository changed-path approval or validation evidence drifted",
+    "current logical scope or action authorization is ambiguous",
+    "a referenced canonical owner or rule changed",
+    "focused validation fails"
+  ],
+  "budget_behavior": "load the compact bootstrap packet and two required continuity surfaces first; reload only mismatched owners or evidence and never the full corpus solely because a boundary occurred",
+  "final_evidence": [
+    "boundary and packet identity or durable-packet limitation",
+    "packet repository and approval verification",
+    "selectively reloaded context",
+    "current-scope authorization re-established after the boundary",
+    "validation and unresolved continuity risk"
+  ]
+}

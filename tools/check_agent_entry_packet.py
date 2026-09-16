@@ -46,8 +46,8 @@ def check_packet(
     source_template: bool = False,
 ) -> list[str]:
     failures: list[str] = []
-    if packet.get("schema_version") != 3:
-        failures.append("entry packet schema_version must be 3")
+    if packet.get("schema_version") != 4:
+        failures.append("entry packet schema_version must be 4")
     if packet.get("packet_kind") != "target-agent-entry-packet":
         failures.append("entry packet kind must be target-agent-entry-packet")
     if packet.get("path") != PACKET_PATH.as_posix():
@@ -66,6 +66,7 @@ def check_packet(
         "context_router",
         "gate_index",
         "action_authorization_policy",
+        "session_continuity_policy",
         "support_policy",
         "task_decomposition",
     }
@@ -189,6 +190,19 @@ def check_packet(
             "live-external",
         ]:
             failures.append("entry packet current-scope phases are invalid")
+
+    continuity = packet.get("session_continuity")
+    expected_continuity = {
+        "policy": ".ai/assistant/policies/session-continuity.json",
+        "overlay": "session-continuity",
+        "gate": ".ai/assistant/gates/session-continuity.md",
+        "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
+        "runtime_directory": ".ai/.runtime/continuity",
+        "resume_mode": "inspect-only-pending-current-scope-revalidation",
+        "authority_behavior": "revalidate-current-scope-before-mutation",
+    }
+    if continuity != expected_continuity:
+        failures.append("entry packet session-continuity recovery route is invalid")
 
     delta = packet.get("support_delta_first")
     if not isinstance(delta, dict):

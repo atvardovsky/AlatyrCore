@@ -654,8 +654,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 667,
-      "content_digest": "sha256:729856f2c34eb0daf5b6d032f7b6f3d5801bdaf0f079909c738dde89b0c7d477"
+      "estimated_words": 708,
+      "content_digest": "sha256:24a342e754f8298b9005e5eb450c9094b07390d659f772370471685afb7986de"
     },
     {
       "id": "assistant.content.templates-migration-note-md",
@@ -764,8 +764,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1683,
-      "content_digest": "sha256:bfb63507da4b73578a80f18989a32deb3ece3a5b295f43a46cac36f2c3f1968d"
+      "estimated_words": 1736,
+      "content_digest": "sha256:26b07952965dfea5775888527dd0484de8f429a793bb382818937601a931b28c"
     },
     {
       "id": "assistant.content.templates-post-update-message-md",
@@ -786,8 +786,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1383,
-      "content_digest": "sha256:da95d49d6f866492583834f01b115cf44eeb60a144ccb4991d1cff136f887495"
+      "estimated_words": 1432,
+      "content_digest": "sha256:ebb402bf1d1d817bf59e0ac236be7cd72e7228316345279cb2b53b3789b8a68a"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",
@@ -863,6 +863,28 @@
       ],
       "estimated_words": 26,
       "content_digest": "sha256:7467db6dc253e9360357d1b2eb3da4bdf25ae5d70f2cc3f689c7aee6c322e231"
+    },
+    {
+      "id": "assistant.content.templates-session-continuity-packet-json",
+      "kind": "content",
+      "path": "templates/session-continuity-packet.json",
+      "summary": "Session Continuity Packet",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "session",
+          "continuity",
+          "packet"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 133,
+      "content_digest": "sha256:bb92d4482f053f3b8fd2387aa4187c7482a3bd565b1595feaa7566b368aec79d"
     },
     {
       "id": "assistant.content.templates-small-task-evidence-md",

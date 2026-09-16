@@ -70,6 +70,7 @@ def validator(
     framework_source: Path | None = None,
     *,
     validation_phase: str = "migration-staging",
+    continuity_packets: list[Path] | None = None,
 ) -> Validator:
     return Validator(
         target,
@@ -84,6 +85,7 @@ def validator(
         allow_local_paths=[],
         config=AdapterValidatorConfig(),
         validation_phase=validation_phase,
+        continuity_packets=continuity_packets,
     )
 
 
@@ -145,6 +147,27 @@ def check_context_cache_regressions(
         failures.append("supported cache routes must reject unsupported provider mode")
     caching["provider_cache_mode"] = "automatic"
     write_json(record_path, record)
+
+    compaction = record["context_compaction"]
+    assert isinstance(compaction, dict)
+    compaction["fallback"] = "bounded-context-routing"
+    write_json(record_path, record)
+    compaction_fallback_validator = validator(target)
+    compaction_fallback_validator.check_assistant_instruction_capabilities(manifest)
+    if "ASSISTANT_CONTEXT_COMPACTION_FALLBACK" not in {
+        finding.code for finding in compaction_fallback_validator.findings
+    }:
+        failures.append("context compaction must retain the continuity fallback")
+    compaction["fallback"] = "session-continuity"
+
+    compaction["manual_trigger"] = "unknown"
+    write_json(record_path, record)
+    compaction_trigger_validator = validator(target)
+    compaction_trigger_validator.check_assistant_instruction_capabilities(manifest)
+    if "ASSISTANT_CONTEXT_COMPACTION_TRIGGER" not in {
+        finding.code for finding in compaction_trigger_validator.findings
+    }:
+        failures.append("manual compaction support must require a verified trigger")
 
 
 def check_core_contracts(failures: list[str]) -> None:

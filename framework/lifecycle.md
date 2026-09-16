@@ -38,6 +38,7 @@ Each installed framework should identify:
 - known deviations from the source framework
 - unresolved adapter gaps
 - support-information policy and current support-state digest
+- session-continuity policy and entry-packet contract version
 
 The source repository may store these facts in simple files such as `VERSION`,
 `ADAPTER_SCHEMA_VERSION`, and `TEMPLATE_VERSION`. Installed adapters should

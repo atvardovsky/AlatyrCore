@@ -11,6 +11,10 @@ evidence, not a source of truth for project facts.
 - Goal: `{GOAL}`
 - Non-goals: `{NON_GOALS}`
 - Allowed actions: `{ALLOWED_ACTIONS}`
+- Current logical scope: `{CURRENT_LOGICAL_SCOPE}`
+- Authorization source/evidence: `{CURRENT_REQUEST_REFERENCE_AND_HOST_VERIFIABLE_DECLARATIVE_OR_UNAVAILABLE}`
+- Recorded action phases: `{INSPECT_MODIFY_COMMIT_PUBLISH_OR_LIVE_EXTERNAL}`
+- Resume authorization state: `inspect-only-pending-current-scope-revalidation`
 - Activation reason: `{LARGE_TASK_ACTIVATION_REASON}`
 - Current phase: `{DISCOVERY_PLANNING_EXECUTION_CONVERGENCE_OR_COMPLETE}`
 - Packet status: `{ACTIVE_BLOCKED_COMPLETE_OR_ARCHIVED}`
@@ -154,4 +158,6 @@ load completed workstream context again unless evidence changed. Re-resolve the
 ordered semantic-guidance bundle and compare it with the last accepted digest.
 When it differs, stop the affected phase, load only changed owners, refresh
 risk, approval, dependencies, and validation, then record a new accepted
-checkpoint before continuing.
+checkpoint before continuing. Apply the `session-continuity` overlay and
+re-establish current-scope authorization from the newest user instruction;
+the packet must not restore publish or live-external authority.

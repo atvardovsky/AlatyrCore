@@ -72,6 +72,9 @@ The framework commits to giving an assistant a defined process for:
 - binding inspect, modify, commit, publish, and live-external phases to the
   newest user intent in one current logical scope, without carrying prior
   phase authorization into a completed or redirected task
+- preserving bounded session continuity across compaction, resume, fork,
+  handoff, client/model changes, and suspected context loss while treating
+  summaries and packets as non-authoritative evidence and resuming inspect-only
 - keeping architecture discussion separate from architecture mutation
 - keeping documentation and diagrams synchronized with code and project facts
 - selecting bounded target-owned code-documentation profiles and generating

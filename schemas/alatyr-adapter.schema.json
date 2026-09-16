@@ -79,7 +79,7 @@
         "router_schema_version": {"const": 12},
         "preloaded_context": {"$ref": "#/definitions/nonEmptyStringArray"},
         "compact_bootstrap": {"$ref": "#/definitions/nonEmptyStringArray"},
-        "agent_entry_packet_schema_version": {"const": 3},
+        "agent_entry_packet_schema_version": {"const": 4},
         "agent_entry_packet": {"const": ".ai/assistant/entry-packet.json"},
         "bootstrap_max_characters": {"type": "integer", "minimum": 1},
         "profile_default_max_total_characters": {"type": "integer", "minimum": 1},
@@ -123,7 +123,14 @@
     },
     "operations": {
       "type": "object",
-      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy", "task_decomposition", "task_decomposition_plan"]
+      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy", "session_continuity_policy", "session_continuity_flow", "session_continuity_gate", "session_continuity_packet", "session_continuity_packet_schema", "task_decomposition", "task_decomposition_plan"],
+      "properties": {
+        "session_continuity_policy": {"const": ".ai/assistant/policies/session-continuity.json"},
+        "session_continuity_flow": {"const": ".ai/assistant/flows/session-continuity.flow.md"},
+        "session_continuity_gate": {"const": ".ai/assistant/gates/session-continuity.md"},
+        "session_continuity_packet": {"const": ".ai/assistant/templates/session-continuity-packet.json"},
+        "session_continuity_packet_schema": {"const": 1}
+      }
     },
     "engineering_evidence": {
       "type": "object",

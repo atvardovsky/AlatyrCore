@@ -488,6 +488,28 @@
       "content_digest": "sha256:602ff6dff445c79a84114efb64acd3986a4edc375ea1dbba644a858746c7e705"
     },
     {
+      "id": "assistant.content.flows-session-continuity-flow-md",
+      "kind": "content",
+      "path": "flows/session-continuity.flow.md",
+      "summary": "Session Continuity Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "session",
+          "continuity",
+          "flow"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 364,
+      "content_digest": "sha256:8d254e12a2fac2c7565ff4650f281a0fd54341a4057f50c0bdb15a081d30115a"
+    },
+    {
       "id": "assistant.content.flows-skill-adaptation-flow-md",
       "kind": "content",
       "path": "flows/skill-adaptation.flow.md",

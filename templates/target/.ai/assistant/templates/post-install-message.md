@@ -31,6 +31,7 @@ Entry points:
 - `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/policies/action-authorization.json`
+- `.ai/assistant/policies/session-continuity.json`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/bootstrap-index.json`
 - `.ai/assistant/bootstrap-integrity.json`
@@ -124,10 +125,16 @@ Future assistant bootstrap:
 - Re-evaluate the newest request at every action-phase boundary. A completed
   task's edit, commit, or push authorization does not carry into a new issue,
   backlog item, discussion, report, or subject switch.
+- After compaction, resume, fork, handoff, client/model change, or suspected
+  context loss, use `Alatyr resume session` or the `session-continuity` overlay.
+  Resume inspect-only; verify packet, repository, context, and current-scope
+  authorization before mutation.
 
 Installed operation help:
 - Send `Alatyr` to see adapter state and up to three relevant operations.
 - Send `Alatyr status` or `Alatyr doctor` for read-only health evidence.
+- Send `Alatyr session checkpoint` before an expected boundary or `Alatyr
+  resume session` after one; neither shortcut restores action authority.
 - Clear development requests route automatically; operation IDs are optional.
 - Issue/backlog returns, status requests, discussion, analysis, plans, reports,
   and ambiguous continuation are read-only until the current request explicitly

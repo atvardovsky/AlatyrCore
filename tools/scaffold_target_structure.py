@@ -296,6 +296,9 @@ def projected_template_content(
                 (TEMPLATE_ROOT / ".ai/assistant/policies/action-authorization.json").read_text(
                     encoding="utf-8"
                 ),
+                (TEMPLATE_ROOT / ".ai/assistant/policies/session-continuity.json").read_text(
+                    encoding="utf-8"
+                ),
                 (TEMPLATE_ROOT / ".ai/project/support-policy.json").read_text(
                     encoding="utf-8"
                 ),

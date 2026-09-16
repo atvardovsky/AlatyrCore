@@ -16,10 +16,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-identity/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/architecture-assistance/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/extension-management/dependency-knowledge/workspace-mode/drift-review/documentation-sync/project-vocabulary/test-first-configuration/test-first-change/adapter-maturity-review/other>
+<optional; help/adapter-health/session-continuity/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-identity/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/architecture-assistance/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/extension-management/dependency-knowledge/workspace-mode/drift-review/documentation-sync/project-vocabulary/test-first-configuration/test-first-change/adapter-maturity-review/other>
 
 Operation alias, if used:
-<for example: Alatyr architecture, Alatyr diagram, document code, Alatyr glossary, Alatyr enable test-first, Alatyr test first, Alatyr extensions, Alatyr inspect extension <source>, Alatyr dependencies, Alatyr sync dependencies, Alatyr explain dependency <package>, Alatyr modes, Alatyr suggest modes, Alatyr mode <id>, Alatyr set actor <actor>, Alatyr team status, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
+<for example: Alatyr session checkpoint, Alatyr resume session, Alatyr architecture, Alatyr diagram, document code, Alatyr glossary, Alatyr enable test-first, Alatyr test first, Alatyr extensions, Alatyr inspect extension <source>, Alatyr dependencies, Alatyr sync dependencies, Alatyr explain dependency <package>, Alatyr modes, Alatyr suggest modes, Alatyr mode <id>, Alatyr set actor <actor>, Alatyr team status, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>
@@ -59,6 +59,9 @@ Delegation preference:
 
 Existing operation packet, when resuming:
 <target-approved packet path or none>
+
+Session boundary and continuity packet, when applicable:
+<boundary kind; ignored target-relative packet path or none>
 
 Team task and actor IDs, when applicable:
 <task-id; source/destination/reviewer actor IDs or none>

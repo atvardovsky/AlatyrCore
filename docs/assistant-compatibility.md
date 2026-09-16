@@ -58,8 +58,8 @@ plan exist.
 
 Static admission and actual support are separate. A selected target surface
 records instruction loading, skill source and activation, client permissions,
-provider context caching, diagram behavior, and delegation in its schema-5
-capability record. That record
+provider context caching, context compaction and recovery signals, diagram
+behavior, and delegation in its schema-6 capability record. That record
 also separates whether the surface is advertised, selected, supported,
 verified, and fresh for the target. Client permissions and auto-approval never
 grant Alatyr action authorization. Exact-client evidence is required before

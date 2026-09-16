@@ -84,6 +84,11 @@ Required files:
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/context/task-scales/small-task.json`
+- `.ai/assistant/context/task-scales/session-continuity.json`
+- `.ai/assistant/policies/session-continuity.json`
+- `.ai/assistant/flows/session-continuity.flow.md`
+- `.ai/assistant/gates/session-continuity.md`
+- `.ai/assistant/templates/session-continuity-packet.json`
 - `.ai/assistant/templates/small-task-evidence.md`
 
 Evidence: `{EVIDENCE_OR_GAP}`
@@ -126,6 +131,23 @@ Evidence: `{ACTION_AUTHORIZATION_EVIDENCE_OR_GAP}`
 Validation or review: `{ACTION_AUTHORIZATION_VALIDATION_OR_REVIEW}`
 Approval needs: `{ACTION_AUTHORIZATION_APPROVAL_NEEDS}`
 Residual risk: `{ACTION_AUTHORIZATION_RESIDUAL_RISK}`
+
+Kernel item: `session-continuity`
+State: `{REQUIRED_ENABLED_OR_BLOCKED}`
+Owner or file: `.ai/assistant/policies/session-continuity.json`
+Required files:
+
+- `.ai/framework/session-continuity.md`
+- `.ai/assistant/policies/session-continuity.json`
+- `.ai/assistant/context/task-scales/session-continuity.json`
+- `.ai/assistant/flows/session-continuity.flow.md`
+- `.ai/assistant/gates/session-continuity.md`
+- `.ai/assistant/templates/session-continuity-packet.json`
+
+Evidence: `{SESSION_CONTINUITY_EVIDENCE_OR_GAP}`
+Validation or review: `{SESSION_CONTINUITY_VALIDATION_OR_REVIEW}`
+Approval needs: `{SESSION_CONTINUITY_APPROVAL_NEEDS}`
+Residual risk: `{SESSION_CONTINUITY_RESIDUAL_RISK}`
 
 Kernel item: `validation-and-final-evidence`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`

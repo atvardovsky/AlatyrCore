@@ -224,8 +224,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 226,
-      "content_digest": "sha256:044358d36dedcc5934c9c317c9be33de417f967cd6a9e36ae0ad900284114dee"
+      "estimated_words": 243,
+      "content_digest": "sha256:aabd711bf086b39f278e2acf9093a7260a36268de953658489cd628ad1f37408"
     },
     {
       "id": "assistant.content.gates-index-json",
@@ -243,8 +243,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 232,
-      "content_digest": "sha256:9f666806856b50bf4c30e3cecc2a198decc252e555f6ccd95ed022549249e2b5"
+      "estimated_words": 254,
+      "content_digest": "sha256:58ad035c356568b332ab02c0408f7be048773841f419a45be4c69fa8ee101fde"
     },
     {
       "id": "assistant.content.gates-project-knowledge-md",
@@ -318,6 +318,27 @@
       ],
       "estimated_words": 77,
       "content_digest": "sha256:b635c816c3768e2c4f010186161d7214ef5d51de0bd0c7a9ee12f6188db99941"
+    },
+    {
+      "id": "assistant.content.gates-session-continuity-md",
+      "kind": "content",
+      "path": "gates/session-continuity.md",
+      "summary": "Session Continuity Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "session",
+          "continuity"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 123,
+      "content_digest": "sha256:6303d1d62a0aae249d23425fe0ecf7ea19a8fef62943db91ca17985bf1c6ddcb"
     },
     {
       "id": "assistant.content.gates-support-generation-md",

@@ -129,6 +129,13 @@ For non-trivial work, it also decomposes the request into bounded subtasks with
 implementation levels, dependencies, selected context, validation, and primary
 or worker executor decisions.
 
+When a session is compacted, resumed, forked, handed off, or otherwise loses
+context, the installed adapter provides a bounded continuity route. The agent
+rechecks packet integrity, repository state, selected context, and the newest
+user authorization before mutation; a generated summary never becomes project
+authority. Native client recovery remains capability-dependent, so the
+repository-owned route is the portable fallback.
+
 For routine development, deterministic tooling can route changed support
 surfaces to focused checks and affected optional modules. Full validation still
 remains the acceptance boundary for installations, framework updates, and
@@ -543,7 +550,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.66`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.67`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

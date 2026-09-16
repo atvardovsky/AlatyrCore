@@ -30,6 +30,8 @@ sync, logical integrity review, and final evidence.
 - change-risk classification and approval trigger model
 - current-scope action authorization across inspect, modify, commit, publish,
   and live-external phases
+- bounded session continuity across compaction, resume, fork, handoff,
+  client/provider/model changes, and suspected context loss
 - first-class logical integrity review
 - blueprint-driven product-change workflow
 - optional project-owned architecture knowledge, pattern discussion, review,
@@ -167,6 +169,8 @@ Those belong to a project contour or repository adapter.
   approvals, tests, docs, diagrams, and final evidence.
 - `.ai/framework/action-authorization.md`: current-scope user-intent boundary
   for inspection, repository edits, commits, publication, and live actions.
+- `.ai/framework/session-continuity.md`: bounded, non-authoritative recovery
+  across context and assistant-session boundaries.
 - `.ai/framework/logical-integrity.md`: portable semantic/logical review for
   changed facts, source-of-truth decisions, repair sets, and evidence.
 - `.ai/framework/blueprint-driven-change.md`: portable product-change workflow

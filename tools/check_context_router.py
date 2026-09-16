@@ -186,6 +186,48 @@ def check_conditional_context(
     return paths
 
 
+def check_session_continuity_overlay(
+    scale_index: dict[str, Any], failures: list[str]
+) -> list[str]:
+    label = "task_scale_overlays.session-continuity"
+    entry = scale_index.get("session-continuity")
+    continuity = descriptor(
+        entry.get("descriptor") if isinstance(entry, dict) else None,
+        "target-task-scale-overlay",
+        label,
+        failures,
+    )
+    check_contract(
+        continuity,
+        [
+            "use_when",
+            "operation_candidates",
+            "required_context",
+            "expand_when",
+            "final_evidence",
+        ],
+        label,
+        failures,
+        {"required_context"},
+    )
+    if continuity.get("operation_candidates") != ["session-continuity"]:
+        failures.append(
+            "session-continuity overlay must route the session-continuity operation"
+        )
+    for required_path in [
+        ".ai/assistant/policies/session-continuity.json",
+        ".ai/assistant/gates/session-continuity.md",
+    ]:
+        if required_path not in continuity.get("required_context", []):
+            failures.append(f"session-continuity overlay must load {required_path}")
+    conditional = check_conditional_context(continuity, label, failures)
+    if ".ai/framework/session-continuity.md" not in conditional:
+        failures.append(
+            "session-continuity overlay must route its canonical owner lazily"
+        )
+    return conditional
+
+
 def check_activation_boundary(
     data: dict[str, Any],
     label: str,
@@ -609,7 +651,7 @@ def main() -> int:
         failures.append("agent_entry_packet must be an object")
     else:
         expected_entry_packet = {
-            "schema_version": 3,
+            "schema_version": 4,
             "path": ".ai/assistant/entry-packet.json",
         }
         for field, expected in expected_entry_packet.items():
@@ -1154,6 +1196,9 @@ def main() -> int:
         TARGET_REQUIRED_SMALL_TASK_EXPANSION_TRIGGERS,
     ):
         failures.append(f"small-task overlay missing expansion trigger {required}")
+    continuity_conditional_context = check_session_continuity_overlay(
+        scale_index, failures
+    )
     large_entry = scale_index.get(LARGE_TASK_CLASS)
     large_task = descriptor(
         large_entry.get("descriptor") if isinstance(large_entry, dict) else None,
@@ -1405,6 +1450,7 @@ def main() -> int:
         dependency_knowledge_conditional_context,
         workspace_mode_conditional_context,
         delegated_conditional_context,
+        continuity_conditional_context,
     ]:
         routed_framework_paths.update(
             value

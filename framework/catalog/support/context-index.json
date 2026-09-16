@@ -45,6 +45,27 @@
       "content_digest": "sha256:1b40dfe7964b099a2d37a4e395bf429c92b963f22bb3e2035180e877ecab5758"
     },
     {
+      "id": "framework.support.session-continuity-md",
+      "kind": "content",
+      "path": "session-continuity.md",
+      "summary": "Session Continuity",
+      "selectors": {
+        "path_terms": [
+          "session",
+          "continuity"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTINUITY-001"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-CONTINUITY-001"
+      ],
+      "estimated_words": 758,
+      "content_digest": "sha256:27e25e0693b934845cd3b27148a97a40e588510634ecfb5fae38a1e0fd9056b4"
+    },
+    {
       "id": "framework.support.support-information-md",
       "kind": "content",
       "path": "support-information.md",

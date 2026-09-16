@@ -2,6 +2,19 @@
   "schema_version": 1,
   "catalog_kind": "target-adapter-contract-compatibility",
   "contracts": {
+    "session-continuity": {
+      "manifest_key": "operations.session_continuity_packet_schema",
+      "manifest_contract_version": 1,
+      "artifacts": {
+        "packet": {
+          "current": 1,
+          "supported": [1],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-session-continuity-packet.schema.json",
+          "template": "templates/target/.ai/assistant/templates/session-continuity-packet.json"
+        }
+      }
+    },
     "debug-mode": {
       "manifest_key": "debug_mode.contract_version",
       "manifest_contract_version": 6,

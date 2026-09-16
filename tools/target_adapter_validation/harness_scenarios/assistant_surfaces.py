@@ -17,6 +17,37 @@ from .common import (
 )
 
 
+def context_management_capabilities(evidence: dict[str, object]) -> dict[str, object]:
+    return {
+        "context_caching": {
+            **evidence,
+            "route": "supported",
+            "provider": "fixture-provider",
+            "model": "fixture-model",
+            "provider_cache_mode": "automatic",
+            "client_control_exposure": "unsupported",
+            "client_telemetry_exposure": "supported",
+            "retention": "fixture-session",
+            "minimum_cacheable_tokens": "1",
+            "stable_prefix_ordering": True,
+            "context_window_reduction": False,
+            "fallback": "bounded-context-routing",
+        },
+        "context_compaction": {
+            **evidence,
+            "route": "supported",
+            "automatic_compaction": "supported",
+            "manual_compaction": "supported",
+            "manual_trigger": "/compact",
+            "pre_boundary_signal": "unsupported",
+            "post_boundary_signal": "supported",
+            "summary_inspection": "supported",
+            "project_instruction_reload": "unknown",
+            "fallback": "session-continuity",
+        },
+    }
+
+
 def run(target: Path, failures: list[str]) -> None:
     instruction_target = target / "instruction-capabilities"
     (instruction_target / ".ai/assistant/assistant-capabilities").mkdir(
@@ -94,20 +125,7 @@ def run(target: Path, failures: list[str]) -> None:
             "effective_restrictions": "fixture read/write prompt",
             "alatyr_authorization_separate": True,
         },
-        "context_caching": {
-            **evidence,
-            "route": "supported",
-            "provider": "fixture-provider",
-            "model": "fixture-model",
-            "provider_cache_mode": "automatic",
-            "client_control_exposure": "unsupported",
-            "client_telemetry_exposure": "supported",
-            "retention": "fixture-session",
-            "minimum_cacheable_tokens": "1",
-            "stable_prefix_ordering": True,
-            "context_window_reduction": False,
-            "fallback": "bounded-context-routing",
-        },
+        **context_management_capabilities(evidence),
         "diagram_discussion": {},
         "subagent_delegation": {},
     }

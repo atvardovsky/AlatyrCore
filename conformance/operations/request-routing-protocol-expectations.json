@@ -23,6 +23,24 @@
       "minimum_evidence": ["health state enum", "installation state", "acceptance eligibility", "checks run and unavailable", "up to three repair operations", "no files changed"]
     },
     {
+      "id": "session-resume",
+      "request": "Alatyr resume session",
+      "authorization_scenario": null,
+      "expected_operation": "session-continuity",
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": [],
+      "minimum_evidence": ["boundary and packet identity", "repository and approval verification", "current-scope authorization revalidation", "next safe action and residual risk"]
+    },
+    {
+      "id": "ambiguous-continuation",
+      "request": "continue",
+      "authorization_scenario": null,
+      "expected_operation": null,
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": [],
+      "minimum_evidence": ["current_user_authorization", "unresolved routing or next safe action"]
+    },
+    {
       "id": "architecture-discussion",
       "request": "Discuss the persistence pattern used by this project.",
       "authorization_scenario": null,

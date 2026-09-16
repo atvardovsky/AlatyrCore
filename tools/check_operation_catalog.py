@@ -32,6 +32,7 @@ AUTHORIZATION_SCENARIOS = ROOT / "conformance" / "authorization-intent-scenarios
 EXPECTED_OPERATIONS = {
     "help",
     "adapter-health",
+    "session-continuity",
     "create-project-blueprint",
     "architecture-assistance",
     "recheck-after-installation",
@@ -124,6 +125,8 @@ ALLOWED_PROFILES = {
 ROUTING_CASE_IDS = {
     "help",
     "status",
+    "session-resume",
+    "ambiguous-continuation",
     "architecture-discussion",
     "product-change",
     "backlog-return",

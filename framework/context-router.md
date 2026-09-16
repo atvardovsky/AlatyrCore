@@ -55,7 +55,9 @@ The entry packet is generated recovery metadata, not another policy owner or
 routine first-use requirement. Load it only for bootstrap recovery, adapter
 audit, or routing conflict. If it is missing or stale when selected, repair it
 from canonical adapter sources or fall back to named owners with an explicit
-context receipt.
+context receipt. It should expose the portable session-continuity route without
+copying that rule, restoring prior phase authorization, or requiring a full
+framework reload.
 
 ## Router Contract
 
@@ -89,8 +91,8 @@ digest behavior, conditional shard loading, and canonical-prose fallback
   one selected mode directory, ambiguity behavior, and preflight
 - optional intent overlays that compose with every base profile
 - optional project-area overlays
-- optional task-scale overlays for large, resumable, team-active, material-
-  evidence, or explicitly debug-enabled work
+- task-scale overlays for session continuity and optional large, resumable,
+  team-active, material-evidence, or explicitly debug-enabled work
 - optional consistency routing from changed fact IDs to applicable
   relationships
 - required project-knowledge routing through a compact root index, bounded

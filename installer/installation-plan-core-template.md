@@ -54,6 +54,7 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Existing files that must remain untouched:
 - Rejected source-repository facts, commands, fixtures, and policies:
 - Optional capability sections loaded from the detailed template and why:
+- Core session-continuity surfaces and ignored runtime storage:
 
 ## Validation And Evidence
 

@@ -37,6 +37,8 @@ An installed adapter should support these operation categories:
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
+- bounded session checkpoint and recovery after compaction, resume, fork,
+  handoff, client/model change, or suspected context loss
 - optional team status, task start/claim/checkpoint/release, concurrent-work
   conflict review, handoff, decision, team review, and merge readiness
 - logical integrity review
@@ -85,6 +87,8 @@ A post-install request should state:
   `code-and-tests`, or `full-with-approval`
 - context profile when known
 - task scale and existing operation packet when known
+- session boundary and continuity packet identity when preparing or resuming
+  continuity
 - team task, actor, coordination backend, and current evidence revision when
   team collaboration applies
 - pre-change preview state when risk-gated preview applies
@@ -202,6 +206,11 @@ For installed operations:
 2. Read the installation note and post-install/update message templates when
    the request follows an installation, framework update, or unclear adapter
    state.
+   After a session boundary or suspected context loss, compose the
+   `session-continuity` overlay, verify only the packet-bound repository,
+   context, approval, and capability evidence, and resume inspect-only until
+   current-scope authorization is re-established. Do not classify ordinary
+   recovery as `large-task` solely because context was compacted.
 3. Select the smallest matching context profile and project-area overlays from
    the bootstrap projection and context router, then read their required
    framework, project, assistant, flow, routed gate fragments, policy, and

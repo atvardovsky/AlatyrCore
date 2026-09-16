@@ -32,8 +32,8 @@
       "owner_refs": [
         "ALATYR-AUTHORIZATION-001"
       ],
-      "estimated_words": 1058,
-      "content_digest": "sha256:2b4383460725aea574a7c0c271b81bf51c0e6888249513df8f4a706411108160"
+      "estimated_words": 1083,
+      "content_digest": "sha256:019c5329aff2d29a4b3b8a78694b3e1fa0640bd9c05c006664fbf7f9822fa48c"
     },
     {
       "id": "framework.core.approval-records-md",
@@ -77,8 +77,8 @@
       "owner_refs": [
         "ALATYR-BRIDGE-001"
       ],
-      "estimated_words": 2234,
-      "content_digest": "sha256:492eef0b0139b38675e718d76718f1543d9965c9b964ab11c405ff51bf1c0dbf"
+      "estimated_words": 2279,
+      "content_digest": "sha256:a9ab9171d049488aa1605eb498e0ae159d634b17d1890efb461a776dc6e336cb"
     },
     {
       "id": "framework.core.change-risk-model-md",
@@ -138,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3543,
-      "content_digest": "sha256:93c2a8266aa54139e7accfd7ea04c062dc2a725073d72163709c87f09bb722fb"
+      "estimated_words": 3608,
+      "content_digest": "sha256:88a1a83702ba4101cc29f10b63255bf61ead7e31cd3120f54145108eba3855f3"
     },
     {
       "id": "framework.core.context-router-md",
@@ -153,8 +153,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3168,
-      "content_digest": "sha256:e14348a96ec3ad2776ef67335a9da07f8b27e2edfa19694a7e4837fef6183462"
+      "estimated_words": 3191,
+      "content_digest": "sha256:2d104d0091f2e30f8fc652fa45f4ae51a873b14f108c7fc0e6a8a2c39e9e0b86"
     },
     {
       "id": "framework.core.contour-md",
@@ -188,8 +188,8 @@
       "owner_refs": [
         "ALATYR-EVIDENCE-001"
       ],
-      "estimated_words": 3385,
-      "content_digest": "sha256:0e81cc49859dc4de5513ed6509fb5d1fc92ec4ae3a434fc9c9d218b77873aafa"
+      "estimated_words": 3412,
+      "content_digest": "sha256:f296d95ddf73c9203894cf385024e45b90644737b70be49f0be919e3d39c5d09"
     },
     {
       "id": "framework.core.installed-operations-md",
@@ -204,8 +204,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4126,
-      "content_digest": "sha256:748b0dae228d841b0c1752a01fa796884dbcc6a311b606d062b4090d59fdfdc8"
+      "estimated_words": 4197,
+      "content_digest": "sha256:79c32f2e17e547ba200785ce1bcb5c25d17f5dbce0fc12d7f0ed75055f19e59e"
     },
     {
       "id": "framework.core.logical-integrity-md",
@@ -249,8 +249,8 @@
       "owner_refs": [
         "ALATYR-MODULE-001"
       ],
-      "estimated_words": 2370,
-      "content_digest": "sha256:47039e8091a8bc0ee9e1e53ca6aec5cae0d180a56b30aa7e2afbe3e83197620b"
+      "estimated_words": 2387,
+      "content_digest": "sha256:9765abae505ff59b65f91a4651ef887784864a3bfdb2dc543c69b7b852e2e96a"
     },
     {
       "id": "framework.core.operation-help-md",
@@ -270,8 +270,8 @@
       "owner_refs": [
         "ALATYR-OPERATION-001"
       ],
-      "estimated_words": 3522,
-      "content_digest": "sha256:e6ddb13e89e7632ad2a52bba6bef105cea0b656149856201fb47149af1f1165f"
+      "estimated_words": 3584,
+      "content_digest": "sha256:559df609ffd2dae05256c0d2b9573d44f111ed351d9e5a215049766335a34eaf"
     },
     {
       "id": "framework.core.project-adapter-contract-md",
@@ -292,8 +292,8 @@
       "owner_refs": [
         "ALATYR-ADAPTER-001"
       ],
-      "estimated_words": 1042,
-      "content_digest": "sha256:3bfd28f39c0405db60d2e9c0401d064cf36468cc8bc785d8fe10a0e35b02c6c0"
+      "estimated_words": 1047,
+      "content_digest": "sha256:854ce41f0aff6291540793aaf61b47f0b1b4d080fc59cbe8736b4881ea605829"
     },
     {
       "id": "framework.core.prompt-injection-md",
@@ -328,8 +328,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1637,
-      "content_digest": "sha256:af0bfabfd293b716529108abd8b5e870e74dfd8bdf293d74ca9a4b2797de3349"
+      "estimated_words": 1662,
+      "content_digest": "sha256:83b1b016fb74092d1616dc5d97156c4fb9290e8a825150f7562b23c3ba0c363f"
     },
     {
       "id": "framework.core.rule-ownership-md",
@@ -344,8 +344,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1744,
-      "content_digest": "sha256:f0ec1823a5f5530c0a8769190ab3263b31b765453aa637384dad5a7a562e8690"
+      "estimated_words": 1788,
+      "content_digest": "sha256:b8b2cc032f944176642d0c26dbd9845c0a91590ad0b68b31b8ce04c179645341"
     },
     {
       "id": "framework.core.rule-registry-json",
@@ -363,8 +363,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4191,
-      "content_digest": "sha256:4ec69881faca831c95b12efd540bc330c2ff55ff2e507330eb932141f4fac00d"
+      "estimated_words": 4294,
+      "content_digest": "sha256:b8de51510ebcd2b2a1cc609124b26275cf9fb28e1bec69bb1989f4e3ad429c06"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -382,8 +382,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3383,
-      "content_digest": "sha256:802809a422a87a2e9a348ee06fca752e06698aaadb38b4c155a20de5dc90a72e"
+      "estimated_words": 3462,
+      "content_digest": "sha256:631ca78cf54e37a30fd5e98932efc47ba70840914b17804c319e9d2319bdd25a"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -440,6 +440,22 @@
       "content_digest": "sha256:daee94942f232bf7d1ba8cc9920f7730a57da61d4978d30961ba58a63628274d"
     },
     {
+      "id": "framework.core.semantics-continuity-json",
+      "kind": "content",
+      "path": "semantics/continuity.json",
+      "summary": "Continuity",
+      "selectors": {
+        "path_terms": [
+          "semantics",
+          "continuity"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 101,
+      "content_digest": "sha256:e0f9cb30abaa0aff433e63a603dc1abdc6bdf13b9856365351c4357a51afb348"
+    },
+    {
       "id": "framework.core.semantics-core-json",
       "kind": "content",
       "path": "semantics/core.json",
@@ -467,8 +483,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 294,
-      "content_digest": "sha256:f37120f0dde7bc5b4067b69ca6c138f53ad1019be38863d70ab4d5cbbfed5d1d"
+      "estimated_words": 320,
+      "content_digest": "sha256:0d43797c6174e4fd7e3be2c74a14d5f73bf7142b080f1c63e6917d88f179300d"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

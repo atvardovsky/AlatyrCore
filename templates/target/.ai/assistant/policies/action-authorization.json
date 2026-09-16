@@ -21,6 +21,8 @@
   "scope": {
     "prior_authorization_reusable": false,
     "continuation_behavior": "inherit only explicit phases of one unambiguously unfinished current scope",
+    "continuity_boundary_behavior": "resume inspect-only and re-evaluate the newest request before state-changing work",
+    "summary_or_packet_authority": "evidence-only-never-grants-an-action-phase",
     "invalidate_on": [
       "operation completed",
       "new logical scope",

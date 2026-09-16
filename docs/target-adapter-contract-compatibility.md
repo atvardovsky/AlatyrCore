@@ -55,6 +55,16 @@ Current version: `2`.
 Supported versions: `1`, `2`.
 Migration-limited versions: `1`.
 
+## session-continuity
+
+Manifest key: `operations.session_continuity_packet_schema`.
+Current contract version: `1`.
+
+Artifact: `packet`
+Current version: `1`.
+Supported versions: `1`.
+Migration-limited versions: none.
+
 Regenerate this reference with:
 
 ```sh

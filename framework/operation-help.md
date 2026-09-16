@@ -9,6 +9,7 @@ alatyr_doc:
     - ALATYR-RISK-001
     - ALATYR-APPROVAL-001
     - ALATYR-AUTHORIZATION-001
+    - ALATYR-CONTINUITY-001
     - ALATYR-MODULE-001
   applies_to:
     - all
@@ -39,6 +40,8 @@ Operation help exists to:
 - prevent assistants from treating vague requests as permission to edit files
 - prevent authorization for edits, commits, publication, or live actions from
   leaking across logical task scopes
+- route bounded recovery after compaction, resume, fork, handoff, client/model
+  change, or suspected context loss without treating summaries as authority
 - distinguish assistant requests from nonexistent universal commands
 - expose missing target adapter facts before work starts
 - provide one stable entry point across supported assistant surfaces
@@ -134,12 +137,14 @@ Automatic routing should use this order:
 6. Classify the newest request under the current-scope action-authorization
    policy. A subject switch, issue or backlog return, status, discussion,
    report, analysis, plan, or ambiguous continuation remains `inspect` only.
-7. Proceed without a routing confirmation when one operation is clearly
+7. When a session boundary or suspected context loss applies, compose the
+   `session-continuity` overlay and revalidate current scope before mutation.
+8. Proceed without a routing confirmation when one operation is clearly
    applicable, its allowed-action scope is sufficient, and the requested phase
    is explicitly authorized.
-8. Present two or three candidates and ask one bounded question when multiple
+9. Present two or three candidates and ask one bounded question when multiple
    operations remain plausible or the permitted scope is unclear.
-9. Route unsupported or disabled operations to help with the specific missing
+10. Route unsupported or disabled operations to help with the specific missing
    module or adapter fact.
 
 The assistant should state the selected operation and reason briefly before
@@ -268,6 +273,8 @@ Typical operation categories include:
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
+- session continuity for bounded checkpoint and recovery around context loss or
+  process, client, provider, model, fork, or handoff boundaries
 - team coordination for status, start/claim/checkpoint/release, changed-fact
   conflicts, handoffs, decisions, review, and revision-bound merge readiness
 - logical integrity review

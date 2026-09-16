@@ -40,6 +40,7 @@ CONTRACT_FILES = {
     "tools/check_assistant_surface_audits.py",
     "tools/check_conformance_matrix.py",
     "tools/check_conformance_reports.py",
+    "tools/check_session_continuity.py",
     "tools/check_effectiveness_benchmark.py",
     "tools/conformance_execution/__init__.py",
     "tools/conformance_execution/codex.py",
@@ -63,6 +64,8 @@ CONTRACT_FILES = {
     "tools/summarize_effectiveness_benchmark.py",
     "tools/summarize_effectiveness_reports.py",
     "tools/target_adapter_validation/framework_baseline.py",
+    "tools/target_adapter_validation/session_continuity.py",
+    "tools/target_validation_support.py",
     "tools/render_rule_registry_docs.py",
 }
 HEX = set("0123456789abcdef")

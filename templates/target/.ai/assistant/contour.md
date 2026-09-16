@@ -18,6 +18,8 @@ Replace placeholders with target facts before accepting installation.
 - versioned semantic-codebook resolution with a bounded core preload and lazy
   domain shards
 - deterministic context packets for expanded, handed-off, or resumed work
+- bounded session-continuity policy, recovery flow, gate, and ephemeral packet
+  contract; recovery evidence never restores action authority
 - module profile under `.ai/assistant/module-profile.md`
 - adapter manifest facts under `.ai/alatyr.yaml`
 - task-specific maturity under `.ai/assistant/maturity-profile.md`

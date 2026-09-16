@@ -19,6 +19,9 @@ SOURCE_PATHS = {
     "action_authorization_policy": Path(
         ".ai/assistant/policies/action-authorization.json"
     ),
+    "session_continuity_policy": Path(
+        ".ai/assistant/policies/session-continuity.json"
+    ),
     "support_policy": Path(".ai/project/support-policy.json"),
     "task_decomposition": Path(".ai/assistant/task-decomposition.json"),
 }
@@ -166,6 +169,7 @@ def build_agent_entry_packet(
     router_text: str,
     gate_index_text: str,
     action_authorization_text: str,
+    session_continuity_text: str,
     support_policy_text: str,
     task_decomposition_text: str,
     *,
@@ -182,6 +186,10 @@ def build_agent_entry_packet(
     authorization = _load_json_text(
         action_authorization_text,
         ".ai/assistant/policies/action-authorization.json",
+    )
+    continuity = _load_json_text(
+        session_continuity_text,
+        ".ai/assistant/policies/session-continuity.json",
     )
     support_policy = _load_json_text(
         support_policy_text,
@@ -225,7 +233,7 @@ def build_agent_entry_packet(
         ".ai/assistant/context-router.json#task_classification.expansion_triggers"
     )
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "packet_kind": "target-agent-entry-packet",
         "path": PACKET_PATH.as_posix(),
         "generated_by": generated_by or {},
@@ -235,6 +243,7 @@ def build_agent_entry_packet(
                 "context_router": router_text,
                 "gate_index": gate_index_text,
                 "action_authorization_policy": action_authorization_text,
+                "session_continuity_policy": session_continuity_text,
                 "support_policy": support_policy_text,
                 "task_decomposition": task_decomposition_text,
             },
@@ -324,6 +333,17 @@ def build_agent_entry_packet(
                 "live-external",
             ],
         },
+        "session_continuity": {
+            "policy": SOURCE_PATHS["session_continuity_policy"].as_posix(),
+            "overlay": "session-continuity",
+            "gate": _string(continuity.get("gate")),
+            "packet_template": _string(continuity.get("packet_template")),
+            "runtime_directory": _string(continuity.get("runtime_directory")),
+            "resume_mode": _string(
+                _object(continuity.get("resume")).get("initial_mode")
+            ),
+            "authority_behavior": "revalidate-current-scope-before-mutation",
+        },
         "support_delta_first": {
             "policy": SOURCE_PATHS["support_policy"].as_posix(),
             "state": ".ai/support-state.json",
@@ -369,6 +389,7 @@ def build_from_target(target: Path) -> dict[str, Any]:
         source_texts["context_router"],
         source_texts["gate_index"],
         source_texts["action_authorization_policy"],
+        source_texts["session_continuity_policy"],
         source_texts["support_policy"],
         source_texts["task_decomposition"],
         operation_index_text=optional_texts.get("operation_index"),

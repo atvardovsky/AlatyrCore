@@ -33,6 +33,7 @@ REQUIRED_CONTROLS = {
     "operation-routing": "bridge-static",
     "current-scope-authorization": "bridge-static",
     "tool-permission-separation": "runtime-verification-required",
+    "context-compaction-continuity": "portable-fallback-static-native-runtime-verification-required",
     "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
     "subagent-delegation": "runtime-verification-required",
     "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
@@ -44,6 +45,7 @@ REQUIRED_RUNTIME_CHECK_FRAGMENTS = {
     "exact alias",
     "read-only discussion",
     "tool permissions",
+    "context compaction",
     "skills and prompts",
     "delegation backend",
     "ASCII diagram",
@@ -225,7 +227,13 @@ def validate_contracts(
                 failures.append("generic audit must use local contract sources")
         elif not string_list(official_sources):
             failures.append(f"{audit_id} audit official_sources must be non-empty strings")
-        if audit.get("control_dispositions", control_defaults) != REQUIRED_CONTROLS:
+        dispositions = dict(control_defaults)
+        local_dispositions = audit.get("control_dispositions")
+        if isinstance(local_dispositions, dict):
+            dispositions.update(local_dispositions)
+        elif local_dispositions is not None:
+            failures.append(f"{audit_id} audit control dispositions must be an object")
+        if dispositions != REQUIRED_CONTROLS:
             failures.append(f"{audit_id} audit control dispositions are incomplete")
         if audit_id == "opencode":
             if audit.get("runtime_variants") != ["v1", "v2"]:
@@ -303,7 +311,12 @@ def validate_contracts(
                         failures.append(
                             f"{audit_id} capability surface_state.{field} must remain placeholder-based"
                         )
-            for section_name in ["instruction_loading", "skills", "tool_permissions"]:
+            for section_name in [
+                "instruction_loading",
+                "skills",
+                "tool_permissions",
+                "context_compaction",
+            ]:
                 if not isinstance(capability.get(section_name), dict):
                     failures.append(f"{audit_id} capability record lacks {section_name}")
             permissions = capability.get("tool_permissions")
@@ -311,6 +324,13 @@ def validate_contracts(
                 "alatyr_authorization_separate"
             ) is not True:
                 failures.append(f"{audit_id} client permissions can grant Alatyr authorization")
+            compaction = capability.get("context_compaction")
+            if not isinstance(compaction, dict) or compaction.get(
+                "fallback"
+            ) != "session-continuity":
+                failures.append(
+                    f"{audit_id} capability record has no session-continuity fallback"
+                )
             diagram = capability.get("diagram_discussion")
             if not isinstance(diagram, dict) or diagram.get("readable_fallback") != "ascii":
                 failures.append(f"{audit_id} capability record has no ASCII fallback")

@@ -744,8 +744,8 @@ py -3 .\tools\check_bridge_capability_matrix.py
 ## Assistant Capability And Admission Checks
 
 `check_assistant_capability_contract.py` validates every target surface record
-against the schema-4 instruction-loading, skill, client-permission, context-
-caching, diagram, and delegation evidence contract.
+against the schema-6 instruction-loading, skill, client-permission, context-
+caching, context-compaction, diagram, and delegation evidence contract.
 `check_assistant_surface_audits.py` then
 checks all canonical surfaces against source lifecycle, official instruction
 paths, precedence risks, static bridge controls, provider-neutral conformance,
@@ -1136,6 +1136,13 @@ revision-bound merge-readiness structure, optional approval scope against a
 supplied git diff, and optional `.ai/framework` drift against an AlatyrCore
 source checkout.
 
+Session-continuity surfaces are checked during full validation. Runtime packet
+validation is explicit so routine checks do not scan ignored local state: pass
+one or more `--continuity-packet` target-relative paths to verify schema,
+canonical digest, packet chain, capability/context bindings, Git change set,
+approval references, ignored storage, and loaded-path evidence. Packets remain
+non-authoritative and cannot restore action phases.
+
 `--validation-scope changed --diff-ref <ref>` keeps universal manifest,
 authorization, path-safety, framework-baseline, source-of-truth, and evidence
 checks active while selecting optional module validators from changed target
@@ -1239,6 +1246,7 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-re
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main --approval-record .ai/assistant/approvals/change-approval.md
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --continuity-packet .ai/.runtime/continuity/task.json
 ```
 
 Windows PowerShell:
@@ -1247,6 +1255,7 @@ Windows PowerShell:
 py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo
 .\tools\validate_target_adapter.ps1 --target C:\path\to\target-repo
 py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo --json --output tmp\alatyr-adapter-report.json
+py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo --continuity-packet .ai\.runtime\continuity\task.json
 ```
 
 Windows Command Prompt:

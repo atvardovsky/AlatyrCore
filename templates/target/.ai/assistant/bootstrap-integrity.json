@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_kind": "target-bootstrap-integrity",
   "bootstrap": ".ai/assistant/bootstrap-index.json",
-  "bootstrap_digest": "sha256:26244e7b7b4d3fb061ade0253192152f7ca0e074b09e51bc6e4bb457156e97f5",
+  "bootstrap_digest": "sha256:186e991c761abd11074cac07899b18443ac09ddaf280cf99a32d6496068aeba3",
   "generated_by": {
     "schema_version": 1,
     "provenance_kind": "source-template",
@@ -11,17 +11,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:7638ea63c380019430b862ccef0811d2f1ac34ce03bd4151f5bce645f5d2f2c2",
+    "target_manifest_digest": "sha256:6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.66",
-    "adapter_schema_version": "54",
-    "template_version": "61"
+    "framework_version": "0.1.0-alpha.67",
+    "adapter_schema_version": "55",
+    "template_version": "62"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "7638ea63c380019430b862ccef0811d2f1ac34ce03bd4151f5bce645f5d2f2c2"
+      "sha256": "6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -29,19 +29,19 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "45f67a38a48951551427134ce09966b4bb12871e7c53b866025df24bf7efcd7b"
+      "sha256": "c5965e4c50ec33b671981aa9ac83d8989d817be5468bb9968f60682c63b22e5a"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "f37120f0dde7bc5b4067b69ca6c138f53ad1019be38863d70ab4d5cbbfed5d1d"
+      "sha256": "0d43797c6174e4fd7e3be2c74a14d5f73bf7142b080f1c63e6917d88f179300d"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
-      "sha256": "4ec69881faca831c95b12efd540bc330c2ff55ff2e507330eb932141f4fac00d"
+      "sha256": "b8de51510ebcd2b2a1cc609124b26275cf9fb28e1bec69bb1989f4e3ad429c06"
     }
   },
   "rule_selector": {
-    "registry_sha256": "4ec69881faca831c95b12efd540bc330c2ff55ff2e507330eb932141f4fac00d",
+    "registry_sha256": "b8de51510ebcd2b2a1cc609124b26275cf9fb28e1bec69bb1989f4e3ad429c06",
     "categories": {
       "CONTEXT": {
         "owner": ".ai/framework/context-profiles.md",
@@ -71,6 +71,12 @@
         "owner": ".ai/framework/action-authorization.md",
         "rule_ids": [
           "ALATYR-AUTHORIZATION-001"
+        ]
+      },
+      "CONTINUITY": {
+        "owner": ".ai/framework/session-continuity.md",
+        "rule_ids": [
+          "ALATYR-CONTINUITY-001"
         ]
       },
       "SAFETY": {

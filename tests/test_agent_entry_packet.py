@@ -60,6 +60,16 @@ modules:
             "default_phase": "inspect",
             "phases": ["inspect", "modify", "commit", "publish", "live-external"],
         }
+        continuity = {
+            "schema_version": 1,
+            "policy_kind": "target-session-continuity",
+            "gate": ".ai/assistant/gates/session-continuity.md",
+            "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
+            "runtime_directory": ".ai/.runtime/continuity",
+            "resume": {
+                "initial_mode": "inspect-only-pending-current-scope-revalidation"
+            },
+        }
         support_policy = {
             "schema_version": 1,
             "policy_kind": "target-support-policy",
@@ -95,6 +105,7 @@ modules:
             "router": json.dumps(router),
             "gates": json.dumps(gates),
             "authorization": json.dumps(authorization),
+            "continuity": json.dumps(continuity),
             "support_policy": json.dumps(support_policy),
             "task_decomposition": json.dumps(task_decomposition),
         }
@@ -106,6 +117,7 @@ modules:
             inputs["router"],
             inputs["gates"],
             inputs["authorization"],
+            inputs["continuity"],
             inputs["support_policy"],
             inputs["task_decomposition"],
             operation_index_text=json.dumps(
@@ -122,7 +134,11 @@ modules:
             ),
         )
 
-        self.assertEqual(packet["schema_version"], 3)
+        self.assertEqual(packet["schema_version"], 4)
+        self.assertEqual(
+            packet["session_continuity"]["resume_mode"],
+            "inspect-only-pending-current-scope-revalidation",
+        )
         self.assertEqual(
             packet["routing_sources"]["installed_profile_routes"],
             ".ai/assistant/bootstrap-index.json",
@@ -174,6 +190,7 @@ modules:
             inputs["router"],
             inputs["gates"],
             inputs["authorization"],
+            inputs["continuity"],
             inputs["support_policy"],
             inputs["task_decomposition"],
         )

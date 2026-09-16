@@ -329,7 +329,7 @@ def project_agent_rule_ids(
     )
     replacement = f"Use installed owners for {rendered_ids}. Project\nfacts belong"
     rendered, count = pattern.subn(replacement, text, count=1)
-    compact_marker = "Use bootstrap-selected owners."
+    compact_marker = "Own project facts in `.ai/project`"
     if count == 0 and compact_marker in text:
         rendered = text
     elif count != 1:

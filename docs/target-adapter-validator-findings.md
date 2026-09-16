@@ -10,14 +10,14 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1373
+Catalog entries: 1431
 
 ## Families
 
 - `AI`: 18 codes.
 - `APPROVAL`: 31 codes.
 - `ARCHITECTURE`: 35 codes.
-- `ASSISTANT`: 35 codes.
+- `ASSISTANT`: 39 codes.
 - `AUTHORIZATION`: 18 codes.
 - `BACKUP`: 1 codes.
 - `BLUEPRINT`: 7 codes.
@@ -35,7 +35,7 @@ Catalog entries: 1373
 - `DIFF`: 3 codes.
 - `ENABLED`: 1 codes.
 - `ENGINEERING`: 49 codes.
-- `ENTRY`: 9 codes.
+- `ENTRY`: 10 codes.
 - `EVIDENCE`: 1 codes.
 - `EXTENSION`: 75 codes.
 - `FRAMEWORK`: 18 codes.
@@ -55,6 +55,7 @@ Catalog entries: 1373
 - `ROUTER`: 73 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
+- `SESSION`: 53 codes.
 - `STALE`: 2 codes.
 - `SUPPORT`: 19 codes.
 - `TARGET`: 8 codes.
@@ -289,6 +290,14 @@ Catalog entries: 1373
 - `ASSISTANT_CONTEXT_CACHE_VALUE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CONTEXT_CACHE_WINDOW_CLAIM`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_COMPACTION_FALLBACK`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_COMPACTION_STATE_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_COMPACTION_TRIGGER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_COMPACTION_VALUE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_INSTRUCTION_LOADING_UNVERIFIED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
@@ -1408,6 +1417,8 @@ Catalog entries: 1373
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_VERSION`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENTRY_PACKET_CONTINUITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENTRY_PACKET_CURRENT`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `ENTRY_PACKET_INVALID`
@@ -2186,6 +2197,112 @@ Catalog entries: 1373
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `RULE_REGISTRY_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `SESSION_CONTINUITY_APPROVAL_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_APPROVAL_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_APPROVAL_PATH`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_AUTHORITY`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_AUTHORIZATION_PARTITION`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CAPABILITY_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CAPABILITY_ID`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CAPABILITY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CAPABILITY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CAPABILITY_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CAPABILITY_PATH`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CAPABILITY_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CHANGE_SET_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CONTEXT_COST`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CONTEXT_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CONTEXT_IDENTITY`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CONTEXT_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CONTEXT_PACKET_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CONTEXT_PACKET_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_CONTEXT_PATH`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_GATE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_GATE_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_GATE_ROUTE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_GIT_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_GIT_UNAVAILABLE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_LOADED_PATH`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_LOADED_PATH_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_CHAIN`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_DIGEST`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_LOCATION`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_NOT_IGNORED`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_ORDER`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_REPLAY`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_SEQUENCE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_SIZE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_PACKET_SYMLINK`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `SESSION_CONTINUITY_PACKET_TRACKED`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_POLICY_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_POLICY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_RESUME_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ROUTE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ROUTER_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ROUTER_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_RULE_REGISTRY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_RULE_REGISTRY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_RULE_UNKNOWN`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_RUNTIME_TRACKING`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_SCHEMA_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_STORAGE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
 - `STALE_CHECKER_MISSING_CLAIM`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `STALE_CHECKER_REFERENCE`

@@ -8,6 +8,7 @@ Then read `.ai/assistant/bootstrap-index.json`. Load `AI_ASSISTANTS.md` or `.ai/
 If the derived index is missing or stale, repair it from its named canonical
 sources. Select the smallest
 profile before reading the matching task flow.
+After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.
 
 For an exact operation ID or alias, including diagram, team, or AI aliases, read
 `.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read

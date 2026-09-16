@@ -350,6 +350,14 @@ def pairwise_router_summary(
     )
 
 
+def task_scale_measurement_inputs(
+    name: str, overlay: Any, default_capability: str
+) -> tuple[str | None, dict[str, Any], list[str]]:
+    reference, contract = descriptor(overlay)
+    surface_context = [default_capability] if name == "session-continuity" else []
+    return reference, contract, surface_context
+
+
 def build_report() -> dict[str, Any]:
     router = json.loads(ROUTER.read_text(encoding="utf-8"))
     bootstrap_refs = [
@@ -410,11 +418,11 @@ def build_report() -> dict[str, Any]:
                 if value
             ]
         )
-
     task_scale_overlays: dict[str, dict[str, Any]] = {}
     task_scale_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
     for name, overlay in router.get("task_scale_overlays", {}).items():
-        reference, contract = descriptor(overlay)
+        inputs = task_scale_measurement_inputs(name, overlay, default_capability)
+        reference, contract, surface_context = inputs
         task_scale_contracts[name] = (reference, contract)
         task_scale_overlays[name] = measure(
             [
@@ -422,6 +430,7 @@ def build_report() -> dict[str, Any]:
                 for value in [
                     reference,
                     *contract.get("required_context", []),
+                    *surface_context,
                 ]
                 if value
             ]

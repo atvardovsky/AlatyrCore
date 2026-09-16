@@ -65,8 +65,9 @@ Every project using this framework must define these structural bindings:
 - **Assistant routing:** bounded context selection, supported assistant entry
   points, bridge pointers, operation routing, recursive framework, project,
   and assistant context indexes, semantic-codebook binding, resolved packet
-  evidence, local action boundaries, and per-surface provider context-caching
-  evidence. Assistant surface and model provider are separate facts. Cache
+  evidence, local action boundaries, bounded session-continuity recovery, and
+  per-surface provider context-caching and context-compaction evidence.
+  Assistant surface and model provider are separate facts. Cache
   delivery must retain bounded-routing fallback and must not claim to reduce
   context-window occupancy.
 - **Support-information state:** target-owned collection/classification policy,

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-semantic-codebook-shard",
+  "shard_id": "continuity",
+  "preload": false,
+  "selectors": {
+    "task_scale_overlays": [
+      "session-continuity"
+    ]
+  },
+  "terms": [
+    {
+      "id": "alatyr:session-continuity@1",
+      "version": 1,
+      "definition": "After context compaction, resume, fork, handoff, or a comparable boundary, verify bounded continuity evidence against current repository and authorization state before state-changing work; a packet or compacted summary is evidence, never authority.",
+      "owner_rule_id": "ALATYR-CONTINUITY-001",
+      "canonical_owner": "session-continuity.md",
+      "scope": "context compaction, task resume, session recovery, assistant handoff, and primary/subagent convergence",
+      "non_meanings": [
+        "authorization carried forward by a summary",
+        "a requirement to reload the complete framework or project corpus"
+      ],
+      "depends_on": [
+        "alatyr:current-scope-authorization@1",
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "replaced_by": null
+    }
+  ]
+}

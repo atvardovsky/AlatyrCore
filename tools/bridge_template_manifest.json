@@ -6,7 +6,7 @@
       "lines": [
         "# AI Assistant Entry Point",
         "",
-        "This repository uses Alatyr Core. All assistants should treat `AGENTS.md` as the canonical instruction file.",
+        "This repository uses Alatyr Core. All assistants should treat `AGENTS.md` as canonical; bridge files stay short and point back to it.",
         "Before making changes:",
         "",
         "1. Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it.",
@@ -26,9 +26,9 @@
         "7. For non-trivial work, use `.ai/assistant/task-decomposition.json` and `.ai/assistant/templates/task-decomposition.md` before implementation or delegation.",
         "8. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.",
         "   Implementation does not imply commit; commit does not imply push; prior authorization expires.",
-        "<!-- alatyr:scaffold-fragment {\"requires_paths\":[\".ai/assistant/ai-infrastructure-router.json\"]} -->9. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.<!-- /alatyr:scaffold-fragment -->",
-        "<!-- alatyr:scaffold-fragment {\"requires_paths\":[\".ai/assistant/assistant-capabilities.json\",\".ai/assistant/prompts/worker-orchestration.md\"]} -->10. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.<!-- /alatyr:scaffold-fragment -->",
-        "Assistant-specific bridge files must stay short and point back to canonical target files."
+        "9. After compaction, resume, fork, handoff, client/model change, or suspected context loss, use the `session-continuity` overlay and re-establish current-scope authorization before mutation.",
+        "<!-- alatyr:scaffold-fragment {\"requires_paths\":[\".ai/assistant/ai-infrastructure-router.json\"]} -->10. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.<!-- /alatyr:scaffold-fragment -->",
+        "<!-- alatyr:scaffold-fragment {\"requires_paths\":[\".ai/assistant/assistant-capabilities.json\",\".ai/assistant/prompts/worker-orchestration.md\"]} -->11. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.<!-- /alatyr:scaffold-fragment -->"
       ]
     },
     {
@@ -40,6 +40,7 @@
         "Then read `.ai/assistant/bootstrap-index.json`. Load `AI_ASSISTANTS.md` or `.ai/assistant/entry-packet.json` only for compatibility, recovery, audit, or routing conflict.",
         "If the derived index is missing or stale, repair it from its named canonical sources.",
         "Select the smallest profile before reading the matching task flow.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
@@ -60,6 +61,7 @@
         "Then read `.ai/assistant/bootstrap-index.json`. Load `AI_ASSISTANTS.md` or `.ai/assistant/entry-packet.json` only for compatibility, recovery, audit, or routing conflict.",
         "If the derived index is missing or stale, repair it from its named canonical sources.",
         "Select the smallest profile before reading the matching task flow.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
@@ -81,6 +83,7 @@
         "Then read `.ai/assistant/bootstrap-index.json`. Load `AI_ASSISTANTS.md` or `.ai/assistant/entry-packet.json` only for compatibility, recovery, audit, or routing conflict.",
         "If the derived index is missing or stale, repair it from its named canonical sources.",
         "Select the smallest profile before reading the matching task flow.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
@@ -106,6 +109,7 @@
         "If the derived index is missing or stale, repair it from its named canonical",
         "sources. Select the smallest",
         "profile before reading the matching task flow.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
@@ -122,7 +126,8 @@
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read .ai/assistant/bootstrap-index.json. Load AI_ASSISTANTS.md or .ai/assistant/entry-packet.json only for compatibility, recovery, audit, or routing conflict. Repair stale routing from its named canonical sources. This file is a legacy bridge for Cursor-compatible tools.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
-        "When delegation is selected, use .ai/assistant/task-decomposition.json, installed delegation surfaces, and the selected capability record; do not infer native worker support."
+        "When delegation is selected, use .ai/assistant/task-decomposition.json, installed delegation surfaces, and the selected capability record; do not infer native worker support.",
+        "After context loss or a compaction/resume boundary, use the session-continuity overlay before mutation."
       ]
     },
     {
@@ -135,6 +140,7 @@
         "If the derived index is missing or stale, repair it from its named canonical",
         "sources. Select the smallest",
         "profile before reading the matching task flow.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
@@ -157,6 +163,7 @@
         "Then read `.ai/assistant/bootstrap-index.json`. Load `AI_ASSISTANTS.md` or `.ai/assistant/entry-packet.json` only for compatibility, recovery, audit, or routing conflict.",
         "If the derived index is missing or stale, repair it from its named canonical sources.",
         "Select the smallest profile before reading task-owned context or flows.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
@@ -206,6 +213,7 @@
         "If the derived index is missing or stale, repair it from its named canonical",
         "sources. Select the smallest",
         "profile before reading the matching task flow.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
@@ -222,7 +230,8 @@
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read .ai/assistant/bootstrap-index.json. Load AI_ASSISTANTS.md or .ai/assistant/entry-packet.json only for compatibility, recovery, audit, or routing conflict. Repair stale routing from its named canonical sources. This file is a legacy bridge for Windsurf-compatible tools.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
-        "When delegation is selected, use .ai/assistant/task-decomposition.json, installed delegation surfaces, and the selected capability record; do not infer native worker support."
+        "When delegation is selected, use .ai/assistant/task-decomposition.json, installed delegation surfaces, and the selected capability record; do not infer native worker support.",
+        "After context loss or a compaction/resume boundary, use the session-continuity overlay before mutation."
       ]
     },
     {
@@ -238,6 +247,7 @@
         "When delegation is selected, use `.ai/assistant/task-decomposition.json`, installed",
         "delegation surfaces, and the selected capability record; do not infer native",
         "worker support.",
+        "After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.",
         "",
         "This legacy bridge does not claim maintained Roo runtime support or override",
         "Alatyr authorization with Roo mode or auto-approve settings."
@@ -248,7 +258,8 @@
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read .ai/assistant/bootstrap-index.json. Load AI_ASSISTANTS.md or .ai/assistant/entry-packet.json only for compatibility, recovery, audit, or routing conflict. This is the Zed Agent first-match bridge, not the source of truth.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
-        "When delegation is selected, use .ai/assistant/task-decomposition.json, installed delegation surfaces, and the selected capability record; do not infer native worker support or treat Zed permissions as Alatyr authorization."
+        "When delegation is selected, use .ai/assistant/task-decomposition.json, installed delegation surfaces, and the selected capability record; do not infer native worker support or treat Zed permissions as Alatyr authorization.",
+        "After context loss or a compaction/resume boundary, use the session-continuity overlay before mutation."
       ]
     }
   ]

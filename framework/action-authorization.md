@@ -38,6 +38,9 @@ request to commit or push does not authorize commit or push for a later task.
 `Continue` may retain only the already explicit phases of the same unfinished
 scope. If no unfinished scope can be identified unambiguously, continue is
 read-only until the user identifies the task and requested next action.
+After context compaction, resume, fork, or handoff, apply
+`ALATYR-CONTINUITY-001`; a packet or generated summary records prior evidence
+but cannot grant or renew an action phase.
 
 ## Authorization Phases
 

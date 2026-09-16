@@ -8,7 +8,7 @@ from target_adapter_validation.values import is_resolved_string
 
 
 CAPABILITY_INDEX_SCHEMA_VERSION = 3
-SURFACE_CAPABILITY_SCHEMA_VERSION = 5
+SURFACE_CAPABILITY_SCHEMA_VERSION = 6
 
 CAPABILITY_INDEX_KIND = "target-assistant-capability-index"
 SURFACE_CAPABILITY_KIND = "target-assistant-surface-capabilities"
@@ -50,6 +50,9 @@ CACHE_ROUTE_STATES = {"supported", "unsupported", "unknown"}
 CACHE_PROVIDER_MODES = {"automatic", "explicit", "both", "unsupported", "unknown"}
 CACHE_EXPOSURE_STATES = {"supported", "unsupported", "unknown"}
 CACHE_FALLBACK = "bounded-context-routing"
+COMPACTION_ROUTE_STATES = {"supported", "limited", "unsupported", "unknown"}
+COMPACTION_CAPABILITY_STATES = {"supported", "unsupported", "unknown"}
+COMPACTION_FALLBACK = "session-continuity"
 
 
 def is_concrete_capability_value(value: Any) -> bool:

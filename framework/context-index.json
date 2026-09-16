@@ -53,7 +53,7 @@
         "ALATYR-TEAM-001"
       ],
       "estimated_words": 212,
-      "content_digest": "sha256:f6e967fdf3ae66dfe45ffe27b277bad11edfb67c53c20d1141a8b455ea7e7b6b"
+      "content_digest": "sha256:0f000228a6b37eba3fc6e4e505fe17f550fac343a2274f86c5d247599db6d0e8"
     },
     {
       "id": "framework.section.core",
@@ -90,8 +90,8 @@
         "ALATYR-SAFETY-002",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 923,
-      "content_digest": "sha256:1f593b67b6c1c9908588a7175315e3c1228747536e5b0bf21d7108dd015af2b9"
+      "estimated_words": 949,
+      "content_digest": "sha256:0675e79f65c160705252b1b10c1accadc3649fc87c2446cf54ea6ced3311d42e"
     },
     {
       "id": "framework.section.infrastructure",
@@ -154,7 +154,7 @@
         "ALATYR-LIFECYCLE-001"
       ],
       "estimated_words": 217,
-      "content_digest": "sha256:908f0eb7e3657d61fbf74505360a7bb46f520859b1e1395d072416cf2ff274bc"
+      "content_digest": "sha256:3298342eb3a56224849a5af2d846f3507756c07833a765c831680c3fa51cce58"
     },
     {
       "id": "framework.section.support",
@@ -172,11 +172,12 @@
         "alatyr:support-state-is-a-locator@1"
       ],
       "owner_refs": [
+        "ALATYR-CONTINUITY-001",
         "ALATYR-SUPPORT-001",
         "ALATYR-TDD-001"
       ],
-      "estimated_words": 174,
-      "content_digest": "sha256:2c1def852fa686daf9317715c2a2e990c69539f92b84e0da0a16daed6e2a99d2"
+      "estimated_words": 207,
+      "content_digest": "sha256:3c67f63351992e9ea151b0333b4f04e0d7f48a9a35d44f9d7e34fb5647b8d3fe"
     }
   ]
 }

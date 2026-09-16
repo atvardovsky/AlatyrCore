@@ -631,6 +631,15 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def canonical_json_sha256(value: Any) -> str:
+    """Return SHA-256 for a deterministic UTF-8 JSON representation."""
+
+    canonical = json.dumps(
+        value, ensure_ascii=True, separators=(",", ":"), sort_keys=True
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
 def git_head_revision(target: Path) -> str | None:
     result = subprocess.run(
         ["git", "rev-parse", "HEAD"],
@@ -758,6 +767,46 @@ class GitEvidenceView:
             ("snapshot-sha256", revision, normalized),
             lambda: git_snapshot_sha256(self.target, revision, list(normalized)),
         )
+
+    def is_tracked(self, path: str) -> bool | None:
+        def load() -> bool | None:
+            try:
+                result = subprocess.run(
+                    ["git", "ls-files", "--error-unmatch", "--", path],
+                    cwd=self.target,
+                    check=False,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+            except OSError:
+                return None
+            if result.returncode == 0:
+                return True
+            if result.returncode == 1:
+                return False
+            return None
+
+        return self._cached(("is-tracked", path), load)
+
+    def is_ignored(self, path: str) -> bool | None:
+        def load() -> bool | None:
+            try:
+                result = subprocess.run(
+                    ["git", "check-ignore", "--no-index", "-q", "--", path],
+                    cwd=self.target,
+                    check=False,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+            except OSError:
+                return None
+            if result.returncode == 0:
+                return True
+            if result.returncode == 1:
+                return False
+            return None
+
+        return self._cached(("is-ignored", path), load)
 
     def refs_match(self, approved: str, selected: str) -> bool:
         approved_revision = self.resolve_ref(approved)

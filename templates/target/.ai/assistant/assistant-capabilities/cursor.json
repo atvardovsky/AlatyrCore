@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "capability_kind": "target-assistant-surface-capabilities",
   "assistant_surface": "cursor",
   "surface_state": {
@@ -87,6 +87,27 @@
       "client cache controls or telemetry changed",
       "stable-prefix delivery behavior changed",
       "{TARGET_CONTEXT_CACHE_REVIEW_TRIGGER}"
+    ]
+  },
+  "context_compaction": {
+    "route": "{SUPPORTED_LIMITED_UNSUPPORTED_OR_UNKNOWN}",
+    "automatic_compaction": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "manual_compaction": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "manual_trigger": "{CLIENT_COMMAND_ENDPOINT_NONE_OR_UNKNOWN}",
+    "pre_boundary_signal": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "post_boundary_signal": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "summary_inspection": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "project_instruction_reload": "{YES_NO_OR_UNKNOWN}",
+    "fallback": "session-continuity",
+    "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+    "evidence": "{TARGET_CLIENT_EVIDENCE_OR_MANUAL_REVIEW}",
+    "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+    "review_triggers": [
+      "client context-management behavior changed",
+      "manual compaction command or boundary signal changed",
+      "project instruction reload behavior changed",
+      "{TARGET_CONTEXT_COMPACTION_REVIEW_TRIGGER}"
     ]
   },
   "diagram_discussion": {

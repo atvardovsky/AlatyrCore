@@ -87,6 +87,9 @@ from target_adapter_validation.assistant_capabilities import (
     CACHE_ROUTE_STATES,
     CAPABILITY_INDEX_KIND,
     CAPABILITY_INDEX_SCHEMA_VERSION,
+    COMPACTION_CAPABILITY_STATES,
+    COMPACTION_FALLBACK,
+    COMPACTION_ROUTE_STATES,
     EVIDENCE_STATES,
     INDEX_STATE_EVIDENCE_STRING_FIELDS,
     INDEX_STATE_EVIDENCE_TRUE_FIELDS,
@@ -125,6 +128,7 @@ from target_adapter_validation.project_vocabulary import validate_project_vocabu
 from target_adapter_validation.code_documentation import validate_code_documentation
 from target_adapter_validation.architecture_knowledge import validate_architecture_knowledge
 from target_adapter_validation.support_state import validate_support_state
+from target_adapter_validation.session_continuity import validate_session_continuity
 from target_adapter_validation.workspace_modes import validate_workspace_modes
 from target_adapter_validation.values import is_resolved_string
 from scaffold_state import validate_installation_state_record
@@ -165,6 +169,7 @@ ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 KERNEL_REQUIRED_FILES = [
     "AGENTS.md",
     "CODEOWNERS",
+    ".ai/.gitignore",
     ".ai/alatyr.yaml",
     ".ai/README.md",
     ".ai/assistant/bootstrap-index.json",
@@ -202,6 +207,11 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/gates/semantic-integrity.md",
     ".ai/assistant/help.md",
     ".ai/assistant/policies/action-authorization.json",
+    ".ai/assistant/policies/session-continuity.json",
+    ".ai/assistant/context/task-scales/session-continuity.json",
+    ".ai/assistant/flows/session-continuity.flow.md",
+    ".ai/assistant/gates/session-continuity.md",
+    ".ai/assistant/templates/session-continuity-packet.json",
     ".ai/assistant/templates/adapter-output-contracts.md",
     ".ai/assistant/templates/installation-note.md",
     ".ai/assistant/templates/operation-request.md",
@@ -889,6 +899,7 @@ class Validator:
         debug_git_state: bool = False,
         debug_remote_ref: str | None = None,
         validation_scope: str = "full",
+        continuity_packets: list[Path] | None = None,
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
@@ -904,6 +915,20 @@ class Validator:
         )
         self.change_packages = self.selected_target_paths(
             change_packages, "--change-package"
+        )
+        continuity_candidates: list[Path] = []
+        for packet in continuity_packets or []:
+            candidate = packet if packet.is_absolute() else self.target / packet
+            if candidate.is_symlink():
+                self.error(
+                    "SESSION_CONTINUITY_PACKET_SYMLINK",
+                    "--continuity-packet must not select a symbolic link",
+                    str(packet),
+                )
+                continue
+            continuity_candidates.append(packet)
+        self.continuity_packets = self.selected_target_paths(
+            continuity_candidates, "--continuity-packet"
         )
         self.enforce_change_package = enforce_change_package
         self.migration_diff = migration_diff.resolve() if migration_diff else None
@@ -1080,6 +1105,7 @@ class Validator:
             ValidationPhase("agent-entry-packet", self.check_agent_entry_packet, ("bootstrap-index",)),
             ValidationPhase("action-authorization", self.check_action_authorization_contract, ("agent-entry-packet",)),
             ValidationPhase("context-router", lambda: self.check_router(enabled_modules, manifest), ("module-profile",)),
+            ValidationPhase("session-continuity", lambda: validate_session_continuity(self), ("action-authorization", "context-router")),
             ValidationPhase("task-decomposition", lambda: validate_task_decomposition(self, manifest), ("context-router",)),
             ValidationPhase("context-catalogs", lambda: validate_context_catalog_contract(self, manifest), ("context-router",)),
             ValidationPhase("support-state", lambda: validate_support_state(self.capability_validation_context(), manifest), ("installation-state",)),
@@ -1281,6 +1307,17 @@ class Validator:
                 "context_window_reduction",
                 "fallback",
             },
+            "context_compaction": {
+                "route",
+                "automatic_compaction",
+                "manual_compaction",
+                "manual_trigger",
+                "pre_boundary_signal",
+                "post_boundary_signal",
+                "summary_inspection",
+                "project_instruction_reload",
+                "fallback",
+            },
         }
         for surface_id, relpath in surfaces.items():
             if not isinstance(surface_id, str) or not isinstance(relpath, str):
@@ -1465,9 +1502,7 @@ class Validator:
                     f"assistant surface {surface_id} must keep client permissions separate from Alatyr authorization",
                     relpath,
                 )
-            caching = record.get("context_caching")
-            if isinstance(caching, dict):
-                self.check_context_caching_capability(surface_id, caching, relpath)
+            self.check_assistant_context_management(surface_id, record, relpath)
 
     def check_assistant_capability_section(
         self,
@@ -1567,6 +1602,97 @@ class Validator:
             self.error(
                 "ASSISTANT_CONTEXT_CACHE_STATE_CONFLICT",
                 f"assistant surface {surface_id} cache route and provider mode conflict",
+                relpath,
+            )
+
+    def check_assistant_context_management(
+        self, surface_id: str, record: dict[str, Any], relpath: str
+    ) -> None:
+        caching = record.get("context_caching")
+        if isinstance(caching, dict):
+            self.check_context_caching_capability(surface_id, caching, relpath)
+        compaction = record.get("context_compaction")
+        if isinstance(compaction, dict):
+            self.check_context_compaction_capability(surface_id, compaction, relpath)
+
+    def check_context_compaction_capability(
+        self, surface_id: str, compaction: dict[str, Any], relpath: str
+    ) -> None:
+        route = compaction.get("route")
+        for label, value, allowed in [
+            ("route", route, COMPACTION_ROUTE_STATES),
+            (
+                "automatic_compaction",
+                compaction.get("automatic_compaction"),
+                COMPACTION_CAPABILITY_STATES,
+            ),
+            (
+                "manual_compaction",
+                compaction.get("manual_compaction"),
+                COMPACTION_CAPABILITY_STATES,
+            ),
+            (
+                "pre_boundary_signal",
+                compaction.get("pre_boundary_signal"),
+                COMPACTION_CAPABILITY_STATES,
+            ),
+            (
+                "post_boundary_signal",
+                compaction.get("post_boundary_signal"),
+                COMPACTION_CAPABILITY_STATES,
+            ),
+            (
+                "summary_inspection",
+                compaction.get("summary_inspection"),
+                COMPACTION_CAPABILITY_STATES,
+            ),
+        ]:
+            if (
+                is_concrete_capability_value(value)
+                and str(value).casefold() not in allowed
+            ):
+                self.error(
+                    "ASSISTANT_CONTEXT_COMPACTION_VALUE",
+                    f"assistant surface {surface_id} context_compaction.{label} is invalid",
+                    relpath,
+                )
+        reload_state = compaction.get("project_instruction_reload")
+        if (
+            is_concrete_capability_value(reload_state)
+            and str(reload_state).casefold() not in YES_NO_UNKNOWN
+        ):
+            self.error(
+                "ASSISTANT_CONTEXT_COMPACTION_VALUE",
+                f"assistant surface {surface_id} context_compaction.project_instruction_reload must be yes, no, or unknown",
+                relpath,
+            )
+        if compaction.get("fallback") != COMPACTION_FALLBACK:
+            self.error(
+                "ASSISTANT_CONTEXT_COMPACTION_FALLBACK",
+                f"assistant surface {surface_id} must use {COMPACTION_FALLBACK} when native compaction evidence is unavailable",
+                relpath,
+            )
+        manual_state = str(compaction.get("manual_compaction", "")).casefold()
+        manual_trigger = compaction.get("manual_trigger")
+        if (
+            manual_state == "supported"
+            and not is_concrete_capability_value(manual_trigger)
+        ):
+            self.error(
+                "ASSISTANT_CONTEXT_COMPACTION_TRIGGER",
+                f"assistant surface {surface_id} claims manual compaction without a verified trigger",
+                relpath,
+            )
+        route_state = str(route).casefold()
+        automatic_state = str(
+            compaction.get("automatic_compaction", "")
+        ).casefold()
+        if route_state == "unsupported" and (
+            automatic_state == "supported" or manual_state == "supported"
+        ):
+            self.error(
+                "ASSISTANT_CONTEXT_COMPACTION_STATE_CONFLICT",
+                f"assistant surface {surface_id} compaction route conflicts with its automatic or manual capability",
                 relpath,
             )
 
@@ -2313,7 +2439,7 @@ class Validator:
             return
         if (
             not isinstance(actual, dict)
-            or actual.get("schema_version") != 3
+            or actual.get("schema_version") != 4
             or actual.get("packet_kind") != "target-agent-entry-packet"
         ):
             self.error(
@@ -2322,6 +2448,22 @@ class Validator:
                 relpath,
             )
             return
+        continuity = actual.get("session_continuity")
+        if (
+            not isinstance(continuity, dict)
+            or continuity.get("policy")
+            != ".ai/assistant/policies/session-continuity.json"
+            or continuity.get("overlay") != "session-continuity"
+            or continuity.get("resume_mode")
+            != "inspect-only-pending-current-scope-revalidation"
+            or continuity.get("authority_behavior")
+            != "revalidate-current-scope-before-mutation"
+        ):
+            self.error(
+                "ENTRY_PACKET_CONTINUITY",
+                "entry packet does not expose the safe session-continuity recovery route",
+                relpath,
+            )
         routing_sources = actual.get("routing_sources")
         if not isinstance(routing_sources, dict) or routing_sources.get(
             "installed_profile_routes"
@@ -6394,6 +6536,17 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--continuity-packet",
+        type=Path,
+        action="append",
+        default=[],
+        help=(
+            "Explicit target-relative session continuity packet to validate "
+            "against its digest, current Git state, rules, and approvals. "
+            "May be provided multiple times."
+        ),
+    )
+    parser.add_argument(
         "--enforce-change-package",
         action="store_true",
         help=(
@@ -6499,6 +6652,7 @@ def main() -> int:
         approval_records=args.approval_record,
         enforce_approval_scope=enforce_approval_scope,
         change_packages=args.change_package,
+        continuity_packets=args.continuity_packet,
         enforce_change_package=args.enforce_change_package,
         migration_diff=args.migration_diff,
         debug_git_state=args.debug_git_state,

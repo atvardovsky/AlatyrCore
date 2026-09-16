@@ -517,9 +517,13 @@ Final evidence must say:
   catalog, states, selected-source routing, validation, and known gaps
 - task-specific maturity profile created or updated
 - bridge capability matrix created or updated
-- every selected assistant has schema-4 context-cache capability evidence or an
-  explicit unknown/unsupported state; no cache or context-reduction claim is
+- every selected assistant has schema-6 context-cache and context-compaction
+  capability evidence or an explicit unknown/unsupported state; no cache,
+  compaction, or context-reduction claim is
   inferred from the assistant name
+- the core session-continuity policy, overlay, flow, gate, packet template, and
+  ignored runtime path are installed; the entry packet routes recovery and no
+  summary or packet restores action authority
 - portable ASCII baseline plus per-assistant inline/artifact capabilities,
   client version, verification time, and evidence resolved or explicitly
   unknown with reason

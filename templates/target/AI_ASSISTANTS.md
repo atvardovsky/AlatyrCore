@@ -1,6 +1,6 @@
 # AI Assistant Entry Point
 
-This repository uses Alatyr Core. All assistants should treat `AGENTS.md` as the canonical instruction file.
+This repository uses Alatyr Core. All assistants should treat `AGENTS.md` as canonical; bridge files stay short and point back to it.
 Before making changes:
 
 1. Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it.
@@ -20,6 +20,6 @@ Before making changes:
 7. For non-trivial work, use `.ai/assistant/task-decomposition.json` and `.ai/assistant/templates/task-decomposition.md` before implementation or delegation.
 8. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.
    Implementation does not imply commit; commit does not imply push; prior authorization expires.
-<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->9. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.<!-- /alatyr:scaffold-fragment -->
-<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json",".ai/assistant/prompts/worker-orchestration.md"]} -->10. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.<!-- /alatyr:scaffold-fragment -->
-Assistant-specific bridge files must stay short and point back to canonical target files.
+9. After compaction, resume, fork, handoff, client/model change, or suspected context loss, use the `session-continuity` overlay and re-establish current-scope authorization before mutation.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->10. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json",".ai/assistant/prompts/worker-orchestration.md"]} -->11. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.<!-- /alatyr:scaffold-fragment -->

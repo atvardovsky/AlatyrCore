@@ -4,6 +4,34 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.67 - 2026-09-15
+
+- Added `ALATYR-CONTINUITY-001` as a portable, assistant-neutral safeguard for
+  context compaction, session resume, forks, handoffs, client/provider/model
+  changes, subagent convergence, and suspected context loss.
+- Added a bounded `session-continuity` operation, task-scale overlay, target
+  policy, flow, gate, ignored ephemeral packet template, and schema; recovery
+  now starts inspect-only and never restores modification, commit,
+  publication, or live-external authority.
+- Bound optional continuity packets to canonical digests, packet chains,
+  capability and context evidence, Git change sets, changed paths, approval
+  records, and installed rule IDs, with explicit opt-in target validation and
+  adversarial harness scenarios.
+- Advanced assistant capability records to schema 6 for per-surface context-
+  compaction evidence and portable fallback routing without inferring native
+  client behavior from an assistant name.
+- Advanced the generated recovery entry packet to schema 4 so it hash-binds
+  and exposes session-continuity policy while keeping routine bootstrap below
+  its existing soft context budget.
+- Updated installer, bridge, operation-help, post-install/update, lifecycle,
+  and human-facing guidance so expected context boundaries can be checkpointed
+  and resumed consistently across supported assistants.
+- Fixed source-check scheduling so critical-capacity reservation starts when a
+  check becomes ready but cannot fit, excluding time spent behind dependencies
+  and removing a load-sensitive ordering failure.
+- Increased adapter schema version to `55` and target template version to `62`
+  for the new core continuity surfaces and recovery contracts.
+
 ## 0.1.0-alpha.66 - 2026-09-14
 
 - Made source-check acceptance evidence fail closed so only complete cold

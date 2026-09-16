@@ -445,6 +445,8 @@ metadata.
 - Context receipt fields:
 - Project-area overlays:
 - Task-scale overlays:
+- Session-continuity policy, overlay, flow, gate, ignored packet storage,
+  capability evidence, and inspect-only resume behavior:
 - Large-task activation, packet storage, and resume rules:
 - Change-package activation, owner, record storage, semantic approval scope,
   companion decisions, correction handling, provenance, retention/redaction,

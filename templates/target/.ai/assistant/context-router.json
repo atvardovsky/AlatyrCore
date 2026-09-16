@@ -215,10 +215,10 @@
     "executor_selection": "primary first; worker only through enabled delegation policy and selected capability record"
   },
   "agent_entry_packet": {
-    "schema_version": 3,
+    "schema_version": 4,
     "path": ".ai/assistant/entry-packet.json",
     "load_when": "bootstrap recovery adapter audit or routing conflict",
-    "purpose": "lazy recovery route containing installation state, decomposition cues, routing source pointers, authorization boundaries, and delta-first support review entry points",
+    "purpose": "lazy recovery route containing installation state, decomposition cues, routing source pointers, authorization and continuity boundaries, and delta-first support review entry points",
     "load_human_references_when": [
       "ambiguity",
       "conflict",
@@ -408,6 +408,12 @@
       ],
       "descriptor": ".ai/assistant/team/context-overlay.json",
       "required_module": "team-collaboration"
+    },
+    "session-continuity": {
+      "use_when": [
+        "context compaction resume fork handoff client/model change context reset or suspected context loss"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/session-continuity.json"
     }
   },
   "area_overlays": {

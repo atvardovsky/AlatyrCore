@@ -65,10 +65,18 @@ dependencies. A term is lossless shorthand for its complete definition; it
 does not own policy or project facts. On missing, stale, ambiguous, superseded,
 or conflicting terms, load the named canonical owner and record the fallback.
 
-For non-trivial work, budget expansion, handoff, or resume, materialize the
-selected indexes, item IDs/paths/digests/reasons, resolved term definitions,
+For non-trivial work that crosses a machine-router receipt trigger,
+materialize the selected indexes, item IDs/paths/digests/reasons, resolved term definitions,
 word totals, and deterministic packet digest with
 `.ai/assistant/templates/context-packet.json`.
+
+For compaction, resume, fork, handoff, client/model change, or suspected
+context loss, compose the lightweight `session-continuity` overlay. Load its
+canonical owner `.ai/framework/session-continuity.md` only when the compact
+contract is missing, stale, or conflicting. Small tasks may use an in-memory
+or host-native checkpoint; they do not require a large-task packet. Before
+state-changing continuation, verify current state and reapply authorization
+from the newest user instruction.
 
 Use each profile's operation candidates from the machine-readable router for
 cheap automatic routing. Resolve an exact operation ID or alias through

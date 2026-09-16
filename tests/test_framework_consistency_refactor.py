@@ -45,7 +45,7 @@ class FrameworkConsistencyRefactorTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertEqual(
             stdout.getvalue(),
-            "OK: checked 50 framework docs and target templates\n",
+            "OK: checked 51 framework docs and target templates\n",
         )
         self.assertEqual(stderr.getvalue(), "")
 

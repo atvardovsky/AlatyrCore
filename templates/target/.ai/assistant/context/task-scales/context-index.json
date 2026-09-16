@@ -125,6 +125,28 @@
       "content_digest": "sha256:73e3cfa78cab8d4da3759fcf8fe0f838e161178c1ef73c6804d0b37802fafb7f"
     },
     {
+      "id": "assistant.content.context-task-scales-session-continuity-json",
+      "kind": "content",
+      "path": "context/task-scales/session-continuity.json",
+      "summary": "Session Continuity",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "scales",
+          "session",
+          "continuity"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 216,
+      "content_digest": "sha256:909118c91977ddb1bf7a5f0572e0cb2533d984a4cec9cf1623a0c4585ac2bccc"
+    },
+    {
       "id": "assistant.content.context-task-scales-small-task-json",
       "kind": "content",
       "path": "context/task-scales/small-task.json",

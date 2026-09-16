@@ -62,6 +62,14 @@ routing, action-authorization policy, operation request and preview, core and
 final-evidence gates, subagent and team boundaries, target structural
 validation, authorization conformance scenarios.
 
+Category: `CONTINUITY`
+Source routing owner: `framework/session-continuity.md`
+Installed routing owner: `.ai/framework/session-continuity.md`
+Rule IDs: `ALATYR-CONTINUITY-001`
+Derived surfaces: session continuity overlay, continuity packet and gate,
+large-task resume, installer stage re-entry, assistant compaction capability
+records, target structural validation.
+
 Category: `SAFETY`
 Source routing owner: `framework/security-safety-guidance.md`
 Installed routing owner: `.ai/framework/security-safety-guidance.md`
@@ -307,6 +315,10 @@ Installed canonical owner: `.ai/framework/approval-records.md`
 Rule: `ALATYR-AUTHORIZATION-001`
 Source canonical owner: `framework/action-authorization.md`
 Installed canonical owner: `.ai/framework/action-authorization.md`
+
+Rule: `ALATYR-CONTINUITY-001`
+Source canonical owner: `framework/session-continuity.md`
+Installed canonical owner: `.ai/framework/session-continuity.md`
 
 Rule: `ALATYR-SAFETY-001`
 Source canonical owner: `framework/security-safety-guidance.md`

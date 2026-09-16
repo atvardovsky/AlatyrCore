@@ -32,6 +32,7 @@
     "tools/target_adapter_validation/project_knowledge.py",
     "tools/target_adapter_validation/project_vocabulary.py",
     "tools/target_adapter_validation/router_costs.py",
+    "tools/target_adapter_validation/session_continuity.py",
     "tools/target_adapter_validation/subagent_delegation.py",
     "tools/target_adapter_validation/support_generation.py",
     "tools/target_adapter_validation/support_state.py",
@@ -56,7 +57,7 @@
     },
     {
       "id": "ASSISTANT",
-      "code_count": 35
+      "code_count": 39
     },
     {
       "id": "AUTHORIZATION",
@@ -128,7 +129,7 @@
     },
     {
       "id": "ENTRY",
-      "code_count": 9
+      "code_count": 10
     },
     {
       "id": "EVIDENCE",
@@ -205,6 +206,10 @@
     {
       "id": "RULE",
       "code_count": 1
+    },
+    {
+      "id": "SESSION",
+      "code_count": 53
     },
     {
       "id": "STALE",
@@ -1242,6 +1247,42 @@
     },
     {
       "code": "ASSISTANT_CONTEXT_CACHE_WINDOW_CLAIM",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_COMPACTION_FALLBACK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_COMPACTION_STATE_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_COMPACTION_TRIGGER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_COMPACTION_VALUE",
       "levels": [
         "error"
       ],
@@ -6285,6 +6326,15 @@
       ]
     },
     {
+      "code": "ENTRY_PACKET_CONTINUITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ENTRY_PACKET_CURRENT",
       "levels": [
         "info"
@@ -9816,6 +9866,483 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_APPROVAL_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_APPROVAL_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_APPROVAL_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_AUTHORITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_AUTHORIZATION_PARTITION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CAPABILITY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CAPABILITY_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CAPABILITY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CAPABILITY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CAPABILITY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CAPABILITY_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CAPABILITY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CHANGE_SET_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CONTEXT_COST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CONTEXT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CONTEXT_IDENTITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CONTEXT_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CONTEXT_PACKET_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CONTEXT_PACKET_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_CONTEXT_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_GATE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_GATE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_GATE_ROUTE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_GIT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_GIT_UNAVAILABLE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_LOADED_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_LOADED_PATH_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_CHAIN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_DIGEST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_LOCATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_NOT_IGNORED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_ORDER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_REPLAY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_SEQUENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_SIZE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_SYMLINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PACKET_TRACKED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_POLICY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_POLICY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_RESUME_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ROUTE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_RULE_REGISTRY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_RULE_REGISTRY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_RULE_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_RUNTIME_TRACKING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_SCHEMA_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_STORAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
       ]
     },
     {

@@ -299,6 +299,56 @@
       ]
     },
     {
+      "id": "session-continuity",
+      "command": [
+        "tools/check_session_continuity.py"
+      ],
+      "profiles": [
+        "fast",
+        "full",
+        "platform"
+      ],
+      "always_for_changed": false,
+      "depends_on": [
+        "assistant-capability-contract"
+      ],
+      "contract_inputs": [
+        "framework/session-continuity.md",
+        "schemas/alatyr-session-continuity-packet.schema.json",
+        "templates/target/.ai/assistant/policies/session-continuity.json",
+        "templates/target/.ai/assistant/context/task-scales/session-continuity.json",
+        "templates/target/.ai/assistant/flows/session-continuity.flow.md",
+        "templates/target/.ai/assistant/gates/session-continuity.md",
+        "templates/target/.ai/assistant/templates/session-continuity-packet.json",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "tools/scaffold_profiles.json"
+      ],
+      "implementation_paths": [
+        "tools/check_session_continuity.py",
+        "tools/target_adapter_validation/session_continuity.py",
+        "tools/target_adapter_validation/harness_scenarios/session_continuity.py",
+        "tools/validate_target_adapter.py"
+      ],
+      "trigger_paths": [
+        "framework/session-continuity.md",
+        "schemas/alatyr-session-continuity-packet.schema.json",
+        "templates/target/.ai/assistant/policies/session-continuity.json",
+        "templates/target/.ai/assistant/context/task-scales/session-continuity.json",
+        "templates/target/.ai/assistant/flows/session-continuity.flow.md",
+        "templates/target/.ai/assistant/gates/session-continuity.md",
+        "templates/target/.ai/assistant/templates/session-continuity-packet.json",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/**",
+        "templates/target/AGENTS.md",
+        "tools/check_session_continuity.py",
+        "tools/scaffold_profiles.json",
+        "tools/target_adapter_validation/session_continuity.py",
+        "tools/target_adapter_validation/harness_scenarios/session_continuity.py",
+        "tools/validate_target_adapter.py"
+      ],
+      "resource_class": "light"
+    },
+    {
       "id": "assistant-surface-audits",
       "command": [
         "tools/check_assistant_surface_audits.py"
@@ -329,7 +379,8 @@
       ],
       "depends_on": [
         "assistant-capability-contract",
-        "bridge-capability-matrix"
+        "bridge-capability-matrix",
+        "session-continuity"
       ]
     },
     {
@@ -763,6 +814,7 @@
         "tools/check_conformance_matrix.py",
         "tools/check_conformance_reports.py",
         "tools/check_effectiveness_benchmark.py",
+        "tools/check_session_continuity.py",
         "tools/conformance_execution/**",
         "tools/context_receipt.py",
         "tools/framework_packaging.py",
@@ -780,6 +832,8 @@
         "tools/summarize_effectiveness_benchmark.py",
         "tools/summarize_effectiveness_reports.py",
         "tools/target_adapter_validation/framework_baseline.py",
+        "tools/target_adapter_validation/session_continuity.py",
+        "tools/target_validation_support.py",
         "tools/render_rule_registry_docs.py"
       ],
       "implementation_paths": [
@@ -815,6 +869,7 @@
         "tools/check_conformance_matrix.py",
         "tools/check_conformance_reports.py",
         "tools/check_effectiveness_benchmark.py",
+        "tools/check_session_continuity.py",
         "tools/conformance_execution/**",
         "tools/context_receipt.py",
         "tools/evidence_contract.py",
@@ -834,6 +889,8 @@
         "tools/summarize_effectiveness_benchmark.py",
         "tools/summarize_effectiveness_reports.py",
         "tools/target_adapter_validation/framework_baseline.py",
+        "tools/target_adapter_validation/session_continuity.py",
+        "tools/target_validation_support.py",
         "tools/render_rule_registry_docs.py"
       ]
     },
@@ -1104,7 +1161,8 @@
       "contract_inputs": [
         "conformance/golden/context-cost-baseline.json",
         "framework/context-*.md",
-        "templates/target/.ai/assistant/context*/**"
+        "templates/target/.ai/assistant/context*/**",
+        "templates/target/.ai/assistant/assistant-capabilities/*.json"
       ],
       "implementation_paths": [
         "tools/context_catalog.py",
@@ -1116,6 +1174,7 @@
         "conformance/golden/context-cost-baseline.json",
         "framework/context-*.md",
         "templates/target/.ai/assistant/context*/**",
+        "templates/target/.ai/assistant/assistant-capabilities/*.json",
         "tools/context_catalog.py",
         "tools/*context_costs.py",
         "tools/check_context_costs.py",
@@ -1946,11 +2005,13 @@
         "schemas/alatyr-project-knowledge-index.schema.json",
         "schemas/alatyr-project-knowledge-promotion.schema.json",
         "schemas/alatyr-project-knowledge-shard.schema.json",
+        "schemas/alatyr-session-continuity-packet.schema.json",
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/assistant/templates/debug-session-record.json",
         "templates/target/.ai/assistant/templates/engineering-evidence-record.json",
         "templates/target/.ai/assistant/templates/project-knowledge-promotion.json",
         "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json",
+        "templates/target/.ai/assistant/templates/session-continuity-packet.json",
         "templates/target/.ai/project/debug/index.json",
         "templates/target/.ai/project/engineering-evidence/index.json",
         "templates/target/.ai/project/knowledge/index.json",
@@ -1969,11 +2030,13 @@
         "schemas/alatyr-project-knowledge-index.schema.json",
         "schemas/alatyr-project-knowledge-promotion.schema.json",
         "schemas/alatyr-project-knowledge-shard.schema.json",
+        "schemas/alatyr-session-continuity-packet.schema.json",
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/assistant/templates/debug-session-record.json",
         "templates/target/.ai/assistant/templates/engineering-evidence-record.json",
         "templates/target/.ai/assistant/templates/project-knowledge-promotion.json",
         "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json",
+        "templates/target/.ai/assistant/templates/session-continuity-packet.json",
         "templates/target/.ai/project/debug/index.json",
         "templates/target/.ai/project/engineering-evidence/index.json",
         "templates/target/.ai/project/knowledge/index.json",
@@ -2034,14 +2097,16 @@
         "tools/scaffold_state.py",
         "tools/task_classification_contract.py",
         "tools/target_adapter_validation/**",
-        "tools/validate_target_adapter.py"
+        "tools/validate_target_adapter.py",
+        "schemas/alatyr-session-continuity-packet.schema.json"
       ],
       "depends_on": [
         "target-validator-findings",
         "context-catalogs"
       ],
       "contract_inputs": [
-        "templates/target/**"
+        "templates/target/**",
+        "schemas/alatyr-session-continuity-packet.schema.json"
       ],
       "implementation_paths": [
         "tools/check_target_adapter_validator.py",
@@ -2722,6 +2787,8 @@
         "tools/target_adapter_validation/files.py",
         "tools/target_adapter_validation/manifest_paths.py",
         "tools/target_adapter_validation/module_profile.py",
+        "tools/target_adapter_validation/harness_scenarios/session_continuity.py",
+        "tools/target_adapter_validation/session_continuity.py",
         "tools/target_adapter_validation/subagent_delegation.py",
         "tools/target_adapter_validation/values.py",
         "tools/target_adapter_validation/workspace_modes.py",
@@ -2755,6 +2822,8 @@
         "tools/target_adapter_validation/files.py",
         "tools/target_adapter_validation/manifest_paths.py",
         "tools/target_adapter_validation/module_profile.py",
+        "tools/target_adapter_validation/harness_scenarios/session_continuity.py",
+        "tools/target_adapter_validation/session_continuity.py",
         "tools/target_adapter_validation/subagent_delegation.py",
         "tools/target_adapter_validation/values.py",
         "tools/target_adapter_validation/workspace_modes.py",

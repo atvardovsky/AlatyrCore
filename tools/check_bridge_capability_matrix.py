@@ -130,6 +130,11 @@ def main() -> int:
         return 1
 
     text = read_text(MATRIX)
+    for marker in ["schema-6", "context compaction", "session-continuity"]:
+        if marker not in text:
+            failures.append(
+                f"bridge capability matrix omits continuity contract marker: {marker}"
+            )
     heading_surface_ids = [
         match.group(1) for match in ENTRY_HEADING.finditer(text)
     ]

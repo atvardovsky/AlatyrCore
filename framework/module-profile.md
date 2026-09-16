@@ -75,6 +75,8 @@ Every accepted installation should provide the `kernel` support profile:
 - current-scope action authorization that separates inspection, working-tree
   modification, local Git mutation, publication, and live external effects;
   expires prior-scope authorization; and does not infer one phase from another
+- bounded session continuity with inspect-only recovery, capability evidence,
+  selective context reload, and ignored ephemeral packet storage
 - logical integrity review for changed semantic or logical facts
 - validation or manual-review evidence, including unresolved checks
 - final evidence format

@@ -7,6 +7,10 @@
     "Alatyr help": "help",
     "Alatyr status": "adapter-health",
     "Alatyr doctor": "adapter-health",
+    "Alatyr session checkpoint": "session-continuity",
+    "Alatyr resume session": "session-continuity",
+    "Alatyr continuity check": "session-continuity",
+    "Alatyr prepare compaction": "session-continuity",
     "create blueprint": "create-project-blueprint",
     "repair blueprint": "create-project-blueprint",
     "recheck blueprint": "create-project-blueprint",
@@ -25,7 +29,7 @@
     "product change": "product-change",
     "plan large task": "large-task",
     "continue large task": "large-task",
-    "resume Alatyr task": "large-task",
+    "resume large Alatyr task": "large-task",
     "Alatyr set actor": "team-identity",
     "Alatyr who am I": "team-identity",
     "Alatyr clear actor": "team-identity",
@@ -125,6 +129,12 @@
       "core-profile",
       ".ai/assistant/flows/adapter-health.flow.md",
       "read-only"
+    ],
+    "session-continuity": [
+      "core-profile",
+      ".ai/assistant/flows/session-continuity.flow.md",
+      "read-only",
+      "adapter-only"
     ],
     "create-project-blueprint": [
       "blueprint-change",

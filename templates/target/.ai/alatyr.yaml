@@ -68,7 +68,7 @@ context_routing:
     - "AGENTS.md"
   compact_bootstrap:
     - ".ai/assistant/bootstrap-index.json"
-  agent_entry_packet_schema_version: 3
+  agent_entry_packet_schema_version: 4
   agent_entry_packet: ".ai/assistant/entry-packet.json"
   bootstrap_max_files: 2
   bootstrap_max_words: 900
@@ -146,6 +146,11 @@ operations:
   health: ".ai/assistant/flows/adapter-health.flow.md"
   pre_change_preview: ".ai/assistant/templates/pre-change-preview.md"
   action_authorization_policy: ".ai/assistant/policies/action-authorization.json"
+  session_continuity_policy: ".ai/assistant/policies/session-continuity.json"
+  session_continuity_flow: ".ai/assistant/flows/session-continuity.flow.md"
+  session_continuity_gate: ".ai/assistant/gates/session-continuity.md"
+  session_continuity_packet: ".ai/assistant/templates/session-continuity-packet.json"
+  session_continuity_packet_schema: 1
   task_decomposition: ".ai/assistant/task-decomposition.json"
   task_decomposition_plan: ".ai/assistant/templates/task-decomposition.md"
   delegation_execution_tree: ".ai/assistant/templates/delegation-execution-tree.json"

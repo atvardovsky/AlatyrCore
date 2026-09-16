@@ -31,6 +31,10 @@
       "path": ".ai/assistant/gates/security-approval.md",
       "use_when": ["protected security live destructive permission dependency or approval boundary"]
     },
+    "session-continuity": {
+      "path": ".ai/assistant/gates/session-continuity.md",
+      "use_when": ["state-changing work resumes after compaction restart fork handoff client/model change context reset or suspected context loss"]
+    },
     "dependency-knowledge": {
       "path": ".ai/assistant/gates/dependency-knowledge.md",
       "use_when": ["dependency knowledge is discovered synchronized explained or used for impact analysis"]

@@ -1461,6 +1461,7 @@ def execute_checks(
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as executor:
         running: dict[concurrent.futures.Future[Any], dict[str, Any]] = {}
         running_weights: dict[concurrent.futures.Future[Any], int] = {}
+        capacity_wait_since: dict[str, float] = {}
         running_weight = 0
 
         def block_failed_dependents() -> None:
@@ -1523,14 +1524,26 @@ def execute_checks(
             nonlocal running_weight
             available = jobs - running_weight
             ready = ready_checks()
+            ready_ids = {check["id"] for check in ready}
+            for check_id in list(capacity_wait_since):
+                if check_id not in ready_ids:
+                    capacity_wait_since.pop(check_id)
             if (
                 ready
                 and resource_weight(ready[0]) > available
-                and time.monotonic() - queued_since[ready[0]["id"]]
-                >= CRITICAL_RESERVATION_AFTER_SECONDS
             ):
-                # Bound backfill, then reserve capacity for the waiting critical path.
-                return False
+                check_id = ready[0]["id"]
+                wait_started = capacity_wait_since.setdefault(
+                    check_id, time.monotonic()
+                )
+                if (
+                    time.monotonic() - wait_started
+                    >= CRITICAL_RESERVATION_AFTER_SECONDS
+                ):
+                    # Bound backfill, then reserve for the ready critical path.
+                    return False
+            elif ready:
+                capacity_wait_since.pop(ready[0]["id"], None)
             admitted: list[dict[str, Any]] = []
             reserved = 0
             for check in ready:
@@ -1560,6 +1573,7 @@ def execute_checks(
                 running_weights[future] = weight
                 running_weight += weight
                 remaining.pop(check["id"])
+                capacity_wait_since.pop(check["id"], None)
                 observations[check["id"]] = {
                     "queued_seconds": round(time.monotonic() - queued_since[check["id"]], 6),
                     "scheduler_slots": resource_weight(check),

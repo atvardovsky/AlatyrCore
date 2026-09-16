@@ -8,6 +8,7 @@ For bare `Alatyr`, ambiguity, or repair, read `.ai/assistant/operation-catalog.j
 When delegation is selected, use `.ai/assistant/task-decomposition.json`, installed
 delegation surfaces, and the selected capability record; do not infer native
 worker support.
+After context loss or a compaction/resume boundary, use the `session-continuity` overlay before mutation.
 
 This legacy bridge does not claim maintained Roo runtime support or override
 Alatyr authorization with Roo mode or auto-approve settings.

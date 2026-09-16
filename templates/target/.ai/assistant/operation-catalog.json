@@ -42,6 +42,20 @@
       "final_evidence": ["health state enum", "installation state", "acceptance eligibility", "checks run and unavailable", "up to three repair operations", "no files changed"]
     },
     {
+      "id": "session-continuity",
+      "title": "Session continuity",
+      "summary": "Prepare or verify bounded recovery state across compaction, resume, fork, handoff, or context loss.",
+      "use_when": ["prepare for context compaction", "resume after context loss", "verify session continuity", "assistant or client handoff"],
+      "context_profiles": [],
+      "required_module": "core-profile",
+      "flow": ".ai/assistant/flows/session-continuity.flow.md",
+      "minimum_inputs": ["task or packet identity", "observed or expected boundary"],
+      "allowed_actions": ["read-only", "adapter-only"],
+      "preview": "never",
+      "aliases": ["Alatyr session checkpoint", "Alatyr resume session", "Alatyr continuity check", "Alatyr prepare compaction"],
+      "final_evidence": ["boundary and packet identity", "repository and approval verification", "current-scope authorization revalidation", "next safe action and residual risk"]
+    },
+    {
       "id": "create-project-blueprint",
       "title": "Create project blueprint",
       "summary": "Create, repair, or recheck blueprint-equivalent sources from target evidence.",
@@ -122,7 +136,7 @@
       "minimum_inputs": ["goal", "non-goals", "affected areas", "allowed actions"],
       "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "preview": "risk-gated",
-      "aliases": ["plan large task", "continue large task", "resume Alatyr task"],
+      "aliases": ["plan large task", "continue large task", "resume large Alatyr task"],
       "final_evidence": ["workstream state", "context receipts", "global convergence"]
     },
     {

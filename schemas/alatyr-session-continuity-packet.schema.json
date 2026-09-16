@@ -1,0 +1,239 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Alatyr session continuity packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "packet_kind",
+    "packet_id",
+    "packet_sequence",
+    "previous_packet_sha256",
+    "task",
+    "boundary",
+    "routing",
+    "authorization",
+    "repository",
+    "approvals",
+    "decisions",
+    "validation",
+    "unresolved",
+    "next_safe_action",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "packet_kind": {"const": "alatyr-session-continuity"},
+    "packet_id": {"type": "string", "minLength": 1},
+    "packet_sequence": {"type": "integer", "minimum": 1},
+    "previous_packet_sha256": {"$ref": "#/definitions/hashOrNone"},
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "operation_id", "objective", "status", "current_phase"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "operation_id": {"type": "string", "minLength": 1},
+        "objective": {"type": "string", "minLength": 1},
+        "status": {"enum": ["planned", "active", "blocked", "validation", "complete"]},
+        "current_phase": {"type": "string", "minLength": 1}
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "observed_at", "assistant_surface", "client_version", "model", "capability_record_state", "capability_record", "capability_record_sha256", "capability_evidence_state"],
+      "properties": {
+        "kind": {"enum": ["manual-compaction", "automatic-compaction", "session-resume", "session-fork", "assistant-handoff", "client-change", "provider-change", "model-change", "subagent-convergence", "context-reset", "unknown"]},
+        "observed_at": {"type": "string", "minLength": 1},
+        "assistant_surface": {"type": "string", "minLength": 1},
+        "client_version": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "capability_record_state": {"enum": ["available", "unavailable"]},
+        "capability_record": {"type": "string", "minLength": 1},
+        "capability_record_sha256": {"$ref": "#/definitions/hashOrUnavailable"},
+        "capability_evidence_state": {"enum": ["current", "stale", "expired", "unverified", "unknown"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"capability_record_state": {"const": "available"}}},
+          "then": {
+            "properties": {
+              "capability_record": {"not": {"const": "unavailable"}},
+              "capability_record_sha256": {"$ref": "#/definitions/hash"}
+            }
+          },
+          "else": {
+            "properties": {
+              "capability_record": {"const": "unavailable"},
+              "capability_record_sha256": {"const": "unavailable"}
+            }
+          }
+        }
+      ]
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profiles", "overlays", "project_areas", "rule_ids", "context_packet", "loaded_paths", "omitted_context"],
+      "properties": {
+        "profiles": {"$ref": "#/definitions/stringArray"},
+        "overlays": {"$ref": "#/definitions/stringArray"},
+        "project_areas": {"$ref": "#/definitions/stringArray"},
+        "rule_ids": {"$ref": "#/definitions/stringArray"},
+        "context_packet": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "path", "sha256"],
+          "properties": {
+            "state": {"enum": ["available", "unavailable"]},
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"$ref": "#/definitions/hashOrUnavailable"}
+          },
+          "allOf": [
+            {
+              "if": {"properties": {"state": {"const": "available"}}},
+              "then": {
+                "properties": {
+                  "path": {"not": {"const": "unavailable"}},
+                  "sha256": {"$ref": "#/definitions/hash"}
+                }
+              },
+              "else": {
+                "properties": {
+                  "path": {"const": "unavailable"},
+                  "sha256": {"const": "unavailable"}
+                }
+              }
+            }
+          ]
+        },
+        "loaded_paths": {"$ref": "#/definitions/stringArray"},
+        "omitted_context": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_scope", "source_reference", "evidence_state", "recorded_phases", "deliberately_not_authorized", "resume_mode", "revalidation_required"],
+      "properties": {
+        "logical_scope": {"type": "string", "minLength": 1},
+        "source_reference": {"type": "string", "minLength": 1},
+        "evidence_state": {"enum": ["host-verifiable", "declarative", "unavailable"]},
+        "recorded_phases": {"$ref": "#/definitions/phaseArray"},
+        "deliberately_not_authorized": {"$ref": "#/definitions/phaseArray"},
+        "resume_mode": {"const": "inspect-only-pending-current-scope-revalidation"},
+        "revalidation_required": {"const": true}
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_state", "branch", "base_revision", "head_revision", "change_set_hash_contract", "change_set_sha256", "changed_paths"],
+      "properties": {
+        "evidence_state": {"enum": ["available", "unavailable"]},
+        "branch": {"type": "string", "minLength": 1},
+        "base_revision": {"type": "string", "minLength": 1},
+        "head_revision": {"type": "string", "minLength": 1},
+        "change_set_hash_contract": {"enum": ["canonical-git-change-set-v1", "unavailable"]},
+        "change_set_sha256": {"$ref": "#/definitions/hashOrUnavailable"},
+        "changed_paths": {"$ref": "#/definitions/stringArray"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"evidence_state": {"const": "available"}}},
+          "then": {
+            "properties": {
+              "branch": {"not": {"const": "unavailable"}},
+              "base_revision": {"not": {"const": "unavailable"}},
+              "head_revision": {"not": {"const": "unavailable"}},
+              "change_set_hash_contract": {"const": "canonical-git-change-set-v1"},
+              "change_set_sha256": {"$ref": "#/definitions/hash"}
+            }
+          },
+          "else": {
+            "properties": {
+              "branch": {"const": "unavailable"},
+              "base_revision": {"const": "unavailable"},
+              "head_revision": {"const": "unavailable"},
+              "change_set_hash_contract": {"const": "unavailable"},
+              "change_set_sha256": {"const": "unavailable"},
+              "changed_paths": {"maxItems": 0}
+            }
+          }
+        }
+      ]
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["approval_id", "path", "sha256", "scope_state"],
+        "properties": {
+          "approval_id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"$ref": "#/definitions/hash"},
+          "scope_state": {"enum": ["current", "stale", "superseded", "unknown"]}
+        }
+      }
+    },
+    "decisions": {"$ref": "#/definitions/stringArray"},
+    "validation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check", "result", "evidence"],
+        "properties": {
+          "check": {"type": "string", "minLength": 1},
+          "result": {"enum": ["passed", "failed", "blocked", "not-run"]},
+          "evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "unresolved": {"$ref": "#/definitions/stringArray"},
+    "next_safe_action": {"type": "string", "minLength": 1},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest_contract", "packet_sha256"],
+      "properties": {
+        "digest_contract": {"const": "alatyr-session-continuity-v1"},
+        "packet_sha256": {"$ref": "#/definitions/hash"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"packet_sequence": {"const": 1}}},
+      "then": {"properties": {"previous_packet_sha256": {"const": "none"}}},
+      "else": {"properties": {"previous_packet_sha256": {"$ref": "#/definitions/hash"}}}
+    }
+  ],
+  "definitions": {
+    "stringArray": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "phaseArray": {
+      "type": "array",
+      "items": {"enum": ["inspect", "modify", "commit", "publish", "live-external"]},
+      "uniqueItems": true
+    },
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "hashOrUnavailable": {
+      "oneOf": [
+        {"$ref": "#/definitions/hash"},
+        {"const": "unavailable"}
+      ]
+    },
+    "hashOrNone": {
+      "oneOf": [
+        {"$ref": "#/definitions/hash"},
+        {"const": "none"}
+      ]
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "packet_kind": "alatyr-session-continuity",
+  "packet_id": "{CONTINUITY_PACKET_ID}",
+  "packet_sequence": 1,
+  "previous_packet_sha256": "{LOWERCASE_SHA256_OR_NONE}",
+  "task": {
+    "task_id": "{TASK_ID}",
+    "operation_id": "{OPERATION_ID_OR_AD_HOC}",
+    "objective": "{CURRENT_OBJECTIVE}",
+    "status": "{PLANNED_ACTIVE_BLOCKED_VALIDATION_OR_COMPLETE}",
+    "current_phase": "{CURRENT_PHASE}"
+  },
+  "boundary": {
+    "kind": "{BOUNDARY_KIND}",
+    "observed_at": "{ISO_8601_TIMESTAMP}",
+    "assistant_surface": "{ASSISTANT_SURFACE_OR_UNKNOWN}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN}",
+    "model": "{MODEL_OR_UNKNOWN}",
+    "capability_record_state": "{AVAILABLE_OR_UNAVAILABLE}",
+    "capability_record": "{TARGET_RELATIVE_CAPABILITY_RECORD_OR_UNAVAILABLE}",
+    "capability_record_sha256": "{LOWERCASE_SHA256_OR_UNAVAILABLE}",
+    "capability_evidence_state": "{CURRENT_STALE_EXPIRED_UNVERIFIED_OR_UNKNOWN}"
+  },
+  "routing": {
+    "profiles": ["{SELECTED_PROFILE}"],
+    "overlays": ["session-continuity"],
+    "project_areas": ["{SELECTED_PROJECT_AREA_OR_NONE}"],
+    "rule_ids": ["ALATYR-CONTINUITY-001"],
+    "context_packet": {
+      "state": "{AVAILABLE_OR_UNAVAILABLE}",
+      "path": "{TARGET_RELATIVE_CONTEXT_PACKET_OR_UNAVAILABLE}",
+      "sha256": "{LOWERCASE_SHA256_OR_UNAVAILABLE}"
+    },
+    "loaded_paths": ["{TARGET_RELATIVE_PATH}"],
+    "omitted_context": ["{OMITTED_CONTEXT_AND_REASON_OR_NONE}"]
+  },
+  "authorization": {
+    "logical_scope": "{CURRENT_LOGICAL_SCOPE}",
+    "source_reference": "{CURRENT_USER_REQUEST_REFERENCE_OR_UNAVAILABLE}",
+    "evidence_state": "{HOST_VERIFIABLE_DECLARATIVE_OR_UNAVAILABLE}",
+    "recorded_phases": ["inspect"],
+    "deliberately_not_authorized": ["commit", "live-external", "modify", "publish"],
+    "resume_mode": "inspect-only-pending-current-scope-revalidation",
+    "revalidation_required": true
+  },
+  "repository": {
+    "evidence_state": "{AVAILABLE_OR_UNAVAILABLE}",
+    "branch": "{BRANCH_OR_UNAVAILABLE}",
+    "base_revision": "{BASE_REVISION_OR_UNAVAILABLE}",
+    "head_revision": "{HEAD_REVISION_OR_UNAVAILABLE}",
+    "change_set_hash_contract": "{CANONICAL_GIT_CHANGE_SET_V1_OR_UNAVAILABLE}",
+    "change_set_sha256": "{LOWERCASE_SHA256_OR_UNAVAILABLE}",
+    "changed_paths": ["{TARGET_RELATIVE_CHANGED_PATH_OR_NONE}"]
+  },
+  "approvals": [],
+  "decisions": ["{ACCEPTED_DECISION_OR_NONE}"],
+  "validation": [
+    {
+      "check": "{CHECK_ID_OR_COMMAND}",
+      "result": "{PASSED_FAILED_BLOCKED_OR_NOT_RUN}",
+      "evidence": "{RESULT_EVIDENCE}"
+    }
+  ],
+  "unresolved": ["{UNRESOLVED_QUESTION_RISK_OR_NONE}"],
+  "next_safe_action": "{NEXT_INSPECT_ONLY_ACTION_UNTIL_REVALIDATION}",
+  "integrity": {
+    "digest_contract": "alatyr-session-continuity-v1",
+    "packet_sha256": "{SHA256_OF_CANONICAL_OBJECT_WITHOUT_INTEGRITY}"
+  }
+}
