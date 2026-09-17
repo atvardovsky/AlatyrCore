@@ -4,11 +4,11 @@
   "contracts": {
     "session-continuity": {
       "manifest_key": "operations.session_continuity_packet_schema",
-      "manifest_contract_version": 2,
+      "manifest_contract_version": 3,
       "artifacts": {
         "packet": {
-          "current": 2,
-          "supported": [2],
+          "current": 3,
+          "supported": [3],
           "migration_limited": [],
           "schema": "schemas/alatyr-session-continuity-packet.schema.json",
           "template": "templates/target/.ai/assistant/templates/session-continuity-packet.json"
@@ -26,11 +26,18 @@
           "template": "templates/target/.ai/assistant/task-decomposition.json"
         },
         "problem-model": {
-          "current": 1,
-          "supported": [1],
+          "current": 2,
+          "supported": [2],
           "migration_limited": [],
           "schema": "schemas/alatyr-problem-model.schema.json",
           "template": "templates/target/.ai/assistant/templates/problem-model.json"
+        },
+        "problem-model-active-projection": {
+          "current": 1,
+          "supported": [1],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-problem-model-active-projection.schema.json",
+          "template": "templates/target/.ai/assistant/templates/problem-model-active-projection.json"
         }
       }
     },

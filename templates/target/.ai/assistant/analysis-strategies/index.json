@@ -1,11 +1,19 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "catalog_kind": "target-analysis-strategy-catalog",
   "portable_rule": ".ai/framework/task-decomposition.md",
   "load_mode": "index-plus-one-selected-descriptor",
   "small_task_behavior": "direct-local without loading this catalog",
-  "problem_model_schema": "alatyr-problem-model-v1",
+  "problem_model_schema": "alatyr-problem-model-v2",
   "problem_model_template": ".ai/assistant/templates/problem-model.json",
+  "active_projection_schema": "alatyr-problem-model-active-projection-v1",
+  "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
+  "problem_model_limits": {
+    "max_utf8_bytes": 65536,
+    "max_words": 6000,
+    "max_active_projection_utf8_bytes": 16384,
+    "max_active_projection_words": 1200
+  },
   "primary_strategy_ids": ["direct-local", "invariant-first", "hypothesis-driven", "architecture-comparison", "evidence-synthesis", "exploratory-design"],
   "review_strategy_ids": ["adversarial-review"],
   "descriptors": {

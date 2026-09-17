@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1458,
-      "content_digest": "sha256:2472ccb7f97c60499f64d0673d233c5dd763ac4a0842fb98f58039c92778065c"
+      "estimated_words": 1477,
+      "content_digest": "sha256:471b2a4b7d3e99d7fbafee91db0d6eb383d2d87e4284dd717db50404bb783981"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -721,8 +721,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 263,
-      "content_digest": "sha256:3918c794b1d3de6e424d3856ae70d7b2847630cca549abf3e46e3f080982b16d"
+      "estimated_words": 276,
+      "content_digest": "sha256:b56dbd94a1e95cb864cab8f938faf00b9081ddb5e0e68e3e0a340637e91b375e"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -812,6 +812,29 @@
       "content_digest": "sha256:2fb389f4792027130958bb7a9ba79eb986b516c0876ef1d1e52c05c462a79ace"
     },
     {
+      "id": "assistant.content.templates-problem-model-active-projection-json",
+      "kind": "content",
+      "path": "templates/problem-model-active-projection.json",
+      "summary": "Problem Model Active Projection",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "problem",
+          "model",
+          "active",
+          "projection"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 101,
+      "content_digest": "sha256:83a026a7d27973681e44026cafa2e38445531e9a7a59206cd9869ada3b4cea06"
+    },
+    {
       "id": "assistant.content.templates-problem-model-json",
       "kind": "content",
       "path": "templates/problem-model.json",
@@ -829,8 +852,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 73,
-      "content_digest": "sha256:63400d44bfd6e48e50c28d34f57fd3093d6c3712c0d06a4fd1cbaee3f1c9c74f"
+      "estimated_words": 80,
+      "content_digest": "sha256:31600edff272a4de3b3d3c0337f2ca9e8c50a5ae8ad2513e04748cd776bfd68c"
     },
     {
       "id": "assistant.content.templates-project-knowledge-promotion-json",
@@ -904,8 +927,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 153,
-      "content_digest": "sha256:dcef59da74e99eec85d6373d6bc8140aa1f016c8bf2b36d1dc9c7f2915b1c8d2"
+      "estimated_words": 168,
+      "content_digest": "sha256:d92526c5b7eb61103447425be9eda821dac8ae81661b26b2263df2d2c8c0c478"
     },
     {
       "id": "assistant.content.templates-small-task-evidence-md",

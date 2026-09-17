@@ -6,8 +6,16 @@
   "plan_template": ".ai/assistant/templates/task-decomposition.md",
   "analysis_strategy": {
     "catalog": ".ai/assistant/analysis-strategies/index.json",
-    "problem_model_schema": "alatyr-problem-model-v1",
+    "problem_model_schema": "alatyr-problem-model-v2",
     "problem_model_template": ".ai/assistant/templates/problem-model.json",
+    "active_projection_schema": "alatyr-problem-model-active-projection-v1",
+    "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
+    "problem_model_limits": {
+      "max_utf8_bytes": 65536,
+      "max_words": 6000,
+      "max_active_projection_utf8_bytes": 16384,
+      "max_active_projection_words": 1200
+    },
     "selection_order": [
       "direct-local for eligible small or settled local non-semantic work",
       "exploratory-design when requirements constraints owners or authority are unclear",
@@ -30,7 +38,7 @@
   "decomposition_order": [
     "classify authorization actions profile scale facts areas and risk",
     "select one primary analysis strategy and required review passes",
-    "record a bounded problem model and proof obligations",
+    "record a bounded problem model, active projection, and proof obligations",
     "split by changed fact owner contract area dependency validation and support sync",
     "assign exactly one implementation level to each task",
     "record dependencies and reject cycles",
@@ -153,11 +161,13 @@
     "private_reasoning_forbidden": true,
     "primary_owns_global_obligations": true,
     "required_obligations_block_completion": true,
-    "required_reviews_block_completion": true
+    "required_reviews_block_completion": true,
+    "oversized_problem_model_requires_successor_or_shard": true,
+    "active_projection_required_for_nontrivial_model": true
   },
   "final_evidence": [
     "plan ID and policy revision",
-    "primary analysis strategy selection evidence and problem model",
+    "primary analysis strategy, bounded problem model, and active projection evidence",
     "required review passes and proof obligation status",
     "task IDs levels dependencies and executor decisions",
     "context selected and omitted per task",

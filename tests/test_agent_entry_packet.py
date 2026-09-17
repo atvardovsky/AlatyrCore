@@ -61,7 +61,7 @@ modules:
             "phases": ["inspect", "modify", "commit", "publish", "live-external"],
         }
         continuity = {
-            "schema_version": 2,
+            "schema_version": 3,
             "policy_kind": "target-session-continuity",
             "gate": ".ai/assistant/gates/session-continuity.md",
             "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
@@ -71,7 +71,7 @@ modules:
             },
         }
         support_policy = {
-            "schema_version": 1,
+            "schema_version": 2,
             "policy_kind": "target-support-policy",
             "managed_roots": [".ai"],
             "optional_entrypoints": ["AGENTS.md"],
@@ -87,6 +87,13 @@ modules:
             "analysis_strategy": {
                 "catalog": ".ai/assistant/analysis-strategies/index.json",
                 "problem_model_template": ".ai/assistant/templates/problem-model.json",
+                "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
+                "problem_model_limits": {
+                    "max_utf8_bytes": 65536,
+                    "max_words": 6000,
+                    "max_active_projection_utf8_bytes": 16384,
+                    "max_active_projection_words": 1200,
+                },
                 "small_task_behavior": "use direct-local without loading the strategy catalog",
                 "nontrivial_load_limit": "load index and one selected descriptor only",
             },
@@ -140,7 +147,7 @@ modules:
             ),
         )
 
-        self.assertEqual(packet["schema_version"], 5)
+        self.assertEqual(packet["schema_version"], 6)
         self.assertEqual(
             packet["session_continuity"]["resume_mode"],
             "inspect-only-pending-current-scope-revalidation",
@@ -188,6 +195,10 @@ modules:
         self.assertEqual(
             decomposition["analysis_strategy"]["catalog"],
             ".ai/assistant/analysis-strategies/index.json",
+        )
+        self.assertEqual(
+            decomposition["analysis_strategy"]["active_projection_template"],
+            ".ai/assistant/templates/problem-model-active-projection.json",
         )
         self.assertEqual(decomposition["executor_default"], "primary")
         self.assertIn("L6", decomposition["non_delegable_levels"])

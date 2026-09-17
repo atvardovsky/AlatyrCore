@@ -2466,7 +2466,7 @@ class Validator:
             return
         if (
             not isinstance(actual, dict)
-            or actual.get("schema_version") != 5
+            or actual.get("schema_version") != 6
             or actual.get("packet_kind") != "target-agent-entry-packet"
         ):
             self.error(

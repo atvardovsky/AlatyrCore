@@ -4,12 +4,11 @@ This project uses Alatyr Core. This file is host-preloaded.
 
 ## Bootstrap
 
-Load `.ai/assistant/bootstrap-index.json`. Select its smallest route and gates.
-Trust validated routing; on failure load the canonical owner. Load
-`.ai/assistant/entry-packet.json` only
-for repair, audit, or conflict. Follow matched child indexes; selecting a
-parent never loads its directory. Use `.ai/README.md` only for
-installation/update recovery.
+Load `.ai/assistant/bootstrap-index.json`; select its smallest route and gates.
+On routing failure, load the canonical owner. Load
+`.ai/assistant/entry-packet.json` only for repair, audit, or conflict. Follow
+matched child indexes; a parent does not load its directory. Use `.ai/README.md`
+only for installation/update recovery.
 
 ## Authority
 
@@ -38,12 +37,11 @@ For semantic changes, name the fact, re-derive invariants, load its owner and
 selected dependent surfaces, then reconcile code, tests, contracts, docs,
 diagrams, gates, and risk. Review unknown relationships; never infer acceptance.
 
-For non-trivial work, use `.ai/assistant/task-decomposition.json`. Select one
-strategy and descriptor; bind evidence-backed proof obligations to a bounded
-problem model. Small settled work stays `direct-local` without the catalog.
-Delegation requires capability evidence and cannot delegate strategy,
-authorization, architecture, obligation acceptance, integration, or final
-acceptance. Run only existing validation.
+Non-trivial work uses `.ai/assistant/task-decomposition.json`: one strategy,
+bounded model, current projection, and obligations. Full history is
+conditional. Small work stays `direct-local`. Delegate only with capability
+evidence; the primary retains decisions, authorization, integration, and
+acceptance. Run existing validation.
 
 ## Evidence
 

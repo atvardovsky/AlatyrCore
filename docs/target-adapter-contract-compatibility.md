@@ -11,6 +11,11 @@ Manifest key: `operations.task_decomposition_schema`.
 Current contract version: `2`.
 
 Artifact: `problem-model`
+Current version: `2`.
+Supported versions: `2`.
+Migration-limited versions: none.
+
+Artifact: `problem-model-active-projection`
 Current version: `1`.
 Supported versions: `1`.
 Migration-limited versions: none.
@@ -103,11 +108,11 @@ Migration-limited versions: `1`.
 ## session-continuity
 
 Manifest key: `operations.session_continuity_packet_schema`.
-Current contract version: `2`.
+Current contract version: `3`.
 
 Artifact: `packet`
-Current version: `2`.
-Supported versions: `2`.
+Current version: `3`.
+Supported versions: `3`.
 Migration-limited versions: none.
 
 Regenerate this reference with:

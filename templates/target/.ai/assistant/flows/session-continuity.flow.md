@@ -19,8 +19,10 @@ Compact semantic reference: `alatyr:session-continuity@1`.
    available.
 5. Bind any referenced capability record and context packet by target-relative
    path and file-content SHA-256.
-6. Record the primary analysis strategy, problem-model path and digest, open
-   proof obligations, completed required reviews, and invalidated assumptions.
+6. Record the primary analysis strategy, problem-model path and digest, and the
+   active-projection path, digest, source-model digest, and measured size.
+   Keep open proof obligations, completed reviews, and invalidated assumptions
+   in the bounded projection instead of copying full history into the packet.
 7. Prefer identifiers, target-relative paths, and digests. Do not copy raw
    chat, hidden reasoning, secrets, or unnecessary source content.
 8. During inspect-only work, use a host-native or in-memory checkpoint. Write
@@ -37,8 +39,11 @@ Compact semantic reference: `alatyr:session-continuity@1`.
 4. Compare its branch, revisions, changed paths, change-set digest, approval
    hashes, and referenced rule IDs with current evidence.
 5. Load only owners or evidence whose identity changed or cannot be verified.
-6. Compare the primary strategy and problem-model digest. Reopen affected
-   obligations when strategy, assumptions, or evidence changed.
+6. Verify the active projection against both its content digest and bound
+   problem-model digest. Load the projection for routine recovery; load the
+   full model only when the projection is stale, invalid, or insufficient for
+   a named conflict. Reopen affected obligations when strategy, assumptions,
+   or evidence changed.
 7. Re-evaluate current logical scope and every action phase from the newest
    user instruction. Never restore publish or live-external authority from the
    packet.

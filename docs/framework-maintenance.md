@@ -227,8 +227,9 @@ Before accepting a change, check:
   implementation levels, executor selection, primary convergence, or worker
   eligibility contracts change.
 - `python3 tools/check_analysis_strategies.py` passes when strategy selection,
-  descriptor context cost, problem-model evidence, proof obligations,
-  adversarial review, continuity binding, or completion evidence changes.
+  descriptor context cost, problem-model limits, active-projection binding,
+  transition history, proof obligations, adversarial review, continuity
+  binding, or completion evidence changes.
 - `python3 tools/check_subagent_delegation.py` passes when delegation policy,
   worker roles/prompts, task/packet/result contracts, recursive envelopes,
   branch checkpoints, compact-summary evidence, lazy overlay,

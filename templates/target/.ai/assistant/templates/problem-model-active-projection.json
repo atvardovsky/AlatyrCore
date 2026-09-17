@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "projection_kind": "alatyr-active-problem-model",
+  "model_id": "{PROBLEM_MODEL_ID}",
+  "operation_id": "{OPERATION_ID}",
+  "source_model": {
+    "path": ".ai/.runtime/problem-models/{PROBLEM_MODEL_ID}.json",
+    "sha256": "{LOWERCASE_SHA256_OF_PROBLEM_MODEL}"
+  },
+  "limits": {
+    "max_payload_utf8_bytes": 16384,
+    "max_payload_words": 1200
+  },
+  "payload": {
+    "objective": "{OBJECTIVE}",
+    "non_goals": [],
+    "repository_binding": {
+      "state": "{AVAILABLE_OR_UNAVAILABLE}",
+      "branch": "{BRANCH_OR_UNAVAILABLE}",
+      "base_revision": "{REVISION_OR_UNAVAILABLE}"
+    },
+    "task_binding": {
+      "task_ids": ["{TASK_ID}"],
+      "workstream_ids": []
+    },
+    "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
+    "risk_classes": [],
+    "protected_change": false,
+    "facts": [],
+    "changed_facts": [],
+    "active_assumptions": [],
+    "invalidated_assumption_ids": [],
+    "unknowns": [],
+    "active_invariants": [],
+    "current_hypotheses": [],
+    "current_alternatives": [],
+    "counterexamples": [],
+    "required_reviews": [],
+    "proof_obligations": [],
+    "unresolved_decisions": [],
+    "latest_transition": null,
+    "evidence_refs": [],
+    "omitted_history_counts": {
+      "rejected_hypotheses": 0,
+      "rejected_alternatives": 0,
+      "invalidated_assumptions": 0,
+      "preserved_invariants": 0,
+      "previous_transitions": 0
+    }
+  },
+  "measurements": {
+    "payload_utf8_bytes": 0,
+    "payload_words": 0
+  }
+}

@@ -163,10 +163,11 @@ optimally modular; it prevents new large functions or unreviewed growth while
 the legacy validators are extracted incrementally.
 
 `check_analysis_strategies.py` validates the compact provider-neutral strategy
-catalog, one-descriptor context ceiling, bounded problem-model schema,
-strategy-specific evidence, proof-obligation and waiver semantics, required
-review routing, and target-validator scenarios. It validates inspectable
-conclusions and evidence, not private model reasoning.
+catalog, one-descriptor context ceiling, hard problem-model limits,
+deterministic active projections, historical transition references, strategy-
+specific evidence, proof-obligation and waiver semantics, required review
+routing, and target-validator scenarios. It validates inspectable conclusions
+and evidence, not private model reasoning.
 
 Structural source-tooling changes should follow the source architecture model
 in [`docs/source-architecture.md`](../docs/source-architecture.md). In

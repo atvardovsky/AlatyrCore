@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "packet_kind": "target-agent-entry-packet",
   "path": ".ai/assistant/entry-packet.json",
   "generated_by": {
@@ -10,21 +10,21 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:3da3b4be201bc7a3ce427ea184fe82c4710e8ed39b20df76f8c3bd9fee98e601",
+    "target_manifest_digest": "sha256:d1cc8d76bfa7fc2b3e3e469725b0091f3562475f0fc15a6d7922fb84c0c738f5",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.68",
-    "adapter_schema_version": "56",
-    "template_version": "63"
+    "framework_version": "0.1.0-alpha.69",
+    "adapter_schema_version": "57",
+    "template_version": "64"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "3da3b4be201bc7a3ce427ea184fe82c4710e8ed39b20df76f8c3bd9fee98e601"
+      "sha256": "d1cc8d76bfa7fc2b3e3e469725b0091f3562475f0fc15a6d7922fb84c0c738f5"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "ea2ce3828cbb6d70f4ba71e38a94cb8786cfa0d3e64fc50f8358916ecebfd4c7"
+      "sha256": "d127de2cc59bed4e7ede9958d3a106916b722c231b6f6a942683be7b76395785"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -36,7 +36,7 @@
     },
     "session_continuity_policy": {
       "path": ".ai/assistant/policies/session-continuity.json",
-      "sha256": "9b2a97c4a00bc7d68d9097058381769d9c524ac1649e4fc7954167866005aa4c"
+      "sha256": "0501092e71917af30e38fc7e3be45c61cc01c0696e65e47d4ac171e195de88bd"
     },
     "support_policy": {
       "path": ".ai/project/support-policy.json",
@@ -44,7 +44,7 @@
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",
-      "sha256": "546dfb768ca4d168f55ec21548f68fda673b4530e49b9d217b2f3ef874160371"
+      "sha256": "2f33b4eee06e7c33b05e065ce615eaccb189adabe80d8d543baf920a0d846732"
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",
@@ -133,6 +133,13 @@
     "analysis_strategy": {
       "catalog": ".ai/assistant/analysis-strategies/index.json",
       "problem_model_template": ".ai/assistant/templates/problem-model.json",
+      "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
+      "problem_model_limits": {
+        "max_utf8_bytes": 65536,
+        "max_words": 6000,
+        "max_active_projection_utf8_bytes": 16384,
+        "max_active_projection_words": 1200
+      },
       "small_task_behavior": "use direct-local without loading the strategy catalog",
       "nontrivial_load_limit": "load index and one selected descriptor only"
     }

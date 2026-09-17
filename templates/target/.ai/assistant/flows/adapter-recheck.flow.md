@@ -192,6 +192,11 @@ Replace placeholders with target facts before accepting installation.
     source revisions/digests, target bindings, permissions, approvals, local
     deviations, installed-file ownership, and historical lifecycle evidence;
     recheck compatibility and drift without automatic updates.
+    When problem-model, active-projection, or continuity-packet contracts
+    change, update their policies, schemas, templates, routes, gates, and
+    completion evidence as one set. Preserve durable evidence references, but
+    discard incompatible ignored runtime records and regenerate current state;
+    do not fabricate migration fields or copy runtime state across branches.
 15. Identify required migrations, approvals, unresolved facts, and skipped
    checks.
    Recheck `.ai/assistant/policies/action-authorization.json`, root assistant

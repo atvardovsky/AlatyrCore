@@ -52,6 +52,7 @@
         ".ai/assistant/templates/installation-note.md",
         ".ai/assistant/templates/operation-request.md",
         ".ai/assistant/templates/operation-completion-evidence.json",
+        ".ai/assistant/templates/problem-model-active-projection.json",
         ".ai/assistant/templates/problem-model.json",
         ".ai/assistant/templates/session-continuity-packet.json",
         ".ai/assistant/templates/small-task-evidence.md",

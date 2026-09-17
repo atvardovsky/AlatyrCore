@@ -9,10 +9,13 @@ from pathlib import Path
 
 from analysis_strategy_contract import (
     PRIMARY_STRATEGY_IDS,
+    build_active_problem_model_projection,
     load_json_object,
     required_obligations_resolved,
     required_reviews_passed,
+    validate_active_problem_model_projection,
     validate_problem_model,
+    validate_problem_model_projection_schema,
     validate_problem_model_schema,
     validate_strategy_catalog,
     validate_strategy_requirements,
@@ -22,14 +25,21 @@ from analysis_strategy_contract import (
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 SCHEMA_PATH = ROOT / "schemas" / "alatyr-problem-model.schema.json"
+PROJECTION_SCHEMA_PATH = (
+    ROOT / "schemas" / "alatyr-problem-model-active-projection.schema.json"
+)
 
 
 def sample_model(strategy_id: str) -> dict[str, object]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": f"fixture-{strategy_id}",
         "operation_id": "fixture-operation",
+        "active_projection": {
+            "schema_version": 1,
+            "path": f".ai/.runtime/problem-model-projections/fixture-{strategy_id}.json",
+        },
         "primary_strategy_id": strategy_id,
         "risk_classes": [],
         "protected_change": False,
@@ -77,7 +87,11 @@ def main() -> int:
     failures: list[str] = []
     try:
         schema = load_json_object(SCHEMA_PATH)
+        projection_schema = load_json_object(PROJECTION_SCHEMA_PATH)
         failures.extend(validate_problem_model_schema(schema))
+        failures.extend(
+            validate_problem_model_projection_schema(projection_schema)
+        )
         failures.extend(validate_strategy_catalog(TARGET))
         catalog = load_json_object(TARGET / ".ai/assistant/analysis-strategies/index.json")
         descriptors = catalog.get("descriptors", {})
@@ -90,6 +104,96 @@ def main() -> int:
                 if isinstance(descriptor_path, str):
                     descriptor = load_json_object(TARGET / descriptor_path)
             failures.extend(validate_strategy_requirements(model, descriptor))
+
+        projected_model = sample_model("invariant-first")
+        projection = build_active_problem_model_projection(
+            projected_model,
+            source_path=".ai/.runtime/problem-models/fixture-invariant-first.json",
+            source_sha256="0" * 64,
+        )
+        failures.extend(
+            validate_active_problem_model_projection(
+                projection,
+                projection_schema,
+                expected=projection,
+            )
+        )
+        projection_payload = projection.get("payload")
+        if not isinstance(projection_payload, dict) or projection_payload.get(
+            "changed_facts"
+        ) != projected_model.get("changed_facts"):
+            failures.append("active projection omitted the current changed facts")
+        if not isinstance(projection_payload, dict) or projection_payload.get(
+            "non_goals"
+        ) != projected_model.get("non_goals"):
+            failures.append("active projection omitted the current non-goals")
+
+        transitioned = sample_model("invariant-first")
+        transitioned["assumptions"] = [
+            {
+                "id": "assumption-1",
+                "statement": "fixture assumption",
+                "evidence_refs": ["fixture:evidence"],
+                "status": "active",
+            }
+        ]
+        transitioned["strategy_transitions"] = [
+            {
+                "from": "hypothesis-driven",
+                "to": "invariant-first",
+                "reason": "new evidence changed the analysis method",
+                "evidence_refs": ["fixture:evidence"],
+                "invalidated_assumption_ids": ["assumption-1"],
+                "reopened_obligation_ids": ["proof-1"],
+            }
+        ]
+        transitioned_obligations = transitioned["proof_obligations"]
+        assert isinstance(transitioned_obligations, list)
+        assert isinstance(transitioned_obligations[0], dict)
+        transitioned_obligations[0]["status"] = "open"
+        transitioned_obligations[0]["evidence_refs"] = []
+        failures.extend(validate_problem_model(transitioned, schema))
+        transitioned_obligations[0]["status"] = "passed"
+        transitioned_obligations[0]["evidence_refs"] = ["fixture:resolved"]
+        failures.extend(validate_problem_model(transitioned, schema))
+        if not required_obligations_resolved(transitioned):
+            failures.append("resolved historically reopened obligation stayed blocked")
+
+        unknown_transition = sample_model("invariant-first")
+        unknown_transition["strategy_transitions"] = [
+            {
+                "from": "hypothesis-driven",
+                "to": "invariant-first",
+                "reason": "invalid fixture reference",
+                "evidence_refs": ["fixture:evidence"],
+                "invalidated_assumption_ids": [],
+                "reopened_obligation_ids": ["missing-proof"],
+            }
+        ]
+        if not any(
+            "unknown obligation" in failure
+            for failure in validate_problem_model(unknown_transition, schema)
+        ):
+            failures.append("unknown transitioned obligation was accepted")
+
+        oversized = sample_model("invariant-first")
+        oversized["objective"] = "word " * 20000
+        if not validate_problem_model(oversized, schema):
+            failures.append("oversized problem model was accepted")
+
+        oversized_active_state = sample_model("invariant-first")
+        oversized_active_state["unknowns"] = [
+            {
+                "id": f"unknown-{index}",
+                "statement": "word " * 100,
+            }
+            for index in range(20)
+        ]
+        if not any(
+            "active state exceeds" in failure
+            for failure in validate_problem_model(oversized_active_state, schema)
+        ):
+            failures.append("oversized active projection state was accepted")
 
         private_reasoning = sample_model("evidence-synthesis")
         private_reasoning["chain_of_thought"] = "must never be persisted"

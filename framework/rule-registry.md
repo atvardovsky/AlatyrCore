@@ -472,17 +472,19 @@ Rule ID: `ALATYR-DECOMPOSITION-001`
 Source owner: `framework/task-decomposition.md`
 Installed owner: `.ai/framework/task-decomposition.md`
 Commitment: Before non-trivial execution, select one task-matched primary
-analysis strategy, maintain a bounded evidence-backed problem model and proof
-obligations, and decompose the request by changed fact, canonical owner,
-contract, area, dependency, validation, and support-surface impact; assign
-exactly one implementation level, bounded context, allowed actions, validation,
-dependencies, and primary-or-worker executor decision per task; keep small
-settled work on descriptor-free direct-local execution; require adversarial
-review for protected or high-impact work; keep worker expansion inside a
-primary-owned bounded tree with obligation, coverage, and stop evidence;
-escalate only on named risk or relationship triggers; and keep strategy
-selection, obligation acceptance or waiver, semantic decisions, approval,
-protected phases, integration, and final convergence with the primary
+analysis strategy, maintain a hard-bounded evidence-backed problem model, a
+digest-bound active projection, and proof obligations, and decompose the
+request by changed fact, canonical owner, contract, area, dependency,
+validation, and support-surface impact; treat strategy transitions as
+historical evidence without freezing later assumption or obligation state;
+assign exactly one implementation level, bounded context, allowed actions,
+validation, dependencies, and primary-or-worker executor decision per task;
+keep small settled work on descriptor-free direct-local execution; require
+adversarial review for protected or high-impact work; keep worker expansion
+inside a primary-owned bounded tree with obligation, coverage, and stop
+evidence; escalate only on named risk or relationship triggers; and keep
+strategy selection, obligation acceptance or waiver, semantic decisions,
+approval, protected phases, integration, and final convergence with the primary
 assistant.
 Applies to: all installed adapter tasks, large tasks, delegated execution, team
 coordination, final evidence.

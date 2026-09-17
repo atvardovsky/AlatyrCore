@@ -110,6 +110,25 @@ reasoning or chain-of-thought. A required obligation must pass, be explicitly
 waived by authorized policy, or remain visibly failed or blocked; unresolved
 required obligations prohibit completion.
 
+A problem model is bounded to 65,536 canonical serialized bytes and 6,000
+structured words. Its collections and individual strings also have schema
+limits. When that bound is insufficient, create a digest-linked successor or
+split disjoint work into separate task-bound models; do not truncate unresolved
+obligations or required evidence.
+
+Every non-trivial model has a deterministic active projection bound to the full
+model digest. The projection is limited to 16,384 payload bytes and 1,200 words
+and carries task scope, repository binding, changed facts, current assumptions,
+invariants, strategy-specific claims, reviews, obligations, unresolved
+decisions, and the latest transition. Routine execution and continuity
+recovery load that projection. Load full model history only for a named
+conflict, a stale or invalid projection, or a transition update.
+
+Strategy transitions are historical evidence. Their assumption and obligation
+references must resolve, but a referenced assumption may remain invalidated and
+a reopened obligation may later pass. Current completion is decided from the
+obligation's current state and evidence, not frozen by an earlier transition.
+
 ## Implementation Levels
 
 Implementation levels describe how deep a subtask may go. They are action
@@ -233,7 +252,8 @@ adapter or project.
 For material work, final evidence should include:
 
 - decomposition policy and template revision
-- selected strategy, selection evidence, problem model, and required reviews
+- selected strategy, selection evidence, bounded problem model, active-
+  projection digest and measurements, and required reviews
 - task IDs, implementation levels, and executor decisions
 - proof-obligation assignment and final acceptance status
 - dependencies and readiness/blocker state

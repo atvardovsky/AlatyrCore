@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "record_kind": "alatyr-operation-completion-evidence",
   "operation": {
     "id": "{OPERATION_ID}",
@@ -40,6 +40,13 @@
       "selection_evidence": "{TASK_FACT_RISK_OR_UNCERTAINTY_EVIDENCE}",
       "problem_model_path_or_inline": "{TARGET_RELATIVE_PATH_INLINE_SUMMARY_OR_NOT_REQUIRED}",
       "problem_model_sha256": "{LOWERCASE_SHA256_OR_NOT_PERSISTED}",
+      "active_projection": {
+        "path": "{TARGET_RELATIVE_PATH_OR_NOT_REQUIRED}",
+        "sha256": "{LOWERCASE_SHA256_OR_NOT_REQUIRED}",
+        "source_model_sha256": "{LOWERCASE_SHA256_OR_NOT_REQUIRED}",
+        "measured_utf8_bytes": "{INTEGER_OR_NOT_REQUIRED}",
+        "measured_words": "{INTEGER_OR_NOT_REQUIRED}"
+      },
       "required_review_ids": ["{ADVERSARIAL_REVIEW_OR_NONE}"],
       "review_results": ["{REVIEW_ID_PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}"]
     },

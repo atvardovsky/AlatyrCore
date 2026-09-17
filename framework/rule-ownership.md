@@ -217,9 +217,11 @@ Installed routing owner: `.ai/framework/task-decomposition.md`
 Rule IDs: `ALATYR-DECOMPOSITION-001`
 Derived surfaces: target task-decomposition policy, task-decomposition plan
 template, analysis-strategy catalog and descriptors, problem-model schema and
-template, analysis-strategy gate, operation routing, context router, entry
-packet summary, large-task workstreams, subagent worker packet selection,
-operation request and completion evidence, target structural validation.
+template, active problem-model projection schema and template,
+analysis-strategy gate, operation routing, context router, entry packet
+summary, session continuity packet, large-task workstreams, subagent worker
+packet selection, operation request and completion evidence, target structural
+validation.
 
 Category: `DELEGATION`
 Source routing owner: `framework/subagent-delegation.md`

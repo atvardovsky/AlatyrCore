@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1806,
-      "content_digest": "sha256:d7ab42423e1ba672600fc3edc5b177e5c5e72fab4ac080d7f9636373d087f2b9"
+      "estimated_words": 1851,
+      "content_digest": "sha256:168d733c9a80bf0b45671bbe87ea3d68a4894528922a5c3f644a4d887f0d4acb"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -409,8 +409,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1588,
-      "content_digest": "sha256:f1fde5c02d1def0948c3d0c73881b797c9ccd49b6fb0c06353e712bc10619022"
+      "estimated_words": 1617,
+      "content_digest": "sha256:1a6a25f2e35e6910b402ff3bcbd32aad54fa74c80554e20b53893f62163844b6"
     },
     {
       "id": "assistant.content.flows-project-blueprint-creation-flow-md",
@@ -506,8 +506,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 400,
-      "content_digest": "sha256:c40e492e8a0cc4cb73517830730d0f0d44cf8afada1bc2e849c65849627acf2e"
+      "estimated_words": 451,
+      "content_digest": "sha256:69044de620f55d4fd90f31bafa6e5f7f7ec1dfcb22e40d0334acfb2e9b7b80a9"
     },
     {
       "id": "assistant.content.flows-skill-adaptation-flow-md",

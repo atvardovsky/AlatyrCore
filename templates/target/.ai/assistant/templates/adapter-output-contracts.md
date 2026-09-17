@@ -18,7 +18,7 @@ a large task package.
 - Completion claim: `{COMPLETE_PARTIAL_BLOCKED_OR_UNVERIFIED}`
 - Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Context receipt result: `{EXPECTED_ROUTE_LOADED_FILES_EXPANSIONS_OMISSIONS_AND_RESIDUAL_CONTEXT_RISK}`
-- Analysis strategy: `{PRIMARY_STRATEGY_SELECTION_PROBLEM_MODEL_AND_REQUIRED_REVIEWS}`
+- Analysis strategy: `{PRIMARY_STRATEGY_MODEL_PROJECTION_AND_REQUIRED_REVIEWS}`
 - Proof obligations: `{OBLIGATION_IDS_OWNERS_STATUS_AND_EVIDENCE}`
 - Delegation execution tree:
   `{LEDGER_PACKETS_RESULTS_BUDGET_OVERLAP_STOP_CANCEL_VALIDATION_PRIMARY_REVIEW_AND_CONVERGENCE_OR_NOT_USED}`
@@ -40,7 +40,9 @@ Do not report `complete` when current authorization is missing, required
 validation failed or was unavailable without an accepted target reason, logical
 integrity is unresolved, approval scope is required but unverified, or residual
 risk needs a target owner decision. Required proof obligations and analysis
-reviews must also be resolved with evidence.
+reviews must also be resolved with evidence. A non-trivial model must remain
+within its hard limits and its active projection must match the recorded model
+digest.
 
 ## Contract: `adapter-health-output`
 

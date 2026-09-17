@@ -1,0 +1,319 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-problem-model-active-projection.schema.json",
+  "title": "Alatyr active problem-model projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "projection_kind", "model_id", "operation_id",
+    "source_model", "limits", "payload", "measurements"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "projection_kind": {"const": "alatyr-active-problem-model"},
+    "model_id": {"$ref": "#/definitions/identifier"},
+    "operation_id": {"$ref": "#/definitions/identifier"},
+    "source_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^\\.ai/\\.runtime/problem-models/[A-Za-z0-9._-]+\\.json$"
+        },
+        "sha256": {"$ref": "#/definitions/hash"}
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_payload_utf8_bytes", "max_payload_words"],
+      "properties": {
+        "max_payload_utf8_bytes": {"const": 16384},
+        "max_payload_words": {"const": 1200}
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objective", "non_goals", "repository_binding", "task_binding",
+        "primary_strategy_id", "risk_classes", "protected_change", "facts",
+        "changed_facts", "active_assumptions", "invalidated_assumption_ids",
+        "unknowns", "active_invariants", "current_hypotheses",
+        "current_alternatives", "counterexamples", "required_reviews",
+        "proof_obligations", "unresolved_decisions", "latest_transition",
+        "evidence_refs", "omitted_history_counts"
+      ],
+      "properties": {
+        "objective": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "non_goals": {"$ref": "#/definitions/stringArray"},
+        "repository_binding": {"$ref": "#/definitions/repositoryBinding"},
+        "task_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["task_ids", "workstream_ids"],
+          "properties": {
+            "task_ids": {"$ref": "#/definitions/stringArray"},
+            "workstream_ids": {"$ref": "#/definitions/stringArray"}
+          }
+        },
+        "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
+        "risk_classes": {"$ref": "#/definitions/stringArray"},
+        "protected_change": {"type": "boolean"},
+        "facts": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/evidenceStatement"}
+        },
+        "changed_facts": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/ownedStatement"}
+        },
+        "active_assumptions": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/assumption"}
+        },
+        "invalidated_assumption_ids": {"$ref": "#/definitions/stringArray"},
+        "unknowns": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/identifiedStatement"}
+        },
+        "active_invariants": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/invariant"}
+        },
+        "current_hypotheses": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/hypothesis"}
+        },
+        "current_alternatives": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/alternative"}
+        },
+        "counterexamples": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/evidenceStatement"}
+        },
+        "required_reviews": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "status", "evidence_refs"],
+            "properties": {
+              "id": {"const": "adversarial-review"},
+              "status": {"enum": ["missing", "pending", "passed", "failed", "blocked"]},
+              "evidence_refs": {"$ref": "#/definitions/stringArray"}
+            }
+          }
+        },
+        "proof_obligations": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/proofObligation"}
+        },
+        "unresolved_decisions": {"$ref": "#/definitions/stringArray"},
+        "latest_transition": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/definitions/transition"}
+          ]
+        },
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "omitted_history_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rejected_hypotheses", "rejected_alternatives", "invalidated_assumptions",
+            "preserved_invariants", "previous_transitions"
+          ],
+          "properties": {
+            "rejected_hypotheses": {"type": "integer", "minimum": 0},
+            "rejected_alternatives": {"type": "integer", "minimum": 0},
+            "invalidated_assumptions": {"type": "integer", "minimum": 0},
+            "preserved_invariants": {"type": "integer", "minimum": 0},
+            "previous_transitions": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "measurements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["payload_utf8_bytes", "payload_words"],
+      "properties": {
+        "payload_utf8_bytes": {"type": "integer", "minimum": 0, "maximum": 16384},
+        "payload_words": {"type": "integer", "minimum": 0, "maximum": 1200}
+      }
+    }
+  },
+  "definitions": {
+    "identifier": {"type": "string", "minLength": 1, "maxLength": 128},
+    "statement": {"type": "string", "minLength": 1, "maxLength": 2048},
+    "reference": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "primaryStrategy": {
+      "enum": ["direct-local", "invariant-first", "hypothesis-driven", "architecture-comparison", "evidence-synthesis", "exploratory-design"]
+    },
+    "stringArray": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"$ref": "#/definitions/reference"},
+      "uniqueItems": true
+    },
+    "repositoryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "branch", "base_revision"],
+      "properties": {
+        "state": {"enum": ["available", "unavailable"]},
+        "branch": {"$ref": "#/definitions/reference"},
+        "base_revision": {"$ref": "#/definitions/reference"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "unavailable"}}},
+          "then": {
+            "properties": {
+              "branch": {"const": "unavailable"},
+              "base_revision": {"const": "unavailable"}
+            }
+          },
+          "else": {
+            "properties": {
+              "branch": {"not": {"const": "unavailable"}},
+              "base_revision": {"not": {"const": "unavailable"}}
+            }
+          }
+        }
+      ]
+    },
+    "identifiedStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"}
+      }
+    },
+    "evidenceStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "ownedStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "owner_ref", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"const": "active"}
+      }
+    },
+    "invariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "owner_ref", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"enum": ["required", "violated", "unresolved"]}
+      }
+    },
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"enum": ["pending", "supported"]}
+      }
+    },
+    "alternative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"enum": ["candidate", "selected"]}
+      }
+    },
+    "proofObligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_owner", "acceptance_owner", "required", "status", "evidence_refs", "waiver"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_owner": {"enum": ["primary", "worker"]},
+        "acceptance_owner": {"const": "primary"},
+        "required": {"type": "boolean"},
+        "status": {"enum": ["open", "passed", "failed", "blocked", "waived"]},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "waiver": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["decision_owner", "authority_ref", "evidence_refs"],
+              "properties": {
+                "decision_owner": {"const": "primary-assistant"},
+                "authority_ref": {"$ref": "#/definitions/reference"},
+                "evidence_refs": {"$ref": "#/definitions/stringArray"}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "reason", "evidence_refs", "invalidated_assumption_ids", "reopened_obligation_ids"],
+      "properties": {
+        "from": {"$ref": "#/definitions/primaryStrategy"},
+        "to": {"$ref": "#/definitions/primaryStrategy"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "invalidated_assumption_ids": {"$ref": "#/definitions/stringArray"},
+        "reopened_obligation_ids": {"$ref": "#/definitions/stringArray"}
+      }
+    }
+  }
+}

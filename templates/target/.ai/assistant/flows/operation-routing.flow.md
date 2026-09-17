@@ -20,6 +20,8 @@ placeholders with target facts before accepting installation.
 - Analysis strategy index:
   `.ai/assistant/analysis-strategies/index.json`
 - Problem-model template: `.ai/assistant/templates/problem-model.json`
+- Active-projection template:
+  `.ai/assistant/templates/problem-model-active-projection.json`
 - Team operating model: `.ai/project/team-operating-model.md` when enabled
 - Team work registry: `.ai/assistant/team/work-registry.json` when enabled
 - Pre-change preview: `.ai/assistant/templates/pre-change-preview.md`
@@ -88,8 +90,11 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
    delegation. Assign exactly one implementation level, bounded context,
    dependency state, validation, allowed files or surfaces, and executor
    decision to each subtask. Select exactly one primary analysis strategy,
-   load only its descriptor, record a bounded problem model and proof
-   obligations, and add required review passes. For a small task,
+   load only its descriptor, record a bounded problem model, generate its
+   digest-bound active projection, record proof obligations, and add required
+   review passes. Load the projection for routine execution and the full model
+   only for a named conflict, stale projection, or transition update. For a
+   small task,
    `direct-local` compact one-node evidence is enough and the strategy catalog
    stays unloaded unless an expansion trigger fires.
 9. When exactly one operation fits, its allowed-action scope is sufficient,

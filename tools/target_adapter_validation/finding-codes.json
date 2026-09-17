@@ -50,7 +50,7 @@
     },
     {
       "id": "ANALYSIS",
-      "code_count": 32
+      "code_count": 44
     },
     {
       "id": "APPROVAL",
@@ -214,7 +214,7 @@
     },
     {
       "id": "SESSION",
-      "code_count": 59
+      "code_count": 67
     },
     {
       "id": "STALE",
@@ -421,6 +421,15 @@
       ]
     },
     {
+      "code": "ANALYSIS_PROBLEM_MODEL_FILE_SIZE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
       "code": "ANALYSIS_PROBLEM_MODEL_INVALID",
       "levels": [
         "error"
@@ -458,6 +467,105 @@
     },
     {
       "code": "ANALYSIS_PROBLEM_MODEL_NOT_IGNORED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_FILE_SIZE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_LOCATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_NOT_IGNORED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_READ",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_PROJECTION_TRACKED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_READ",
       "levels": [
         "error"
       ],
@@ -10168,6 +10276,78 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_MEASUREMENT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ACTIVE_PROJECTION_SOURCE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
       ]
     },
     {

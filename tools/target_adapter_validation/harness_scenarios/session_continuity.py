@@ -8,6 +8,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from analysis_strategy_contract import build_active_problem_model_projection
 from target_adapter_validation.session_continuity import validate_session_continuity
 from target_validation_support import canonical_json_sha256
 
@@ -55,7 +56,7 @@ def _packet(
     context_packet_sha256: str,
 ) -> dict[str, object]:
     packet: dict[str, object] = {
-        "schema_version": 2,
+        "schema_version": 3,
         "packet_kind": "alatyr-session-continuity",
         "packet_id": "fixture-continuity",
         "packet_sequence": 1,
@@ -118,6 +119,14 @@ def _packet(
                 "path": "unavailable",
                 "sha256": "unavailable",
             },
+            "active_projection": {
+                "state": "not-required",
+                "path": "unavailable",
+                "sha256": "unavailable",
+                "source_model_sha256": "unavailable",
+                "payload_utf8_bytes": 0,
+                "payload_words": 0,
+            },
             "open_proof_obligation_ids": [],
             "completed_review_ids": [],
             "invalidated_assumption_ids": [],
@@ -127,7 +136,7 @@ def _packet(
         "next_safe_action": "revalidate current modify authorization",
     }
     packet["integrity"] = {
-        "digest_contract": "alatyr-session-continuity-v2",
+        "digest_contract": "alatyr-session-continuity-v3",
         "packet_sha256": _digest(packet),
     }
     return packet
@@ -135,10 +144,14 @@ def _packet(
 
 def _problem_model(*, branch: str, head: str) -> dict[str, object]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": "fixture-problem",
         "operation_id": "ad-hoc",
+        "active_projection": {
+            "schema_version": 1,
+            "path": ".ai/.runtime/problem-model-projections/fixture-problem.json",
+        },
         "primary_strategy_id": "direct-local",
         "risk_classes": [],
         "protected_change": False,
@@ -245,7 +258,18 @@ def run(target: Path, failures: list[str]) -> None:
     model_path = (
         continuity_target / ".ai/.runtime/problem-models/fixture.json"
     )
-    write_json(model_path, _problem_model(branch=branch, head=head))
+    model = _problem_model(branch=branch, head=head)
+    write_json(model_path, model)
+    projection_path = (
+        continuity_target
+        / ".ai/.runtime/problem-model-projections/fixture-problem.json"
+    )
+    projection = build_active_problem_model_projection(
+        model,
+        source_path=".ai/.runtime/problem-models/fixture.json",
+        source_sha256=hashlib.sha256(model_path.read_bytes()).hexdigest(),
+    )
+    write_json(projection_path, projection)
     bound_packet = _packet(
         branch=branch,
         head=head,
@@ -263,12 +287,20 @@ def run(target: Path, failures: list[str]) -> None:
             "path": ".ai/.runtime/problem-models/fixture.json",
             "sha256": hashlib.sha256(model_path.read_bytes()).hexdigest(),
         },
+        "active_projection": {
+            "state": "available",
+            "path": ".ai/.runtime/problem-model-projections/fixture-problem.json",
+            "sha256": hashlib.sha256(projection_path.read_bytes()).hexdigest(),
+            "source_model_sha256": hashlib.sha256(model_path.read_bytes()).hexdigest(),
+            "payload_utf8_bytes": projection["measurements"]["payload_utf8_bytes"],
+            "payload_words": projection["measurements"]["payload_words"],
+        },
         "open_proof_obligation_ids": [],
         "completed_review_ids": [],
         "invalidated_assumption_ids": [],
     }
     bound_packet["integrity"] = {
-        "digest_contract": "alatyr-session-continuity-v2",
+        "digest_contract": "alatyr-session-continuity-v3",
         "packet_sha256": _digest(bound_packet),
     }
     write_json(packet_path, bound_packet)
@@ -282,6 +314,35 @@ def run(target: Path, failures: list[str]) -> None:
         for finding in valid_analysis.findings
     ):
         failures.append("valid continuity problem-model binding was rejected")
+
+    stale_projection = json.loads(projection_path.read_text(encoding="utf-8"))
+    stale_projection["payload"]["objective"] = "stale continuity projection"
+    write_json(projection_path, stale_projection)
+    stale_projection_result = validator(
+        continuity_target, continuity_packets=[packet_path]
+    )
+    validate_session_continuity(stale_projection_result)
+    if "SESSION_CONTINUITY_ACTIVE_PROJECTION_DRIFT" not in {
+        finding.code for finding in stale_projection_result.findings
+    }:
+        failures.append("continuity must reject a changed active projection")
+    write_json(projection_path, projection)
+
+    bound_packet["analysis"]["active_projection"]["payload_words"] += 1
+    bound_packet["integrity"] = {
+        "digest_contract": "alatyr-session-continuity-v3",
+        "packet_sha256": _digest(bound_packet),
+    }
+    write_json(packet_path, bound_packet)
+    measurement_result = validator(
+        continuity_target, continuity_packets=[packet_path]
+    )
+    validate_session_continuity(measurement_result)
+    if "SESSION_CONTINUITY_ACTIVE_PROJECTION_MEASUREMENT_DRIFT" not in {
+        finding.code for finding in measurement_result.findings
+    }:
+        failures.append("continuity must reject stale projection measurements")
+    bound_packet["analysis"]["active_projection"]["payload_words"] -= 1
 
     bound_packet["analysis"]["primary_strategy_id"] = "invariant-first"
     bound_packet["integrity"]["packet_sha256"] = _digest(bound_packet)

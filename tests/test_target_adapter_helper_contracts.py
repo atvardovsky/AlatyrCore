@@ -53,6 +53,7 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
             "DEBUG_SESSION_SCHEMA",
             "ENGINEERING_EVIDENCE_SCHEMA",
             "PACKET_SCHEMA",
+            "PROBLEM_MODEL_PROJECTION_SCHEMA",
             "PROBLEM_MODEL_SCHEMA",
         }
         explicitly_external_functions = {

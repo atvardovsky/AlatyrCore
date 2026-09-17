@@ -198,6 +198,7 @@
     "plan_template": ".ai/assistant/templates/task-decomposition.md",
     "analysis_strategy_index": ".ai/assistant/analysis-strategies/index.json",
     "problem_model_template": ".ai/assistant/templates/problem-model.json",
+    "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
     "load_after": [
       "task classification",
       "operation routing",
@@ -217,10 +218,11 @@
     ],
     "small_task_behavior": "one direct-local task may be recorded without loading the policy or strategy catalog",
     "strategy_loading": "non-trivial work loads the index and exactly one selected descriptor; reviews load only when required",
+    "problem_state_loading": "load the active projection for routine work; load full model history only for a named conflict, stale projection, or transition update",
     "executor_selection": "primary first; worker only through enabled delegation policy and selected capability record"
   },
   "agent_entry_packet": {
-    "schema_version": 5,
+    "schema_version": 6,
     "path": ".ai/assistant/entry-packet.json",
     "load_when": "bootstrap recovery adapter audit or routing conflict",
     "purpose": "lazy recovery route containing installation state, decomposition cues, routing source pointers, authorization and continuity boundaries, and delta-first support review entry points",

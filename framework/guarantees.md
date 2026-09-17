@@ -227,9 +227,13 @@ Machine checks can verify only deterministic repository facts, such as:
   resolvable revisions, plan hashes, declared semantic and path scope,
   companion decisions, correction impact, and evidence-quality prerequisites
 - selected analysis strategies and problem models can be checked for supported
-  strategy identity, repository and task lineage, evidence-backed conclusive
-  claims, bounded transitions, required adversarial review, and complete proof-
-  obligation convergence across delegated work
+  strategy identity, repository and task lineage, hard content limits,
+  evidence-backed conclusive claims, historically valid transitions, required
+  adversarial review, and complete proof-obligation convergence across
+  delegated work
+- active problem-model projections can be checked for deterministic agreement
+  with the bound full-model digest, current-state preservation, measured size
+  limits, and continuity-packet binding
 - target support policy and state can be checked for complete classification,
   ignored-file exclusion, case collisions, canonical digests, and current
   managed-surface coverage

@@ -10,12 +10,12 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1472
+Catalog entries: 1492
 
 ## Families
 
 - `AI`: 18 codes.
-- `ANALYSIS`: 32 codes.
+- `ANALYSIS`: 44 codes.
 - `APPROVAL`: 31 codes.
 - `ARCHITECTURE`: 35 codes.
 - `ASSISTANT`: 39 codes.
@@ -56,7 +56,7 @@ Catalog entries: 1472
 - `ROUTER`: 73 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
-- `SESSION`: 59 codes.
+- `SESSION`: 67 codes.
 - `STALE`: 2 codes.
 - `SUPPORT`: 19 codes.
 - `TARGET`: 8 codes.
@@ -106,6 +106,8 @@ Catalog entries: 1472
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
+- `ANALYSIS_PROBLEM_MODEL_FILE_SIZE`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID_JSON`
@@ -115,6 +117,28 @@ Catalog entries: 1472
 - `ANALYSIS_PROBLEM_MODEL_LOCATION`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_NOT_IGNORED`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_FILE_SIZE`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_LOCATION`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_NOT_IGNORED`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_READ`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_PROJECTION_TRACKED`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_PROBLEM_MODEL_READ`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
@@ -2264,6 +2288,22 @@ Catalog entries: 1472
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `RULE_REGISTRY_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_MEASUREMENT_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_PATH`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_CONTINUITY_ACTIVE_PROJECTION_SOURCE_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
 - `SESSION_CONTINUITY_ANALYSIS_BINDING`
   Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
 - `SESSION_CONTINUITY_ANALYSIS_DRIFT`

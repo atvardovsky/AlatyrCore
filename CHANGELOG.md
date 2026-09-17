@@ -4,6 +4,28 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.69 - 2026-09-17
+
+- Corrected strategy-transition validation so historical assumption
+  invalidation and obligation reopening remain auditable without freezing the
+  referenced item in its earlier state; reopened obligations can now pass with
+  later evidence while unknown references still fail.
+- Added deterministic limits for problem-model serialized size, structured
+  words, collections, and strings, plus a conservative raw-file ceiling for
+  installed runtime validation.
+- Added a deterministic, digest-bound active problem-model projection with
+  smaller byte and word limits so routine execution and continuity recovery
+  preserve current assumptions, invariants, reviews, obligations, and decisions
+  without loading complete model history.
+- Bound continuity packets, compact entry routing, completion evidence, target
+  adapter validation, scaffold profiles, and compatibility metadata to the new
+  problem-model and projection contracts.
+- Added shared and installed-adapter regressions for open-to-passed historical
+  transitions, unknown references, oversized models, stale projections, and
+  continuity projection drift.
+- Increased adapter schema version to `57` and target template version to `64`
+  for the mandatory projection, continuity, and completion-evidence surfaces.
+
 ## 0.1.0-alpha.68 - 2026-09-17
 
 - Added a provider-neutral analysis-strategy contract to match non-trivial

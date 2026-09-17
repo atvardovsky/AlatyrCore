@@ -1,8 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "model_kind": "alatyr-bounded-problem-model",
   "model_id": "{PROBLEM_MODEL_ID}",
   "operation_id": "{OPERATION_ID}",
+  "active_projection": {
+    "schema_version": 1,
+    "path": ".ai/.runtime/problem-model-projections/{PROBLEM_MODEL_ID}.json"
+  },
   "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
   "risk_classes": [],
   "protected_change": false,

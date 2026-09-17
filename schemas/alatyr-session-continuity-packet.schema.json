@@ -23,7 +23,7 @@
     "integrity"
   ],
   "properties": {
-    "schema_version": {"const": 2},
+    "schema_version": {"const": 3},
     "packet_kind": {"const": "alatyr-session-continuity"},
     "packet_id": {"type": "string", "minLength": 1},
     "packet_sequence": {"type": "integer", "minimum": 1},
@@ -186,6 +186,7 @@
       "required": [
         "primary_strategy_id",
         "problem_model",
+        "active_projection",
         "open_proof_obligation_ids",
         "completed_review_ids",
         "invalidated_assumption_ids"
@@ -228,6 +229,42 @@
             }
           ]
         },
+        "active_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "path", "sha256", "source_model_sha256", "payload_utf8_bytes", "payload_words"],
+          "properties": {
+            "state": {"enum": ["available", "not-required", "unavailable"]},
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"$ref": "#/definitions/hashOrUnavailable"},
+            "source_model_sha256": {"$ref": "#/definitions/hashOrUnavailable"},
+            "payload_utf8_bytes": {"type": "integer", "minimum": 0, "maximum": 16384},
+            "payload_words": {"type": "integer", "minimum": 0, "maximum": 1200}
+          },
+          "allOf": [
+            {
+              "if": {"properties": {"state": {"const": "available"}}},
+              "then": {
+                "properties": {
+                  "path": {"not": {"const": "unavailable"}},
+                  "sha256": {"$ref": "#/definitions/hash"},
+                  "source_model_sha256": {"$ref": "#/definitions/hash"},
+                  "payload_utf8_bytes": {"minimum": 1},
+                  "payload_words": {"minimum": 1}
+                }
+              },
+              "else": {
+                "properties": {
+                  "path": {"const": "unavailable"},
+                  "sha256": {"const": "unavailable"},
+                  "source_model_sha256": {"const": "unavailable"},
+                  "payload_utf8_bytes": {"const": 0},
+                  "payload_words": {"const": 0}
+                }
+              }
+            }
+          ]
+        },
         "open_proof_obligation_ids": {"$ref": "#/definitions/stringArray"},
         "completed_review_ids": {"$ref": "#/definitions/stringArray"},
         "invalidated_assumption_ids": {"$ref": "#/definitions/stringArray"}
@@ -253,7 +290,7 @@
       "additionalProperties": false,
       "required": ["digest_contract", "packet_sha256"],
       "properties": {
-        "digest_contract": {"const": "alatyr-session-continuity-v2"},
+        "digest_contract": {"const": "alatyr-session-continuity-v3"},
         "packet_sha256": {"$ref": "#/definitions/hash"}
       }
     }

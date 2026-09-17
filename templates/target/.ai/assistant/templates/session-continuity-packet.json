@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "packet_kind": "alatyr-session-continuity",
   "packet_id": "{CONTINUITY_PACKET_ID}",
   "packet_sequence": 1,
@@ -62,6 +62,14 @@
       "path": "{TARGET_RELATIVE_PROBLEM_MODEL_OR_UNAVAILABLE}",
       "sha256": "{LOWERCASE_SHA256_OR_UNAVAILABLE}"
     },
+    "active_projection": {
+      "state": "{AVAILABLE_NOT_REQUIRED_OR_UNAVAILABLE}",
+      "path": "{TARGET_RELATIVE_ACTIVE_PROJECTION_OR_UNAVAILABLE}",
+      "sha256": "{LOWERCASE_SHA256_OR_UNAVAILABLE}",
+      "source_model_sha256": "{LOWERCASE_SHA256_OR_UNAVAILABLE}",
+      "payload_utf8_bytes": "{INTEGER_OR_ZERO}",
+      "payload_words": "{INTEGER_OR_ZERO}"
+    },
     "open_proof_obligation_ids": [],
     "completed_review_ids": [],
     "invalidated_assumption_ids": []
@@ -76,7 +84,7 @@
   "unresolved": ["{UNRESOLVED_QUESTION_RISK_OR_NONE}"],
   "next_safe_action": "{NEXT_INSPECT_ONLY_ACTION_UNTIL_REVALIDATION}",
   "integrity": {
-    "digest_contract": "alatyr-session-continuity-v2",
+    "digest_contract": "alatyr-session-continuity-v3",
     "packet_sha256": "{SHA256_OF_CANONICAL_OBJECT_WITHOUT_INTEGRITY}"
   }
 }

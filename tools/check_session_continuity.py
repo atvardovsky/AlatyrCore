@@ -38,10 +38,10 @@ def main() -> int:
         policy = load_object(
             TARGET / ".ai/assistant/policies/session-continuity.json"
         )
-        if policy.get("schema_version") != 2:
-            failures.append("continuity policy schema_version must be 2")
-        if policy.get("packet_schema") != "alatyr-session-continuity-packet-v2":
-            failures.append("continuity policy must use packet schema v2")
+        if policy.get("schema_version") != 3:
+            failures.append("continuity policy schema_version must be 3")
+        if policy.get("packet_schema") != "alatyr-session-continuity-packet-v3":
+            failures.append("continuity policy must use packet schema v3")
         if policy.get("canonical_rule") != "ALATYR-CONTINUITY-001":
             failures.append("continuity policy must route to its canonical rule")
         if policy.get("runtime_directory") != ".ai/.runtime/continuity":
@@ -54,7 +54,11 @@ def main() -> int:
         ) is not False:
             failures.append("continuity policy must not restore publish or live authority")
         analysis_state = resume.get("analysis_state") if isinstance(resume, dict) else None
-        if not isinstance(analysis_state, list) or "open proof obligations" not in analysis_state:
+        if not isinstance(analysis_state, list) or not {
+            "problem-model path and digest",
+            "active-projection path, digest, and source-model digest",
+            "active-projection measured size",
+        }.issubset(set(analysis_state)):
             failures.append("continuity policy must preserve bounded analysis state")
 
         support_policy = load_object(TARGET / ".ai/project/support-policy.json")

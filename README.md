@@ -45,8 +45,10 @@ the problem: invariant-first for semantic rules, hypothesis-driven for uncertain
 defects, architecture comparison for competing designs, evidence synthesis for
 audits, or exploratory design when the problem is not yet settled. It records
 facts, assumptions, unknowns, and proof obligations as inspectable project-task
-evidence, without asking an agent to expose private reasoning. Small settled
-tasks stay on the compact `direct-local` route.
+evidence, without asking an agent to expose private reasoning. Hard model
+limits and a smaller digest-bound view keep current task state available without
+reloading its full history. Small settled tasks stay on the compact
+`direct-local` route.
 
 The agent still has to inspect the routed sources and report uncertainty.
 AlatyrCore gives the discussion a project-owned memory and source-of-truth
@@ -559,7 +561,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.68`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.69`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

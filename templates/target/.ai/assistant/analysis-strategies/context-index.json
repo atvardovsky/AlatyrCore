@@ -143,8 +143,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 44,
-      "content_digest": "sha256:dbef78c722e2553e6e2f8c88a8c2030e87a5bb71944d4132898228bee29ff65e"
+      "estimated_words": 59,
+      "content_digest": "sha256:2d43e6e8b293feaebf3fb297fa051ad14eba9db4ee46cf35231f4f1987e515ac"
     },
     {
       "id": "assistant.content.analysis-strategies-invariant-first-json",

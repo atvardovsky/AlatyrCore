@@ -30,8 +30,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 168,
-      "content_digest": "sha256:695a627a74e75243da305bda437d22de194be1d8bb4d7e9ed2d1c6bdc496235b"
+      "estimated_words": 229,
+      "content_digest": "sha256:e413eba3855b06621396106adbe2b953c3b2737eca2ab282b8a5fa34b596083d"
     },
     {
       "id": "assistant.content.gates-checklist-md",
@@ -358,8 +358,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 144,
-      "content_digest": "sha256:b56303ac5bafb6af599308ba10a5ebc9c473272b50589315b0db9cc9a44366b2"
+      "estimated_words": 156,
+      "content_digest": "sha256:d8fb3248595ffae04fe86c9e4a46db3bb05923e6c0c837d9d63b9d39a0ad80b6"
     },
     {
       "id": "assistant.content.gates-support-generation-md",

@@ -21,6 +21,7 @@ from target_adapter_validation.analysis_strategies import (
     load_problem_model_schema,
     validate_selected_problem_model,
 )
+from analysis_strategy_contract import MAX_ACTIVE_PROJECTION_FILE_BYTES
 
 
 POLICY_RELPATH = ".ai/assistant/policies/session-continuity.json"
@@ -91,14 +92,14 @@ def _check_static_contract(validator: Any) -> None:
     if not isinstance(policy, dict):
         return
     expected = {
-        "schema_version": 2,
+        "schema_version": 3,
         "policy_kind": "target-session-continuity",
         "canonical_rule": "ALATYR-CONTINUITY-001",
         "canonical_owner": ".ai/framework/session-continuity.md",
         "flow": FLOW_RELPATH,
         "gate": GATE_RELPATH,
         "packet_template": TEMPLATE_RELPATH,
-        "packet_schema": "alatyr-session-continuity-packet-v2",
+        "packet_schema": "alatyr-session-continuity-packet-v3",
         "runtime_directory": RUNTIME_DIRECTORY,
     }
     for field, value in expected.items():
@@ -239,33 +240,38 @@ def _check_analysis_binding(
     )
     if not isinstance(model, dict):
         return
-    if analysis.get("primary_strategy_id") != model.get("primary_strategy_id"):
+    payload = _bound_projection_payload(
+        validator,
+        analysis,
+        model,
+        problem_model,
+        relpath,
+    )
+    if not isinstance(payload, dict):
+        return
+    if analysis.get("primary_strategy_id") != payload.get("primary_strategy_id"):
         validator.error(
             "SESSION_CONTINUITY_ANALYSIS_DRIFT",
-            "continuity strategy differs from the bound problem model",
+            "continuity strategy differs from the active problem-model projection",
             relpath,
         )
     expected_analysis = {
         "open_proof_obligation_ids": sorted(
             item["id"]
-            for item in model.get("proof_obligations", [])
+            for item in payload.get("proof_obligations", [])
             if isinstance(item, dict)
             and item.get("status") in {"open", "failed", "blocked"}
             and isinstance(item.get("id"), str)
         ),
         "completed_review_ids": sorted(
             item["id"]
-            for item in model.get("review_results", [])
+            for item in payload.get("required_reviews", [])
             if isinstance(item, dict)
             and item.get("status") == "passed"
             and isinstance(item.get("id"), str)
         ),
-        "invalidated_assumption_ids": sorted(
-            item["id"]
-            for item in model.get("assumptions", [])
-            if isinstance(item, dict)
-            and item.get("status") == "invalidated"
-            and isinstance(item.get("id"), str)
+        "invalidated_assumption_ids": payload.get(
+            "invalidated_assumption_ids", []
         ),
     }
     for field, expected in expected_analysis.items():
@@ -276,7 +282,7 @@ def _check_analysis_binding(
                 relpath,
             )
     packet_task = packet.get("task")
-    model_task = model.get("task_binding")
+    model_task = payload.get("task_binding")
     if isinstance(packet_task, dict) and isinstance(model_task, dict) and (
         packet_task.get("operation_id") != model.get("operation_id")
         or packet_task.get("task_id") not in model_task.get("task_ids", [])
@@ -286,6 +292,99 @@ def _check_analysis_binding(
             "continuity task identity differs from the bound problem model",
             relpath,
         )
+
+
+def _bound_projection_payload(
+    validator: Any,
+    analysis: dict[str, Any],
+    model: dict[str, Any],
+    problem_model: dict[str, Any],
+    relpath: str,
+) -> dict[str, Any] | None:
+    projection_binding = analysis.get("active_projection")
+    projection_ref = model.get("active_projection")
+    if (
+        not isinstance(projection_binding, dict)
+        or projection_binding.get("state") != "available"
+        or not isinstance(projection_ref, dict)
+    ):
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_MISSING",
+            "available problem model requires an available active projection",
+            relpath,
+        )
+        return None
+    projection_relpath = projection_ref.get("path")
+    if (
+        not isinstance(projection_relpath, str)
+        or projection_binding.get("path") != projection_relpath
+        or not is_target_relative_path(projection_relpath)
+    ):
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_PATH",
+            "continuity active projection differs from the bound problem model",
+            relpath,
+        )
+        return None
+    projection_path = validator.target_path(projection_relpath)
+    if not validator.is_target_file(projection_path):
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_MISSING",
+            f"active problem-model projection is unavailable: {projection_relpath}",
+            relpath,
+        )
+        return None
+    projection_sha256 = validator.context.content_digest(projection_path)
+    if projection_binding.get("sha256") != projection_sha256:
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_DRIFT",
+            f"active problem-model projection changed: {projection_relpath}",
+            relpath,
+        )
+        return None
+    if projection_binding.get("source_model_sha256") != problem_model.get("sha256"):
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_SOURCE_DRIFT",
+            "active projection source digest differs from the bound problem model",
+            relpath,
+        )
+        return None
+    projection_read = validator.context.read_bytes_result(projection_path)
+    if (
+        projection_read.value is None
+        or len(projection_read.value) > MAX_ACTIVE_PROJECTION_FILE_BYTES
+    ):
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID",
+            "active problem-model projection is unreadable or exceeds its file limit",
+            relpath,
+        )
+        return None
+    projection = validator.load_json_object(
+        projection_path, "SESSION_CONTINUITY_ACTIVE_PROJECTION"
+    )
+    payload = projection.get("payload") if isinstance(projection, dict) else None
+    measurements = (
+        projection.get("measurements") if isinstance(projection, dict) else None
+    )
+    if not isinstance(payload, dict):
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID",
+            "active problem-model projection payload is unavailable",
+            relpath,
+        )
+        return None
+    if not isinstance(measurements, dict) or any(
+        projection_binding.get(field) != measurements.get(field)
+        for field in ("payload_utf8_bytes", "payload_words")
+    ):
+        validator.error(
+            "SESSION_CONTINUITY_ACTIVE_PROJECTION_MEASUREMENT_DRIFT",
+            "continuity active-projection measurements differ from the projection",
+            relpath,
+        )
+        return None
+    return payload
 
 
 def _check_packet(

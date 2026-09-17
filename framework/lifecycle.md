@@ -199,6 +199,12 @@ Before upgrading framework files in a target project:
     Recheck recursive contour-index coverage, semantic-codebook resolution,
     compact preload limits, context-packet compatibility, and the absence of
     stale index entries left by removed or moved files.
+    When problem-model, active-projection, or continuity-packet contracts
+    change, replace their source templates atomically. Incompatible ignored
+    runtime records are recovery aids, not canonical history: preserve their
+    durable evidence references, then discard and regenerate them from current
+    task and repository evidence. Never invent fields to make an old runtime
+    record appear current.
 13. Recheck adapter owners, review cadence, CODEOWNERS or equivalent owner
     map, operation catalog, help, routing/health/preview flows, and post-update
     chat message

@@ -127,6 +127,12 @@ def _task_decomposition_summary(value: Any) -> dict[str, Any]:
             "problem_model_template": _string(
                 analysis_strategy.get("problem_model_template")
             ),
+            "active_projection_template": _string(
+                analysis_strategy.get("active_projection_template")
+            ),
+            "problem_model_limits": _object(
+                analysis_strategy.get("problem_model_limits")
+            ),
             "small_task_behavior": _string(
                 analysis_strategy.get("small_task_behavior")
             ),
@@ -246,7 +252,7 @@ def build_agent_entry_packet(
         ".ai/assistant/context-router.json#task_classification.expansion_triggers"
     )
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "packet_kind": "target-agent-entry-packet",
         "path": PACKET_PATH.as_posix(),
         "generated_by": generated_by or {},

@@ -46,8 +46,8 @@ def check_packet(
     source_template: bool = False,
 ) -> list[str]:
     failures: list[str] = []
-    if packet.get("schema_version") != 5:
-        failures.append("entry packet schema_version must be 5")
+    if packet.get("schema_version") != 6:
+        failures.append("entry packet schema_version must be 6")
     if packet.get("packet_kind") != "target-agent-entry-packet":
         failures.append("entry packet kind must be target-agent-entry-packet")
     if packet.get("path") != PACKET_PATH.as_posix():
@@ -183,6 +183,7 @@ def check_packet(
             expected_strategy = {
                 "catalog": ".ai/assistant/analysis-strategies/index.json",
                 "problem_model_template": ".ai/assistant/templates/problem-model.json",
+                "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
             }
             for field, expected in expected_strategy.items():
                 if strategy.get(field) != expected:
@@ -199,6 +200,14 @@ def check_packet(
                 failures.append(
                     "entry packet must limit non-trivial strategy context"
                 )
+            expected_limits = {
+                "max_utf8_bytes": 65536,
+                "max_words": 6000,
+                "max_active_projection_utf8_bytes": 16384,
+                "max_active_projection_words": 1200,
+            }
+            if strategy.get("problem_model_limits") != expected_limits:
+                failures.append("entry packet problem-model limits are invalid")
 
     authorization = packet.get("authorization")
     if not isinstance(authorization, dict):

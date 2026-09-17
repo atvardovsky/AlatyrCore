@@ -439,6 +439,13 @@ def check_task_decomposition(router: dict[str, Any], failures: list[str]) -> Non
         failures.append("task_decomposition.policy is invalid")
     if decomposition.get("plan_template") != DECOMPOSITION_PLAN:
         failures.append("task_decomposition.plan_template is invalid")
+    if (
+        decomposition.get("active_projection_template")
+        != ".ai/assistant/templates/problem-model-active-projection.json"
+    ):
+        failures.append("task_decomposition.active_projection_template is invalid")
+    if "active projection" not in str(decomposition.get("problem_state_loading", "")):
+        failures.append("task_decomposition must prefer the active projection")
     for field in ["load_after", "use_when"]:
         values = require_string_list(
             decomposition,
@@ -651,7 +658,7 @@ def main() -> int:
         failures.append("agent_entry_packet must be an object")
     else:
         expected_entry_packet = {
-            "schema_version": 5,
+            "schema_version": 6,
             "path": ".ai/assistant/entry-packet.json",
         }
         for field, expected in expected_entry_packet.items():

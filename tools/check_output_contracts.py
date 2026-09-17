@@ -292,8 +292,8 @@ def main() -> int:
             f"{COMPLETION_TEMPLATE.relative_to(ROOT)} must contain a JSON object"
         )
         completion_data = {}
-    if completion_data.get("schema_version") != 2:
-        failures.append("operation-completion evidence schema_version must be 2")
+    if completion_data.get("schema_version") != 3:
+        failures.append("operation-completion evidence schema_version must be 3")
     if completion_data.get("record_kind") != "alatyr-operation-completion-evidence":
         failures.append("operation-completion evidence record_kind is invalid")
     for field in COMPLETION_TEMPLATE_FIELDS:
