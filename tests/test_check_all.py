@@ -557,12 +557,14 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(identity["jobs"], 4)
         self.assertEqual(identity["source_snapshot_sha256"], "snapshot")
 
-    def test_live_full_profile_includes_change_release_drift(self) -> None:
+    def test_live_full_profile_includes_both_release_drift_views(self) -> None:
         selected = select_check_plan(
             load_manifest(), "full", "origin/main", platform="linux"
         ).selected
+        selected_ids = {item["id"] for item in selected}
 
-        self.assertIn("release-drift-change", {item["id"] for item in selected})
+        self.assertIn("release-drift-change", selected_ids)
+        self.assertIn("release-drift-release", selected_ids)
 
     def test_live_release_profile_selects_only_release_drift_variant(self) -> None:
         selected = select_check_plan(

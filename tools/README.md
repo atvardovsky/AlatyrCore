@@ -260,7 +260,10 @@ records are bounded to the newest 512 entries. Cache records live below Git's
 local metadata, are disposable, and never become repository or release
 evidence. Release validation rejects local result reuse.
 `change --changed-from <ref>` uses the same ref as the release-drift baseline
-when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
+when `--from-ref` is omitted. The `full` acceptance profile runs both that
+change-baseline check and canonical release-baseline migration validation;
+`release` retains the canonical release path without the change-baseline
+variant.
 `platform` runs the portable tooling contract slice used on macOS and Windows.
 It uses a lightweight lifecycle smoke proof for portability and intentionally
 does not rerun the full source unit suite; Linux full-profile CI on Python 3.10
@@ -1591,11 +1594,14 @@ or `--report-output` to write generated evidence for review.
 existing reviewed release commit. It is read-only unless `--write` is supplied,
 does not create tags, and refuses incomplete or mismatched migration reports.
 
-The default `check_all.py --profile full` route also runs change-mode release
-drift against `origin/main`, or `HEAD` when that remote ref is unavailable.
-This makes the documented full pre-push gate fail locally when contract files
-change without the required version and migration evidence. Pass
-`--from-ref <ref>` when another integration baseline owns the change.
+The default `check_all.py --profile full` route runs change-mode release drift
+against `origin/main`, or `HEAD` when that remote ref is unavailable, and
+release-mode validation against the nearest canonical tag or reviewed
+checkpoint. This makes the documented full pre-push gate fail locally when
+contract files change without the required version, migration evidence, or
+canonical release binding. Pass `--from-ref <ref>` when another integration
+baseline owns the change-mode comparison; it does not override canonical
+release evidence.
 
 Linux or macOS:
 

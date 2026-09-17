@@ -85,9 +85,10 @@ Before accepting a change, check:
   available. This is the preferred AlatyrCore source-repository check set, not
   a portable target-project requirement. Its default `full` profile includes
   change-aware release drift against `origin/main`, or `HEAD` when no remote
-  baseline is available; pass `--from-ref <ref>` for another integration
-  baseline. Run it before commit and publication so contract changes cannot
-  omit required version and migration evidence.
+  baseline is available, plus canonical release drift against the nearest tag
+  or reviewed checkpoint. Pass `--from-ref <ref>` for another change baseline.
+  Run the profile before commit and publication so contract changes cannot
+  omit required versions, migration evidence, or canonical release binding.
   Use `--jobs auto` for capacity-aware local parallelism. Optional
   `--cache-mode timing` stores disposable Git-local scheduling hints only;
   `--cache-mode local` also attempts bounded, per-check, content-addressed,

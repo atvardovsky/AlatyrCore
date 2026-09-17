@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Made the normal local `full` source gate validate canonical release-baseline
+  evidence in addition to change-baseline drift, so a migration report bound
+  to an intermediate development tree fails before push instead of only in
+  the Python 3.13 CI release-transition step.
 
 ## 0.1.0-alpha.69 - 2026-09-17
 
