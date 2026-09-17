@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "strategy_kind": "primary",
+  "id": "exploratory-design",
+  "use_when": ["requirements goals constraints or solution boundaries are incomplete"],
+  "sequence": ["separate facts assumptions and unknowns", "define objective and non-goals", "generate bounded alternatives", "identify decision owners", "stop before implementation until blockers are resolved"],
+  "required_nonempty_fields": ["unknowns", "alternatives"],
+  "completion_rule": "the next decision or experiment is explicit; unresolved authority blocks implementation"
+}

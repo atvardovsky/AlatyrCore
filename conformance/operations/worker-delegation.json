@@ -93,6 +93,20 @@
       "preconditions": ["primary summary total exceeds target cap"],
       "expected_role": "primary",
       "expected_outcome": "sequential-primary-fallback"
+    },
+    {
+      "id": "unassigned-proof-obligation",
+      "input": "A worker result claims evidence for a proof obligation that was not assigned by the primary.",
+      "preconditions": ["execution node has bounded obligation IDs", "worker result adds an unknown obligation ID"],
+      "expected_role": "primary",
+      "expected_outcome": "reject-result"
+    },
+    {
+      "id": "non-local-strategy-without-problem-model",
+      "input": "A delegated non-local analysis strategy has no digest-bound problem model.",
+      "preconditions": ["selected strategy is not direct-local", "problem-model digest is absent"],
+      "expected_role": "primary",
+      "expected_outcome": "reject"
     }
   ]
 }

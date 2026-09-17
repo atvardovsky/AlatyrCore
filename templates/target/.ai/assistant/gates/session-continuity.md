@@ -6,6 +6,9 @@ Before state-changing work resumes after a context boundary, verify:
 - current repository, branch, revision, changed-path, and approval evidence
   matches the packet or every difference was explicitly reconciled
 - referenced rule IDs and canonical owners remain available
+- the primary analysis strategy and problem-model digest still match, with
+  affected obligations reopened after any strategy, assumption, or evidence
+  change
 - the newest user instruction re-establishes the current logical scope and
   required action phase
 - publish and live-external authority were not restored from the packet

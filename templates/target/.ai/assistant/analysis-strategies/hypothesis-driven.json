@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "strategy_kind": "primary",
+  "id": "hypothesis-driven",
+  "use_when": ["a defect cause or observed behavior is uncertain"],
+  "sequence": ["record observations", "form competing hypotheses", "choose discriminating evidence", "reject unsupported causes", "validate the surviving explanation and fix"],
+  "required_nonempty_fields": ["facts", "hypotheses", "proof_obligations"],
+  "completion_rule": "the selected explanation has discriminating evidence and required fix obligations pass"
+}

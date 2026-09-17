@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-analysis-strategy-catalog",
+  "portable_rule": ".ai/framework/task-decomposition.md",
+  "load_mode": "index-plus-one-selected-descriptor",
+  "small_task_behavior": "direct-local without loading this catalog",
+  "problem_model_schema": "alatyr-problem-model-v1",
+  "problem_model_template": ".ai/assistant/templates/problem-model.json",
+  "primary_strategy_ids": ["direct-local", "invariant-first", "hypothesis-driven", "architecture-comparison", "evidence-synthesis", "exploratory-design"],
+  "review_strategy_ids": ["adversarial-review"],
+  "descriptors": {
+    "invariant-first": ".ai/assistant/analysis-strategies/invariant-first.json",
+    "hypothesis-driven": ".ai/assistant/analysis-strategies/hypothesis-driven.json",
+    "architecture-comparison": ".ai/assistant/analysis-strategies/architecture-comparison.json",
+    "evidence-synthesis": ".ai/assistant/analysis-strategies/evidence-synthesis.json",
+    "exploratory-design": ".ai/assistant/analysis-strategies/exploratory-design.json",
+    "adversarial-review": ".ai/assistant/analysis-strategies/adversarial-review.json"
+  }
+}

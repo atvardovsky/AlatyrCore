@@ -7,6 +7,7 @@ from typing import Callable, Tuple
 
 from . import (
     approval_scope,
+    analysis_strategies,
     assistant_surfaces,
     authorization,
     capabilities_delegation,
@@ -30,6 +31,7 @@ SCENARIOS: Tuple[Tuple[str, Scenario], ...] = (
     ("context-catalogs", context_catalogs.run),
     ("assistant-surfaces", assistant_surfaces.run),
     ("authorization", authorization.run),
+    ("analysis-strategies", analysis_strategies.run),
     ("session-continuity", session_continuity.run),
     ("context-routing", context_routing.run),
     ("framework-packaging", framework_packaging.run),

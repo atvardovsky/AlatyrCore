@@ -245,7 +245,7 @@
       ],
       "context_budget": {
         "max_required_files": 2,
-        "max_required_words": 1900,
+        "max_required_words": 1950,
         "max_initial_words": 4000
       },
       "check_profile": "full",

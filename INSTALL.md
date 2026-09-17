@@ -124,6 +124,10 @@ The plan must identify:
 - target task-decomposition policy and plan template for assigning
   implementation levels, dependencies, bounded context, validation, allowed
   surfaces, and primary/worker executor decisions
+- analysis-strategy index and bounded descriptors, problem-model schema and
+  template, strategy gate, continuity binding, and completion evidence; keep
+  `direct-local` descriptor-free and load only one descriptor for non-trivial
+  work
 - large-task task-scale routing, packet, checkpoint, and storage needs
 - worker launch/model-selection support, target delegation policy, role
   catalog, orchestration prompt, task-plan and result contracts, native worker

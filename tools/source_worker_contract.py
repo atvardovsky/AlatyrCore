@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any
 
 
-POLICY_SCHEMA_VERSION = 6
+POLICY_SCHEMA_VERSION = 7
 CAPABILITY_SCHEMA_VERSION = 2
-PACKET_SCHEMA_VERSION = 5
-EXECUTION_TREE_SCHEMA_VERSION = 2
+PACKET_SCHEMA_VERSION = 6
+EXECUTION_TREE_SCHEMA_VERSION = 3
 POLICY_KIND = "alatyr-source-worker-policy"
 CANONICAL_RULE = "ALATYR-DELEGATION-001"
 TREE_KIND = "alatyr-delegation-execution-tree"
@@ -65,6 +65,7 @@ PACKET_FIELDS = {
     "independence_key",
     "semantic_scope",
     "changed_fact_ids",
+    "proof_obligation_ids",
     "canonical_owner_refs",
     "surface_refs",
     "relationship_refs",
@@ -79,6 +80,8 @@ EXECUTION_TREE_FIELDS = {
     "base_revision",
     "current_user_authorization",
     "task_profile",
+    "analysis_strategy_id",
+    "problem_model_sha256",
     "policy_revision",
     "capability_evidence",
     "capability_evidence_sha256",
@@ -118,6 +121,7 @@ EXECUTION_TREE_NODE_FIELDS = {
     "coverage_key",
     "semantic_scope",
     "changed_fact_ids",
+    "proof_obligation_ids",
     "canonical_owner_refs",
     "surface_refs",
     "relationship_refs",
@@ -136,6 +140,7 @@ EXECUTION_TREE_NODE_FIELDS = {
     "accepted_summary_evidence",
     "summary_covers_result_ids",
     "satisfied_acceptance_ids",
+    "satisfied_proof_obligation_ids",
     "produced_evidence_ids",
     "attempt",
     "result_status",
@@ -147,6 +152,8 @@ EXECUTION_TREE_CONVERGENCE_FIELDS = {
     "status",
     "required_acceptance_ids",
     "required_evidence_ids",
+    "required_proof_obligation_ids",
+    "satisfied_proof_obligation_ids",
     "reviewed_result_ids",
     "indirect_result_ids",
     "rejected_result_ids",
@@ -260,6 +267,7 @@ WORKSTREAM_FIELDS = {
     "non_goals",
     "semantic_scope",
     "changed_fact_ids",
+    "proof_obligation_ids",
     "canonical_owner_refs",
     "surface_refs",
     "relationship_refs",
@@ -370,7 +378,7 @@ def validate_worker_packet(
         raise SourceWorkerContractError("worker packet must be an object")
     required = set(_string_list(contract.get("required_fields"), label="packet required_fields"))
     if required != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v5")
+        raise SourceWorkerContractError("packet required_fields do not match schema v6")
     _require_exact_fields(packet, required, "worker packet")
     if packet.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet schema_version is invalid")
@@ -422,6 +430,11 @@ def validate_worker_packet(
     _string_list(
         packet.get("changed_fact_ids"),
         label="worker packet changed_fact_ids",
+        nonempty=False,
+    )
+    _string_list(
+        packet.get("proof_obligation_ids"),
+        label="worker packet proof_obligation_ids",
         nonempty=False,
     )
     _string_list(
@@ -670,7 +683,7 @@ def _validate_tree_and_stop_policy(tree: Any, stop: Any) -> None:
     if stop.get("require_stop_reason") is not True:
         raise SourceWorkerContractError("stop_policy must require a stop reason")
     if stop.get("evidence_saturation") != (
-        "stop-when-acceptance-and-required-evidence-are-covered"
+        "stop-when-acceptance-required-evidence-and-assigned-proof-obligations-are-covered"
     ):
         raise SourceWorkerContractError("stop_policy evidence_saturation is invalid")
     if set(_string_list(stop.get("stop_reason_ids"), label="stop reason IDs")) != STOP_REASON_IDS:
@@ -946,7 +959,7 @@ def validate_source_worker_policy(
         "worker_packet_contract",
     )
     if set(_string_list(packet_contract.get("required_fields"), label="packet required_fields")) != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v5")
+        raise SourceWorkerContractError("packet required_fields do not match schema v6")
     if packet_contract.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet contract schema_version is invalid")
     if packet_contract.get("packet_kinds") != ["source-read-only-workstream"]:
@@ -1093,6 +1106,7 @@ def make_builtin_packet(policy: dict[str, Any], workstream_id: str) -> dict[str,
         "independence_key": workstream.get("independence_key"),
         "semantic_scope": workstream.get("semantic_scope"),
         "changed_fact_ids": workstream.get("changed_fact_ids"),
+        "proof_obligation_ids": workstream.get("proof_obligation_ids"),
         "canonical_owner_refs": workstream.get("canonical_owner_refs"),
         "surface_refs": workstream.get("surface_refs"),
         "relationship_refs": workstream.get("relationship_refs"),

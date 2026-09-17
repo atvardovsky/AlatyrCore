@@ -48,6 +48,9 @@ The framework commits to giving an assistant a defined process for:
   implementation, validation, diagrams, and final evidence
 - coordinating large or resumable changes through bounded workstreams,
   context receipts, checkpoints, and final convergence evidence
+- selecting one bounded analysis strategy for nontrivial work, recording a
+  repository- and task-bound problem model, and resolving its proof
+  obligations before completion without requiring private reasoning traces
 - binding activated material changes into optional change packages with
   semantic scope, companion decisions, implementation corrections, and
   repository provenance
@@ -223,6 +226,10 @@ Machine checks can verify only deterministic repository facts, such as:
 - explicitly selected change packages can be checked for record shape,
   resolvable revisions, plan hashes, declared semantic and path scope,
   companion decisions, correction impact, and evidence-quality prerequisites
+- selected analysis strategies and problem models can be checked for supported
+  strategy identity, repository and task lineage, evidence-backed conclusive
+  claims, bounded transitions, required adversarial review, and complete proof-
+  obligation convergence across delegated work
 - target support policy and state can be checked for complete classification,
   ignored-file exclusion, case collisions, canonical digests, and current
   managed-surface coverage
@@ -267,6 +274,12 @@ Support hashes and generated impact closures likewise do not prove what a
 changed fact means, whether a newly observed dependency is architecturally
 valid, or whether the selected repair set preserves every invariant. Those
 remain project reasoning and decision-owner responsibilities.
+
+Analysis-strategy checks likewise do not prove that a selected method was the
+best one, that a hypothesis or comparison was cognitively complete, or that an
+evidence-backed conclusion is true. They make strategy selection, review,
+transition, and proof status inspectable while leaving semantic judgment with
+the primary assistant, reviewers, and project decision owners.
 
 Project-knowledge checks can validate promotion linkage, route selectors,
 authority/freshness states, canonical-owner digests, reciprocal conflict or

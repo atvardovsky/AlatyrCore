@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "envelope_kind": "alatyr-delegation-branch-envelope",
   "envelope_id": "{ENVELOPE_ID}",
   "operation_id": "{OPERATION_ID}",
@@ -20,6 +20,7 @@
   "allowed_surface_refs": ["{TARGET_RELATIVE_PATH_OR_SELECTOR}"],
   "semantic_scope": "{NARROWED_SEMANTIC_SCOPE}",
   "coverage_prefix": "{UNIQUE_BRANCH_COVERAGE_PREFIX}",
+  "proof_obligation_ids": ["{ASSIGNED_BRANCH_PROOF_OBLIGATION_ID_OR_NONE}"],
   "context_packet_sha256": "{LOWERCASE_SHA256_OR_NONE}",
   "capability_evidence_sha256": "{LOWERCASE_SHA256}",
   "required_validation": ["{OBJECTIVE_VALIDATION_OR_MANUAL_REVIEW}"],

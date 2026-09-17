@@ -483,6 +483,10 @@ Final evidence must say:
 - large-task orchestration is enabled or skipped from target evidence; enabled
   adapters define activation, packet storage, bounded resume context,
   checkpoints, and global convergence
+- required task analysis is routed: small settled tasks use descriptor-free
+  `direct-local`; non-trivial tasks select one strategy descriptor, bind a
+  problem model, track proof obligations, and require adversarial review for
+  protected or high-impact work
 - subagent delegation is enabled or skipped from target evidence; enabled
   adapters define current per-surface capabilities, native/external/
   suggestion-only/unsupported dispatch, external dispatcher item where used,

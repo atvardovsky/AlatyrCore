@@ -9,6 +9,8 @@ Before completion, report:
 - `current_user_authorization`: source/scope, allowed phases, invalidation,
   latest commit/publish/live confirmation/effects
 - invariant/review reconciliation
+- primary analysis strategy, problem-model reference, required review results,
+  and proof-obligation acceptance status
 - validation outcomes/unresolved checks
 - approval scope and avoided protected actions
 - context index chain, required obligation IDs, selected item IDs/digests,
@@ -36,6 +38,8 @@ Completion semantics:
 - Report `complete` only when current authorization covers performed phases,
   required validation passed or is target-not-applicable, logical integrity and
   required approval scope are resolved, and no owner-decision risk remains.
+- A required proof obligation or analysis review that is open, failed,
+  blocked, or unevidenced prevents a `complete` result.
 - Report `partial`, `blocked`, or `unverified` when validation failed, was
   skipped or unavailable, authorization/approval is missing, or evidence is
   narrower than the changed facts.

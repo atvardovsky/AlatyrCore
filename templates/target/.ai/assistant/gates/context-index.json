@@ -13,6 +13,27 @@
   },
   "entries": [
     {
+      "id": "assistant.content.gates-analysis-strategy-md",
+      "kind": "content",
+      "path": "gates/analysis-strategy.md",
+      "summary": "Analysis Strategy Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "analysis",
+          "strategy"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 168,
+      "content_digest": "sha256:695a627a74e75243da305bda437d22de194be1d8bb4d7e9ed2d1c6bdc496235b"
+    },
+    {
       "id": "assistant.content.gates-checklist-md",
       "kind": "content",
       "path": "gates/checklist.md",
@@ -224,8 +245,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 243,
-      "content_digest": "sha256:aabd711bf086b39f278e2acf9093a7260a36268de953658489cd628ad1f37408"
+      "estimated_words": 275,
+      "content_digest": "sha256:85e5d3d5b440c694f5ad72d295386dbffac08f471c98cb70187b3afcb36057f8"
     },
     {
       "id": "assistant.content.gates-index-json",
@@ -243,8 +264,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 254,
-      "content_digest": "sha256:58ad035c356568b332ab02c0408f7be048773841f419a45be4c69fa8ee101fde"
+      "estimated_words": 270,
+      "content_digest": "sha256:a888e9e04dc695a1b1c5a340744fadd4bae4d316641763d2da1ada21cece0374"
     },
     {
       "id": "assistant.content.gates-project-knowledge-md",
@@ -337,8 +358,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 123,
-      "content_digest": "sha256:6303d1d62a0aae249d23425fe0ecf7ea19a8fef62943db91ca17985bf1c6ddcb"
+      "estimated_words": 144,
+      "content_digest": "sha256:b56303ac5bafb6af599308ba10a5ebc9c473272b50589315b0db9cc9a44366b2"
     },
     {
       "id": "assistant.content.gates-support-generation-md",

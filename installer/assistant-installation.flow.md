@@ -662,6 +662,10 @@ Report:
   capability evidence, native definition paths, role/model bindings,
   aggregate budget, semantic-overlap, cancellation, retry/conflict fallback,
   validation, and primary-convergence evidence added or skipped
+- required analysis-strategy index and descriptors, problem-model schema and
+  template, strategy gate, continuity binding, and completion evidence added;
+  verify that small tasks skip the catalog and non-trivial tasks load only one
+  selected descriptor
 - change-package index, lazy overlay, flow, schema, redacted report, retention
   policy, and validator support added, migrated, skipped, or blocked
 - durable engineering-evidence owner, policy, compact index, lazy overlay,

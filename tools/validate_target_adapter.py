@@ -119,6 +119,7 @@ from target_adapter_validation.project_knowledge import (
 )
 from target_adapter_validation.subagent_delegation import validate_subagent_delegation
 from target_adapter_validation.task_decomposition import validate_task_decomposition
+from target_adapter_validation.analysis_strategies import validate_analysis_strategies
 from target_adapter_validation.team_collaboration import validate_team_collaboration
 from target_adapter_validation.development_evidence import validate_development_evidence
 from target_adapter_validation.dependency_knowledge import validate_dependency_knowledge
@@ -164,7 +165,7 @@ CANONICAL_PROFILES = [
     "ai-infrastructure",
     "framework-upgrade",
 ]
-ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}
 
 KERNEL_REQUIRED_FILES = [
     "AGENTS.md",
@@ -198,8 +199,16 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
     ".ai/assistant/task-decomposition.json",
+    ".ai/assistant/analysis-strategies/index.json",
+    ".ai/assistant/analysis-strategies/invariant-first.json",
+    ".ai/assistant/analysis-strategies/hypothesis-driven.json",
+    ".ai/assistant/analysis-strategies/architecture-comparison.json",
+    ".ai/assistant/analysis-strategies/evidence-synthesis.json",
+    ".ai/assistant/analysis-strategies/exploratory-design.json",
+    ".ai/assistant/analysis-strategies/adversarial-review.json",
     ".ai/assistant/gates/index.json",
     ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/analysis-strategy.md",
     ".ai/assistant/gates/code-and-tests.md",
     ".ai/assistant/gates/documentation.md",
     ".ai/assistant/gates/final-evidence.md",
@@ -215,6 +224,8 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/templates/adapter-output-contracts.md",
     ".ai/assistant/templates/installation-note.md",
     ".ai/assistant/templates/operation-request.md",
+    ".ai/assistant/templates/operation-completion-evidence.json",
+    ".ai/assistant/templates/problem-model.json",
     ".ai/assistant/templates/small-task-evidence.md",
     ".ai/assistant/templates/task-decomposition.md",
     ".ai/assistant/flows/logical-integrity-review.flow.md",
@@ -900,6 +911,7 @@ class Validator:
         debug_remote_ref: str | None = None,
         validation_scope: str = "full",
         continuity_packets: list[Path] | None = None,
+        problem_models: list[Path] | None = None,
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
@@ -929,6 +941,20 @@ class Validator:
             continuity_candidates.append(packet)
         self.continuity_packets = self.selected_target_paths(
             continuity_candidates, "--continuity-packet"
+        )
+        problem_model_candidates: list[Path] = []
+        for model in problem_models or []:
+            candidate = model if model.is_absolute() else self.target / model
+            if candidate.is_symlink():
+                self.error(
+                    "ANALYSIS_PROBLEM_MODEL_SYMLINK",
+                    "--problem-model must not select a symbolic link",
+                    str(model),
+                )
+                continue
+            problem_model_candidates.append(model)
+        self.problem_models = self.selected_target_paths(
+            problem_model_candidates, "--problem-model"
         )
         self.enforce_change_package = enforce_change_package
         self.migration_diff = migration_diff.resolve() if migration_diff else None
@@ -1107,6 +1133,7 @@ class Validator:
             ValidationPhase("context-router", lambda: self.check_router(enabled_modules, manifest), ("module-profile",)),
             ValidationPhase("session-continuity", lambda: validate_session_continuity(self), ("action-authorization", "context-router")),
             ValidationPhase("task-decomposition", lambda: validate_task_decomposition(self, manifest), ("context-router",)),
+            ValidationPhase("analysis-strategies", lambda: validate_analysis_strategies(self), ("task-decomposition",)),
             ValidationPhase("context-catalogs", lambda: validate_context_catalog_contract(self, manifest), ("context-router",)),
             ValidationPhase("support-state", lambda: validate_support_state(self.capability_validation_context(), manifest), ("installation-state",)),
             ValidationPhase("operation-catalog", operation_catalog, ("required-files",)),
@@ -2172,7 +2199,7 @@ class Validator:
         if router_schema not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2 through 12",
+                "context_routing.router_schema_version must be 2 through 13",
                 ".ai/alatyr.yaml",
             )
         expected_context_paths = {
@@ -2439,7 +2466,7 @@ class Validator:
             return
         if (
             not isinstance(actual, dict)
-            or actual.get("schema_version") != 4
+            or actual.get("schema_version") != 5
             or actual.get("packet_kind") != "target-agent-entry-packet"
         ):
             self.error(
@@ -2548,13 +2575,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to current routing schema 12",
+                "context router schema 1 should migrate to current routing schema 13",
                 ".ai/assistant/context-router.json",
             )
         elif schema_version not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2 through 12",
+                "context router schema_version should be 2 through 13",
                 ".ai/assistant/context-router.json",
             )
         validate_router_manifest_schema(self, manifest, router)
@@ -2594,7 +2621,7 @@ class Validator:
                 )
             required_bootstrap = (
                 REQUIRED_BOOTSTRAP
-                if schema_version in {5, 6, 7, 8, 9, 10, 11, 12}
+                if schema_version in {5, 6, 7, 8, 9, 10, 11, 12, 13}
                 else LEGACY_REQUIRED_BOOTSTRAP
             )
             for required in required_bootstrap:
@@ -2606,7 +2633,7 @@ class Validator:
                     )
             deferred = (
                 sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
-                if schema_version in {5, 6, 7, 8, 9, 10, 11, 12}
+                if schema_version in {5, 6, 7, 8, 9, 10, 11, 12, 13}
                 else []
             )
             if deferred:
@@ -2625,9 +2652,9 @@ class Validator:
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version in {4, 5, 6, 7, 8, 9, 10, 11, 12}:
+            elif schema_version in {4, 5, 6, 7, 8, 9, 10, 11, 12, 13}:
                 self.check_router_budget_shape(
-                    budgets, require_character_limits=schema_version == 12
+                    budgets, require_character_limits=schema_version in {12, 13}
                 )
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
@@ -2637,7 +2664,7 @@ class Validator:
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -2679,7 +2706,7 @@ class Validator:
                         for value in values:
                             self.check_router_path(value, "migration_routing", field)
 
-            if schema_version in {10, 11, 12}:
+            if schema_version in {10, 11, 12, 13}:
                 self.check_task_classification(router)
 
         self.check_router_routing_order(router)
@@ -2769,17 +2796,17 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
-        if schema_version in {10, 11, 12}:
+        if schema_version in {10, 11, 12, 13}:
             self.check_small_task_overlay(router)
 
-        if schema_version in {7, 8, 9, 10, 11, 12}:
+        if schema_version in {7, 8, 9, 10, 11, 12, 13}:
             knowledge_entry = router.get("project_knowledge_routing")
             if not isinstance(knowledge_entry, dict) and self.is_target_file(
                 ".ai/assistant/context/project-knowledge-routing.json"
             ):
                 self.error(
                     "ROUTER_PROJECT_KNOWLEDGE_MISSING",
-                    "schema 7 through 12 requires project_knowledge_routing",
+                    "schema 7 through 13 requires project_knowledge_routing",
                     ".ai/assistant/context-router.json",
                 )
             elif isinstance(knowledge_entry, dict):
@@ -2905,7 +2932,7 @@ class Validator:
                                 "conditional_context",
                             )
 
-        if schema_version in {4, 5, 6, 7, 8, 9, 10, 11, 12} and isinstance(budgets, dict):
+        if schema_version in {4, 5, 6, 7, 8, 9, 10, 11, 12, 13} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -3156,14 +3183,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12}:
+        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3 through 12 router must define profile_index",
+                "schema 3 through 13 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}
@@ -6547,6 +6574,17 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--problem-model",
+        type=Path,
+        action="append",
+        default=[],
+        help=(
+            "Explicit target-relative runtime problem model to validate for "
+            "schema, evidence, required obligations, and required reviews. "
+            "May be provided multiple times."
+        ),
+    )
+    parser.add_argument(
         "--enforce-change-package",
         action="store_true",
         help=(
@@ -6653,6 +6691,7 @@ def main() -> int:
         enforce_approval_scope=enforce_approval_scope,
         change_packages=args.change_package,
         continuity_packets=args.continuity_packet,
+        problem_models=args.problem_model,
         enforce_change_package=args.enforce_change_package,
         migration_diff=args.migration_diff,
         debug_git_state=args.debug_git_state,

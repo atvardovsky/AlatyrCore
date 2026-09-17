@@ -14,6 +14,7 @@ from typing import Any
 TREE_FIELDS = {
     "schema_version", "tree_kind", "operation_id", "recorded_at", "base_revision",
     "current_user_authorization", "task_profile", "policy_revision",
+    "analysis_strategy_id", "problem_model_sha256",
     "capability_evidence", "capability_evidence_sha256", "aggregate_budget",
     "root_node_id", "nodes", "edges", "primary_convergence",
 }
@@ -36,11 +37,13 @@ NODE_FIELDS = {
     "branch_envelope", "branch_envelope_sha256", "result_evidence",
     "branch_checkpoint", "branch_checkpoint_sha256",
     "accepted_summary_evidence", "summary_covers_result_ids",
-    "satisfied_acceptance_ids", "produced_evidence_ids", "attempt",
+    "satisfied_acceptance_ids", "proof_obligation_ids",
+    "satisfied_proof_obligation_ids", "produced_evidence_ids", "attempt",
     "result_status", "stop_reason_id", "child_proposals", "overlap_decision",
 }
 CONVERGENCE_FIELDS = {
     "status", "required_acceptance_ids", "required_evidence_ids",
+    "required_proof_obligation_ids", "satisfied_proof_obligation_ids",
     "reviewed_result_ids", "indirect_result_ids", "rejected_result_ids",
     "combined_validation", "logical_integrity_review", "residual_risk",
     "final_stop_reason_id",
@@ -64,6 +67,14 @@ PORTABLE_MAX_CONTEXT_WORDS = 24000
 PORTABLE_MAX_RESULT_WORDS = 12000
 PORTABLE_MAX_PRIMARY_SUMMARY_WORDS = 4000
 PORTABLE_MAX_RETRIES = 2
+PRIMARY_ANALYSIS_STRATEGIES = {
+    "direct-local",
+    "invariant-first",
+    "hypothesis-driven",
+    "architecture-comparison",
+    "evidence-synthesis",
+    "exploratory-design",
+}
 
 
 class DelegationEvidenceError(ValueError):
@@ -230,11 +241,12 @@ def validate_branch_envelope(
         "max_result_words", "max_summary_words", "max_retries",
         "allowed_actions", "write_scope", "allowed_tools", "allowed_surface_refs",
         "semantic_scope", "coverage_prefix", "context_packet_sha256",
+        "proof_obligation_ids",
         "capability_evidence_sha256", "required_validation", "expires_at",
         "envelope_sha256",
     }
     _exact(envelope, required, "branch envelope")
-    if envelope.get("schema_version") != 1 or envelope.get("envelope_kind") != (
+    if envelope.get("schema_version") != 2 or envelope.get("envelope_kind") != (
         "alatyr-delegation-branch-envelope"
     ):
         raise DelegationEvidenceError("branch envelope identity is invalid")
@@ -270,6 +282,10 @@ def validate_branch_envelope(
     required_validation = _strings(
         envelope.get("required_validation"),
         "branch envelope.required_validation",
+    )
+    _strings(
+        envelope.get("proof_obligation_ids"),
+        "branch envelope.proof_obligation_ids",
     )
     if not allowed_tools or not allowed_surfaces or not required_validation:
         raise DelegationEvidenceError(
@@ -313,12 +329,13 @@ def validate_branch_checkpoint(
         "branch_envelope_sha256", "base_revision", "accepted_result_ids",
         "accepted_result_sha256", "rejected_result_ids",
         "completed_coverage_keys", "accepted_summary", "context_packet_sha256",
+        "completed_proof_obligation_ids", "open_proof_obligation_ids",
         "semantic_guidance_sha256", "evidence_manifest_sha256",
         "validation_sha256", "unresolved_escalations", "next_ready_action",
         "stop_reason_id", "checkpoint_sha256",
     }
     _exact(checkpoint, fields, "branch checkpoint")
-    if checkpoint.get("schema_version") != 1 or checkpoint.get("checkpoint_kind") != (
+    if checkpoint.get("schema_version") != 2 or checkpoint.get("checkpoint_kind") != (
         "alatyr-delegation-branch-checkpoint"
     ):
         raise DelegationEvidenceError("branch checkpoint identity is invalid")
@@ -343,8 +360,21 @@ def validate_branch_checkpoint(
         artifact_root=artifact_root,
         label="branch checkpoint accepted_summary",
     )
-    for field in ["accepted_result_ids", "rejected_result_ids", "completed_coverage_keys", "unresolved_escalations"]:
+    for field in [
+        "accepted_result_ids", "rejected_result_ids", "completed_coverage_keys",
+        "completed_proof_obligation_ids", "open_proof_obligation_ids",
+        "unresolved_escalations",
+    ]:
         _strings(checkpoint.get(field), f"branch checkpoint.{field}")
+    completed_obligations = set(checkpoint["completed_proof_obligation_ids"])
+    open_obligations = set(checkpoint["open_proof_obligation_ids"])
+    assigned_obligations = set(envelope["proof_obligation_ids"])
+    if completed_obligations & open_obligations or (
+        completed_obligations | open_obligations
+    ) != assigned_obligations:
+        raise DelegationEvidenceError(
+            "branch checkpoint must partition its assigned proof obligations"
+        )
     for field in ["accepted_result_sha256"]:
         for index, digest in enumerate(_strings(checkpoint.get(field), f"branch checkpoint.{field}")):
             _sha256(digest, f"branch checkpoint.{field}[{index}]")
@@ -376,12 +406,14 @@ def validate_worker_result(
         "schema_version", "result_kind", "result_id", "packet_id",
         "parent_packet_id", "node_id", "depth", "base_revision", "status",
     "measurement_state", "input_context_packet_sha256", "raw_payload",
-    "accepted_summary", "summary_covers_result_ids", "child_result_sha256",
-    "evidence_manifest", "touched_surfaces", "tools_used", "scope_violation",
-        "authorization_concern", "validation", "stop_reason_id", "subtree_sha256",
+        "accepted_summary", "summary_covers_result_ids", "child_result_sha256",
+        "evidence_manifest", "touched_surfaces", "tools_used", "scope_violation",
+        "authorization_concern", "proof_obligation_ids",
+        "satisfied_proof_obligation_ids", "validation", "stop_reason_id",
+        "subtree_sha256",
     }
     _exact(result, fields, "worker result")
-    if result.get("schema_version") != 1 or result.get("result_kind") != (
+    if result.get("schema_version") != 2 or result.get("result_kind") != (
         "alatyr-normalized-worker-result"
     ):
         raise DelegationEvidenceError("worker result identity is invalid")
@@ -421,6 +453,25 @@ def validate_worker_result(
         raise DelegationEvidenceError("worker summary disagrees with execution node")
     if result.get("summary_covers_result_ids") != node.get("summary_covers_result_ids"):
         raise DelegationEvidenceError("worker summary coverage disagrees with execution node")
+    result_obligations = set(
+        _strings(result.get("proof_obligation_ids"), "worker result.proof_obligation_ids")
+    )
+    satisfied_obligations = set(
+        _strings(
+            result.get("satisfied_proof_obligation_ids"),
+            "worker result.satisfied_proof_obligation_ids",
+        )
+    )
+    if result_obligations != set(node["proof_obligation_ids"]):
+        raise DelegationEvidenceError(
+            "worker result proof obligations disagree with execution node"
+        )
+    if not satisfied_obligations <= result_obligations or (
+        satisfied_obligations != set(node["satisfied_proof_obligation_ids"])
+    ):
+        raise DelegationEvidenceError(
+            "worker result satisfied proof obligations are invalid"
+        )
     for index, digest in enumerate(_strings(result.get("child_result_sha256"), "worker result.child_result_sha256")):
         _sha256(digest, f"worker result.child_result_sha256[{index}]")
     touched_surfaces = _strings(
@@ -515,7 +566,8 @@ def _validate_nodes(
         for field in [
             "changed_fact_ids", "canonical_owner_refs", "surface_refs",
             "relationship_refs", "allowed_actions", "summary_covers_result_ids",
-            "satisfied_acceptance_ids", "produced_evidence_ids",
+            "satisfied_acceptance_ids", "proof_obligation_ids",
+            "satisfied_proof_obligation_ids", "produced_evidence_ids",
         ]:
             _strings(node.get(field), f"execution node {node_id}.{field}")
         if node.get("overlap_decision") not in {
@@ -601,6 +653,7 @@ def _validate_nodes(
             node.get("result_status") is not None
             or node["summary_covers_result_ids"]
             or node["satisfied_acceptance_ids"]
+            or node["satisfied_proof_obligation_ids"]
             or node["produced_evidence_ids"]
         ):
             raise DelegationEvidenceError(
@@ -613,15 +666,27 @@ def _validate_header_and_budget(
     tree: dict[str, Any], policy: dict[str, Any], *, artifact_root: Path
 ) -> tuple[datetime, str, int, set[str], dict[str, Any]]:
     _exact(_object(tree, "execution tree"), TREE_FIELDS, "execution tree")
-    if tree.get("schema_version") != 2 or tree.get("tree_kind") != (
+    if tree.get("schema_version") != 3 or tree.get("tree_kind") != (
         "alatyr-delegation-execution-tree"
     ):
         raise DelegationEvidenceError("execution tree identity is invalid")
     for field in [
         "operation_id", "base_revision", "task_profile", "capability_evidence",
-        "root_node_id",
+        "root_node_id", "analysis_strategy_id",
     ]:
         _string(tree.get(field), f"execution tree.{field}")
+    strategy_id = tree["analysis_strategy_id"]
+    if strategy_id not in PRIMARY_ANALYSIS_STRATEGIES:
+        raise DelegationEvidenceError(
+            "execution tree analysis_strategy_id is invalid"
+        )
+    problem_model_sha256 = tree.get("problem_model_sha256")
+    if strategy_id != "direct-local" and problem_model_sha256 is None:
+        raise DelegationEvidenceError(
+            "non-local execution strategy requires a problem-model digest"
+        )
+    if problem_model_sha256 is not None:
+        _sha256(problem_model_sha256, "execution tree.problem_model_sha256")
     policy_digest = _sha256(
         tree.get("policy_revision"), "execution tree.policy_revision"
     )
@@ -1003,6 +1068,12 @@ def validate_execution_tree(
                 raise DelegationEvidenceError("branch envelope identity disagrees with execution tree")
             if envelope["root_packet_id"] != node["packet_id"]:
                 raise DelegationEvidenceError("branch envelope root packet is invalid")
+            if set(envelope["proof_obligation_ids"]) != set(
+                node["proof_obligation_ids"]
+            ):
+                raise DelegationEvidenceError(
+                    "branch envelope proof obligations disagree with coordinator"
+                )
             if envelope["base_revision"] != tree["base_revision"]:
                 raise DelegationEvidenceError("branch envelope base_revision is stale")
             if envelope["capability_evidence_sha256"] != capability_evidence_sha256:
@@ -1053,6 +1124,12 @@ def validate_execution_tree(
                 if child_result["input_context_packet_sha256"] != envelope["context_packet_sha256"]:
                     raise DelegationEvidenceError(
                         "recursive child input context digest disagrees with branch envelope"
+                    )
+                if not set(child["proof_obligation_ids"]) <= set(
+                    envelope["proof_obligation_ids"]
+                ):
+                    raise DelegationEvidenceError(
+                        "recursive child proof obligations escape branch envelope"
                     )
                 observed_validation.update(child_result["validation"])
             if not set(envelope["required_validation"]) <= observed_validation:
@@ -1106,6 +1183,18 @@ def validate_execution_tree(
                 raise DelegationEvidenceError(
                     "branch checkpoint coverage keys are incomplete"
                 )
+            accepted_obligations = {
+                obligation_id
+                for child in branch_children
+                if child["result_id"] in accepted_ids
+                for obligation_id in child["satisfied_proof_obligation_ids"]
+            }
+            if set(checkpoint["completed_proof_obligation_ids"]) != (
+                accepted_obligations
+            ):
+                raise DelegationEvidenceError(
+                    "branch checkpoint proof-obligation coverage is incomplete"
+                )
             if checkpoint["accepted_summary"] != node["accepted_summary_evidence"]:
                 raise DelegationEvidenceError(
                     "branch checkpoint summary disagrees with coordinator result"
@@ -1139,36 +1228,123 @@ def validate_execution_tree(
                     "completed branch checkpoint has unresolved escalations"
                 )
 
+    return _validate_budget_and_convergence(
+        tree,
+        nodes=nodes,
+        root=root,
+        budget=budget,
+        result_words=result_words,
+        primary_summary_words=primary_summary_words,
+        checkpoint_rejected_ids=checkpoint_rejected_ids,
+        allowed_stop_reasons=allowed_stop_reasons,
+    )
+
+
+def _validate_budget_and_convergence(
+    tree: dict[str, Any],
+    *,
+    nodes: dict[str, dict[str, Any]],
+    root: dict[str, Any],
+    budget: dict[str, Any],
+    result_words: int,
+    primary_summary_words: int,
+    checkpoint_rejected_ids: set[str],
+    allowed_stop_reasons: set[str],
+) -> dict[str, Any]:
     used = {
         "used_total_delegates": len(nodes) - 1,
         "used_parallel_delegates": max(
-            (sum(1 for node in nodes.values() if node.get("dispatch_group_id") == group) for group in {node.get("dispatch_group_id") for node in nodes.values() if node.get("dispatch_group_id")}),
+            (
+                sum(
+                    1
+                    for node in nodes.values()
+                    if node.get("dispatch_group_id") == group
+                )
+                for group in {
+                    node.get("dispatch_group_id")
+                    for node in nodes.values()
+                    if node.get("dispatch_group_id")
+                }
+            ),
             default=0,
         ),
-        "used_context_words": sum(node["context_words"] for node in nodes.values() if node["depth"] > 0),
+        "used_context_words": sum(
+            node["context_words"] for node in nodes.values() if node["depth"] > 0
+        ),
         "used_result_words": result_words,
         "used_primary_summary_words": primary_summary_words,
-        "used_retries": sum(node["attempt"] for node in nodes.values() if node["depth"] > 0),
+        "used_retries": sum(
+            node["attempt"] for node in nodes.values() if node["depth"] > 0
+        ),
+    }
+    maximum_fields = {
+        "used_total_delegates": "max_total_delegates",
+        "used_parallel_delegates": "max_parallel_delegates",
+        "used_context_words": "max_context_words_total",
+        "used_result_words": "max_result_words_total",
+        "used_primary_summary_words": "max_primary_summary_words_total",
+        "used_retries": "max_retries_total",
     }
     for field, measured in used.items():
         if budget.get(field) != measured:
-            raise DelegationEvidenceError(f"aggregate {field} does not match measured evidence")
-        maximum_field = field.replace("used_", "max_").replace("primary_summary_words", "primary_summary_words_total").replace("result_words", "result_words_total").replace("context_words", "context_words_total").replace("retries", "retries_total").replace("parallel_delegates", "parallel_delegates").replace("total_delegates", "total_delegates")
+            raise DelegationEvidenceError(
+                f"aggregate {field} does not match measured evidence"
+            )
+        maximum_field = maximum_fields[field]
         if measured > budget[maximum_field]:
-            raise DelegationEvidenceError(f"aggregate {field} exceeds {maximum_field}")
+            raise DelegationEvidenceError(
+                f"aggregate {field} exceeds {maximum_field}"
+            )
 
     convergence = _object(tree.get("primary_convergence"), "primary convergence")
     _exact(convergence, CONVERGENCE_FIELDS, "primary convergence")
-    convergence_status = convergence.get("status")
-    if convergence_status not in {"pending", "completed", "blocked", "cancelled"}:
+    status = convergence.get("status")
+    if status not in {"pending", "completed", "blocked", "cancelled"}:
         raise DelegationEvidenceError("primary convergence status is invalid")
-    required_acceptance = set(_strings(convergence.get("required_acceptance_ids"), "primary convergence.required_acceptance_ids"))
-    required_evidence = set(_strings(convergence.get("required_evidence_ids"), "primary convergence.required_evidence_ids"))
-    reviewed = set(_strings(convergence.get("reviewed_result_ids"), "primary convergence.reviewed_result_ids"))
-    indirect = set(_strings(convergence.get("indirect_result_ids"), "primary convergence.indirect_result_ids"))
-    rejected = set(_strings(convergence.get("rejected_result_ids"), "primary convergence.rejected_result_ids"))
+    required_acceptance = set(
+        _strings(
+            convergence.get("required_acceptance_ids"),
+            "primary convergence.required_acceptance_ids",
+        )
+    )
+    required_evidence = set(
+        _strings(
+            convergence.get("required_evidence_ids"),
+            "primary convergence.required_evidence_ids",
+        )
+    )
+    required_obligations = set(
+        _strings(
+            convergence.get("required_proof_obligation_ids"),
+            "primary convergence.required_proof_obligation_ids",
+        )
+    )
+    satisfied_obligations = set(
+        _strings(
+            convergence.get("satisfied_proof_obligation_ids"),
+            "primary convergence.satisfied_proof_obligation_ids",
+        )
+    )
+    reviewed = set(
+        _strings(
+            convergence.get("reviewed_result_ids"),
+            "primary convergence.reviewed_result_ids",
+        )
+    )
+    indirect = set(
+        _strings(
+            convergence.get("indirect_result_ids"),
+            "primary convergence.indirect_result_ids",
+        )
+    )
+    rejected = set(
+        _strings(
+            convergence.get("rejected_result_ids"),
+            "primary convergence.rejected_result_ids",
+        )
+    )
     final_stop_reason = convergence.get("final_stop_reason_id")
-    if convergence_status in {"completed", "blocked", "cancelled"}:
+    if status in {"completed", "blocked", "cancelled"}:
         if final_stop_reason not in allowed_stop_reasons:
             raise DelegationEvidenceError(
                 "terminal primary convergence needs a known final stop reason"
@@ -1183,26 +1359,38 @@ def validate_execution_tree(
         "blocked": {"BLOCKED", "REVIEW_REQUIRED", "FAILED", "REJECTED"},
         "cancelled": {"CANCELLED"},
     }
-    if root["status"] not in root_statuses[convergence_status]:
+    if root["status"] not in root_statuses[status]:
         raise DelegationEvidenceError(
             "primary convergence status disagrees with the root execution node"
         )
-    if convergence_status != "pending" and root["stop_reason_id"] != final_stop_reason:
+    if status != "pending" and root["stop_reason_id"] != final_stop_reason:
         raise DelegationEvidenceError(
             "primary convergence stop reason disagrees with the root execution node"
         )
-    direct_results = {node["result_id"] for node in nodes.values() if node["depth"] == 1 and node.get("result_id")}
-    descendant_results = {node["result_id"] for node in nodes.values() if node["depth"] == 2 and node.get("result_id")}
+    direct_results = {
+        node["result_id"]
+        for node in nodes.values()
+        if node["depth"] == 1 and node.get("result_id")
+    }
+    descendant_results = {
+        node["result_id"]
+        for node in nodes.values()
+        if node["depth"] == 2 and node.get("result_id")
+    }
     if reviewed != direct_results or indirect != descendant_results:
-        raise DelegationEvidenceError("primary convergence direct or indirect result coverage is incomplete")
+        raise DelegationEvidenceError(
+            "primary convergence direct or indirect result coverage is incomplete"
+        )
     if not rejected <= reviewed | indirect:
-        raise DelegationEvidenceError("primary convergence rejects an unknown result")
+        raise DelegationEvidenceError(
+            "primary convergence rejects an unknown result"
+        )
     if not checkpoint_rejected_ids <= rejected:
         raise DelegationEvidenceError(
             "primary convergence accepts a branch-rejected result"
         )
     accepted_result_ids = (reviewed | indirect) - rejected
-    if convergence_status == "completed" and any(
+    if status == "completed" and any(
         node["status"] != "DONE"
         for node in nodes.values()
         if node.get("result_id") in accepted_result_ids
@@ -1215,8 +1403,34 @@ def validate_execution_tree(
         for node in nodes.values()
         if node.get("result_id") in accepted_result_ids and node["status"] == "DONE"
     ]
-    acceptance = {item for node in accepted_nodes for item in node["satisfied_acceptance_ids"]}
-    evidence = {item for node in accepted_nodes for item in node["produced_evidence_ids"]}
-    if convergence.get("status") == "completed" and (not required_acceptance <= acceptance or not required_evidence <= evidence):
-        raise DelegationEvidenceError("completed convergence lacks required acceptance or evidence coverage")
+    acceptance = {
+        item for node in accepted_nodes for item in node["satisfied_acceptance_ids"]
+    }
+    evidence = {
+        item for node in accepted_nodes for item in node["produced_evidence_ids"]
+    }
+    worker_obligations = {
+        item
+        for node in accepted_nodes
+        for item in node["satisfied_proof_obligation_ids"]
+    }
+    if not satisfied_obligations <= required_obligations:
+        raise DelegationEvidenceError(
+            "primary convergence satisfies an unrequired proof obligation"
+        )
+    if not worker_obligations <= satisfied_obligations:
+        raise DelegationEvidenceError(
+            "primary convergence omits accepted worker proof evidence"
+        )
+    if status == "completed" and (
+        not required_acceptance <= acceptance
+        or not required_evidence <= evidence
+    ):
+        raise DelegationEvidenceError(
+            "completed convergence lacks required acceptance or evidence coverage"
+        )
+    if status == "completed" and required_obligations != satisfied_obligations:
+        raise DelegationEvidenceError(
+            "completed convergence lacks required proof-obligation coverage"
+        )
     return tree

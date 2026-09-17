@@ -28,7 +28,8 @@ Read-only source workers normally return proposals. With verified nested
 transport, a depth-1 coordinator may dispatch depth-2 read-only children inside
 an unexpired hash-bound primary envelope. Enforce every worker, child, context,
 result, summary, retry, overlap, capability, authority, cancellation, and cost
-limit; stop at evidence saturation or the first boundary and record its reason.
+limit; stop when acceptance, required evidence, and assigned proof obligations
+are covered or at the first boundary, then record its reason.
 
 For an explicit `repository-audit`, delegation evaluation is deterministic:
 
@@ -73,11 +74,12 @@ preflight evidence, not proof of client probing, dispatch, or result delivery.
 Completion is not accepted from preflight evidence. It is validated through the
 execution-tree ledger and primary convergence record.
 
-Every packet must carry schema version 5, its parent, depth, remaining worker
+Every packet must carry schema version 6, its parent, depth, remaining worker
 budget, unique coverage key, workstream ID, role, objective, bounded and
 conditional context, maximum initial, result, and summary words, inherited
 context-packet identity and delta, non-goals,
 `inspect`-only action mode, no-write scope, semantic scope, changed fact IDs,
+assigned proof-obligation IDs,
 canonical owner references, surface references, relationship references,
 overlap decision, independence evidence, and expected evidence. Policy
 validation measures all required file content and rejects a built-in packet
@@ -92,14 +94,14 @@ binds its context-word count to a measured artifact. Every accepted result uses
 measured raw and accepted-summary artifacts, SHA-256 values, tool IDs,
 child-result identity, and a deterministic subtree digest. Recursive branches
 record a resumable checkpoint. Validate accepted execution evidence with
-`python3 tools/alatyr.py validate-delegation-tree ...`; schema-1 ledgers remain
+`python3 tools/alatyr.py validate-delegation-tree ...`; schema-1 and schema-2 ledgers remain
 legacy structural records and are not acceptance evidence.
 
-Keep a schema-2 `alatyr-delegation-execution-tree` ledger. Record current
+Keep a schema-3 `alatyr-delegation-execution-tree` ledger. Record current
 authorization and time, base revision, the canonical policy digest, the hashed capability
 artifact, measured budgets, topology, overlap decisions, direct and indirect
-result coverage, stop or cancellation reasons, validation, primary review, and
-convergence. Routine primary context loads accepted summaries and the latest
+result and proof-obligation coverage, stop or cancellation reasons, validation,
+primary review, and convergence. Routine primary context loads accepted summaries and the latest
 checkpoint, not descendant raw payloads. A missing or inconsistent ledger
 blocks integration.
 

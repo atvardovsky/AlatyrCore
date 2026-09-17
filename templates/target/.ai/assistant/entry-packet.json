@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "packet_kind": "target-agent-entry-packet",
   "path": ".ai/assistant/entry-packet.json",
   "generated_by": {
@@ -10,25 +10,25 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd",
+    "target_manifest_digest": "sha256:3da3b4be201bc7a3ce427ea184fe82c4710e8ed39b20df76f8c3bd9fee98e601",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.67",
-    "adapter_schema_version": "55",
-    "template_version": "62"
+    "framework_version": "0.1.0-alpha.68",
+    "adapter_schema_version": "56",
+    "template_version": "63"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd"
+      "sha256": "3da3b4be201bc7a3ce427ea184fe82c4710e8ed39b20df76f8c3bd9fee98e601"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "c5965e4c50ec33b671981aa9ac83d8989d817be5468bb9968f60682c63b22e5a"
+      "sha256": "ea2ce3828cbb6d70f4ba71e38a94cb8786cfa0d3e64fc50f8358916ecebfd4c7"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
-      "sha256": "58ad035c356568b332ab02c0408f7be048773841f419a45be4c69fa8ee101fde"
+      "sha256": "a888e9e04dc695a1b1c5a340744fadd4bae4d316641763d2da1ada21cece0374"
     },
     "action_authorization_policy": {
       "path": ".ai/assistant/policies/action-authorization.json",
@@ -36,7 +36,7 @@
     },
     "session_continuity_policy": {
       "path": ".ai/assistant/policies/session-continuity.json",
-      "sha256": "22ebb01cd04c327019457592c16daf9d07282b4c64e0f00ed35afd69005829dd"
+      "sha256": "9b2a97c4a00bc7d68d9097058381769d9c524ac1649e4fc7954167866005aa4c"
     },
     "support_policy": {
       "path": ".ai/project/support-policy.json",
@@ -44,7 +44,7 @@
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",
-      "sha256": "7704d00daf8edd463dcebe144f5033533f18a152af2096459262cbfcb2435b5c"
+      "sha256": "546dfb768ca4d168f55ec21548f68fda673b4530e49b9d217b2f3ef874160371"
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",
@@ -119,7 +119,7 @@
     "expansion_policy": ".ai/assistant/context-router.json#task_classification.expansion_triggers"
   },
   "task_decomposition": {
-    "schema_version": 1,
+    "schema_version": 2,
     "policy": ".ai/assistant/task-decomposition.json",
     "plan_template": ".ai/assistant/templates/task-decomposition.md",
     "level_range": "L0-L7",
@@ -129,7 +129,13 @@
       "L7"
     ],
     "default_behavior": "non-trivial-decompose",
-    "executor_default": "primary"
+    "executor_default": "primary",
+    "analysis_strategy": {
+      "catalog": ".ai/assistant/analysis-strategies/index.json",
+      "problem_model_template": ".ai/assistant/templates/problem-model.json",
+      "small_task_behavior": "use direct-local without loading the strategy catalog",
+      "nontrivial_load_limit": "load index and one selected descriptor only"
+    }
   },
   "operation_routing": {
     "index": ".ai/assistant/operation-index.json",

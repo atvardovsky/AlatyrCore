@@ -1,13 +1,36 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "policy_kind": "target-task-decomposition-policy",
   "owner": "{TARGET_TASK_DECOMPOSITION_OWNER}",
   "portable_rule": ".ai/framework/task-decomposition.md",
   "plan_template": ".ai/assistant/templates/task-decomposition.md",
+  "analysis_strategy": {
+    "catalog": ".ai/assistant/analysis-strategies/index.json",
+    "problem_model_schema": "alatyr-problem-model-v1",
+    "problem_model_template": ".ai/assistant/templates/problem-model.json",
+    "selection_order": [
+      "direct-local for eligible small or settled local non-semantic work",
+      "exploratory-design when requirements constraints owners or authority are unclear",
+      "hypothesis-driven for uncertain defects or causes",
+      "architecture-comparison for architectural alternatives and boundaries",
+      "evidence-synthesis for audits or conflicting distributed evidence",
+      "invariant-first for business data state ownership or semantic change"
+    ],
+    "primary_strategy_ids": ["direct-local", "invariant-first", "hypothesis-driven", "architecture-comparison", "evidence-synthesis", "exploratory-design"],
+    "review_strategy_ids": ["adversarial-review"],
+    "required_reviews": {
+      "security protected destructive public-contract approval-sensitive or high-impact": ["adversarial-review"]
+    },
+    "small_task_behavior": "use direct-local without loading the strategy catalog",
+    "nontrivial_load_limit": "load index and one selected descriptor only",
+    "debug_mode_activation": "never automatic"
+  },
   "default_behavior": "decompose non-trivial work; use one local task for small focused work",
   "small_task_behavior": "one compact local task unless an expansion trigger fires",
   "decomposition_order": [
     "classify authorization actions profile scale facts areas and risk",
+    "select one primary analysis strategy and required review passes",
+    "record a bounded problem model and proof obligations",
     "split by changed fact owner contract area dependency validation and support sync",
     "assign exactly one implementation level to each task",
     "record dependencies and reject cycles",
@@ -123,10 +146,19 @@
     "delegation_cannot_broaden_authorization": true,
     "escalate_on_new_relationship": true,
     "escalate_on_failed_validation": true,
-    "escalation_loads_only_triggering_context": true
+    "escalation_loads_only_triggering_context": true,
+    "exactly_one_primary_strategy": true,
+    "small_task_skips_strategy_catalog": true,
+    "one_selected_strategy_descriptor": true,
+    "private_reasoning_forbidden": true,
+    "primary_owns_global_obligations": true,
+    "required_obligations_block_completion": true,
+    "required_reviews_block_completion": true
   },
   "final_evidence": [
     "plan ID and policy revision",
+    "primary analysis strategy selection evidence and problem model",
+    "required review passes and proof obligation status",
     "task IDs levels dependencies and executor decisions",
     "context selected and omitted per task",
     "worker packet and result IDs when delegation was used",

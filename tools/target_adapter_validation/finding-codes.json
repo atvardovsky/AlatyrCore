@@ -7,6 +7,7 @@
     "tools/target_adapter_validation/__init__.py",
     "tools/target_adapter_validation/action_modes.py",
     "tools/target_adapter_validation/ai_infrastructure.py",
+    "tools/target_adapter_validation/analysis_strategies.py",
     "tools/target_adapter_validation/architecture_knowledge.py",
     "tools/target_adapter_validation/assistant_capabilities.py",
     "tools/target_adapter_validation/blueprint_change.py",
@@ -46,6 +47,10 @@
     {
       "id": "AI",
       "code_count": 18
+    },
+    {
+      "id": "ANALYSIS",
+      "code_count": 32
     },
     {
       "id": "APPROVAL",
@@ -101,7 +106,7 @@
     },
     {
       "id": "DELEGATION",
-      "code_count": 97
+      "code_count": 98
     },
     {
       "id": "DEPENDENCY",
@@ -209,7 +214,7 @@
     },
     {
       "id": "SESSION",
-      "code_count": 53
+      "code_count": 59
     },
     {
       "id": "STALE",
@@ -225,7 +230,7 @@
     },
     {
       "id": "TASK",
-      "code_count": 25
+      "code_count": 27
     },
     {
       "id": "TDD",
@@ -413,6 +418,294 @@
       ],
       "sources": [
         "tools/target_adapter_validation/ai_infrastructure.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_LOCATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_NOT_IGNORED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_SYMLINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_PROBLEM_MODEL_TRACKED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_REQUIRED_OBLIGATION_OPEN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_REQUIRED_REVIEW_OPEN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_COMPLETION_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_COMPLETION_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_COMPLETION_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_DESCRIPTOR_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_DESCRIPTOR_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_GATE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_GATE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_GATE_ROUTE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_POLICY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_POLICY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_POLICY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_POLICY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_PRIMARY_IDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_REQUIREMENT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_ROUTE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_STRATEGY_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
       ]
     },
     {
@@ -3976,6 +4269,15 @@
     },
     {
       "code": "DELEGATION_AI_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ANALYSIS_STRATEGY_CONTRACT",
       "levels": [
         "error"
       ],
@@ -9869,6 +10171,24 @@
       ]
     },
     {
+      "code": "SESSION_CONTINUITY_ANALYSIS_BINDING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_ANALYSIS_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
       "code": "SESSION_CONTINUITY_APPROVAL_DRIFT",
       "levels": [
         "error"
@@ -10256,6 +10576,42 @@
       ]
     },
     {
+      "code": "SESSION_CONTINUITY_PROBLEM_MODEL_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PROBLEM_MODEL_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PROBLEM_MODEL_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTINUITY_PROBLEM_MODEL_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
       "code": "SESSION_CONTINUITY_RESUME_POLICY",
       "levels": [
         "error"
@@ -10604,6 +10960,24 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_ANALYSIS_DEBUG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_ANALYSIS_STRATEGY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
       ]
     },
     {

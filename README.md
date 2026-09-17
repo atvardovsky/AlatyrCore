@@ -13,6 +13,7 @@ agents, and time change.
 - Recorded architectural intent and reviewed engineering knowledge
 - Bounded task-specific delivery of applicable rules and context
 - Task decomposition with implementation levels and executor selection
+- Task-matched analysis strategies with explicit evidence and proof obligations
 - Target-designated authority and approval boundaries
 - Project-specific validation and evidence expectations
 - Continuity across developers, compatible agents, tools, and sessions
@@ -38,6 +39,14 @@ Typical questions include:
 - What files or project-knowledge surfaces may need to change with this
   behavior?
 - What validation is required before this change is safe?
+
+For non-trivial work, Alatyr selects one bounded analysis strategy that matches
+the problem: invariant-first for semantic rules, hypothesis-driven for uncertain
+defects, architecture comparison for competing designs, evidence synthesis for
+audits, or exploratory design when the problem is not yet settled. It records
+facts, assumptions, unknowns, and proof obligations as inspectable project-task
+evidence, without asking an agent to expose private reasoning. Small settled
+tasks stay on the compact `direct-local` route.
 
 The agent still has to inspect the routed sources and report uncertainty.
 AlatyrCore gives the discussion a project-owned memory and source-of-truth
@@ -550,7 +559,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.67`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.68`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

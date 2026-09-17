@@ -245,10 +245,10 @@ def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
 
 
 def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
-    if policy.get("schema_version") != 5:
+    if policy.get("schema_version") != 6:
         self.error(
             "DELEGATION_POLICY_SCHEMA",
-            "delegation policy schema_version must be 5",
+            "delegation policy schema_version must be 6",
             POLICY_RELPATH,
         )
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
@@ -269,6 +269,18 @@ def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
         self.error(
             "DELEGATION_DECISION_MODE",
             "enabled delegation decision_mode must be automatic or suggest-only",
+            POLICY_RELPATH,
+        )
+    expected_strategy_contract = {
+        "primary_selection_owner": "primary-assistant",
+        "worker_scope": "assigned-proof-obligations-only",
+        "waiver_authority": "primary-assistant-with-target-authorization",
+        "completion_owner": "primary-assistant",
+    }
+    if policy.get("analysis_strategy_contract") != expected_strategy_contract:
+        self.error(
+            "DELEGATION_ANALYSIS_STRATEGY_CONTRACT",
+            "delegation policy must preserve primary strategy and obligation authority",
             POLICY_RELPATH,
         )
     preference = policy.get("default_preference")
@@ -421,7 +433,7 @@ def _validate_tree_and_stop_policy(self: Any, policy: dict[str, Any]) -> None:
         not isinstance(stop, dict)
         or stop.get("require_stop_reason") is not True
         or stop.get("evidence_saturation")
-        != "stop-when-acceptance-and-required-evidence-are-covered"
+        != "stop-when-acceptance-required-evidence-and-assigned-proof-obligations-are-covered"
         or set(stop.get("stop_reason_ids", [])) != REQUIRED_STOP_REASONS
     ):
         self.error(
@@ -1241,6 +1253,8 @@ def _validate_delegation_templates(self: Any) -> None:
         "base_revision",
         "current_user_authorization",
         "task_profile",
+        "analysis_strategy_id",
+        "problem_model_sha256",
         "policy_revision",
         "capability_evidence",
         "capability_evidence_sha256",
@@ -1252,7 +1266,7 @@ def _validate_delegation_templates(self: Any) -> None:
     }
     if (
         set(tree) != required
-        or tree.get("schema_version") != 2
+        or tree.get("schema_version") != 3
         or tree.get("tree_kind") != "alatyr-delegation-execution-tree"
     ):
         self.error(
@@ -1299,6 +1313,7 @@ def _validate_delegation_templates(self: Any) -> None:
         "coverage_key",
         "semantic_scope",
         "changed_fact_ids",
+        "proof_obligation_ids",
         "canonical_owner_refs",
         "surface_refs",
         "relationship_refs",
@@ -1317,6 +1332,7 @@ def _validate_delegation_templates(self: Any) -> None:
         "accepted_summary_evidence",
         "summary_covers_result_ids",
         "satisfied_acceptance_ids",
+        "satisfied_proof_obligation_ids",
         "produced_evidence_ids",
         "attempt",
         "result_status",
@@ -1335,6 +1351,8 @@ def _validate_delegation_templates(self: Any) -> None:
         "status",
         "required_acceptance_ids",
         "required_evidence_ids",
+        "required_proof_obligation_ids",
+        "satisfied_proof_obligation_ids",
         "reviewed_result_ids",
         "indirect_result_ids",
         "rejected_result_ids",
@@ -1367,6 +1385,7 @@ def _validate_delegation_templates(self: Any) -> None:
                 "raw_payload", "accepted_summary", "summary_covers_result_ids",
                 "child_result_sha256", "evidence_manifest", "touched_surfaces",
                 "tools_used", "scope_violation", "authorization_concern", "validation",
+                "proof_obligation_ids", "satisfied_proof_obligation_ids",
                 "stop_reason_id", "subtree_sha256",
             },
         ),
@@ -1387,6 +1406,7 @@ def _validate_delegation_templates(self: Any) -> None:
                 "max_summary_words", "max_retries", "allowed_actions",
                 "write_scope", "allowed_tools", "allowed_surface_refs",
                 "semantic_scope", "coverage_prefix", "context_packet_sha256",
+                "proof_obligation_ids",
                 "capability_evidence_sha256", "required_validation",
                 "expires_at", "envelope_sha256",
             },
@@ -1406,6 +1426,7 @@ def _validate_delegation_templates(self: Any) -> None:
                 "branch_envelope_sha256", "base_revision",
                 "accepted_result_ids", "accepted_result_sha256",
                 "rejected_result_ids", "completed_coverage_keys",
+                "completed_proof_obligation_ids", "open_proof_obligation_ids",
                 "accepted_summary", "context_packet_sha256",
                 "semantic_guidance_sha256", "evidence_manifest_sha256",
                 "validation_sha256", "unresolved_escalations",
@@ -1416,7 +1437,7 @@ def _validate_delegation_templates(self: Any) -> None:
     for record, relpath, code, identity_field, identity, fields in json_templates:
         if (
             not isinstance(record, dict)
-            or record.get("schema_version") != 1
+            or record.get("schema_version") != 2
             or record.get(identity_field) != identity
             or set(record) != fields
         ):

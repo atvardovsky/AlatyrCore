@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "policy_kind": "target-subagent-delegation-policy",
   "state": "{ENABLED_SUGGEST_ONLY_DISABLED_OR_BLOCKED}",
   "owner": "{TARGET_DELEGATION_POLICY_OWNER}",
@@ -37,7 +37,7 @@
   },
   "stop_policy": {
     "require_stop_reason": true,
-    "evidence_saturation": "stop-when-acceptance-and-required-evidence-are-covered",
+    "evidence_saturation": "stop-when-acceptance-required-evidence-and-assigned-proof-obligations-are-covered",
     "stop_reason_ids": [
       "scope-covered",
       "evidence-sufficient",
@@ -63,6 +63,12 @@
   },
   "decomposition_policy": ".ai/assistant/task-decomposition.json",
   "role_catalog": ".ai/assistant/workers/role-catalog.json",
+  "analysis_strategy_contract": {
+    "primary_selection_owner": "primary-assistant",
+    "worker_scope": "assigned-proof-obligations-only",
+    "waiver_authority": "primary-assistant-with-target-authorization",
+    "completion_owner": "primary-assistant"
+  },
   "enabled_role_ids": [
     "{TARGET_ENABLED_WORKER_ROLE_ID}"
   ],

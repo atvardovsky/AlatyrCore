@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "strategy_kind": "review",
+  "id": "adversarial-review",
+  "use_when": ["security protected destructive public-contract approval or high-impact boundaries apply"],
+  "sequence": ["challenge assumptions", "seek boundary counterexamples", "test authorization and failure modes", "verify proof evidence", "record residual risk"],
+  "required_nonempty_fields": ["proof_obligations"],
+  "completion_rule": "required challenges are resolved or block completion"
+}

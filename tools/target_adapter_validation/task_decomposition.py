@@ -59,6 +59,13 @@ REQUIRED_QUALITY_GATES = {
     "escalate_on_new_relationship",
     "escalate_on_failed_validation",
     "escalation_loads_only_triggering_context",
+    "exactly_one_primary_strategy",
+    "small_task_skips_strategy_catalog",
+    "one_selected_strategy_descriptor",
+    "private_reasoning_forbidden",
+    "primary_owns_global_obligations",
+    "required_obligations_block_completion",
+    "required_reviews_block_completion",
 }
 
 
@@ -90,6 +97,8 @@ def validate_task_decomposition(validator: Any, manifest: Any) -> None:
             "Implementation level:",
             "Executor decision:",
             "Selected worker role:",
+            "Primary strategy:",
+            "Assigned proof obligations:",
             "Dependency cycles:",
             "## Primary Convergence",
         ],
@@ -108,12 +117,19 @@ def validate_task_decomposition(validator: Any, manifest: Any) -> None:
             self.target_path(OPERATION_COMPLETION_RELPATH),
             "OPERATION_COMPLETION_EVIDENCE",
         )
-        if not isinstance(completion, dict) or not isinstance(
-            completion.get("task_decomposition"), dict
-        ):
+        decomposition = completion.get("task_decomposition") if isinstance(completion, dict) else None
+        if not isinstance(decomposition, dict):
             self.error(
                 "TASK_DECOMPOSITION_COMPLETION_EVIDENCE",
                 "operation completion evidence must record task decomposition",
+                OPERATION_COMPLETION_RELPATH,
+            )
+        elif not isinstance(decomposition.get("analysis_strategy"), dict) or not isinstance(
+            decomposition.get("proof_obligations"), list
+        ):
+            self.error(
+                "TASK_DECOMPOSITION_COMPLETION_EVIDENCE",
+                "operation completion evidence must record analysis strategy and proof obligations",
                 OPERATION_COMPLETION_RELPATH,
             )
     _require_template_text(
@@ -132,10 +148,10 @@ def validate_task_decomposition(validator: Any, manifest: Any) -> None:
 
 
 def _validate_policy(self: Any, policy: dict[str, Any]) -> None:
-    if policy.get("schema_version") != 1:
+    if policy.get("schema_version") != 2:
         self.error(
             "TASK_DECOMPOSITION_POLICY_SCHEMA",
-            "task-decomposition policy schema_version must be 1",
+            "task-decomposition policy schema_version must be 2",
             POLICY_RELPATH,
         )
     if policy.get("policy_kind") != "target-task-decomposition-policy":
@@ -160,6 +176,19 @@ def _validate_policy(self: Any, policy: dict[str, Any]) -> None:
         self.error(
             "TASK_DECOMPOSITION_DEFAULT_BEHAVIOR",
             "task-decomposition policy must name non-trivial request behavior",
+            POLICY_RELPATH,
+        )
+    strategy = policy.get("analysis_strategy")
+    if not isinstance(strategy, dict):
+        self.error(
+            "TASK_DECOMPOSITION_ANALYSIS_STRATEGY",
+            "task-decomposition policy must define analysis_strategy",
+            POLICY_RELPATH,
+        )
+    elif strategy.get("debug_mode_activation") != "never automatic":
+        self.error(
+            "TASK_DECOMPOSITION_ANALYSIS_DEBUG",
+            "analysis strategy selection must not auto-enable Debug Mode",
             POLICY_RELPATH,
         )
     expect_string_list(
@@ -276,10 +305,10 @@ def _validate_router(self: Any, router: dict[str, Any]) -> None:
             ROUTER_RELPATH,
         )
         return
-    if decomposition.get("schema_version") != 1:
+    if decomposition.get("schema_version") != 2:
         self.error(
             "ROUTER_TASK_DECOMPOSITION_SCHEMA",
-            "task_decomposition.schema_version must be 1",
+            "task_decomposition.schema_version must be 2",
             ROUTER_RELPATH,
         )
     if decomposition.get("policy") != POLICY_RELPATH:

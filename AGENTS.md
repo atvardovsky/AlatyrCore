@@ -55,6 +55,12 @@ capability is verified, or record a policy skip reason. The primary retains
 authorization, decisions, integration, synthesis, validation, and state
 changes. Delegation never broadens scope.
 
+For non-trivial work, select one primary analysis strategy and keep an
+evidence-backed bounded problem model with explicit proof obligations. Small
+settled work stays `direct-local` without loading the strategy catalog. The
+primary owns strategy transitions, obligation acceptance or authorized waiver,
+required reviews, and final convergence; never persist private reasoning.
+
 Host and target repositories keep their own active adapter policy. This local
 route composes `ALATYR-DELEGATION-001` without changing portable target rules.
 

@@ -61,7 +61,7 @@ modules:
             "phases": ["inspect", "modify", "commit", "publish", "live-external"],
         }
         continuity = {
-            "schema_version": 1,
+            "schema_version": 2,
             "policy_kind": "target-session-continuity",
             "gate": ".ai/assistant/gates/session-continuity.md",
             "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
@@ -84,6 +84,12 @@ modules:
             "plan_template": ".ai/assistant/templates/task-decomposition.md",
             "default_behavior": "decompose every non-trivial request",
             "small_task_behavior": "one local task",
+            "analysis_strategy": {
+                "catalog": ".ai/assistant/analysis-strategies/index.json",
+                "problem_model_template": ".ai/assistant/templates/problem-model.json",
+                "small_task_behavior": "use direct-local without loading the strategy catalog",
+                "nontrivial_load_limit": "load index and one selected descriptor only",
+            },
             "levels": [
                 {"id": "L0", "worker_roles": []},
                 {"id": "L1", "worker_roles": ["explorer"]},
@@ -134,7 +140,7 @@ modules:
             ),
         )
 
-        self.assertEqual(packet["schema_version"], 4)
+        self.assertEqual(packet["schema_version"], 5)
         self.assertEqual(
             packet["session_continuity"]["resume_mode"],
             "inspect-only-pending-current-scope-revalidation",
@@ -178,6 +184,10 @@ modules:
         self.assertEqual(
             decomposition["level_range"],
             "L0-L7",
+        )
+        self.assertEqual(
+            decomposition["analysis_strategy"]["catalog"],
+            ".ai/assistant/analysis-strategies/index.json",
         )
         self.assertEqual(decomposition["executor_default"], "primary")
         self.assertIn("L6", decomposition["non_delegable_levels"])

@@ -24,6 +24,9 @@ Non-goals: `{EXPLICIT_NON_GOALS}`
 Expected output: `{PATCH_EVIDENCE_FINDINGS_OR_OTHER}`
 Implementation level: `{L1_L2_L3_L4_OR_L5}`
 Task decomposition plan: `{TASK_DECOMPOSITION_PLAN_ID_OR_PATH}`
+Parent primary analysis strategy: `{PRIMARY_STRATEGY_ID}`
+Assigned proof obligations: `{LOCAL_OBLIGATION_IDS_OR_NONE}`
+Global strategy and obligation authority: `primary-only`
 Changed fact IDs: `{CHANGED_FACT_IDS_OR_NONE}`
 Semantic scope: `{SEMANTIC_SCOPE_OR_NOT_APPLICABLE}`
 Semantic fact owner: `{PRIMARY_OWNED_OWNER_OR_NONE}`
@@ -98,6 +101,7 @@ Scope review: `{ACCEPTED_REJECTED_OR_REWORK_REQUIRED}`
 Patch/evidence review: `{PRIMARY_REVIEW_RESULT}`
 Repeated or combined validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Changed-fact and approval reconciliation: `{RESULT_OR_NOT_APPLICABLE}`
+Assigned proof-obligation evidence: `{OBLIGATION_IDS_STATUS_AND_EVIDENCE}`
 Final disposition: `{INTEGRATED_REWORKED_DISCARDED_OR_BLOCKED}`
 Measured latency or cost evidence: `{MEASUREMENT_OR_NOT_CAPTURED}`
 Execution tree update: `{UPDATED_VALIDATED_CANCELLED_OR_NOT_CAPTURED_WITH_REASON}`

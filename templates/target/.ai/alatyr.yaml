@@ -63,12 +63,12 @@ support_information:
   policy: ".ai/project/support-policy.json"
   state: ".ai/support-state.json"
 context_routing:
-  router_schema_version: 12
+  router_schema_version: 13
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:
     - ".ai/assistant/bootstrap-index.json"
-  agent_entry_packet_schema_version: 4
+  agent_entry_packet_schema_version: 5
   agent_entry_packet: ".ai/assistant/entry-packet.json"
   bootstrap_max_files: 2
   bootstrap_max_words: 900
@@ -150,13 +150,22 @@ operations:
   session_continuity_flow: ".ai/assistant/flows/session-continuity.flow.md"
   session_continuity_gate: ".ai/assistant/gates/session-continuity.md"
   session_continuity_packet: ".ai/assistant/templates/session-continuity-packet.json"
-  session_continuity_packet_schema: 1
+  session_continuity_packet_schema: 2
   task_decomposition: ".ai/assistant/task-decomposition.json"
+  task_decomposition_schema: 2
   task_decomposition_plan: ".ai/assistant/templates/task-decomposition.md"
+  analysis_strategy_index: ".ai/assistant/analysis-strategies/index.json"
+  problem_model_template: ".ai/assistant/templates/problem-model.json"
+  problem_model_schema: 1
   delegation_execution_tree: ".ai/assistant/templates/delegation-execution-tree.json"
+  delegation_policy_schema: 6
+  delegation_execution_tree_schema: 3
   delegation_worker_result: ".ai/assistant/templates/worker-result.json"
+  delegation_worker_result_schema: 2
   delegation_branch_envelope: ".ai/assistant/templates/delegation-branch-envelope.json"
+  delegation_branch_envelope_schema: 2
   delegation_branch_checkpoint: ".ai/assistant/templates/delegation-branch-checkpoint.json"
+  delegation_branch_checkpoint_schema: 2
   diagram_discussion: ".ai/assistant/flows/diagram-discussion.flow.md"
   diagram_presentation: ".ai/assistant/templates/diagram-presentation.md"
   architecture_assistance: ".ai/assistant/flows/architecture-assistance.flow.md"

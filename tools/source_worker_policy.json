@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
@@ -30,7 +30,7 @@
   },
   "stop_policy": {
     "require_stop_reason": true,
-    "evidence_saturation": "stop-when-acceptance-and-required-evidence-are-covered",
+    "evidence_saturation": "stop-when-acceptance-required-evidence-and-assigned-proof-obligations-are-covered",
     "stop_reason_ids": [
       "scope-covered",
       "evidence-sufficient",
@@ -55,7 +55,7 @@
     ]
   },
   "execution_tree_contract": {
-    "schema_version": 2,
+    "schema_version": 3,
     "tree_kind": "alatyr-delegation-execution-tree",
     "template_path": "templates/target/.ai/assistant/templates/delegation-execution-tree.json",
     "required_tree_fields": [
@@ -66,6 +66,8 @@
       "base_revision",
       "current_user_authorization",
       "task_profile",
+      "analysis_strategy_id",
+      "problem_model_sha256",
       "policy_revision",
       "capability_evidence",
       "capability_evidence_sha256",
@@ -105,6 +107,7 @@
       "coverage_key",
       "semantic_scope",
       "changed_fact_ids",
+      "proof_obligation_ids",
       "canonical_owner_refs",
       "surface_refs",
       "relationship_refs",
@@ -123,6 +126,7 @@
       "accepted_summary_evidence",
       "summary_covers_result_ids",
       "satisfied_acceptance_ids",
+      "satisfied_proof_obligation_ids",
       "produced_evidence_ids",
       "attempt",
       "result_status",
@@ -235,7 +239,7 @@
     }
   },
   "worker_packet_contract": {
-    "schema_version": 5,
+    "schema_version": 6,
     "packet_kinds": ["source-read-only-workstream"],
     "required_fields": [
       "schema_version",
@@ -263,6 +267,7 @@
       "independence_key",
       "semantic_scope",
       "changed_fact_ids",
+      "proof_obligation_ids",
       "canonical_owner_refs",
       "surface_refs",
       "relationship_refs",
@@ -289,6 +294,7 @@
       "independence_key": "portable-framework-rules",
       "semantic_scope": "portable-framework-rules",
       "changed_fact_ids": [],
+      "proof_obligation_ids": [],
       "canonical_owner_refs": [
         "framework/rule-registry.json",
         "framework/rule-ownership.md"
@@ -329,6 +335,7 @@
       "independence_key": "installation-and-target-projections",
       "semantic_scope": "installation-and-target-projections",
       "changed_fact_ids": [],
+      "proof_obligation_ids": [],
       "canonical_owner_refs": [
         "INSTALL.md",
         "installer/assistant-installation.flow.md"
@@ -369,6 +376,7 @@
       "independence_key": "source-tools-and-validation",
       "semantic_scope": "source-tools-and-validation",
       "changed_fact_ids": [],
+      "proof_obligation_ids": [],
       "canonical_owner_refs": [
         "tools/check_manifest.json",
         "docs/source-architecture.md"
@@ -411,6 +419,7 @@
       "independence_key": "public-and-release-evidence",
       "semantic_scope": "public-and-release-evidence",
       "changed_fact_ids": [],
+      "proof_obligation_ids": [],
       "canonical_owner_refs": [
         "README.md",
         "CHANGELOG.md",

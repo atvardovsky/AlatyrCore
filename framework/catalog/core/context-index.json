@@ -188,8 +188,8 @@
       "owner_refs": [
         "ALATYR-EVIDENCE-001"
       ],
-      "estimated_words": 3412,
-      "content_digest": "sha256:f296d95ddf73c9203894cf385024e45b90644737b70be49f0be919e3d39c5d09"
+      "estimated_words": 3526,
+      "content_digest": "sha256:6d3821cbea627f5b1f0fb2e08978b47a5f0f3f8697727ec7502b3d9a3cb61558"
     },
     {
       "id": "framework.core.installed-operations-md",
@@ -328,8 +328,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1662,
-      "content_digest": "sha256:83b1b016fb74092d1616dc5d97156c4fb9290e8a825150f7562b23c3ba0c363f"
+      "estimated_words": 1673,
+      "content_digest": "sha256:fa2a63405f400baa6cd7a7b78441bb0d6005ec968a65b391deef08331b480136"
     },
     {
       "id": "framework.core.rule-ownership-md",
@@ -344,8 +344,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1788,
-      "content_digest": "sha256:b8b2cc032f944176642d0c26dbd9845c0a91590ad0b68b31b8ce04c179645341"
+      "estimated_words": 1803,
+      "content_digest": "sha256:31f7a7e546de53a0d961d6a4e3bb99a96d634063431f5b4efaf6aaf7363be48a"
     },
     {
       "id": "framework.core.rule-registry-json",
@@ -363,8 +363,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4294,
-      "content_digest": "sha256:b8de51510ebcd2b2a1cc609124b26275cf9fb28e1bec69bb1989f4e3ad429c06"
+      "estimated_words": 4348,
+      "content_digest": "sha256:bb0461d7f63c31d5a3b3c7f63bec38fd2a56ffeee555d57862fdcec69d35dd35"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -382,8 +382,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3462,
-      "content_digest": "sha256:631ca78cf54e37a30fd5e98932efc47ba70840914b17804c319e9d2319bdd25a"
+      "estimated_words": 3501,
+      "content_digest": "sha256:3cc4803c44feba1bb881975c7b1aa80a71f46802643070cc0c685d37046aa467"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 320,
-      "content_digest": "sha256:0d43797c6174e4fd7e3be2c74a14d5f73bf7142b080f1c63e6917d88f179300d"
+      "content_digest": "sha256:1786bef6f5f62e4892312226978d111fd46587a6ea52637688f60be84068542f"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

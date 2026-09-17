@@ -119,6 +119,9 @@ Replace this section with the actual target project map.
 - deterministic context-packet evidence for non-trivial or expanded routes
 - context profiles for task-specific context loading
 - module profile for required core and optional Alatyr capabilities
+- task decomposition with descriptor-free small-task execution, one selected
+  analysis strategy for non-trivial work, bounded problem models, proof
+  obligations, and primary-owned review and convergence
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/workspace-modes/catalog.json"]} -->
 - compact workspace-mode routing and per-mode support when application,
   framework, library, skeleton, dependency, or workspace perspectives differ

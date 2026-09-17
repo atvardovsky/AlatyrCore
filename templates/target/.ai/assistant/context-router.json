@@ -1,5 +1,5 @@
 {
-  "schema_version": 12,
+  "schema_version": 13,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -45,6 +45,8 @@
       "selected intent overlays",
       "task classification",
       "task decomposition id and implementation levels",
+      "primary analysis strategy and problem model evidence",
+      "proof obligation and required review status",
       "selected task scale overlay",
       "selected project areas",
       "selected project knowledge and routing stage",
@@ -191,9 +193,11 @@
     ]
   },
   "task_decomposition": {
-    "schema_version": 1,
+    "schema_version": 2,
     "policy": ".ai/assistant/task-decomposition.json",
     "plan_template": ".ai/assistant/templates/task-decomposition.md",
+    "analysis_strategy_index": ".ai/assistant/analysis-strategies/index.json",
+    "problem_model_template": ".ai/assistant/templates/problem-model.json",
     "load_after": [
       "task classification",
       "operation routing",
@@ -211,11 +215,12 @@
         "when": "task splitting implementation levels dependency ordering executor selection or policy repair is ambiguous"
       }
     ],
-    "small_task_behavior": "one local task may be recorded from the entry packet without loading the full policy",
+    "small_task_behavior": "one direct-local task may be recorded without loading the policy or strategy catalog",
+    "strategy_loading": "non-trivial work loads the index and exactly one selected descriptor; reviews load only when required",
     "executor_selection": "primary first; worker only through enabled delegation policy and selected capability record"
   },
   "agent_entry_packet": {
-    "schema_version": 4,
+    "schema_version": 5,
     "path": ".ai/assistant/entry-packet.json",
     "load_when": "bootstrap recovery adapter audit or routing conflict",
     "purpose": "lazy recovery route containing installation state, decomposition cues, routing source pointers, authorization and continuity boundaries, and delta-first support review entry points",

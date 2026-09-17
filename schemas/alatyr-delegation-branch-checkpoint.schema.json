@@ -9,12 +9,13 @@
     "previous_checkpoint_id", "operation_id", "node_id",
     "branch_envelope_sha256", "base_revision", "accepted_result_ids",
     "accepted_result_sha256", "rejected_result_ids", "completed_coverage_keys",
+    "completed_proof_obligation_ids", "open_proof_obligation_ids",
     "accepted_summary", "context_packet_sha256", "semantic_guidance_sha256",
     "evidence_manifest_sha256", "validation_sha256", "unresolved_escalations",
     "next_ready_action", "stop_reason_id", "checkpoint_sha256"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "checkpoint_kind": {"const": "alatyr-delegation-branch-checkpoint"},
     "checkpoint_id": {"type": "string", "minLength": 1},
     "previous_checkpoint_id": {"type": ["string", "null"], "minLength": 1},
@@ -26,6 +27,8 @@
     "accepted_result_sha256": {"type": "array", "items": {"$ref": "#/definitions/sha256"}, "uniqueItems": true},
     "rejected_result_ids": {"$ref": "#/definitions/stringList"},
     "completed_coverage_keys": {"$ref": "#/definitions/stringList"},
+    "completed_proof_obligation_ids": {"$ref": "#/definitions/stringList"},
+    "open_proof_obligation_ids": {"$ref": "#/definitions/stringList"},
     "accepted_summary": {"$ref": "#/definitions/artifact"},
     "context_packet_sha256": {"anyOf": [{"$ref": "#/definitions/sha256"}, {"type": "null"}]},
     "semantic_guidance_sha256": {"anyOf": [{"$ref": "#/definitions/sha256"}, {"type": "null"}]},

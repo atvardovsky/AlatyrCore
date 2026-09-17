@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "strategy_kind": "primary",
+  "id": "architecture-comparison",
+  "use_when": ["architecture patterns boundaries or alternatives need comparison"],
+  "sequence": ["record decision drivers", "define alternatives", "compare constraints and consequences", "test boundary failures", "route any accepted decision to its owner"],
+  "required_nonempty_fields": ["invariants", "alternatives", "proof_obligations"],
+  "completion_rule": "recommendation distinguishes evidence tradeoffs and authority; acceptance remains owner-controlled"
+}

@@ -5,6 +5,21 @@ compatibility data in
 `tools/target_adapter_validation/contract-compatibility.json`.
 It does not replace portable framework rules or target-owned project facts.
 
+## analysis-strategies
+
+Manifest key: `operations.task_decomposition_schema`.
+Current contract version: `2`.
+
+Artifact: `problem-model`
+Current version: `1`.
+Supported versions: `1`.
+Migration-limited versions: none.
+
+Artifact: `task-decomposition`
+Current version: `2`.
+Supported versions: `2`.
+Migration-limited versions: none.
+
 ## debug-mode
 
 Manifest key: `debug_mode.contract_version`.
@@ -19,6 +34,36 @@ Artifact: `record`
 Current version: `6`.
 Supported versions: `1`, `2`, `3`, `4`, `5`, `6`.
 Migration-limited versions: `1`, `2`, `3`, `4`, `5`.
+
+## delegation-evidence
+
+Manifest key: `operations.delegation_policy_schema`.
+Current contract version: `6`.
+
+Artifact: `branch-checkpoint`
+Current version: `2`.
+Supported versions: `2`.
+Migration-limited versions: none.
+
+Artifact: `branch-envelope`
+Current version: `2`.
+Supported versions: `2`.
+Migration-limited versions: none.
+
+Artifact: `execution-tree`
+Current version: `3`.
+Supported versions: `3`.
+Migration-limited versions: none.
+
+Artifact: `policy`
+Current version: `6`.
+Supported versions: `6`.
+Migration-limited versions: none.
+
+Artifact: `worker-result`
+Current version: `2`.
+Supported versions: `2`.
+Migration-limited versions: none.
 
 ## engineering-evidence
 
@@ -58,11 +103,11 @@ Migration-limited versions: `1`.
 ## session-continuity
 
 Manifest key: `operations.session_continuity_packet_schema`.
-Current contract version: `1`.
+Current contract version: `2`.
 
 Artifact: `packet`
-Current version: `1`.
-Supported versions: `1`.
+Current version: `2`.
+Supported versions: `2`.
 Migration-limited versions: none.
 
 Regenerate this reference with:

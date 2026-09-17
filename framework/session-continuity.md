@@ -69,6 +69,8 @@ resume safely:
 - Git branch, revision, changed paths, and change-set digest when available
 - selected approval references and content digests
 - accepted decisions, unresolved questions, validation results, and risks
+- primary analysis strategy, problem-model digest, open proof obligations,
+  completed required reviews, and invalidated assumptions
 - boundary kind, assistant surface, and capability evidence state
 
 Do not store raw conversation history, hidden reasoning, secrets, credentials,
@@ -91,9 +93,11 @@ Before state-changing work resumes:
    with the current state.
 4. Re-resolve only changed or stale canonical owners, rules, and validation
    evidence named by the packet.
-5. Re-evaluate current-scope authorization from the newest user instruction.
-6. Reclassify risk when scope, changed facts, or external effects differ.
-7. Continue from the recorded next safe action only when every applicable
+5. Verify the primary strategy and problem-model digest; reopen affected proof
+   obligations when assumptions, evidence, or strategy changed.
+6. Re-evaluate current-scope authorization from the newest user instruction.
+7. Reclassify risk when scope, changed facts, or external effects differ.
+8. Continue from the recorded next safe action only when every applicable
    boundary still passes.
 
 No full framework or project reread is required merely because compaction
@@ -121,6 +125,8 @@ For a resumed state-changing task, final evidence should identify:
 - context selectively reloaded because of detected drift
 - current user authorization re-established after the boundary
 - invalidated approvals or decisions
+- preserved or changed strategy, open obligations, completed reviews, and
+  invalidated assumptions
 - validation performed after resume
 - unresolved continuity risk
 
@@ -134,3 +140,5 @@ Reject or stop a state-changing continuation that:
 - ignores branch, revision, changed-path, approval, or digest drift
 - reloads the entire corpus without a named expansion reason
 - claims a provider compaction capability without current target evidence
+- resumes from stale problem-model evidence without reopening affected proof
+  obligations

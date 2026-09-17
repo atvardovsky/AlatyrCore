@@ -18,6 +18,8 @@ a large task package.
 - Completion claim: `{COMPLETE_PARTIAL_BLOCKED_OR_UNVERIFIED}`
 - Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Context receipt result: `{EXPECTED_ROUTE_LOADED_FILES_EXPANSIONS_OMISSIONS_AND_RESIDUAL_CONTEXT_RISK}`
+- Analysis strategy: `{PRIMARY_STRATEGY_SELECTION_PROBLEM_MODEL_AND_REQUIRED_REVIEWS}`
+- Proof obligations: `{OBLIGATION_IDS_OWNERS_STATUS_AND_EVIDENCE}`
 - Delegation execution tree:
   `{LEDGER_PACKETS_RESULTS_BUDGET_OVERLAP_STOP_CANCEL_VALIDATION_PRIMARY_REVIEW_AND_CONVERGENCE_OR_NOT_USED}`
 - Changed facts: `{FACT_IDS_STATEMENTS_OWNERS_AND_STATUS_OR_NOT_APPLICABLE}`
@@ -32,11 +34,13 @@ a large task package.
 - May claim complete: `{TRUE_ONLY_WHEN_REQUIRED_EVIDENCE_PASSED_OR_IS_NOT_APPLICABLE}`
 - Blocking reasons: `{BLOCKING_REASONS_OR_NONE}`
 - Next owner or action: `{OWNER_ACTION_OR_NONE}`
+- Learning outcome: `{CLASSIFICATION_EVIDENCE_PROMOTION_STATE_AND_OWNER}`
 
 Do not report `complete` when current authorization is missing, required
 validation failed or was unavailable without an accepted target reason, logical
 integrity is unresolved, approval scope is required but unverified, or residual
-risk needs a target owner decision.
+risk needs a target owner decision. Required proof obligations and analysis
+reviews must also be resolved with evidence.
 
 ## Contract: `adapter-health-output`
 

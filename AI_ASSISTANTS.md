@@ -67,7 +67,13 @@ selectors, read selected canonical owners, and apply only accepted/current
 constraints. Historical evidence and promotion records are not authority.
 Then use the installed task-decomposition policy to assign implementation
 levels, dependencies, bounded context, validation, and primary/worker executor
-decisions before implementation or delegation.
+decisions before implementation or delegation. Small settled work uses the
+`direct-local` strategy without loading the strategy catalog. For non-trivial
+work, load `.ai/assistant/analysis-strategies/index.json`, select exactly one
+primary strategy, load only its descriptor, and maintain a bounded problem
+model with evidence-backed proof obligations. Required adversarial review and
+unresolved required obligations block completion. Persist conclusions and
+evidence, never private chain-of-thought.
 
 ## Installation Workflow
 

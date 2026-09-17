@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "alatyr-operation-completion-evidence",
   "operation": {
     "id": "{OPERATION_ID}",
@@ -35,6 +35,22 @@
     "policy": ".ai/assistant/task-decomposition.json",
     "plan_id": "{TASK_DECOMPOSITION_PLAN_ID_OR_ONE_NODE_INLINE}",
     "plan_path": "{TASK_DECOMPOSITION_PLAN_PATH_OR_NONE}",
+    "analysis_strategy": {
+      "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
+      "selection_evidence": "{TASK_FACT_RISK_OR_UNCERTAINTY_EVIDENCE}",
+      "problem_model_path_or_inline": "{TARGET_RELATIVE_PATH_INLINE_SUMMARY_OR_NOT_REQUIRED}",
+      "problem_model_sha256": "{LOWERCASE_SHA256_OR_NOT_PERSISTED}",
+      "required_review_ids": ["{ADVERSARIAL_REVIEW_OR_NONE}"],
+      "review_results": ["{REVIEW_ID_PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}"]
+    },
+    "proof_obligations": [
+      {
+        "id": "{OBLIGATION_ID}",
+        "owner": "{PRIMARY_OR_WORKER}",
+        "status": "{PASSED_WAIVED_FAILED_BLOCKED_OR_OPEN}",
+        "evidence": "{TARGET_RELATIVE_EVIDENCE_OR_REASON}"
+      }
+    ],
     "tasks": [
       {
         "id": "{TASK_ID}",
@@ -73,6 +89,12 @@
       "primary_convergence_result": "{PASSED_FAILED_BLOCKED_OR_NOT_USED}"
     },
     "residual_risk": "{NONE_OR_RESIDUAL_RISK}"
+  },
+  "learning_outcome": {
+    "classification": "{NONE_PROJECT_KNOWLEDGE_CANDIDATE_ARCHITECTURE_RECORD_CANDIDATE_AI_INFRASTRUCTURE_PATTERN_CANDIDATE_MISSING_SKILL_PROMPT_GATE_CHECKER_OR_FLOW_OR_TASK_LOCAL_CORRECTION}",
+    "evidence": "{EVIDENCE_OR_NOT_APPLICABLE}",
+    "promotion_state": "{NOT_PROPOSED_PROPOSED_APPROVED_OR_APPLIED}",
+    "owner": "{TARGET_OWNER_OR_NOT_APPLICABLE}"
   },
   "changed_facts": [
     {

@@ -75,6 +75,7 @@ POLICY_FIELDS = {
     "stop_policy",
     "decomposition_policy",
     "role_catalog",
+    "analysis_strategy_contract",
     "enabled_role_ids",
     "requirements",
     "eligible_work",
@@ -409,6 +410,8 @@ def validate_static_contract_text(failures: list[str]) -> None:
             '"indirect_result_ids"',
             '"semantic_scope"',
             '"changed_fact_ids"',
+            '"proof_obligation_ids"',
+            '"satisfied_proof_obligation_ids"',
             '"canonical_owner_refs"',
             '"relationship_refs"',
             '"overlap_decision"',
@@ -583,8 +586,8 @@ def main() -> int:
     missing_policy = sorted(POLICY_FIELDS - set(policy))
     if missing_policy:
         failures.append(f"delegation policy missing fields {missing_policy}")
-    if policy.get("schema_version") != 5:
-        failures.append("delegation policy schema_version must be 5")
+    if policy.get("schema_version") != 6:
+        failures.append("delegation policy schema_version must be 6")
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
         failures.append("delegation policy kind is incorrect")
     if capability_index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
@@ -859,6 +862,8 @@ def main() -> int:
         "recursive-envelope-expansion": "reject-result",
         "recursive-summary-digest-mismatch": "reject-result",
         "primary-summary-budget-exceeded": "sequential-primary-fallback",
+        "unassigned-proof-obligation": "reject-result",
+        "non-local-strategy-without-problem-model": "reject",
     }
     actual_cases = {
         case.get("id"): case.get("expected_outcome")

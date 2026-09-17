@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "policy_kind": "target-session-continuity",
   "canonical_rule": "ALATYR-CONTINUITY-001",
   "canonical_owner": ".ai/framework/session-continuity.md",
   "flow": ".ai/assistant/flows/session-continuity.flow.md",
   "gate": ".ai/assistant/gates/session-continuity.md",
   "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
-  "packet_schema": "alatyr-session-continuity-packet-v1",
+  "packet_schema": "alatyr-session-continuity-packet-v2",
   "runtime_directory": ".ai/.runtime/continuity",
   "boundary_kinds": [
     "manual-compaction",
@@ -46,6 +46,13 @@
       "missing or changed canonical owner",
       "scope or authorization ambiguity",
       "failed focused validation"
+    ],
+    "analysis_state": [
+      "primary strategy identity",
+      "problem-model path and digest",
+      "open proof obligations",
+      "completed required reviews",
+      "invalidated assumptions"
     ]
   }
 }

@@ -51,7 +51,8 @@ sync, logical integrity review, and final evidence.
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
 - required task decomposition with implementation levels, dependency-aware
-  task graphs, bounded context, executor selection, and primary-agent
+  task graphs, bounded context, one task-matched analysis strategy,
+  evidence-backed proof obligations, executor selection, and primary-agent
   convergence before non-trivial execution
 - optional capability-gated worker delegation with project-owned roles and
   prompts, deterministic task/packet/result contracts, verified per-surface
@@ -233,7 +234,8 @@ Those belong to a project contour or repository adapter.
   for large, cross-boundary, multi-workstream, or resumable changes.
 - `.ai/framework/task-decomposition.md`: required request decomposition
   contract for assigning implementation levels, dependencies, bounded context,
-  executor decisions, validation, and convergence before non-trivial work.
+  analysis strategy, proof obligations, executor decisions, validation, and
+  convergence before non-trivial work.
 - `.ai/framework/subagent-delegation.md`: optional contract for capability-
   checked decomposition, target worker roles, deterministic task readiness,
   bounded packet/results, thin native bindings, retry/conflict handling, and

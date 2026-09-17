@@ -17,6 +17,9 @@ placeholders with target facts before accepting installation.
 - Task decomposition policy: `.ai/assistant/task-decomposition.json`
 - Task decomposition template:
   `.ai/assistant/templates/task-decomposition.md`
+- Analysis strategy index:
+  `.ai/assistant/analysis-strategies/index.json`
+- Problem-model template: `.ai/assistant/templates/problem-model.json`
 - Team operating model: `.ai/project/team-operating-model.md` when enabled
 - Team work registry: `.ai/assistant/team/work-registry.json` when enabled
 - Pre-change preview: `.ai/assistant/templates/pre-change-preview.md`
@@ -84,8 +87,11 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
    `.ai/assistant/templates/task-decomposition.md` before implementation or
    delegation. Assign exactly one implementation level, bounded context,
    dependency state, validation, allowed files or surfaces, and executor
-   decision to each subtask. For a small task, compact one-node evidence is
-   enough unless an expansion trigger fires.
+   decision to each subtask. Select exactly one primary analysis strategy,
+   load only its descriptor, record a bounded problem model and proof
+   obligations, and add required review passes. For a small task,
+   `direct-local` compact one-node evidence is enough and the strategy catalog
+   stays unloaded unless an expansion trigger fires.
 9. When exactly one operation fits, its allowed-action scope is sufficient,
    and the next phase is authorized, state the operation and reason briefly,
    then continue without asking the user to confirm routing.
@@ -179,6 +185,8 @@ Report:
 - selected context profile and overlays
 - task decomposition plan ID, implementation levels, dependencies, and
   executor decisions
+- selected primary strategy, problem model, required review passes, and proof-
+  obligation results
 - matching flow and required module state
 - reason for selection
 - allowed actions and approval needs
@@ -217,6 +225,8 @@ Reject or revise routing that:
 - treats the pre-change preview as approval
 - edits, delegates, or claims completion for non-trivial work without task
   decomposition evidence
+- loads every strategy descriptor, selects multiple primary strategies, or
+  claims completion with unresolved required obligations or reviews
 - assigns architecture, business, approval, commit, publish, or live-external
   authority to a worker
 - claims adapter health without fresh evidence

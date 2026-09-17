@@ -21,6 +21,16 @@ Project areas: `{AREA_IDS_OR_NONE}`
 Risk: `{RISK_CLASSES_OR_NONE}`
 Approval state: `{NOT_REQUIRED_REQUIRED_PRESENT_BLOCKED_OR_UNRESOLVED}`
 
+## Analysis Strategy
+
+Primary strategy: `{PRIMARY_STRATEGY_ID}`
+Selection evidence: `{TASK_FACT_RISK_OR_UNCERTAINTY_EVIDENCE}`
+Strategy descriptor: `{SELECTED_DESCRIPTOR_OR_NOT_LOADED_FOR_DIRECT_LOCAL}`
+Problem model: `{PROBLEM_MODEL_PATH_INLINE_SUMMARY_OR_NOT_REQUIRED}`
+Problem model digest: `{LOWERCASE_SHA256_OR_NOT_PERSISTED}`
+Required review passes: `{ADVERSARIAL_REVIEW_OR_NONE}`
+Debug Mode: `{EXPLICITLY_ENABLED_OR_NOT_ENABLED}`
+
 ## Task Graph
 
 Use one task when the request is small and locally provable. Use multiple
@@ -39,6 +49,7 @@ Allowed files or surfaces: `{PATHS_SURFACES_OR_NONE}`
 Required context: `{PATHS_AND_REASONS}`
 Intentionally omitted context: `{PATHS_AND_REASONS_OR_NONE}`
 Acceptance criteria: `{OBJECTIVE_LOCAL_CRITERIA}`
+Assigned proof obligations: `{OBLIGATION_IDS_OR_NONE}`
 Validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`
 Executor decision: `{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}`
 Selected worker role: `{ROLE_ID_OR_NONE}`
@@ -56,6 +67,7 @@ Shared semantic owners: `{NONE_OR_PRIMARY_CONVERGENCE_TASK}`
 Overlapping write scopes: `{NONE_OR_REJECTED_TASKS}`
 New relationships discovered: `{NONE_OR_ESCALATION_DETAILS}`
 Escalations: `{NONE_OR_TASK_IDS_AND_REASONS}`
+Invalidated assumptions: `{NONE_OR_ASSUMPTION_IDS_AND_EVIDENCE}`
 
 ## Primary Convergence
 
@@ -66,5 +78,10 @@ Combined validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Changed-fact reconciliation: `{RESULT_OR_NOT_APPLICABLE}`
 Approval and authorization reconciliation: `{RESULT_OR_NOT_APPLICABLE}`
 Documentation diagram and support sync: `{RESULT_OR_NOT_APPLICABLE}`
+Proof obligations: `{PASSED_WAIVED_FAILED_BLOCKED_OPEN_AND_EVIDENCE}`
+Required review passes: `{PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}`
 Final logical integrity result: `{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}`
 Residual risk: `{RESIDUAL_RISK}`
+
+Completion is blocked while a required proof obligation or review pass is
+open, failed, blocked, unevidenced, or waived without target-authorized policy.

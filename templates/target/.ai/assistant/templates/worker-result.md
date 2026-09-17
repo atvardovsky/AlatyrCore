@@ -32,6 +32,7 @@ Files or surfaces touched: `{TOUCHED_SURFACES_OR_NONE}`
 Commands or tools used: `{COMMANDS_TOOLS_AND_RESULTS_OR_NONE}`
 Validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Acceptance criteria: `{PASS_FAIL_OR_BLOCKED_BY_CRITERION}`
+Assigned proof-obligation evidence: `{OBLIGATION_IDS_STATUS_AND_EVIDENCE_OR_NONE}`
 
 ## Boundary Evidence
 
@@ -54,6 +55,8 @@ Residual risk: `{RESIDUAL_RISK}`
 
 This result is evidence for primary review. It is not approval, integration,
 commit, publication, or final operation completion.
+The worker cannot change the primary strategy or accept or waive a
+primary-owned proof obligation.
 Routine parent context loads the accepted summary, not the raw payload. Load the
 raw payload only for a named conflict, failed validation, scope concern,
 semantic decision, or final-review requirement.

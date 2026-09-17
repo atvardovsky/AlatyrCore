@@ -433,8 +433,8 @@ def check_task_decomposition(router: dict[str, Any], failures: list[str]) -> Non
     if not isinstance(decomposition, dict):
         failures.append("task_decomposition must be an object")
         return
-    if decomposition.get("schema_version") != 1:
-        failures.append("task_decomposition.schema_version must be 1")
+    if decomposition.get("schema_version") != 2:
+        failures.append("task_decomposition.schema_version must be 2")
     if decomposition.get("policy") != DECOMPOSITION_POLICY:
         failures.append("task_decomposition.policy is invalid")
     if decomposition.get("plan_template") != DECOMPOSITION_PLAN:
@@ -489,8 +489,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 12:
-        failures.append("context-router.json schema_version must be 12")
+    if router.get("schema_version") != 13:
+        failures.append("context-router.json schema_version must be 13")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -651,7 +651,7 @@ def main() -> int:
         failures.append("agent_entry_packet must be an object")
     else:
         expected_entry_packet = {
-            "schema_version": 4,
+            "schema_version": 5,
             "path": ".ai/assistant/entry-packet.json",
         }
         for field, expected in expected_entry_packet.items():

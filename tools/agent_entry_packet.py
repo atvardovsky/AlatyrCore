@@ -112,6 +112,7 @@ def _task_decomposition_summary(value: Any) -> dict[str, Any]:
             else:
                 non_delegable_levels.append(level_id)
     executor_selection = _object(source.get("executor_selection"))
+    analysis_strategy = _object(source.get("analysis_strategy"))
     return {
         "schema_version": source.get("schema_version", "unknown"),
         "policy": SOURCE_PATHS["task_decomposition"].as_posix(),
@@ -121,6 +122,18 @@ def _task_decomposition_summary(value: Any) -> dict[str, Any]:
         "worker_eligible_levels": worker_eligible_levels,
         "non_delegable_levels": non_delegable_levels,
         "small_task_behavior": _string(source.get("small_task_behavior")),
+        "analysis_strategy": {
+            "catalog": _string(analysis_strategy.get("catalog")),
+            "problem_model_template": _string(
+                analysis_strategy.get("problem_model_template")
+            ),
+            "small_task_behavior": _string(
+                analysis_strategy.get("small_task_behavior")
+            ),
+            "nontrivial_load_limit": _string(
+                analysis_strategy.get("nontrivial_load_limit")
+            ),
+        },
         "executor_selection": {
             "default": _string(executor_selection.get("default"), "primary"),
             "selection_order": _string_list(executor_selection.get("selection_order")),
@@ -233,7 +246,7 @@ def build_agent_entry_packet(
         ".ai/assistant/context-router.json#task_classification.expansion_triggers"
     )
     return {
-        "schema_version": 4,
+        "schema_version": 5,
         "packet_kind": "target-agent-entry-packet",
         "path": PACKET_PATH.as_posix(),
         "generated_by": generated_by or {},
@@ -313,6 +326,7 @@ def build_agent_entry_packet(
             "executor_default": _object(
                 decomposition.get("executor_selection")
             ).get("default"),
+            "analysis_strategy": decomposition.get("analysis_strategy"),
         },
         "operation_routing": {
             "index": _string(operation_routing.get("index"), "not installed"),

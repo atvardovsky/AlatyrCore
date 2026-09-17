@@ -153,7 +153,9 @@ context budget reached, checkpoint required or invalid, context or evidence
 digest mismatch, branch-envelope violation, validation regression, semantic
 decision required, overlapping scope, primary critical path, capability
 unavailable, user restricted, or cancelled by the primary assistant.
-Missing stop evidence is a failed delegation record, not permission to continue.
+Evidence saturation requires assigned local proof obligations as well as
+acceptance and required evidence. Missing stop evidence or uncovered assigned
+obligations is a failed delegation record, not permission to continue.
 
 ## Worker Role Catalog
 

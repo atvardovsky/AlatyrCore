@@ -28,6 +28,7 @@ class TargetAdapterValidatorHarnessTests(unittest.TestCase):
                 "context-catalogs",
                 "assistant-surfaces",
                 "authorization",
+                "analysis-strategies",
                 "session-continuity",
                 "context-routing",
                 "framework-packaging",
@@ -133,10 +134,10 @@ class TargetAdapterValidatorHarnessTests(unittest.TestCase):
             ).encode("utf-8")
         ).hexdigest()
 
-        self.assertEqual(len(payload), 99)
+        self.assertEqual(len(payload), 124)
         self.assertEqual(
             digest,
-            "ef7859a386a73a0d3c1a958ab2ef41324e6dd8443d3064c61b7f34246cc8d61b",
+            "b7c9ca5a57effe5e58cc006c67643081aafef00a4ee47ffb8bba3bd8ba24c4d8",
         )
         self.assertEqual(
             payload[0],

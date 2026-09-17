@@ -8,6 +8,8 @@ Current logical scope: `{CURRENT_LOGICAL_SCOPE}`
 Authorized action phases: `{CURRENT_AUTHORIZED_PHASES}`
 Delegation policy revision: `{POLICY_REVISION_OR_HASH}`
 Task decomposition policy revision: `{TASK_DECOMPOSITION_POLICY_REVISION_OR_HASH}`
+Primary analysis strategy: `{PRIMARY_STRATEGY_ID}`
+Problem model: `{PATH_DIGEST_OR_INLINE_SUMMARY}`
 Execution tree ledger: `{TARGET_APPROVED_OPERATION_LEDGER_PATH_OR_INLINE_EVIDENCE}`
 Ledger template: `.ai/assistant/templates/delegation-execution-tree.json`
 
@@ -52,6 +54,7 @@ Role: `{ENABLED_ROLE_ID_OR_PRIMARY}`
 Executor decision: `{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}`
 Required context: `{PATHS_AND_REASONS}`
 Acceptance criteria: `{OBJECTIVE_LOCAL_CRITERIA}`
+Assigned proof obligations: `{LOCAL_OBLIGATION_IDS_OR_NONE}`
 Validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`
 Dispatch backend: `{NATIVE_EXTERNAL_SUGGESTION_ONLY_PRIMARY_OR_UNRESOLVED}`
 Packet ID: `{PACKET_ID_OR_NONE}`
@@ -79,6 +82,7 @@ Raw descendant results loaded by primary: `{NONE_OR_TRIGGER_AND_RESULT_IDS}`
 Rejected or retried results: `{RESULT_IDS_REASONS_OR_NONE}`
 Combined validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Logical integrity and approval reconciliation: `{RESULT}`
+Proof-obligation reconciliation: `{PASSED_FAILED_BLOCKED_OPEN_OR_NOT_APPLICABLE}`
 Residual risk: `{RESIDUAL_RISK}`
 Tree stop reason: `{TARGET_STOP_REASON_ID}`
 Execution tree status: `{UPDATED_VALIDATED_OR_NOT_CAPTURED_WITH_REASON}`

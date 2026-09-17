@@ -591,37 +591,39 @@ class ContextPlanningTests(unittest.TestCase):
         )
         self.assertIsNone(result["context_packet"])
 
-    def test_schema_twelve_planner_enforces_character_budget(self) -> None:
+    def test_current_schema_planner_enforces_character_budget(self) -> None:
         router_path = self.fixture.assistant / "context-router.json"
         router = json.loads(router_path.read_text(encoding="utf-8"))
-        router["schema_version"] = 12
-        router["context_budgets"]["profile_default"][
-            "max_total_characters"
-        ] = 100000
-        write_json(router_path, router)
+        for schema_version in (12, 13):
+            with self.subTest(schema_version=schema_version):
+                router["schema_version"] = schema_version
+                router["context_budgets"]["profile_default"][
+                    "max_total_characters"
+                ] = 100000
+                write_json(router_path, router)
 
-        ready = plan_target_context(self.request())
+                ready = plan_target_context(self.request())
 
-        self.assertEqual(ready["status"], "ready")
-        self.assertEqual(
-            ready["context_packet"]["budget"]["character_budget_state"],
-            "enforced",
-        )
-        self.assertGreater(
-            ready["context_packet"]["budget"]["total_characters"], 0
-        )
+                self.assertEqual(ready["status"], "ready")
+                self.assertEqual(
+                    ready["context_packet"]["budget"]["character_budget_state"],
+                    "enforced",
+                )
+                self.assertGreater(
+                    ready["context_packet"]["budget"]["total_characters"], 0
+                )
 
-        router["context_budgets"]["profile_default"][
-            "max_total_characters"
-        ] = 1
-        write_json(router_path, router)
-        blocked = plan_target_context(self.request())
+                router["context_budgets"]["profile_default"][
+                    "max_total_characters"
+                ] = 1
+                write_json(router_path, router)
+                blocked = plan_target_context(self.request())
 
-        self.assertEqual(blocked["status"], "blocked")
-        self.assertEqual(
-            blocked["errors"][0]["code"],
-            "CONTEXT_CHARACTER_BUDGET_EXCEEDED",
-        )
+                self.assertEqual(blocked["status"], "blocked")
+                self.assertEqual(
+                    blocked["errors"][0]["code"],
+                    "CONTEXT_CHARACTER_BUDGET_EXCEEDED",
+                )
 
     def test_profile_can_bind_declared_target_source_outside_support_catalogs(self) -> None:
         profile_path = self.fixture.assistant / "context/profiles/code-local.json"

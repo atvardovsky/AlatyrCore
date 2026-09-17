@@ -162,6 +162,12 @@ known oversized Python functions. It does not claim the validator is already
 optimally modular; it prevents new large functions or unreviewed growth while
 the legacy validators are extracted incrementally.
 
+`check_analysis_strategies.py` validates the compact provider-neutral strategy
+catalog, one-descriptor context ceiling, bounded problem-model schema,
+strategy-specific evidence, proof-obligation and waiver semantics, required
+review routing, and target-validator scenarios. It validates inspectable
+conclusions and evidence, not private model reasoning.
+
 Structural source-tooling changes should follow the source architecture model
 in [`docs/source-architecture.md`](../docs/source-architecture.md). In
 practice, that means extracting pure helper logic before moving CLI behavior,
@@ -880,8 +886,8 @@ returns structured unavailable evidence rather than inventing any other
 missing route.
 
 Router schemas 10 and 11 remain readable migration inputs and record character
-budget state as `unavailable-legacy`. Schema 12 requires the configured
-character ceiling and emits context-packet schema 4 with measured word and
+budget state as `unavailable-legacy`. Schemas 12 and 13 require the configured
+character ceiling and emit context-packet schema 4 with measured word and
 character evidence. `--max-words` and `--max-characters` may only narrow the
 installed limits.
 

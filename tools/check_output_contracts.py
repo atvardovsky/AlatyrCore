@@ -68,6 +68,8 @@ COMPLETION_CONTRACT_FIELDS = [
     "Completion claim:",
     "Current user authorization:",
     "Context receipt result:",
+    "Analysis strategy:",
+    "Proof obligations:",
     "Changed facts:",
     "Validation completion basis:",
     "Tests run:",
@@ -80,6 +82,7 @@ COMPLETION_CONTRACT_FIELDS = [
     "May claim complete:",
     "Blocking reasons:",
     "Next owner or action:",
+    "Learning outcome:",
 ]
 
 COMPLETION_TEMPLATE_FIELDS = [
@@ -87,6 +90,8 @@ COMPLETION_TEMPLATE_FIELDS = [
     "operation",
     "current_user_authorization",
     "context_receipt",
+    "task_decomposition",
+    "learning_outcome",
     "changed_facts",
     "validation",
     "consistency",
@@ -287,8 +292,8 @@ def main() -> int:
             f"{COMPLETION_TEMPLATE.relative_to(ROOT)} must contain a JSON object"
         )
         completion_data = {}
-    if completion_data.get("schema_version") != 1:
-        failures.append("operation-completion evidence schema_version must be 1")
+    if completion_data.get("schema_version") != 2:
+        failures.append("operation-completion evidence schema_version must be 2")
     if completion_data.get("record_kind") != "alatyr-operation-completion-evidence":
         failures.append("operation-completion evidence record_kind is invalid")
     for field in COMPLETION_TEMPLATE_FIELDS:

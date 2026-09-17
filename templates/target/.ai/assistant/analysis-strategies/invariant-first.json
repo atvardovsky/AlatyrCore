@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "strategy_kind": "primary",
+  "id": "invariant-first",
+  "use_when": ["business data state ownership or semantic behavior may change"],
+  "sequence": ["name changed facts", "derive owner-backed invariants", "define proof obligations", "map repair surfaces", "validate invariant preservation"],
+  "required_nonempty_fields": ["changed_facts", "invariants", "proof_obligations"],
+  "completion_rule": "all required invariants have passed obligations or an explicit blocked result"
+}

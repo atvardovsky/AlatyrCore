@@ -170,10 +170,10 @@ def _load_router(target: Path) -> dict[str, Any]:
     router = _load_json(
         target, ".ai/assistant/context-router.json", "context router"
     )
-    if router.get("schema_version") not in {10, 11, 12} or router.get("router_kind") != "target-context-router":
+    if router.get("schema_version") not in {10, 11, 12, 13} or router.get("router_kind") != "target-context-router":
         raise ContextPlanningError(
             "CONTEXT_ROUTER_UNSUPPORTED",
-            "target context router must use supported schema 10, 11, or 12 and target-context-router",
+            "target context router must use supported schema 10, 11, 12, or 13 and target-context-router",
             upgrade_required=True,
             actions=("run the Alatyr framework-update assessment",),
         )
@@ -1068,14 +1068,14 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         )
     max_words = request.max_words or configured_words
     configured_characters = budget.get("max_total_characters")
-    if router.get("schema_version") == 12 and (
+    if router.get("schema_version") in {12, 13} and (
         not isinstance(configured_characters, int)
         or isinstance(configured_characters, bool)
         or configured_characters < 1
     ):
         raise ContextPlanningError(
             "CONTEXT_BUDGET_INVALID",
-            "schema-12 target router character budget is invalid",
+            "current target router character budget is invalid",
             upgrade_required=True,
         )
     if request.max_characters is not None and request.max_characters < 1:

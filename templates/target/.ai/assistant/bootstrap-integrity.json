@@ -11,37 +11,37 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd",
+    "target_manifest_digest": "sha256:3da3b4be201bc7a3ce427ea184fe82c4710e8ed39b20df76f8c3bd9fee98e601",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.67",
-    "adapter_schema_version": "55",
-    "template_version": "62"
+    "framework_version": "0.1.0-alpha.68",
+    "adapter_schema_version": "56",
+    "template_version": "63"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "6cf51ad0e4363e0eb6be88f59ce4fed75a8f4d4d977ed5e1f6daff97a0e485cd"
+      "sha256": "3da3b4be201bc7a3ce427ea184fe82c4710e8ed39b20df76f8c3bd9fee98e601"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "f515c14573c751ae165f97cee53a7e9c1e93843af4fec6f877c2d71a95420ebf"
+      "sha256": "1f2d802535c03c1651adf866b68c1eab54db83f66d795df82166af651b6089a3"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "c5965e4c50ec33b671981aa9ac83d8989d817be5468bb9968f60682c63b22e5a"
+      "sha256": "ea2ce3828cbb6d70f4ba71e38a94cb8786cfa0d3e64fc50f8358916ecebfd4c7"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "0d43797c6174e4fd7e3be2c74a14d5f73bf7142b080f1c63e6917d88f179300d"
+      "sha256": "1786bef6f5f62e4892312226978d111fd46587a6ea52637688f60be84068542f"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
-      "sha256": "b8de51510ebcd2b2a1cc609124b26275cf9fb28e1bec69bb1989f4e3ad429c06"
+      "sha256": "bb0461d7f63c31d5a3b3c7f63bec38fd2a56ffeee555d57862fdcec69d35dd35"
     }
   },
   "rule_selector": {
-    "registry_sha256": "b8de51510ebcd2b2a1cc609124b26275cf9fb28e1bec69bb1989f4e3ad429c06",
+    "registry_sha256": "bb0461d7f63c31d5a3b3c7f63bec38fd2a56ffeee555d57862fdcec69d35dd35",
     "categories": {
       "CONTEXT": {
         "owner": ".ai/framework/context-profiles.md",

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "model_kind": "alatyr-bounded-problem-model",
+  "model_id": "{PROBLEM_MODEL_ID}",
+  "operation_id": "{OPERATION_ID}",
+  "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
+  "risk_classes": [],
+  "protected_change": false,
+  "required_review_ids": [],
+  "review_results": [],
+  "objective": "{OBJECTIVE}",
+  "repository_binding": {
+    "state": "{AVAILABLE_OR_UNAVAILABLE}",
+    "branch": "{BRANCH_OR_UNAVAILABLE}",
+    "base_revision": "{BASE_REVISION_OR_UNAVAILABLE}"
+  },
+  "task_binding": {
+    "task_ids": ["{TASK_ID}"],
+    "workstream_ids": []
+  },
+  "predecessor": {
+    "state": "none",
+    "model_id": "none",
+    "sha256": "none"
+  },
+  "strategy_transitions": [],
+  "non_goals": [],
+  "facts": [],
+  "assumptions": [],
+  "unknowns": [],
+  "changed_facts": [],
+  "invariants": [],
+  "hypotheses": [],
+  "alternatives": [],
+  "proof_obligations": [],
+  "counterexamples": [],
+  "unresolved_decisions": [],
+  "evidence_refs": []
+}

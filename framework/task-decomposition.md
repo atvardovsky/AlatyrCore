@@ -42,6 +42,7 @@ of the decomposition contract.
 Use decomposition to choose the smallest quality-preserving execution path:
 
 - split by semantic responsibility before splitting by files
+- select one bounded analysis strategy before solving non-trivial work
 - assign an implementation level to each subtask
 - attach only the context needed by that subtask
 - identify dependencies, owners, validation, and allowed actions
@@ -58,21 +59,56 @@ For every non-trivial request:
 
 1. Classify current user authorization, allowed actions, task profile, task
    scale, changed facts, project areas, and risk.
-2. Split the work by changed fact, canonical owner, contract, area,
+2. Select exactly one primary analysis strategy and any policy-required review
+   passes. Create a bounded problem model with inspectable claims and proof
+   obligations; never record private reasoning or chain-of-thought.
+3. Split the work by changed fact, canonical owner, contract, area,
    dependency, validation need, and support-surface synchronization.
-3. Assign one implementation level to each subtask.
-4. Record dependencies and reject cycles.
-5. Select the executor: primary assistant, eligible worker role, suggestion-
+4. Assign one implementation level to each subtask.
+5. Record dependencies and reject cycles.
+6. Select the executor: primary assistant, eligible worker role, suggestion-
    only handoff, or blocked.
-6. Attach bounded context, explicit non-goals, allowed files or surfaces,
-   validation, and acceptance criteria.
-7. Execute or dispatch only ready tasks.
-8. Reconcile results, changed facts, approvals, validation, documentation,
-   diagrams, support information, and residual risk in the primary operation.
+7. Attach bounded context, explicit non-goals, assigned proof obligations,
+   allowed files or surfaces, validation, and acceptance criteria.
+8. Execute or dispatch only ready tasks.
+9. Reconcile proof obligations, review passes, results, changed facts,
+   approvals, validation, documentation, diagrams, support information, and
+   residual risk in the primary operation.
 
 For a small request, the decomposition result can be one task with one profile,
 one local surface or direct neighbor set, and compact final evidence. Do not
 create heavy operation packets when the one-task plan is enough.
+
+## Analysis Strategy Contract
+
+An analysis strategy structures evidence for the current problem. It grants no
+authority, does not replace a task profile, and cannot enable Debug Mode. Use
+exactly one primary strategy:
+
+- `direct-local`: settled, local, non-semantic work; the small-task default
+- `invariant-first`: business, data, state, ownership, or semantic change
+- `hypothesis-driven`: uncertain defect cause or observed behavior
+- `architecture-comparison`: architecture patterns, boundaries, or options
+- `evidence-synthesis`: broad audit or conflicting distributed evidence
+- `exploratory-design`: unclear goals, constraints, requirements, or owners
+
+`adversarial-review` is a review pass, never a primary strategy. Require it for
+security, protected, destructive, public-contract, approval-sensitive, or
+similarly high-impact work.
+
+For non-trivial work, load the compact strategy index and only the selected
+descriptor. Do not load every descriptor. `direct-local` stays inline and
+loads no strategy catalog for eligible small tasks. If selection is ambiguous,
+remain read-only and use `exploratory-design` until the missing facts or
+authority are resolved.
+
+The problem model records objective, non-goals, facts, assumptions, unknowns,
+changed facts, invariants, hypotheses or alternatives when relevant, proof
+obligations, counterexamples, unresolved decisions, and evidence references.
+These are inspectable conclusions and verification duties, not private
+reasoning or chain-of-thought. A required obligation must pass, be explicitly
+waived by authorized policy, or remain visibly failed or blocked; unresolved
+required obligations prohibit completion.
 
 ## Implementation Levels
 
@@ -163,7 +199,9 @@ Primary execution is preferred when:
 Worker execution may be proposed or used only when the target delegation
 module, policy, role catalog, and selected assistant capability record permit
 it. A worker receives a task packet after the primary assistant assigns the
-implementation level, context, scope, dependencies, and validation.
+implementation level, context, scope, dependencies, proof obligations, and
+validation. Workers may satisfy assigned local obligations but cannot select
+the global strategy or accept, waive, or close primary-owned obligations.
 
 When a worker identifies useful descendant work, it returns a bounded child
 proposal unless the primary has issued a hash-bound, read-only branch envelope.
@@ -195,7 +233,9 @@ adapter or project.
 For material work, final evidence should include:
 
 - decomposition policy and template revision
+- selected strategy, selection evidence, problem model, and required reviews
 - task IDs, implementation levels, and executor decisions
+- proof-obligation assignment and final acceptance status
 - dependencies and readiness/blocker state
 - context selected and intentionally omitted for each task
 - worker packet/result IDs and execution-tree ledger when delegation was used
@@ -205,6 +245,13 @@ For material work, final evidence should include:
 - measured raw-result words and accepted-summary words loaded by the primary
 - validation and acceptance evidence per task
 - primary convergence result and residual risk
+- learning-outcome classification, evidence, proposed owner, and promotion
+  state when the task exposes a reusable project or AI-infrastructure lesson
+
+A learning-outcome classification is routing evidence only. It does not update
+project knowledge, architecture, skills, prompts, gates, checkers, or flows and
+does not grant promotion authority; use the owning lifecycle and approval
+contract before any such change.
 
 Do not claim cost, latency, or quality improvement without comparable
 measurement. A decomposition plan is evidence of process structure; it is not
@@ -223,3 +270,7 @@ Reject or revise decomposition that:
 - runs full orchestration for a small one-task request without a concrete
   benefit
 - accepts local worker success as final operation completion
+- selects multiple primary strategies or bulk-loads strategies for a small task
+- records private reasoning or unsupported conclusions as project evidence
+- claims completion with an open, failed, blocked, or unevidenced required
+  proof obligation or review

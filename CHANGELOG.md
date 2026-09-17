@@ -4,6 +4,33 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.68 - 2026-09-17
+
+- Added a provider-neutral analysis-strategy contract to match non-trivial
+  tasks with invariant-first, hypothesis-driven, architecture-comparison,
+  evidence-synthesis, or exploratory-design analysis while keeping small
+  settled tasks on descriptor-free `direct-local` execution.
+- Added bounded problem models for inspectable facts, assumptions, unknowns,
+  changed facts, invariants, alternatives, evidence, review results, and proof
+  obligations without storing private reasoning or chain-of-thought.
+- Added mandatory adversarial review for protected or high-impact work and
+  machine validation for strategy-specific evidence, obligation completion,
+  authorized waivers, model lineage, and strategy transitions.
+- Bound session-continuity packets and recursive worker evidence to the
+  selected strategy, problem-model digest, assigned proof obligations, review
+  completion, invalidated assumptions, and primary convergence.
+- Advanced context router schema to `13`, recovery entry-packet schema to `5`,
+  task-decomposition schema to `2`, session-continuity packet schema to `2`,
+  delegation policy schema to `6`, delegation execution-tree schema to `3`,
+  and normalized worker, branch-envelope, and branch-checkpoint schemas to
+  `2`.
+- Kept strategy context bounded to the index plus one selected descriptor,
+  retained primary ownership of decisions and acceptance, and added target
+  validator and conformance scenarios for drift, unsupported claims, missing
+  obligations, and missing model bindings.
+- Increased adapter schema version to `56` and target template version to `63`
+  for the new mandatory analysis and evidence contracts.
+
 ## 0.1.0-alpha.67 - 2026-09-15
 
 - Added `ALATYR-CONTINUITY-001` as a portable, assistant-neutral safeguard for

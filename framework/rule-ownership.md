@@ -216,9 +216,10 @@ Source routing owner: `framework/task-decomposition.md`
 Installed routing owner: `.ai/framework/task-decomposition.md`
 Rule IDs: `ALATYR-DECOMPOSITION-001`
 Derived surfaces: target task-decomposition policy, task-decomposition plan
-template, operation routing, context router, entry packet summary, large-task
-workstreams, subagent worker packet selection, operation request and completion
-evidence, target structural validation.
+template, analysis-strategy catalog and descriptors, problem-model schema and
+template, analysis-strategy gate, operation routing, context router, entry
+packet summary, large-task workstreams, subagent worker packet selection,
+operation request and completion evidence, target structural validation.
 
 Category: `DELEGATION`
 Source routing owner: `framework/subagent-delegation.md`
@@ -226,9 +227,10 @@ Installed routing owner: `.ai/framework/subagent-delegation.md`
 Rule IDs: `ALATYR-DELEGATION-001`
 Derived surfaces: target delegation policy, worker role catalog and prompts,
 worker execution plan, delegated-execution overlay, subagent task packet,
-normalized worker result, large-task workstreams, assistant capability records
-and native bindings, bridge capability matrix, operation routing, installation
-and update planning, delegation conformance scenarios, structural validation.
+normalized worker result, proof-obligation assignment and result evidence,
+large-task workstreams, assistant capability records and native bindings,
+bridge capability matrix, operation routing, installation and update planning,
+delegation conformance scenarios, structural validation.
 
 Category: `BRIDGE`
 Source routing owner: `framework/bridge-capability-matrix.md`

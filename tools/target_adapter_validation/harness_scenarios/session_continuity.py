@@ -55,7 +55,7 @@ def _packet(
     context_packet_sha256: str,
 ) -> dict[str, object]:
     packet: dict[str, object] = {
-        "schema_version": 1,
+        "schema_version": 2,
         "packet_kind": "alatyr-session-continuity",
         "packet_id": "fixture-continuity",
         "packet_sequence": 1,
@@ -111,15 +111,61 @@ def _packet(
         },
         "approvals": [],
         "decisions": [],
+        "analysis": {
+            "primary_strategy_id": "direct-local",
+            "problem_model": {
+                "state": "not-required",
+                "path": "unavailable",
+                "sha256": "unavailable",
+            },
+            "open_proof_obligation_ids": [],
+            "completed_review_ids": [],
+            "invalidated_assumption_ids": [],
+        },
         "validation": [],
         "unresolved": [],
         "next_safe_action": "revalidate current modify authorization",
     }
     packet["integrity"] = {
-        "digest_contract": "alatyr-session-continuity-v1",
+        "digest_contract": "alatyr-session-continuity-v2",
         "packet_sha256": _digest(packet),
     }
     return packet
+
+
+def _problem_model(*, branch: str, head: str) -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "model_kind": "alatyr-bounded-problem-model",
+        "model_id": "fixture-problem",
+        "operation_id": "ad-hoc",
+        "primary_strategy_id": "direct-local",
+        "risk_classes": [],
+        "protected_change": False,
+        "required_review_ids": [],
+        "review_results": [],
+        "objective": "verify continuity",
+        "repository_binding": {
+            "state": "available",
+            "branch": branch,
+            "base_revision": head,
+        },
+        "task_binding": {"task_ids": ["fixture-task"], "workstream_ids": []},
+        "predecessor": {"state": "none", "model_id": "none", "sha256": "none"},
+        "strategy_transitions": [],
+        "non_goals": [],
+        "facts": [],
+        "assumptions": [],
+        "unknowns": [],
+        "changed_facts": [],
+        "invariants": [],
+        "hypotheses": [],
+        "alternatives": [],
+        "proof_obligations": [],
+        "counterexamples": [],
+        "unresolved_decisions": [],
+        "evidence_refs": [],
+    }
 
 
 def run(target: Path, failures: list[str]) -> None:
@@ -194,6 +240,61 @@ def run(target: Path, failures: list[str]) -> None:
         failures.append(
             "valid session continuity packet produced errors: "
             + ", ".join(sorted(valid_errors))
+        )
+
+    model_path = (
+        continuity_target / ".ai/.runtime/problem-models/fixture.json"
+    )
+    write_json(model_path, _problem_model(branch=branch, head=head))
+    bound_packet = _packet(
+        branch=branch,
+        head=head,
+        change_set_sha256=change_set.content_sha256,
+        changed_paths=list(change_set.changed_files),
+        capability_sha256=hashlib.sha256(capability_path.read_bytes()).hexdigest(),
+        context_packet_sha256=hashlib.sha256(
+            context_packet_path.read_bytes()
+        ).hexdigest(),
+    )
+    bound_packet["analysis"] = {
+        "primary_strategy_id": "direct-local",
+        "problem_model": {
+            "state": "available",
+            "path": ".ai/.runtime/problem-models/fixture.json",
+            "sha256": hashlib.sha256(model_path.read_bytes()).hexdigest(),
+        },
+        "open_proof_obligation_ids": [],
+        "completed_review_ids": [],
+        "invalidated_assumption_ids": [],
+    }
+    bound_packet["integrity"] = {
+        "digest_contract": "alatyr-session-continuity-v2",
+        "packet_sha256": _digest(bound_packet),
+    }
+    write_json(packet_path, bound_packet)
+    valid_analysis = validator(
+        continuity_target, continuity_packets=[packet_path]
+    )
+    validate_session_continuity(valid_analysis)
+    if any(
+        finding.level == "error"
+        and finding.code.startswith("SESSION_CONTINUITY_ANALYSIS")
+        for finding in valid_analysis.findings
+    ):
+        failures.append("valid continuity problem-model binding was rejected")
+
+    bound_packet["analysis"]["primary_strategy_id"] = "invariant-first"
+    bound_packet["integrity"]["packet_sha256"] = _digest(bound_packet)
+    write_json(packet_path, bound_packet)
+    mismatched_analysis = validator(
+        continuity_target, continuity_packets=[packet_path]
+    )
+    validate_session_continuity(mismatched_analysis)
+    if "SESSION_CONTINUITY_ANALYSIS_DRIFT" not in {
+        finding.code for finding in mismatched_analysis.findings
+    }:
+        failures.append(
+            "continuity must reject strategy drift from its bound problem model"
         )
 
     wrong_capability = json.loads(packet_path.read_text(encoding="utf-8"))

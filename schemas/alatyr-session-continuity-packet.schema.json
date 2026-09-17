@@ -16,13 +16,14 @@
     "repository",
     "approvals",
     "decisions",
+    "analysis",
     "validation",
     "unresolved",
     "next_safe_action",
     "integrity"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "packet_kind": {"const": "alatyr-session-continuity"},
     "packet_id": {"type": "string", "minLength": 1},
     "packet_sequence": {"type": "integer", "minimum": 1},
@@ -179,6 +180,59 @@
       }
     },
     "decisions": {"$ref": "#/definitions/stringArray"},
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_strategy_id",
+        "problem_model",
+        "open_proof_obligation_ids",
+        "completed_review_ids",
+        "invalidated_assumption_ids"
+      ],
+      "properties": {
+        "primary_strategy_id": {
+          "enum": [
+            "direct-local",
+            "invariant-first",
+            "hypothesis-driven",
+            "architecture-comparison",
+            "evidence-synthesis",
+            "exploratory-design"
+          ]
+        },
+        "problem_model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "path", "sha256"],
+          "properties": {
+            "state": {"enum": ["available", "not-required", "unavailable"]},
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"$ref": "#/definitions/hashOrUnavailable"}
+          },
+          "allOf": [
+            {
+              "if": {"properties": {"state": {"const": "available"}}},
+              "then": {
+                "properties": {
+                  "path": {"not": {"const": "unavailable"}},
+                  "sha256": {"$ref": "#/definitions/hash"}
+                }
+              },
+              "else": {
+                "properties": {
+                  "path": {"const": "unavailable"},
+                  "sha256": {"const": "unavailable"}
+                }
+              }
+            }
+          ]
+        },
+        "open_proof_obligation_ids": {"$ref": "#/definitions/stringArray"},
+        "completed_review_ids": {"$ref": "#/definitions/stringArray"},
+        "invalidated_assumption_ids": {"$ref": "#/definitions/stringArray"}
+      }
+    },
     "validation": {
       "type": "array",
       "items": {
@@ -199,7 +253,7 @@
       "additionalProperties": false,
       "required": ["digest_contract", "packet_sha256"],
       "properties": {
-        "digest_contract": {"const": "alatyr-session-continuity-v1"},
+        "digest_contract": {"const": "alatyr-session-continuity-v2"},
         "packet_sha256": {"$ref": "#/definitions/hash"}
       }
     }

@@ -71,6 +71,7 @@ def validator(
     *,
     validation_phase: str = "migration-staging",
     continuity_packets: list[Path] | None = None,
+    problem_models: list[Path] | None = None,
 ) -> Validator:
     return Validator(
         target,
@@ -86,6 +87,7 @@ def validator(
         config=AdapterValidatorConfig(),
         validation_phase=validation_phase,
         continuity_packets=continuity_packets,
+        problem_models=problem_models,
     )
 
 

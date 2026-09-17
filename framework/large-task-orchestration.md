@@ -54,6 +54,8 @@ packet coordinates one operation and records:
   is enabled
 - workstreams, dependencies, required context, outputs, and validation
 - implementation levels and primary/worker executor decisions per workstream
+- one primary analysis strategy, problem-model identity, proof obligations,
+  and required review passes
 - context receipts, ordered semantic-guidance bundle identities and digests,
   and reasons for budget expansion
 - resumable checkpoints, unresolved decisions, and the next ready action
@@ -80,6 +82,7 @@ completion test. Every workstream should define:
 - worker execution-plan task, delegation packet, normalized result, selected
   role/model/native evidence, write isolation, and retry/fallback when
   `subagent-delegation` is enabled for that workstream
+- assigned local proof obligations; global acceptance remains primary-owned
 
 Do not split one semantic fact across independent workstreams unless one
 workstream owns final reconciliation. Parallel-looking edits are not
@@ -156,8 +159,9 @@ understood, remembered, or complied with the guidance.
 Create a checkpoint before context is likely to be lost, before a handoff,
 after an approval boundary, or after a workstream reaches local validation.
 A checkpoint should record completed work, decisions, evidence, unresolved
-items, invalidated assumptions, the accepted resolved semantic-guidance bundle
-digest, and the next ready action.
+items, invalidated assumptions, primary strategy identity, problem-model
+digest, open proof obligations, completed reviews, the accepted resolved
+semantic-guidance bundle digest, and the next ready action.
 
 Do not claim a workstream complete when required approval or validation is
 missing. Use `blocked` or `unresolved` and name the missing evidence.
@@ -187,6 +191,8 @@ Local workstream success is not final operation success. Before completion:
 11. When subagents were used, reconcile every packet's actual scope, model or
     unverified status, validation, rejected output, fallback, and primary
     review before accepting the workstream result.
+12. Reject completion while any required proof obligation or review remains
+    open, failed, blocked, or unevidenced.
 
 ## Storage And Privacy
 

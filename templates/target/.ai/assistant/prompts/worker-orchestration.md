@@ -14,8 +14,8 @@ or under repair.
 2. Instantiate `.ai/assistant/templates/worker-execution-plan.md` into a
    target-approved operation evidence path or inline completion evidence. Mark
    `READY` only when Implementation level, dependencies, context, acceptance,
-   and write scope allow it. Assign parent, depth, coverage key, and remaining
-   tree budget.
+   assigned proof obligations, and write scope allow it. The primary selects
+   the operation strategy and retains global obligation acceptance.
 3. Prefer primary execution when packet/review overhead outweighs likely
    benefit. Never delegate non-delegable work.
 4. Select an enabled role whose action ceiling contains the packet action.
@@ -39,6 +39,10 @@ or under repair.
    result, primary-summary, retry, overlap, capability, envelope, checkpoint,
    validation, authority, or cost boundary is reached. Record
    the policy stop-reason ID for every branch.
+
+A worker may return evidence for assigned local proof obligations. It must not
+change the primary strategy, waive an obligation, accept a primary-owned
+obligation, or turn a review pass into operation completion.
 
 Do not claim parallelism, model identity, speed, cost, or quality unless the
 selected capability record and result contain matching evidence.

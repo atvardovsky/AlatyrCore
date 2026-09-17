@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "result_kind": "alatyr-normalized-worker-result",
   "result_id": "{RESULT_ID}",
   "packet_id": "{PACKET_ID}",
@@ -36,6 +36,8 @@
   "tools_used": ["{TOOL_ID_OR_NONE}"],
   "scope_violation": "{NONE_OR_DETAILS}",
   "authorization_concern": "{NONE_OR_DETAILS}",
+  "proof_obligation_ids": ["{ASSIGNED_PROOF_OBLIGATION_ID_OR_NONE}"],
+  "satisfied_proof_obligation_ids": ["{SATISFIED_PROOF_OBLIGATION_ID_OR_NONE}"],
   "validation": ["{VALIDATION_RESULT_OR_NOT_RUN_WITH_REASON}"],
   "stop_reason_id": "{NORMALIZED_STOP_REASON_ID}",
   "subtree_sha256": "{SHA256_OF_RESULT_AND_CHILD_DIGESTS}"

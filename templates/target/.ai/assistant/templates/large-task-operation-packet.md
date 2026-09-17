@@ -22,6 +22,9 @@ evidence, not a source of truth for project facts.
 - Storage and retention policy: `{TARGET_OPERATION_PACKET_POLICY}`
 - Change package: `{CHANGE_PACKAGE_ID_OR_NOT_ACTIVE}`
 - Task decomposition plan: `{TASK_DECOMPOSITION_PLAN_ID_OR_PATH}`
+- Primary analysis strategy: `{PRIMARY_STRATEGY_ID}`
+- Problem model and digest: `{TARGET_RELATIVE_PATH_OR_INLINE_AND_SHA256}`
+- Required review passes: `{REVIEW_IDS_OR_NONE}`
 
 ## Routed Context
 
@@ -81,6 +84,7 @@ Repeat this block for each coherent workstream.
 
 - Goal: `{WORKSTREAM_GOAL}`
 - Implementation level: `{L1_L2_L3_L4_L5_L6_OR_L7}`
+- Assigned proof obligations: `{OBLIGATION_IDS_OR_NONE}`
 - Executor decision: `{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}`
 - Project area: `{PROJECT_AREA}`
 - Changed facts: `{FACT_IDS}`
@@ -115,6 +119,9 @@ context reset.
 - Approval state: `{APPROVAL_STATE}`
 - Validation state: `{VALIDATION_STATE}`
 - Invalidated assumptions: `{INVALIDATED_ASSUMPTIONS_OR_NONE}`
+- Primary strategy and problem-model digest: `{STRATEGY_ID_AND_SHA256}`
+- Open proof obligations: `{OBLIGATION_IDS_OR_NONE}`
+- Completed review passes: `{REVIEW_IDS_AND_RESULTS_OR_NONE}`
 - Context receipt delta: `{NEW_FILES_REASONS_AND_VOLUME}`
 - Revalidation gate: `{RESUME_PROTECTED_IMPLEMENTATION_MATERIAL_DECISION_FINAL_VALIDATION_OR_FINAL_EVIDENCE}`
 - Previously accepted resolved bundle digest: `{DIGEST_SCHEMA_VERSION_ALGORITHM_AND_VALUE}`
@@ -132,6 +139,8 @@ context reset.
 - Completed workstreams: `{COMPLETED_WORKSTREAMS}`
 - Unresolved workstreams: `{UNRESOLVED_WORKSTREAMS_OR_NONE}`
 - Implementation levels and executor decisions: `{TASK_LEVELS_AND_EXECUTOR_DECISIONS}`
+- Primary strategy and problem-model reconciliation: `{RESULT}`
+- Required proof obligations and review passes: `{PASSED_WAIVED_FAILED_BLOCKED_OPEN_AND_EVIDENCE}`
 - Blocked or escalated tasks: `{TASK_IDS_REASONS_OR_NONE}`
 - Changed-fact reconciliation: `{FACT_RECONCILIATION_RESULT}`
 - Relationship impact closure: `{LEVELS_AREAS_EDGES_AND_MISSING_LINKS}`
@@ -161,3 +170,6 @@ risk, approval, dependencies, and validation, then record a new accepted
 checkpoint before continuing. Apply the `session-continuity` overlay and
 re-establish current-scope authorization from the newest user instruction;
 the packet must not restore publish or live-external authority.
+Resume also preserves the primary strategy identity, problem-model digest,
+open proof obligations, completed reviews, and invalidated assumptions. A
+strategy change invalidates affected conclusions and requires a new checkpoint.

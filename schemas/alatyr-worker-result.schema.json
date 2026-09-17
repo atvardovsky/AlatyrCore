@@ -10,10 +10,12 @@
     "measurement_state", "input_context_packet_sha256", "raw_payload",
     "accepted_summary", "summary_covers_result_ids", "child_result_sha256",
     "evidence_manifest", "touched_surfaces", "tools_used", "scope_violation",
-    "authorization_concern", "validation", "stop_reason_id", "subtree_sha256"
+    "authorization_concern", "proof_obligation_ids",
+    "satisfied_proof_obligation_ids", "validation", "stop_reason_id",
+    "subtree_sha256"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "result_kind": {"const": "alatyr-normalized-worker-result"},
     "result_id": {"type": "string", "minLength": 1},
     "packet_id": {"type": "string", "minLength": 1},
@@ -33,6 +35,8 @@
     "tools_used": {"$ref": "#/definitions/stringList"},
     "scope_violation": {"type": "string", "minLength": 1},
     "authorization_concern": {"type": "string", "minLength": 1},
+    "proof_obligation_ids": {"$ref": "#/definitions/stringList"},
+    "satisfied_proof_obligation_ids": {"$ref": "#/definitions/stringList"},
     "validation": {"$ref": "#/definitions/stringList"},
     "stop_reason_id": {"type": "string", "minLength": 1},
     "subtree_sha256": {"$ref": "#/definitions/sha256"}

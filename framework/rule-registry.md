@@ -471,15 +471,19 @@ Enforcement: required when module enabled.
 Rule ID: `ALATYR-DECOMPOSITION-001`
 Source owner: `framework/task-decomposition.md`
 Installed owner: `.ai/framework/task-decomposition.md`
-Commitment: Before non-trivial execution, decompose the request by changed
-fact, canonical owner, contract, area, dependency, validation, and
-support-surface impact; assign exactly one implementation level, bounded
-context, allowed actions, validation, dependencies, and primary-or-worker
-executor decision per task; keep small work as one local task when sufficient;
-keep worker expansion inside a primary-owned bounded tree with coverage and
-stop evidence; escalate only on named risk or relationship triggers; and keep
-semantic decisions, approval, protected phases, integration, and final
-convergence with the primary assistant.
+Commitment: Before non-trivial execution, select one task-matched primary
+analysis strategy, maintain a bounded evidence-backed problem model and proof
+obligations, and decompose the request by changed fact, canonical owner,
+contract, area, dependency, validation, and support-surface impact; assign
+exactly one implementation level, bounded context, allowed actions, validation,
+dependencies, and primary-or-worker executor decision per task; keep small
+settled work on descriptor-free direct-local execution; require adversarial
+review for protected or high-impact work; keep worker expansion inside a
+primary-owned bounded tree with obligation, coverage, and stop evidence;
+escalate only on named risk or relationship triggers; and keep strategy
+selection, obligation acceptance or waiver, semantic decisions, approval,
+protected phases, integration, and final convergence with the primary
+assistant.
 Applies to: all installed adapter tasks, large tasks, delegated execution, team
 coordination, final evidence.
 Enforcement: required.
@@ -488,19 +492,20 @@ Rule ID: `ALATYR-DELEGATION-001`
 Source owner: `framework/subagent-delegation.md`
 Installed owner: `.ai/framework/subagent-delegation.md`
 Commitment: When optional subagent delegation is enabled, keep task readiness,
-project decisions, approval, branch authorization, integration, and final
-evidence with the primary assistant; use target-owned roles, deterministic
-dependency and write-scope planning, bounded packets, unique coverage keys,
-depth/worker/context/result/summary/retry limits, evidence saturation,
-normalized stop reasons, measured hash-bound results, compact accepted
-summaries, resumable checkpoints, and primary convergence for target-verified
-native workers, external dispatchers, and suggestion-only handoff; permit
-inspect-only depth-2 dispatch only inside an immutable primary-issued branch
-envelope and otherwise require child proposals; keep descendant raw evidence
-lazy but reviewable; keep provider-native definitions as thin target bindings;
-preserve context, action, tool, write, privacy, validation, model,
-runtime-capability, and concurrency boundaries; and fall back without
-unsupported quality, latency, or cost claims.
+analysis-strategy selection, proof-obligation acceptance or waiver, project
+decisions, approval, branch authorization, integration, and final evidence with
+the primary assistant; use target-owned roles, deterministic dependency and
+write-scope planning, bounded packets, assigned proof-obligation IDs, unique
+coverage keys, depth/worker/context/result/summary/retry limits, evidence
+saturation, normalized stop reasons, measured hash-bound results, compact
+accepted summaries, resumable checkpoints, and primary convergence for
+target-verified native workers, external dispatchers, and suggestion-only
+handoff; permit inspect-only depth-2 dispatch only inside an immutable
+primary-issued branch envelope and otherwise require child proposals; keep
+descendant raw evidence lazy but reviewable; keep provider-native definitions
+as thin target bindings; preserve context, action, tool, write, privacy,
+validation, model, runtime-capability, and concurrency boundaries; and fall
+back without unsupported quality, latency, or cost claims.
 Applies to: delegated execution, parallel workstreams, fast focused coding,
 large tasks.
 Enforcement: required when module enabled or delegated execution is attempted.

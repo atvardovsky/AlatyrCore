@@ -65,6 +65,13 @@ QUALITY_GATES = {
     "escalate_on_new_relationship",
     "escalate_on_failed_validation",
     "escalation_loads_only_triggering_context",
+    "exactly_one_primary_strategy",
+    "small_task_skips_strategy_catalog",
+    "one_selected_strategy_descriptor",
+    "private_reasoning_forbidden",
+    "primary_owns_global_obligations",
+    "required_obligations_block_completion",
+    "required_reviews_block_completion",
 }
 
 
@@ -94,8 +101,8 @@ def string_list(value: Any) -> list[str]:
 
 
 def validate_policy(policy: dict[str, Any], failures: list[str]) -> None:
-    if policy.get("schema_version") != 1:
-        failures.append("task-decomposition policy schema_version must be 1")
+    if policy.get("schema_version") != 2:
+        failures.append("task-decomposition policy schema_version must be 2")
     if policy.get("policy_kind") != "target-task-decomposition-policy":
         failures.append("task-decomposition policy kind is invalid")
     if policy.get("portable_rule") != ".ai/framework/task-decomposition.md":
@@ -104,6 +111,11 @@ def validate_policy(policy: dict[str, Any], failures: list[str]) -> None:
         failures.append("task-decomposition policy plan_template is invalid")
     if "non-trivial" not in str(policy.get("default_behavior", "")):
         failures.append("task-decomposition policy must route non-trivial work")
+    strategy = policy.get("analysis_strategy")
+    if not isinstance(strategy, dict):
+        failures.append("task-decomposition policy must define analysis_strategy")
+    elif strategy.get("debug_mode_activation") != "never automatic":
+        failures.append("analysis strategy must not auto-enable Debug Mode")
 
     levels = policy.get("levels")
     if not isinstance(levels, list):
@@ -152,9 +164,11 @@ def validate_router(router: dict[str, Any], failures: list[str]) -> None:
         failures.append("context router missing task_decomposition")
         return
     expected = {
-        "schema_version": 1,
+        "schema_version": 2,
         "policy": ".ai/assistant/task-decomposition.json",
         "plan_template": ".ai/assistant/templates/task-decomposition.md",
+        "analysis_strategy_index": ".ai/assistant/analysis-strategies/index.json",
+        "problem_model_template": ".ai/assistant/templates/problem-model.json",
     }
     for key, value in expected.items():
         if decomposition.get(key) != value:
@@ -208,6 +222,11 @@ def validate_completion_evidence(failures: list[str]) -> None:
     ]:
         if required not in decomposition:
             failures.append(f"operation completion task_decomposition missing {required}")
+    for required in ["analysis_strategy", "proof_obligations"]:
+        if required not in decomposition:
+            failures.append(
+                f"operation completion task_decomposition missing {required}"
+            )
 
 
 def main() -> int:
@@ -218,6 +237,7 @@ def main() -> int:
             "# Task Decomposition",
             "ALATYR-DECOMPOSITION-001",
             "## Decomposition Sequence",
+            "## Analysis Strategy Contract",
             "## Implementation Levels",
             "## Executor Selection",
             "## Quality Guard",
@@ -234,6 +254,8 @@ def main() -> int:
             "Implementation level:",
             "Executor decision:",
             "Selected worker role:",
+            "Primary strategy:",
+            "Assigned proof obligations:",
             "Dependency cycles:",
             "## Primary Convergence",
         ],

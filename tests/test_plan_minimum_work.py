@@ -61,7 +61,7 @@ def capability_record(max_parallelism: int = 2) -> dict[str, object]:
 
 def worker_packet(workstream_id: str, context: str) -> dict[str, object]:
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "packet_kind": "source-read-only-workstream",
         "parent_packet_id": None,
         "depth": 1,
@@ -86,6 +86,7 @@ def worker_packet(workstream_id: str, context: str) -> dict[str, object]:
         "independence_key": f"area-{workstream_id}",
         "semantic_scope": f"area-{workstream_id}",
         "changed_fact_ids": [],
+        "proof_obligation_ids": [],
         "canonical_owner_refs": [context],
         "surface_refs": [context],
         "relationship_refs": [],

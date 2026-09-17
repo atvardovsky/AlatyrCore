@@ -26,8 +26,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1425,
-      "content_digest": "sha256:72a090eab9f98c729078afd7851f04aba47f6b25ffb3eb42ae22245a5106874f"
+      "estimated_words": 1473,
+      "content_digest": "sha256:b8c812efadb35dcf2e610f078c2836e702e2f4c5f4ed16f9ad3ddb4013a250a9"
     },
     {
       "id": "framework.collaboration.subagent-delegation-md",
@@ -49,8 +49,8 @@
       "owner_refs": [
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 2575,
-      "content_digest": "sha256:e402e6cb16611324306e9f1287846cb3f689aa5e5e533cd58d756f1b41a5ab5a"
+      "estimated_words": 2593,
+      "content_digest": "sha256:37cf37ae1cbb34149c0080d2c65dbb26645e09e7223aad6b222cb511e3a68191"
     },
     {
       "id": "framework.collaboration.task-decomposition-md",
@@ -70,8 +70,8 @@
       "owner_refs": [
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 1319,
-      "content_digest": "sha256:1697507fe0650ffa14fc354f0516af26e6d8246fc6df449530d548229aadabb3"
+      "estimated_words": 1705,
+      "content_digest": "sha256:762773dab9c742861e5ed510f204556349c8de7becddeb8e22566a19730ff1df"
     },
     {
       "id": "framework.collaboration.team-collaboration-md",

@@ -17,6 +17,10 @@ from target_adapter_validation.assistant_capabilities import (
     SURFACE_CAPABILITY_SCHEMA_VERSION,
     capability_record_path,
 )
+from target_adapter_validation.analysis_strategies import (
+    load_problem_model_schema,
+    validate_selected_problem_model,
+)
 
 
 POLICY_RELPATH = ".ai/assistant/policies/session-continuity.json"
@@ -42,6 +46,9 @@ ORDERED_SET_PATHS = (
     ("authorization", "recorded_phases"),
     ("authorization", "deliberately_not_authorized"),
     ("repository", "changed_paths"),
+    ("analysis", "open_proof_obligation_ids"),
+    ("analysis", "completed_review_ids"),
+    ("analysis", "invalidated_assumption_ids"),
     ("decisions",),
     ("unresolved",),
 )
@@ -84,14 +91,14 @@ def _check_static_contract(validator: Any) -> None:
     if not isinstance(policy, dict):
         return
     expected = {
-        "schema_version": 1,
+        "schema_version": 2,
         "policy_kind": "target-session-continuity",
         "canonical_rule": "ALATYR-CONTINUITY-001",
         "canonical_owner": ".ai/framework/session-continuity.md",
         "flow": FLOW_RELPATH,
         "gate": GATE_RELPATH,
         "packet_template": TEMPLATE_RELPATH,
-        "packet_schema": "alatyr-session-continuity-packet-v1",
+        "packet_schema": "alatyr-session-continuity-packet-v2",
         "runtime_directory": RUNTIME_DIRECTORY,
     }
     for field, value in expected.items():
@@ -181,6 +188,104 @@ def _check_static_contract(validator: Any) -> None:
                 ".ai/.gitignore must exclude ephemeral .runtime records",
                 ".ai/.gitignore",
             )
+
+
+def _check_analysis_binding(
+    validator: Any, packet: dict[str, Any], relpath: str
+) -> None:
+    analysis = packet.get("analysis")
+    if not isinstance(analysis, dict):
+        return
+    problem_model = analysis.get("problem_model")
+    if not isinstance(problem_model, dict) or problem_model.get("state") != "available":
+        return
+    model_path = problem_model.get("path")
+    if not isinstance(model_path, str) or not is_target_relative_path(model_path):
+        validator.error(
+            "SESSION_CONTINUITY_PROBLEM_MODEL_PATH",
+            f"invalid problem-model path: {model_path}",
+            relpath,
+        )
+        return
+    selected_model = validator.target_path(model_path)
+    if not validator.is_target_file(selected_model):
+        validator.error(
+            "SESSION_CONTINUITY_PROBLEM_MODEL_MISSING",
+            f"problem model is unavailable: {model_path}",
+            relpath,
+        )
+        return
+    if problem_model.get("sha256") != validator.context.content_digest(
+        selected_model
+    ):
+        validator.error(
+            "SESSION_CONTINUITY_PROBLEM_MODEL_DRIFT",
+            f"problem model changed: {model_path}",
+            relpath,
+        )
+        return
+    try:
+        model_schema = load_problem_model_schema()
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        validator.error(
+            "SESSION_CONTINUITY_PROBLEM_MODEL_SCHEMA", str(exc), relpath
+        )
+        return
+    model = validate_selected_problem_model(
+        validator,
+        selected_model,
+        model_schema,
+        require_completion=False,
+    )
+    if not isinstance(model, dict):
+        return
+    if analysis.get("primary_strategy_id") != model.get("primary_strategy_id"):
+        validator.error(
+            "SESSION_CONTINUITY_ANALYSIS_DRIFT",
+            "continuity strategy differs from the bound problem model",
+            relpath,
+        )
+    expected_analysis = {
+        "open_proof_obligation_ids": sorted(
+            item["id"]
+            for item in model.get("proof_obligations", [])
+            if isinstance(item, dict)
+            and item.get("status") in {"open", "failed", "blocked"}
+            and isinstance(item.get("id"), str)
+        ),
+        "completed_review_ids": sorted(
+            item["id"]
+            for item in model.get("review_results", [])
+            if isinstance(item, dict)
+            and item.get("status") == "passed"
+            and isinstance(item.get("id"), str)
+        ),
+        "invalidated_assumption_ids": sorted(
+            item["id"]
+            for item in model.get("assumptions", [])
+            if isinstance(item, dict)
+            and item.get("status") == "invalidated"
+            and isinstance(item.get("id"), str)
+        ),
+    }
+    for field, expected in expected_analysis.items():
+        if analysis.get(field) != expected:
+            validator.error(
+                "SESSION_CONTINUITY_ANALYSIS_DRIFT",
+                f"continuity {field} differs from the bound problem model",
+                relpath,
+            )
+    packet_task = packet.get("task")
+    model_task = model.get("task_binding")
+    if isinstance(packet_task, dict) and isinstance(model_task, dict) and (
+        packet_task.get("operation_id") != model.get("operation_id")
+        or packet_task.get("task_id") not in model_task.get("task_ids", [])
+    ):
+        validator.error(
+            "SESSION_CONTINUITY_ANALYSIS_BINDING",
+            "continuity task identity differs from the bound problem model",
+            relpath,
+        )
 
 
 def _check_packet(
@@ -295,6 +400,8 @@ def _check_packet(
                     f"previously loaded path is no longer available: {loaded_path}",
                     relpath,
                 )
+
+    _check_analysis_binding(validator, packet, relpath)
 
     boundary = packet.get("boundary")
     if isinstance(boundary, dict) and boundary.get(

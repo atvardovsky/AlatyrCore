@@ -23,6 +23,10 @@
       "path": ".ai/assistant/gates/semantic-integrity.md",
       "use_when": ["semantic fact or accepted contract may change"]
     },
+    "analysis-strategy": {
+      "path": ".ai/assistant/gates/analysis-strategy.md",
+      "use_when": ["non-trivial work needs a bounded reasoning strategy or proof obligations"]
+    },
     "visual-validation": {
       "path": ".ai/assistant/gates/visual-validation.md",
       "use_when": ["UI visual layout diagram rendering or discussion diagram presentation changes"]

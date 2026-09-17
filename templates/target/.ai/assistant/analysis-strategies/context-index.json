@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.analysis-strategies",
+  "contour": "assistant",
+  "title": "Assistant Analysis Strategies Context",
+  "summary": "Recursive navigation for the assistant contour at analysis-strategies.",
+  "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
+  "entries": [
+    {
+      "id": "assistant.content.analysis-strategies-adversarial-review-json",
+      "kind": "content",
+      "path": "analysis-strategies/adversarial-review.json",
+      "summary": "Adversarial Review",
+      "selectors": {
+        "path_terms": [
+          "analysis",
+          "strategies",
+          "adversarial",
+          "review"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 45,
+      "content_digest": "sha256:c36046f0f879ef09774f63c843e361bd7d5abc098deda0fd3d74b405a2baf381"
+    },
+    {
+      "id": "assistant.content.analysis-strategies-architecture-comparison-json",
+      "kind": "content",
+      "path": "analysis-strategies/architecture-comparison.json",
+      "summary": "Architecture Comparison",
+      "selectors": {
+        "path_terms": [
+          "analysis",
+          "strategies",
+          "architecture",
+          "comparison"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 50,
+      "content_digest": "sha256:b50c561408565501b3926314787e735ec4308a46945ae8da015f17c6d9fb53b2"
+    },
+    {
+      "id": "assistant.content.analysis-strategies-evidence-synthesis-json",
+      "kind": "content",
+      "path": "analysis-strategies/evidence-synthesis.json",
+      "summary": "Evidence Synthesis",
+      "selectors": {
+        "path_terms": [
+          "analysis",
+          "strategies",
+          "evidence",
+          "synthesis"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 56,
+      "content_digest": "sha256:01e844dd68ace539dbaa7a887ffbf601832aa1cf51ad01b27304eb746f008bf2"
+    },
+    {
+      "id": "assistant.content.analysis-strategies-exploratory-design-json",
+      "kind": "content",
+      "path": "analysis-strategies/exploratory-design.json",
+      "summary": "Exploratory Design",
+      "selectors": {
+        "path_terms": [
+          "analysis",
+          "strategies",
+          "exploratory",
+          "design"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 55,
+      "content_digest": "sha256:5fff91b9d86716d5a1f4e6a592977989bcef709b27bbb7256b4b17b9cce6cbc1"
+    },
+    {
+      "id": "assistant.content.analysis-strategies-hypothesis-driven-json",
+      "kind": "content",
+      "path": "analysis-strategies/hypothesis-driven.json",
+      "summary": "Hypothesis Driven",
+      "selectors": {
+        "path_terms": [
+          "analysis",
+          "strategies",
+          "hypothesis",
+          "driven"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 51,
+      "content_digest": "sha256:eaa971b59c9d6511e14598e7c70c0a160d6e988fce3da35229ecc6f69d74f830"
+    },
+    {
+      "id": "assistant.content.analysis-strategies-index-json",
+      "kind": "content",
+      "path": "analysis-strategies/index.json",
+      "summary": "Index",
+      "selectors": {
+        "path_terms": [
+          "analysis",
+          "strategies"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 44,
+      "content_digest": "sha256:dbef78c722e2553e6e2f8c88a8c2030e87a5bb71944d4132898228bee29ff65e"
+    },
+    {
+      "id": "assistant.content.analysis-strategies-invariant-first-json",
+      "kind": "content",
+      "path": "analysis-strategies/invariant-first.json",
+      "summary": "Invariant First",
+      "selectors": {
+        "path_terms": [
+          "analysis",
+          "strategies",
+          "invariant",
+          "first"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 50,
+      "content_digest": "sha256:6f55f88fb6a5c4bdbca5551df4c3be031e2fa281247a86b4487465100f9e9f19"
+    }
+  ]
+}

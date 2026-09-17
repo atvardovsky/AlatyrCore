@@ -61,7 +61,7 @@ def capability_fixture() -> dict[str, object]:
 
 def packet_fixture() -> dict[str, object]:
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "packet_kind": "source-read-only-workstream",
         "parent_packet_id": None,
         "depth": 1,
@@ -86,6 +86,7 @@ def packet_fixture() -> dict[str, object]:
         "independence_key": "source-worker-contract",
         "semantic_scope": "source-worker-contract",
         "changed_fact_ids": [],
+        "proof_obligation_ids": [],
         "canonical_owner_refs": ["tools/source_worker_contract.py"],
         "surface_refs": ["tools/source_worker_contract.py"],
         "relationship_refs": [],
@@ -135,7 +136,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         '{"status":"available","nested_dispatch":true}\n',
     )
     envelope = {
-        "schema_version": 1,
+        "schema_version": 2,
         "envelope_kind": "alatyr-delegation-branch-envelope",
         "envelope_id": "envelope-1",
         "operation_id": "op-1",
@@ -156,6 +157,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         "allowed_surface_refs": ["tools/**"],
         "semantic_scope": "source-worker-contract",
         "coverage_prefix": "source-worker-contract/",
+        "proof_obligation_ids": ["obligation-child"],
         "context_packet_sha256": None,
         "capability_evidence_sha256": capability["sha256"],
         "required_validation": ["unit tests"],
@@ -171,7 +173,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         raw = write_artifact(root, f"evidence/{node_id}-raw.md", f"raw finding for {node_id}\n")
         summary = write_artifact(root, f"evidence/{node_id}-summary.md", f"summary {node_id}\n")
         result = {
-            "schema_version": 1,
+            "schema_version": 2,
             "result_kind": "alatyr-normalized-worker-result",
             "result_id": f"result-{node_id}",
             "packet_id": f"packet-{node_id}",
@@ -191,6 +193,8 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "tools_used": ["read"],
             "scope_violation": "none",
             "authorization_concern": "none",
+            "proof_obligation_ids": ["obligation-child"],
+            "satisfied_proof_obligation_ids": ["obligation-child"],
             "validation": ["unit tests"],
             "stop_reason_id": "scope-covered",
             "subtree_sha256": "pending",
@@ -215,7 +219,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         [child_result_artifact["sha256"]],
     )
     checkpoint = {
-        "schema_version": 1,
+        "schema_version": 2,
         "checkpoint_kind": "alatyr-delegation-branch-checkpoint",
         "checkpoint_id": "checkpoint-1",
         "previous_checkpoint_id": None,
@@ -227,6 +231,8 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         "accepted_result_sha256": [child_result_artifact["sha256"]],
         "rejected_result_ids": [],
         "completed_coverage_keys": ["source-worker-contract/child"],
+        "completed_proof_obligation_ids": ["obligation-child"],
+        "open_proof_obligation_ids": [],
         "accepted_summary": coordinator_result["accepted_summary"],
         "context_packet_sha256": None,
         "semantic_guidance_sha256": None,
@@ -285,6 +291,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
                 else "source-worker-contract/child"
             ),
             "changed_fact_ids": [],
+            "proof_obligation_ids": [] if is_root else ["obligation-child"],
             "canonical_owner_refs": ["tools/source_worker_contract.py"],
             "surface_refs": ["tools/source_worker_contract.py"],
             "relationship_refs": [],
@@ -303,6 +310,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "accepted_summary_evidence": None if result is None else result["accepted_summary"],
             "summary_covers_result_ids": [] if result is None else result["summary_covers_result_ids"],
             "satisfied_acceptance_ids": [] if is_root else [f"accept-{node_id}"],
+            "satisfied_proof_obligation_ids": [] if is_root else ["obligation-child"],
             "produced_evidence_ids": [] if is_root else [f"evidence-{node_id}"],
             "attempt": 0,
             "result_status": None if is_root else "succeeded",
@@ -316,7 +324,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         + child_result["raw_payload"]["word_count"]
     )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "tree_kind": "alatyr-delegation-execution-tree",
         "operation_id": "op-1",
         "recorded_at": "2026-09-03T12:05:00Z",
@@ -328,6 +336,8 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "approval_record": None,
         },
         "task_profile": "repository-audit",
+        "analysis_strategy_id": "evidence-synthesis",
+        "problem_model_sha256": "0" * 64,
         "policy_revision": canonical_value_digest(policy_fixture()),
         "capability_evidence": capability["path"],
         "capability_evidence_sha256": capability["sha256"],
@@ -360,6 +370,8 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "status": "completed",
             "required_acceptance_ids": ["accept-coordinator", "accept-child"],
             "required_evidence_ids": ["evidence-coordinator", "evidence-child"],
+            "required_proof_obligation_ids": ["obligation-child"],
+            "satisfied_proof_obligation_ids": ["obligation-child"],
             "reviewed_result_ids": ["result-coordinator"],
             "indirect_result_ids": ["result-child"],
             "rejected_result_ids": [],
@@ -698,6 +710,12 @@ class DelegationExecutionTreeTests(unittest.TestCase):
             "stale policy binding": lambda item: item.update(
                 {"policy_revision": "1" * 64}
             ),
+            "missing non-local problem model": lambda item: item.update(
+                {"problem_model_sha256": None}
+            ),
+            "missing proof convergence": lambda item: item[
+                "primary_convergence"
+            ].update({"satisfied_proof_obligation_ids": []}),
             "depth-one source write": lambda item: item["nodes"][1].update(
                 {"allowed_actions": ["modify"], "write_scope": "src/**"}
             ),
@@ -774,6 +792,9 @@ class DelegationExecutionTreeTests(unittest.TestCase):
             "successful result without validation": lambda result, tree: result.update(
                 {"validation": []}
             ),
+            "unassigned proof obligation": lambda result, tree: result.update(
+                {"proof_obligation_ids": ["unassigned"]}
+            ),
             "reused summary artifact": lambda result, tree: result.update(
                 {
                     "accepted_summary": tree["nodes"][2][
@@ -831,6 +852,7 @@ class DelegationExecutionTreeTests(unittest.TestCase):
                     "stop_reason_id": None,
                     "summary_covers_result_ids": [],
                     "satisfied_acceptance_ids": [],
+                    "satisfied_proof_obligation_ids": [],
                     "produced_evidence_ids": [],
                 }
             )
@@ -846,6 +868,8 @@ class DelegationExecutionTreeTests(unittest.TestCase):
                 {
                     "required_acceptance_ids": [],
                     "required_evidence_ids": [],
+                    "required_proof_obligation_ids": [],
+                    "satisfied_proof_obligation_ids": [],
                     "indirect_result_ids": [],
                 }
             )

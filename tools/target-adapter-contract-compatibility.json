@@ -4,14 +4,74 @@
   "contracts": {
     "session-continuity": {
       "manifest_key": "operations.session_continuity_packet_schema",
-      "manifest_contract_version": 1,
+      "manifest_contract_version": 2,
       "artifacts": {
         "packet": {
-          "current": 1,
-          "supported": [1],
+          "current": 2,
+          "supported": [2],
           "migration_limited": [],
           "schema": "schemas/alatyr-session-continuity-packet.schema.json",
           "template": "templates/target/.ai/assistant/templates/session-continuity-packet.json"
+        }
+      }
+    },
+    "analysis-strategies": {
+      "manifest_key": "operations.task_decomposition_schema",
+      "manifest_contract_version": 2,
+      "artifacts": {
+        "task-decomposition": {
+          "current": 2,
+          "supported": [2],
+          "migration_limited": [],
+          "template": "templates/target/.ai/assistant/task-decomposition.json"
+        },
+        "problem-model": {
+          "current": 1,
+          "supported": [1],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-problem-model.schema.json",
+          "template": "templates/target/.ai/assistant/templates/problem-model.json"
+        }
+      }
+    },
+    "delegation-evidence": {
+      "manifest_key": "operations.delegation_policy_schema",
+      "manifest_contract_version": 6,
+      "artifacts": {
+        "policy": {
+          "current": 6,
+          "supported": [6],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-delegation-policy.schema.json",
+          "template": "templates/target/.ai/assistant/delegation-policy.json"
+        },
+        "execution-tree": {
+          "current": 3,
+          "supported": [3],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-delegation-execution-tree.schema.json",
+          "template": "templates/target/.ai/assistant/templates/delegation-execution-tree.json"
+        },
+        "worker-result": {
+          "current": 2,
+          "supported": [2],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-worker-result.schema.json",
+          "template": "templates/target/.ai/assistant/templates/worker-result.json"
+        },
+        "branch-envelope": {
+          "current": 2,
+          "supported": [2],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-delegation-branch-envelope.schema.json",
+          "template": "templates/target/.ai/assistant/templates/delegation-branch-envelope.json"
+        },
+        "branch-checkpoint": {
+          "current": 2,
+          "supported": [2],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-delegation-branch-checkpoint.schema.json",
+          "template": "templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json"
         }
       }
     },

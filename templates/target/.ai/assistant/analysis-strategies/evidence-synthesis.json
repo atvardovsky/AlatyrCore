@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "strategy_kind": "primary",
+  "id": "evidence-synthesis",
+  "use_when": ["audit evidence is broad conflicting or distributed across owners"],
+  "sequence": ["partition evidence by claim", "rank authority and freshness", "identify conflicts and gaps", "derive bounded findings", "validate each conclusion against cited evidence"],
+  "required_nonempty_fields": ["facts", "proof_obligations", "evidence_refs"],
+  "completion_rule": "every material conclusion cites sufficient evidence and unresolved conflicts remain explicit"
+}

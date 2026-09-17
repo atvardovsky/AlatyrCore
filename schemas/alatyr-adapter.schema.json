@@ -76,10 +76,10 @@
       "type": "object",
       "required": ["router_schema_version", "preloaded_context", "compact_bootstrap", "agent_entry_packet_schema_version", "agent_entry_packet", "bootstrap_max_files", "bootstrap_max_words", "bootstrap_max_characters", "profile_default_max_files", "profile_default_max_total_words", "profile_default_max_portable_words", "profile_default_reserved_target_words", "profile_default_max_total_characters", "budget_behavior", "recursive_index_schema_version", "recursive_index_max_depth", "semantic_codebook_schema_version", "semantic_preload_policy", "context_packet_schema_version", "context_packet_template"],
       "properties": {
-        "router_schema_version": {"const": 12},
+        "router_schema_version": {"const": 13},
         "preloaded_context": {"$ref": "#/definitions/nonEmptyStringArray"},
         "compact_bootstrap": {"$ref": "#/definitions/nonEmptyStringArray"},
-        "agent_entry_packet_schema_version": {"const": 4},
+        "agent_entry_packet_schema_version": {"const": 5},
         "agent_entry_packet": {"const": ".ai/assistant/entry-packet.json"},
         "bootstrap_max_characters": {"type": "integer", "minimum": 1},
         "profile_default_max_total_characters": {"type": "integer", "minimum": 1},
@@ -123,13 +123,22 @@
     },
     "operations": {
       "type": "object",
-      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy", "session_continuity_policy", "session_continuity_flow", "session_continuity_gate", "session_continuity_packet", "session_continuity_packet_schema", "task_decomposition", "task_decomposition_plan"],
+      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy", "session_continuity_policy", "session_continuity_flow", "session_continuity_gate", "session_continuity_packet", "session_continuity_packet_schema", "task_decomposition", "task_decomposition_schema", "task_decomposition_plan", "analysis_strategy_index", "problem_model_template", "problem_model_schema", "delegation_policy_schema", "delegation_execution_tree_schema", "delegation_worker_result_schema", "delegation_branch_envelope_schema", "delegation_branch_checkpoint_schema"],
       "properties": {
         "session_continuity_policy": {"const": ".ai/assistant/policies/session-continuity.json"},
         "session_continuity_flow": {"const": ".ai/assistant/flows/session-continuity.flow.md"},
         "session_continuity_gate": {"const": ".ai/assistant/gates/session-continuity.md"},
         "session_continuity_packet": {"const": ".ai/assistant/templates/session-continuity-packet.json"},
-        "session_continuity_packet_schema": {"const": 1}
+        "session_continuity_packet_schema": {"const": 2},
+        "task_decomposition_schema": {"const": 2},
+        "analysis_strategy_index": {"const": ".ai/assistant/analysis-strategies/index.json"},
+        "problem_model_template": {"const": ".ai/assistant/templates/problem-model.json"},
+        "problem_model_schema": {"const": 1},
+        "delegation_policy_schema": {"const": 6},
+        "delegation_execution_tree_schema": {"const": 3},
+        "delegation_worker_result_schema": {"const": 2},
+        "delegation_branch_envelope_schema": {"const": 2},
+        "delegation_branch_checkpoint_schema": {"const": 2}
       }
     },
     "engineering_evidence": {

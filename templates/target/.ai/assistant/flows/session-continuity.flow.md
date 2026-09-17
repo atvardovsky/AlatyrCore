@@ -19,12 +19,14 @@ Compact semantic reference: `alatyr:session-continuity@1`.
    available.
 5. Bind any referenced capability record and context packet by target-relative
    path and file-content SHA-256.
-6. Prefer identifiers, target-relative paths, and digests. Do not copy raw
+6. Record the primary analysis strategy, problem-model path and digest, open
+   proof obligations, completed required reviews, and invalidated assumptions.
+7. Prefer identifiers, target-relative paths, and digests. Do not copy raw
    chat, hidden reasoning, secrets, or unnecessary source content.
-7. During inspect-only work, use a host-native or in-memory checkpoint. Write
+8. During inspect-only work, use a host-native or in-memory checkpoint. Write
    `.ai/.runtime/continuity/<task-id>.json` only when the current request
    authorizes that local adapter/runtime mutation.
-8. Compute `integrity.packet_sha256` over canonical JSON with the complete
+9. Compute `integrity.packet_sha256` over canonical JSON with the complete
    `integrity` object omitted.
 
 ## Rehydrate
@@ -35,12 +37,14 @@ Compact semantic reference: `alatyr:session-continuity@1`.
 4. Compare its branch, revisions, changed paths, change-set digest, approval
    hashes, and referenced rule IDs with current evidence.
 5. Load only owners or evidence whose identity changed or cannot be verified.
-6. Re-evaluate current logical scope and every action phase from the newest
+6. Compare the primary strategy and problem-model digest. Reopen affected
+   obligations when strategy, assumptions, or evidence changed.
+7. Re-evaluate current logical scope and every action phase from the newest
    user instruction. Never restore publish or live-external authority from the
    packet.
-7. Reclassify risk and approval needs if facts, scope, or effects changed.
-8. Run the smallest focused validation that proves the resumed next action.
-9. Continue only after `.ai/assistant/gates/session-continuity.md` passes.
+8. Reclassify risk and approval needs if facts, scope, or effects changed.
+9. Run the smallest focused validation that proves the resumed next action.
+10. Continue only after `.ai/assistant/gates/session-continuity.md` passes.
 
 ## Failure Behavior
 

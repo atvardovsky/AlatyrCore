@@ -84,24 +84,26 @@ def run(target: Path, failures: list[str]) -> None:
     write_json(
         router_path,
         {
-            "schema_version": 12,
+            "schema_version": 13,
             "router_kind": "target-context-router",
             "human_reference": ".ai/assistant/context-profiles.md",
             "routing_order": ["docs-local"],
         },
     )
-    schema_twelve = validator(target)
-    schema_twelve.check_router()
-    schema_twelve_codes = {finding.code for finding in schema_twelve.findings}
+    schema_thirteen = validator(target)
+    schema_thirteen.check_router()
+    schema_thirteen_codes = {
+        finding.code for finding in schema_thirteen.findings
+    }
     for required in [
         "ROUTER_PROFILE_INDEX",
         "ROUTER_PROJECT_KNOWLEDGE_MISSING",
         "ROUTER_TASK_CLASSIFICATION_MISSING",
         "ROUTER_TASK_SCALE_OVERLAYS",
     ]:
-        if required not in schema_twelve_codes:
+        if required not in schema_thirteen_codes:
             failures.append(
-                f"schema-12 router must retain current-contract finding {required}"
+                f"schema-13 router must retain current-contract finding {required}"
             )
 
     consistency_descriptor = (

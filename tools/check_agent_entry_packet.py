@@ -46,8 +46,8 @@ def check_packet(
     source_template: bool = False,
 ) -> list[str]:
     failures: list[str] = []
-    if packet.get("schema_version") != 4:
-        failures.append("entry packet schema_version must be 4")
+    if packet.get("schema_version") != 5:
+        failures.append("entry packet schema_version must be 5")
     if packet.get("packet_kind") != "target-agent-entry-packet":
         failures.append("entry packet kind must be target-agent-entry-packet")
     if packet.get("path") != PACKET_PATH.as_posix():
@@ -159,7 +159,7 @@ def check_packet(
     if not isinstance(decomposition, dict):
         failures.append("entry packet must include task_decomposition")
     else:
-        if decomposition.get("schema_version") != 1:
+        if decomposition.get("schema_version") != 2:
             failures.append("entry packet task decomposition schema is invalid")
         if decomposition.get("policy") != ".ai/assistant/task-decomposition.json":
             failures.append("entry packet task decomposition policy path is invalid")
@@ -176,6 +176,29 @@ def check_packet(
             failures.append("entry packet task decomposition default must name non-trivial work")
         if decomposition.get("executor_default") != "primary":
             failures.append("entry packet task decomposition executor default must be primary")
+        strategy = decomposition.get("analysis_strategy")
+        if not isinstance(strategy, dict):
+            failures.append("entry packet must include analysis strategy routing")
+        else:
+            expected_strategy = {
+                "catalog": ".ai/assistant/analysis-strategies/index.json",
+                "problem_model_template": ".ai/assistant/templates/problem-model.json",
+            }
+            for field, expected in expected_strategy.items():
+                if strategy.get(field) != expected:
+                    failures.append(
+                        f"entry packet analysis strategy {field} is invalid"
+                    )
+            if "direct-local" not in str(strategy.get("small_task_behavior", "")):
+                failures.append(
+                    "entry packet small-task strategy must remain direct-local"
+                )
+            if "one selected descriptor" not in str(
+                strategy.get("nontrivial_load_limit", "")
+            ):
+                failures.append(
+                    "entry packet must limit non-trivial strategy context"
+                )
 
     authorization = packet.get("authorization")
     if not isinstance(authorization, dict):

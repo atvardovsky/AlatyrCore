@@ -137,13 +137,13 @@
       "category": "DECOMPOSITION",
       "owner": "framework/task-decomposition.md",
       "rule_ids": ["ALATYR-DECOMPOSITION-001"],
-      "derived_surfaces": ["target task-decomposition policy", "task-decomposition plan template", "operation routing", "context router", "entry packet summary", "large-task workstreams", "subagent worker packet selection", "operation request and completion evidence", "target structural validation"]
+      "derived_surfaces": ["target task-decomposition policy", "task-decomposition plan template", "analysis-strategy catalog and descriptors", "problem-model schema and template", "analysis-strategy gate", "operation routing", "context router", "entry packet summary", "large-task workstreams", "subagent worker packet selection", "operation request and completion evidence", "target structural validation"]
     },
     {
       "category": "DELEGATION",
       "owner": "framework/subagent-delegation.md",
       "rule_ids": ["ALATYR-DELEGATION-001"],
-      "derived_surfaces": ["target delegation policy", "worker role catalog and prompts", "worker execution plan", "delegated-execution overlay", "subagent task packet", "normalized worker result", "large-task workstreams", "assistant capability records and native bindings", "bridge capability matrix", "operation routing", "installation and update planning", "delegation conformance scenarios", "structural validation"]
+      "derived_surfaces": ["target delegation policy", "worker role catalog and prompts", "worker execution plan", "delegated-execution overlay", "subagent task packet", "normalized worker result", "proof-obligation assignment and result evidence", "large-task workstreams", "assistant capability records and native bindings", "bridge capability matrix", "operation routing", "installation and update planning", "delegation conformance scenarios", "structural validation"]
     },
     {
       "category": "BRIDGE",
@@ -411,7 +411,7 @@
       "id": "ALATYR-DECOMPOSITION-001",
       "category": "DECOMPOSITION",
       "canonical_source": "framework/task-decomposition.md",
-      "summary": "Before non-trivial execution, decompose the request by changed fact, canonical owner, contract, area, dependency, validation, and support-surface impact; assign exactly one implementation level, bounded context, allowed actions, validation, dependencies, and primary-or-worker executor decision per task; keep small work as one local task when sufficient; keep worker expansion inside a primary-owned bounded tree with coverage and stop evidence; escalate only on named risk or relationship triggers; and keep semantic decisions, approval, protected phases, integration, and final convergence with the primary assistant.",
+      "summary": "Before non-trivial execution, select one task-matched primary analysis strategy, maintain a bounded evidence-backed problem model and proof obligations, and decompose the request by changed fact, canonical owner, contract, area, dependency, validation, and support-surface impact; assign exactly one implementation level, bounded context, allowed actions, validation, dependencies, and primary-or-worker executor decision per task; keep small settled work on descriptor-free direct-local execution; require adversarial review for protected or high-impact work; keep worker expansion inside a primary-owned bounded tree with obligation, coverage, and stop evidence; escalate only on named risk or relationship triggers; and keep strategy selection, obligation acceptance or waiver, semantic decisions, approval, protected phases, integration, and final convergence with the primary assistant.",
       "applies_to": ["all installed adapter tasks", "large tasks", "delegated execution", "team coordination", "final evidence"],
       "enforcement": "required"
     },
@@ -419,7 +419,7 @@
       "id": "ALATYR-DELEGATION-001",
       "category": "DELEGATION",
       "canonical_source": "framework/subagent-delegation.md",
-      "summary": "When optional subagent delegation is enabled, keep task readiness, project decisions, approval, branch authorization, integration, and final evidence with the primary assistant; use target-owned roles, deterministic dependency and write-scope planning, bounded packets, unique coverage keys, depth/worker/context/result/summary/retry limits, evidence saturation, normalized stop reasons, measured hash-bound results, compact accepted summaries, resumable checkpoints, and primary convergence for target-verified native workers, external dispatchers, and suggestion-only handoff; permit inspect-only depth-2 dispatch only inside an immutable primary-issued branch envelope and otherwise require child proposals; keep descendant raw evidence lazy but reviewable; keep provider-native definitions as thin target bindings; preserve context, action, tool, write, privacy, validation, model, runtime-capability, and concurrency boundaries; and fall back without unsupported quality, latency, or cost claims.",
+      "summary": "When optional subagent delegation is enabled, keep task readiness, analysis-strategy selection, proof-obligation acceptance or waiver, project decisions, approval, branch authorization, integration, and final evidence with the primary assistant; use target-owned roles, deterministic dependency and write-scope planning, bounded packets, assigned proof-obligation IDs, unique coverage keys, depth/worker/context/result/summary/retry limits, evidence saturation, normalized stop reasons, measured hash-bound results, compact accepted summaries, resumable checkpoints, and primary convergence for target-verified native workers, external dispatchers, and suggestion-only handoff; permit inspect-only depth-2 dispatch only inside an immutable primary-issued branch envelope and otherwise require child proposals; keep descendant raw evidence lazy but reviewable; keep provider-native definitions as thin target bindings; preserve context, action, tool, write, privacy, validation, model, runtime-capability, and concurrency boundaries; and fall back without unsupported quality, latency, or cost claims.",
       "applies_to": ["delegated execution", "parallel workstreams", "fast focused coding", "large tasks"],
       "enforcement": "required when module enabled or delegated execution is attempted"
     },

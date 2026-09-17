@@ -409,8 +409,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1518,
-      "content_digest": "sha256:4b22ace0e57882b363b5ab0cf3c6a75c19a94c669085091a1e8317e3da46fc2d"
+      "estimated_words": 1588,
+      "content_digest": "sha256:f1fde5c02d1def0948c3d0c73881b797c9ccd49b6fb0c06353e712bc10619022"
     },
     {
       "id": "assistant.content.flows-project-blueprint-creation-flow-md",
@@ -506,8 +506,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 364,
-      "content_digest": "sha256:8d254e12a2fac2c7565ff4650f281a0fd54341a4057f50c0bdb15a081d30115a"
+      "estimated_words": 400,
+      "content_digest": "sha256:c40e492e8a0cc4cb73517830730d0f0d44cf8afada1bc2e849c65849627acf2e"
     },
     {
       "id": "assistant.content.flows-skill-adaptation-flow-md",

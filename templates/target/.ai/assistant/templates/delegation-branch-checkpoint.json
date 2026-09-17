@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "checkpoint_kind": "alatyr-delegation-branch-checkpoint",
   "checkpoint_id": "{CHECKPOINT_ID}",
   "previous_checkpoint_id": "{PREVIOUS_CHECKPOINT_ID_OR_NONE}",
@@ -11,6 +11,8 @@
   "accepted_result_sha256": ["{LOWERCASE_SHA256_OR_NONE}"],
   "rejected_result_ids": ["{RESULT_ID_OR_NONE}"],
   "completed_coverage_keys": ["{COVERAGE_KEY_OR_NONE}"],
+  "completed_proof_obligation_ids": ["{PROOF_OBLIGATION_ID_OR_NONE}"],
+  "open_proof_obligation_ids": ["{PROOF_OBLIGATION_ID_OR_NONE}"],
   "accepted_summary": {
     "path": "{TARGET_RELATIVE_ACCEPTED_SUMMARY_PATH}",
     "word_count": "{MEASURED_NON_NEGATIVE_INTEGER}",
