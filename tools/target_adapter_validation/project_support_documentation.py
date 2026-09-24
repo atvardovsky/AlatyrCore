@@ -210,30 +210,32 @@ def validate_project_support_documentation(
                 f"Fact Type {fact_type!r} remains of unknown applicability",
                 path,
             )
-        elif applicability == "applicable":
+        elif applicability in {"applicable", "not-applicable"}:
+            for field in ["Decision source", "Evidence revision"]:
+                if not _resolved(fields[field]):
+                    context.error(
+                        "SOURCE_REGISTRY_EVIDENCE_UNRESOLVED",
+                        f"{applicability} Fact Type {fact_type!r} has unresolved {field}",
+                        path,
+                    )
+            if not _valid_date(fields["Last reviewed"]):
+                context.error(
+                    "SOURCE_REGISTRY_REVIEW_DATE",
+                    f"{applicability} Fact Type {fact_type!r} needs an ISO review date",
+                    path,
+                )
+
+        if applicability == "applicable":
             if authority != "accepted":
                 context.error(
                     "SOURCE_REGISTRY_AUTHORITY_UNACCEPTED",
                     f"applicable Fact Type {fact_type!r} requires accepted authority, not {authority!r}",
                     path,
                 )
-            for field in ["Decision source", "Evidence revision"]:
-                if not _resolved(fields[field]):
-                    context.error(
-                        "SOURCE_REGISTRY_EVIDENCE_UNRESOLVED",
-                        f"applicable Fact Type {fact_type!r} has unresolved {field}",
-                        path,
-                    )
             if not any(_resolved(value) for value in owner_values):
                 context.error(
                     "SOURCE_REGISTRY_EVIDENCE_UNRESOLVED",
                     f"applicable Fact Type {fact_type!r} has no resolved owner",
-                    path,
-                )
-            if not _valid_date(fields["Last reviewed"]):
-                context.error(
-                    "SOURCE_REGISTRY_REVIEW_DATE",
-                    f"applicable Fact Type {fact_type!r} needs an ISO review date",
                     path,
                 )
             if gap == "blocking":

@@ -31,7 +31,13 @@ Known contradictions, missing facts, or accepted limitations:
 """
 
 
-def registry(authority: str = "accepted", applicability: str = "applicable") -> str:
+def registry(
+    authority: str = "accepted",
+    applicability: str = "applicable",
+    decision_source: str = "docs/decision.md",
+    evidence_revision: str = "abc123",
+    last_reviewed: str = "2026-09-24",
+) -> str:
     return f"""# Source Of Truth Registry
 
 ### Fact Type: `business rule`
@@ -39,9 +45,9 @@ def registry(authority: str = "accepted", applicability: str = "applicable") -> 
 Fact type: `business rule`
 Applicability state: `{applicability}`
 Authority state: `{authority}`
-Decision source: `docs/decision.md`
-Evidence revision: `abc123`
-Last reviewed: `2026-09-24`
+Decision source: `{decision_source}`
+Evidence revision: `{evidence_revision}`
+Last reviewed: `{last_reviewed}`
 Gap severity: `none`
 Canonical owner: `docs/business.md`
 Consistency level: `fact`
@@ -51,13 +57,17 @@ Relationship coverage: `mapped`
 """
 
 
-def compact_registry() -> str:
-    return """# Source Of Truth Registry
+def compact_registry(
+    authority: str = "accepted",
+    applicability: str = "applicable",
+    decision_source: str = "docs/decision.md",
+) -> str:
+    return f"""# Source Of Truth Registry
 
 ### Fact Type: `business rule`
 
 Fact type: `business rule`
-Authority: applicability=`applicable`; state=`accepted`; decision_source=`docs/decision.md`; evidence_revision=`abc123`; reviewed=`2026-09-24`; gap=`none`
+Authority: applicability=`{applicability}`; state=`{authority}`; decision_source=`{decision_source}`; evidence_revision=`abc123`; reviewed=`2026-09-24`; gap=`none`
 Canonical owner: `docs/business.md`
 Routing: consistency_level=`fact`; project_area=`billing`; consistency_node=`fact.business`; relationship_coverage=`mapped`
 """
@@ -119,6 +129,107 @@ class ProjectSupportDocumentationTests(unittest.TestCase):
 
         self.assertIn(
             "SOURCE_REGISTRY_APPLICABILITY_UNRESOLVED",
+            {finding.code for finding in check.findings},
+        )
+
+    def test_non_applicable_entry_with_resolved_evidence_passes(self) -> None:
+        target = self.make_target(
+            registry(authority="not-applicable", applicability="not-applicable")
+        )
+        check = validator(target, validation_phase="acceptance")
+
+        validate_project_support_documentation(
+            check.capability_validation_context(), None
+        )
+
+        self.assertEqual(check.findings, [])
+
+    def test_non_applicable_entry_requires_resolved_decision_source(self) -> None:
+        target = self.make_target(
+            registry(
+                authority="not-applicable",
+                applicability="not-applicable",
+                decision_source="unknown",
+            )
+        )
+        check = validator(target, validation_phase="acceptance")
+
+        validate_project_support_documentation(
+            check.capability_validation_context(), None
+        )
+
+        self.assertIn(
+            "SOURCE_REGISTRY_EVIDENCE_UNRESOLVED",
+            {finding.code for finding in check.findings},
+        )
+
+    def test_compact_non_applicable_entry_requires_decision_source(self) -> None:
+        target = self.make_target(
+            compact_registry(
+                authority="not-applicable",
+                applicability="not-applicable",
+                decision_source="unknown",
+            )
+        )
+        check = validator(target, validation_phase="acceptance")
+
+        validate_project_support_documentation(
+            check.capability_validation_context(), None
+        )
+
+        self.assertIn(
+            "SOURCE_REGISTRY_EVIDENCE_UNRESOLVED",
+            {finding.code for finding in check.findings},
+        )
+
+    def test_non_applicable_entry_requires_evidence_revision(self) -> None:
+        target = self.make_target(
+            registry(
+                authority="not-applicable",
+                applicability="not-applicable",
+                evidence_revision="unknown",
+            )
+        )
+        check = validator(target, validation_phase="acceptance")
+
+        validate_project_support_documentation(
+            check.capability_validation_context(), None
+        )
+
+        self.assertIn(
+            "SOURCE_REGISTRY_EVIDENCE_UNRESOLVED",
+            {finding.code for finding in check.findings},
+        )
+
+    def test_non_applicable_entry_requires_iso_review_date(self) -> None:
+        target = self.make_target(
+            registry(
+                authority="not-applicable",
+                applicability="not-applicable",
+                last_reviewed="unknown",
+            )
+        )
+        check = validator(target, validation_phase="acceptance")
+
+        validate_project_support_documentation(
+            check.capability_validation_context(), None
+        )
+
+        self.assertIn(
+            "SOURCE_REGISTRY_REVIEW_DATE",
+            {finding.code for finding in check.findings},
+        )
+
+    def test_non_applicable_entry_requires_matching_authority_state(self) -> None:
+        target = self.make_target(registry(applicability="not-applicable"))
+        check = validator(target, validation_phase="acceptance")
+
+        validate_project_support_documentation(
+            check.capability_validation_context(), None
+        )
+
+        self.assertIn(
+            "SOURCE_REGISTRY_NOT_APPLICABLE_AUTHORITY",
             {finding.code for finding in check.findings},
         )
 

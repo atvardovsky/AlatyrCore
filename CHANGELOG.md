@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fixed target adapter acceptance validation so an explicitly non-applicable
+  source-of-truth registry entry requires a resolved decision source, evidence
+  revision, and ISO review date, matching the existing registry contract.
 
 ## 0.1.0-alpha.70 - 2026-09-24
 
