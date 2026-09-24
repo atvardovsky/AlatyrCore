@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-target-discovery-report.schema.json",
+  "title": "Alatyr target discovery report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_kind",
+    "discovery_id",
+    "target",
+    "scope",
+    "findings",
+    "exclusions",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "report_kind": {"const": "alatyr-target-discovery-report"},
+    "discovery_id": {"type": "string", "minLength": 1},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_name",
+        "revision",
+        "branch",
+        "worktree_state",
+        "inventory_digest",
+        "observed_at"
+      ],
+      "properties": {
+        "repository_name": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1},
+        "branch": {"type": "string", "minLength": 1},
+        "worktree_state": {"enum": ["clean", "dirty", "unavailable"]},
+        "inventory_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "observed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "support_profile", "modules", "categories"],
+      "properties": {
+        "operation": {"enum": ["installation", "update", "repair", "recheck"]},
+        "support_profile": {"enum": ["kernel", "core", "standard", "full"]},
+        "modules": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/definitions/category"}
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/finding"}
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inventory_files",
+        "selected_categories",
+        "classified_findings",
+        "material_findings",
+        "unresolved_material_findings"
+      ],
+      "properties": {
+        "inventory_files": {"type": "integer", "minimum": 0},
+        "selected_categories": {"type": "integer", "minimum": 1},
+        "classified_findings": {"type": "integer", "minimum": 1},
+        "material_findings": {"type": "integer", "minimum": 0},
+        "unresolved_material_findings": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "definitions": {
+    "category": {
+      "enum": [
+        "repository-identity",
+        "existing-ai-surfaces",
+        "project-sources-of-truth",
+        "risk-authorization-validation",
+        "context-routing",
+        "support-state"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "selector"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "selector": {"type": "string", "minLength": 1}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "signal",
+        "statement",
+        "evidence_state",
+        "confidence",
+        "material",
+        "decision_authority",
+        "source_count",
+        "sources_truncated",
+        "matched_path_digest",
+        "sources",
+        "disposition",
+        "projections",
+        "disposition_reason"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "category": {"$ref": "#/definitions/category"},
+        "signal": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "evidence_state": {
+          "enum": ["observed", "proposed", "accepted", "contradicted", "unknown"]
+        },
+        "confidence": {"enum": ["deterministic", "high", "medium", "low", "unknown"]},
+        "material": {"type": "boolean"},
+        "decision_authority": {"type": "string", "minLength": 1},
+        "source_count": {"type": "integer", "minimum": 0},
+        "sources_truncated": {"type": "boolean"},
+        "matched_path_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "sources": {"type": "array", "items": {"$ref": "#/definitions/source"}},
+        "disposition": {
+          "enum": ["projected", "rejected", "deferred", "unresolved", "not-applicable"]
+        },
+        "projections": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "disposition_reason": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"evidence_state": {"const": "observed"}}},
+          "then": {"properties": {"sources": {"minItems": 1}}}
+        },
+        {
+          "if": {"properties": {"disposition": {"const": "projected"}}},
+          "then": {"properties": {"projections": {"minItems": 1}}}
+        }
+      ]
+    }
+  }
+}

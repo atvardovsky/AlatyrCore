@@ -5,8 +5,11 @@ from __future__ import annotations
 
 import json
 import sys
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
+
+import jsonschema
 
 from installer_stage_model import (
     load_installer_stage_plan,
@@ -18,6 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "installer" / "discovery-contract.json"
 ROUTER = ROOT / "installer" / "context-router.json"
 CAPABILITIES = ROOT / "framework" / "capabilities.json"
+REPORT_SCHEMA = ROOT / "schemas" / "alatyr-target-discovery-report.schema.json"
+REPORT_TEMPLATE = ROOT / "templates" / "target" / ".ai" / "assistant" / "discovery-report.json"
+TOOL_COMMANDS = ROOT / "tools" / "tool_commands.json"
 PROSE_SURFACES = [
     ROOT / "INSTALL.md",
     ROOT / "installer" / "assistant-installation.flow.md",
@@ -69,6 +75,65 @@ def main() -> int:
             failures.append("discovery contract must require metadata-first inspection")
         if "Load content only" not in usage.get("content_loading", ""):
             failures.append("discovery contract must make content loading conditional")
+
+    result_contract = contract.get("result_contract")
+    expected_result_contract = {
+        "schema": "schemas/alatyr-target-discovery-report.schema.json",
+        "target_path": ".ai/assistant/discovery-report.json",
+        "template": "templates/target/.ai/assistant/discovery-report.json",
+        "read_only_inventory_tool": "python3 tools/alatyr.py inspect-target",
+    }
+    if not isinstance(result_contract, dict):
+        failures.append("discovery contract must define result_contract")
+    else:
+        for field, expected in expected_result_contract.items():
+            if result_contract.get(field) != expected:
+                failures.append(
+                    f"discovery result_contract.{field} must equal {expected}"
+                )
+        if "material finding" not in result_contract.get("projection_rule", ""):
+            failures.append(
+                "discovery result contract must preserve material-finding dispositions"
+            )
+    try:
+        report_schema = load(REPORT_SCHEMA)
+        jsonschema.Draft7Validator.check_schema(report_schema)
+        report_template = load(REPORT_TEMPLATE)
+        schema_template = deepcopy(report_template)
+        schema_template["scope"]["support_profile"] = "kernel"
+        report_errors = sorted(
+            jsonschema.Draft7Validator(report_schema).iter_errors(schema_template),
+            key=lambda error: list(error.absolute_path),
+        )
+        for error in report_errors:
+            location = ".".join(str(item) for item in error.absolute_path) or "root"
+            failures.append(
+                f"target discovery report template {location}: {error.message}"
+            )
+    except (OSError, ValueError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
+        failures.append(f"cannot validate target discovery report contract: {exc}")
+
+    try:
+        command_manifest = load(TOOL_COMMANDS)
+        inspect_command = next(
+            (
+                command
+                for command in command_manifest.get("commands", [])
+                if isinstance(command, dict)
+                and command.get("name") == "inspect-target"
+            ),
+            None,
+        )
+        if not isinstance(inspect_command, dict):
+            failures.append("tool command manifest must expose inspect-target")
+        elif (
+            inspect_command.get("script") != "inspect_target_discovery.py"
+            or inspect_command.get("write_scope")
+            != "explicit-report-output-only"
+        ):
+            failures.append("inspect-target command contract is invalid")
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        failures.append(f"cannot validate inspect-target command: {exc}")
 
     stages = router.get("stages")
     if not isinstance(stages, dict):

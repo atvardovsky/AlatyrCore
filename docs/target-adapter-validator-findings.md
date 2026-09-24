@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1492
+Catalog entries: 1531
 
 ## Families
 
@@ -26,7 +26,7 @@ Catalog entries: 1492
 - `CAPABILITY`: 10 codes.
 - `CHANGED`: 2 codes.
 - `CODEDOC`: 37 codes.
-- `CONSISTENCY`: 43 codes.
+- `CONSISTENCY`: 50 codes.
 - `CONTEXT`: 22 codes.
 - `DEBUG`: 140 codes.
 - `DELEGATION`: 98 codes.
@@ -50,16 +50,17 @@ Catalog entries: 1492
 - `PACKAGE`: 78 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
-- `PROJECT`: 54 codes.
+- `PROJECT`: 55 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
 - `ROUTER`: 73 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `SESSION`: 67 codes.
+- `SOURCE`: 13 codes.
 - `STALE`: 2 codes.
-- `SUPPORT`: 19 codes.
-- `TARGET`: 8 codes.
+- `SUPPORT`: 21 codes.
+- `TARGET`: 24 codes.
 - `TASK`: 27 codes.
 - `TDD`: 47 codes.
 - `TEAM`: 112 codes.
@@ -572,6 +573,12 @@ Catalog entries: 1492
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_SELECTION_POLICY`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
+- `CONSISTENCY_MAP_BINDING_INVENTORY`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_MAP_BINDING_UNMATCHED`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_MAP_BINDING_UNSAFE`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_DIRECTION`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGES`
@@ -611,7 +618,7 @@ Catalog entries: 1492
 - `CONSISTENCY_MAP_NODE_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_OWNER_MISSING`
-  Level: warning. Source: `tools/target_adapter_validation/consistency_map.py`.
+  Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_OWNER_PATH`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_REGISTRY`
@@ -651,6 +658,14 @@ Catalog entries: 1492
 - `CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_RELATIONSHIP_CANDIDATES_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_RELATIONSHIP_CANDIDATE_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_RELATIONSHIP_CANDIDATE_NODE`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_RELATIONSHIP_CANDIDATE_TYPE`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REVERSE_INDEX_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
@@ -2132,6 +2147,8 @@ Catalog entries: 1492
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_SUPERSESSION_STATE`
   Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_ORIENTATION_INCOMPLETE`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
 - `REQUIRED_FILE_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTED_PATH_MISSING`
@@ -2422,6 +2439,32 @@ Catalog entries: 1492
   Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
 - `SESSION_CONTINUITY_STORAGE`
   Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SOURCE_REGISTRY_APPLICABILITY`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_APPLICABILITY_UNRESOLVED`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_AUTHORITY`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_AUTHORITY_UNACCEPTED`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_BLOCKING_GAP`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_EMPTY`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_EVIDENCE_FIELDS`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_EVIDENCE_UNRESOLVED`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_FACT_TYPE_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_FACT_TYPE_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_GAP_SEVERITY`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_NOT_APPLICABLE_AUTHORITY`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_REVIEW_DATE`
+  Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
 - `STALE_CHECKER_MISSING_CLAIM`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `STALE_CHECKER_REFERENCE`
@@ -2434,11 +2477,15 @@ Catalog entries: 1492
   Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_INDEX_STALE`
   Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_INPUTS_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_INVALID`
   Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_REGISTRY_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_REGISTRY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_REVIEW_EVIDENCE_MISSING`
   Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_UNRESOLVED`
   Level: configured. Source: `tools/target_adapter_validation/support_generation.py`.
@@ -2470,6 +2517,38 @@ Catalog entries: 1492
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `TARGET_CHECKER_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `TARGET_DISCOVERY_AUTHORITY_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_CATEGORY_UNCLASSIFIED`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_DISPOSITION_AUTHORITY_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_FINDING_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_MANIFEST_PATH`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_MATERIAL_UNRESOLVED`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_PROFILE_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_PROJECTION_PATH`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_REPORT_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_REPORT_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_SOURCE_COUNT_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_SOURCE_PATH`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_SOURCE_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_SUMMARY_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/discovery.py`.
+- `TARGET_DISCOVERY_UNRESOLVED`
+  Level: dynamic. Source: `tools/target_adapter_validation/discovery.py`.
 - `TARGET_GIT_STATE_MUTATED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_INPUT_MUTATED`

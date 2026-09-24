@@ -114,6 +114,24 @@ def load_registry(target: Path) -> dict[str, Any]:
             if not isinstance(item, dict):
                 raise SupportGenerationError(f"artifact {artifact_id} input {position} is invalid")
             _safe_path(item.get("path"), f"artifact {artifact_id} input path")
+            required = item.get("required", True)
+            min_matches = item.get("min_matches", 1 if required is True else 0)
+            if not isinstance(required, bool):
+                raise SupportGenerationError(
+                    f"artifact {artifact_id} input {position} required must be boolean"
+                )
+            if (
+                not isinstance(min_matches, int)
+                or isinstance(min_matches, bool)
+                or min_matches < 0
+            ):
+                raise SupportGenerationError(
+                    f"artifact {artifact_id} input {position} min_matches must be a non-negative integer"
+                )
+            if required and min_matches < 1:
+                raise SupportGenerationError(
+                    f"artifact {artifact_id} required input {position} needs min_matches >= 1"
+                )
         artifact_outputs = artifact.get("outputs")
         if not isinstance(artifact_outputs, list) or not artifact_outputs:
             raise SupportGenerationError(f"artifact {artifact_id} needs outputs")
@@ -227,30 +245,91 @@ def repository_state_digest(target: Path) -> str:
     )
 
 
-def build_generation_index(target: Path, registry: dict[str, Any] | None = None) -> dict[str, Any]:
+def _minimum_input_matches(item: dict[str, Any]) -> int:
+    configured = item.get("min_matches")
+    if isinstance(configured, int) and not isinstance(configured, bool):
+        return configured
+    return 1 if item.get("required", True) is True else 0
+
+
+def build_generation_index(
+    target: Path,
+    registry: dict[str, Any] | None = None,
+    *,
+    recorded_index: dict[str, Any] | None = None,
+    review_evidence: dict[str, list[str]] | None = None,
+) -> dict[str, Any]:
     target = target.resolve()
     registry = registry or load_registry(target)
     order = topological_order(registry)
     artifacts = {item["id"]: item for item in registry["artifacts"]}
     repository_paths = _repository_paths(target)
+    recorded_states = {
+        item["id"]: item
+        for item in (recorded_index or {}).get("artifacts", [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    review_evidence = review_evidence or {}
     states: list[dict[str, Any]] = []
     for artifact_id in order:
         artifact = artifacts[artifact_id]
-        input_paths = _matching_paths(repository_paths, [item["path"] for item in artifact["inputs"]])
+        input_path_set: set[str] = set()
+        missing_inputs: list[str] = []
+        for item in artifact["inputs"]:
+            matches = _matching_paths(repository_paths, [item["path"]])
+            input_path_set.update(matches)
+            if len(matches) < _minimum_input_matches(item):
+                missing_inputs.append(item["path"])
+        input_paths = sorted(input_path_set)
+        missing_inputs.sort()
         output_paths = _matching_paths(repository_paths, artifact["outputs"])
         missing_outputs = sorted(set(artifact["outputs"]) - set(output_paths))
-        states.append(
-            {
-                "id": artifact_id,
-                "mode": artifact["mode"],
-                "owner": artifact["owner"],
-                "input_paths": input_paths,
-                "input_digest": _path_digest(target, input_paths, b"alatyr-support-inputs-v1\0"),
-                "output_paths": output_paths,
-                "output_digest": _path_digest(target, output_paths, b"alatyr-support-outputs-v1\0"),
-                "missing_outputs": missing_outputs,
-            }
-        )
+        state = {
+            "id": artifact_id,
+            "mode": artifact["mode"],
+            "owner": artifact["owner"],
+            "input_paths": input_paths,
+            "input_digest": _path_digest(target, input_paths, b"alatyr-support-inputs-v1\0"),
+            "missing_inputs": missing_inputs,
+            "output_paths": output_paths,
+            "output_digest": _path_digest(target, output_paths, b"alatyr-support-outputs-v1\0"),
+            "missing_outputs": missing_outputs,
+        }
+        if artifact["mode"] != "deterministic-derived":
+            supplied_evidence = review_evidence.get(artifact_id)
+            previous = recorded_states.get(artifact_id)
+            evidence_paths: list[str] = []
+            if supplied_evidence:
+                evidence_paths = sorted(set(supplied_evidence))
+            elif (
+                isinstance(previous, dict)
+                and previous.get("input_digest") == state["input_digest"]
+                and previous.get("output_digest") == state["output_digest"]
+                and isinstance(previous.get("review_evidence"), list)
+                and previous["review_evidence"]
+                and all(
+                    isinstance(value, str) and value
+                    for value in previous["review_evidence"]
+                )
+            ):
+                evidence_paths = sorted(set(previous["review_evidence"]))
+            if evidence_paths:
+                valid_evidence: list[str] = []
+                for relpath in evidence_paths:
+                    try:
+                        evidence_path = safe_destination(target, relpath)
+                    except SupportGenerationError:
+                        continue
+                    if evidence_path.is_file():
+                        valid_evidence.append(relpath)
+                if valid_evidence:
+                    state["review_evidence"] = valid_evidence
+                    state["review_evidence_digest"] = _path_digest(
+                        target,
+                        valid_evidence,
+                        b"alatyr-support-review-evidence-v1\0",
+                    )
+        states.append(state)
     return {
         "schema_version": 1,
         "index_kind": "target-support-generation-index",
@@ -271,7 +350,7 @@ def load_index(target: Path) -> dict[str, Any]:
 def generation_plan(target: Path) -> dict[str, Any]:
     registry = load_registry(target)
     recorded = load_index(target)
-    current = build_generation_index(target, registry)
+    current = build_generation_index(target, registry, recorded_index=recorded)
     recorded_states = {
         item["id"]: item for item in recorded.get("artifacts", []) if isinstance(item, dict) and isinstance(item.get("id"), str)
     }
@@ -290,7 +369,16 @@ def generation_plan(target: Path) -> dict[str, Any]:
                 stale_reasons.append("outputs-changed")
         if state["missing_outputs"]:
             stale_reasons.append("outputs-missing")
+        if state["missing_inputs"]:
+            stale_reasons.append("inputs-missing")
         artifact = artifacts[state["id"]]
+        if artifact["mode"] != "deterministic-derived":
+            if not state.get("review_evidence"):
+                stale_reasons.append("review-evidence-missing")
+            elif previous is None or previous.get(
+                "review_evidence_digest"
+            ) != state.get("review_evidence_digest"):
+                stale_reasons.append("review-evidence-changed")
         if any(dependency in stale_ids for dependency in artifact["depends_on"]):
             stale_reasons.append("dependency-stale")
         if stale_reasons:

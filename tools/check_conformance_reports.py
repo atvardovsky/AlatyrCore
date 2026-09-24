@@ -244,6 +244,48 @@ def validate_logical_integrity_evidence(report: dict[str, Any], path: Path) -> N
             )
 
 
+def validate_discovery_receipt_evidence(
+    report: dict[str, Any], path: Path
+) -> None:
+    value = report.get("discovery_receipt_evidence")
+    if value is None:
+        return
+    if not isinstance(value, dict):
+        raise AssertionError(f"{path} discovery_receipt_evidence must be object")
+    for field in ["receipt_path", "project_orientation_review"]:
+        require_non_empty(value, field, path)
+    categories = require_non_empty(value, "selected_categories", path)
+    if not isinstance(categories, list) or not all(
+        isinstance(item, str) and item for item in categories
+    ):
+        raise AssertionError(
+            f"{path} discovery_receipt_evidence.selected_categories must be string list"
+        )
+    counts: dict[str, int] = {}
+    for field in [
+        "material_findings",
+        "disposed_material_findings",
+        "unresolved_material_findings",
+    ]:
+        count = require_non_empty(value, field, path)
+        if count != "unknown" and (
+            not isinstance(count, int) or isinstance(count, bool) or count < 0
+        ):
+            raise AssertionError(
+                f"{path} discovery_receipt_evidence.{field} must be non-negative int or unknown"
+            )
+        if isinstance(count, int):
+            counts[field] = count
+    if len(counts) == 3 and (
+        counts["disposed_material_findings"]
+        + counts["unresolved_material_findings"]
+        != counts["material_findings"]
+    ):
+        raise AssertionError(
+            f"{path} discovery receipt material finding counts do not reconcile"
+        )
+
+
 def validate_report(
     fixture_dir: Path,
     shared: dict[str, Any],
@@ -293,6 +335,7 @@ def validate_report(
     validate_validation_status(report, report_path)
     validate_context_cost_evidence(report, report_path, actual_run=actual_run)
     validate_logical_integrity_evidence(report, report_path)
+    validate_discovery_receipt_evidence(report, report_path)
 
     target_shape = require_string_list(expected, "target_shape", fixture_dir / "expected.json")
     target_shape_confirmed = require_string_list(
@@ -444,6 +487,22 @@ def validate_run_template(shared: dict[str, Any]) -> list[str]:
             if field not in integrity:
                 failures.append(
                     f"{RUN_TEMPLATE} logical_integrity_evidence missing {field}"
+                )
+    discovery = template.get("discovery_receipt_evidence")
+    if not isinstance(discovery, dict):
+        failures.append(f"{RUN_TEMPLATE} discovery_receipt_evidence must be object")
+    else:
+        for field in [
+            "receipt_path",
+            "selected_categories",
+            "material_findings",
+            "disposed_material_findings",
+            "unresolved_material_findings",
+            "project_orientation_review",
+        ]:
+            if field not in discovery:
+                failures.append(
+                    f"{RUN_TEMPLATE} discovery_receipt_evidence missing {field}"
                 )
     return failures
 

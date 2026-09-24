@@ -66,6 +66,24 @@ def _load_approval(path: Path, plan: dict[str, Any], base: str, outputs: list[st
     return None
 
 
+def _review_evidence(
+    target: Path, values: list[str] | None
+) -> tuple[dict[str, list[str]], str | None]:
+    evidence: dict[str, list[str]] = {}
+    for value in values or []:
+        artifact_id, separator, relpath = value.partition("=")
+        if not separator or not artifact_id or not relpath:
+            return {}, "review evidence must use ARTIFACT_ID=TARGET_RELATIVE_PATH"
+        try:
+            path = safe_destination(target, relpath)
+        except SupportGenerationError as exc:
+            return {}, f"invalid review evidence for {artifact_id}: {exc}"
+        if not path.is_file():
+            return {}, f"review evidence does not exist for {artifact_id}: {relpath}"
+        evidence.setdefault(artifact_id, []).append(relpath)
+    return evidence, None
+
+
 def _apply(target: Path, plan: dict[str, Any], args: argparse.Namespace) -> int:
     if args.authorization != "modify":
         print("FAIL: --apply requires --authorization modify for the current scope", file=sys.stderr)
@@ -89,6 +107,7 @@ def _apply(target: Path, plan: dict[str, Any], args: argparse.Namespace) -> int:
             return 1
     registry = load_registry(target)
     artifacts = {item["id"]: item for item in registry["artifacts"]}
+    recorded = load_index(target)
     base = _head(target)
     stale_ids = [item["id"] for item in plan["actions"] if item["status"] == "stale"]
     deterministic_ids = [item for item in stale_ids if artifacts[item]["mode"] == "deterministic-derived"]
@@ -174,7 +193,11 @@ def _apply(target: Path, plan: dict[str, Any], args: argparse.Namespace) -> int:
                 backups.append((destination, backup))
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 os.replace(staged, destination)
-            index = build_generation_index(target, registry)
+            index = build_generation_index(
+                target,
+                registry,
+                recorded_index=recorded,
+            )
             index_backup = backup_root / "index"
             if index_path.is_file():
                 os.replace(index_path, index_backup)
@@ -202,7 +225,21 @@ def _apply(target: Path, plan: dict[str, Any], args: argparse.Namespace) -> int:
             )
             print(f"FAIL: generation apply rolled back: {exc}{detail}", file=sys.stderr)
             return 1
-    print(f"Applied {len(deterministic_ids)} support-generation action(s) at {base}")
+    unresolved = [
+        item["id"]
+        for item in generation_plan(target)["actions"]
+        if item["status"] == "stale"
+    ]
+    suffix = (
+        "; unresolved review or generation actions remain: "
+        + ", ".join(unresolved)
+        if unresolved
+        else ""
+    )
+    print(
+        f"Applied {len(deterministic_ids)} deterministic support-generation "
+        f"action(s) at {base}{suffix}"
+    )
     return 0
 
 
@@ -218,19 +255,96 @@ def main() -> int:
     parser.add_argument("--plan-digest")
     parser.add_argument("--authorization")
     parser.add_argument("--approval-record", type=Path)
+    parser.add_argument(
+        "--review-evidence",
+        action="append",
+        metavar="ARTIFACT_ID=PATH",
+        help="target-relative owner/manual review evidence for a non-deterministic artifact",
+    )
     args = parser.parse_args()
     target = args.target.resolve()
     try:
         if args.record:
-            index = build_generation_index(target)
+            if args.authorization != "modify":
+                print(
+                    "FAIL: --record requires --authorization modify for the current scope",
+                    file=sys.stderr,
+                )
+                return 1
+            review_evidence, evidence_error = _review_evidence(
+                target, args.review_evidence
+            )
+            if evidence_error:
+                print(f"FAIL: {evidence_error}", file=sys.stderr)
+                return 1
+            registry = load_registry(target)
+            artifact_ids = {item["id"] for item in registry["artifacts"]}
+            unknown_review_ids = sorted(set(review_evidence) - artifact_ids)
+            if unknown_review_ids:
+                print(
+                    "FAIL: review evidence names unknown artifacts: "
+                    + ", ".join(unknown_review_ids),
+                    file=sys.stderr,
+                )
+                return 1
+            try:
+                recorded = load_index(target)
+            except SupportGenerationError:
+                recorded = None
+            if recorded is not None:
+                existing_plan = generation_plan(target)
+                stale_deterministic = [
+                    item["id"]
+                    for item in existing_plan["actions"]
+                    if item["status"] == "stale"
+                    and item["mode"] == "deterministic-derived"
+                ]
+                if stale_deterministic:
+                    print(
+                        "FAIL: deterministic artifacts must be regenerated before recording: "
+                        + ", ".join(stale_deterministic),
+                        file=sys.stderr,
+                    )
+                    return 1
+            index = build_generation_index(
+                target,
+                registry,
+                recorded_index=recorded,
+                review_evidence=review_evidence,
+            )
+            missing_reviews = [
+                item["id"]
+                for item in index["artifacts"]
+                if item["mode"] != "deterministic-derived"
+                and not item.get("review_evidence")
+            ]
+            if missing_reviews:
+                print(
+                    "FAIL: non-deterministic artifacts require explicit review evidence: "
+                    + ", ".join(missing_reviews),
+                    file=sys.stderr,
+                )
+                return 1
+            missing_inputs = [
+                item["id"]
+                for item in index["artifacts"]
+                if item.get("missing_inputs")
+            ]
+            if missing_inputs:
+                print(
+                    "FAIL: required generation inputs are missing: "
+                    + ", ".join(missing_inputs),
+                    file=sys.stderr,
+                )
+                return 1
             output = target / INDEX_PATH
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_bytes(render_json(index).encode("utf-8"))
             print(f"Wrote {INDEX_PATH} with {len(index['artifacts'])} artifacts")
             return 0
         if args.check:
-            current = build_generation_index(target)
             recorded = load_index(target)
+            current = build_generation_index(target, recorded_index=recorded)
             if current != recorded:
                 print("FAIL: support-generation index is stale", file=sys.stderr)
                 return 1

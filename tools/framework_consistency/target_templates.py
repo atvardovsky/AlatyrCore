@@ -157,7 +157,9 @@ def check_target_governance_surfaces(context: CheckContext) -> list[str]:
     source_registry = context.read_text("templates/target/.ai/project/source-of-truth-registry.md")
     for required_registry_text in [
         "Fact type:",
+        "Authority:",
         "Canonical owner:",
+        "Routing:",
         "Derived surfaces:",
         "Sync direction:",
         "Validation or manual review:",

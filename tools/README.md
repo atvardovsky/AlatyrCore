@@ -20,6 +20,7 @@ python3 tools/alatyr.py validate-delegation-tree --target-root /path/to/target-r
 python3 tools/alatyr.py context-plan --target /path/to/target-repo --profile code-local --operation logical-integrity-review
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py compare-check-reports /tmp/base.json /tmp/candidate.json
+python3 tools/alatyr.py inspect-target --target /path/to/target-repo --profile kernel
 python3 tools/alatyr.py status --target /path/to/target-repo
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
@@ -50,6 +51,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 validate-delegation-tree --target-root C:\path\to\target-repo --tree C:\path\to\execution-tree.json
 .\tools\alatyr.ps1 check-source-focused
 .\tools\alatyr.ps1 compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
+.\tools\alatyr.ps1 inspect-target --target C:\path\to\target-repo --profile kernel
 .\tools\alatyr.ps1 status --target C:\path\to\target-repo
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
@@ -79,6 +81,7 @@ tools\alatyr.cmd plan-work --source-profile repository-audit --summary
 tools\alatyr.cmd validate-delegation-tree --target-root C:\path\to\target-repo --tree C:\path\to\execution-tree.json
 tools\alatyr.cmd check-source-focused
 tools\alatyr.cmd compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
+tools\alatyr.cmd inspect-target --target C:\path\to\target-repo --profile kernel
 tools\alatyr.cmd status --target C:\path\to\target-repo
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
@@ -113,6 +116,9 @@ The stable command set is:
   reports and labels source/manifest identity before interpreting timing
   deltas
 - `scaffold`: target structure writes only with `--write`
+- `inspect-target`: metadata-only target inventory that emits a typed discovery
+  receipt; it does not execute target code, load imported instructions as
+  authority, or infer accepted project facts
 - `render-bootstrap`: target bootstrap and lazy integrity regeneration only
   with `--write`
 - `render-entry`: target recovery packet regeneration only with `--write`
@@ -131,7 +137,9 @@ The stable command set is:
   replace invariant reasoning
 - `generate-support`: read-only plan/check by default; guarded apply is limited
   to declared staged deterministic outputs with current authorization and plan
-  binding
+  binding; recording non-deterministic artifacts requires explicit target-
+  relative content-hash-bound review evidence, and required input patterns
+  must have effective matches
 - `validate-adapter`: optional explicit report output only
 - `approval-check`: read-only strict diff-to-approval scope check with optional
   change-package enforcement

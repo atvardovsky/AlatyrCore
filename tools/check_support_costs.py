@@ -170,6 +170,29 @@ def main() -> int:
                 failures.append("installed report is missing installed_support_files")
             elif installed_scope.get("files") != installed["support_surfaces"]["files"]:
                 failures.append("installed support file scope is out of sync")
+            managed_scope = installed.get("cost_scopes", {}).get(
+                "managed_support_files"
+            )
+            excluded_scope = installed.get("cost_scopes", {}).get(
+                "excluded_support_files"
+            )
+            unclassified_scope = installed.get("cost_scopes", {}).get(
+                "unclassified_support_files"
+            )
+            if not all(
+                isinstance(scope, dict)
+                for scope in [managed_scope, excluded_scope, unclassified_scope]
+            ):
+                failures.append(
+                    "installed report must separate managed, excluded, and unclassified support costs"
+                )
+            elif sum(
+                scope.get("files", 0)
+                for scope in [managed_scope, excluded_scope, unclassified_scope]
+            ) != installed_scope.get("files"):
+                failures.append(
+                    "installed managed/excluded/unclassified file scopes do not sum to gross support files"
+                )
             installed_inventory = installed.get("cost_scopes", {}).get(
                 "managed_inventory"
             )

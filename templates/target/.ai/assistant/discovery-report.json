@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "report_kind": "alatyr-target-discovery-report",
+  "discovery_id": "{TARGET_DISCOVERY_ID}",
+  "target": {
+    "repository_name": "{TARGET_REPOSITORY_NAME}",
+    "revision": "{TARGET_DISCOVERY_REVISION}",
+    "branch": "{TARGET_DISCOVERY_BRANCH}",
+    "worktree_state": "unavailable",
+    "inventory_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "observed_at": "{TARGET_DISCOVERY_OBSERVED_AT}"
+  },
+  "scope": {
+    "operation": "installation",
+    "support_profile": "{KERNEL_CORE_STANDARD_OR_FULL}",
+    "modules": [],
+    "categories": [
+      "repository-identity",
+      "existing-ai-surfaces",
+      "project-sources-of-truth",
+      "risk-authorization-validation",
+      "context-routing",
+      "support-state"
+    ]
+  },
+  "findings": [
+    {
+      "id": "{TARGET_DISCOVERY_FINDING_ID}",
+      "category": "repository-identity",
+      "signal": "{TARGET_DISCOVERY_SIGNAL}",
+      "statement": "{TARGET_DISCOVERY_STATEMENT}",
+      "evidence_state": "unknown",
+      "confidence": "unknown",
+      "material": true,
+      "decision_authority": "{TARGET_DECISION_AUTHORITY_OR_UNRESOLVED}",
+      "source_count": 0,
+      "sources_truncated": false,
+      "matched_path_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "sources": [],
+      "disposition": "unresolved",
+      "projections": [],
+      "disposition_reason": "{TARGET_DISPOSITION_REASON}"
+    }
+  ],
+  "exclusions": [
+    "{TARGET_DISCOVERY_EXCLUSION_OR_NONE}"
+  ],
+  "summary": {
+    "inventory_files": 0,
+    "selected_categories": 6,
+    "classified_findings": 1,
+    "material_findings": 1,
+    "unresolved_material_findings": 1
+  }
+}

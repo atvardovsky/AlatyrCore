@@ -11,6 +11,8 @@ Discovery category map: `installer/discovery-contract.json`
 ## Target Repository
 
 - Path:
+- Discovery receipt ID, observation revision, inventory digest, selected
+  categories, and exclusions:
 - New install or upgrade:
 - Primary stack:
 - Existing AI instructions:
@@ -42,6 +44,8 @@ List what must not be changed.
 
 ## Target Facts Collected
 
+- Material discovery findings, evidence selectors, authority state, and final
+  dispositions:
 - Product purpose:
 - Architecture/module facts:
 - Blueprint or equivalent source-of-truth docs:
@@ -218,6 +222,12 @@ Include `.ai/alatyr.yaml` or an equivalent manifest with framework version,
 adapter schema version, template version, owner, source-of-truth files,
 validation entry points, known gaps, and local deviations.
 
+Include `.ai/assistant/discovery-report.json` as the typed retained receipt for
+installation, update, repair, or recheck evidence. Every material finding must
+retain an evidence selector and end as projected into a named artifact,
+rejected, deferred, or not applicable before acceptance. Inventory observations
+must not become accepted project facts without target decision authority.
+
 Include `CODEOWNERS` or an equivalent file-owner map when the target
 repository uses ownership metadata for `.ai/*`, root assistant entry points,
 or supported bridge files.
@@ -245,7 +255,9 @@ modules, deferred modules, blocked modules, and reasons. Scaffolded files do
 not establish enabled state.
 
 Include `.ai/project/source-of-truth-registry.md` when multiple files or
-surfaces can describe the same project fact.
+surfaces can describe the same project fact. Record applicability, authority
+state, decision source, evidence revision, review date, and gap severity for
+every baseline fact type.
 
 Include `.ai/project/engineering-evidence/README.md`, its compact `index.json`,
 the lazy task-scale overlay, capture flow, gate, and machine record template in

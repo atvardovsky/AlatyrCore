@@ -42,6 +42,18 @@ python3 tools/alatyr.py --help
 This command does not launch a conversational runtime. It exposes optional
 source-repository tooling such as structural checks and scaffolding support.
 
+To inspect repository metadata without executing target code, a maintainer can
+point the source helper at a target checkout:
+
+```sh
+python3 tools/alatyr.py inspect-target --target <target-repository> --profile kernel
+```
+
+The JSON output is a draft discovery receipt. It distinguishes observations,
+unknowns, and material findings, but it does not accept architecture or project
+authority. An installation assistant must inspect the selected canonical
+sources and record a disposition for every material finding.
+
 The architecture source contract can be checked with:
 
 ```sh

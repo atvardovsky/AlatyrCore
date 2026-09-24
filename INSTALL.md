@@ -75,6 +75,9 @@ Before creating files in the target repository, inspect:
 - glossaries, terminology docs, acronym lists, data dictionaries, schemas,
   APIs, naming rules, ambiguous terms, and terminology validation
 - package/build files
+- source roots, languages, frameworks, structured comment or docstring
+  conventions, public symbol boundaries, documentation generators, generated
+  references, and documentation lint or publication rules
 - test folders and test conventions
 - test-first/TDD policy, defect and regression patterns, test levels, commands,
   fixtures, isolation, exceptions, feedback time, CI, and merge requirements
@@ -97,6 +100,20 @@ Before creating files in the target repository, inspect:
   handoffs, decisions, merge policy, retention, and privacy rules
 
 If a target fact is missing, mark it as missing. Do not invent it.
+
+When running from an AlatyrCore source checkout, the optional read-only command
+below can prepare a typed metadata receipt without executing target code or
+imported instructions:
+
+```sh
+python3 tools/alatyr.py inspect-target --target /path/to/target-repo --profile kernel
+```
+
+Treat its stdout as inventory evidence, not accepted project facts. Store the
+adapted receipt at `.ai/assistant/discovery-report.json` only during an
+authorized modification stage. The assistant still resolves authority,
+inspects routed content, records conflicts, and gives every material finding
+an explicit final disposition.
 
 ## Planning Rule
 

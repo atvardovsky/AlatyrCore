@@ -47,8 +47,8 @@ class SupportGenerationModule:
             return
         try:
             load_registry(target)
-            current = build_generation_index(target)
             recorded = load_index(target)
+            current = build_generation_index(target, recorded_index=recorded)
         except SupportGenerationError as exc:
             context.error("SUPPORT_GENERATION_INVALID", str(exc), REGISTRY_PATH)
             return
@@ -56,6 +56,33 @@ class SupportGenerationModule:
             context.error(
                 "SUPPORT_GENERATION_INDEX_STALE",
                 "generated support-generation index differs from current inputs or outputs",
+                INDEX_PATH,
+            )
+            return
+        missing_inputs = [
+            item["id"]
+            for item in current["artifacts"]
+            if item.get("missing_inputs")
+        ]
+        if missing_inputs:
+            context.error(
+                "SUPPORT_GENERATION_INPUTS_MISSING",
+                "required support-generation inputs have no effective matches: "
+                + ", ".join(missing_inputs),
+                INDEX_PATH,
+            )
+            return
+        missing_reviews = [
+            item["id"]
+            for item in current["artifacts"]
+            if item["mode"] != "deterministic-derived"
+            and not item.get("review_evidence")
+        ]
+        if missing_reviews:
+            context.error(
+                "SUPPORT_GENERATION_REVIEW_EVIDENCE_MISSING",
+                "non-deterministic support artifacts need explicit owner/manual review evidence: "
+                + ", ".join(missing_reviews),
                 INDEX_PATH,
             )
             return

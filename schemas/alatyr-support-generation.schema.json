@@ -18,7 +18,11 @@
           "id": {"type": "string", "minLength": 1},
           "owner": {"type": "string", "minLength": 1},
           "mode": {"enum": ["deterministic-derived", "assistant-proposed", "owner-maintained"]},
-          "inputs": {"type": "array", "minItems": 1},
+          "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"$ref": "#/definitions/input"}
+          },
           "outputs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
           "depends_on": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
           "generator": {"type": "object"},
@@ -33,6 +37,24 @@
     }
   },
   "definitions": {
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "selector_kind", "selector"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "selector_kind": {"type": "string", "minLength": 1},
+        "selector": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"},
+        "min_matches": {"type": "integer", "minimum": 0}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"required": {"const": true}}, "required": ["required"]},
+          "then": {"properties": {"min_matches": {"minimum": 1}}}
+        }
+      ]
+    },
     "validation": {
       "type": "object",
       "additionalProperties": false,

@@ -67,12 +67,6 @@
       "reason": "migration report renderer; extract release, rule, and target action sections"
     },
     {
-      "path": "tools/target_adapter_validation/consistency_map.py",
-      "qualname": "ConsistencyMapModule.validate",
-      "max_lines": 378,
-      "reason": "consistency-map validator; split node, shard, and registry sync checks"
-    },
-    {
       "path": "tools/target_adapter_validation/debug_mode.py",
       "qualname": "validate_debug_mode",
       "max_lines": 1998,

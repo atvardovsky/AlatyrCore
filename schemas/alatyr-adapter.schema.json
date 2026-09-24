@@ -36,12 +36,13 @@
     },
     "installation": {
       "type": "object",
-      "required": ["id", "date", "mode", "support_profile", "state", "state_record"],
+      "required": ["id", "date", "mode", "support_profile", "state", "state_record", "discovery_report"],
       "properties": {
         "state": {
           "enum": ["scaffolded", "staged", "accepted", "degraded"]
         },
-        "state_record": {"type": "string", "minLength": 1}
+        "state_record": {"type": "string", "minLength": 1},
+        "discovery_report": {"const": ".ai/assistant/discovery-report.json"}
       }
     },
     "owner": {

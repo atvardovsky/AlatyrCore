@@ -24,6 +24,13 @@ contract. The router is the default cheap routing surface. This human-readable
 file is loaded when rationale, conflicts, missing entries, or adapter repair
 require it; it is not mandatory bootstrap context.
 
+Installation, update, repair, and recheck begin from a typed metadata-first
+discovery receipt. It records selected categories, target revision, bounded
+source selectors, unknowns, and exclusions without executing target code or
+granting authority to detected instructions. Load content only for material
+findings selected by the route, then retain an explicit evidence-preserving
+disposition for each material finding before adapter acceptance.
+
 The compact router should index one lazy descriptor per canonical profile.
 Load only the selected descriptor. Intent, migration, consistency, and
 task-scale descriptors compose with that profile when their trigger applies;
@@ -179,6 +186,12 @@ Each target profile should define:
 
 The profile should list concrete target paths after installation. Placeholder
 paths are acceptable only before the adapter is accepted.
+
+Require the selected target owner directly. Keep the complete target
+source-of-truth registry conditional unless ownership is missing, disputed,
+contradicted, or a registry-wide consistency route is selected. This preserves
+authority checks without charging every semantic task for unrelated fact
+types.
 
 ## Task Classification
 

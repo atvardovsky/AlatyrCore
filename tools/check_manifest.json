@@ -54,11 +54,15 @@
         "installer/assistant-installation.flow.md",
         "installer/discovery-contract.json",
         "installer/installation-plan-template.md",
-        "installer/readiness-checklist.md"
+        "installer/readiness-checklist.md",
+        "schemas/alatyr-target-discovery-report.schema.json",
+        "templates/target/.ai/assistant/discovery-report.json",
+        "tools/tool_commands.json"
       ],
       "implementation_paths": [
         "tools/check_installer_discovery_contract.py",
-        "tools/installer_stage_model.py"
+        "tools/installer_stage_model.py",
+        "tools/inspect_target_discovery.py"
       ],
       "trigger_paths": [
         "INSTALL.md",
@@ -67,8 +71,12 @@
         "installer/discovery-contract.json",
         "installer/installation-plan-template.md",
         "installer/readiness-checklist.md",
+        "schemas/alatyr-target-discovery-report.schema.json",
+        "templates/target/.ai/assistant/discovery-report.json",
         "tools/check_installer_discovery_contract.py",
-        "tools/installer_stage_model.py"
+        "tools/installer_stage_model.py",
+        "tools/inspect_target_discovery.py",
+        "tools/tool_commands.json"
       ]
     },
     {
@@ -2192,6 +2200,8 @@
         "templates/target/.ai/assistant/gates/**",
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/team/**",
+        "schemas/alatyr-relationship-candidates.schema.json",
+        "schemas/alatyr-target-discovery-report.schema.json",
         "tools/report_approval_scope.py",
         "tools/check_target_adapter_validator.py",
         "tools/context_catalog.py",
@@ -2211,6 +2221,8 @@
       ],
     "contract_inputs": [
       "templates/target/**",
+      "schemas/alatyr-relationship-candidates.schema.json",
+      "schemas/alatyr-target-discovery-report.schema.json",
       "schemas/alatyr-problem-model-active-projection.schema.json",
       "schemas/alatyr-problem-model.schema.json",
       "schemas/alatyr-session-continuity-packet.schema.json"
@@ -2574,6 +2586,7 @@
         "tools/context_catalog.py",
         "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
+        "tools/inspect_target_discovery.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
         "tools/render_context_catalogs.py",
@@ -2596,6 +2609,7 @@
         "tools/context_catalog.py",
         "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
+        "tools/inspect_target_discovery.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
         "tools/render_context_catalogs.py",
@@ -2637,6 +2651,7 @@
         "tools/context_catalog.py",
         "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
+        "tools/inspect_target_discovery.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
         "tools/render_context_catalogs.py",
@@ -2659,6 +2674,7 @@
         "tools/context_catalog.py",
         "tools/context_planning.py",
         "tools/check_lifecycle_conformance.py",
+        "tools/inspect_target_discovery.py",
         "tools/parallel_execution.py",
         "tools/plan_target_upgrade.py",
         "tools/render_context_catalogs.py",

@@ -16,6 +16,13 @@
     "missing_fact": "Record unresolved target facts as missing, blocked, deferred, disabled, or not applicable; do not invent them.",
     "detail_owner": "Detailed findings belong in the target installation plan and target adapter files, not in this source contract."
   },
+  "result_contract": {
+    "schema": "schemas/alatyr-target-discovery-report.schema.json",
+    "target_path": ".ai/assistant/discovery-report.json",
+    "template": "templates/target/.ai/assistant/discovery-report.json",
+    "read_only_inventory_tool": "python3 tools/alatyr.py inspect-target",
+    "projection_rule": "Every material finding must retain evidence and end as projected, rejected, deferred, or not-applicable before adapter acceptance; deterministic inventory never grants semantic authority."
+  },
   "profile_selection": {
     "default_profile": "kernel",
     "expansion_rule": "Start with the smallest support profile that preserves safety, routing, source-of-truth ownership, authorization, logical integrity, and evidence. Treat optional modules as explicit expansion unless target evidence or the user request justifies them.",

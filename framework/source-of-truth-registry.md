@@ -30,6 +30,10 @@ The registry should answer:
 - which direction synchronization should flow
 - which stable fact ID, consistency level, and project area identify the owner
 - which machine-map node routes to related contracts and surfaces
+- whether the fact is applicable, merely observed or proposed, accepted by the
+  target authority, contradicted, missing, or explicitly not applicable
+- which decision source, evidence revision, and review date support that state
+- whether an unresolved gap is non-blocking or blocks adapter acceptance
 - which invariants constrain scope, identity, ownership, lifecycle, and
   dependent behavior when the fact changes
 - which validation or manual review confirms consistency
@@ -44,6 +48,11 @@ policy can each have different owners.
 Each entry should define:
 
 - fact type
+- applicability state
+- authority state
+- decision source
+- evidence revision and last-reviewed date
+- gap severity
 - canonical owner
 - stable fact ID, consistency level, and project area
 - consistency-map node or an explicit missing relationship record
@@ -57,7 +66,10 @@ Each entry should define:
 - final evidence expected after a change
 
 If a target does not know the owner for a fact type, mark it as missing instead
-of inferring ownership from the nearest file.
+of inferring ownership from the nearest file. An applicable fact observed in
+code or documentation is not canonical until the target decision authority
+accepts its owner and evidence. Acceptance must fail when an applicable
+baseline entry remains observed, proposed, contradicted, missing, or blocked.
 
 ## Machine-Readable Relationship Companion
 
@@ -158,8 +170,10 @@ that commonly create drift when left ownerless:
 - test strategy and test-first policy when that optional module is enabled
 
 Each baseline entry may remain placeholder-based during installation planning,
-but before an adapter claims maturity the owner should be resolved from target
-evidence or explicitly marked missing.
+but before an adapter claims acceptance it must be classified as applicable
+with accepted authority and non-blocking evidence, or not applicable with a
+named decision source. Unknown applicability and unclassified missing owners
+remain blocking gaps.
 
 Generated reference documentation is a derived surface. A target may assign
 bounded symbol-level explanation to structured comments, but declarations,

@@ -84,17 +84,24 @@ If the user asks to install AlatyrCore:
 1. Treat `AGENTS.md` as host-preloaded context.
 2. Read `installer/context-router.json` and select the current stage.
 3. Inspect the target repository before writing files.
-4. Load only stage-required canonical owners and selected target templates.
-5. Identify existing AI instructions, project documentation, validation,
+4. Record a typed discovery receipt for observed metadata, bounded source
+   evidence, unknowns, and every material finding's disposition. The optional
+   `python3 tools/alatyr.py inspect-target` helper is read-only unless an
+   explicit report output is authorized; it does not infer project authority.
+5. Load only stage-required canonical owners and selected target templates.
+6. Identify existing AI instructions, project documentation, code-documentation
+   conventions, validation,
    ownership, generated files, diagrams, and protected surfaces.
-6. Create and review an installation plan before protected changes.
-7. Use `framework/file-inventory.json` for deterministic file and hash
+7. Create and review an installation plan before protected changes.
+8. Use `framework/file-inventory.json` for deterministic file and hash
    comparison without loading unchanged framework prose.
-8. Rewrite target adapter facts from target evidence.
-9. Use `templates/target` only as placeholders.
-10. Run only validation that exists in the target or the explicitly selected
+9. Rewrite target adapter facts from target evidence. Keep observations,
+   proposals, accepted authority, freshness, and known gaps distinct.
+10. Use `templates/target` only as placeholders.
+11. Run only validation that exists in the target or the explicitly selected
     source tooling. Do not invent commands.
-11. Report created or changed surfaces, approvals, validation, unresolved
+12. Report created or changed surfaces, discovery dispositions, approvals,
+    validation, unresolved
     checks, and residual risk.
 
 Optional scaffolding creates structure only. It does not inspect project truth,

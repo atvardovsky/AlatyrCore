@@ -275,6 +275,10 @@ Before accepting a change, check:
 - `python3 tools/check_source_of_truth_registry.py` passes when target
   source-of-truth registry fact types, fields, placeholders, or conflict
   resolution guidance changes.
+- `python3 tools/check_installer_discovery_contract.py` passes when installation
+  discovery categories, typed receipts, material-finding dispositions,
+  metadata inspection, project orientation, or installer-stage evidence
+  changes.
 - `python3 tools/check_target_adapter_validator.py` passes when portable target
   validator routing, route-map schemas, strict complete changed-path approval
   scope matching, Git diff collection, or evidence classification changes.
@@ -398,10 +402,10 @@ Before accepting a change, check:
 - optional consistency-map schema, exact human registry Fact Type and node
   identity, relationship routing, measured semantic composition, module state,
   impact evidence, and checker rules agree.
-- target source-of-truth registry baseline entries include canonical owner,
-  stable fact ID, consistency level, project area, relationship coverage,
-  derived surfaces, sync direction, validation, conflict resolver, approval,
-  and final evidence fields.
+- target source-of-truth registry baseline entries include applicability,
+  authority, decision source, evidence revision, review date, gap severity,
+  canonical owner, stable fact ID, routing, derived surfaces, synchronization,
+  validation, conflict resolution, approval, and final evidence fields.
 - target bridge capability matrix baseline entries include assistant surface,
   bridge paths, auto-load behavior, instruction priority, supported surfaces,
   tool permission model, selected provider/model cache behavior and capability

@@ -13,6 +13,7 @@ installation:
   support_profile: "{KERNEL_CORE_STANDARD_OR_FULL}"
   state: "scaffolded"
   state_record: ".ai/assistant/installation-state.json"
+  discovery_report: ".ai/assistant/discovery-report.json"
 owner:
   responsible_team: "{RESPONSIBLE_TEAM}"
   technical_owner: "{TECHNICAL_OWNER}"

@@ -42,7 +42,7 @@
   },
   "contracts": {
     "outputs": {
-      "discovery-findings": "Read-only target findings grouped by discovery category.",
+      "discovery-findings": "Typed read-only target findings retained in .ai/assistant/discovery-report.json and grouped by discovery category.",
       "resolved-composition": "Selected profile modules assistants and framework pack.",
       "installation-plan": "Bounded installation or update execution plan.",
       "approval-disposition": "Required approval request or explicit non-protected classification.",
@@ -74,6 +74,7 @@
     },
     "completion_checks": {
       "discovery-category-coverage": "Every selected category is classified or explicitly unresolved.",
+      "discovery-disposition-coverage": "Every material discovery finding retains evidence and an explicit projected, rejected, deferred, or not-applicable disposition before acceptance.",
       "composition-closure": "Composition dependency closure resolves without missing capabilities.",
       "projection-owner-coverage": "Every selected output has one projection owner.",
       "bounded-plan": "Planned files actions and exclusions are bounded.",
@@ -149,7 +150,7 @@
       "conditional_context": ["installer/readiness-checklist.md sections selected by enabled capabilities", "target validation discovered during inspection", "focused validator for each enabled module"],
       "required_evidence": ["validation-results", "logical-integrity-review", "residual-risk-record"],
       "required_outputs": ["validation-evidence"],
-      "completion_checks": ["validation-completion", "validation-input-binding"],
+      "completion_checks": ["validation-completion", "validation-input-binding", "discovery-disposition-coverage"],
       "context_budget_words": 4200,
       "authorization_ceiling": "inspect",
       "prohibited_actions": ["invent validation commands", "claim semantic correctness from structural checks"]

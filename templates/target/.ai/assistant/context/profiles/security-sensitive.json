@@ -19,7 +19,6 @@
   ],
   "required_context": [
     ".ai/framework/security-safety-guidance.md",
-    ".ai/project/source-of-truth-registry.md",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/semantic-integrity.md",
     ".ai/assistant/gates/security-approval.md",
@@ -27,6 +26,7 @@
     "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {"path": ".ai/project/source-of-truth-registry.md", "when": "the selected security owner is missing disputed contradicted or requires registry-wide comparison"},
     {"path": ".ai/framework/logical-integrity.md", "when": "invariant derivation repair-set selection or semantic closure is ambiguous"},
     {"path": ".ai/framework/change-risk-model.md", "when": "risk classification or escalation semantics are disputed"},
     {"path": ".ai/framework/approval-records.md", "when": "a protected change requires a scoped approval record"},

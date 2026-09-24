@@ -12,6 +12,7 @@ from report_context_costs import build_report
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "conformance" / "golden" / "context-cost-baseline.json"
+SEMANTIC_REVIEW_MAX_CHARACTERS = 28_600
 
 
 def check_compact_scale_route(
@@ -36,18 +37,32 @@ def check_compact_scale_route(
         failures.append(f"{label} route should stay below {max_words} words")
 
 
-def main() -> int:
-    failures: list[str] = []
-    report = build_report()
+def check_semantic_review_cost(
+    report: dict[str, object], failures: list[str]
+) -> None:
+    scenario = report["cost_scenarios"]["semantic-consistency-review"]
+    if scenario["characters"] > SEMANTIC_REVIEW_MAX_CHARACTERS:
+        failures.append(
+            "semantic consistency review exceeds its cost-regression character ceiling"
+        )
+
+
+def baseline_failures(report: dict[str, object]) -> list[str]:
     try:
         baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"FAIL: invalid context-cost baseline: {exc}", file=sys.stderr)
-        return 1
+        return [f"invalid context-cost baseline: {exc}"]
     if report != baseline:
-        failures.append(
+        return [
             "context-cost baseline drifted; review costs and refresh the golden report"
-        )
+        ]
+    return []
+
+
+def main() -> int:
+    failures: list[str] = []
+    report = build_report()
+    failures.extend(baseline_failures(report))
 
     bootstrap = report["bootstrap"]
     bootstrap_budget = report["budgets"]["bootstrap"]
@@ -292,6 +307,8 @@ def main() -> int:
                 failures.append(f"expansion cost scenario {name} has no measured context")
         else:
             failures.append(f"cost scenario {name} has no valid expected budget state")
+
+    check_semantic_review_cost(report, failures)
 
     migration = report["migration_routing"]
     reduction = migration["initial_word_reduction_percent"]

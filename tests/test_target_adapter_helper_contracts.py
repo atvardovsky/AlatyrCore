@@ -47,6 +47,7 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
         source_owned_modules = {
             "contract_compatibility.py",
             "framework_baseline.py",
+            "source_contracts.py",
         }
         source_owned_receivers = {
             "ADAPTER_MANIFEST_SCHEMA",

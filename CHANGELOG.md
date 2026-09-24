@@ -2,10 +2,39 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.70 - 2026-09-24
+
 - Made the normal local `full` source gate validate canonical release-baseline
   evidence in addition to change-baseline drift, so a migration report bound
   to an intermediate development tree fails before push instead of only in
   the Python 3.13 CI release-transition step.
+- Added a typed, metadata-first target discovery receipt with explicit
+  evidence states, material-finding dispositions, bounded source lists, and a
+  read-only cross-platform inspection helper; module selection expands its
+  required categories and reported path samples remain capped.
+- Required accepted adapters to record concise project orientation and
+  per-fact applicability, authority, decision source, evidence revision,
+  review date, and gap severity without treating observed code as accepted
+  architecture.
+- Prevented support generators from recording missing required inputs or
+  unreviewed owner-maintained outputs as current, and kept non-deterministic
+  evidence valid only while its input, output, and review-evidence digests
+  remain unchanged.
+- Strengthened consistency-map validation for effective mapped bindings,
+  relationship-candidate schemas, exact fact-type synchronization, and
+  repository paths that match real target files.
+- Separated gross, managed, excluded, and unclassified support cost so
+  explicit exclusions no longer inflate maintained-surface estimates.
+- Kept semantic profile context within the existing budget by routing the
+  selected owner directly, loading the complete registry only for ownership
+  conflict or registry-wide review, and compressing repeated registry
+  authority/routing metadata below the prior serialized route size without
+  dropping evidence; added a character ceiling to prevent future silent cost
+  regression.
+- Increased adapter schema version to `58` and target template version to `65`
+  for the discovery receipt, authority evidence, and validation contracts.
 
 ## 0.1.0-alpha.69 - 2026-09-17
 

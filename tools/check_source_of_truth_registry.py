@@ -43,11 +43,9 @@ REQUIRED_FACT_TYPES = [
 
 REQUIRED_FIELDS = [
     "Fact type:",
+    "Authority:",
     "Canonical owner:",
-    "Consistency level:",
-    "Project area:",
-    "Consistency map node:",
-    "Relationship coverage:",
+    "Routing:",
     "Invariant and dependency constraints:",
     "Derived surfaces:",
     "Sync direction:",
@@ -58,6 +56,10 @@ REQUIRED_FIELDS = [
 ]
 
 ENTRY_HEADING = re.compile(r"^### Fact Type: `([^`]+)`\s*$", re.MULTILINE)
+COMPACT_FIELDS = {
+    "Authority": {"ap", "st", "ds", "er", "at", "gs"},
+    "Routing": {"cl", "pa", "cn", "rc"},
+}
 
 
 def read_registry() -> str:
@@ -72,6 +74,16 @@ def parse_entries(text: str) -> dict[str, str]:
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
         entries[match.group(1)] = text[start:end]
     return entries
+
+
+def compact_fields(block: str, group: str) -> dict[str, str]:
+    match = re.search(rf"^{re.escape(group)}:\s*(.*?)\s*$", block, re.MULTILINE)
+    if match is None:
+        return {}
+    return {
+        key: value
+        for key, value in re.findall(r"([a-z_]+)=`([^`]*)`", match.group(1))
+    }
 
 
 def main() -> int:
@@ -105,6 +117,19 @@ def main() -> int:
 
         if f"Fact type: `{fact_type}`" not in block:
             failures.append(f"{fact_type} heading and Fact type field disagree")
+
+        for group, expected_keys in COMPACT_FIELDS.items():
+            observed = compact_fields(block, group)
+            if set(observed) != expected_keys:
+                failures.append(
+                    f"{fact_type} {group} keys differ: "
+                    + ", ".join(sorted(set(observed) ^ expected_keys))
+                )
+            for key, value in observed.items():
+                if "{" not in value:
+                    failures.append(
+                        f"{fact_type} {group}.{key} should remain placeholder-based"
+                    )
 
         if fact_type == "AI infrastructure item":
             for field in [
@@ -161,10 +186,6 @@ def main() -> int:
             failures.append(f"{fact_type} derived surfaces must include a placeholder bullet")
 
         for field in [
-            "Consistency level:",
-            "Project area:",
-            "Consistency map node:",
-            "Relationship coverage:",
             "Invariant and dependency constraints:",
             "Sync direction:",
             "Validation or manual review:",

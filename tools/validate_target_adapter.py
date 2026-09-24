@@ -128,6 +128,10 @@ from target_adapter_validation.test_first_development import validate_test_first
 from target_adapter_validation.project_vocabulary import validate_project_vocabulary
 from target_adapter_validation.code_documentation import validate_code_documentation
 from target_adapter_validation.architecture_knowledge import validate_architecture_knowledge
+from target_adapter_validation.discovery import validate_target_discovery
+from target_adapter_validation.project_support_documentation import (
+    validate_project_support_documentation,
+)
 from target_adapter_validation.support_state import validate_support_state
 from target_adapter_validation.session_continuity import validate_session_continuity
 from target_adapter_validation.workspace_modes import validate_workspace_modes
@@ -196,6 +200,7 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/context/profiles/security-sensitive.json",
     ".ai/assistant/context/task-scales/small-task.json",
     ".ai/assistant/installation-state.json",
+    ".ai/assistant/discovery-report.json",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
     ".ai/assistant/task-decomposition.json",
@@ -1125,6 +1130,8 @@ class Validator:
         core_phases = (
             ValidationPhase("installation-state", installation_state),
             ValidationPhase("required-files", lambda: self.check_required_files(support_profile), ("installation-state",)),
+            ValidationPhase("target-discovery", lambda: validate_target_discovery(self.capability_validation_context(), manifest), ("required-files",)),
+            ValidationPhase("project-support-documentation", lambda: validate_project_support_documentation(self.capability_validation_context(), manifest), ("required-files",)),
             ValidationPhase("capability-closure", lambda: self.check_capability_closure(manifest), ("required-files",)),
             ValidationPhase("module-profile", lambda: self.check_module_profile_sync(manifest), ("capability-closure",)),
             ValidationPhase("bootstrap-index", self.check_bootstrap_index, ("required-files",)),

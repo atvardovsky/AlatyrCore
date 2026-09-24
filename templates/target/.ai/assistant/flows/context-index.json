@@ -432,8 +432,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 250,
-      "content_digest": "sha256:36211aafb517360af360cd895bf2d8e6a01ec68ea3ad3a60d77b1d30f26289e6"
+      "estimated_words": 307,
+      "content_digest": "sha256:587829e5f9fb84ce1b2eab31e261a7c24b5b89c5a269d8370c213cb5a307b04d"
     },
     {
       "id": "assistant.content.flows-project-knowledge-flow-md",
@@ -574,8 +574,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 170,
-      "content_digest": "sha256:ec01ca1acbb85ab8271cf94bafeadc686d3ac9e73ea85ec3cc9ba4ea25381b5f"
+      "estimated_words": 252,
+      "content_digest": "sha256:3b01273ba153d3b097095661a23e7b20a648d9aa3852ac1f6279beab116d1f72"
     },
     {
       "id": "assistant.content.flows-team-decision-flow-md",

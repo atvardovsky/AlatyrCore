@@ -36,6 +36,7 @@ from scaffold_target_structure import plan as scaffold_plan
 from render_context_catalogs import build_framework_catalog_contents
 from render_installed_context_catalogs import expected_outputs as installed_context_outputs
 from render_semantic_codebook import render as render_semantic_codebook
+from inspect_target_discovery import build_report as build_discovery_report
 from support_state import STATE_PATH, build_support_state, render_state
 from target_adapter_validation.framework_baseline import (
     source_pack_projection,
@@ -101,9 +102,38 @@ def replacement(name: str) -> str:
         "SKILL_PROMPT_GATE_CHECKER_FLOW_TOOL_MCP_BRIDGE_WRAPPER_RULE_TEMPLATE_OR_OTHER": "skill",
         "ACTIVE_BLOCKED_DEPRECATED_OR_UNRESOLVED": "blocked",
         "TARGET_UPGRADE_IMPACT_REPORT": ".ai/assistant/migrations/upgrade-impact.json",
+        "AP": "applicable",
+        "ST": "accepted",
+        "DS": "README.md",
+        "ER": "fixture-revision",
+        "AT": "2026-01-01",
+        "GS": "none",
+        "CL": "fact",
+        "PA": "fixture-area",
+        "CN": "fixture-node",
+        "RC": "not-applicable in lifecycle fixture",
     }
     if name in exact:
         return exact[name]
+    if name.endswith("_APPLICABLE_NOT_APPLICABLE_OR_UNKNOWN"):
+        return "applicable"
+    if name.endswith(
+        "_OBSERVED_PROPOSED_ACCEPTED_CONTRADICTED_MISSING_OR_NOT_APPLICABLE"
+    ):
+        return "accepted"
+    if name.endswith("_DECISION_SOURCE_OR_UNAVAILABLE_WITH_REASON"):
+        return "README.md"
+    if name.endswith("_EVIDENCE_REVISION"):
+        return "fixture-revision"
+    if name.endswith("_NONE_NON_BLOCKING_OR_BLOCKING"):
+        return "none"
+    if name.endswith("_CONSISTENCY_LEVEL"):
+        return "fact"
+    if name.endswith("_FACT_ID_OR_MISSING"):
+        prefix = name[: -len("_FACT_ID_OR_MISSING")]
+        return "fixture-" + prefix.casefold().replace("_", "-")
+    if name.endswith("_RELATIONSHIP_COVERAGE_OR_GAP"):
+        return "not-applicable in lifecycle fixture"
     if "STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED" in name:
         return "deferred"
     if "REQUIRED_ENABLED_OR_BLOCKED" in name:
@@ -162,6 +192,29 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
     manifest_path.write_text(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
         encoding="utf-8",
+    )
+    discovery = build_discovery_report(
+        repo,
+        operation="installation",
+        support_profile=support_profile,
+        modules=[],
+        categories=[],
+    )
+    discovery["target"]["observed_at"] = "2026-01-01T00:00:00Z"
+    for finding in discovery["findings"]:
+        finding["decision_authority"] = "fixture-owner"
+        finding["disposition"] = (
+            "deferred" if finding["material"] else "not-applicable"
+        )
+        finding["disposition_reason"] = (
+            "Lifecycle fixture retains the observed surface for later semantic review."
+            if finding["material"]
+            else "Lifecycle fixture metadata probe found no applicable surface."
+        )
+    discovery["summary"]["unresolved_material_findings"] = 0
+    discovery_path = repo / ".ai" / "assistant" / "discovery-report.json"
+    discovery_path.write_text(
+        json.dumps(discovery, indent=2) + "\n", encoding="utf-8"
     )
     checker_path = repo / "tools" / "check-alatyr.sh"
     checker_path.parent.mkdir(parents=True, exist_ok=True)

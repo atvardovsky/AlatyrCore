@@ -126,6 +126,20 @@ class ImpactGraphTests(unittest.TestCase):
             any("targets missing node" in failure for failure in validate_graph(graph))
         )
 
+    def test_mapped_node_without_binding_fails_validation(self) -> None:
+        _directory, target = self.make_graph()
+        shard_path = target / ".ai/project/consistency/areas/billing.json"
+        shard = json.loads(shard_path.read_text(encoding="utf-8"))
+        shard["nodes"][0]["bindings"] = []
+        write_json(shard_path, shard)
+
+        failures = validate_graph(load_impact_graph(target))
+
+        self.assertIn(
+            "mapped node fact.payment-retry must have a binding",
+            failures,
+        )
+
     def test_node_limit_fails_closed(self) -> None:
         _directory, target = self.make_graph()
         graph = load_impact_graph(target)

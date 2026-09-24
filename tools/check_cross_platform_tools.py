@@ -30,6 +30,7 @@ EXPECTED_COMMANDS = {
     "plan-work",
     "validate-delegation-tree",
     "context-plan",
+    "inspect-target",
     "compare-check-reports",
     "scaffold",
     "render-bootstrap",

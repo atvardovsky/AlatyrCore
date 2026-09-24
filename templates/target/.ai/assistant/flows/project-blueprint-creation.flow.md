@@ -17,15 +17,21 @@ Replace placeholders with target facts before accepting installation.
 
 ## Steps
 
-1. Load `AGENTS.md`, `.ai/README.md`, framework docs, target contours, and
-   existing target source-of-truth docs.
+1. Load `AGENTS.md`, `.ai/README.md`, the router-selected framework owner or
+   semantic shard, target contours, and the named target source-of-truth docs.
 2. Identify blueprint scope and non-goals.
-3. Collect target evidence from docs, code structure, tests, validation, CI,
-   diagrams, prompts, skills, gates, and bridge files.
+3. Start from `.ai/assistant/discovery-report.json` and collect only the target
+   evidence selected by its categories, unresolved material findings, named
+   boundaries, or conflicts. Expand to code, tests, validation, CI, diagrams,
+   prompts, skills, gates, or bridge files only when the routed fact requires
+   that surface.
 4. Classify facts by owner: framework, project, repository adapter, bridge,
    skill/prompt, or generated artifact.
-5. Draft or repair only facts supported by target evidence.
-6. Mark missing or contradictory facts explicitly.
+5. Draft or repair only facts supported by target evidence. Link concise human
+   orientation text to canonical owners instead of duplicating their policy.
+6. Mark missing or contradictory facts explicitly and update each material
+   discovery finding with its projected, rejected, deferred, or not-applicable
+   disposition.
 7. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
 8. Update blueprint or equivalent docs, project contour, flow docs, diagrams,
    gates, prompts, skills, or bridge files only when their owned facts change.

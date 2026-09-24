@@ -76,6 +76,12 @@ target repository, not copied as generic project facts. The assistant inspects
 the target, prepares an installation plan, preserves existing instructions,
 and asks for approval before protected changes.
 
+Inspection starts metadata-first and can produce a typed discovery receipt:
+what was observed, which sources support it, what remains unknown, and how each
+material finding was accepted, projected, deferred, or rejected. Inventory
+evidence helps the assistant find project knowledge; it does not make code or
+file names authoritative architecture decisions.
+
 ## What AlatyrCore Is
 
 AlatyrCore is not another coding agent. It is a repository-owned framework and
@@ -418,6 +424,11 @@ to the task. When a change affects related areas, recorded relationships help
 it find the additional sources that need review. The project team still decides
 whether those relationships and resulting changes are correct.
 
+The target project contour provides a concise human orientation: purpose,
+users, architectural areas and owners, primary workflows, validation entry
+points, and known contradictions. Detailed facts remain in their canonical
+owners, while the source-of-truth registry records authority and freshness.
+
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
 large-task planning, worker delegation, diagrams, dependency knowledge, and
@@ -495,6 +506,11 @@ the repository's stage routing and file inventory to inspect only the relevant
 installation material. Unchanged framework documents do not need to be loaded
 again as prose.
 
+The optional `inspect-target` helper inventories bounded repository metadata
+without executing target code. Its output is a draft receipt, not accepted
+project truth; the installation assistant must inspect routed sources and
+resolve every material finding before acceptance.
+
 Optional scaffolding can create placeholder structure, but it does not inspect
 the target, resolve project facts, approve changes, or complete installation.
 It can scaffold an explicit dependency-closed capability set instead of
@@ -561,7 +577,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.69`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.70`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

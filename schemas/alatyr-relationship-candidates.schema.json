@@ -12,6 +12,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["id", "state", "source_node", "target_node", "relationship_type", "evidence", "observed_revision", "decision_owner"],
         "properties": {
           "id": {"type": "string", "minLength": 1},

@@ -66,14 +66,14 @@ def main() -> int:
             failures.append("template relationship candidates must start empty and non-authoritative")
 
     registry_text = REGISTRY.read_text(encoding="utf-8")
-    for required in [
-        "Consistency map node:",
-        "Relationship coverage:",
-        "every live Fact Type entry",
-        "relationship candidate",
+    for label, alternatives in [
+        ("consistency-node field", ("consistency_node=", "cn=")),
+        ("relationship-coverage field", ("relationship_coverage=", "rc=")),
+        ("live Fact Type contract", ("every live Fact Type entry",)),
+        ("relationship-candidate contract", ("relationship candidate",)),
     ]:
-        if required not in registry_text:
-            failures.append(f"source-of-truth registry missing {required}")
+        if not any(value in registry_text for value in alternatives):
+            failures.append(f"source-of-truth registry missing {label}")
 
     manifest_text = MANIFEST.read_text(encoding="utf-8")
     if 'consistency_map: ".ai/project/consistency-map.json"' not in manifest_text:

@@ -12,6 +12,8 @@ questions.
 ## Target And Authority
 
 - Target repository and revision:
+- Discovery receipt ID, observation revision, selected categories, and
+  inventory digest:
 - New installation or update:
 - Primary stack and repository structure:
 - Existing assistant instructions and supported assistant surfaces:
@@ -30,6 +32,8 @@ questions.
 - Explicit non-goals:
 - Protected categories and excluded actions:
 - Missing or contradictory target facts:
+- Material discovery findings and their projected, rejected, deferred,
+  unresolved, or not-applicable dispositions:
 
 Start with the `kernel` profile unless target evidence or the current request
 justifies expansion. Scaffolding does not enable an optional capability.
@@ -39,6 +43,8 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Product purpose and architecture areas:
 - Canonical project sources and decision owners:
 - Project contour, source-of-truth registry, and relevant relationships:
+- Registry applicability, authority, decision source, evidence revision,
+  review date, and gap-severity status:
 - Existing validation commands and CI evidence:
 - Security, credential, privacy, destructive-operation, and live-service
   boundaries:
@@ -63,6 +69,7 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Logical integrity and affected relationship review:
 - Approval-record and actual-diff scope validation when required:
 - Installation or update state transition evidence:
+- Discovery disposition coverage and project-orientation quality review:
 - Post-install or post-update assistant handoff:
 - Skipped checks and residual risks:
 

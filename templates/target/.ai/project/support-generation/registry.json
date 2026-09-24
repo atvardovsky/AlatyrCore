@@ -10,7 +10,9 @@
         {
           "path": "{TARGET_INPUT_PATH_OR_GLOB}",
           "selector_kind": "{FILE_GLOB_JSON_POINTER_MARKDOWN_SECTION_OR_OTHER}",
-          "selector": "{SELECTOR_OR_WHOLE_FILE}"
+          "selector": "{SELECTOR_OR_WHOLE_FILE}",
+          "required": true,
+          "min_matches": 1
         }
       ],
       "outputs": [

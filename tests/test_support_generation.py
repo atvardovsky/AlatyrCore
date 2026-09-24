@@ -71,6 +71,7 @@ class SupportGenerationTests(unittest.TestCase):
             "src/api.txt": "source\n",
             "docs/api.txt": "derived\n",
             "docs/guide.txt": "guide\n",
+            "docs/guide-review.md": "owner review\n",
         }.items():
             path = target / relpath
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -82,9 +83,15 @@ class SupportGenerationTests(unittest.TestCase):
         subprocess.run(["git", "commit", "-qm", "fixture"], cwd=target, check=True)
         return target
 
+    def reviewed_index(self, target: Path) -> dict[str, object]:
+        return build_generation_index(
+            target,
+            review_evidence={"public-guide": ["docs/guide-review.md"]},
+        )
+
     def test_index_records_dependency_order_and_current_digests(self) -> None:
         target = self.make_target()
-        index = build_generation_index(target)
+        index = self.reviewed_index(target)
         self.assertEqual(index["order"], ["api-reference", "public-guide"])
         (target / INDEX_PATH).parent.mkdir(parents=True, exist_ok=True)
         (target / INDEX_PATH).write_bytes(render_json(index).encode("utf-8"))
@@ -93,7 +100,7 @@ class SupportGenerationTests(unittest.TestCase):
 
     def test_input_change_marks_artifact_stale(self) -> None:
         target = self.make_target()
-        index = build_generation_index(target)
+        index = self.reviewed_index(target)
         (target / INDEX_PATH).parent.mkdir(parents=True, exist_ok=True)
         (target / INDEX_PATH).write_bytes(render_json(index).encode("utf-8"))
         (target / "src/api.txt").write_bytes(b"changed\n")
@@ -108,6 +115,24 @@ class SupportGenerationTests(unittest.TestCase):
         self.assertEqual(dependent["status"], "stale")
         self.assertIn("dependency-stale", dependent["reasons"])
 
+    def test_review_evidence_change_invalidates_owner_artifact(self) -> None:
+        target = self.make_target()
+        index = self.reviewed_index(target)
+        (target / INDEX_PATH).parent.mkdir(parents=True, exist_ok=True)
+        (target / INDEX_PATH).write_bytes(render_json(index).encode("utf-8"))
+
+        (target / "docs/guide-review.md").write_text(
+            "changed review evidence\n", encoding="utf-8"
+        )
+        action = next(
+            item
+            for item in generation_plan(target)["actions"]
+            if item["id"] == "public-guide"
+        )
+
+        self.assertEqual(action["status"], "stale")
+        self.assertIn("review-evidence-changed", action["reasons"])
+
     def test_generation_index_enumerates_repository_once(self) -> None:
         target = self.make_target()
         original = support_generation._repository_paths
@@ -117,6 +142,41 @@ class SupportGenerationTests(unittest.TestCase):
             build_generation_index(target)
 
         repository_paths.assert_called_once_with(target.resolve())
+
+    def test_required_input_without_matches_stays_stale(self) -> None:
+        target = self.make_target()
+        value = registry()
+        value["artifacts"][0]["inputs"][0]["path"] = "src/missing.txt"
+        write_json(target / REGISTRY_PATH, value)
+        index = build_generation_index(
+            target,
+            review_evidence={"public-guide": ["docs/guide-review.md"]},
+        )
+        state = next(item for item in index["artifacts"] if item["id"] == "api-reference")
+        self.assertEqual(state["missing_inputs"], ["src/missing.txt"])
+        (target / INDEX_PATH).parent.mkdir(parents=True, exist_ok=True)
+        (target / INDEX_PATH).write_bytes(render_json(index).encode("utf-8"))
+
+        action = next(
+            item for item in generation_plan(target)["actions"]
+            if item["id"] == "api-reference"
+        )
+        self.assertEqual(action["status"], "stale")
+        self.assertIn("inputs-missing", action["reasons"])
+
+    def test_optional_input_may_match_no_paths(self) -> None:
+        target = self.make_target()
+        value = registry()
+        value["artifacts"][0]["inputs"][0].update(
+            {"path": "src/missing.txt", "required": False, "min_matches": 0}
+        )
+        write_json(target / REGISTRY_PATH, value)
+        index = build_generation_index(
+            target,
+            review_evidence={"public-guide": ["docs/guide-review.md"]},
+        )
+        state = next(item for item in index["artifacts"] if item["id"] == "api-reference")
+        self.assertEqual(state["missing_inputs"], [])
 
     def test_cycle_is_rejected(self) -> None:
         value = registry()
@@ -199,6 +259,53 @@ class SupportGenerationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual((target / "docs/api.txt").read_text(encoding="utf-8"), "new\n")
 
+    def test_apply_keeps_dependent_owner_artifact_stale_until_reviewed(self) -> None:
+        target = self.make_target()
+        value = registry()
+        artifact = value["artifacts"][0]
+        artifact["generator"]["command"] = [
+            sys.executable,
+            "-c",
+            "from pathlib import Path; import sys; p=Path(sys.argv[1])/'docs/api.txt'; p.parent.mkdir(parents=True, exist_ok=True); p.write_text('new\\n')",
+            "{OUTPUT_DIR}",
+        ]
+        artifact["validation"] = [
+            {
+                "kind": "command",
+                "required": True,
+                "command": [sys.executable, "-c", "raise SystemExit(0)"],
+            }
+        ]
+        write_json(target / REGISTRY_PATH, value)
+        index = self.reviewed_index(target)
+        (target / INDEX_PATH).parent.mkdir(parents=True, exist_ok=True)
+        (target / INDEX_PATH).write_bytes(render_json(index).encode("utf-8"))
+        (target / "src/api.txt").write_text("changed\n", encoding="utf-8")
+        plan = generation_plan(target)
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[1] / "tools/manage_support_generation.py"),
+                "--target",
+                str(target),
+                "--apply",
+                "--authorization",
+                "modify",
+                "--plan-digest",
+                plan["plan_digest"],
+            ],
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("public-guide", result.stdout)
+        owner_action = next(
+            item for item in generation_plan(target)["actions"]
+            if item["id"] == "public-guide"
+        )
+        self.assertEqual(owner_action["status"], "stale")
+        self.assertIn("review-evidence-missing", owner_action["reasons"])
+
     def test_failed_validation_preserves_existing_output(self) -> None:
         target = self.make_target()
         value = registry()
@@ -236,6 +343,35 @@ class SupportGenerationTests(unittest.TestCase):
         )
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual((target / "docs/api.txt").read_text(encoding="utf-8"), "derived\n")
+
+    def test_record_requires_explicit_review_evidence(self) -> None:
+        target = self.make_target()
+        command = [
+            sys.executable,
+            str(Path(__file__).resolve().parents[1] / "tools/manage_support_generation.py"),
+            "--target",
+            str(target),
+            "--record",
+            "--authorization",
+            "modify",
+        ]
+
+        missing = subprocess.run(command, text=True, capture_output=True)
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("explicit review evidence", missing.stderr)
+
+        recorded = subprocess.run(
+            [
+                *command,
+                "--review-evidence",
+                "public-guide=docs/guide-review.md",
+            ],
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(recorded.returncode, 0, recorded.stderr)
+        plan = generation_plan(target)
+        self.assertTrue(all(item["status"] == "current" for item in plan["actions"]))
 
 
 if __name__ == "__main__":

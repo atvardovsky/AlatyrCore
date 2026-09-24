@@ -159,6 +159,8 @@ def validate_graph(graph: ImpactGraph, *, allow_placeholders: bool = False) -> l
         if not isinstance(bindings, list):
             failures.append(f"node {node_id} bindings must be a list")
             bindings = []
+        if coverage == "mapped" and not bindings:
+            failures.append(f"mapped node {node_id} must have a binding")
         for binding in bindings:
             if not isinstance(binding, dict):
                 failures.append(f"node {node_id} has a non-object binding")

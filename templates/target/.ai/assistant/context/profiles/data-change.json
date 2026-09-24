@@ -17,7 +17,6 @@
     "test-first-change"
   ],
   "required_context": [
-    ".ai/project/source-of-truth-registry.md",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/semantic-integrity.md",
     ".ai/assistant/gates/code-and-tests.md",
@@ -25,6 +24,7 @@
     "{TARGET_DATA_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {"path": ".ai/project/source-of-truth-registry.md", "when": "the selected data owner is missing disputed contradicted or requires registry-wide comparison"},
     {"path": ".ai/framework/change-risk-model.md", "when": "changed-fact risk classification or escalation is disputed"},
     {"path": ".ai/framework/logical-integrity.md", "when": "invariant derivation repair-set selection or semantic closure is ambiguous"},
     {"path": ".ai/framework/context-discovery.md", "when": "source selection expansion rules or missing-context handling are disputed"},

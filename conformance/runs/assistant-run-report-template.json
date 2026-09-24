@@ -26,6 +26,16 @@
   "target_facts_inspected": [
     "{TARGET_FACT_SURFACE}"
   ],
+  "discovery_receipt_evidence": {
+    "receipt_path": "{DISCOVERY_RECEIPT_PATH}",
+    "selected_categories": [
+      "{DISCOVERY_CATEGORY}"
+    ],
+    "material_findings": "{COUNT_OR_UNKNOWN}",
+    "disposed_material_findings": "{COUNT_OR_UNKNOWN}",
+    "unresolved_material_findings": "{COUNT_OR_UNKNOWN}",
+    "project_orientation_review": "{PASSED_FAILED_UNKNOWN_AND_REASON}"
+  },
   "files_created_preserved_or_skipped": {
     "created": [
       "{CREATED_PATH_OR_SUMMARY}"

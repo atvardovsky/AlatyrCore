@@ -29,7 +29,10 @@ the current branch and revision with no active placeholders or blocking gaps.
 cannot currently be proven. Only `accepted` may qualify for `ready` health.
 The ordered evidence for that claim lives at
 `.ai/assistant/installation-state.json`; its final state must match the
-manifest. The record does not grant authorization or approval.
+manifest. The retained metadata-first discovery evidence lives at
+`.ai/assistant/discovery-report.json`. Every material finding must keep an
+explicit disposition before acceptance, but the receipt does not replace its
+named canonical project owner. Neither record grants authorization or approval.
 
 ## Framework Area
 
@@ -43,7 +46,8 @@ facts, or target skill infrastructure.
 
 `.ai/project` contains target product facts:
 
-- product purpose
+- concise human project orientation with product purpose, main areas,
+  workflows, validation entry points, canonical-owner links, and known gaps
 - architecture facts
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/architecture/catalog.json"]} -->
 - optional architecture knowledge index and compact catalog for selected

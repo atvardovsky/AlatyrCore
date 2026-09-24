@@ -116,8 +116,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 769,
-      "content_digest": "sha256:1e80ed312865f2e32e2ce130af279eee601744e0dc0e39ccaddf323a232d6ff8"
+      "estimated_words": 879,
+      "content_digest": "sha256:adb2d699cf0575da85dcc8df8f353fc87af218bbd176b1dffebb1d19007a7422"
     },
     {
       "id": "framework.core.context-profiles-md",
@@ -138,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3608,
-      "content_digest": "sha256:88a1a83702ba4101cc29f10b63255bf61ead7e31cd3120f54145108eba3855f3"
+      "estimated_words": 3704,
+      "content_digest": "sha256:d9fbd9993647402cd278482a068298a780d96af54c4f685301541c82a4c56568"
     },
     {
       "id": "framework.core.context-router-md",
@@ -292,8 +292,8 @@
       "owner_refs": [
         "ALATYR-ADAPTER-001"
       ],
-      "estimated_words": 1047,
-      "content_digest": "sha256:854ce41f0aff6291540793aaf61b47f0b1b4d080fc59cbe8736b4881ea605829"
+      "estimated_words": 1109,
+      "content_digest": "sha256:783d9419b5c40658385e1a1574a736023156fdc6d9cf3be669b491c8c47e2ad6"
     },
     {
       "id": "framework.core.prompt-injection-md",
@@ -363,8 +363,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4374,
-      "content_digest": "sha256:c9db4502f0bd3f848e9a633f3c3cbfb78c2261b0ad1d8dda3d1a8c7c1b4fa5d4"
+      "estimated_words": 4456,
+      "content_digest": "sha256:907dc4888175359734dce5c9ffe63c282757bfac91eb590bd4a5341f06593edc"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -382,8 +382,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3518,
-      "content_digest": "sha256:ea2a0173216df02f12825e35b49b10415e1a66a71673eb721e6169f3b0c8a822"
+      "estimated_words": 3600,
+      "content_digest": "sha256:410e8f0f37e4abe3523e8cc0af13611bd7e21ab53d6b32ceaa766a2754677c3e"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 320,
-      "content_digest": "sha256:3278269b76f541979b76de20c47da93d0615227862d66d4119c99554bf4d9a96"
+      "content_digest": "sha256:7f91c44de4c212cbe0ef7beb27214e36c253df8c69267f0046631a1c7fde107f"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",
@@ -555,8 +555,8 @@
       "owner_refs": [
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 1136,
-      "content_digest": "sha256:4ed11289dd267551eafa9fea08edf04a4c06689c3780348a05c8dbe97917e1db"
+      "estimated_words": 1251,
+      "content_digest": "sha256:af17bf350b75490789532e2d937d8b8c1df96a2166e2d95054d6019a144d1f1a"
     }
   ]
 }

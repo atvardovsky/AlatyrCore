@@ -226,6 +226,11 @@ def projected_template_content(
         return project_module_profile(
             src.read_text(encoding="utf-8"), set(context.enabled_modules)
         )
+    if rel == Path(".ai/assistant/discovery-report.json"):
+        report = load_object(src)
+        report["scope"]["support_profile"] = profile
+        report["scope"]["modules"] = sorted(context.enabled_modules)
+        return render_json(report)
     if rel in PROJECTED_MARKDOWN_TARGET_PATHS:
         return project_markdown_fragments(
             src.read_text(encoding="utf-8"),

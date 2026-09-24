@@ -181,8 +181,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 73,
-      "content_digest": "sha256:dcf194d1fd49de18c75f7e4e1e90146e1b2068f4347819e9ee482be2ef056385"
+      "estimated_words": 165,
+      "content_digest": "sha256:2602ad222c061a08af51deac89c6d4e7288c5553375545788defa4f42834884c"
     },
     {
       "id": "assistant.content.gates-engineering-evidence-md",

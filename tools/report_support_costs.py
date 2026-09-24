@@ -513,7 +513,7 @@ def classify_path(relpath: str, policy: dict[str, Any] | None) -> str:
         return "unclassified"
     for exclusion in policy.get("exclusions", []):
         if isinstance(exclusion, dict) and PathSpec(
-            exclusion.get("pattern", ""), PathDialect.SOURCE_HOST_V1
+            exclusion.get("pattern", ""), PathDialect.SUPPORT_TREE_V1
         ).matches(relpath):
             return "excluded"
     for entry in policy.get("classifications", []):
@@ -524,7 +524,7 @@ def classify_path(relpath: str, policy: dict[str, Any] | None) -> str:
         if isinstance(classification, str) and isinstance(patterns, list):
             if any(
                 isinstance(pattern, str)
-                and PathSpec(pattern, PathDialect.SOURCE_HOST_V1).matches(relpath)
+                and PathSpec(pattern, PathDialect.SUPPORT_TREE_V1).matches(relpath)
                 for pattern in patterns
             ):
                 return classification
@@ -550,10 +550,22 @@ def build_installed_report(target: Path) -> dict[str, Any]:
     pairs = [(path.as_posix(), target / path) for path in sorted(paths)]
     measured = measure_files(pairs)
     classifications: dict[str, int] = {}
+    classified_pairs: dict[str, list[tuple[str, Path]]] = {}
     for label, path in pairs:
         if path.is_file():
             classification = classify_path(label, policy)
             classifications[classification] = classifications.get(classification, 0) + 1
+            classified_pairs.setdefault(classification, []).append((label, path))
+    excluded = measure_files(classified_pairs.get("excluded", []))
+    managed = measure_files(
+        [
+            pair
+            for classification, entries in classified_pairs.items()
+            if classification not in {"excluded", "unclassified"}
+            for pair in entries
+        ]
+    )
+    unclassified = measure_files(classified_pairs.get("unclassified", []))
     return {
         "schema_version": 1,
         "report_kind": "installed-alatyr-standing-support-cost",
@@ -570,10 +582,22 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         "support_surfaces": measured,
         "cost_scopes": {
             "installed_support_files": {
-                "description": "Support files present in the target filesystem and measured by this report.",
+                "description": "Gross support files present in the target filesystem before policy exclusions.",
                 "files": measured["files"],
                 "words": measured["words"],
                 "estimated_tokens_4_chars": measured["estimated_tokens_4_chars"],
+            },
+            "managed_support_files": {
+                "description": "Support files selected by policy after exclusions.",
+                **managed,
+            },
+            "excluded_support_files": {
+                "description": "Support files omitted by explicit support-policy exclusions.",
+                **excluded,
+            },
+            "unclassified_support_files": {
+                "description": "Support files not covered by a policy classification.",
+                **unclassified,
             },
             "managed_inventory": support_state_inventory_summary(
                 target / ".ai" / "support-state.json"
@@ -595,14 +619,20 @@ def build_installed_report(target: Path) -> dict[str, Any]:
 def render_text(report: dict[str, Any]) -> str:
     if report["report_kind"] == "installed-alatyr-standing-support-cost":
         support = report["support_surfaces"]
+        managed_support = report["cost_scopes"]["managed_support_files"]
+        excluded_support = report["cost_scopes"]["excluded_support_files"]
         inventory = report["cost_scopes"]["managed_inventory"]
         lines = [
             "Alatyr installed support cost",
             f"Target: {report['target']}",
             f"Recommended entry point: {report['review_recommendation']['entry_point']}",
-            f"Files: {support['files']}",
-            f"Words: {support['words']}",
-            f"Estimated tokens at 4 chars/token: {support['estimated_tokens_4_chars']}",
+            f"Gross files: {support['files']}",
+            f"Gross words: {support['words']}",
+            f"Managed files: {managed_support['files']}",
+            f"Managed words: {managed_support['words']}",
+            f"Excluded files: {excluded_support['files']}",
+            f"Excluded words: {excluded_support['words']}",
+            f"Gross estimated tokens at 4 chars/token: {support['estimated_tokens_4_chars']}",
             (
                 "Managed inventory records: "
                 f"{inventory['managed_files']} files"

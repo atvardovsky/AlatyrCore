@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import sys
+import json
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -9,10 +11,46 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from report_support_costs import build_scaffold_report  # noqa: E402
+from report_support_costs import build_installed_report, build_scaffold_report  # noqa: E402
 
 
 class SupportCostReportTests(unittest.TestCase):
+    def test_installed_report_separates_policy_exclusions(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            policy = {
+                "schema_version": 1,
+                "policy_kind": "target-support-policy",
+                "managed_roots": [".ai"],
+                "optional_entrypoints": [],
+                "exclusions": [
+                    {"pattern": ".ai/cache/**", "reason": "local cache"}
+                ],
+                "classifications": [
+                    {
+                        "id": "adapter-support",
+                        "classification": "exact-contract",
+                        "patterns": [".ai/**"],
+                    }
+                ],
+            }
+            policy_path = target / ".ai/project/support-policy.json"
+            policy_path.parent.mkdir(parents=True)
+            policy_path.write_text(json.dumps(policy), encoding="utf-8")
+            cache = target / ".ai/cache/large.txt"
+            cache.parent.mkdir(parents=True)
+            cache.write_text("word " * 1000, encoding="utf-8")
+
+            report = build_installed_report(target)
+
+            scopes = report["cost_scopes"]
+            self.assertGreater(scopes["excluded_support_files"]["words"], 900)
+            self.assertLess(
+                scopes["managed_support_files"]["words"],
+                scopes["installed_support_files"]["words"],
+            )
+            self.assertEqual(report["classifications"]["excluded"], 1)
+
     def test_cached_expensive_summaries_can_be_injected(self) -> None:
         assistant_surface_report = {
             "known_surfaces": 99,

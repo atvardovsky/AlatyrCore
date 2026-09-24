@@ -53,7 +53,14 @@ Every project using this framework must define these structural bindings:
 - **Contour separation:** explicit project, portable-framework, and
   repository-adapter contours, including which contour owns each kind of fact.
 - **Project evidence entry points:** project source-of-truth owners, validation
-  entry points, generated-artifact boundaries, and missing-evidence escalation.
+  entry points, generated-artifact boundaries, a concise human orientation,
+  and missing-evidence escalation. Registry entries distinguish applicability,
+  observed or proposed evidence, accepted authority, evidence revision, review
+  date, and blocking gaps.
+- **Discovery traceability:** one typed metadata-first receipt for the current
+  installation, update, repair, or recheck scope. It binds observations to the
+  target revision and selected categories and retains an explicit disposition
+  for every material finding without treating inventory as semantic authority.
 - **Installed framework projection:** a dependency-closed selected pack whose
   installed rule registry, ownership map, file inventory, and framework files
   agree with the source projection.

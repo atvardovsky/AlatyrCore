@@ -102,6 +102,15 @@ profile and modules. Load file contents only when a selected category, missing
 fact, conflict, or named boundary requires evidence. Record unresolved facts
 without broadening discovery by default.
 
+When source tools are available, `python3 tools/alatyr.py inspect-target` may
+create the initial metadata-only receipt defined by
+`schemas/alatyr-target-discovery-report.schema.json`. The tool does not execute
+target code or imported instructions and does not infer architecture. The
+assistant must review its observations, add content evidence only when routed,
+resolve decision authority, and retain every material finding as projected,
+rejected, deferred, or not applicable in
+`.ai/assistant/discovery-report.json`.
+
 Candidate inventory categories include:
 
 - existing AI instructions and bridge files
@@ -162,7 +171,9 @@ Classify every proposed target file:
 
 ## Steps
 
-1. Inspect the target repository before creating files.
+1. Inspect the target repository before creating files. Create or adapt the
+   typed discovery receipt, preserving target revision, selected categories,
+   evidence selectors, unresolved facts, and exclusions.
 2. Optionally use source-repository scaffolding only to preview or create
    placeholder structure. Use the profile-selection matrix in
    `installer/discovery-contract.json`; start with `kernel` unless target
@@ -585,12 +596,16 @@ accepted or ready. Before reporting installation or update completion:
 4. Synchronize machine policy indexes and their human README projections.
 5. Rebuild recursive context indexes, optional reverse/generation indexes, and
    the generated support state in that order.
-6. Run strict `acceptance` validation on the checked-out target branch and
+6. Confirm that every material discovery finding has an evidence-preserving
+   disposition and that every projected finding names its resulting target
+   artifact. Deterministic observations remain non-authoritative until target
+   decision authority accepts the corresponding fact.
+7. Run strict `acceptance` validation on the checked-out target branch and
    record that branch and exact revision. Repeat this final step separately on
    any other branch whose adapter state is to be accepted.
-7. End the inspect-only validation stage. Do not mutate installation state as
+8. End the inspect-only validation stage. Do not mutate installation state as
    part of validation.
-8. Enter the explicit `acceptance-recording` stage only with current-scope
+9. Enter the explicit `acceptance-recording` stage only with current-scope
    `modify` authorization for the state records. Update the manifest
    installation state and its machine-readable transition record together.
    Require a continuous previous-state chain, the current operation and
@@ -601,7 +616,7 @@ accepted or ready. Before reporting installation or update completion:
    When upgrading a pre-transition-record adapter, initialize the record at
    `staged` with `legacy-migration-baseline` and an explicit unavailable prior-
    history explanation instead of reconstructing unobserved events.
-9. Enter the inspect-only `handoff` stage after acceptance recording. Read the
+10. Enter the inspect-only `handoff` stage after acceptance recording. Read the
    resulting state and current output/validation bindings, then produce the
    post-install or post-update message without changing repository state.
 

@@ -21,6 +21,7 @@
     "tools/target_adapter_validation/dependency_knowledge.py",
     "tools/target_adapter_validation/development_evidence.py",
     "tools/target_adapter_validation/diagrams.py",
+    "tools/target_adapter_validation/discovery.py",
     "tools/target_adapter_validation/domain.py",
     "tools/target_adapter_validation/engineering_evidence.py",
     "tools/target_adapter_validation/extensions.py",
@@ -31,9 +32,11 @@
     "tools/target_adapter_validation/module_profile.py",
     "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/project_knowledge.py",
+    "tools/target_adapter_validation/project_support_documentation.py",
     "tools/target_adapter_validation/project_vocabulary.py",
     "tools/target_adapter_validation/router_costs.py",
     "tools/target_adapter_validation/session_continuity.py",
+    "tools/target_adapter_validation/source_contracts.py",
     "tools/target_adapter_validation/subagent_delegation.py",
     "tools/target_adapter_validation/support_generation.py",
     "tools/target_adapter_validation/support_state.py",
@@ -94,7 +97,7 @@
     },
     {
       "id": "CONSISTENCY",
-      "code_count": 43
+      "code_count": 50
     },
     {
       "id": "CONTEXT",
@@ -190,7 +193,7 @@
     },
     {
       "id": "PROJECT",
-      "code_count": 54
+      "code_count": 55
     },
     {
       "id": "REQUIRED",
@@ -217,16 +220,20 @@
       "code_count": 67
     },
     {
+      "id": "SOURCE",
+      "code_count": 13
+    },
+    {
       "id": "STALE",
       "code_count": 2
     },
     {
       "id": "SUPPORT",
-      "code_count": 19
+      "code_count": 21
     },
     {
       "id": "TARGET",
-      "code_count": 8
+      "code_count": 24
     },
     {
       "id": "TASK",
@@ -2522,6 +2529,33 @@
       ]
     },
     {
+      "code": "CONSISTENCY_MAP_BINDING_INVENTORY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_BINDING_UNMATCHED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_BINDING_UNSAFE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_MAP_DIRECTION",
       "levels": [
         "error"
@@ -2695,7 +2729,7 @@
     {
       "code": "CONSISTENCY_MAP_OWNER_MISSING",
       "levels": [
-        "warning"
+        "configured"
       ],
       "sources": [
         "tools/target_adapter_validation/consistency_map.py"
@@ -2874,6 +2908,42 @@
     },
     {
       "code": "CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATES_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATE_NODE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATE_TYPE",
       "levels": [
         "error"
       ],
@@ -9558,6 +9628,15 @@
       ]
     },
     {
+      "code": "PROJECT_ORIENTATION_INCOMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
       "code": "REQUIRED_FILE_MISSING",
       "levels": [
         "error"
@@ -10882,6 +10961,123 @@
       ]
     },
     {
+      "code": "SOURCE_REGISTRY_APPLICABILITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_APPLICABILITY_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_AUTHORITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_AUTHORITY_UNACCEPTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_BLOCKING_GAP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_EVIDENCE_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_EVIDENCE_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_FACT_TYPE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_FACT_TYPE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_GAP_SEVERITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_NOT_APPLICABLE_AUTHORITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_REVIEW_DATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
       "code": "STALE_CHECKER_MISSING_CLAIM",
       "levels": [
         "error"
@@ -10936,6 +11132,15 @@
       ]
     },
     {
+      "code": "SUPPORT_GENERATION_INPUTS_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
       "code": "SUPPORT_GENERATION_INVALID",
       "levels": [
         "error"
@@ -10955,6 +11160,15 @@
     },
     {
       "code": "SUPPORT_GENERATION_REGISTRY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_GENERATION_REVIEW_EVIDENCE_MISSING",
       "levels": [
         "error"
       ],
@@ -11095,6 +11309,150 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_AUTHORITY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_CATEGORY_UNCLASSIFIED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_DISPOSITION_AUTHORITY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_FINDING_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_MATERIAL_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_PROFILE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_PROJECTION_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_REPORT_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_REPORT_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_SOURCE_COUNT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_SOURCE_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_SOURCE_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_SUMMARY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
+      ]
+    },
+    {
+      "code": "TARGET_DISCOVERY_UNRESOLVED",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/discovery.py"
       ]
     },
     {

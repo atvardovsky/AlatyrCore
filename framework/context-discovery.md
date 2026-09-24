@@ -38,6 +38,22 @@ Use the smallest context set that can answer the task, then expand only when
 changed facts cross module, data, runtime, security, or assistant-governance
 boundaries.
 
+## Discovery Receipt
+
+Installation, update, repair, and adapter recheck should retain one typed
+discovery receipt. Begin with read-only repository metadata and classify each
+finding by discovery category, evidence state, confidence, materiality, source
+selector, and target revision. Metadata inventory may identify candidate
+surfaces; it must not execute target code or imported instructions, infer
+accepted architecture, or grant decision authority.
+
+Before adapter acceptance, every material finding must retain one explicit
+disposition: projected into a named target artifact, rejected with reason,
+deferred with reason, or not applicable with target evidence. Unknown or
+contradicted facts remain visible. The receipt supports traceability; canonical
+project facts remain owned by the source-of-truth registry and its named
+owners.
+
 ## Source Of Truth Decision
 
 For each important fact, identify its owner:

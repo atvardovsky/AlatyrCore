@@ -29,6 +29,7 @@
         ".ai/assistant/context/task-scales/small-task.json",
         ".ai/assistant/context/task-scales/session-continuity.json",
         ".ai/assistant/contour.md",
+        ".ai/assistant/discovery-report.json",
         ".ai/assistant/flows/logical-integrity-review.flow.md",
         ".ai/assistant/flows/session-continuity.flow.md",
         ".ai/assistant/gates/analysis-strategy.md",

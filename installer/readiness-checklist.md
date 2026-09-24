@@ -15,6 +15,9 @@ the discovery prompts in this checklist.
 - Primary language/framework:
 - Package/build files:
 - Existing docs:
+- Existing or newly prepared typed discovery receipt, observation revision,
+  selected categories, evidence selectors, exclusions, and material finding
+  dispositions:
 - Existing tests:
 - Existing CI:
 - Known validation commands:
@@ -175,7 +178,9 @@ The target installation must define or adapt:
 - module profile: required core status, enabled optional modules, deferred
   modules, blocked modules, and reasons
 - source-of-truth registry: fact owners, invariant/dependency constraints,
-  derived surfaces, sync direction, validation, and conflict resolvers
+  applicability and authority state, decision source, evidence revision,
+  review date, gap severity, derived surfaces, sync direction, validation, and
+  conflict resolvers
 - optional consistency map: stable fact IDs, levels, project areas,
   relationships, impact traversal, staleness handling, and missing coverage
 - required support policy/state: complete classification, justified
@@ -460,6 +465,10 @@ Final evidence must say:
 - target adapter rewritten
 - contours created or updated
 - source-of-truth registry created or updated
+- typed discovery receipt retained with every material finding projected,
+  rejected, deferred, or marked not applicable with evidence
+- project orientation lets a new developer locate purpose, architecture areas,
+  primary workflows, validation entry points, canonical owners, and known gaps
 - consistency-map module enabled, deferred, disabled, or blocked with reason
 - support-information policy adapted and support state generated last
 - consistency reverse index and optional support-generation index rebuilt from

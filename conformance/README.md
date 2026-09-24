@@ -164,6 +164,8 @@ For each fixture, compare:
 - prepared assistant-run prompts and report directories for selected assistant
   surfaces
 - target source surfaces and missing adapter surfaces
+- typed discovery receipt category coverage, material-finding dispositions,
+  source-of-truth authority state, and human project-orientation review
 - temporary scaffold output for required placeholder adapter surfaces
 - golden scaffolded-adapter snapshots for created, preserved, skipped, and
   placeholder paths

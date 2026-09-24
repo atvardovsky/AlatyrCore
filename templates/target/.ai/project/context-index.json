@@ -50,8 +50,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 511,
-      "content_digest": "sha256:8be7f1e222da26fe8a1e38efcc070eead9255159082edde935852772cafef5ca"
+      "estimated_words": 603,
+      "content_digest": "sha256:f254d01290a3aa89971746d19b44acf2942b119d685e46b0748868d64b2bcb22"
     },
     {
       "id": "project.content.development-evidence-json",
@@ -91,8 +91,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1137,
-      "content_digest": "sha256:1d8a6a7a6d89b7751e7e4c2975602f79927e5f5f9e5b4b9e7a8541d9a7b84442"
+      "estimated_words": 1164,
+      "content_digest": "sha256:28bc1e3ad275cd08d5e3b49d173808e40bd993864262688fd988ca7c508c93cd"
     },
     {
       "id": "project.content.support-policy-json",
@@ -277,7 +277,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 81,
-      "content_digest": "sha256:6b9774653741530500ab96beeb8cc5e9b7539593fbd072622bac29d8e7e6fb24"
+      "content_digest": "sha256:79f6c4f948813a3c9c5e777f97330f8e83fa787aa4472c7120e168f557bbed94"
     },
     {
       "id": "project.section.testing",

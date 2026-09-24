@@ -6,25 +6,31 @@ Replace placeholders with target facts before accepting installation.
 
 ## Baseline Registry Entries
 
-Resolve these entries from target evidence or mark the owner as missing before
-accepting installation. Add target-specific entries when other fact types can
-have competing owners or derived surfaces.
+Resolve each entry from target evidence before acceptance; mark unresolved
+owners missing and add target-specific fact types when needed. Applicable facts
+require accepted authority, decision source, evidence revision, review date,
+and gap severity. Other authority states are noncanonical. `not-applicable`
+requires target evidence and decision authority.
 
-When the `consistency-map` module is enabled, every live Fact Type entry must
-name one resolved, unique `Consistency map node`. The referenced node's
-`fact_type` must match the Fact Type heading exactly. Additional map nodes may
-represent derived contracts, areas, systems, adapter surfaces, or concrete
-support surfaces. A detected relationship candidate is evidence for owner
-review, not an accepted edge or a new source of truth.
+Section-local compact fields retain evidence at lower context cost. Replace
+each placeholder within its Fact Type section:
+
+- `Authority`: `ap` applicability, `st` authority state, `ds` decision source,
+  `er` evidence revision, `at` reviewed-at date, `gs` gap severity.
+- `Routing`: `cl` consistency level, `pa` project area, `cn` consistency node,
+  `rc` relationship coverage.
+
+With `consistency-map` enabled, every live Fact Type entry names one unique
+resolved node whose `fact_type` matches the heading. Extra nodes may represent
+derived surfaces. Each relationship candidate requires owner review; it is
+neither an accepted edge nor a source of truth.
 
 ### Fact Type: `product behavior`
 
 Fact type: `product behavior`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{PRODUCT_BEHAVIOR_CANONICAL_OWNER}`
-Consistency level: `{PRODUCT_BEHAVIOR_CONSISTENCY_LEVEL}`
-Project area: `{PRODUCT_BEHAVIOR_PROJECT_AREA}`
-Consistency map node: `{PRODUCT_BEHAVIOR_FACT_ID_OR_MISSING}`
-Relationship coverage: `{PRODUCT_BEHAVIOR_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{PRODUCT_BEHAVIOR_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -39,11 +45,9 @@ Final evidence: `{PRODUCT_BEHAVIOR_FINAL_EVIDENCE}`
 ### Fact Type: `business rule`
 
 Fact type: `business rule`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{BUSINESS_RULE_CANONICAL_OWNER}`
-Consistency level: `{BUSINESS_RULE_CONSISTENCY_LEVEL}`
-Project area: `{BUSINESS_RULE_PROJECT_AREA}`
-Consistency map node: `{BUSINESS_RULE_FACT_ID_OR_MISSING}`
-Relationship coverage: `{BUSINESS_RULE_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{BUSINESS_RULE_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -58,11 +62,9 @@ Final evidence: `{BUSINESS_RULE_FINAL_EVIDENCE}`
 ### Fact Type: `architecture decision`
 
 Fact type: `architecture decision`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{ARCHITECTURE_DECISION_CANONICAL_OWNER}`
-Consistency level: `{ARCHITECTURE_DECISION_CONSISTENCY_LEVEL}`
-Project area: `{ARCHITECTURE_DECISION_PROJECT_AREA}`
-Consistency map node: `{ARCHITECTURE_DECISION_FACT_ID_OR_MISSING}`
-Relationship coverage: `{ARCHITECTURE_DECISION_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{ARCHITECTURE_DECISION_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -77,11 +79,9 @@ Final evidence: `{ARCHITECTURE_DECISION_FINAL_EVIDENCE}`
 ### Fact Type: `architecture pattern`
 
 Fact type: `architecture pattern`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{ARCHITECTURE_PATTERN_CANONICAL_OWNER}`
-Consistency level: `{ARCHITECTURE_PATTERN_CONSISTENCY_LEVEL}`
-Project area: `{ARCHITECTURE_PATTERN_PROJECT_AREA}`
-Consistency map node: `{ARCHITECTURE_PATTERN_FACT_ID_OR_MISSING}`
-Relationship coverage: `{ARCHITECTURE_PATTERN_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{ARCHITECTURE_PATTERN_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -97,11 +97,9 @@ Final evidence: `{ARCHITECTURE_PATTERN_FINAL_EVIDENCE}`
 ### Fact Type: `data model`
 
 Fact type: `data model`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{DATA_MODEL_CANONICAL_OWNER}`
-Consistency level: `{DATA_MODEL_CONSISTENCY_LEVEL}`
-Project area: `{DATA_MODEL_PROJECT_AREA}`
-Consistency map node: `{DATA_MODEL_FACT_ID_OR_MISSING}`
-Relationship coverage: `{DATA_MODEL_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{DATA_MODEL_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -116,16 +114,14 @@ Final evidence: `{DATA_MODEL_FINAL_EVIDENCE}`
 ### Fact Type: `dependency public contract and target use`
 
 Fact type: `dependency public contract and target use`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Upstream public fact owner: `{DEPENDENCY_PUBLIC_FACT_OWNER_OR_MISSING}`
 Target configuration, restriction, wrapper, or patch owner: `{TARGET_DEPENDENCY_USE_OWNER_OR_MISSING}`
 Cross-package integration owner: `{DEPENDENCY_INTEGRATION_OWNER_OR_MISSING}`
 Dependency knowledge policy: `.ai/project/dependencies/policy.json`
 Dependency knowledge catalog: `.ai/project/dependencies/catalog.json`
 Target deviations: `.ai/project/dependencies/deviations.json`
-Consistency level: `{DEPENDENCY_FACT_CONSISTENCY_LEVEL}`
-Project area: `{DEPENDENCY_FACT_PROJECT_AREA}`
-Consistency map node: `{DEPENDENCY_FACT_ID_OR_MISSING}`
-Relationship coverage: `{DEPENDENCY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{PACKAGE_IDENTITY_PUBLIC_CONTRACT_TARGET_USE_PATCH_APPLICABILITY_AND_INTEGRATION_CONSTRAINTS}`
 Derived surfaces:
 
@@ -141,12 +137,10 @@ Final evidence: `{PACKAGE_INSTANCE_FACT_STATES_DEVIATIONS_IMPACT_VALIDATION_AND_
 ### Fact Type: `workspace identity and development mode relationship`
 
 Fact type: `workspace identity and development mode relationship`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `.ai/project/workspace-modes/catalog.json` and the selected
 `.ai/project/workspace-modes/modes/{MODE_ID}/mode.json`
-Consistency level: `{WORKSPACE_MODE_CONSISTENCY_LEVEL}`
-Project area: `{WORKSPACE_MODE_PROJECT_AREA}`
-Consistency map node: `{WORKSPACE_MODE_FACT_ID_OR_MISSING}`
-Relationship coverage: `{WORKSPACE_MODE_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{WORKSPACE_IDENTITY_MODE_RELATIONSHIP_ADAPTER_ROLE_OWNERSHIP_SELECTION_AND_NO_GRANTS_CONSTRAINTS}`
 Derived surfaces:
 
@@ -163,11 +157,9 @@ Final evidence: `{WORKSPACE_MODE_SELECTION_RELATIONSHIPS_CONTEXT_DECISION_VALIDA
 ### Fact Type: `validation command`
 
 Fact type: `validation command`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{VALIDATION_COMMAND_CANONICAL_OWNER}`
-Consistency level: `{VALIDATION_COMMAND_CONSISTENCY_LEVEL}`
-Project area: `{VALIDATION_COMMAND_PROJECT_AREA}`
-Consistency map node: `{VALIDATION_COMMAND_FACT_ID_OR_MISSING}`
-Relationship coverage: `{VALIDATION_COMMAND_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{VALIDATION_COMMAND_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -182,11 +174,9 @@ Final evidence: `{VALIDATION_COMMAND_FINAL_EVIDENCE}`
 ### Fact Type: `security policy`
 
 Fact type: `security policy`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{SECURITY_POLICY_CANONICAL_OWNER}`
-Consistency level: `{SECURITY_POLICY_CONSISTENCY_LEVEL}`
-Project area: `{SECURITY_POLICY_PROJECT_AREA}`
-Consistency map node: `{SECURITY_POLICY_FACT_ID_OR_MISSING}`
-Relationship coverage: `{SECURITY_POLICY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{SECURITY_POLICY_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -201,11 +191,9 @@ Final evidence: `{SECURITY_POLICY_FINAL_EVIDENCE}`
 ### Fact Type: `assistant operation`
 
 Fact type: `assistant operation`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{ASSISTANT_OPERATION_CANONICAL_OWNER}`
-Consistency level: `{ASSISTANT_OPERATION_CONSISTENCY_LEVEL}`
-Project area: `{ASSISTANT_OPERATION_PROJECT_AREA}`
-Consistency map node: `{ASSISTANT_OPERATION_FACT_ID_OR_MISSING}`
-Relationship coverage: `{ASSISTANT_OPERATION_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{ASSISTANT_OPERATION_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -220,11 +208,9 @@ Final evidence: `{ASSISTANT_OPERATION_FINAL_EVIDENCE}`
 ### Fact Type: `development process pattern`
 
 Fact type: `development process pattern`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `.ai/project/development-evidence.json`
-Consistency level: `{DEVELOPMENT_PATTERN_CONSISTENCY_LEVEL}`
-Project area: `{DEVELOPMENT_PATTERN_PROJECT_AREA}`
-Consistency map node: `{DEVELOPMENT_PATTERN_CONSISTENCY_MAP_NODE_OR_NONE}`
-Relationship coverage: `{DEVELOPMENT_PATTERN_RELATIONSHIP_COVERAGE}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{DEVELOPMENT_PATTERN_CONSTRAINTS}`
 Derived surfaces:
 
@@ -239,15 +225,13 @@ Final evidence: `{DEVELOPMENT_EVIDENCE_FINAL_EVIDENCE}`
 ### Fact Type: `AI infrastructure item`
 
 Fact type: `AI infrastructure item`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `{AI_INFRASTRUCTURE_ITEM_CANONICAL_OWNER}`
 AI infrastructure router item: `{AI_INFRASTRUCTURE_ITEM_ID}`
 Adaptation record: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_OR_NOT_APPLICABLE}`
 Project-contour need and outcome owner: `{AI_INFRASTRUCTURE_PROJECT_NEED_AND_OUTCOME_OWNER}`
 Recommendation record: `{AI_INFRASTRUCTURE_RECOMMENDATION_RECORD_OR_NOT_APPLICABLE}`
-Consistency level: `{AI_INFRASTRUCTURE_ITEM_CONSISTENCY_LEVEL}`
-Project area: `{AI_INFRASTRUCTURE_ITEM_PROJECT_AREA}`
-Consistency map node: `{AI_INFRASTRUCTURE_ITEM_FACT_ID_OR_MISSING}`
-Relationship coverage: `{AI_INFRASTRUCTURE_ITEM_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{AI_INFRASTRUCTURE_ITEM_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
@@ -262,11 +246,9 @@ Final evidence: `{AI_INFRASTRUCTURE_ITEM_FINAL_EVIDENCE}`
 ### Fact Type: `code documentation profile`
 
 Fact type: `code documentation profile`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `.ai/project/documentation/profiles.json`
-Consistency level: `{CODE_DOCUMENTATION_PROFILE_CONSISTENCY_LEVEL}`
-Project area: `{CODE_DOCUMENTATION_PROJECT_AREA}`
-Consistency map node: `{CODE_DOCUMENTATION_PROFILE_FACT_ID_OR_MISSING}`
-Relationship coverage: `{CODE_DOCUMENTATION_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{CODE_DOCUMENTATION_PROFILE_SELECTION_SOURCE_OWNER_AND_GENERATION_CONSTRAINTS}`
 Derived surfaces:
 
@@ -283,13 +265,11 @@ Final evidence: `{SELECTED_PROFILE_COMMENTS_GENERATION_OUTPUT_AND_RESIDUAL_RISK}
 ### Fact Type: `project vocabulary`
 
 Fact type: `project vocabulary`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `.ai/project/vocabulary/terms.json`
 Compact lookup catalog: `.ai/project/vocabulary/catalog.json`
 Data dictionary links: `.ai/project/vocabulary/data-dictionary-links.json`
-Consistency level: `{PROJECT_VOCABULARY_CONSISTENCY_LEVEL}`
-Project area: `{PROJECT_VOCABULARY_PROJECT_AREA}`
-Consistency map node: `{PROJECT_VOCABULARY_FACT_ID_OR_MISSING}`
-Relationship coverage: `{PROJECT_VOCABULARY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{TERM_SCOPE_STATE_OWNER_ALIAS_AMBIGUITY_AND_CANONICAL_LINK_CONSTRAINTS}`
 Derived surfaces:
 
@@ -304,11 +284,9 @@ Final evidence: `{SELECTED_TERM_IDS_STATES_OWNERS_SOURCES_LINKS_VALIDATION_AND_R
 ### Fact Type: `test strategy and test-first policy`
 
 Fact type: `test strategy and test-first policy`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `.ai/project/testing/test-first-policy.json`
-Consistency level: `{TEST_FIRST_POLICY_CONSISTENCY_LEVEL}`
-Project area: `{TEST_FIRST_POLICY_PROJECT_AREA}`
-Consistency map node: `{TEST_FIRST_POLICY_FACT_ID_OR_MISSING}`
-Relationship coverage: `{TEST_FIRST_POLICY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{TEST_LEVEL_COMMAND_TRIGGER_ISOLATION_EXCEPTION_AND_EVIDENCE_CONSTRAINTS}`
 Derived surfaces:
 
@@ -323,12 +301,10 @@ Final evidence: `{POLICY_STATE_TRIGGER_MODES_COMMANDS_ISOLATION_EXCEPTIONS_VALID
 ### Fact Type: `team policy`
 
 Fact type: `team policy`
+Authority: ap=`{AP}`; st=`{ST}`; ds=`{DS}`; er=`{ER}`; at=`{AT}`; gs=`{GS}`
 Canonical owner: `.ai/project/team-policy.json`
 Human explanation: `.ai/project/team-operating-model.md`
-Consistency level: `{TEAM_POLICY_CONSISTENCY_LEVEL}`
-Project area: `{TEAM_POLICY_PROJECT_AREA}`
-Consistency map node: `{TEAM_POLICY_FACT_ID_OR_MISSING}`
-Relationship coverage: `{TEAM_POLICY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Routing: cl=`{CL}`; pa=`{PA}`; cn=`{CN}`; rc=`{RC}`
 Invariant and dependency constraints: `{ACTOR_AUTHORITY_PRIORITY_REVIEW_TRANSITION_BACKEND_AND_IDENTITY_CONSTRAINTS}`
 Derived surfaces:
 

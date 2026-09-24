@@ -4,6 +4,35 @@ This contour describes `{PROJECT_NAME}` product facts.
 
 Replace placeholders with target facts before accepting installation.
 
+## Project Orientation
+
+Keep this section concise and human-readable. It routes readers to canonical
+owners; it must not duplicate their detailed policy or architecture content.
+
+Purpose: `{TARGET_PRODUCT_PURPOSE}`
+
+Primary users or stakeholders: `{TARGET_PRIMARY_USERS_OR_STAKEHOLDERS}`
+
+Main architectural areas and owners:
+
+- `{TARGET_ARCHITECTURAL_AREA}` -> `{TARGET_ARCHITECTURAL_AREA_OWNER}`
+
+Primary runtime or business workflows:
+
+- `{TARGET_PRIMARY_WORKFLOW}` -> `{TARGET_WORKFLOW_OWNER}`
+
+Validation entry points:
+
+- `{TARGET_VALIDATION_SCOPE}` -> `{TARGET_VALIDATION_OWNER_OR_COMMAND_SOURCE}`
+
+Known contradictions, missing facts, or accepted limitations:
+
+- `{TARGET_KNOWN_GAP_OR_NONE_WITH_EVIDENCE}`
+
+Start with `.ai/project/source-of-truth-registry.md` when ownership is unclear.
+Use the architecture, vocabulary, testing, and code-documentation indexes only
+when those modules are enabled and relevant to the question.
+
 ## Owns
 
 - product purpose

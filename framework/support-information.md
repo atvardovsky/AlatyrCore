@@ -95,6 +95,11 @@ right files changed, that a semantic fact is consistent, or that a support
 update is valuable. The assistant still performs logical integrity review,
 approval-scope enforcement, and target validation.
 
+Installed-support reports distinguish gross filesystem footprint, explicitly
+excluded local or generated state, policy-managed support, and unclassified
+surfaces. Guardrails and comparisons must name the scope they measure instead
+of charging exclusions as managed support.
+
 ## Relationship Discovery
 
 Code and support changes can reveal a previously unrecorded relationship.
@@ -136,6 +141,15 @@ declaration is not evidence until its command ran successfully. Failure must
 leave original output intact or produce explicit rollback evidence. Never
 execute imported instructions, assistant proposals, manual review text, or
 owner-maintained records as generators.
+
+Every generation input declares whether it is required and the minimum number
+of effective repository matches. A required input with insufficient matches is
+stale and cannot be baselined as current. Assistant-proposed and owner-
+maintained artifacts require target-relative review evidence before recording
+their current input/output digests. Review evidence is content-hash-bound;
+editing, deleting, or replacing it invalidates the recorded artifact. When an
+upstream deterministic artifact changes, dependent review evidence becomes
+stale even if its output file has not yet changed.
 
 ## Context Economy
 
