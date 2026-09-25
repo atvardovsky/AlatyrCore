@@ -133,18 +133,21 @@ class ScaffoldRun:
 
 
 def build_projection_context(
-    selected: set[Path],
+    selected: set[Path] | SelectedPathIndex,
     enabled_modules: set[str],
     context_catalogs: dict[Path, str] | None = None,
     generated_by: dict[str, Any] | None = None,
 ) -> ProjectionContext:
+    selected_paths = selected_path_index(selected)
     validate_projection_graph(
-        target_projection_nodes(path.as_posix() for path in selected)
+        target_projection_nodes(path.as_posix() for path in selected_paths.exact)
     )
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     catalog = None
-    if catalog_rel in selected:
-        catalog = project_catalog(load_object(TEMPLATE_ROOT / catalog_rel), selected)
+    if portable_relative_path(catalog_rel) in selected_paths.exact:
+        catalog = project_catalog(
+            load_object(TEMPLATE_ROOT / catalog_rel), selected_paths
+        )
     operation_ids = frozenset(
         operation["id"]
         for operation in (catalog or {}).get("operations", [])
@@ -155,7 +158,7 @@ def build_projection_context(
         operation_ids=operation_ids,
         enabled_modules=frozenset(enabled_modules),
         context_catalogs=context_catalogs or {},
-        selected_paths=selected_path_index(selected),
+        selected_paths=selected_paths,
         generated_by=generated_by,
     )
 
@@ -455,7 +458,10 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
     selected = selected_templates | {
         Path(".ai") / "framework" / name for name in framework_files
     }
-    projection_nodes = target_projection_nodes(path.as_posix() for path in selected)
+    selected_paths = selected_path_index(selected)
+    projection_nodes = target_projection_nodes(
+        path.as_posix() for path in selected_paths.exact
+    )
     nodes_by_id = {node.node_id: node for node in projection_nodes}
     projection_order = validate_projection_graph(projection_nodes)
     ordered_projection_paths = [
@@ -467,7 +473,7 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
         (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
         profile,
         framework_pack,
-        selected_path_index(selected),
+        selected_paths,
         enabled_modules,
     )
     projection_provenance = generation_provenance_from_manifest_text(
@@ -476,7 +482,7 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
         manifest_text=projected_manifest_text,
     )
     initial_context = build_projection_context(
-        selected, enabled_modules, generated_by=projection_provenance
+        selected_paths, enabled_modules, generated_by=projection_provenance
     )
     projected_target_contents: dict[Path, str] = {}
     for rel in ordered_projection_paths:
@@ -500,7 +506,7 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
         allowed_semantic_refs=allowed_semantic_refs,
     )
     projection_context = build_projection_context(
-        selected,
+        selected_paths,
         enabled_modules,
         context_catalogs,
         generated_by=projection_provenance,

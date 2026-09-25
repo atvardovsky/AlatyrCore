@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Reduced source-validation cost by reusing one scaffold path index, removing
+  duplicate target-validator execution, consolidating Git evidence snapshots,
+  enabling safe local reuse for focused checks, and allowing independent
+  validator and scaffold checks to execute concurrently without weakening the
+  lifecycle acceptance dependency.
+- Added resolved source-context budgets and typed conditional routes so source
+  tasks can prove complete context cost instead of bounding only bootstrap
+  files.
 - Fixed target adapter acceptance validation so an explicitly non-applicable
   source-of-truth registry entry requires a resolved decision source, evidence
   revision, and ISO review date, matching the existing registry contract.

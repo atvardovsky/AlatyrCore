@@ -19,6 +19,7 @@ ALLOWED_PROFILES = {"micro", "quick", "fast", "full", "change", "platform", "rel
 ALLOWED_WRITE_SCOPES = {"none"}
 ALLOWED_PLATFORMS = {"all", "linux", "macos", "windows"}
 ALLOWED_RESOURCE_CLASSES = {"light", "standard", "heavy"}
+ALLOWED_DEPENDENCY_TRIGGER_MODES = {"none", "direct", "transitive"}
 RESOURCE_CLASS_DEFAULT_SLOTS = {"light": 1, "standard": 1, "heavy": 2}
 MAX_SCHEDULER_CAPACITY = 64
 MAX_DURATION_HINT_SECONDS = 86400
@@ -38,6 +39,7 @@ DEFAULT_FIELDS = {
     "always_for_changed",
     "produces_run_artifacts",
     "artifact_dependencies",
+    "dependency_trigger_mode",
 }
 CHECK_FIELDS = DEFAULT_FIELDS | {
     "id",
@@ -112,6 +114,11 @@ def load_manifest(
     root: Path = ROOT,
 ) -> list[dict[str, Any]]:
     manifest = manifest_path or root / "tools" / "check_manifest.json"
+    import_graph = (
+        LOCAL_IMPORT_GRAPH
+        if root.resolve() == ROOT.resolve()
+        else LocalPythonImportGraph(root)
+    )
     data = json.loads(manifest.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError("source check manifest must contain a JSON object")
@@ -159,6 +166,9 @@ def load_manifest(
         )
         dependencies = check.get("depends_on")
         artifact_dependencies = check.get("artifact_dependencies", [])
+        dependency_trigger_mode = check.get(
+            "dependency_trigger_mode", "transitive"
+        )
         if not isinstance(check_id, str) or not check_id or check_id in ids:
             raise ValueError(f"checks[{index}] has invalid or duplicate id")
         if not isinstance(command, list) or not command or not all(
@@ -215,8 +225,13 @@ def load_manifest(
             raise ValueError(
                 f"{check_id}.observed_inputs overlap owned inputs: {observed_overlap}"
             )
+        trigger_required_implementation = (
+            implementation_paths
+            if dependency_trigger_mode == "transitive"
+            else [script]
+        )
         undeclared_triggers = sorted(
-            set(contract_inputs + implementation_paths + observed_inputs)
+            set(contract_inputs + trigger_required_implementation + observed_inputs)
             - set(trigger_paths)
         )
         if undeclared_triggers:
@@ -283,6 +298,17 @@ def load_manifest(
             )
         if not isinstance(check.get("produces_run_artifacts", False), bool):
             raise ValueError(f"{check_id}.produces_run_artifacts must be boolean")
+        if (
+            not isinstance(dependency_trigger_mode, str)
+            or dependency_trigger_mode not in ALLOWED_DEPENDENCY_TRIGGER_MODES
+        ):
+            raise ValueError(f"{check_id}.dependency_trigger_mode is invalid")
+        if dependency_trigger_mode == "direct":
+            scan = import_graph.scan((root / script).resolve())
+            if not scan.complete:
+                raise ValueError(
+                    f"{check_id}.dependency_trigger_mode direct requires a complete import scan"
+                )
         ids.add(check_id)
         check["contract_inputs"] = contract_inputs
         check["implementation_paths"] = implementation_paths
@@ -296,6 +322,7 @@ def load_manifest(
             "produces_run_artifacts", False
         )
         check["artifact_dependencies"] = artifact_dependencies
+        check["dependency_trigger_mode"] = dependency_trigger_mode
         normalized.append(check)
 
     by_id = {check["id"]: check for check in normalized}
@@ -345,6 +372,11 @@ def routes(check: dict[str, Any], path: str) -> bool:
         path, check["trigger_paths"], dialect=PathDialect.SOURCE_HOST_V1
     ):
         return True
+    dependency_mode = check.get("dependency_trigger_mode", "transitive")
+    if dependency_mode == "none":
+        return False
+    if dependency_mode == "direct":
+        return path in direct_local_tool_dependencies(check["command"][0])
     return path in transitive_local_tool_dependencies(check["command"][0])
 
 
@@ -397,7 +429,8 @@ def declared_implementation_path(check: dict[str, Any], path: str) -> bool:
     )
 
 
-def direct_local_tool_dependencies(script: str) -> set[str]:
+@lru_cache(maxsize=None)
+def direct_local_tool_dependencies(script: str) -> frozenset[str]:
     """Find direct imports that resolve to repository-local tools modules.
 
     This deliberately validates only imports that Python can resolve from the
@@ -406,14 +439,10 @@ def direct_local_tool_dependencies(script: str) -> set[str]:
     """
 
     path = ROOT / script
-    dependencies: set[str] = set()
-    for dependency in LOCAL_IMPORT_GRAPH.scan(path).dependencies:
-        relative = dependency.relative_to(ROOT)
-        if len(relative.parts) > 2:
-            dependencies.add(f"tools/{relative.parts[1]}/**")
-        else:
-            dependencies.add(relative.as_posix())
-    return dependencies
+    return frozenset(
+        dependency.relative_to(ROOT).as_posix()
+        for dependency in LOCAL_IMPORT_GRAPH.scan(path).dependencies
+    )
 
 
 @lru_cache(maxsize=None)

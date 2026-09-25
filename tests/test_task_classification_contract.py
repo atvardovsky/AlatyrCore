@@ -20,6 +20,11 @@ from task_classification_contract import (  # noqa: E402
     TASK_CLASSES,
     TASK_CLASSIFICATION_SCHEMA_VERSION,
 )
+from plan_minimum_work import (  # noqa: E402
+    SOURCE_CONDITIONAL_REQUIRED_FIELDS,
+    SOURCE_CONDITIONAL_RESOLVERS,
+    SOURCE_CONTEXT_BUDGET_FIELDS,
+)
 
 
 TARGET_ROUTER = ROOT / "templates/target/.ai/assistant/context-router.json"
@@ -125,6 +130,37 @@ class TaskClassificationContractTests(unittest.TestCase):
         )
         for trigger in SOURCE_REQUIRED_EXPANSION_TRIGGERS:
             self.assertIn(trigger, classification["expansion_triggers"])
+
+    def test_source_profiles_use_typed_conditionals_and_resolved_budgets(self) -> None:
+        router = load_json(SOURCE_ROUTER)
+        profiles = router["profiles"]
+        self.assertIsInstance(profiles, dict)
+        assert isinstance(profiles, dict)
+        conditional_ids: set[str] = set()
+        for profile_id, profile in profiles.items():
+            with self.subTest(profile=profile_id):
+                self.assertIsInstance(profile, dict)
+                assert isinstance(profile, dict)
+                budget = profile["context_budget"]
+                self.assertEqual(set(budget), SOURCE_CONTEXT_BUDGET_FIELDS)
+                conditionals = profile["conditional_context"]
+                self.assertTrue(conditionals)
+                for conditional in conditionals:
+                    self.assertIsInstance(conditional, dict)
+                    assert isinstance(conditional, dict)
+                    self.assertTrue(
+                        SOURCE_CONDITIONAL_REQUIRED_FIELDS <= set(conditional)
+                    )
+                    self.assertIn(
+                        conditional["resolver"], SOURCE_CONDITIONAL_RESOLVERS
+                    )
+                    self.assertNotIn(conditional["id"], conditional_ids)
+                    conditional_ids.add(conditional["id"])
+                for dimension in ["files", "words", "characters"]:
+                    self.assertGreater(
+                        budget[f"max_resolved_{dimension}"],
+                        budget[f"reserved_{dimension}"],
+                    )
 
 
 if __name__ == "__main__":

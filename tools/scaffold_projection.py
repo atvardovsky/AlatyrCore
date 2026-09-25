@@ -8,7 +8,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path, PurePath, PurePosixPath
-from typing import Any
+from typing import Any, Iterable, Union
 
 from scaffold_state import INITIAL_INSTALLATION_STATE
 
@@ -20,7 +20,7 @@ class SelectedPathIndex:
     ancestors: frozenset[PurePosixPath]
 
 
-SelectedPaths = Any
+SelectedPaths = Union[SelectedPathIndex, Iterable[Union[str, PurePath]]]
 
 TARGET_PATH_RE = re.compile(
     r"^(?P<prefix>\s+[A-Za-z0-9_-]+:\s+)(?P<quote>[\"']?)(?P<path>\.ai/[^\"']+)(?P=quote)\s*$"
@@ -102,6 +102,7 @@ def project_markdown_fragments(
     fragment_lines: list[str] | None = None
     include_fragment = False
     modules = enabled_modules or set()
+    selected_index = selected_path_index(selected)
 
     def condition_matches(condition_text: str, line_number: int) -> bool:
         try:
@@ -141,7 +142,7 @@ def project_markdown_fragments(
                 f"scaffold Markdown fragment at line {line_number} has a non-.ai path"
             )
         return all(
-            path_available(value, selected) for value in required_paths
+            path_available(value, selected_index) for value in required_paths
         ) and set(required_modules).issubset(modules)
 
     for line_number, line in enumerate(text.splitlines(keepends=True), start=1):
@@ -336,17 +337,22 @@ def project_agent_rule_ids(
         raise ValueError("cannot project AGENTS.md registered rule IDs")
     if selected is None:
         return rendered
-    if not path_available(".ai/assistant/operation-index.json", selected):
+    selected_index = selected_path_index(selected)
+    if not path_available(".ai/assistant/operation-index.json", selected_index):
         rendered = rendered.replace(
             OPERATION_ROUTING_PARAGRAPH,
             KERNEL_OPERATION_ROUTING_PARAGRAPH,
         )
-    if not path_available(".ai/assistant/ai-infrastructure-router.json", selected):
+    if not path_available(
+        ".ai/assistant/ai-infrastructure-router.json", selected_index
+    ):
         rendered = rendered.replace(
             AI_INFRASTRUCTURE_ROUTING_SENTENCE,
             KERNEL_AI_INFRASTRUCTURE_ROUTING_SENTENCE,
         )
-    if not path_available(".ai/assistant/assistant-capabilities.json", selected):
+    if not path_available(
+        ".ai/assistant/assistant-capabilities.json", selected_index
+    ):
         rendered = rendered.replace(
             ASSISTANT_CAPABILITY_PARAGRAPH,
             KERNEL_ASSISTANT_CAPABILITY_PARAGRAPH,
@@ -381,6 +387,7 @@ def project_catalog(catalog: dict[str, Any], selected: SelectedPaths) -> dict[st
     """Keep only operations whose flow and catalog support files are installed."""
 
     projected = copy.deepcopy(catalog)
+    selected_index = selected_path_index(selected)
     operations = projected.get("operations")
     if not isinstance(operations, list):
         raise ValueError("operation catalog must define an operations list")
@@ -389,7 +396,7 @@ def project_catalog(catalog: dict[str, Any], selected: SelectedPaths) -> dict[st
         for operation in operations
         if isinstance(operation, dict)
         and isinstance(operation.get("flow"), str)
-        and path_available(operation["flow"], selected)
+        and path_available(operation["flow"], selected_index)
     ]
     return projected
 
@@ -427,6 +434,7 @@ def project_gate_index(gates: dict[str, Any], selected: SelectedPaths) -> dict[s
     """Keep only gate index entries whose fragment files are installed."""
 
     projected = copy.deepcopy(gates)
+    selected_index = selected_path_index(selected)
     gate_entries = projected.get("gates")
     if not isinstance(gate_entries, dict):
         raise ValueError("gate index must define a gates object")
@@ -435,7 +443,7 @@ def project_gate_index(gates: dict[str, Any], selected: SelectedPaths) -> dict[s
         if not isinstance(gate_id, str) or not isinstance(entry, dict):
             continue
         path = entry.get("path")
-        if isinstance(path, str) and path_available(path, selected):
+        if isinstance(path, str) and path_available(path, selected_index):
             available[gate_id] = entry
     projected["gates"] = available
     profile_defaults = projected.get("profile_defaults")
@@ -561,7 +569,10 @@ def project_router(
     """Remove routes and overlays that point outside the selected profile."""
 
     projected = copy.deepcopy(router)
-    has_catalog = path_available(".ai/assistant/operation-catalog.json", selected)
+    selected_index = selected_path_index(selected)
+    has_catalog = path_available(
+        ".ai/assistant/operation-catalog.json", selected_index
+    )
     if not has_catalog:
         projected.pop("operation_routing", None)
 
@@ -573,7 +584,7 @@ def project_router(
                 continue
             descriptor = profile.get("descriptor")
             if not isinstance(descriptor, str) or not path_available(
-                descriptor, selected
+                descriptor, selected_index
             ):
                 continue
             candidates = profile.get("operation_candidates")
@@ -597,7 +608,7 @@ def project_router(
         projected["intent_overlays"] = {
             name: overlay
             for name, overlay in overlays.items()
-            if _context_contract_available(overlay, selected)
+            if _context_contract_available(overlay, selected_index)
             and isinstance(overlay.get("operation_candidates"), list)
             and all(value in operation_ids for value in overlay["operation_candidates"])
         }
@@ -607,10 +618,10 @@ def project_router(
         projected["task_scale_overlays"] = {
             name: overlay
             for name, overlay in scale_overlays.items()
-            if _context_contract_available(overlay, selected)
+            if _context_contract_available(overlay, selected_index)
             and (
                 not isinstance(overlay.get("descriptor"), str)
-                or path_available(overlay["descriptor"], selected)
+                or path_available(overlay["descriptor"], selected_index)
             )
         }
 
@@ -620,9 +631,9 @@ def project_router(
         "project_knowledge_routing": ".ai/assistant/context/project-knowledge-routing.json",
     }
     for route, required_path in descriptor_routes.items():
-        if not path_available(required_path, selected):
+        if not path_available(required_path, selected_index):
             projected.pop(route, None)
-    return _filter_paths(projected, selected)
+    return _filter_paths(projected, selected_index)
 
 
 def project_context_descriptor(
@@ -633,6 +644,7 @@ def project_context_descriptor(
     """Project one lazy context descriptor onto installed paths and operations."""
 
     projected = copy.deepcopy(descriptor)
+    selected_index = selected_path_index(selected)
     candidates = projected.get("operation_candidates")
     if isinstance(candidates, list):
         if operation_ids:
@@ -641,7 +653,7 @@ def project_context_descriptor(
             ]
         else:
             projected.pop("operation_candidates", None)
-    return _filter_paths(projected, selected)
+    return _filter_paths(projected, selected_index)
 
 
 def project_ai_infrastructure_router(
@@ -650,6 +662,7 @@ def project_ai_infrastructure_router(
     """Remove routes whose concrete canonical context is not installed."""
 
     projected = copy.deepcopy(router)
+    selected_index = selected_path_index(selected)
     routes = projected.get("routes")
     if not isinstance(routes, dict):
         return projected
@@ -665,8 +678,8 @@ def project_ai_infrastructure_router(
             for value in required
             if isinstance(value, str) and value.startswith(".ai/")
         ]
-        if all(path_available(value, selected) for value in concrete):
-            available_routes[name] = _filter_paths(route, selected)
+        if all(path_available(value, selected_index) for value in concrete):
+            available_routes[name] = _filter_paths(route, selected_index)
     projected["routes"] = available_routes
     order = projected.get("routing_order")
     if isinstance(order, list):

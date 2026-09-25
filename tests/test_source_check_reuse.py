@@ -296,6 +296,34 @@ class SourceCheckReuseTests(unittest.TestCase):
             {"docs/example.md", "tools/example.py"},
         )
 
+    def test_prefix_index_preserves_recursive_and_character_class_matches(self) -> None:
+        snapshot = {
+            "docs/a.md": SourceEntry("file", 0o644, "aaa"),
+            "docs/nested/b.md": SourceEntry("file", 0o644, "bbb"),
+            "framework/a.md": SourceEntry("file", 0o644, "ccc"),
+            "framework/b.txt": SourceEntry("file", 0o644, "ddd"),
+            "tools/check_alpha.py": SourceEntry("file", 0o644, "eee"),
+            "tools/check_beta.py": SourceEntry("file", 0o644, "fff"),
+        }
+        index = SourceSnapshotIndex(snapshot)
+
+        self.assertEqual(
+            index.matching_paths("docs/**"),
+            ("docs/a.md", "docs/nested/b.md"),
+        )
+        self.assertEqual(
+            index.matching_paths("framework/*.md"),
+            ("framework/a.md",),
+        )
+        self.assertEqual(
+            index.matching_paths("tools/check_[ab]*.py"),
+            ("tools/check_alpha.py", "tools/check_beta.py"),
+        )
+        self.assertEqual(
+            index.matching_paths("**/*.md"),
+            ("docs/a.md", "docs/nested/b.md", "framework/a.md"),
+        )
+
     def test_symlink_input_is_not_reuse_eligible(self) -> None:
         item = check()
         current_fingerprint = check_input_fingerprint(

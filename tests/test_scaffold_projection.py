@@ -17,6 +17,7 @@ from scaffold_projection import (  # noqa: E402
     path_available,
     project_assistant_capability_index,
     project_bridge_capability_matrix,
+    project_catalog,
     project_manifest,
     project_markdown_fragments,
     project_module_profile,
@@ -79,6 +80,45 @@ class ScaffoldProjectionTests(unittest.TestCase):
         self.assertTrue(path_available(".ai/assistant/help.md", indexed))
         self.assertTrue(path_available(".ai/assistant", indexed))
         self.assertFalse(path_available(".ai/assistant/help-reference.md", indexed))
+
+    def test_projection_consumes_raw_selected_paths_once(self) -> None:
+        class SinglePassPaths:
+            def __init__(self) -> None:
+                self.iterations = 0
+
+            def __iter__(self):
+                self.iterations += 1
+                if self.iterations > 1:
+                    raise AssertionError("selected paths were rebuilt")
+                return iter(
+                    [
+                        Path(".ai/assistant/flows/first.flow.md"),
+                        Path(".ai/assistant/flows/second.flow.md"),
+                    ]
+                )
+
+        selected = SinglePassPaths()
+        projected = project_catalog(
+            {
+                "operations": [
+                    {"id": "first", "flow": ".ai/assistant/flows/first.flow.md"},
+                    {"id": "second", "flow": ".ai/assistant/flows/second.flow.md"},
+                    {"id": "absent", "flow": ".ai/assistant/flows/absent.flow.md"},
+                ]
+            },
+            selected,
+        )
+
+        self.assertEqual(selected.iterations, 1)
+        self.assertEqual(
+            [operation["id"] for operation in projected["operations"]],
+            ["first", "second"],
+        )
+
+    def test_selected_path_index_reuses_normalized_instance(self) -> None:
+        indexed = selected_path_index({Path(".ai/assistant/help.md")})
+
+        self.assertIs(selected_path_index(indexed), indexed)
 
     def test_assistant_capability_index_keeps_only_installed_records_and_bridges(self) -> None:
         source = {

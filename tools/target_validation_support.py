@@ -66,6 +66,15 @@ class GitChangeSet:
 
 
 @dataclass(frozen=True)
+class GitRepositorySnapshot:
+    """One portable porcelain-v2 observation of repository identity and state."""
+
+    head_revision: str | None
+    branch_name: str | None
+    worktree_status: bytes
+
+
+@dataclass(frozen=True)
 class Scalar:
     value: str
     line: int
@@ -678,10 +687,18 @@ class GitEvidenceView:
         self._cache: dict[tuple[Any, ...], Any] = {}
         self.query_misses = 0
         self.cache_hits = 0
+        self._last_stability: GitEvidenceState | None = None
         target_is_directory = self.target.is_dir()
-        self.initial_head = git_head_revision(self.target) if target_is_directory else None
-        self.initial_branch = git_branch_name(self.target) if target_is_directory else None
-        self.initial_status = self._status_snapshot() if target_is_directory else None
+        initial_snapshot = self._repository_snapshot() if target_is_directory else None
+        self.initial_head = (
+            initial_snapshot.head_revision if initial_snapshot is not None else None
+        )
+        self.initial_branch = (
+            initial_snapshot.branch_name if initial_snapshot is not None else None
+        )
+        self.initial_status = (
+            initial_snapshot.worktree_status if initial_snapshot is not None else None
+        )
         self.initial_state = (
             GitEvidenceState.STABLE
             if self.initial_head is not None
@@ -690,10 +707,19 @@ class GitEvidenceView:
             else GitEvidenceState.UNAVAILABLE
         )
 
-    def _status_snapshot(self) -> bytes | None:
+    def _repository_snapshot(self) -> GitRepositorySnapshot | None:
+        """Observe HEAD, branch, and worktree state with one portable Git query."""
+
         try:
             result = subprocess.run(
-                ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+                [
+                    "git",
+                    "status",
+                    "--porcelain=v2",
+                    "--branch",
+                    "-z",
+                    "--untracked-files=all",
+                ],
                 cwd=self.target,
                 check=False,
                 stdout=subprocess.PIPE,
@@ -701,7 +727,34 @@ class GitEvidenceView:
             )
         except OSError:
             return None
-        return result.stdout if result.returncode == 0 else None
+        if result.returncode != 0:
+            return None
+
+        head_revision: str | None = None
+        branch_name: str | None = None
+        status_records: list[bytes] = []
+        for record in result.stdout.split(b"\0"):
+            if record.startswith(b"# branch.oid "):
+                value = record[len(b"# branch.oid ") :]
+                if value != b"(initial)":
+                    head_revision = value.decode("ascii")
+            elif record.startswith(b"# branch.head "):
+                value = record[len(b"# branch.head ") :]
+                branch_name = (
+                    "detached HEAD"
+                    if value == b"(detached)"
+                    else value.decode("utf-8", errors="surrogateescape")
+                )
+            elif record and not record.startswith(b"# "):
+                status_records.append(record)
+        worktree_status = b"\0".join(status_records)
+        if status_records:
+            worktree_status += b"\0"
+        return GitRepositorySnapshot(
+            head_revision=head_revision,
+            branch_name=branch_name,
+            worktree_status=worktree_status,
+        )
 
     def _cached(self, key: tuple[Any, ...], loader: Any) -> Any:
         if key in self._cache:
@@ -819,19 +872,21 @@ class GitEvidenceView:
         """Return stable, mutated, or unavailable Git evidence state."""
 
         if self.initial_state is GitEvidenceState.UNAVAILABLE:
-            return GitEvidenceState.UNAVAILABLE
-        current_head = git_head_revision(self.target)
-        current_branch = git_branch_name(self.target)
-        current_status = self._status_snapshot()
-        if current_head is None or current_branch is None or current_status is None:
-            return GitEvidenceState.MUTATED
-        if (
-            self.initial_head != current_head
-            or self.initial_branch != current_branch
-            or self.initial_status != current_status
-        ):
-            return GitEvidenceState.MUTATED
-        return GitEvidenceState.STABLE
+            state = GitEvidenceState.UNAVAILABLE
+        else:
+            current = self._repository_snapshot()
+            if current is None:
+                state = GitEvidenceState.MUTATED
+            elif (
+                self.initial_head != current.head_revision
+                or self.initial_branch != current.branch_name
+                or self.initial_status != current.worktree_status
+            ):
+                state = GitEvidenceState.MUTATED
+            else:
+                state = GitEvidenceState.STABLE
+        self._last_stability = state
+        return state
 
     def finalize(self) -> bool:
         """Compatibility facade returning true only for stable Git evidence."""
@@ -839,11 +894,14 @@ class GitEvidenceView:
         return self.stability() is GitEvidenceState.STABLE
 
     def telemetry(self) -> dict[str, int | str]:
+        stability = self._last_stability
+        if stability is None:
+            stability = self.stability()
         return {
             "query_misses": self.query_misses,
             "cache_hits": self.cache_hits,
             "cached_queries": len(self._cache),
-            "stability": self.stability().value,
+            "stability": stability.value,
         }
 
 

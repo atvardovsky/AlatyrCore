@@ -248,8 +248,10 @@ worker, claim completed delegation, or grant worker permissions.
 `tools/alatyr.py check-source-focused` is the cheap small-task entry point for
 that route. It runs `check_all.py --profile fast --changed-from <baseline>`,
 selecting `origin/main` as the default baseline when available and `HEAD` when
-the repository has no remote main reference. It is an optimization path, not a
-replacement for the full acceptance gate.
+the repository has no remote main reference. Focused runs default to
+content-addressed Git-local reuse; pass `--cache-mode off` for a cold focused
+run. This is an optimization path, not a replacement for the full acceptance
+gate, and direct full or release validation remains cold by default.
 The runner passes changed-path and selection-reason metadata to checks. The
 source unit-test wrapper is selected only for tests or routed Python/tooling
 changes, uses that metadata to run directly affected test modules, and falls

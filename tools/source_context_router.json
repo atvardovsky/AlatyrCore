@@ -27,7 +27,7 @@
     "fallback": "load canonical owner prose and stop compact interpretation"
   },
   "budgets": {
-    "bootstrap_max_words": 2100,
+    "bootstrap_max_words": 2500,
     "minimum_headroom_words": 100,
     "on_exceed": "stop and repair or report routing drift"
   },
@@ -109,14 +109,21 @@
     "docs-local": {
       "required_context": [],
       "conditional_context": [
-        "edited file",
-        "directly linked neighbor",
-        "selected docs/framework-maintenance.md section when acceptance or lifecycle routing is ambiguous"
+        {"id": "docs-edited-path", "resolver": "path-pattern", "path_or_registry_query": "docs/**", "when": "a documentation path is edited"},
+        {"id": "docs-root-readme", "resolver": "exact-path", "path_or_registry_query": "README.md", "when": "the repository README is edited"},
+        {"id": "docs-linked-neighbor", "resolver": "selector-paths", "path_or_registry_query": "linked_paths", "when": "a direct local link can change with the edited document"},
+        {"id": "docs-maintenance-section", "resolver": "indexed-query", "path_or_registry_query": "docs/framework-maintenance.md#selector=acceptance_or_lifecycle_topics", "when": "acceptance or lifecycle routing is ambiguous"}
       ],
       "context_budget": {
         "max_required_files": 0,
         "max_required_words": 0,
-        "max_initial_words": 2200
+        "max_initial_words": 2500,
+        "max_resolved_files": 8,
+        "max_resolved_words": 14000,
+        "max_resolved_characters": 130000,
+        "reserved_files": 2,
+        "reserved_words": 1500,
+        "reserved_characters": 12000
       },
       "check_profile": "fast",
       "checks": ["markdown-links", "framework-consistency"]
@@ -127,15 +134,22 @@
         "framework/semantics/index.json"
       ],
       "conditional_context": [
-        "selected framework/rule-registry.json entry by exact rule ID",
-        "canonical owner selected by rule ID",
-        "dependency owner selected under rule_dependency_loading",
-        "affected installer or target template surface"
+        {"id": "framework-rule-registry-entry", "resolver": "indexed-query", "path_or_registry_query": "framework/rule-registry.json#selector=rule_ids", "when": "an exact changed rule ID is known"},
+        {"id": "framework-canonical-owner", "resolver": "indexed-query", "path_or_registry_query": "framework/context-index.json#selector=rule_ids", "when": "a rule decision requires its canonical owner", "owner_rule_id": "$rule_id"},
+        {"id": "framework-dependency-owner", "resolver": "indexed-query", "path_or_registry_query": "framework/context-index.json#selector=dependency_rule_ids", "when": "the selected rule depends on a prerequisite", "owner_rule_id": "$dependency_rule_id"},
+        {"id": "framework-installer-surface", "resolver": "path-pattern", "path_or_registry_query": "installer/**", "when": "a changed rule affects installer behavior"},
+        {"id": "framework-target-template-surface", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "a changed rule affects an installed target surface"}
       ],
       "context_budget": {
         "max_required_files": 2,
         "max_required_words": 700,
-        "max_initial_words": 2900
+        "max_initial_words": 2900,
+        "max_resolved_files": 10,
+        "max_resolved_words": 18000,
+        "max_resolved_characters": 175000,
+        "reserved_files": 2,
+        "reserved_words": 1500,
+        "reserved_characters": 12000
       },
       "check_profile": "fast",
       "checks": ["framework-metadata", "rule-ownership", "framework-consistency"]
@@ -145,17 +159,23 @@
         "installer/context-router.json"
       ],
       "conditional_context": [
-        "selected installer stage required_context",
-        "INSTALL.md section selected for public installation behavior",
-        "installer/assistant-installation.flow.md section selected for execution behavior",
-        "affected readiness or plan section",
-        "selected target template",
-        "owning framework rule"
+        {"id": "installer-stage-context", "resolver": "indexed-query", "path_or_registry_query": "installer/context-router.json#selector=installer_stage_ids", "when": "one or more installer stages are in scope"},
+        {"id": "installer-public-contract", "resolver": "exact-path", "path_or_registry_query": "INSTALL.md", "when": "public installation behavior is affected"},
+        {"id": "installer-execution-flow", "resolver": "exact-path", "path_or_registry_query": "installer/assistant-installation.flow.md", "when": "assistant execution behavior is affected"},
+        {"id": "installer-readiness-or-plan", "resolver": "selector-paths", "path_or_registry_query": "readiness_or_plan_paths", "when": "a readiness or installation-plan surface is affected"},
+        {"id": "installer-target-template", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "an installed target projection is affected"},
+        {"id": "installer-rule-owner", "resolver": "indexed-query", "path_or_registry_query": "framework/context-index.json#selector=rule_ids", "when": "installer behavior depends on a portable rule", "owner_rule_id": "$rule_id"}
       ],
       "context_budget": {
         "max_required_files": 1,
         "max_required_words": 900,
-        "max_initial_words": 3000
+        "max_initial_words": 3400,
+        "max_resolved_files": 10,
+        "max_resolved_words": 20000,
+        "max_resolved_characters": 180000,
+        "reserved_files": 2,
+        "reserved_words": 1600,
+        "reserved_characters": 14000
       },
       "check_profile": "fast",
       "checks": ["source-context-routing", "scaffold-profiles", "framework-consistency"]
@@ -163,17 +183,24 @@
     "source-tooling": {
       "required_context": [],
       "conditional_context": [
-        "tool being changed",
-        "contract validated by the tool",
-        "selected tools/check_manifest.json entry by exact check ID",
-        "selected docs/source-architecture.md section for affected component",
-        "selected tools/README.md section for CLI usage",
-        "docs/framework-maintenance.md for ambiguous acceptance or lifecycle routing"
+        {"id": "source-tool-changed-path", "resolver": "path-pattern", "path_or_registry_query": "tools/**", "when": "a source tool path is changed"},
+        {"id": "source-test-changed-path", "resolver": "path-pattern", "path_or_registry_query": "tests/**", "when": "a source tool test path is changed"},
+        {"id": "source-tool-contract", "resolver": "selector-paths", "path_or_registry_query": "contract_paths", "when": "the tool validates a named contract surface"},
+        {"id": "source-check-manifest-entry", "resolver": "indexed-query", "path_or_registry_query": "tools/check_manifest.json#selector=check_ids", "when": "one or more exact source check IDs are selected"},
+        {"id": "source-architecture-section", "resolver": "indexed-query", "path_or_registry_query": "docs/source-architecture.md#selector=architecture_topics", "when": "the affected component has source architecture guidance"},
+        {"id": "source-cli-section", "resolver": "indexed-query", "path_or_registry_query": "tools/README.md#selector=cli_topics", "when": "the tool command or public CLI usage changes"},
+        {"id": "source-maintenance-fallback", "resolver": "indexed-query", "path_or_registry_query": "docs/framework-maintenance.md#selector=acceptance_or_lifecycle_topics", "when": "acceptance or lifecycle routing is ambiguous"}
       ],
       "context_budget": {
         "max_required_files": 0,
         "max_required_words": 0,
-        "max_initial_words": 2200
+        "max_initial_words": 2500,
+        "max_resolved_files": 10,
+        "max_resolved_words": 24000,
+        "max_resolved_characters": 300000,
+        "reserved_files": 2,
+        "reserved_words": 1600,
+        "reserved_characters": 14000
       },
       "check_profile": "fast",
       "check_selection": "select fast changed-path checks by trigger_paths",
@@ -187,16 +214,23 @@
         "docs/release-process.md"
       ],
       "conditional_context": [
-        "framework/lifecycle.md section selected by release phase",
-        "framework/migration-diff.md when a migration or compatibility boundary applies",
-        "CHANGELOG.md Unreleased and latest version sections",
-        "release migration report",
-        "changed rule owners and templates"
+        {"id": "release-lifecycle-section", "resolver": "indexed-query", "path_or_registry_query": "framework/lifecycle.md#selector=lifecycle_phases", "when": "a release lifecycle phase is selected", "owner_rule_id": "ALATYR-LIFECYCLE-001"},
+        {"id": "release-migration-contract", "resolver": "exact-path", "path_or_registry_query": "framework/migration-diff.md", "when": "a migration or compatibility boundary applies", "owner_rule_id": "ALATYR-LIFECYCLE-001"},
+        {"id": "release-changelog-section", "resolver": "indexed-query", "path_or_registry_query": "CHANGELOG.md#selector=changelog_sections", "when": "the Unreleased or latest-version record is in scope"},
+        {"id": "release-migration-report", "resolver": "selector-paths", "path_or_registry_query": "release_report_paths", "when": "a concrete migration report is part of the release"},
+        {"id": "release-rule-owner", "resolver": "indexed-query", "path_or_registry_query": "framework/context-index.json#selector=rule_ids", "when": "changed release behavior is owned by a portable rule", "owner_rule_id": "$rule_id"},
+        {"id": "release-target-template", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "the release changes an installed target projection"}
       ],
       "context_budget": {
         "max_required_files": 4,
         "max_required_words": 1200,
-        "max_initial_words": 3400
+        "max_initial_words": 3400,
+        "max_resolved_files": 14,
+        "max_resolved_words": 30000,
+        "max_resolved_characters": 250000,
+        "reserved_files": 2,
+        "reserved_words": 2000,
+        "reserved_characters": 16000
       },
       "check_profile": "full",
       "additional_check_profiles": ["release"],
@@ -208,18 +242,24 @@
         "templates/target/.ai/assistant/assistant-capabilities.json"
       ],
       "conditional_context": [
-        "selected AI_ASSISTANTS.md section for source entry behavior",
-        "selected assistant compatibility or bridge capability record",
-        "framework/ai-infrastructure-routing.md for item routing changes",
-        "selected skill prompt gate tool MCP bridge or wrapper",
-        "assistant surface admission audit and capability schema when support changes",
-        "import policy when an external source is involved",
-        "operation help when routing changes"
+        {"id": "assistant-source-entry", "resolver": "indexed-query", "path_or_registry_query": "AI_ASSISTANTS.md#selector=assistant_surface_ids", "when": "source entry behavior changes for an assistant surface", "owner_rule_id": "ALATYR-BRIDGE-001"},
+        {"id": "assistant-capability-record", "resolver": "selector-paths", "path_or_registry_query": "assistant_surface_paths", "when": "an assistant compatibility or capability record is selected", "owner_rule_id": "ALATYR-BRIDGE-001"},
+        {"id": "ai-infrastructure-routing-owner", "resolver": "exact-path", "path_or_registry_query": "framework/ai-infrastructure-routing.md", "when": "AI infrastructure item routing changes", "owner_rule_id": "ALATYR-BRIDGE-001"},
+        {"id": "ai-infrastructure-item", "resolver": "selector-paths", "path_or_registry_query": "ai_infrastructure_item_paths", "when": "a skill prompt gate tool MCP bridge or wrapper is selected"},
+        {"id": "assistant-admission-contract", "resolver": "selector-paths", "path_or_registry_query": "assistant_admission_paths", "when": "assistant support or capability admission changes", "owner_rule_id": "ALATYR-BRIDGE-001"},
+        {"id": "ai-import-policy", "resolver": "indexed-query", "path_or_registry_query": "framework/prompt-injection.md#selector=external_source_ids", "when": "an external AI infrastructure source is involved", "owner_rule_id": "ALATYR-SAFETY-002"},
+        {"id": "ai-operation-help", "resolver": "exact-path", "path_or_registry_query": "framework/operation-help.md", "when": "installed operation routing changes", "owner_rule_id": "ALATYR-OPERATION-001"}
       ],
       "context_budget": {
         "max_required_files": 2,
         "max_required_words": 600,
-        "max_initial_words": 2800
+        "max_initial_words": 2800,
+        "max_resolved_files": 16,
+        "max_resolved_words": 16000,
+        "max_resolved_characters": 140000,
+        "reserved_files": 3,
+        "reserved_words": 2500,
+        "reserved_characters": 20000
       },
       "check_profile": "full",
       "checks": [
@@ -235,18 +275,25 @@
         "tools/source_worker_policy.json"
       ],
       "conditional_context": [
-        "selected tools/check_manifest.json entries by audit workstream or failed check ID",
-        "selected docs/framework-maintenance.md acceptance section",
-        "selected docs/source-architecture.md component section",
-        "bounded context listed by each selected audit workstream",
-        "canonical owners selected by failed check IDs",
-        "affected installer or target template surfaces",
-        "release context only when release checks fail"
+        {"id": "audit-check-manifest-entries", "resolver": "indexed-query", "path_or_registry_query": "tools/check_manifest.json#selector=audit_check_ids", "when": "audit workstreams or failed checks identify exact check IDs"},
+        {"id": "audit-maintenance-section", "resolver": "indexed-query", "path_or_registry_query": "docs/framework-maintenance.md#selector=acceptance_topics", "when": "the audit evaluates acceptance behavior"},
+        {"id": "audit-source-architecture-section", "resolver": "indexed-query", "path_or_registry_query": "docs/source-architecture.md#selector=architecture_topics", "when": "the audit evaluates a named source component"},
+        {"id": "audit-workstream-context", "resolver": "selector-paths", "path_or_registry_query": "audit_context_paths", "when": "selected workstreams declare bounded context"},
+        {"id": "audit-failed-check-owner", "resolver": "indexed-query", "path_or_registry_query": "framework/context-index.json#selector=failed_owner_rule_ids", "when": "failed checks identify canonical owner rule IDs", "owner_rule_id": "$failed_owner_rule_id"},
+        {"id": "audit-installer-surface", "resolver": "path-pattern", "path_or_registry_query": "installer/**", "when": "audit evidence reaches installer behavior"},
+        {"id": "audit-target-template-surface", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "audit evidence reaches target projections"},
+        {"id": "audit-release-context", "resolver": "indexed-query", "path_or_registry_query": "docs/release-process.md#selector=release_failure_ids", "when": "one or more release checks fail", "owner_rule_id": "ALATYR-LIFECYCLE-001"}
       ],
       "context_budget": {
         "max_required_files": 2,
         "max_required_words": 1950,
-        "max_initial_words": 4000
+        "max_initial_words": 4400,
+        "max_resolved_files": 18,
+        "max_resolved_words": 30000,
+        "max_resolved_characters": 350000,
+        "reserved_files": 4,
+        "reserved_words": 3500,
+        "reserved_characters": 30000
       },
       "check_profile": "full",
       "decomposition": {

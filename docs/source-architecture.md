@@ -117,6 +117,15 @@ Apply least sufficient context to the source repository itself. Add indexes,
 manifests, and narrow trigger paths so agents and checks load only what the
 task actually needs.
 
+Source profile conditionals are typed route declarations, not prose hints.
+Each declaration has a stable ID, a bounded resolver, a concrete path or
+indexed query, and an explicit load condition. Minimum-work plans resolve only
+selectors supported by current evidence, record selected and omitted routes,
+and retain fail-closed canonical-owner fallback when an owner selector is not
+available. Profile budgets cover the complete resolved packet in files, words,
+and characters while preserving declared reserve capacity; initial bootstrap
+limits remain an additional, narrower guard.
+
 ## Extraction Rules
 
 - Extract pure helpers before moving CLI behavior.

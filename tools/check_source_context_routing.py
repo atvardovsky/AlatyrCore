@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +18,16 @@ from context_catalog import (
     load_codebook,
     preload_term_ids,
     validate_context_catalog,
+)
+from path_spec import PathDialect, matches_any
+from plan_minimum_work import (
+    SOURCE_CONDITIONAL_REQUIRED_FIELDS,
+    SOURCE_CONDITIONAL_RESOLVERS,
+    SOURCE_CONTEXT_BUDGET_FIELDS,
+    build_source_profile_context,
+    measure_source_context,
+    parse_source_indexed_query,
+    resolve_source_conditionals,
 )
 from source_check_manifest import valid_manifest_path
 from task_classification_contract import (
@@ -60,11 +72,6 @@ EXPECTED_INSTALL_STAGES = [
     "handoff",
 ]
 EXPECTED_SMALL_TASK_PROFILES = {"docs-local", "source-tooling"}
-SOURCE_PROFILE_BUDGET_FIELDS = {
-    "max_required_files",
-    "max_required_words",
-    "max_initial_words",
-}
 REQUIRED_SMALL_TASK_BOUNDARIES = {
     "AGENTS.md",
     "AI_ASSISTANTS.md",
@@ -80,6 +87,11 @@ REQUIRED_SMALL_TASK_BOUNDARIES = {
     "tools/source_context_router.json",
     "tools/source_worker_policy.json",
 }
+SOURCE_CONDITIONAL_FIELDS = SOURCE_CONDITIONAL_REQUIRED_FIELDS | {"owner_rule_id"}
+SOURCE_CONDITIONAL_ID = re.compile(r"^[a-z][a-z0-9-]*$")
+SOURCE_OWNER_RULE_ID = re.compile(
+    r"^(?:ALATYR-[A-Z][A-Z0-9-]*-[0-9]{3}|\$[a-z][a-z0-9_]*)$"
+)
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -110,6 +122,201 @@ def word_count(paths: list[str]) -> int:
         if path.is_file():
             total += len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
     return total
+
+
+@lru_cache(maxsize=1)
+def _source_files() -> tuple[str, ...]:
+    result = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        return tuple(
+            sorted(
+                path.decode("utf-8")
+                for path in result.stdout.split(b"\0")
+                if path
+            )
+        )
+    return tuple(
+        sorted(
+            path.relative_to(ROOT).as_posix()
+            for path in ROOT.rglob("*")
+            if path.is_file()
+            and not {".git", "tmp"}.intersection(path.relative_to(ROOT).parts)
+        )
+    )
+
+
+def _first_matching_path(pattern: str) -> str | None:
+    for relpath in _source_files():
+        if matches_any(relpath, [pattern], dialect=PathDialect.PORTABLE_FNMATCH_V1):
+            return relpath
+    return None
+
+
+def _fixture_selectors(entries: list[dict[str, Any]]) -> dict[str, list[str]]:
+    selectors: dict[str, list[str]] = {}
+
+    def append(selector: str, value: str) -> None:
+        values = selectors.setdefault(selector, [])
+        if value not in values:
+            values.append(value)
+
+    for entry in entries:
+        resolver = entry["resolver"]
+        query = entry["path_or_registry_query"]
+        if resolver == "selector-paths":
+            append(query, "tools/source_context_router.json")
+        elif resolver == "exact-path":
+            append("requested_paths", query)
+        elif resolver == "path-pattern":
+            matched = _first_matching_path(query)
+            if matched is not None:
+                append("requested_paths", matched)
+        elif resolver == "indexed-query":
+            parsed = parse_source_indexed_query(query)
+            if parsed is not None:
+                _, selector = parsed
+                append(
+                    selector,
+                    (
+                        "ALATYR-CONTEXT-001"
+                        if selector.endswith("rule_ids")
+                        or str(entry.get("owner_rule_id", "")).startswith("$")
+                        else "fixture-value"
+                    ),
+                )
+    return selectors
+
+
+def validate_source_conditionals(
+    profile_id: str,
+    profile: dict[str, Any],
+    known_ids: set[str],
+    failures: list[str],
+) -> None:
+    entries = profile.get("conditional_context")
+    if not isinstance(entries, list) or not entries:
+        failures.append(f"source profile {profile_id} has no conditional context")
+        return
+
+    typed_entries: list[dict[str, Any]] = []
+    for index, entry in enumerate(entries):
+        label = f"source profile {profile_id} conditional_context[{index}]"
+        if not isinstance(entry, dict):
+            failures.append(f"{label} must be a typed object")
+            continue
+        if not SOURCE_CONDITIONAL_REQUIRED_FIELDS <= set(entry):
+            failures.append(f"{label} is missing required typed fields")
+            continue
+        if not set(entry) <= SOURCE_CONDITIONAL_FIELDS:
+            failures.append(f"{label} has unknown fields")
+            continue
+        if not all(
+            isinstance(entry[field], str) and entry[field]
+            for field in SOURCE_CONDITIONAL_REQUIRED_FIELDS
+        ):
+            failures.append(f"{label} typed fields must be non-empty strings")
+            continue
+        conditional_id = entry["id"]
+        if not SOURCE_CONDITIONAL_ID.fullmatch(conditional_id):
+            failures.append(f"{label} has invalid stable ID {conditional_id}")
+        elif conditional_id in known_ids:
+            failures.append(f"duplicate source conditional ID {conditional_id}")
+        else:
+            known_ids.add(conditional_id)
+        resolver = entry["resolver"]
+        query = entry["path_or_registry_query"]
+        if resolver not in SOURCE_CONDITIONAL_RESOLVERS:
+            failures.append(f"{label} has unsupported resolver {resolver}")
+            continue
+        owner_rule_id = entry.get("owner_rule_id")
+        if owner_rule_id is not None and (
+            not isinstance(owner_rule_id, str)
+            or SOURCE_OWNER_RULE_ID.fullmatch(owner_rule_id) is None
+        ):
+            failures.append(f"{label} has invalid owner_rule_id")
+
+        if resolver == "selector-paths":
+            if re.fullmatch(r"[a-z][a-z0-9_]*", query) is None:
+                failures.append(f"{label} has invalid selector-paths query")
+        elif resolver == "exact-path":
+            if not valid_manifest_path(query) or not (ROOT / query).is_file():
+                failures.append(f"{label} exact path is not resolvable: {query}")
+        elif resolver == "path-pattern":
+            if not valid_manifest_path(query) or _first_matching_path(query) is None:
+                failures.append(f"{label} path pattern is not resolvable: {query}")
+        else:
+            parsed = parse_source_indexed_query(query)
+            if parsed is None:
+                failures.append(f"{label} indexed query is invalid: {query}")
+            elif not valid_manifest_path(parsed[0]) or not (ROOT / parsed[0]).is_file():
+                failures.append(f"{label} indexed path is not resolvable: {parsed[0]}")
+        typed_entries.append(entry)
+
+    if len(typed_entries) != len(entries):
+        return
+
+    for entry in typed_entries:
+        selectors = _fixture_selectors([entry])
+        try:
+            selected, omitted = resolve_source_conditionals([entry], selectors)
+            empty_selected, empty_omitted = resolve_source_conditionals([entry], {})
+        except ValueError as exc:
+            failures.append(f"source conditional fixture {entry['id']} failed: {exc}")
+            continue
+        if [item["id"] for item in selected] != [entry["id"]] or omitted:
+            failures.append(
+                f"source conditional {entry['id']} has no selected fixture evidence"
+            )
+        if empty_selected or [item["id"] for item in empty_omitted] != [entry["id"]]:
+            failures.append(
+                f"source conditional {entry['id']} has no omitted fixture evidence"
+            )
+        if entry.get("owner_rule_id") and (
+            not empty_omitted
+            or empty_omitted[0].get("fallback")
+            != "load-canonical-owner-before-action"
+        ):
+            failures.append(
+                f"source conditional {entry['id']} loses fail-closed owner fallback"
+            )
+
+    try:
+        packet = build_source_profile_context(
+            profile_id,
+            selector_values=_fixture_selectors(typed_entries),
+        )
+    except ValueError as exc:
+        failures.append(f"source profile {profile_id} fixture route failed: {exc}")
+        return
+    selected_ids = {item["id"] for item in packet["selected_conditionals"]}
+    expected_ids = {item["id"] for item in typed_entries}
+    if selected_ids != expected_ids or packet["omitted_candidates"]:
+        failures.append(
+            f"source profile {profile_id} combined fixture does not select every conditional"
+        )
+    budget_evidence = packet.get("context_budget", {})
+    if budget_evidence.get("reserved_capacity_preserved") is not True:
+        failures.append(
+            f"source profile {profile_id} combined fixture exceeds resolved budget reserve"
+        )
+    planned = budget_evidence.get("planned", {})
+    resolved = budget_evidence.get("resolved", {})
+    measured = measure_source_context(planned.get("paths", []))
+    if (
+        planned.get("files") != measured["planned_files"]
+        or resolved.get("files") != measured["resolved_files"]
+        or resolved.get("words") != measured["resolved_words"]
+        or resolved.get("characters") != measured["resolved_characters"]
+        or resolved.get("unresolved_paths") != measured["unresolved_paths"]
+    ):
+        failures.append(
+            f"source profile {profile_id} planned/resolved budget evidence is inaccurate"
+        )
 
 
 def validate_router_paths(router: dict[str, Any], label: str) -> list[str]:
@@ -282,25 +489,42 @@ def validate_source_profile_budget(
     ):
         failures.append(f"source profile {profile_id} has invalid required context")
         return
-    if not isinstance(budget, dict) or set(budget) != SOURCE_PROFILE_BUDGET_FIELDS:
+    if not isinstance(budget, dict) or set(budget) != SOURCE_CONTEXT_BUDGET_FIELDS:
         failures.append(f"source profile {profile_id} has invalid context budget")
         return
     if not all(
         isinstance(budget[field], int)
         and not isinstance(budget[field], bool)
         and budget[field] >= 0
-        for field in SOURCE_PROFILE_BUDGET_FIELDS
+        for field in SOURCE_CONTEXT_BUDGET_FIELDS
     ):
         failures.append(f"source profile {profile_id} context budget must use integers")
         return
+    for dimension in ["files", "words", "characters"]:
+        maximum = budget[f"max_resolved_{dimension}"]
+        reserved = budget[f"reserved_{dimension}"]
+        if maximum <= 0 or reserved <= 0 or reserved >= maximum:
+            failures.append(
+                f"source profile {profile_id} has invalid resolved {dimension} reserve"
+            )
     required_words = word_count(required)
-    initial_words = word_count([*source_bootstrap, *required])
+    initial = measure_source_context([*source_bootstrap, *required])
+    initial_words = initial["resolved_words"]
     if len(required) > budget["max_required_files"]:
         failures.append(f"source profile {profile_id} exceeds required-file budget")
     if required_words > budget["max_required_words"]:
         failures.append(f"source profile {profile_id} exceeds required-word budget")
     if initial_words > budget["max_initial_words"]:
         failures.append(f"source profile {profile_id} exceeds initial-word budget")
+    for dimension in ["files", "words", "characters"]:
+        if (
+            initial[f"resolved_{dimension}"]
+            > budget[f"max_resolved_{dimension}"] - budget[f"reserved_{dimension}"]
+        ):
+            failures.append(
+                f"source profile {profile_id} initial context consumes its resolved "
+                f"{dimension} reserve"
+            )
 
 
 def main() -> int:
@@ -326,9 +550,13 @@ def main() -> int:
         manifest = load_manifest()
         manifest_by_id = {check["id"]: check for check in manifest}
         manifest_ids = set(manifest_by_id)
+        conditional_ids: set[str] = set()
         for profile_id, profile in profiles.items():
             validate_source_profile_budget(
                 profile_id, profile, source_bootstrap, failures
+            )
+            validate_source_conditionals(
+                profile_id, profile, conditional_ids, failures
             )
             checks = profile.get("checks")
             if not isinstance(checks, list) or not checks:

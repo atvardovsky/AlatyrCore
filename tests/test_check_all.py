@@ -1256,7 +1256,16 @@ class CheckGraphTests(unittest.TestCase):
 
     def test_live_manifest_declares_complete_trigger_inputs(self) -> None:
         for item in load_manifest():
-            declared = set(item["contract_inputs"] + item["implementation_paths"])
+            trigger_implementation = (
+                item["implementation_paths"]
+                if item["dependency_trigger_mode"] == "transitive"
+                else [item["command"][0]]
+            )
+            declared = set(
+                item["contract_inputs"]
+                + trigger_implementation
+                + item["observed_inputs"]
+            )
             self.assertTrue(declared <= set(item["trigger_paths"]), item["id"])
 
     def test_report_order_follows_selected_manifest_order(self) -> None:

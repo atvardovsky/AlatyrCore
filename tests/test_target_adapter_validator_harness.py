@@ -4,7 +4,6 @@ import contextlib
 import hashlib
 import io
 import json
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -73,21 +72,32 @@ class TargetAdapterValidatorHarnessTests(unittest.TestCase):
         )
         self.assertEqual(failures, ["recorded failure"])
 
-    def test_aggregate_cli_preserves_success_contract(self) -> None:
-        result = subprocess.run(
-            [sys.executable, str(ROOT / "tools/check_target_adapter_validator.py")],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+    def test_aggregate_main_preserves_success_contract(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
 
-        self.assertEqual(result.returncode, 0, result.stderr)
+        with contextlib.ExitStack() as stack:
+            check_core_contracts = stack.enter_context(
+                patch.object(harness, "check_core_contracts")
+            )
+            run_scenarios = stack.enter_context(
+                patch.object(harness, "run_scenarios")
+            )
+            stack.enter_context(contextlib.redirect_stdout(stdout))
+            stack.enter_context(contextlib.redirect_stderr(stderr))
+            result = harness.main()
+
+        self.assertEqual(result, 0)
+        check_core_contracts.assert_called_once_with([])
+        run_scenarios.assert_called_once()
+        scenario_target, failures = run_scenarios.call_args.args
+        self.assertIsInstance(scenario_target, Path)
+        self.assertEqual(failures, [])
         self.assertEqual(
-            result.stdout,
+            stdout.getvalue(),
             "OK: checked target adapter validator routing, scope, and evidence contracts\n",
         )
-        self.assertEqual(result.stderr, "")
+        self.assertEqual(stderr.getvalue(), "")
 
     def test_aggregate_main_preserves_failure_contract(self) -> None:
         stdout = io.StringIO()

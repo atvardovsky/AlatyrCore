@@ -42,6 +42,15 @@ def parser() -> argparse.ArgumentParser:
         help="Write the machine-readable check_all.py report to this path.",
     )
     argument_parser.add_argument(
+        "--cache-mode",
+        choices=("off", "timing", "local"),
+        default="local",
+        help=(
+            "Git-local source-check reuse mode. Focused development defaults to "
+            "content-addressed local reuse; full and release validation remain cold."
+        ),
+    )
+    argument_parser.add_argument(
         "--list",
         action="store_true",
         help="List the selected focused check commands without running them.",
@@ -58,6 +67,8 @@ def check_all_command(args: argparse.Namespace) -> tuple[str, list[str]]:
         "fast",
         "--changed-from",
         changed_from,
+        "--cache-mode",
+        args.cache_mode,
     ]
     if args.from_ref:
         command.extend(["--from-ref", args.from_ref])
@@ -79,7 +90,8 @@ def main(argv: list[str] | None = None) -> int:
     changed_from, command = check_all_command(args)
     print(
         "INFO: running focused source checks with "
-        f"`tools/check_all.py --profile fast --changed-from {changed_from}`",
+        "`tools/check_all.py --profile fast "
+        f"--changed-from {changed_from} --cache-mode {args.cache_mode}`",
         flush=True,
     )
     result = subprocess.run(command, cwd=ROOT, check=False)

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shlex
 import subprocess
 import sys
@@ -42,6 +43,33 @@ SOURCE_ROUTER = ROOT / "tools" / "source_context_router.json"
 SOURCE_WORKER_POLICY = ROOT / "tools" / "source_worker_policy.json"
 RUNTIME_CAPABILITY_STATES = ["unknown", "available", "unavailable"]
 DELEGATION_DECISIONS = ["kept-local"]
+SOURCE_CONDITIONAL_RESOLVERS = {
+    "exact-path",
+    "indexed-query",
+    "path-pattern",
+    "selector-paths",
+}
+SOURCE_CONDITIONAL_REQUIRED_FIELDS = {
+    "id",
+    "resolver",
+    "path_or_registry_query",
+    "when",
+}
+SOURCE_CONTEXT_BUDGET_FIELDS = {
+    "max_initial_words",
+    "max_required_files",
+    "max_required_words",
+    "max_resolved_characters",
+    "max_resolved_files",
+    "max_resolved_words",
+    "reserved_characters",
+    "reserved_files",
+    "reserved_words",
+}
+_INDEXED_QUERY = re.compile(
+    r"^(?P<path>[^#]+)#selector=(?P<selector>[a-z][a-z0-9_]*)$"
+)
+_SELECTOR_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 
 
 def _load_source_router() -> dict[str, Any]:
@@ -55,37 +83,266 @@ def _load_source_worker_policy() -> dict[str, Any]:
     return load_source_worker_policy(SOURCE_WORKER_POLICY, root=ROOT)
 
 
+def _unique_strings(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return list(
+        dict.fromkeys(item for item in value if isinstance(item, str) and item)
+    )
+
+
+def measure_source_context(paths: list[str], *, root: Path = ROOT) -> dict[str, Any]:
+    planned_paths = list(dict.fromkeys(paths))
+    resolved_paths: list[str] = []
+    unresolved_paths: list[str] = []
+    words = 0
+    characters = 0
+    for relpath in planned_paths:
+        path = root / relpath
+        if not path.is_file():
+            unresolved_paths.append(relpath)
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            unresolved_paths.append(relpath)
+            continue
+        resolved_paths.append(relpath)
+        words += len(re.findall(r"\S+", text))
+        characters += len(text)
+    return {
+        "planned_files": len(planned_paths),
+        "resolved_files": len(resolved_paths),
+        "resolved_words": words,
+        "resolved_characters": characters,
+        "resolved_paths": resolved_paths,
+        "unresolved_paths": unresolved_paths,
+    }
+
+
+def parse_source_indexed_query(value: str) -> tuple[str, str] | None:
+    match = _INDEXED_QUERY.fullmatch(value)
+    if match is None:
+        return None
+    return match.group("path"), match.group("selector")
+
+
+def _canonical_owner_paths(
+    owner_rule_id: str,
+    selector_values: list[str],
+    *,
+    root: Path,
+) -> tuple[list[str], list[str]]:
+    rule_ids = selector_values if owner_rule_id.startswith("$") else [owner_rule_id]
+    try:
+        registry = json.loads(
+            (root / "framework" / "rule-registry.json").read_text(encoding="utf-8")
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return [], rule_ids
+    rules = registry.get("rules") if isinstance(registry, dict) else None
+    if not isinstance(rules, list):
+        return [], rule_ids
+    owners = {
+        rule.get("id"): rule.get("canonical_source")
+        for rule in rules
+        if isinstance(rule, dict)
+        and isinstance(rule.get("id"), str)
+        and isinstance(rule.get("canonical_source"), str)
+    }
+    paths: list[str] = []
+    unresolved: list[str] = []
+    for rule_id in rule_ids:
+        owner = owners.get(rule_id)
+        if not isinstance(owner, str) or not (root / owner).is_file():
+            unresolved.append(rule_id)
+        elif owner not in paths:
+            paths.append(owner)
+    return paths, unresolved
+
+
+def resolve_source_conditionals(
+    entries: Any,
+    selectors: dict[str, Any],
+    *,
+    root: Path = ROOT,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Resolve only source-route selectors backed by concrete current evidence."""
+
+    if not isinstance(entries, list):
+        raise ValueError("source conditional_context must be a list")
+    selected: list[dict[str, Any]] = []
+    omitted: list[dict[str, Any]] = []
+    requested_paths = _unique_strings(selectors.get("requested_paths"))
+    changed_paths = _unique_strings(selectors.get("changed_paths"))
+    selectable_paths = list(dict.fromkeys([*changed_paths, *requested_paths]))
+
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise ValueError(f"source conditional_context[{index}] must be an object")
+        missing = SOURCE_CONDITIONAL_REQUIRED_FIELDS - set(entry)
+        if missing:
+            raise ValueError(
+                f"source conditional_context[{index}] misses fields {sorted(missing)}"
+            )
+        conditional_id = entry["id"]
+        resolver = entry["resolver"]
+        query = entry["path_or_registry_query"]
+        if not all(
+            isinstance(value, str) and value
+            for value in [conditional_id, resolver, query, entry["when"]]
+        ):
+            raise ValueError(
+                f"source conditional_context[{index}] fields must be non-empty strings"
+            )
+        if resolver not in SOURCE_CONDITIONAL_RESOLVERS:
+            raise ValueError(
+                f"source conditional_context[{index}] has unknown resolver {resolver}"
+            )
+
+        selector_values: list[str] = []
+        candidate_paths: list[str] = []
+        reason = "selector evidence is unavailable"
+        if resolver == "selector-paths":
+            if not _SELECTOR_NAME.fullmatch(query):
+                raise ValueError(f"invalid selector-paths query: {query}")
+            selector_values = _unique_strings(selectors.get(query))
+            candidate_paths = selector_values
+            reason = f"selector {query} has no paths"
+        elif resolver == "exact-path":
+            if query in selectable_paths:
+                selector_values = [query]
+                candidate_paths = [query]
+            reason = "exact path was not requested or changed"
+        elif resolver == "path-pattern":
+            candidate_paths = [
+                path for path in selectable_paths if _matches_any(path, [query])
+            ]
+            selector_values = candidate_paths
+            reason = "no changed or requested path matched the pattern"
+        else:
+            indexed = parse_source_indexed_query(query)
+            if indexed is None:
+                raise ValueError(f"invalid indexed query: {query}")
+            index_path, selector_name = indexed
+            selector_values = _unique_strings(selectors.get(selector_name))
+            if selector_values:
+                candidate_paths = [index_path]
+            reason = f"selector {selector_name} has no values"
+
+        measurement = measure_source_context(candidate_paths, root=root)
+        evidence = {
+            "id": conditional_id,
+            "resolver": resolver,
+            "path_or_registry_query": query,
+            "when": entry["when"],
+            "selector_values": selector_values,
+            "resolved_paths": measurement["resolved_paths"],
+        }
+        owner_rule_id = entry.get("owner_rule_id")
+        if owner_rule_id is not None:
+            evidence["owner_rule_id"] = owner_rule_id
+        unresolved_owner_rule_ids: list[str] = []
+        if (
+            candidate_paths
+            and isinstance(owner_rule_id, str)
+            and owner_rule_id
+        ):
+            owner_paths, unresolved_owner_rule_ids = _canonical_owner_paths(
+                owner_rule_id,
+                selector_values,
+                root=root,
+            )
+            candidate_paths = list(dict.fromkeys([*candidate_paths, *owner_paths]))
+            measurement = measure_source_context(candidate_paths, root=root)
+            evidence["resolved_paths"] = measurement["resolved_paths"]
+            evidence["resolved_owner_paths"] = owner_paths
+
+        if (
+            candidate_paths
+            and not measurement["unresolved_paths"]
+            and not unresolved_owner_rule_ids
+        ):
+            evidence["status"] = "selected"
+            evidence["reason"] = "current selector evidence matched"
+            selected.append(evidence)
+            continue
+
+        evidence["status"] = "omitted"
+        if measurement["unresolved_paths"]:
+            evidence["reason"] = "selected paths are unavailable or unreadable"
+            evidence["unresolved_paths"] = measurement["unresolved_paths"]
+        else:
+            evidence["reason"] = reason
+        if unresolved_owner_rule_ids:
+            evidence["reason"] = "canonical owner could not be resolved"
+            evidence["unresolved_owner_rule_ids"] = unresolved_owner_rule_ids
+        evidence["fallback"] = (
+            "load-canonical-owner-before-action"
+            if isinstance(owner_rule_id, str) and owner_rule_id
+            else "none"
+        )
+        omitted.append(evidence)
+    return selected, omitted
+
+
 def _load_source_tooling_context() -> dict[str, Any]:
-    return _load_source_profile_context("source-tooling")
+    return build_source_profile_context("source-tooling")
 
 
-def _load_source_profile_context(
+def build_source_profile_context(
     source_profile: str,
     *,
     changed_paths: list[str] | None = None,
     selection_details: dict[str, dict[str, Any]] | None = None,
+    selector_values: dict[str, list[str]] | None = None,
 ) -> dict[str, Any]:
     router = _load_source_router()
     profiles = router.get("profiles", {})
     profile = profiles.get(source_profile)
     if not isinstance(profile, dict):
         raise ValueError(f"unknown source profile: {source_profile}")
-    required = [*router.get("preloaded_context", []), *router.get("bootstrap_context", []), *profile.get("required_context", [])]
+    required = [
+        *router.get("preloaded_context", []),
+        *router.get("bootstrap_context", []),
+        *profile.get("required_context", []),
+    ]
     required_context = profile.get("required_context", [])
-    required_words = sum(
-        len((ROOT / path).read_text(encoding="utf-8").split())
-        for path in required_context
-        if (ROOT / path).is_file()
-    )
-    initial_words = sum(
-        len((ROOT / path).read_text(encoding="utf-8").split())
-        for path in dict.fromkeys(required)
-        if (ROOT / path).is_file()
-    )
+    required_measurement = measure_source_context(required_context)
+    initial_measurement = measure_source_context(required)
     selectors = {
         "changed_paths": sorted(changed_paths or []),
         "check_ids": sorted((selection_details or {}).keys()),
+        **(selector_values or {}),
     }
+    selected_conditionals, omitted_conditionals = resolve_source_conditionals(
+        profile.get("conditional_context", []), selectors
+    )
+    conditional_paths = [
+        path
+        for item in selected_conditionals
+        for path in item.get("resolved_paths", [])
+    ]
+    planned_measurement = measure_source_context([*required, *conditional_paths])
+    budget = profile.get("context_budget", {})
+    reserved_capacity = {
+        "files": budget.get("reserved_files"),
+        "words": budget.get("reserved_words"),
+        "characters": budget.get("reserved_characters"),
+    }
+    remaining_capacity = {
+        "files": budget.get("max_resolved_files", 0)
+        - planned_measurement["resolved_files"],
+        "words": budget.get("max_resolved_words", 0)
+        - planned_measurement["resolved_words"],
+        "characters": budget.get("max_resolved_characters", 0)
+        - planned_measurement["resolved_characters"],
+    }
+    reserved_capacity_preserved = all(
+        isinstance(reserved_capacity[key], int)
+        and remaining_capacity[key] >= reserved_capacity[key]
+        for key in reserved_capacity
+    )
     return {
         "source_profile": source_profile,
         "preloaded_context": router.get("preloaded_context", []),
@@ -95,18 +352,52 @@ def _load_source_profile_context(
         "selected_items": [
             {"path": path, "reason": ["source-profile:" + source_profile]}
             for path in dict.fromkeys(required)
+        ]
+        + [
+            {
+                "path": path,
+                "reason": ["source-conditional:" + item["id"]],
+                "conditional_id": item["id"],
+            }
+            for item in selected_conditionals
+            for path in item["resolved_paths"]
+            if path not in required
         ],
         "selectors": selectors,
-        "omitted_candidates": profile.get("conditional_context", []),
+        "selected_conditionals": selected_conditionals,
+        "omitted_candidates": omitted_conditionals,
+        "owner_fallbacks": [
+            {
+                "conditional_id": item["id"],
+                "owner_rule_id": item["owner_rule_id"],
+                "action": item["fallback"],
+            }
+            for item in omitted_conditionals
+            if item.get("fallback") == "load-canonical-owner-before-action"
+        ],
         "unresolved_selector_behavior": "load the canonical owner and report the routing gap",
         "expansion_triggers": router.get("task_classification", {}).get(
             "expansion_triggers", []
         ),
         "context_budget": {
-            **profile.get("context_budget", {}),
+            **budget,
             "planned_required_files": len(required_context),
-            "planned_required_words": required_words,
-            "planned_initial_words": initial_words,
+            "planned_required_words": required_measurement["resolved_words"],
+            "planned_initial_words": initial_measurement["resolved_words"],
+            "planned": {
+                "files": planned_measurement["planned_files"],
+                "paths": list(dict.fromkeys([*required, *conditional_paths])),
+            },
+            "resolved": {
+                "files": planned_measurement["resolved_files"],
+                "words": planned_measurement["resolved_words"],
+                "characters": planned_measurement["resolved_characters"],
+                "paths": planned_measurement["resolved_paths"],
+                "unresolved_paths": planned_measurement["unresolved_paths"],
+            },
+            "remaining_capacity": remaining_capacity,
+            "reserved_capacity": reserved_capacity,
+            "reserved_capacity_preserved": reserved_capacity_preserved,
         },
     }
 
@@ -694,13 +985,13 @@ def build_plan(
         "changed_paths": plan.changed_paths,
         "selection": selection,
         "context_packet": (
-            _load_source_profile_context(
+            build_source_profile_context(
                 "source-tooling",
                 changed_paths=plan.changed_paths,
                 selection_details=plan.selection_details,
             )
             if source_profile is None
-            else _load_source_profile_context(
+            else build_source_profile_context(
                 source_profile,
                 changed_paths=plan.changed_paths,
                 selection_details=plan.selection_details,

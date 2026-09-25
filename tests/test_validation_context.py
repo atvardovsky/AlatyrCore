@@ -18,7 +18,7 @@ from target_adapter_validation.context import (  # noqa: E402
     ValidationContext,
 )
 from validate_target_adapter import AdapterValidatorConfig, Validator  # noqa: E402
-from target_validation_support import GitEvidenceView  # noqa: E402
+from target_validation_support import GitEvidenceState, GitEvidenceView  # noqa: E402
 import validate_target_adapter  # noqa: E402
 
 
@@ -90,11 +90,121 @@ class ValidationContextTests(unittest.TestCase):
             self.assertEqual(first, second)
             self.assertEqual(evidence.telemetry()["query_misses"], 1)
             self.assertEqual(evidence.telemetry()["cache_hits"], 1)
-            self.assertTrue(evidence.finalize())
-
             tracked.write_text("after\n", encoding="utf-8")
 
             self.assertFalse(evidence.finalize())
+            self.assertEqual(evidence.telemetry()["stability"], "mutated")
+
+    def test_git_evidence_uses_one_snapshot_per_observation_and_reuses_telemetry(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            tracked = target / "tracked.txt"
+            tracked.write_text("stable\n", encoding="utf-8")
+            subprocess.run(["git", "add", "tracked.txt"], cwd=target, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=Alatyr Tests",
+                    "-c",
+                    "user.email=tests@example.invalid",
+                    "commit",
+                    "-qm",
+                    "Create fixture",
+                ],
+                cwd=target,
+                check=True,
+            )
+            evidence = GitEvidenceView(target)
+
+            with patch.object(
+                evidence,
+                "_repository_snapshot",
+                wraps=evidence._repository_snapshot,
+            ) as snapshot:
+                self.assertTrue(evidence.finalize())
+                self.assertEqual(evidence.telemetry()["stability"], "stable")
+
+            self.assertEqual(snapshot.call_count, 1)
+
+            tracked.write_text("mutated\n", encoding="utf-8")
+            self.assertFalse(evidence.finalize())
+
+    def test_git_evidence_preserves_normal_detached_unborn_and_non_repo_states(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            tracked = target / "tracked.txt"
+            tracked.write_text("stable\n", encoding="utf-8")
+            subprocess.run(["git", "add", "tracked.txt"], cwd=target, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=Alatyr Tests",
+                    "-c",
+                    "user.email=tests@example.invalid",
+                    "commit",
+                    "-qm",
+                    "Create fixture",
+                ],
+                cwd=target,
+                check=True,
+            )
+
+            normal = GitEvidenceView(target)
+            self.assertIs(normal.initial_state, GitEvidenceState.STABLE)
+            self.assertIsNotNone(normal.head_revision())
+            self.assertNotEqual(normal.branch_name(), "detached HEAD")
+            self.assertTrue(normal.finalize())
+
+            head_change = GitEvidenceView(target)
+            tracked.write_text("next revision\n", encoding="utf-8")
+            subprocess.run(["git", "add", "tracked.txt"], cwd=target, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=Alatyr Tests",
+                    "-c",
+                    "user.email=tests@example.invalid",
+                    "commit",
+                    "-qm",
+                    "Advance fixture",
+                ],
+                cwd=target,
+                check=True,
+            )
+            self.assertFalse(head_change.finalize())
+
+            branch_change = GitEvidenceView(target)
+            subprocess.run(
+                ["git", "switch", "-q", "-c", "alternate"], cwd=target, check=True
+            )
+            self.assertFalse(branch_change.finalize())
+
+            subprocess.run(["git", "checkout", "--detach", "-q"], cwd=target, check=True)
+            detached = GitEvidenceView(target)
+            self.assertIs(detached.initial_state, GitEvidenceState.STABLE)
+            self.assertEqual(detached.branch_name(), "detached HEAD")
+            self.assertTrue(detached.finalize())
+
+        with tempfile.TemporaryDirectory() as directory:
+            unborn_target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=unborn_target, check=True)
+            unborn = GitEvidenceView(unborn_target)
+            self.assertIs(unborn.initial_state, GitEvidenceState.UNAVAILABLE)
+            self.assertIsNone(unborn.head_revision())
+            self.assertIsNotNone(unborn.branch_name())
+            self.assertFalse(unborn.finalize())
+
+        with tempfile.TemporaryDirectory() as directory:
+            unavailable = GitEvidenceView(Path(directory))
+            self.assertIs(unavailable.initial_state, GitEvidenceState.UNAVAILABLE)
+            self.assertIsNone(unavailable.head_revision())
+            self.assertIsNone(unavailable.branch_name())
+            self.assertFalse(unavailable.finalize())
 
     def test_validator_records_sequential_phase_telemetry(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

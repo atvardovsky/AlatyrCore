@@ -17,6 +17,7 @@ from source_check_manifest import (  # noqa: E402
     declared_implementation_path,
     load_manifest,
     micro_routes,
+    routes,
     transitive_local_tool_dependencies,
     valid_manifest_path,
 )
@@ -24,6 +25,50 @@ from local_python_import_graph import LocalPythonImportGraph  # noqa: E402
 
 
 class SourceCheckManifestTests(unittest.TestCase):
+    def test_dependency_trigger_modes_bound_import_fanout(self) -> None:
+        base = {
+            "command": ["tools/check_assistant_capability_contract.py"],
+            "trigger_paths": [],
+        }
+
+        self.assertTrue(
+            routes(
+                {**base, "dependency_trigger_mode": "direct"},
+                "tools/target_adapter_validation/assistant_capabilities.py",
+            )
+        )
+        self.assertFalse(
+            routes(
+                {**base, "dependency_trigger_mode": "direct"},
+                "tools/target_adapter_validation/debug_mode.py",
+            )
+        )
+        self.assertFalse(
+            routes(
+                {**base, "dependency_trigger_mode": "none"},
+                "tools/target_adapter_validation/assistant_capabilities.py",
+            )
+        )
+
+    def test_target_validator_leaf_routes_to_its_focused_owner(self) -> None:
+        checks = load_manifest()
+        selected = {
+            check["id"]
+            for check in checks
+            if routes(
+                check,
+                "tools/target_adapter_validation/project_support_documentation.py",
+            )
+        }
+
+        self.assertIn("source-of-truth-registry", selected)
+        self.assertIn("target-adapter-validator", selected)
+        self.assertIn("target-validator-findings", selected)
+        self.assertNotIn("debug-mode", selected)
+        self.assertNotIn("engineering-evidence", selected)
+        self.assertNotIn("team-collaboration-scenarios", selected)
+        self.assertNotIn("conformance-scaffold", selected)
+
     def test_load_manifest_rejects_non_object_root(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             manifest = Path(directory) / "manifest.json"

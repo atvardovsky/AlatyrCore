@@ -28,6 +28,7 @@ class CheckSourceFocusedTests(unittest.TestCase):
             from_ref="v0.1.0",
             jobs=2,
             report=Path("tmp/focused.json"),
+            cache_mode="local",
             list=True,
         )
 
@@ -43,6 +44,8 @@ class CheckSourceFocusedTests(unittest.TestCase):
                 "fast",
                 "--changed-from",
                 "main",
+                "--cache-mode",
+                "local",
                 "--from-ref",
                 "v0.1.0",
                 "--jobs",
@@ -52,6 +55,11 @@ class CheckSourceFocusedTests(unittest.TestCase):
                 "--list",
             ],
         )
+
+    def test_parser_defaults_to_content_addressed_local_reuse(self) -> None:
+        args = run_focused_source_checks.parser().parse_args([])
+
+        self.assertEqual(args.cache_mode, "local")
 
 
 if __name__ == "__main__":

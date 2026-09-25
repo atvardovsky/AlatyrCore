@@ -15,7 +15,12 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from check_all import SelectionResult  # noqa: E402
 import plan_minimum_work  # noqa: E402
-from plan_minimum_work import build_plan, render_summary  # noqa: E402
+from plan_minimum_work import (  # noqa: E402
+    build_plan,
+    build_source_profile_context,
+    render_summary,
+    resolve_source_conditionals,
+)
 from source_state import SourceEntry  # noqa: E402
 
 
@@ -213,10 +218,78 @@ class MinimumWorkPlanTests(unittest.TestCase):
             ["docs/human/faq.md"],
         )
         self.assertEqual(plan["context_packet"]["selectors"]["check_ids"], ["docs"])
-        self.assertTrue(plan["context_packet"]["omitted_candidates"])
+        self.assertEqual(
+            [item["id"] for item in plan["context_packet"]["selected_conditionals"]],
+            ["docs-edited-path"],
+        )
+        self.assertEqual(
+            {item["id"] for item in plan["context_packet"]["omitted_candidates"]},
+            {
+                "docs-root-readme",
+                "docs-linked-neighbor",
+                "docs-maintenance-section",
+            },
+        )
+        budget = plan["context_packet"]["context_budget"]
+        self.assertTrue(budget["reserved_capacity_preserved"])
+        self.assertEqual(budget["planned"]["files"], len(budget["planned"]["paths"]))
+        self.assertEqual(budget["resolved"]["unresolved_paths"], [])
+        for dimension in ["files", "words", "characters"]:
+            self.assertGreaterEqual(
+                budget["remaining_capacity"][dimension],
+                budget["reserved_capacity"][dimension],
+            )
         self.assertIn("logical integrity review", plan["quality_boundary"])
         self.assertEqual(plan["reuse"]["reusable_check_count"], 0)
         self.assertIn("--profile fast", render_summary(plan))
+
+    def test_unavailable_rule_selectors_remain_omitted_with_owner_fallback(self) -> None:
+        packet = build_source_profile_context("framework-rule")
+
+        self.assertEqual(packet["selected_conditionals"], [])
+        omitted = {item["id"]: item for item in packet["omitted_candidates"]}
+        for conditional_id in [
+            "framework-canonical-owner",
+            "framework-dependency-owner",
+        ]:
+            self.assertEqual(
+                omitted[conditional_id]["fallback"],
+                "load-canonical-owner-before-action",
+            )
+            self.assertEqual(omitted[conditional_id]["selector_values"], [])
+        self.assertEqual(
+            {item["conditional_id"] for item in packet["owner_fallbacks"]},
+            {
+                "framework-canonical-owner",
+                "framework-dependency-owner",
+            },
+        )
+
+    def test_exact_rule_selector_resolves_only_supported_index_routes(self) -> None:
+        packet = build_source_profile_context(
+            "framework-rule",
+            selector_values={"rule_ids": ["ALATYR-CONTEXT-001"]},
+        )
+
+        self.assertEqual(
+            {item["id"] for item in packet["selected_conditionals"]},
+            {"framework-rule-registry-entry", "framework-canonical-owner"},
+        )
+        self.assertEqual(
+            {item["id"] for item in packet["omitted_candidates"]},
+            {
+                "framework-dependency-owner",
+                "framework-installer-surface",
+                "framework-target-template-surface",
+            },
+        )
+        resolved_paths = packet["context_budget"]["resolved"]["paths"]
+        self.assertIn("framework/context-profiles.md", resolved_paths)
+        self.assertNotIn("framework/lifecycle.md", resolved_paths)
+
+    def test_conditional_resolver_rejects_untyped_prose(self) -> None:
+        with self.assertRaisesRegex(ValueError, "must be an object"):
+            resolve_source_conditionals(["canonical owner"], {})
 
     def test_explicit_repository_audit_overrides_clean_tree_auto_profile(self) -> None:
         selection = SelectionResult(

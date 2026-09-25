@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from bisect import bisect_left
 from pathlib import Path
 from typing import Any
 
@@ -36,6 +37,7 @@ class SourceSnapshotIndex:
     def __init__(self, snapshot: dict[str, SourceEntry]) -> None:
         self._entries = tuple(sorted(snapshot.items()))
         self._by_path = dict(self._entries)
+        self._paths = tuple(relpath for relpath, _entry in self._entries)
         self._pattern_matches: dict[str, tuple[str, ...]] = {}
         self.sha256 = canonical_digest(
             {
@@ -60,9 +62,21 @@ class SourceSnapshotIndex:
             matched = (pattern,) if pattern in self._by_path else ()
         else:
             spec = PathSpec(pattern, PathDialect.SOURCE_HOST_V1)
+            wildcard = min(
+                index
+                for character in "*?["
+                if (index := pattern.find(character)) >= 0
+            )
+            prefix = pattern[:wildcard]
+            start = bisect_left(self._paths, prefix) if prefix else 0
+            end = (
+                bisect_left(self._paths, prefix + "\U0010ffff")
+                if prefix
+                else len(self._paths)
+            )
             matched = tuple(
                 relpath
-                for relpath, _entry in self._entries
+                for relpath in self._paths[start:end]
                 if spec.matches(relpath)
             )
         self._pattern_matches[pattern] = matched
