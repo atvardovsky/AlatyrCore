@@ -436,7 +436,9 @@ templates only when the target needs coherent material-change evidence,
 semantic multi-surface approval, architecture segment/capability evidence,
 audit, pilot, or publishable provenance. Define record ownership, retention,
 redaction, Git/PR evidence policy, and target validator use. Start with an
-empty index and do not infer historical packages.
+empty index and do not infer historical packages. Include the bounded
+index-shard template, initialize root `shards` empty, and define the
+path/SHA-256/count binding used when the compact root exceeds its target budget.
 
 Include `.ai/.gitignore`, `.ai/project/team-policy.json`, its human operating
 model, active-work index, registry metadata, per-task and backend contracts,

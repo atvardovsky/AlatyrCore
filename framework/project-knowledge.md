@@ -111,6 +111,16 @@ accepted automatically. The source helper `tools/suggest_project_knowledge.py`
 provides this bounded suggestion route when AlatyrCore source tools are
 available.
 
+The helper combines project area and canonical owner instead of emitting an
+independent broad candidate for each signal. It verifies candidate-supporting
+compact entries against their package records, retains only bounded evidence
+samples, and derives a deterministic candidate snapshot ID from the selectors
+and evidence summary. An unchanged snapshot already referenced by a promotion
+record is suppressed; new package evidence produces a new snapshot for review.
+The report binds the package and knowledge indexes by SHA-256 so an external
+cache may detect unchanged inputs, but the helper does not trust cached
+candidate content or auto-promote it.
+
 Each proposal or directive should identify:
 
 - the candidate statement and reuse rationale

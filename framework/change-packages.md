@@ -209,12 +209,30 @@ owners, project areas, provenance, approval references, active workstream, and
 residual risk. Load plan details, discussion evidence, companion decisions,
 corrections, or validation logs only when the active task needs them.
 
+Treat the compact entry as a derived projection of its named package record.
+Its package ID and status must match the record; changed-fact IDs and canonical
+owners derive from `changed_facts`; project areas derive from `routing`;
+evidence quality derives from `provenance`; approval references derive from
+`approved_scope`; and active workstream derives from `operation`. Full adapter
+validation checks every projection. Changed-scope validation checks the index
+when it changed and otherwise checks only changed package records, so routine
+product work does not reopen historical package evidence.
+
 When completed package records make a directory or recursive context index
 exceed its target budget, move completed records into bounded chronological
 subdirectories such as `change-packages/archive/2026-09/`. Keep active records
 and the compact machine index directly addressable. Regenerate recursive
 context indexes after the move; moving evidence does not change package
 identity, status, provenance, or canonical-owner references.
+
+When the compact root index itself grows beyond the target budget, retain
+active and recent entries in `records` and move closed entries into bounded
+index shards. The root `shards` directory contains target-relative shard path,
+SHA-256, and record count; each shard uses
+`target-change-package-index-shard`. Suggestion and full validation process one
+shard at a time. Changed-scope validation opens only a changed shard, a changed
+record, or every shard after its root descriptor changes. Do not use sharding
+to omit package identity, status, owners, projection checks, or evidence.
 
 Reuse the package across checkpoints and handoffs instead of rediscovering the
 same scope. Do not copy large source documents, raw chats, diffs, or test logs

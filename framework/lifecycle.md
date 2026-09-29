@@ -139,8 +139,9 @@ Before upgrading framework files in a target project:
    When `team-collaboration` is enabled, compare its rule, structured policy,
    local-identity boundary, registry and task schemas, active-work index,
    backend contract, lazy overlay, operation routes, and operating model.
-   When `change-packages` is enabled, compare its record schema, semantic
-   approval fields, provenance policy, lazy route, and validator support.
+   When `change-packages` is enabled, compare its record schema, compact-index
+   projection, optional digest-bound index shards, semantic approval fields,
+   provenance policy, lazy route, and validator support.
    Compare the required support policy and state contract. Preserve target-owned
    classifications, exclusions, accepted relationships, relationship
    candidates, and generator bindings. Rebuild affected context indexes,
@@ -358,8 +359,9 @@ Framework lifecycle notes should record:
   active-work route, backend contract, optimistic-concurrency behavior,
   schema-1 record migration, active-record preservation, and post-update stale-
   state review when that module is enabled
-- change-package rule, record schema, lazy route, target retention policy,
-  provenance grades, and validator migration when that module is enabled
+- change-package rule, record schema, compact projection, bounded index-shard
+  template and digest binding, lazy route, target retention policy, provenance
+  grades, and validator migration when that module is enabled
 - durable engineering-evidence rule, policy, index/record schema, lazy route,
   capture gate, task/revision binding, privacy/publication boundary, existing-
   record preservation, and validator migration

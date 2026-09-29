@@ -38,6 +38,11 @@ project edits, commits, publication, or live external actions.
    engineering-evidence summaries. Return bounded candidates and the evidence
    IDs that caused each suggestion. Do not create a promotion or edit project
    knowledge under `read-only`.
+   Verify candidate-supporting compact package entries against their records,
+   combine area and canonical-owner signals, retain bounded evidence samples,
+   and suppress an unchanged deterministic candidate snapshot already named by
+   a promotion record. Input digests may support external cache decisions, but
+   cached candidate content is not trusted automatically.
 2. Classify the origin as an `engineering-discovery` or an explicitly recorded
    `decision-owner-directive`. Engineering discovery requires durable
    engineering evidence. A directive requires verified target decision

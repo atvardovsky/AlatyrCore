@@ -338,6 +338,7 @@
         ".ai/assistant/flows/change-package.flow.md",
         ".ai/assistant/gates/contract-artifacts.md",
         ".ai/assistant/templates/contract-artifact-review.md",
+        ".ai/assistant/templates/change-package-index-shard.json",
         ".ai/assistant/templates/change-package-record.json",
         ".ai/assistant/templates/change-package-report.md"
       ],

@@ -26,7 +26,10 @@ from typing import Any, Callable
 import jsonschema
 
 from approval_archive import INDEX_PATH as APPROVAL_ARCHIVE_INDEX_PATH, build_archive_index
-from change_package_contract import CHANGE_PACKAGE_STATUSES
+from change_package_contract import (
+    CHANGE_PACKAGE_STATUSES,
+    package_index_projection_mismatches,
+)
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
 from agent_entry_packet import (
     PACKET_PATH,
@@ -5186,6 +5189,99 @@ class Validator:
         finding = self.error if self.enforce_change_package else self.warn
         finding(code, message, path)
 
+    def check_change_package_index_entries(
+        self,
+        records: list[Any],
+        *,
+        source: str,
+        changed_paths: set[str] | None,
+        source_changed: bool,
+        seen: set[str],
+    ) -> None:
+        for index, entry in enumerate(records):
+            if not isinstance(entry, dict):
+                self.error(
+                    "PACKAGE_INDEX_ENTRY",
+                    f"records[{index}] must be an object",
+                    source,
+                )
+                continue
+            for field in [
+                "package_id",
+                "status",
+                "record",
+                "changed_fact_ids",
+                "canonical_owners",
+                "project_areas",
+                "evidence_quality",
+                "approval_records",
+                "active_workstream",
+                "residual_risk",
+            ]:
+                if field not in entry:
+                    self.error(
+                        "PACKAGE_INDEX_FIELD",
+                        f"records[{index}] missing {field}",
+                        source,
+                    )
+            status = entry.get("status")
+            if "status" in entry and (
+                not isinstance(status, str) or status not in CHANGE_PACKAGE_STATUSES
+            ):
+                self.error(
+                    "PACKAGE_INDEX_STATUS",
+                    f"records[{index}].status is not a canonical package status: {status!r}",
+                    source,
+                )
+            package_id = entry.get("package_id")
+            if isinstance(package_id, str):
+                if package_id in seen:
+                    self.error(
+                        "PACKAGE_INDEX_DUPLICATE",
+                        f"duplicate package_id: {package_id}",
+                        source,
+                    )
+                seen.add(package_id)
+            record = entry.get("record")
+            if not isinstance(record, str) or is_placeholder(record):
+                continue
+            if not is_target_relative_path(record) or not self.is_target_file(record):
+                self.error(
+                    "PACKAGE_INDEX_RECORD_PATH",
+                    f"records[{index}].record does not resolve inside target: {record}",
+                    source,
+                )
+                continue
+            validate_projection = (
+                changed_paths is None or source_changed or record in changed_paths
+            )
+            if not validate_projection:
+                continue
+            package, package_error = self.context.read_json(self.target_path(record))
+            if package_error is not None:
+                self.error(
+                    "PACKAGE_INDEX_RECORD_LOAD",
+                    f"records[{index}].record cannot be loaded: {package_error}",
+                    record,
+                )
+                continue
+            if not isinstance(package, dict):
+                self.error(
+                    "PACKAGE_INDEX_RECORD_ROOT",
+                    f"records[{index}].record must contain an object",
+                    record,
+                )
+                continue
+            mismatches = package_index_projection_mismatches(entry, package)
+            if mismatches:
+                self.error(
+                    "PACKAGE_INDEX_PROJECTION",
+                    "records[{}] differs from its package record for: {}".format(
+                        index, ", ".join(mismatches)
+                    ),
+                    source,
+                )
+
     def check_change_package_index(self) -> None:
         relpath = ".ai/assistant/change-packages/index.json"
         path = self.target_path(relpath)
@@ -5214,59 +5310,140 @@ class Validator:
         if not isinstance(records, list):
             self.error("PACKAGE_INDEX_RECORDS", "records must be a list", relpath)
             return
+        changed_paths: set[str] | None = None
+        index_changed = True
+        if self.validation_scope == "changed":
+            changed = self.git.changed_files(self.diff_ref)
+            if changed is not None:
+                changed_paths = set(changed)
+                index_changed = relpath in changed_paths
         seen: set[str] = set()
-        for index, entry in enumerate(records):
-            if not isinstance(entry, dict):
+        self.check_change_package_index_entries(
+            records,
+            source=relpath,
+            changed_paths=changed_paths,
+            source_changed=index_changed,
+            seen=seen,
+        )
+
+        shards = data.get("shards", [])
+        if not isinstance(shards, list):
+            self.error("PACKAGE_INDEX_SHARDS", "shards must be a list", relpath)
+            return
+        seen_shard_ids: set[str] = set()
+        seen_shard_paths: set[str] = set()
+        for index, descriptor in enumerate(shards):
+            if not isinstance(descriptor, dict):
                 self.error(
-                    "PACKAGE_INDEX_ENTRY",
-                    f"records[{index}] must be an object",
+                    "PACKAGE_INDEX_SHARD",
+                    f"shards[{index}] must be an object",
                     relpath,
                 )
                 continue
-            for field in [
-                "package_id",
-                "status",
-                "record",
-                "changed_fact_ids",
-                "canonical_owners",
-                "project_areas",
-                "evidence_quality",
-                "approval_records",
-                "active_workstream",
-                "residual_risk",
-            ]:
-                if field not in entry:
-                    self.error(
-                        "PACKAGE_INDEX_FIELD",
-                        f"records[{index}] missing {field}",
-                        relpath,
-                    )
-            status = entry.get("status")
-            if "status" in entry and (
-                not isinstance(status, str) or status not in CHANGE_PACKAGE_STATUSES
-            ):
+            missing = {
+                "shard_id",
+                "path",
+                "sha256",
+                "record_count",
+            } - descriptor.keys()
+            if missing:
                 self.error(
-                    "PACKAGE_INDEX_STATUS",
-                    f"records[{index}].status is not a canonical package status: {status!r}",
+                    "PACKAGE_INDEX_SHARD_FIELD",
+                    f"shards[{index}] missing fields: {', '.join(sorted(missing))}",
                     relpath,
                 )
-            package_id = entry.get("package_id")
-            if isinstance(package_id, str):
-                if package_id in seen:
-                    self.error(
-                        "PACKAGE_INDEX_DUPLICATE",
-                        f"duplicate package_id: {package_id}",
-                        relpath,
-                    )
-                seen.add(package_id)
-            record = entry.get("record")
-            if isinstance(record, str) and not is_placeholder(record):
-                if not is_target_relative_path(record) or not self.is_target_file(record):
-                    self.error(
-                        "PACKAGE_INDEX_RECORD_PATH",
-                        f"records[{index}].record does not resolve inside target: {record}",
-                        relpath,
-                    )
+                continue
+            shard_id = descriptor.get("shard_id")
+            shard_relpath = descriptor.get("path")
+            expected_sha = descriptor.get("sha256")
+            expected_count = descriptor.get("record_count")
+            if not isinstance(shard_id, str) or not shard_id:
+                self.error(
+                    "PACKAGE_INDEX_SHARD_ID",
+                    f"shards[{index}].shard_id must be a non-empty string",
+                    relpath,
+                )
+                continue
+            if shard_id in seen_shard_ids:
+                self.error(
+                    "PACKAGE_INDEX_SHARD_DUPLICATE",
+                    f"duplicate shard_id: {shard_id}",
+                    relpath,
+                )
+                continue
+            seen_shard_ids.add(shard_id)
+            if (
+                not isinstance(shard_relpath, str)
+                or shard_relpath in seen_shard_paths
+                or not is_target_relative_path(shard_relpath)
+                or self.target_path(shard_relpath).is_symlink()
+                or not self.is_target_file(shard_relpath)
+            ):
+                self.error(
+                    "PACKAGE_INDEX_SHARD_PATH",
+                    f"shards[{index}].path is invalid or unavailable: {shard_relpath!r}",
+                    relpath,
+                )
+                continue
+            seen_shard_paths.add(shard_relpath)
+            shard_changed = changed_paths is None or index_changed or shard_relpath in changed_paths
+            if not shard_changed:
+                continue
+            shard_path = self.target_path(shard_relpath)
+            content = self.context.read_bytes_result(shard_path)
+            if content.value is None:
+                self.error(
+                    "PACKAGE_INDEX_SHARD_LOAD",
+                    f"shards[{index}] cannot be read: {content.error}",
+                    shard_relpath,
+                )
+                continue
+            actual_sha = hashlib.sha256(content.value).hexdigest()
+            if expected_sha != actual_sha:
+                self.error(
+                    "PACKAGE_INDEX_SHARD_DIGEST",
+                    f"shards[{index}].sha256 differs from its file",
+                    relpath,
+                )
+            shard, shard_error = self.context.read_json(shard_path)
+            if shard_error is not None or not isinstance(shard, dict):
+                self.error(
+                    "PACKAGE_INDEX_SHARD_LOAD",
+                    f"shards[{index}] is not a valid JSON object: {shard_error}",
+                    shard_relpath,
+                )
+                continue
+            if (
+                shard.get("schema_version") != 1
+                or shard.get("index_kind") != "target-change-package-index-shard"
+                or shard.get("shard_id") != shard_id
+            ):
+                self.error(
+                    "PACKAGE_INDEX_SHARD_IDENTITY",
+                    f"shards[{index}] identity differs from its descriptor",
+                    shard_relpath,
+                )
+            shard_records = shard.get("records")
+            if not isinstance(shard_records, list):
+                self.error(
+                    "PACKAGE_INDEX_SHARD_RECORDS",
+                    f"shards[{index}].records must be a list",
+                    shard_relpath,
+                )
+                continue
+            if expected_count != len(shard_records):
+                self.error(
+                    "PACKAGE_INDEX_SHARD_COUNT",
+                    f"shards[{index}].record_count differs from its file",
+                    relpath,
+                )
+            self.check_change_package_index_entries(
+                shard_records,
+                source=shard_relpath,
+                changed_paths=changed_paths,
+                source_changed=shard_changed,
+                seen=seen,
+            )
 
     def resolve_change_packages(self) -> list[Path]:
         resolved: list[Path] = []
@@ -5378,6 +5555,29 @@ class Validator:
             digest.update(b"\0")
         return digest.hexdigest()
 
+    def indexed_change_package_paths(self, index_data: dict[str, Any]) -> set[str]:
+        indexed: set[str] = set()
+        for entry in index_data.get("records", []):
+            if isinstance(entry, dict) and isinstance(entry.get("record"), str):
+                indexed.add(entry["record"])
+        for descriptor in index_data.get("shards", []):
+            if not isinstance(descriptor, dict):
+                continue
+            shard_relpath = descriptor.get("path")
+            if not isinstance(shard_relpath, str) or not self.is_target_file(
+                shard_relpath
+            ):
+                continue
+            shard, shard_error = self.context.read_json(
+                self.target_path(shard_relpath)
+            )
+            if shard_error is not None or not isinstance(shard, dict):
+                continue
+            for entry in shard.get("records", []):
+                if isinstance(entry, dict) and isinstance(entry.get("record"), str):
+                    indexed.add(entry["record"])
+        return indexed
+
     def check_change_packages(self) -> None:
         if self.enforce_change_package and not self.change_packages:
             self.error(
@@ -5400,9 +5600,7 @@ class Validator:
             if index_error is not None:
                 index_data = {}
             if isinstance(index_data, dict):
-                for entry in index_data.get("records", []):
-                    if isinstance(entry, dict) and isinstance(entry.get("record"), str):
-                        indexed_records.add(entry["record"])
+                indexed_records = self.indexed_change_package_paths(index_data)
         elif self.enforce_change_package:
             self.error(
                 "PACKAGE_INDEX_REQUIRED",

@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
   "index_kind": "target-change-package-index",
-  "records": []
+  "records": [],
+  "shards": []
 }

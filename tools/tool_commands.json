@@ -124,7 +124,7 @@
     {
       "name": "suggest-knowledge",
       "script": "suggest_project_knowledge.py",
-      "purpose": "suggest review-only project knowledge candidates from completed package summaries",
+      "purpose": "suggest verified, bounded, review-only project knowledge candidates from completed package summaries",
       "write_scope": "none"
     },
     {

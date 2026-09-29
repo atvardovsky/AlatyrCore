@@ -34,6 +34,13 @@ evidence. Large-task activation alone is not sufficient.
    Each index entry uses `package_id`, `status`, `record`, `changed_fact_ids`,
    `canonical_owners`, `project_areas`, `evidence_quality`, `approval_records`,
    `active_workstream`, and `residual_risk`.
+   Keep those fields as an exact projection of the package record: IDs and
+   owners from `changed_facts`, areas from `routing`, evidence quality from
+   `provenance`, approvals from `approved_scope`, and workstream from
+   `operation`.
+   Keep active and recent entries in the root index. When its target budget is
+   exceeded, move closed entries into bounded index shards and record each
+   shard's target-relative path, SHA-256, and record count in root `shards`.
 4. Record the plan version/file/hash and the approved semantic and path scope.
 5. Link explicit machine approval records. Require reapproval for new
    protected fact IDs, areas, behavior categories, external effects, or paths.

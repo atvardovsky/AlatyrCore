@@ -440,8 +440,8 @@ Classify every proposed target file:
     automatic or explicit cache mode, client control and telemetry exposure,
     retention/minimum-size evidence, and freshness. Keep hidden capability
     unknown and retain bounded-context fallback without savings claims.
-    Add the change-package index, flow, machine record, and redacted report
-    template when the target needs semantic multi-surface approval, architecture
+    Add the change-package index, bounded index-shard template, flow, machine
+    record, and redacted report template when the target needs semantic multi-surface approval, architecture
     segment/capability evidence, audit, pilot, or publishable provenance. Record
     retention and redaction policy; do not seed historical records.
     Add the durable engineering-evidence task-scale overlay, capture flow,
@@ -691,8 +691,9 @@ Report:
   template, strategy gate, continuity binding, and completion evidence added;
   verify that small tasks skip the catalog and non-trivial tasks load only one
   selected descriptor
-- change-package index, lazy overlay, flow, schema, redacted report, retention
-  policy, and validator support added, migrated, skipped, or blocked
+- change-package root index, bounded digest-bound index shards, lazy overlay,
+  flow, schema, redacted report, retention policy, and validator support added,
+  migrated, skipped, or blocked
 - durable engineering-evidence owner, policy, compact index, lazy overlay,
   capture flow, gate, contract/record schema, binding lineage, validator,
   existing-record preservation, and current installation capture decision

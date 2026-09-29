@@ -290,9 +290,10 @@ Collect target-specific facts before writing project docs:
   aggregate worker/context/result/primary-summary/retry budgets, semantic
   overlap decisions, cancellation stop reasons, retry/conflict fallback,
   privacy, validation, and primary convergence when needed
-- change-package activation, compact index, semantic and path approval scope,
-  companion decisions, implementation corrections, provenance quality,
-  retention/redaction, and validator expectations when needed
+- change-package activation, compact root index, digest-bound bounded index
+  shards, semantic and path approval scope, companion decisions,
+  implementation corrections, provenance quality, retention/redaction, and
+  validator expectations when needed
 - team-collaboration owner, structured actor/authority/priority/transition
   policy, ignored local identity boundary, backend capabilities and
   synchronization, active-work index, per-task registry and optimistic
@@ -578,8 +579,9 @@ Final evidence must say:
   branch envelope, branch checkpoint, native definition bindings, aggregate
   budget, semantic-overlap, cancellation, and per-surface capability fields
   added or skipped
-- change-package index, lazy overlay, flow, machine record, redacted report,
-  and retention/redaction policy added, migrated, skipped, or blocked
+- change-package root index, bounded index-shard template, lazy overlay, flow,
+  machine record, redacted report, and retention/redaction policy added,
+  migrated, skipped, or blocked
 - team policy and operating model, local ignore rule, active-work index,
   registry metadata, per-task template, backend contract, team-active overlay,
   identity/task/handoff/decision/review flows, team gate, adapted skill, and

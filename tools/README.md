@@ -554,8 +554,17 @@ cases for profile-only selection, stale owners, stale routing policy,
 promotion drift, and asymmetric conflicts. It does not decide whether a human
 should accept a candidate or whether the accepted project fact is true.
 
+`suggest_project_knowledge.py` is a read-only candidate preflight. It selects
+only exact `validated` and `complete` package statuses, combines project-area
+and canonical-owner evidence, verifies supporting compact entries against the
+named package records, keeps at most eight sample package and fact IDs, and
+suppresses an unchanged candidate snapshot already referenced by a promotion.
+Its package-index and knowledge-index SHA-256 values support external cache
+decisions; the tool intentionally does not trust or execute cached output.
+
 ```sh
 python3 tools/check_project_knowledge.py
+python3 tools/suggest_project_knowledge.py --target /path/to/target
 ```
 
 ## Debug Mode Check

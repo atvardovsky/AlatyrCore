@@ -224,6 +224,30 @@
       "content_digest": "sha256:a56dd3db27b7b25238b1013773e70edbe11708a958e43a933134dc83786b55de"
     },
     {
+      "id": "assistant.content.templates-change-package-index-shard-json",
+      "kind": "content",
+      "path": "templates/change-package-index-shard.json",
+      "summary": "Change Package Index Shard",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "change",
+          "package",
+          "shard"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 10,
+      "content_digest": "sha256:52e1a79d6e910e6c65187318aed32d303d6ea42cd19b55206666506e085e04a2"
+    },
+    {
       "id": "assistant.content.templates-change-package-record-json",
       "kind": "content",
       "path": "templates/change-package-record.json",

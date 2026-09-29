@@ -561,6 +561,7 @@ Required files:
 - `.ai/assistant/change-packages/index.json`
 - `.ai/assistant/context/task-scales/change-package.json`
 - `.ai/assistant/flows/change-package.flow.md`
+- `.ai/assistant/templates/change-package-index-shard.json`
 - `.ai/assistant/templates/change-package-record.json`
 - `.ai/assistant/templates/change-package-report.md`
 - `.ai/assistant/gates/contract-artifacts.md`

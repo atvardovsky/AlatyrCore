@@ -357,7 +357,9 @@ In a typical target repository:
    index before state-changing operations and keep full team state outside
    routine bootstrap.
    When change packages are enabled, add the lazy `change-package` overlay and
-   compact index; do not load package records for ordinary tasks.
+   compact index plus its index-shard template; initialize root `shards` empty,
+   bind later shards by path/SHA-256/count, and do not load package records for
+   ordinary tasks.
    Add the `extension-request` intent overlay when extension inspection or
    lifecycle management is supported. Keep extension items and unrelated lock
    entries outside routine bootstrap.
@@ -388,8 +390,8 @@ In a typical target repository:
    subagent delegation policy, worker role catalog/prompts, delegated-
    execution overlay, flow, native-binding authoring, execution-plan, packet,
    and normalized-result templates when delegation is enabled,
-   change-package flow, machine record, redacted report, and index when coherent
-   material-change evidence is needed,
+   change-package flow, machine record, redacted report, root index, and bounded
+   index-shard template when coherent material-change evidence is needed,
    durable engineering-evidence task-scale overlay, capture flow, gate, and
    machine record template and contract version as lazy required-core
    finalization surfaces,

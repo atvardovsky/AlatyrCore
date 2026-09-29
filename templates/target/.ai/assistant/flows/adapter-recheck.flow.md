@@ -78,6 +78,7 @@ Replace placeholders with target facts before accepting installation.
 - Change-package index, flow, and record:
   `.ai/assistant/change-packages/index.json`,
   `.ai/assistant/flows/change-package.flow.md`,
+  `.ai/assistant/templates/change-package-index-shard.json`,
   `.ai/assistant/templates/change-package-record.json`
 - Team collaboration: `.ai/project/team-operating-model.md`,
   `.ai/assistant/team/context-overlay.json`,
@@ -160,8 +161,9 @@ Replace placeholders with target facts before accepting installation.
     stale claims, evidence revisions, concurrent changed-fact overlaps,
     checkpoints, handoffs, decisions, review state, and merge-readiness
     invalidation.
-    When change packages are enabled, preserve historical target records and
-    check semantic approval fields, companion decisions, correction impact,
+    When change packages are enabled, preserve historical target records,
+    verify compact projections and digest-bound index shards, and check
+    semantic approval fields, companion decisions, correction impact,
     provenance quality, and target validator support.
     Preserve durable engineering-evidence IDs and schema-version-1 records,
     install the current authoring template without rewriting historical
@@ -281,8 +283,9 @@ Report:
 - team module owner/backend, active registry schema and references, stale
   claims, overlaps, handoffs, decision destinations, review evidence, and
   revision-bound merge readiness
-- change-package index, record schema, target record preservation, semantic
-  approval scope, provenance policy, and validator support
+- change-package root index and bounded shards, record schema, target record
+  preservation, semantic approval scope, provenance policy, and validator
+  support
 - development-pattern index schema, owner, retention/privacy policy, evidence
   references, and target-only optimization boundary
 - durable engineering-evidence owner, retained storage and external-patch

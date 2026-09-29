@@ -14,9 +14,9 @@
     "target_manifest_digest": "sha256:0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.71",
-    "adapter_schema_version": "59",
-    "template_version": "66"
+    "framework_version": "0.1.0-alpha.72",
+    "adapter_schema_version": "60",
+    "template_version": "67"
   },
   "derived_from": {
     "manifest": {
@@ -33,7 +33,7 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "73b9ed5a8486a0313063a82c2490d42fe0a9c11f53d8e34d4929d8f571ac720c"
+      "sha256": "141f9a576d4c17ab072d6205c8c5f94f6092ccd883faea4e6089cbe2c38fd99b"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",

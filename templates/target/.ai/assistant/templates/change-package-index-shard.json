@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-change-package-index-shard",
+  "shard_id": "{CHANGE_PACKAGE_INDEX_SHARD_ID}",
+  "records": []
+}

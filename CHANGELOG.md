@@ -2,10 +2,24 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.72 - 2026-09-29
+
 - Fixed project-knowledge candidate selection so only exact canonical
   `validated` and `complete` change-package statuses are eligible; substring
   matches such as `incomplete`, `unvalidated`, and `not completed` are ignored,
   and compact package indexes now reject non-canonical statuses.
+- Bound compact change-package entries to their package-record projections,
+  combined broad knowledge signals into deterministic area-and-owner candidate
+  snapshots, suppressed unchanged promoted candidates, bounded retained
+  evidence, and added input digests for safe external cache decisions without
+  trusting cached candidate content.
+- Added digest-bound compact change-package index shards so large histories can
+  be processed one shard at a time, while full validation checks every shard
+  and changed-scope validation opens only changed support evidence.
+- Increased adapter schema version to `60` and target template version to `67`
+  for the verified compact projection and index-shard contracts.
 
 ## 0.1.0-alpha.71 - 2026-09-29
 

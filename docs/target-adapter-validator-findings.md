@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1553
+Catalog entries: 1567
 
 ## Families
 
@@ -48,7 +48,7 @@ Catalog entries: 1553
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 79 codes.
+- `PACKAGE`: 93 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -1983,15 +1983,43 @@ Catalog entries: 1553
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_KIND`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_PROJECTION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_RECORDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_RECORD_LOAD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_RECORD_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_RECORD_ROOT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_REQUIRED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_ROOT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_COUNT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_DIGEST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_FIELD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_ID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_IDENTITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_LOAD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_SHARD_RECORDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_STATUS`
   Level: error. Source: `tools/validate_target_adapter.py`.

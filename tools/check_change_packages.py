@@ -10,7 +10,9 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
+from change_package_contract import CHANGE_PACKAGE_STATUS_PLACEHOLDER
 from validate_target_adapter import AdapterValidatorConfig, Validator
 
 
@@ -21,6 +23,7 @@ FLOW = TARGET / ".ai" / "assistant" / "flows" / "change-package.flow.md"
 RECORD = TARGET / ".ai" / "assistant" / "templates" / "change-package-record.json"
 REPORT = TARGET / ".ai" / "assistant" / "templates" / "change-package-report.md"
 INDEX = TARGET / ".ai" / "assistant" / "change-packages" / "index.json"
+SHARD = TARGET / ".ai" / "assistant" / "templates" / "change-package-index-shard.json"
 OVERLAY = (
     TARGET
     / ".ai"
@@ -92,6 +95,17 @@ def valid_package_fixture(repo: Path) -> tuple[Path, dict[str, object]]:
         "package_type": "architecture-segment",
         "status": "complete",
         "activation_reason": "coherent architecture segment",
+        "operation": {
+            "id": "operation-1",
+            "type": "product-change",
+            "large_task_packet": "not active",
+            "active_workstream": "not active",
+        },
+        "routing": {
+            "task_profile": "architecture-change",
+            "project_areas": ["area-1"],
+            "context_receipt": "not available with reason",
+        },
         "changed_facts": [
             {
                 "id": "FACT-1",
@@ -247,6 +261,128 @@ def validate_fixture(failures: list[str]) -> None:
         invalid_index["records"][0]["status"] = "complete"
         index_path.write_text(json.dumps(invalid_index, indent=2) + "\n", encoding="utf-8")
 
+        drifted_index = copy.deepcopy(invalid_index)
+        drifted_index["records"][0]["project_areas"] = ["other-area"]
+        index_path.write_text(json.dumps(drifted_index, indent=2) + "\n", encoding="utf-8")
+        projection_validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[],
+            enforce_change_package=False,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        projection_validator.check_change_package_index()
+        if not any(
+            finding.code == "PACKAGE_INDEX_PROJECTION" and finding.level == "error"
+            for finding in projection_validator.findings
+        ):
+            failures.append("change-package index accepted a stale package projection")
+        index_path.write_text(json.dumps(invalid_index, indent=2) + "\n", encoding="utf-8")
+
+        package_path.write_text("not JSON\n", encoding="utf-8")
+        changed_scope_validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref="HEAD",
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[],
+            enforce_change_package=False,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+            validation_scope="changed",
+        )
+        with patch.object(
+            changed_scope_validator.git,
+            "changed_files",
+            return_value=["src/feature.txt"],
+        ):
+            changed_scope_validator.check_change_package_index()
+        if any(
+            finding.code.startswith("PACKAGE_INDEX_RECORD_")
+            for finding in changed_scope_validator.findings
+        ):
+            failures.append("changed-scope package validation reopened unchanged history")
+        package_path.write_text(json.dumps(package, indent=2) + "\n", encoding="utf-8")
+
+        shard_path = repo / ".ai" / "assistant" / "change-packages" / "archive" / "2026-09" / "index.json"
+        shard_path.parent.mkdir(parents=True)
+        shard = {
+            "schema_version": 1,
+            "index_kind": "target-change-package-index-shard",
+            "shard_id": "2026-09",
+            "records": invalid_index["records"],
+        }
+        shard_path.write_text(json.dumps(shard, indent=2) + "\n", encoding="utf-8")
+        shard_relpath = shard_path.relative_to(repo).as_posix()
+        sharded_index = {
+            "schema_version": 1,
+            "index_kind": "target-change-package-index",
+            "records": [],
+            "shards": [
+                {
+                    "shard_id": "2026-09",
+                    "path": shard_relpath,
+                    "sha256": hashlib.sha256(shard_path.read_bytes()).hexdigest(),
+                    "record_count": 1,
+                }
+            ],
+        }
+        index_path.write_text(json.dumps(sharded_index, indent=2) + "\n", encoding="utf-8")
+        shard_validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[package_path],
+            enforce_change_package=True,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        shard_validator.check_change_package_index()
+        shard_validator.check_change_packages()
+        shard_errors = [
+            finding for finding in shard_validator.findings if finding.level == "error"
+        ]
+        if shard_errors:
+            failures.append(
+                "valid sharded change-package index failed: "
+                + "; ".join(f"{item.code}: {item.message}" for item in shard_errors)
+            )
+        sharded_index["shards"][0]["sha256"] = "0" * 64
+        index_path.write_text(json.dumps(sharded_index, indent=2) + "\n", encoding="utf-8")
+        stale_shard_validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[],
+            enforce_change_package=False,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        stale_shard_validator.check_change_package_index()
+        if not any(
+            finding.code == "PACKAGE_INDEX_SHARD_DIGEST"
+            for finding in stale_shard_validator.findings
+        ):
+            failures.append("change-package validator accepted stale shard digest")
+        index_path.write_text(json.dumps(invalid_index, indent=2) + "\n", encoding="utf-8")
+
         reversed_package = copy.deepcopy(package)
         reversed_provenance = reversed_package["provenance"]
         assert isinstance(reversed_provenance, dict)
@@ -361,6 +497,7 @@ def main() -> int:
     try:
         record = json.loads(RECORD.read_text(encoding="utf-8"))
         index = json.loads(INDEX.read_text(encoding="utf-8"))
+        shard = json.loads(SHARD.read_text(encoding="utf-8"))
         overlay = json.loads(OVERLAY.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         failures.append(f"invalid change-package JSON template: {exc}")
@@ -379,8 +516,17 @@ def main() -> int:
         ]:
             if field not in record:
                 failures.append(f"change-package record missing {field}")
+        if record.get("status") != CHANGE_PACKAGE_STATUS_PLACEHOLDER:
+            failures.append("change-package status placeholder differs from canonical statuses")
         if index.get("records") != []:
             failures.append("source change-package index must start empty")
+        if index.get("shards") != []:
+            failures.append("source change-package shard directory must start empty")
+        if (
+            shard.get("index_kind") != "target-change-package-index-shard"
+            or shard.get("records") != []
+        ):
+            failures.append("change-package shard template is invalid")
         if overlay.get("overlay") != "change-package":
             failures.append("change-package overlay identity is invalid")
 
