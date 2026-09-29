@@ -471,6 +471,13 @@ Final evidence must say:
   primary workflows, validation entry points, canonical owners, and known gaps
 - consistency-map module enabled, deferred, disabled, or blocked with reason
 - support-information policy adapted and support state generated last
+- target validation contract distinguishes adapter health, current-change
+  validation, and complete archive audit; every command declares canonical,
+  target-equivalent, structural-only, or manual coverage
+- current baseline claims match the manifest; historical baseline labels stay
+  explicitly historical
+- completed approval history is bounded into monthly shards when needed, its
+  digest index is current, and acceptance used complete archive validation
 - consistency reverse index and optional support-generation index rebuilt from
   the final target-owned contracts
 - context profiles created or updated

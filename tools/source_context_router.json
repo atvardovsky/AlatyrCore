@@ -145,7 +145,7 @@
         "max_required_words": 700,
         "max_initial_words": 2900,
         "max_resolved_files": 10,
-        "max_resolved_words": 18000,
+        "max_resolved_words": 18100,
         "max_resolved_characters": 175000,
         "reserved_files": 2,
         "reserved_words": 1500,

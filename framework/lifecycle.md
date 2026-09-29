@@ -306,6 +306,16 @@ Before upgrading framework files in a target project:
     and enabled-capability placeholders, then run strict acceptance validation
     on the branch and revision being accepted. Enabled manifest modules and
     human module-profile states must agree before acceptance.
+    Reconcile `.ai/assistant/validation-contract.json`: local commands must
+    declare whether they delegate to canonical validation, provide a reviewed
+    target equivalent, cover structure only, or remain manual. Run adapter
+    health, current-change validation, and complete archive audit according to
+    their separate contracts. A changed-scope or partial archive run cannot
+    become installation/update acceptance evidence.
+    Synchronize manifest-owned current-baseline claims, regenerate approval
+    archive digests and recursive context indexes, then generate support state
+    last. Historical baseline labels remain historical and must not be
+    rewritten as current claims.
 16. Send a post-update assistant chat message that names updated surfaces,
     recommended recheck operation, validation, and unresolved gaps.
 

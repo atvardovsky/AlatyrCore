@@ -10,6 +10,7 @@
     "tools/target_adapter_validation/analysis_strategies.py",
     "tools/target_adapter_validation/architecture_knowledge.py",
     "tools/target_adapter_validation/assistant_capabilities.py",
+    "tools/target_adapter_validation/baseline_claims.py",
     "tools/target_adapter_validation/blueprint_change.py",
     "tools/target_adapter_validation/capability.py",
     "tools/target_adapter_validation/code_documentation.py",
@@ -43,6 +44,7 @@
     "tools/target_adapter_validation/task_decomposition.py",
     "tools/target_adapter_validation/team_collaboration.py",
     "tools/target_adapter_validation/test_first_development.py",
+    "tools/target_adapter_validation/validation_contract.py",
     "tools/target_adapter_validation/values.py",
     "tools/target_adapter_validation/workspace_modes.py"
   ],
@@ -57,7 +59,7 @@
     },
     {
       "id": "APPROVAL",
-      "code_count": 31
+      "code_count": 39
     },
     {
       "id": "ARCHITECTURE",
@@ -74,6 +76,10 @@
     {
       "id": "BACKUP",
       "code_count": 1
+    },
+    {
+      "id": "BASELINE",
+      "code_count": 2
     },
     {
       "id": "BLUEPRINT",
@@ -101,7 +107,7 @@
     },
     {
       "id": "CONTEXT",
-      "code_count": 22
+      "code_count": 23
     },
     {
       "id": "DEBUG",
@@ -205,7 +211,7 @@
     },
     {
       "id": "ROUTER",
-      "code_count": 73
+      "code_count": 74
     },
     {
       "id": "ROUTING",
@@ -250,6 +256,10 @@
     {
       "id": "UNRESOLVED",
       "code_count": 1
+    },
+    {
+      "id": "VALIDATION",
+      "code_count": 9
     },
     {
       "id": "VOCABULARY",
@@ -824,7 +834,79 @@
       ]
     },
     {
+      "code": "APPROVAL_ARCHIVE_CHANGED_UNAVAILABLE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "APPROVAL_ARCHIVE_CHECKED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_INDEX_CURRENT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_INDEX_REQUIRED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_INDEX_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_INDEX_STALE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_PARTIAL",
       "levels": [
         "info"
       ],
@@ -1944,6 +2026,24 @@
       ]
     },
     {
+      "code": "BASELINE_CLAIMS_CHECKED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/baseline_claims.py"
+      ]
+    },
+    {
+      "code": "BASELINE_CLAIM_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/baseline_claims.py"
+      ]
+    },
+    {
       "code": "BLUEPRINT_CHANGE_OPERATION_CATALOG",
       "levels": [
         "error"
@@ -2991,6 +3091,15 @@
       "code": "CONTEXT_CATALOG_BOOTSTRAP_INVALID_SHAPE",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_COVERAGE_DEFERRED",
+      "levels": [
+        "info"
       ],
       "sources": [
         "tools/target_adapter_validation/context_catalogs.py"
@@ -9682,6 +9791,15 @@
       ]
     },
     {
+      "code": "ROUTER_BOOTSTRAP_SOFT_LIMIT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
       "code": "ROUTER_BUDGETS_MISSING",
       "levels": [
         "error"
@@ -13181,6 +13299,87 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_CHECKED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_COMMAND_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_FALSE_CANONICAL_CLAIM",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_FINAL_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_LIMITED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_POINTER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
       ]
     },
     {

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.71 - 2026-09-29
+
 - Reduced source-validation cost by reusing one scaffold path index, removing
   duplicate target-validator execution, consolidating Git evidence snapshots,
   enabling safe local reuse for focused checks, and allowing independent
@@ -13,6 +17,23 @@
 - Fixed target adapter acceptance validation so an explicitly non-applicable
   source-of-truth registry entry requires a resolved decision source, evidence
   revision, and ISO review date, matching the existing registry contract.
+- Added explicit target validation contracts that separate adapter health,
+  current-change checks, and complete archive audits; local structural success
+  can no longer be presented as canonical acceptance without declared coverage.
+- Added layered installation, support, and current-change health evidence,
+  current baseline-claim drift checks, and bounded bootstrap soft-limit
+  warnings without changing existing aggregate health consumers.
+- Added digest-bound monthly approval archives, changed-shard routine checks,
+  compact historical findings, and full-audit acceptance boundaries so large
+  evidence histories remain verifiable without dominating every task.
+- Contained context-catalog failures to their owning contour, removed broad
+  repository traversal from recovery packet generation and live checker-claim
+  discovery, and retained Git-visible untracked adapter evidence.
+- Added read-only project-knowledge candidate suggestions from completed change
+  packages; repeated summaries remain discovery signals and never promote
+  themselves into canonical project truth.
+- Increased adapter schema version to `59` and target template version to `66`
+  for the validation contract and approval archive index.
 
 ## 0.1.0-alpha.70 - 2026-09-24
 

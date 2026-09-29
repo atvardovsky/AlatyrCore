@@ -25,6 +25,8 @@ from typing import Any, Callable
 
 import jsonschema
 
+from approval_archive import INDEX_PATH as APPROVAL_ARCHIVE_INDEX_PATH, build_archive_index
+from repository_inventory import RepositoryInventory, RepositoryInventoryError
 from agent_entry_packet import (
     PACKET_PATH,
     build_from_target as build_entry_packet,
@@ -75,6 +77,8 @@ from target_adapter_validation.context import (
 from target_adapter_validation.context_catalogs import (
     validate_context_catalog_contract,
 )
+from target_adapter_validation.baseline_claims import validate_baseline_claims
+from target_adapter_validation.validation_contract import validate_validation_contract
 from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
@@ -157,6 +161,9 @@ from task_classification_contract import (
     missing_required_values,
 )
 ROOT = Path(__file__).resolve().parents[1]
+APPROVAL_ARCHIVE_INDEX_SCHEMA = (
+    ROOT / "schemas" / "alatyr-approval-archive-index.schema.json"
+)
 ADAPTER_MANIFEST_SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
 
 CANONICAL_PROFILES = [
@@ -203,6 +210,8 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/discovery-report.json",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
+    ".ai/assistant/validation-contract.json",
+    ".ai/assistant/approvals/archive-index.json",
     ".ai/assistant/task-decomposition.json",
     ".ai/assistant/analysis-strategies/index.json",
     ".ai/assistant/analysis-strategies/invariant-first.json",
@@ -338,6 +347,15 @@ BRIDGE_FILES = [
     ".roo/rules/alatyr-core.md",
     ".rules",
 ]
+
+HISTORICAL_ADAPTER_PREFIXES = (
+    ".ai/assistant/approvals/",
+    ".ai/assistant/change-packages/",
+    ".ai/assistant/reports/",
+    ".ai/project/debug/sessions/",
+    ".ai/project/engineering-evidence/records/",
+    ".ai/project/knowledge/records/",
+)
 
 NEUTRAL_ASSISTANT_ENTRY_FILES = {"AGENTS.md", "AI_ASSISTANTS.md"}
 
@@ -917,6 +935,8 @@ class Validator:
         validation_scope: str = "full",
         continuity_packets: list[Path] | None = None,
         problem_models: list[Path] | None = None,
+        approval_archive_mode: str = "full",
+        compact_archive_findings: bool = True,
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
@@ -968,6 +988,18 @@ class Validator:
         if validation_scope not in {"full", "changed"}:
             raise ValueError(f"unsupported validation scope: {validation_scope}")
         self.validation_scope = validation_scope
+        if approval_archive_mode not in {"full", "changed", "none"}:
+            raise ValueError(
+                f"unsupported approval archive mode: {approval_archive_mode}"
+            )
+        self.approval_archive_mode = approval_archive_mode
+        self.compact_archive_findings = compact_archive_findings
+        self.approval_archive_summary: dict[str, Any] = {
+            "mode": approval_archive_mode,
+            "records_discovered": 0,
+            "records_checked": 0,
+            "findings_grouped": 0,
+        }
         self.validation_phase = validation_phase or (
             "migration-staging" if allow_placeholders else "acceptance"
         )
@@ -1040,11 +1072,21 @@ class Validator:
             finding_count = len(self.findings)
             started = time.perf_counter()
             phase.run()
+            added_findings = self.findings[finding_count:]
             self.phase_telemetry.append(
                 {
                     "phase_id": phase.phase_id,
                     "duration_seconds": round(time.perf_counter() - started, 6),
-                    "findings_added": len(self.findings) - finding_count,
+                    "findings_added": len(added_findings),
+                    "errors_added": sum(
+                        finding.level == "error" for finding in added_findings
+                    ),
+                    "warnings_added": sum(
+                        finding.level == "warning" for finding in added_findings
+                    ),
+                    "blocking_findings_added": sum(
+                        is_blocking_finding(finding) for finding in added_findings
+                    ),
                     "cost_class": phase.cost_class,
                 }
             )
@@ -1129,7 +1171,9 @@ class Validator:
 
         core_phases = (
             ValidationPhase("installation-state", installation_state),
+            ValidationPhase("baseline-claims", lambda: validate_baseline_claims(self, manifest), ("installation-state",)),
             ValidationPhase("required-files", lambda: self.check_required_files(support_profile), ("installation-state",)),
+            ValidationPhase("validation-contract", lambda: validate_validation_contract(self, manifest), ("required-files",)),
             ValidationPhase("target-discovery", lambda: validate_target_discovery(self.capability_validation_context(), manifest), ("required-files",)),
             ValidationPhase("project-support-documentation", lambda: validate_project_support_documentation(self.capability_validation_context(), manifest), ("required-files",)),
             ValidationPhase("capability-closure", lambda: self.check_capability_closure(manifest), ("required-files",)),
@@ -4200,18 +4244,38 @@ class Validator:
     def scan_text_files(self) -> list[Path]:
         if self._scan_text_files_cache is not None:
             return list(self._scan_text_files_cache)
-        roots = [self.target_path(".ai")]
-        files = [self.target_path(relpath) for relpath in ["AGENTS.md", *BRIDGE_FILES]]
-        for root in roots:
-            if not self.is_target_dir(root):
-                continue
-            for path in root.rglob("*"):
-                if self.is_target_file(path) and not should_skip_path(path):
-                    files.append(path)
+        try:
+            inventory = RepositoryInventory.load(self.target)
+            relpaths = [
+                relpath
+                for relpath in inventory.paths
+                if relpath == "AGENTS.md"
+                or relpath in BRIDGE_FILES
+                or relpath.startswith(".ai/")
+            ]
+            files = [self.target_path(relpath) for relpath in relpaths]
+        except RepositoryInventoryError:
+            roots = [self.target_path(".ai")]
+            files = [
+                self.target_path(relpath) for relpath in ["AGENTS.md", *BRIDGE_FILES]
+            ]
+            for root in roots:
+                if not self.is_target_dir(root):
+                    continue
+                for path in root.rglob("*"):
+                    if self.is_target_file(path) and not should_skip_path(path):
+                        files.append(path)
         self._scan_text_files_cache = tuple(
             sorted({path for path in files if self.is_target_file(path)})
         )
         return list(self._scan_text_files_cache)
+
+    def scan_live_text_files(self) -> list[Path]:
+        return [
+            path
+            for path in self.scan_text_files()
+            if not self.rel(path).startswith(HISTORICAL_ADAPTER_PREFIXES)
+        ]
 
     def discover_checkers(
         self,
@@ -4277,7 +4341,7 @@ class Validator:
         # Only target-owned adapter surfaces can make target-local checker claims.
         adapter_text_files = [
             path
-            for path in self.scan_text_files()
+            for path in self.scan_live_text_files()
             if not self.rel(path).startswith(".ai/framework/")
         ]
         for path in adapter_text_files:
@@ -4324,20 +4388,59 @@ class Validator:
 
     def check_approval_scope(self) -> None:
         approval_records = self.resolve_approval_records()
+        archive_index_current = self.check_approval_archive_index()
         archive_records = [
             record
             for record in self.discover_approval_archive_records()
             if record not in approval_records
         ]
+        self.approval_archive_summary["records_discovered"] = len(archive_records)
+        if self.approval_archive_mode == "none":
+            archive_records = []
+        elif self.approval_archive_mode == "changed":
+            if not archive_index_current:
+                self.warn(
+                    "APPROVAL_ARCHIVE_INDEX_REQUIRED",
+                    "changed archive validation requires a current archive digest index; "
+                    "falling back to full audit",
+                    APPROVAL_ARCHIVE_INDEX_PATH.as_posix(),
+                )
+            else:
+                changed = self.git.changed_files(self.diff_ref or "HEAD")
+                if changed is None:
+                    self.warn(
+                        "APPROVAL_ARCHIVE_CHANGED_UNAVAILABLE",
+                        "changed approval archive scope is unavailable; falling back to full audit",
+                    )
+                else:
+                    changed_set = set(changed)
+                    archive_records = [
+                        record
+                        for record in archive_records
+                        if self.rel(record) in changed_set
+                        or not self.rel(record).startswith(
+                            ".ai/assistant/approvals/archive/"
+                        )
+                    ]
+        self.approval_archive_summary["records_checked"] = len(archive_records)
         if archive_records:
+            archive_finding_start = len(self.findings)
             self.check_approval_record_shape(archive_records)
             self.check_approval_hash_evidence(
                 archive_records, compare_current_patch=False
             )
+            if self.compact_archive_findings:
+                self._compact_approval_archive_findings(archive_finding_start)
             self.info(
                 "APPROVAL_ARCHIVE_CHECKED",
                 f"checked {len(archive_records)} historical approval record(s) "
                 "without applying them to the current operation",
+            )
+        if self.approval_archive_mode != "full":
+            self.info(
+                "APPROVAL_ARCHIVE_PARTIAL",
+                f"approval archive mode {self.approval_archive_mode} does not provide "
+                "complete historical acceptance evidence",
             )
         if approval_records:
             self.check_approval_record_shape(approval_records)
@@ -4475,14 +4578,82 @@ class Validator:
         return sorted(
             path
             for pattern in ("*.md", "*.json")
-            for path in directory.glob(pattern)
+            for path in directory.rglob(pattern)
             if path.name
             not in {
                 "approval-template.md",
                 "approval-record-template.json",
                 "context-index.json",
+                "archive-index.json",
             }
         )
+
+    def check_approval_archive_index(self) -> bool:
+        relpath = APPROVAL_ARCHIVE_INDEX_PATH.as_posix()
+        path = self.target_path(relpath)
+        # Older adapters predate this index. Required-file and migration
+        # checks own the absence; invalid JSON would be a misleading cascade.
+        if not self.is_target_file(path):
+            return False
+        data = self.load_json_object(path, "APPROVAL_ARCHIVE_INDEX")
+        if data is None:
+            return False
+        try:
+            schema = json.loads(
+                APPROVAL_ARCHIVE_INDEX_SCHEMA.read_text(encoding="utf-8")
+            )
+            jsonschema.validate(data, schema)
+        except (OSError, UnicodeError, json.JSONDecodeError, jsonschema.ValidationError) as exc:
+            message = exc.message if isinstance(exc, jsonschema.ValidationError) else str(exc)
+            self.error("APPROVAL_ARCHIVE_INDEX_SCHEMA", message, relpath)
+            return False
+        expected = build_archive_index(self.target)
+        if data != expected:
+            self.error(
+                "APPROVAL_ARCHIVE_INDEX_STALE",
+                "approval archive shard count or digest differs from current records",
+                relpath,
+            )
+            return False
+        self.info(
+            "APPROVAL_ARCHIVE_INDEX_CURRENT",
+            f"approval archive index covers {len(expected['shards'])} immutable shard(s)",
+            relpath,
+        )
+        return True
+
+    def _compact_approval_archive_findings(self, start: int) -> None:
+        archive_findings = self.findings[start:]
+        grouped: dict[tuple[str, str], list[Finding]] = {}
+        for finding in archive_findings:
+            if finding.level not in {"warning", "info"}:
+                continue
+            grouped.setdefault((finding.level, finding.code), []).append(finding)
+        replacements: list[Finding] = []
+        removed: set[int] = set()
+        grouped_count = 0
+        for (level, code), findings in grouped.items():
+            if len(findings) < 5:
+                continue
+            grouped_count += len(findings)
+            removed.update(id(finding) for finding in findings)
+            samples = ", ".join(
+                finding.path or "<no-path>" for finding in findings[:3]
+            )
+            replacements.append(
+                Finding(
+                    level,
+                    code,
+                    f"{len(findings)} historical approval finding(s); samples: {samples}",
+                    ".ai/assistant/approvals/",
+                )
+            )
+        if not removed:
+            return
+        self.findings[start:] = [
+            finding for finding in archive_findings if id(finding) not in removed
+        ] + replacements
+        self.approval_archive_summary["findings_grouped"] = grouped_count
 
     def load_approval_scope(self, record: Path) -> ApprovalScope | None:
         if record.suffix.lower() == ".json":
@@ -6289,6 +6460,108 @@ def adapter_health_state(
     return "ready"
 
 
+def layered_health_state(
+    findings: list[Finding],
+    *,
+    installation_state: str,
+    validation_phase: str,
+    validation_scope: str,
+    diff_ref: str | None = None,
+    approval_records_selected: int = 0,
+    change_packages_selected: int = 0,
+    approval_scope_enforced: bool = False,
+    change_package_enforced: bool = False,
+) -> dict[str, Any]:
+    installation_blocked = any(
+        is_blocking_finding(finding)
+        and finding.code.startswith(("INSTALLATION_", "MANIFEST_"))
+        for finding in findings
+    )
+    installation_layer = (
+        "degraded"
+        if installation_blocked
+        else installation_state
+        if installation_state in {"scaffolded", "staged", "accepted"}
+        else "unverified"
+    )
+
+    support_findings = [
+        finding
+        for finding in findings
+        if finding.code.startswith(
+            (
+                "SUPPORT_",
+                "CONTEXT_CATALOG_",
+                "CONTEXT_SEMANTIC_",
+                "BOOTSTRAP_",
+                "AGENT_ENTRY_",
+                "BASELINE_CLAIM_",
+                "FRAMEWORK_",
+                "MANIFEST_",
+                "REQUIRED_FILE_",
+                "VALIDATION_CONTRACT_",
+            )
+        )
+    ]
+    support_layer = (
+        "blocked"
+        if any(is_blocking_finding(finding) for finding in support_findings)
+        else "attention"
+        if any(finding.level == "warning" for finding in support_findings)
+        else "current"
+        if validation_phase == "acceptance" and validation_scope == "full"
+        else "unverified"
+    )
+
+    change_findings = [
+        finding
+        for finding in findings
+        if finding.code.startswith(
+            (
+                "APPROVAL_",
+                "DIFF_SCOPE_",
+                "PACKAGE_",
+                "CHANGE_PACKAGE_",
+                "TARGET_INPUT_MUTATED",
+                "TARGET_GIT_STATE_MUTATED",
+            )
+        )
+    ]
+    if diff_ref is None:
+        current_change_layer = "not-evaluated"
+    elif any(is_blocking_finding(finding) for finding in change_findings):
+        current_change_layer = "blocked"
+    elif not (approval_records_selected or change_packages_selected):
+        current_change_layer = "partial"
+    else:
+        current_change_layer = "structurally-checked"
+
+    return {
+        "installation": {
+            "state": installation_layer,
+            "declared_state": installation_state,
+            "meaning": "adapter installation transition evidence",
+        },
+        "support": {
+            "state": support_layer,
+            "meaning": "current generated and installed support surfaces",
+        },
+        "current_change": {
+            "state": current_change_layer,
+            "diff_ref": diff_ref,
+            "approval_records_selected": approval_records_selected,
+            "approval_scope_enforced": approval_scope_enforced,
+            "change_packages_selected": change_packages_selected,
+            "change_package_enforced": change_package_enforced,
+            "semantic_correctness_proven": False,
+            "meaning": (
+                "structural change evidence only; semantic correctness still requires "
+                "human and assistant reasoning"
+            ),
+        },
+    }
+
+
 def target_installation_state(
     target: Path,
     manifest: ManifestData | None = None,
@@ -6345,6 +6618,12 @@ def render_summary(
     validation_phase: str,
     installation_state: str = "unverified",
     validation_scope: str = "full",
+    diff_ref: str | None = None,
+    approval_records_selected: int = 0,
+    change_packages_selected: int = 0,
+    approval_scope_enforced: bool = False,
+    change_package_enforced: bool = False,
+    approval_archive_mode: str = "full",
 ) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
     for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
@@ -6371,10 +6650,29 @@ def render_summary(
     print(f"Alatyr adapter health: {health}")
     print(f"Validation phase: {validation_phase}")
     print(f"Validation scope: {validation_scope}")
+    layers = layered_health_state(
+        findings,
+        installation_state=installation_state,
+        validation_phase=validation_phase,
+        validation_scope=validation_scope,
+        diff_ref=diff_ref,
+        approval_records_selected=approval_records_selected,
+        change_packages_selected=change_packages_selected,
+        approval_scope_enforced=approval_scope_enforced,
+        change_package_enforced=change_package_enforced,
+    )
+    print(
+        "Health layers: "
+        f"installation={layers['installation']['state']} "
+        f"support={layers['support']['state']} "
+        f"current_change={layers['current_change']['state']}"
+    )
     if validation_phase == "migration-staging":
         print("Acceptance eligible: no; rerun in acceptance phase after resolving active placeholders")
     elif validation_scope == "changed":
         print("Acceptance eligible: no; rerun with --validation-scope full for final evidence")
+    elif approval_archive_mode != "full":
+        print("Acceptance eligible: no; rerun with --approval-archive-mode full for final evidence")
     repairs = prioritized_repair_operations(findings)
     if repairs:
         print("Suggested repair operations: " + ", ".join(repairs))
@@ -6406,6 +6704,12 @@ def findings_payload(
     validation_scope: str = "full",
     git_evidence: GitEvidenceView | None = None,
     phase_telemetry: list[dict[str, Any]] | None = None,
+    diff_ref: str | None = None,
+    approval_records_selected: int = 0,
+    change_packages_selected: int = 0,
+    approval_scope_enforced: bool = False,
+    change_package_enforced: bool = False,
+    approval_archive_summary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
@@ -6426,10 +6730,16 @@ def findings_payload(
         for finding in findings
         if finding.code in {"PLACEHOLDER_UNRESOLVED", "PLACEHOLDER_STAGING_UNRESOLVED"}
     )
+    archive_mode = (
+        approval_archive_summary.get("mode")
+        if isinstance(approval_archive_summary, dict)
+        else "full"
+    )
     acceptance_eligible = (
         resolved_installation_state == "accepted"
         and validation_phase == "acceptance"
         and validation_scope == "full"
+        and archive_mode == "full"
         and exit_code == 0
     )
     return {
@@ -6477,6 +6787,24 @@ def findings_payload(
             "observed_branch": observed_branch,
             "repair_operations": prioritized_repair_operations(findings),
             "automatic_repair_performed": False,
+        },
+        "health_layers": layered_health_state(
+            findings,
+            installation_state=resolved_installation_state,
+            validation_phase=validation_phase,
+            validation_scope=validation_scope,
+            diff_ref=diff_ref,
+            approval_records_selected=approval_records_selected,
+            change_packages_selected=change_packages_selected,
+            approval_scope_enforced=approval_scope_enforced,
+            change_package_enforced=change_package_enforced,
+        ),
+        "approval_archive": approval_archive_summary
+        or {
+            "mode": "full",
+            "records_discovered": 0,
+            "records_checked": 0,
+            "findings_grouped": 0,
         },
         "strict_warnings": strict_warnings,
         "execution": {
@@ -6649,6 +6977,21 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--approval-archive-mode",
+        choices=["auto", "full", "changed", "none"],
+        default="auto",
+        help=(
+            "Historical approval validation cost policy. auto uses full for full "
+            "validation and changed for changed-scope validation. Reduced modes "
+            "never provide complete archive acceptance evidence."
+        ),
+    )
+    parser.add_argument(
+        "--verbose-archive-findings",
+        action="store_true",
+        help="Retain one finding per historical approval instead of grouped findings.",
+    )
+    parser.add_argument(
         "--allow-placeholders",
         action="store_true",
         help=(
@@ -6683,6 +7026,13 @@ def main() -> int:
     validation_phase = (
         "migration-staging" if args.allow_placeholders else args.validation_phase
     )
+    approval_archive_mode = (
+        "full"
+        if args.approval_archive_mode == "auto" and args.validation_scope == "full"
+        else "changed"
+        if args.approval_archive_mode == "auto"
+        else args.approval_archive_mode
+    )
 
     config, config_findings = load_validator_config(args.target, args.config)
     enforce_approval_scope = approval_enforcement_enabled(
@@ -6709,6 +7059,8 @@ def main() -> int:
         initial_findings=config_findings,
         validation_phase=validation_phase,
         validation_scope=args.validation_scope,
+        approval_archive_mode=approval_archive_mode,
+        compact_archive_findings=not args.verbose_archive_findings,
     )
     findings = validator.run()
     payload = findings_payload(
@@ -6720,6 +7072,12 @@ def main() -> int:
         validation_scope=args.validation_scope,
         git_evidence=validator.git,
         phase_telemetry=validator.phase_telemetry,
+        diff_ref=args.diff_ref,
+        approval_records_selected=len(args.approval_record),
+        change_packages_selected=len(args.change_package),
+        approval_scope_enforced=enforce_approval_scope,
+        change_package_enforced=args.enforce_change_package,
+        approval_archive_summary=validator.approval_archive_summary,
     )
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -6736,6 +7094,12 @@ def main() -> int:
         validation_phase=validation_phase,
         installation_state=validator.installation_state,
         validation_scope=args.validation_scope,
+        diff_ref=args.diff_ref,
+        approval_records_selected=len(args.approval_record),
+        change_packages_selected=len(args.change_package),
+        approval_scope_enforced=enforce_approval_scope,
+        change_package_enforced=args.enforce_change_package,
+        approval_archive_mode=approval_archive_mode,
     )
 
 

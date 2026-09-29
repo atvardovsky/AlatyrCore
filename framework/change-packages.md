@@ -209,6 +209,13 @@ owners, project areas, provenance, approval references, active workstream, and
 residual risk. Load plan details, discussion evidence, companion decisions,
 corrections, or validation logs only when the active task needs them.
 
+When completed package records make a directory or recursive context index
+exceed its target budget, move completed records into bounded chronological
+subdirectories such as `change-packages/archive/2026-09/`. Keep active records
+and the compact machine index directly addressable. Regenerate recursive
+context indexes after the move; moving evidence does not change package
+identity, status, provenance, or canonical-owner references.
+
 Reuse the package across checkpoints and handoffs instead of rediscovering the
 same scope. Do not copy large source documents, raw chats, diffs, or test logs
 into the package.

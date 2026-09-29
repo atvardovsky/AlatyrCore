@@ -49,6 +49,18 @@ def run(target: Path, failures: list[str]) -> None:
             finding.code for finding in stale_catalogs.findings
         }:
             failures.append("context catalog content drift was not detected")
+        if any(
+            finding.code == "CONTEXT_CATALOG_REFERENCE_UNINDEXED"
+            and finding.path.startswith(".ai/assistant/")
+            for finding in stale_catalogs.findings
+        ):
+            failures.append(
+                "one stale contour must not cascade into unindexed-reference errors"
+            )
+        if "CONTEXT_CATALOG_COVERAGE_DEFERRED" not in {
+            finding.code for finding in stale_catalogs.findings
+        }:
+            failures.append("stale contour must report deferred dependent coverage")
         repair_result = subprocess.run(
             [
                 sys.executable,

@@ -27,6 +27,8 @@ Replace placeholders with target facts before accepting installation.
 - Assistant capabilities: `.ai/assistant/assistant-capabilities.json`
 - Adapter recheck flow: `.ai/assistant/flows/adapter-recheck.flow.md`
 - Health output contract: `.ai/assistant/templates/adapter-output-contracts.md`
+- Validation contract: `.ai/assistant/validation-contract.json`
+- Approval archive index: `.ai/assistant/approvals/archive-index.json`
 - Target validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`
 
 ## Steps
@@ -52,10 +54,19 @@ Replace placeholders with target facts before accepting installation.
    For the selected surface, report context caching as supported, unsupported,
    or unknown from its current provider/client evidence. Do not probe a provider
    or infer cache hits during this read-only health operation.
-8. Run a recorded target-local adapter validator when it exists and read-only
-   execution is permitted. Otherwise record the check as unavailable; do not
-   invent a command.
-9. Classify health as:
+8. Read the validation contract before running a target-local validator. State
+   whether the command delegates to canonical validation, provides a reviewed
+   target equivalent, checks structure only, or remains manual. Otherwise
+   record the check as unavailable; do not invent a command or treat a local
+   structural pass as canonical success.
+9. Report three layers before the aggregate compatibility status:
+   - `installation`: manifest transition and acceptance evidence;
+   - `support`: current generated and installed support surfaces;
+   - `current_change`: not evaluated without explicit diff/evidence inputs,
+     partial with incomplete scope, structurally checked with selected records,
+     or blocked by current-change findings.
+   The current-change layer never claims semantic correctness.
+10. Classify aggregate compatibility health as:
    - `ready`: installation state is `accepted`, required current checks passed,
      and no active placeholder or blocking finding remains;
    - `attention`: actionable non-blocking drift or stale evidence exists;
@@ -65,10 +76,10 @@ Replace placeholders with target facts before accepting installation.
    `scaffolded` or `staged` as `unverified` unless a blocking failure requires
    `blocked`. Report a stale `accepted` claim as installation-state drift and
    classify it from the current evidence.
-10. For each finding record severity, stable finding code, owning surface,
+11. For each finding record severity, stable finding code, owning surface,
    evidence, proposed repair operation, approval need, and automatic-repair
    eligibility from target policy.
-11. Return no more than three prioritized repair operations. Do not apply them
+12. Return no more than three prioritized repair operations. Do not apply them
    in this flow.
 
 ## Final Evidence
@@ -76,6 +87,7 @@ Replace placeholders with target facts before accepting installation.
 ```text
 Alatyr adapter health: <ready, attention, blocked, or unverified>
 Installation state: <scaffolded, staged, accepted, degraded, or invalid>
+Health layers: <installation>, <support>, <current_change>
 Acceptance eligibility: <eligible, ineligible, or unverified with reason>
 Evidence: <time and repository revision, or unknown>
 Checks run: <commands and manual checks>

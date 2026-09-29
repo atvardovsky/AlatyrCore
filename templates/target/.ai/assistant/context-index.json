@@ -151,8 +151,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 689,
-      "content_digest": "sha256:338fd4b883128d29f7d49595fa64d83b9c75565376ef39e1844464097de85432"
+      "estimated_words": 699,
+      "content_digest": "sha256:72a4f49772ac9b208711cd111252a933310582b098c017cd31ee4f4e0cd9551f"
     },
     {
       "id": "assistant.content.delegation-policy-json",
@@ -214,7 +214,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 345,
-      "content_digest": "sha256:7d77d746771bede7e2e2882751afbdb4bd4da83f4b82eb4fe2b38b2dbcde7af8"
+      "content_digest": "sha256:9bc1822e82b0c726d14d96253533a5a7f838333a90a880800ca77f842d8fdb93"
     },
     {
       "id": "assistant.content.help-md",
@@ -332,8 +332,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2983,
-      "content_digest": "sha256:aeb59a946a9fb142b305cd1b8747543770462e912a9564297e2ec12ac9126b90"
+      "estimated_words": 2996,
+      "content_digest": "sha256:dfa330d770f1e196ba9f6f9b1af0e935c3387f673ed1078744c0d575f732eb2b"
     },
     {
       "id": "assistant.content.operation-index-json",
@@ -351,8 +351,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 703,
-      "content_digest": "sha256:10516e2433cac000427dfe2371931b7257f2d9e25c2687b1c1a8318eb21025e2"
+      "estimated_words": 707,
+      "content_digest": "sha256:6e6283ce1ff34fe48df22e71745d0a61844303c0b90d0bfcc72ae4c75a967378"
     },
     {
       "id": "assistant.content.support-generation-index-json",
@@ -396,6 +396,26 @@
       "content_digest": "sha256:2f33b4eee06e7c33b05e065ce615eaccb189adabe80d8d543baf920a0d846732"
     },
     {
+      "id": "assistant.content.validation-contract-json",
+      "kind": "content",
+      "path": "validation-contract.json",
+      "summary": "Validation Contract",
+      "selectors": {
+        "path_terms": [
+          "validation",
+          "contract"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 54,
+      "content_digest": "sha256:24f8afc2c91c401f2300a37e9ce3350e5ed24d8572e0d265b7e0dd632e2486da"
+    },
+    {
       "id": "assistant.section.analysis-strategies",
       "kind": "index",
       "path": "analysis-strategies/context-index.json",
@@ -422,8 +442,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 123,
-      "content_digest": "sha256:54f094cc47429123c6d85227d658e8038cec9ad6205bc2fa7ef2168710766b72"
+      "estimated_words": 158,
+      "content_digest": "sha256:dfd2d6b8cd141b4055fddd6b395b7fd857766316c61ab9c00ec1f03ee0ca38d8"
     },
     {
       "id": "assistant.section.assistant-capabilities",
@@ -513,7 +533,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1202,
-      "content_digest": "sha256:a3afd3fc6233274699689b09bac91607961623d76340c07daef7cad4d22d6658"
+      "content_digest": "sha256:25f1e4118196d29dc359da53f0ed3370fae19d2b1dafee898051fedea6ebcacb"
     },
     {
       "id": "assistant.section.gates",

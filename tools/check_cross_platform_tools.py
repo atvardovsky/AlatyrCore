@@ -45,6 +45,8 @@ EXPECTED_COMMANDS = {
     "generate-support",
     "validate-adapter",
     "approval-check",
+    "archive-approvals",
+    "suggest-knowledge",
     "status",
     "doctor",
     "migration-report",

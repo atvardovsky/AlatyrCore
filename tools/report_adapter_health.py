@@ -43,6 +43,7 @@ def health_payload(
         config=config,
         initial_findings=config_findings,
         validation_phase=phase,
+        approval_archive_mode="changed",
     )
     findings = validator.run()
     return findings_payload(
@@ -51,6 +52,8 @@ def health_payload(
         strict_warnings=strict_warnings,
         validation_phase=phase,
         installation_state=validator.installation_state,
+        phase_telemetry=validator.phase_telemetry,
+        approval_archive_summary=validator.approval_archive_summary,
     )
 
 
@@ -64,6 +67,7 @@ def finding_line(finding: dict[str, Any]) -> str:
 
 def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     health = payload.get("adapter_health", {})
+    layers = payload.get("health_layers", {})
     evidence = payload.get("evidence", {})
     counts = payload.get("counts", {})
     placeholder = payload.get("placeholder_validation", {})
@@ -90,6 +94,12 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     lines = [
         f"Alatyr adapter health: {display(health.get('state'))}",
         f"Installation state: {display(payload.get('installation_state'))}",
+        (
+            "Health layers: "
+            f"installation={display(layers.get('installation', {}).get('state'))} "
+            f"support={display(layers.get('support', {}).get('state'))} "
+            f"current_change={display(layers.get('current_change', {}).get('state'))}"
+        ),
         f"Validation phase: {display(payload.get('validation_phase'))}",
         f"Acceptance eligible: {'yes' if accepted else 'no'}",
         f"Evidence basis: {display(evidence.get('basis'))}",

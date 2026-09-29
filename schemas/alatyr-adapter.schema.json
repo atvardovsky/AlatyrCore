@@ -105,8 +105,10 @@
     },
     "validation": {
       "type": "object",
-      "required": ["commands"],
+      "required": ["contract", "baseline_claim_surfaces", "commands"],
       "properties": {
+        "contract": {"const": ".ai/assistant/validation-contract.json"},
+        "baseline_claim_surfaces": {"$ref": "#/definitions/stringArray"},
         "commands": {
           "type": "array",
           "minItems": 1,
@@ -197,7 +199,16 @@
       }
     },
     "maturity": {"type": "object", "required": ["profile"]},
-    "approvals": {"type": "object", "required": ["directory", "template", "machine_template"]},
+    "approvals": {
+      "type": "object",
+      "required": ["directory", "archive_index"],
+      "properties": {
+        "directory": {"const": ".ai/assistant/approvals"},
+        "archive_index": {"const": ".ai/assistant/approvals/archive-index.json"},
+        "template": {"type": "string", "minLength": 1},
+        "machine_template": {"type": "string", "minLength": 1}
+      }
+    },
     "dependency_knowledge": {
       "type": ["object", "null"],
       "properties": {

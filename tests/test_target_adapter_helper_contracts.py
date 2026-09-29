@@ -56,6 +56,8 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
             "PACKET_SCHEMA",
             "PROBLEM_MODEL_PROJECTION_SCHEMA",
             "PROBLEM_MODEL_SCHEMA",
+            "APPROVAL_ARCHIVE_INDEX_SCHEMA",
+            "VALIDATION_CONTRACT_SCHEMA",
         }
         explicitly_external_functions = {
             "load_validator_config",

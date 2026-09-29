@@ -45,7 +45,9 @@ Replace placeholders with target facts before accepting installation.
   `.ai/project/debug`
 - AI infrastructure route/item contracts and adaptation records under
   `.ai/assistant/ai-infrastructure-router.json` and target-owned record paths
-- target validation commands or manual checks
+- target validation commands or manual checks, with canonical-delegate,
+  target-equivalent, structural-only, or manual coverage declared in
+  `.ai/assistant/validation-contract.json`
 - blueprint-driven change or equivalent target product-change workflow
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows

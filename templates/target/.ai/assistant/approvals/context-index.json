@@ -62,6 +62,30 @@
       ],
       "estimated_words": 203,
       "content_digest": "sha256:b6bba8246afd5786bf97f6b5852f4a505d37692804439e25717feffa3f01a3b4"
+    },
+    {
+      "id": "assistant.content.approvals-archive-index-json",
+      "kind": "content",
+      "path": "approvals/archive-index.json",
+      "summary": "Archive Index",
+      "selectors": {
+        "path_terms": [
+          "approvals",
+          "archive"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:current-scope-authorization@1",
+        "alatyr:protected-change@1"
+      ],
+      "owner_refs": [
+        "ALATYR-APPROVAL-001",
+        "ALATYR-AUTHORIZATION-001",
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 8,
+      "content_digest": "sha256:234018c9d8c2229df5d8fc4230260110cbcb564a3b1071f5404c0fd8c4629038"
     }
   ]
 }

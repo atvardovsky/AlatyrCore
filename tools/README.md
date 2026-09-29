@@ -25,6 +25,8 @@ python3 tools/alatyr.py status --target /path/to/target-repo
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py approval-check --target /path/to/target-repo --diff-ref HEAD~1 --approval-record .ai/assistant/approvals/approval.json
+python3 tools/alatyr.py archive-approvals --target /path/to/target-repo
+python3 tools/alatyr.py suggest-knowledge --target /path/to/target-repo
 python3 tools/alatyr.py render-entry --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo --write

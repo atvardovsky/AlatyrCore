@@ -98,6 +98,11 @@ modules:
   blocked:
     - "{BLOCKED_MODULE_AND_MISSING_FACT}"
 validation:
+  contract: ".ai/assistant/validation-contract.json"
+  baseline_claim_surfaces:
+    - ".ai/assistant/lifecycle.md"
+    - ".ai/assistant/maturity-profile.md"
+    - ".ai/assistant/module-profile.md"
   commands:
     - name: "{VALIDATION_NAME}"
       command: "{TARGET_VALIDATION_COMMAND_OR_MANUAL_REVIEW}"
@@ -240,6 +245,7 @@ bridges:
   capabilities: ".ai/assistant/assistant-capabilities.json"
 approvals:
   directory: ".ai/assistant/approvals"
+  archive_index: ".ai/assistant/approvals/archive-index.json"
   template: ".ai/assistant/approvals/approval-template.md"
   machine_template: ".ai/assistant/approvals/approval-record-template.json"
 change_packages:

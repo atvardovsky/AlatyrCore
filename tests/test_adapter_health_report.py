@@ -26,6 +26,21 @@ class AdapterHealthReportTests(unittest.TestCase):
 
         self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
         self.assertEqual(payload["adapter_health"]["state"], "unverified")
+        self.assertEqual(
+            payload["health_layers"]["current_change"]["state"], "not-evaluated"
+        )
+
+    def test_partial_archive_mode_never_produces_acceptance_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = findings_payload(
+                [],
+                target=Path(directory),
+                strict_warnings=False,
+                installation_state="accepted",
+                approval_archive_summary={"mode": "changed"},
+            )
+
+        self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
 
     def test_staging_health_is_unverified_and_not_acceptance_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -41,6 +56,11 @@ class AdapterHealthReportTests(unittest.TestCase):
 
         self.assertIn("Alatyr adapter health: unverified", text)
         self.assertIn("Installation state: staged", text)
+        self.assertIn(
+            "Health layers: installation=staged support=unverified "
+            "current_change=not-evaluated",
+            text,
+        )
         self.assertIn("Acceptance eligible: no", text)
         self.assertIn("Observed revision: unavailable", text)
         self.assertNotIn("None", text)
@@ -60,6 +80,66 @@ class AdapterHealthReportTests(unittest.TestCase):
         self.assertIn("Alatyr adapter health: blocked", text)
         self.assertIn("Blocking findings:", text)
         self.assertIn("MANIFEST_SCHEMA: invalid manifest [.ai/alatyr.yaml]", text)
+        self.assertEqual(payload["health_layers"]["installation"]["state"], "degraded")
+
+    def test_stale_support_does_not_change_accepted_installation_layer(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = findings_payload(
+                [
+                    Finding(
+                        "error",
+                        "SUPPORT_STATE_STALE",
+                        "support state differs",
+                        ".ai/support-state.json",
+                    )
+                ],
+                target=Path(directory),
+                strict_warnings=False,
+                installation_state="accepted",
+            )
+
+        self.assertEqual(payload["health_layers"]["installation"]["state"], "accepted")
+        self.assertEqual(payload["health_layers"]["support"]["state"], "blocked")
+        self.assertEqual(
+            payload["health_layers"]["current_change"]["state"], "not-evaluated"
+        )
+
+    def test_missing_required_contract_blocks_support_layer(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = findings_payload(
+                [
+                    Finding(
+                        "error",
+                        "REQUIRED_FILE_MISSING",
+                        "required adapter file is missing",
+                        ".ai/assistant/validation-contract.json",
+                    )
+                ],
+                target=Path(directory),
+                strict_warnings=False,
+                installation_state="accepted",
+            )
+
+        self.assertEqual(payload["health_layers"]["installation"]["state"], "accepted")
+        self.assertEqual(payload["health_layers"]["support"]["state"], "blocked")
+
+    def test_selected_change_evidence_is_reported_separately(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = findings_payload(
+                [],
+                target=Path(directory),
+                strict_warnings=False,
+                installation_state="accepted",
+                diff_ref="HEAD~1",
+                approval_records_selected=1,
+                change_packages_selected=1,
+                approval_scope_enforced=True,
+                change_package_enforced=True,
+            )
+
+        current = payload["health_layers"]["current_change"]
+        self.assertEqual(current["state"], "structurally-checked")
+        self.assertFalse(current["semantic_correctness_proven"])
 
     def test_status_mode_omits_detailed_repair_findings(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

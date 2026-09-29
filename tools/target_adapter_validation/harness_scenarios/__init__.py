@@ -10,6 +10,7 @@ from . import (
     analysis_strategies,
     assistant_surfaces,
     authorization,
+    baseline_claims,
     capabilities_delegation,
     context_catalogs,
     context_routing,
@@ -22,6 +23,7 @@ from . import (
     support_information,
     team_collaboration,
     testing_dependencies,
+    validation_contract,
     workspace_modes,
 )
 
@@ -31,6 +33,7 @@ SCENARIOS: Tuple[Tuple[str, Scenario], ...] = (
     ("context-catalogs", context_catalogs.run),
     ("assistant-surfaces", assistant_surfaces.run),
     ("authorization", authorization.run),
+    ("baseline-claims", baseline_claims.run),
     ("analysis-strategies", analysis_strategies.run),
     ("session-continuity", session_continuity.run),
     ("context-routing", context_routing.run),
@@ -44,6 +47,7 @@ SCENARIOS: Tuple[Tuple[str, Scenario], ...] = (
     ("support-information", support_information.run),
     ("team-collaboration", team_collaboration.run),
     ("approval-scope", approval_scope.run),
+    ("validation-contract", validation_contract.run),
     ("evidence-contracts", evidence_contracts.run),
 )
 

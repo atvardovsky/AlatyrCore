@@ -35,7 +35,7 @@
       ],
       "canonical_owner_digests": {
         "alatyr:changed-fact-not-file@1": "sha256:79b27ecba6056a960c4fa09293476b2e146a2cfe93134d7e21e79ce001b564cb",
-        "alatyr:coherent-change-package@1": "sha256:cb9cd1037d27cf67f609db309e230b8d871d65fefbf763b9f97a021e4523a1fd"
+        "alatyr:coherent-change-package@1": "sha256:0bf98e37ef0e354b03f432650cfae79c520b56dfb348709851834377b1bedf77"
       },
       "content_digest": "sha256:290581ca65581c08a51b1408ae1a65efcd5ed67ce37f8b6b92b15858ace94a0e"
     },
@@ -117,7 +117,7 @@
         "alatyr:current-scope-authorization@1": "sha256:019c5329aff2d29a4b3b8a78694b3e1fa0640bd9c05c006664fbf7f9822fa48c",
         "alatyr:canonical-owner@1": "sha256:af17bf350b75490789532e2d937d8b8c1df96a2166e2d95054d6019a144d1f1a",
         "alatyr:risk-by-fact@1": "sha256:f72a84e252abedc5d1797a7034556a2713cb1a8fb3ec8b609fbb6e0e573cd1db",
-        "alatyr:protected-change@1": "sha256:45b9d377710693fa0711015ebfb4f4f17bc768fe2af71c6be6946181a7300427",
+        "alatyr:protected-change@1": "sha256:112f8b4c4e3d0487c60cec45af94efc33e67823c9ba96565cca870499b650030",
         "alatyr:logical-integrity@1": "sha256:79b27ecba6056a960c4fa09293476b2e146a2cfe93134d7e21e79ce001b564cb",
         "alatyr:bounded-context-expansion@1": "sha256:d9fbd9993647402cd278482a068298a780d96af54c4f685301541c82a4c56568"
       },
@@ -172,8 +172,8 @@
         "alatyr:observed-is-not-accepted@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:accepted-current@1": "sha256:47b4849783a12149d80ae900bf268edc123112fd41d0392035c36a2688cb17f6",
-        "alatyr:observed-is-not-accepted@1": "sha256:47b4849783a12149d80ae900bf268edc123112fd41d0392035c36a2688cb17f6"
+        "alatyr:accepted-current@1": "sha256:0cb1cc6f146d0d9263cd717ec68d18ab21e2040311d358078f4d4e5d8c4675ef",
+        "alatyr:observed-is-not-accepted@1": "sha256:0cb1cc6f146d0d9263cd717ec68d18ab21e2040311d358078f4d4e5d8c4675ef"
       },
       "content_digest": "sha256:df16defad839350502cefea040b689189cb7cf3481e7c8ac0948759249b3a783"
     },

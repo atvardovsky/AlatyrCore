@@ -31,8 +31,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 621,
-      "content_digest": "sha256:1d83aa3a7864a9fca50b3a469ade70e5653c26771319adbebfadf27f123d4ca1"
+      "estimated_words": 713,
+      "content_digest": "sha256:8c0e7c680453f092f721ab04578445d52c5ad823dd24f4533ca328887ffc1a38"
     },
     {
       "id": "assistant.content.flows-adapter-recheck-flow-md",
@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1851,
-      "content_digest": "sha256:168d733c9a80bf0b45671bbe87ea3d68a4894528922a5c3f644a4d887f0d4acb"
+      "estimated_words": 1890,
+      "content_digest": "sha256:bbfbc60cdd03b23b0c171d3aa1e0e0a3aad6cc73babdee7030a73f1c4b1ae435"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -458,8 +458,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 674,
-      "content_digest": "sha256:fb9250ea0fe2cd69f02da0e5cb89e05beb94e2c340310191f585f4a69f68ecf0"
+      "estimated_words": 710,
+      "content_digest": "sha256:c620e3513e4110c89a1de9196066c5baabaa1d91f273c1707cfd310f88d157a0"
     },
     {
       "id": "assistant.content.flows-project-vocabulary-flow-md",

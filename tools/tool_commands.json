@@ -116,6 +116,18 @@
       "write_scope": "none"
     },
     {
+      "name": "archive-approvals",
+      "script": "render_approval_archive_index.py",
+      "purpose": "check or explicitly regenerate the target approval archive digest index",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
+      "name": "suggest-knowledge",
+      "script": "suggest_project_knowledge.py",
+      "purpose": "suggest review-only project knowledge candidates from completed package summaries",
+      "write_scope": "none"
+    },
+    {
       "name": "status",
       "script": "report_adapter_health.py",
       "purpose": "report compact read-only installed adapter health",

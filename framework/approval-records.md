@@ -137,6 +137,20 @@ Installed adapters should reserve a target-owned approval directory, commonly:
 .ai/assistant/approvals/
 ```
 
+Keep active or reusable records directly addressable. When a flat directory or
+its generated context index approaches the target context budget, move only
+completed historical records into monthly shards such as
+`.ai/assistant/approvals/archive/2026-09/`. Generate
+`.ai/assistant/approvals/archive-index.json` after the move. The index binds
+each shard by record count and content digest so routine changed-scope checks
+can verify unchanged history without loading every record.
+
+Archive movement does not change an approval's meaning, scope, identity, or
+authorization state. A complete acceptance or explicit archive audit still
+deep-validates every record. Changed-scope validation may deep-check active and
+changed records while verifying unchanged shards by digest, but that reduced
+mode is not complete historical acceptance evidence.
+
 Approval records are target adapter evidence, not portable framework core.
 The target may choose whether committed records are allowed, redacted, or
 stored outside the repository.

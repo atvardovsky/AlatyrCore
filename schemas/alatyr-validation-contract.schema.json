@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-validation-contract.schema.json",
+  "title": "Alatyr target validation contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_kind", "entrypoints", "parity"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "contract_kind": {"const": "target-validation-contract"},
+    "entrypoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter-health", "current-change", "archive-audit"],
+      "properties": {
+        "adapter-health": {"$ref": "#/definitions/entrypoint"},
+        "current-change": {"$ref": "#/definitions/entrypoint"},
+        "archive-audit": {"$ref": "#/definitions/entrypoint"}
+      }
+    },
+    "parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["local_pass_is_canonical", "comparison", "result_evidence"],
+      "properties": {
+        "local_pass_is_canonical": {"const": false},
+        "comparison": {"const": "canonical-result-required"},
+        "result_evidence": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "definitions": {
+    "entrypoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "coverage", "final_evidence_eligible"],
+      "properties": {
+        "command": {"type": "string", "minLength": 1},
+        "coverage": {
+          "enum": ["canonical-delegate", "target-equivalent", "structural-only", "manual"]
+        },
+        "final_evidence_eligible": {"type": "boolean"}
+      }
+    }
+  }
+}

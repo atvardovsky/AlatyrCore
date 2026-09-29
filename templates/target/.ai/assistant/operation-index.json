@@ -48,6 +48,7 @@
     "Alatyr capture evidence": "engineering-evidence",
     "Alatyr explain decision": "engineering-evidence",
     "Alatyr knowledge": "project-knowledge",
+    "Alatyr suggest knowledge": "project-knowledge",
     "Alatyr remember this": "project-knowledge",
     "Alatyr record guidance": "project-knowledge",
     "Alatyr what do we know": "project-knowledge",

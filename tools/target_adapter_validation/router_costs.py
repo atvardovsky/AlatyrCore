@@ -204,12 +204,43 @@ def validate_installed_costs(
         sink.error("ROUTER_BOOTSTRAP_COST", "bootstrap exceeds max_files", SOURCE)
     if isinstance(max_bootstrap_words, int) and bootstrap_words > max_bootstrap_words:
         sink.error("ROUTER_BOOTSTRAP_COST", "bootstrap exceeds max_words", SOURCE)
+    soft_bootstrap_words = bootstrap_budget.get("soft_max_words")
+    if (
+        isinstance(soft_bootstrap_words, int)
+        and bootstrap_words > soft_bootstrap_words
+        and not (
+            isinstance(max_bootstrap_words, int)
+            and bootstrap_words > max_bootstrap_words
+        )
+    ):
+        sink.warn(
+            "ROUTER_BOOTSTRAP_SOFT_LIMIT",
+            f"bootstrap measures {bootstrap_words} words above soft_max_words "
+            f"{soft_bootstrap_words}; preserve reserve before adding context",
+            SOURCE,
+        )
     max_bootstrap_characters = bootstrap_budget.get("max_characters")
     if (
         isinstance(max_bootstrap_characters, int)
         and bootstrap_characters > max_bootstrap_characters
     ):
         sink.error("ROUTER_BOOTSTRAP_COST", "bootstrap exceeds max_characters", SOURCE)
+    soft_bootstrap_characters = bootstrap_budget.get("soft_max_characters")
+    if (
+        isinstance(soft_bootstrap_characters, int)
+        and bootstrap_characters > soft_bootstrap_characters
+        and not (
+            isinstance(max_bootstrap_characters, int)
+            and bootstrap_characters > max_bootstrap_characters
+        )
+    ):
+        sink.warn(
+            "ROUTER_BOOTSTRAP_SOFT_LIMIT",
+            f"bootstrap measures {bootstrap_characters} characters above "
+            f"soft_max_characters {soft_bootstrap_characters}; preserve reserve "
+            "before adding context",
+            SOURCE,
+        )
 
     profile_index = router.get("profile_index", {})
     profile_references: dict[str, list[str]] = {}

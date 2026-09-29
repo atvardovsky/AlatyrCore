@@ -669,11 +669,29 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo --framewo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-phase migration-staging
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-phase acceptance
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-scope changed --diff-ref HEAD~1
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-scope changed --diff-ref HEAD~1 --approval-archive-mode changed
+python3 tools/alatyr.py archive-approvals --target /path/to/target-repo
+python3 tools/alatyr.py suggest-knowledge --target /path/to/target-repo
 ```
 
 The changed validation scope is a bounded development-loop check and cannot
 produce final acceptance evidence. Always rerun the default full scope before
 accepting an installation or update.
+
+Installed adapters declare their target-local entry points in
+`.ai/assistant/validation-contract.json`. The contract separates adapter
+health, current-change validation, and complete archive audit and states
+whether each entry point delegates to canonical validation, provides a
+target-equivalent check, checks structure only, or remains manual. A local
+checker pass must not be presented as canonical acceptance without that
+binding and its result evidence.
+
+Large approval histories may be stored under monthly archive directories. The
+archive index lets routine changed-scope validation verify unchanged shards by
+digest and deep-check only changed records. Full acceptance and explicit
+archive audit still inspect the complete history. The knowledge-suggestion
+helper is read-only: repeated completed-package summaries are candidates for
+owner review, never automatic project knowledge.
 
 Windows users may run the same helper through `py -3` or the provided
 Command Prompt and PowerShell wrappers under `tools/`.

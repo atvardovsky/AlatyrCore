@@ -55,8 +55,8 @@
       "owner_refs": [
         "ALATYR-APPROVAL-001"
       ],
-      "estimated_words": 1130,
-      "content_digest": "sha256:45b9d377710693fa0711015ebfb4f4f17bc768fe2af71c6be6946181a7300427"
+      "estimated_words": 1238,
+      "content_digest": "sha256:112f8b4c4e3d0487c60cec45af94efc33e67823c9ba96565cca870499b650030"
     },
     {
       "id": "framework.core.bridge-capability-matrix-md",
@@ -292,8 +292,8 @@
       "owner_refs": [
         "ALATYR-ADAPTER-001"
       ],
-      "estimated_words": 1109,
-      "content_digest": "sha256:783d9419b5c40658385e1a1574a736023156fdc6d9cf3be669b491c8c47e2ad6"
+      "estimated_words": 1175,
+      "content_digest": "sha256:c9d2973ab1f79e16abe5157caf15078075ac0b95ad2dd9785fa8b85beb6f90f5"
     },
     {
       "id": "framework.core.prompt-injection-md",
@@ -363,8 +363,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4456,
-      "content_digest": "sha256:907dc4888175359734dce5c9ffe63c282757bfac91eb590bd4a5341f06593edc"
+      "estimated_words": 4541,
+      "content_digest": "sha256:24c6416fbe198d1af8188875ef00a458f8a222f48e34f83bc61f7e6adcee2eac"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -382,8 +382,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3600,
-      "content_digest": "sha256:410e8f0f37e4abe3523e8cc0af13611bd7e21ab53d6b32ceaa766a2754677c3e"
+      "estimated_words": 3685,
+      "content_digest": "sha256:0038c96c558fb40355c8e3e89898001ad4a321af09c648abc55541589850aab0"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 320,
-      "content_digest": "sha256:7f91c44de4c212cbe0ef7beb27214e36c253df8c69267f0046631a1c7fde107f"
+      "content_digest": "sha256:73b9ed5a8486a0313063a82c2490d42fe0a9c11f53d8e34d4929d8f571ac720c"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

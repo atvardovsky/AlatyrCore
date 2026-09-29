@@ -158,6 +158,13 @@ surfaces to focused checks and affected optional modules. Full validation still
 remains the acceptance boundary for installations, framework updates, and
 releases; faster feedback does not replace logical integrity review.
 
+Adapter health is intentionally layered. Installation acceptance, current
+support-information freshness, and validation of the present change are
+reported separately. Target-local checker commands declare whether they call
+canonical validation, provide target-equivalent coverage, check structure
+only, or remain manual, so a fast green result is not mistaken for broader
+evidence.
+
 This is the practical distinction:
 
 - **The AI agent performs the work.** It reads, explains, investigates, and
@@ -577,7 +584,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.70`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.71`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

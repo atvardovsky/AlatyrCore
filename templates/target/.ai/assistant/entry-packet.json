@@ -10,17 +10,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:c9002dcbbeb2d5034f24cc9e7fb6d18f6f5d522e46e630cf3513a69116b476ae",
+    "target_manifest_digest": "sha256:0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.70",
-    "adapter_schema_version": "58",
-    "template_version": "65"
+    "framework_version": "0.1.0-alpha.71",
+    "adapter_schema_version": "59",
+    "template_version": "66"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "c9002dcbbeb2d5034f24cc9e7fb6d18f6f5d522e46e630cf3513a69116b476ae"
+      "sha256": "0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
@@ -48,11 +48,11 @@
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",
-      "sha256": "10516e2433cac000427dfe2371931b7257f2d9e25c2687b1c1a8318eb21025e2"
+      "sha256": "6e6283ce1ff34fe48df22e71745d0a61844303c0b90d0bfcc72ae4c75a967378"
     },
     "operation_catalog": {
       "path": ".ai/assistant/operation-catalog.json",
-      "sha256": "aeb59a946a9fb142b305cd1b8747543770462e912a9564297e2ec12ac9126b90"
+      "sha256": "dfa330d770f1e196ba9f6f9b1af0e935c3387f673ed1078744c0d575f732eb2b"
     }
   },
   "installation": {

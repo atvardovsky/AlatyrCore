@@ -81,8 +81,13 @@ Every project using this framework must define these structural bindings:
   canonical cross-platform digests, changed-surface evidence, and bounded
   impact routing with unresolved relationship candidates kept non-authoritative.
 - **Local execution bindings:** project-specific validation, approval,
-  authorization, safety, output-evidence, and checker status. Missing local
-  automation must be reported as a gap rather than represented as available.
+  authorization, safety, output-evidence, and checker status. A target
+  validation contract must distinguish adapter health, current-change
+  validation, and complete archive audit, and classify each local command as a
+  canonical delegate, target-equivalent check, structural-only check, or
+  manual review. Missing local automation must be reported as a gap rather
+  than represented as available. A local green result is not canonical
+  acceptance unless the declared contract and evidence support that claim.
 - **Acceptance evidence:** an explicit staged or accepted result showing that
   installed files, selected capability state, target facts, local checks, and
   unresolved placeholders were evaluated at the target revision.
@@ -139,6 +144,8 @@ The adapter must not:
 - copy detailed downstream policy into aggregate adapter surfaces instead of
   referencing its canonical rule owner
 - represent staged, unresolved, or unchecked content as an accepted adapter
+- let one aggregate health value hide an accepted installation with stale
+  support information or an unevaluated current change
 - let assistant bridges or generated summaries become divergent sources of
   truth
 - let recursive indexes, semantic terms, or context packets become canonical

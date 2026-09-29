@@ -102,6 +102,15 @@ recur, or an explanation of why a constraint exists. Do not propose line
 numbers, obvious declarations, complete source summaries, or facts that are
 already cheaply and reliably routed from their canonical owner.
 
+Candidate discovery should start from compact, validated change-package and
+engineering-evidence summaries. Repeated project areas, canonical owners,
+stable fact IDs, invariants, rejected directions, or compatibility traps may
+trigger a read-only suggestion. A frequency signal is not semantic proof and
+must never create a promotion, edit a canonical owner, or mark guidance
+accepted automatically. The source helper `tools/suggest_project_knowledge.py`
+provides this bounded suggestion route when AlatyrCore source tools are
+available.
+
 Each proposal or directive should identify:
 
 - the candidate statement and reuse rationale

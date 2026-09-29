@@ -331,12 +331,14 @@ def _validate_packet_receipt(sink: FindingSink, receipt: Any) -> None:
 
 def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
     resolutions = {}
+    failed_contours: set[str] = set()
     indexed_paths: set[str] = set()
     semantic_refs: set[str] = set()
     for contour, relpath in CATALOG_ROOTS.items():
         root = sink.target_path(f".ai/{contour}")
         index = sink.target_path(relpath)
         if not sink.is_target_file(index):
+            failed_contours.add(contour)
             sink.error(
                 "CONTEXT_CATALOG_MISSING",
                 f"{contour} recursive context index is missing",
@@ -346,6 +348,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
         try:
             resolution = validate_context_catalog(index, catalog_root=root)
         except (OSError, UnicodeError, ContextCatalogError) as exc:
+            failed_contours.add(contour)
             sink.error(
                 "CONTEXT_CATALOG_INVALID",
                 f"{contour} recursive context index is invalid: {exc}",
@@ -392,6 +395,16 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
             or relpath in DERIVED_ROUTING_REFERENCES
         ):
             continue
+        contour = next(
+            (
+                candidate
+                for candidate in CATALOG_ROOTS
+                if relpath.startswith(f".ai/{candidate}/")
+            ),
+            None,
+        )
+        if contour in failed_contours:
+            continue
         path = sink.target_path(relpath)
         if sink.is_target_file(path) and relpath not in indexed_paths:
             sink.error(
@@ -399,6 +412,13 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
                 f"live adapter reference is absent from recursive indexes: {relpath}",
                 relpath,
             )
+
+    if failed_contours:
+        sink.info(
+            "CONTEXT_CATALOG_COVERAGE_DEFERRED",
+            "reference coverage was deferred for invalid contours: "
+            + ", ".join(sorted(failed_contours)),
+        )
 
     codebook_path = sink.target_path(CODEBOOK)
     try:

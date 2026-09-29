@@ -34,6 +34,12 @@ manifest. The retained metadata-first discovery evidence lives at
 explicit disposition before acceptance, but the receipt does not replace its
 named canonical project owner. Neither record grants authorization or approval.
 
+Do not collapse installation acceptance, support-information freshness, and
+current-change validation into one health claim. Their layered result and the
+coverage of each target-local command are owned by
+`.ai/assistant/validation-contract.json`. A structural-only local pass is not
+canonical acceptance.
+
 ## Framework Area
 
 `.ai/framework` contains Alatyr Core portable framework rules.

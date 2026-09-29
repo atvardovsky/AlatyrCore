@@ -214,6 +214,11 @@ Replace placeholders with target facts before accepting installation.
     accepted, or complete evidence. Before accepting an installation or
     update, resolve active placeholders and rerun strict `acceptance`
     validation on the checked-out branch/revision.
+    Reconcile `.ai/assistant/validation-contract.json`, current manifest-owned
+    baseline claims, and `.ai/assistant/approvals/archive-index.json`. Use
+    changed archive validation only for routine feedback; full acceptance and
+    explicit archive audits must deep-check complete history. Rebuild recursive
+    context indexes after any archive move and generate support state last.
 19. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Current files prove current structure only; name dated operation, approval,
     validation, or migration records before making historical claims.

@@ -404,6 +404,9 @@ def build_from_target(target: Path) -> dict[str, Any]:
         for text in [_load_optional_text(target, path)]
         if text is not None
     }
+    available_paths = {
+        relpath for relpath in LAZY_HEAVY_SURFACES if (target / relpath).is_file()
+    }
     return build_agent_entry_packet(
         source_texts["manifest"],
         source_texts["context_router"],
@@ -418,11 +421,7 @@ def build_from_target(target: Path) -> dict[str, Any]:
             target,
             tool_name="render_target_entry_packet.py",
         ),
-        available_paths={
-            path.relative_to(target).as_posix()
-            for path in target.rglob("*")
-            if path.is_file()
-        },
+        available_paths=available_paths,
     )
 
 

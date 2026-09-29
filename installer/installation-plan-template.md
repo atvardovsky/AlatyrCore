@@ -222,6 +222,12 @@ Include `.ai/alatyr.yaml` or an equivalent manifest with framework version,
 adapter schema version, template version, owner, source-of-truth files,
 validation entry points, known gaps, and local deviations.
 
+Include `.ai/assistant/validation-contract.json` with separate adapter-health,
+current-change, and archive-audit entry points. Classify each command as a
+canonical delegate, reviewed target equivalent, structural-only check, or
+manual review. Include an empty approval archive digest index and define when
+monthly archive sharding becomes necessary.
+
 Include `.ai/assistant/discovery-report.json` as the typed retained receipt for
 installation, update, repair, or recheck evidence. Every material finding must
 retain an evidence selector and end as projected into a named artifact,
@@ -613,6 +619,10 @@ List source or example facts that must not be copied into the target project.
 
 Validation commands must come from the target repository. If no command exists,
 write a manual review item or mark the check unresolved.
+
+State which validation entry point proves installation/support health, which
+checks the current change, and which deep-validates historical archives. A
+changed-scope or partial archive run cannot be the final acceptance check.
 
 ## Approval Required
 

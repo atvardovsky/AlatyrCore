@@ -46,6 +46,13 @@ The source repository supplies portable rules and placeholder templates. It
 does not supply the target's business facts, architecture, commands, security
 policy, owners, or validation.
 
+An installed target must also declare what its local checker actually proves.
+Use the target validation contract to distinguish adapter health,
+current-change validation, and full archive audit. Do not equate a fast local
+structural pass with canonical acceptance, and do not collapse accepted
+installation state, support freshness, and current-change coverage into one
+claim.
+
 ### Working In An Installed Target Project
 
 Use the target repository's own entry points, normally:

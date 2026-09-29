@@ -120,9 +120,10 @@ Installed owner: `.ai/framework/approval-records.md`
 Commitment: Require explicit approval for protected changes, keep that approval
 distinct from current-scope action authorization, use explicitly selected
 machine-readable records to enforce that the complete operation diff stays
-within approved path scope, and reconcile activated package facts, architecture
+within approved path scope, reconcile activated package facts, architecture
 areas, behavior categories, external effects, and paths with declared semantic
-scope.
+scope, and keep active approvals separate from digest-bound monthly history so
+reduced archive checks cannot become acceptance evidence.
 Applies to: protected changes, installed operations.
 Enforcement: required.
 
@@ -225,7 +226,9 @@ semantic multi-surface approval, audit, or publishable provenance need; bind
 changed facts, semantic and path scope, plan, approvals, companion decisions,
 implementation corrections, linked durable engineering-evidence IDs,
 validation, and before-to-after evidence without replacing canonical project
-owners or burdening ordinary local tasks.
+owners or burdening ordinary local tasks; keep active indexes compact and shard
+completed evidence when context budgets require it without changing identity or
+authority.
 Applies to: activated business changes, activated architecture changes,
 activated data changes, activated security changes, migrations, public contract
 changes.
@@ -262,8 +265,10 @@ model target-authorized narrowing and exceptions without a global precedence
 order, expose mapped, known-gap, and unknown coverage without fake
 completeness, classify module adoption as enabled-empty, populated, or
 reuse-observed without inventing reuse evidence, keep a compact derived sharded
-index with independent authority and freshness states, and deliver only
-accepted current items through bounded initial and refined task routes.
+index with independent authority and freshness states, deliver only accepted
+current items through bounded initial and refined task routes, and treat
+repeated completed-package signals as review-only suggestions rather than
+automatic promotion.
 Applies to: material task finalization, direct decision-owner guidance, project
 knowledge promotion, non-trivial task context routing, guidance narrowing and
 exceptions, guidance coverage, knowledge revalidation, knowledge contradiction
@@ -413,14 +418,16 @@ rule owners from their installed .ai/framework projections; record the
 installed framework pack and its projected registry, inventory, bootstrap
 index, recursive contour indexes, semantic-codebook binding, context-packet
 contract, gate index, support policy/state, capability closure, installation
-state and transition evidence, and current-scope action policy; reject
-unclassified or stale support, live support placeholders, manifest/profile
-module disagreement, invalid installation-state history, and machine/human
-policy drift before acceptance; and preserve target-owned classifications,
-relationships, candidates, generator bindings, durable task engineering
-evidence, structured and non-canonical Debug Mode evidence, development-pattern
-evidence, routed AI infrastructure items, recommendation/adaptation records,
-and optional project-owned module state.
+state and transition evidence, current-scope action policy, and target
+validation contract; separate installation, support, and current-change health
+and declare whether local checks are canonical delegates, target equivalents,
+structural-only, or manual; reject unclassified or stale support, live support
+placeholders, manifest/profile module disagreement, invalid installation-state
+history, and machine/human policy drift before acceptance; and preserve
+target-owned classifications, relationships, candidates, generator bindings,
+durable task engineering evidence, structured and non-canonical Debug Mode
+evidence, development-pattern evidence, routed AI infrastructure items,
+recommendation/adaptation records, and optional project-owned module state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
 
@@ -548,14 +555,17 @@ evidence, and the checked-out target branch/revision; compare historical schema
 and template trees from exact reachable source-version evidence when available
 and otherwise report them as not compared; publish upgrade-assessment outputs
 transactionally; preserve target-owned support classifications, relationships,
-candidates, and generator bindings; rebuild recursive context, reverse
-relationship, optional generation, semantic-codebook, and bootstrap bindings
-from the exact checked-out installation before generating support state last;
-preserve current-scope authorization and project evidence; bind installation
-states to a continuous operation/revision/authorization/approval/validation
-transition record; distinguish migration staging from strict acceptance; expand
-context from affected owners and migrate schemas atomically without replacing
-active state with placeholders or inferring missing historical evidence.
+candidates, generator bindings, validation coverage, and historical claims;
+synchronize current manifest-owned baseline claims and approval archive
+digests, then rebuild recursive context, reverse relationship, optional
+generation, semantic-codebook, and bootstrap bindings from the exact
+checked-out installation before generating support state last; preserve
+current-scope authorization and project evidence; bind installation states to a
+continuous operation/revision/authorization/approval/validation transition
+record; distinguish migration staging and partial archive checks from strict
+acceptance; expand context from affected owners and migrate schemas atomically
+without replacing active state with placeholders or inferring missing
+historical evidence.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 

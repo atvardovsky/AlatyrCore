@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "contract_kind": "target-validation-contract",
+  "entrypoints": {
+    "adapter-health": {
+      "command": "{TARGET_ADAPTER_HEALTH_COMMAND_OR_MANUAL_REVIEW}",
+      "coverage": "structural-only",
+      "final_evidence_eligible": false
+    },
+    "current-change": {
+      "command": "{TARGET_CURRENT_CHANGE_VALIDATION_COMMAND_OR_MANUAL_REVIEW}",
+      "coverage": "structural-only",
+      "final_evidence_eligible": false
+    },
+    "archive-audit": {
+      "command": "{TARGET_ARCHIVE_AUDIT_COMMAND_OR_MANUAL_REVIEW}",
+      "coverage": "structural-only",
+      "final_evidence_eligible": false
+    }
+  },
+  "parity": {
+    "local_pass_is_canonical": false,
+    "comparison": "canonical-result-required",
+    "result_evidence": "unavailable until a target-owned result is compared with canonical validation"
+  }
+}

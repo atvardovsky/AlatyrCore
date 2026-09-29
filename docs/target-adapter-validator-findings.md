@@ -10,24 +10,25 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1531
+Catalog entries: 1552
 
 ## Families
 
 - `AI`: 18 codes.
 - `ANALYSIS`: 44 codes.
-- `APPROVAL`: 31 codes.
+- `APPROVAL`: 39 codes.
 - `ARCHITECTURE`: 35 codes.
 - `ASSISTANT`: 39 codes.
 - `AUTHORIZATION`: 18 codes.
 - `BACKUP`: 1 codes.
+- `BASELINE`: 2 codes.
 - `BLUEPRINT`: 7 codes.
 - `BOOTSTRAP`: 9 codes.
 - `CAPABILITY`: 10 codes.
 - `CHANGED`: 2 codes.
 - `CODEDOC`: 37 codes.
 - `CONSISTENCY`: 50 codes.
-- `CONTEXT`: 22 codes.
+- `CONTEXT`: 23 codes.
 - `DEBUG`: 140 codes.
 - `DELEGATION`: 98 codes.
 - `DEPENDENCY`: 63 codes.
@@ -53,7 +54,7 @@ Catalog entries: 1531
 - `PROJECT`: 55 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
-- `ROUTER`: 73 codes.
+- `ROUTER`: 74 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `SESSION`: 67 codes.
@@ -65,6 +66,7 @@ Catalog entries: 1531
 - `TDD`: 47 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
+- `VALIDATION`: 9 codes.
 - `VOCABULARY`: 52 codes.
 - `WORKER`: 2 codes.
 - `WORKSPACE`: 46 codes.
@@ -195,7 +197,23 @@ Catalog entries: 1531
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_STRATEGY_ROUTER_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `APPROVAL_ARCHIVE_CHANGED_UNAVAILABLE`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_ARCHIVE_CHECKED`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_INDEX_CURRENT`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_INDEX_REQUIRED`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_INDEX_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_INDEX_STALE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_PARTIAL`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_DIFF_BASE_MISMATCH`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -443,6 +461,10 @@ Catalog entries: 1531
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `BACKUP_OWNER_UNRESOLVED`
   Level: configured. Source: `tools/validate_target_adapter.py`.
+- `BASELINE_CLAIMS_CHECKED`
+  Level: info. Source: `tools/target_adapter_validation/baseline_claims.py`.
+- `BASELINE_CLAIM_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/baseline_claims.py`.
 - `BLUEPRINT_CHANGE_OPERATION_CATALOG`
   Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
 - `BLUEPRINT_CHANGE_OPERATION_CATALOG_INVALID_JSON`
@@ -677,6 +699,8 @@ Catalog entries: 1531
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_CATALOG_BOOTSTRAP_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_COVERAGE_DEFERRED`
+  Level: info. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_CATALOG_CURRENT`
   Level: info. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_CATALOG_EVIDENCE_LIMIT`
@@ -2159,6 +2183,8 @@ Catalog entries: 1531
   Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_BOOTSTRAP_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_BOOTSTRAP_SOFT_LIMIT`
+  Level: warning. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_BUDGETS_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_BUDGET_BOOTSTRAP`
@@ -2933,6 +2959,24 @@ Catalog entries: 1531
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `UNRESOLVED_NOT_DEFINED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `VALIDATION_CONTRACT_CHECKED`
+  Level: info. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_COMMAND_UNRESOLVED`
+  Level: configured. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_FALSE_CANONICAL_CLAIM`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_FINAL_EVIDENCE`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_LIMITED`
+  Level: warning. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_POINTER`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VOCABULARY_ACCEPTED_AMBIGUITY`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_ACCEPTED_UNRESOLVED`

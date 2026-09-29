@@ -34,32 +34,36 @@ project edits, commits, publication, or live external actions.
 
 ## Promotion Or Direct Guidance Intake
 
-1. Classify the origin as an `engineering-discovery` or an explicitly recorded
+1. For a suggestion request, inspect only validated or completed package and
+   engineering-evidence summaries. Return bounded candidates and the evidence
+   IDs that caused each suggestion. Do not create a promotion or edit project
+   knowledge under `read-only`.
+2. Classify the origin as an `engineering-discovery` or an explicitly recorded
    `decision-owner-directive`. Engineering discovery requires durable
    engineering evidence. A directive requires verified target decision
    authority and a durable decision reference. Both require bounded repository
    evidence and a registered canonical owner.
-2. Under `read-only`, return a proposal only. Creating a promotion record or
+3. Under `read-only`, return a proposal only. Creating a promotion record or
    changing a canonical source requires current-scope authorization compatible
    with target policy.
-3. Identify the fact type, fact IDs, proposed canonical owner, decision owner,
+4. Identify the fact type, fact IDs, proposed canonical owner, decision owner,
    and route hints. Report an ownership gap instead of inventing an owner.
-4. Ask the target decision owner to accept, narrow, reject, or defer an
+5. Ask the target decision owner to accept, narrow, reject, or defer an
    engineering-discovery candidate. For a direct directive, verify that the
    named decision owner is authorized for the fact type and scope. Do not treat
    an arbitrary human message as project authority. Do not infer acceptance
    from silence, implementation frequency, test success, or previous approval
    for another scope.
-5. For acceptance or narrowing, update or verify the canonical owner first and
+6. For acceptance or narrowing, update or verify the canonical owner first and
    record its content SHA-256. Preserve the accepted wording and decision
    reference in the promotion record.
-6. Create or update one bounded route entry, link its promotion and engineering
+7. Create or update one bounded route entry, link its promotion and engineering
    evidence, add freshness triggers, and register its shard in the root index.
-7. Validate reciprocal contradiction and supersession links. A contradicted
+8. Validate reciprocal contradiction and supersession links. A contradicted
    entry cannot remain current.
-8. Run target adapter and project validation. Report the promotion disposition,
+9. Run target adapter and project validation. Report the promotion disposition,
    canonical update, route result, and residual uncertainty.
-9. Synchronize the index adoption state. Use `enabled-empty` only with no
+10. Synchronize the index adoption state. Use `enabled-empty` only with no
    promotions, coverage, or route entries; use `populated` after reviewed route
    entries exist; use `reuse-observed` only with explicit later-task delivery
    or operation evidence.

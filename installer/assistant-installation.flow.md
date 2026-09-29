@@ -509,7 +509,13 @@ Classify every proposed target file:
     work; unavailable timing remains unknown.
 18. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
-19. Run target validation that exists. Do not invent commands.
+19. Run target validation that exists. Do not invent commands. Rewrite
+    `.ai/assistant/validation-contract.json` from target evidence so adapter
+    health, current-change validation, and complete archive audit each name
+    their real command and coverage class. A structural-only or manual local
+    pass is not canonical acceptance. When approval history is sharded,
+    generate its digest index; use complete archive validation for acceptance
+    and changed-shard validation only for routine feedback.
 20. Apply logical integrity review: changed facts, re-derived invariants,
     reconciled review-item clusters, affected contracts, source of truth,
    repair direction, and residual risk.
@@ -594,8 +600,12 @@ accepted or ready. Before reporting installation or update completion:
    Synchronize `modules.staged` with `staged` profile blocks, and resolve every
    staged item before acceptance.
 4. Synchronize machine policy indexes and their human README projections.
-5. Rebuild recursive context indexes, optional reverse/generation indexes, and
-   the generated support state in that order.
+   Synchronize current framework, adapter-schema, template, and source-commit
+   claims with the manifest while preserving explicitly historical claims.
+5. Rebuild approval archive digests, recursive context indexes, optional
+   reverse/generation indexes, and the generated support state in that order.
+   Validate the declared adapter-health, current-change, and archive-audit
+   entry points; only complete archive validation is acceptance evidence.
 6. Confirm that every material discovery finding has an evidence-preserving
    disposition and that every projected finding names its resulting target
    artifact. Deterministic observations remain non-authoritative until target
