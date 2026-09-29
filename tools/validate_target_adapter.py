@@ -5197,8 +5197,15 @@ class Validator:
         changed_paths: set[str] | None,
         source_changed: bool,
         seen: set[str],
-    ) -> None:
+        record_filter: set[str] | None = None,
+    ) -> set[str]:
+        matched_records: set[str] = set()
         for index, entry in enumerate(records):
+            if record_filter is not None and (
+                not isinstance(entry, dict)
+                or entry.get("record") not in record_filter
+            ):
+                continue
             if not isinstance(entry, dict):
                 self.error(
                     "PACKAGE_INDEX_ENTRY",
@@ -5245,6 +5252,8 @@ class Validator:
             record = entry.get("record")
             if not isinstance(record, str) or is_placeholder(record):
                 continue
+            if changed_paths is not None and record in changed_paths:
+                matched_records.add(record)
             if not is_target_relative_path(record) or not self.is_target_file(record):
                 self.error(
                     "PACKAGE_INDEX_RECORD_PATH",
@@ -5281,6 +5290,7 @@ class Validator:
                     ),
                     source,
                 )
+        return matched_records
 
     def check_change_package_index(self) -> None:
         relpath = ".ai/assistant/change-packages/index.json"
@@ -5317,8 +5327,18 @@ class Validator:
             if changed is not None:
                 changed_paths = set(changed)
                 index_changed = relpath in changed_paths
+        changed_record_candidates: set[str] = set()
+        if changed_paths is not None:
+            package_prefix = ".ai/assistant/change-packages/"
+            changed_record_candidates = {
+                changed_path
+                for changed_path in changed_paths
+                if changed_path.startswith(package_prefix)
+                and changed_path.endswith(".json")
+                and changed_path != relpath
+            }
         seen: set[str] = set()
-        self.check_change_package_index_entries(
+        matched_records = self.check_change_package_index_entries(
             records,
             source=relpath,
             changed_paths=changed_paths,
@@ -5330,6 +5350,15 @@ class Validator:
         if not isinstance(shards, list):
             self.error("PACKAGE_INDEX_SHARDS", "shards must be a list", relpath)
             return
+        declared_shard_paths = {
+            descriptor.get("path")
+            for descriptor in shards
+            if isinstance(descriptor, dict)
+            and isinstance(descriptor.get("path"), str)
+        }
+        pending_changed_records = (
+            changed_record_candidates - declared_shard_paths - matched_records
+        )
         seen_shard_ids: set[str] = set()
         seen_shard_paths: set[str] = set()
         for index, descriptor in enumerate(shards):
@@ -5386,8 +5415,12 @@ class Validator:
                 )
                 continue
             seen_shard_paths.add(shard_relpath)
-            shard_changed = changed_paths is None or index_changed or shard_relpath in changed_paths
-            if not shard_changed:
+            shard_changed = (
+                changed_paths is None
+                or index_changed
+                or shard_relpath in changed_paths
+            )
+            if not shard_changed and not pending_changed_records:
                 continue
             shard_path = self.target_path(shard_relpath)
             content = self.context.read_bytes_result(shard_path)
@@ -5437,13 +5470,15 @@ class Validator:
                     f"shards[{index}].record_count differs from its file",
                     relpath,
                 )
-            self.check_change_package_index_entries(
+            matched_records = self.check_change_package_index_entries(
                 shard_records,
                 source=shard_relpath,
                 changed_paths=changed_paths,
                 source_changed=shard_changed,
                 seen=seen,
+                record_filter=None if shard_changed else pending_changed_records,
             )
+            pending_changed_records -= matched_records
 
     def resolve_change_packages(self) -> list[Path]:
         resolved: list[Path] = []

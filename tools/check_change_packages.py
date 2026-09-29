@@ -208,6 +208,151 @@ def valid_package_fixture(repo: Path) -> tuple[Path, dict[str, object]]:
     return package_path, package
 
 
+def changed_index_validator(repo: Path) -> Validator:
+    return Validator(
+        repo,
+        framework_source=None,
+        diff_ref="HEAD",
+        approval_records=[],
+        enforce_approval_scope=False,
+        change_packages=[],
+        enforce_change_package=False,
+        migration_diff=None,
+        allow_placeholders=True,
+        allow_local_paths=[],
+        config=AdapterValidatorConfig(),
+        validation_scope="changed",
+    )
+
+
+def validate_unchanged_shard_routing(
+    repo: Path,
+    package_path: Path,
+    package: dict[str, object],
+    failures: list[str],
+) -> None:
+    index_path = repo / ".ai" / "assistant" / "change-packages" / "index.json"
+    shard_path = (
+        repo
+        / ".ai"
+        / "assistant"
+        / "change-packages"
+        / "archive"
+        / "2026-09"
+        / "index.json"
+    )
+    original_index = index_path.read_bytes()
+    original_shard = shard_path.read_bytes()
+    shard = json.loads(original_shard)
+    historical_path = (
+        repo / ".ai" / "assistant" / "change-packages" / "historical.json"
+    )
+    historical_package = copy.deepcopy(package)
+    historical_package["package_id"] = "package-2"
+    historical_path.write_text(
+        json.dumps(historical_package, indent=2) + "\n", encoding="utf-8"
+    )
+    historical_entry = copy.deepcopy(shard["records"][0])
+    historical_entry.update(
+        package_id="package-2",
+        record=historical_path.relative_to(repo).as_posix(),
+    )
+    shard["records"].append(historical_entry)
+    shard_path.write_text(json.dumps(shard, indent=2) + "\n", encoding="utf-8")
+    committed_shard = shard_path.read_bytes()
+    root_index = json.loads(original_index)
+    root_index["shards"][0].update(
+        sha256=hashlib.sha256(shard_path.read_bytes()).hexdigest(),
+        record_count=len(shard["records"]),
+    )
+    index_path.write_text(json.dumps(root_index, indent=2) + "\n", encoding="utf-8")
+    git(repo, "add", ".")
+    git(repo, "commit", "-qm", "record sharded package projection")
+
+    changed_package = copy.deepcopy(package)
+    changed_package["status"] = "blocked"
+    package_path.write_text(
+        json.dumps(changed_package, indent=2) + "\n", encoding="utf-8"
+    )
+    changed_record_validator = changed_index_validator(repo)
+    loaded_json_paths: list[Path] = []
+    read_json = changed_record_validator.context.read_json
+
+    def tracked_read_json(path: Path):
+        loaded_json_paths.append(path.resolve())
+        return read_json(path)
+
+    with patch.object(
+        changed_record_validator.context,
+        "read_json",
+        side_effect=tracked_read_json,
+    ):
+        changed_record_validator.check_change_package_index()
+    if not any(
+        finding.code == "PACKAGE_INDEX_PROJECTION" and "status" in finding.message
+        for finding in changed_record_validator.findings
+    ):
+        failures.append(
+            "changed-scope validation missed projection drift in an unchanged shard"
+        )
+    if historical_path.resolve() in loaded_json_paths:
+        failures.append(
+            "changed-scope validation reopened an unrelated historical package record"
+        )
+
+    consistent_changed_package = copy.deepcopy(package)
+    consistent_changed_package["activation_reason"] = (
+        "coherent architecture segment with additional context"
+    )
+    package_path.write_text(
+        json.dumps(consistent_changed_package, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    consistent_record_validator = changed_index_validator(repo)
+    consistent_record_validator.check_change_package_index()
+    if any(
+        finding.code == "PACKAGE_INDEX_PROJECTION"
+        for finding in consistent_record_validator.findings
+    ):
+        failures.append(
+            "changed-scope validation rejected a consistent unchanged-shard projection"
+        )
+
+    package_path.write_text(json.dumps(package, indent=2) + "\n", encoding="utf-8")
+    changed_shard = json.loads(committed_shard)
+    changed_shard["records"][0]["status"] = "blocked"
+    shard_path.write_text(
+        json.dumps(changed_shard, indent=2) + "\n", encoding="utf-8"
+    )
+    changed_shard_validator = changed_index_validator(repo)
+    changed_shard_validator.check_change_package_index()
+    changed_shard_codes = {
+        finding.code for finding in changed_shard_validator.findings
+    }
+    if not {"PACKAGE_INDEX_SHARD_DIGEST", "PACKAGE_INDEX_PROJECTION"}.issubset(
+        changed_shard_codes
+    ):
+        failures.append("changed-scope validation lost changed-shard detection")
+    shard_path.write_bytes(committed_shard)
+
+    changed_root_index = copy.deepcopy(root_index)
+    changed_root_index["shards"][0]["record_count"] += 1
+    index_path.write_text(
+        json.dumps(changed_root_index, indent=2) + "\n", encoding="utf-8"
+    )
+    changed_root_validator = changed_index_validator(repo)
+    changed_root_validator.check_change_package_index()
+    if not any(
+        finding.code == "PACKAGE_INDEX_SHARD_COUNT"
+        for finding in changed_root_validator.findings
+    ):
+        failures.append("changed-scope validation lost changed-root detection")
+
+    index_path.write_bytes(original_index)
+    shard_path.write_bytes(original_shard)
+    historical_path.unlink()
+
+
 def validate_fixture(failures: list[str]) -> None:
     with tempfile.TemporaryDirectory() as directory:
         repo = Path(directory)
@@ -360,6 +505,8 @@ def validate_fixture(failures: list[str]) -> None:
                 "valid sharded change-package index failed: "
                 + "; ".join(f"{item.code}: {item.message}" for item in shard_errors)
             )
+
+        validate_unchanged_shard_routing(repo, package_path, package, failures)
         sharded_index["shards"][0]["sha256"] = "0" * 64
         index_path.write_text(json.dumps(sharded_index, indent=2) + "\n", encoding="utf-8")
         stale_shard_validator = Validator(

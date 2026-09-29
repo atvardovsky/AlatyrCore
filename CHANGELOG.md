@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fixed changed-scope target validation so a changed package record is routed
+  through compact entries stored in unchanged index shards, while unrelated
+  historical package records remain unopened.
 
 ## 0.1.0-alpha.72 - 2026-09-29
 
