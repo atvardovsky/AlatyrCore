@@ -187,7 +187,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 78
+      "code_count": 79
     },
     {
       "id": "PLACEHOLDERS",
@@ -8928,6 +8928,15 @@
     },
     {
       "code": "PACKAGE_INDEX_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_STATUS",
       "levels": [
         "error"
       ],

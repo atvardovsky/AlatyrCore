@@ -221,6 +221,32 @@ def validate_fixture(failures: list[str]) -> None:
                 + "; ".join(f"{item.code}: {item.message}" for item in package_errors)
             )
 
+        index_path = repo / ".ai" / "assistant" / "change-packages" / "index.json"
+        invalid_index = json.loads(index_path.read_text(encoding="utf-8"))
+        invalid_index["records"][0]["status"] = "unvalidated"
+        index_path.write_text(json.dumps(invalid_index, indent=2) + "\n", encoding="utf-8")
+        index_validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[],
+            enforce_change_package=False,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        index_validator.check_change_package_index()
+        if not any(
+            finding.code == "PACKAGE_INDEX_STATUS" and finding.level == "error"
+            for finding in index_validator.findings
+        ):
+            failures.append("change-package index accepted a non-canonical status")
+        invalid_index["records"][0]["status"] = "complete"
+        index_path.write_text(json.dumps(invalid_index, indent=2) + "\n", encoding="utf-8")
+
         reversed_package = copy.deepcopy(package)
         reversed_provenance = reversed_package["provenance"]
         assert isinstance(reversed_provenance, dict)

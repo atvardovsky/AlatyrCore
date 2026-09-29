@@ -409,12 +409,14 @@
         "templates/target/.ai/assistant/change-packages/**"
       ],
       "implementation_paths": [
+        "tools/change_package_contract.py",
         "tools/check_change_packages.py",
         "tools/validate_target_adapter.py"
       ],
       "trigger_paths": [
         "framework/change-packages.md",
         "templates/target/.ai/assistant/change-packages/**",
+        "tools/change_package_contract.py",
         "tools/check_change_packages.py",
         "tools/validate_target_adapter.py"
       ]
@@ -469,8 +471,11 @@
         "templates/target/.ai/assistant/**/*project-knowledge*",
         "templates/target/.ai/project/knowledge/**",
         "tests/test_project_knowledge.py",
+        "tests/test_project_knowledge_suggestions.py",
         "tools/check_project_knowledge.py",
         "tools/project_knowledge.py",
+        "tools/suggest_project_knowledge.py",
+        "tools/change_package_contract.py",
         "tools/validate_target_adapter.py"
       ],
       "contract_inputs": [
@@ -480,11 +485,14 @@
         "schemas/alatyr-project-knowledge-*.schema.json",
         "templates/target/.ai/assistant/**/*project-knowledge*",
         "templates/target/.ai/project/knowledge/**",
-        "tests/test_project_knowledge.py"
+        "tests/test_project_knowledge.py",
+        "tests/test_project_knowledge_suggestions.py"
       ],
       "implementation_paths": [
         "tools/check_project_knowledge.py",
         "tools/project_knowledge.py",
+        "tools/suggest_project_knowledge.py",
+        "tools/change_package_contract.py",
         "tools/validate_target_adapter.py"
       ]
     },

@@ -26,6 +26,7 @@ from typing import Any, Callable
 import jsonschema
 
 from approval_archive import INDEX_PATH as APPROVAL_ARCHIVE_INDEX_PATH, build_archive_index
+from change_package_contract import CHANGE_PACKAGE_STATUSES
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
 from agent_entry_packet import (
     PACKET_PATH,
@@ -5240,6 +5241,15 @@ class Validator:
                         f"records[{index}] missing {field}",
                         relpath,
                     )
+            status = entry.get("status")
+            if "status" in entry and (
+                not isinstance(status, str) or status not in CHANGE_PACKAGE_STATUSES
+            ):
+                self.error(
+                    "PACKAGE_INDEX_STATUS",
+                    f"records[{index}].status is not a canonical package status: {status!r}",
+                    relpath,
+                )
             package_id = entry.get("package_id")
             if isinstance(package_id, str):
                 if package_id in seen:
@@ -5470,14 +5480,7 @@ class Validator:
                     "PACKAGE_TYPE", f"unsupported package_type: {package_type}", source
                 )
             status = self.package_string(data, ("status",), source)
-            if status and status not in {
-                "proposed",
-                "approved",
-                "implementing",
-                "validated",
-                "complete",
-                "blocked",
-            }:
+            if status and status not in CHANGE_PACKAGE_STATUSES:
                 self.change_package_finding(
                     "PACKAGE_STATUS", f"unsupported package status: {status}", source
                 )

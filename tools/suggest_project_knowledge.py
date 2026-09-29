@@ -10,10 +10,14 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+try:
+    from change_package_contract import KNOWLEDGE_CANDIDATE_STATUSES
+except ModuleNotFoundError:  # Support package-style imports in source tests.
+    from tools.change_package_contract import KNOWLEDGE_CANDIDATE_STATUSES
+
 
 PACKAGE_INDEX = Path(".ai/assistant/change-packages/index.json")
 KNOWLEDGE_INDEX = Path(".ai/project/knowledge/index.json")
-COMPLETED_STATUS_TERMS = ("validated", "complete", "published", "deployed")
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -34,8 +38,7 @@ def suggestions(target: Path, *, minimum_occurrences: int = 2) -> dict[str, Any]
         record
         for record in records
         if isinstance(record, dict)
-        and isinstance(record.get("status"), str)
-        and any(term in record["status"].casefold() for term in COMPLETED_STATUS_TERMS)
+        and record.get("status") in KNOWLEDGE_CANDIDATE_STATUSES
     ]
     by_area: dict[str, list[str]] = defaultdict(list)
     by_owner: dict[str, list[str]] = defaultdict(list)

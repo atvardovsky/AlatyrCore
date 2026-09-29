@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1552
+Catalog entries: 1553
 
 ## Families
 
@@ -48,7 +48,7 @@ Catalog entries: 1552
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 78 codes.
+- `PACKAGE`: 79 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -1992,6 +1992,8 @@ Catalog entries: 1552
 - `PACKAGE_INDEX_ROOT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_STATUS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INVALID_JSON`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.

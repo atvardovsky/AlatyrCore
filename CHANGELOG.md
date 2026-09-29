@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fixed project-knowledge candidate selection so only exact canonical
+  `validated` and `complete` change-package statuses are eligible; substring
+  matches such as `incomplete`, `unvalidated`, and `not completed` are ignored,
+  and compact package indexes now reject non-canonical statuses.
 
 ## 0.1.0-alpha.71 - 2026-09-29
 
