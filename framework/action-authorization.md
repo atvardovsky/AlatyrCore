@@ -93,6 +93,13 @@ target-language imperatives may authorize `modify` for the named scope. They do
 not authorize `commit`, `publish`, or `live-external` unless those phases are
 also explicit.
 
+`update Alatyr` therefore authorizes `inspect` and target-adapter `modify` for
+that current logical scope so assessment, target-aware migration, projection
+reconciliation, and final strict acceptance can converge without a second
+request. It does not authorize unrelated product changes or bypass protected-
+change approval. `assess Alatyr update` and `recheck Alatyr update` remain
+read-only unless repair is explicitly requested.
+
 Clear intent to stage, commit, amend, merge, rebase, pull, switch, branch,
 stash, reset, or otherwise mutate local Git state may authorize `commit` for
 the named scope. Clear push, publish, pull-request/issue/review mutation,

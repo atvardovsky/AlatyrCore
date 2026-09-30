@@ -34,8 +34,8 @@
         "ALATYR-AUTHORIZATION-001",
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 332,
-      "content_digest": "sha256:d528a86d592adbfbdc7ed6e74c6946a5d8b316666383c20569fe9fd48fe5227a"
+      "estimated_words": 334,
+      "content_digest": "sha256:3eb8f3fbf0c90d5ea03ef62ef4e3c070f443605701ae29d0b94ddf0b0074295f"
     },
     {
       "id": "assistant.content.policies-ai-infrastructure-source-access-md",

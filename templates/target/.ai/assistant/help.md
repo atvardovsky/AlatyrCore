@@ -42,6 +42,12 @@ Default routing:
 - If the request asks for status or doctor, route to `adapter-health` and keep
   allowed actions `read-only`.
 <!-- /alatyr:scaffold-fragment -->
+- Treat `update Alatyr` as current-scope `inspect` plus `modify` intent for the
+  installed adapter. Complete assessment, target-aware migration, derived-
+  surface reconciliation, and strict acceptance in one operation. This does
+  not authorize commit, push, deployment, or unrelated project changes.
+- Treat `assess Alatyr update` and `recheck Alatyr update` as `read-only`
+  unless the user separately requests repair.
 - If the request only returns to an issue, backlog item, report, or discussion,
   or asks for status, analysis, a plan, or what comes next, keep the operation
   read-only. Do not reuse implementation, commit, or push authorization from a

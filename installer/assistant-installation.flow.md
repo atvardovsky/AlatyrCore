@@ -557,6 +557,9 @@ Classify every proposed target file:
     When Debug Mode is enabled, state that it remains inactive until explicitly
     enabled for one task/session and name its status, summary, and disable
     aliases plus the target storage and external-patch boundary.
+    For updates, follow the convergence contract in `framework/lifecycle.md`.
+    Report `accepted`, `assessed`, `staged`, or `blocked`; only `accepted`
+    needs no recheck, and every other outcome names one exact next action.
 
 ## Human Approval Gate
 
@@ -618,25 +621,21 @@ accepted or ready. Before reporting installation or update completion:
    disposition and that every projected finding names its resulting target
    artifact. Deterministic observations remain non-authoritative until target
    decision authority accepts the corresponding fact.
-7. Run strict `acceptance` validation on the checked-out target branch and
-   record that branch and exact revision. Repeat this final step separately on
-   any other branch whose adapter state is to be accepted.
+7. While state is `staged`, run strict acceptance/full/full validation on the
+   checked-out branch and record its revision. This pre-acceptance evidence is
+   not yet acceptance eligible.
 8. End the inspect-only validation stage. Do not mutate installation state as
    part of validation.
 9. Enter the explicit `acceptance-recording` stage only with current-scope
-   `modify` authorization for the state records. Update the manifest
-   installation state and its machine-readable transition record together.
-   Require a continuous previous-state chain, the current operation and
-   revision, current-scope authorization evidence, approval evidence when
-   applicable, and the strict validation result. This stage may modify only
-   installation-state records; it does not inherit broader adaptation scope.
-   A failed or unavailable strict check cannot produce `accepted`.
-   When upgrading a pre-transition-record adapter, initialize the record at
-   `staged` with `legacy-migration-baseline` and an explicit unavailable prior-
-   history explanation instead of reconstructing unobserved events.
-10. Enter the inspect-only `handoff` stage after acceptance recording. Read the
-   resulting state and current output/validation bindings, then produce the
-   post-install or post-update message without changing repository state.
+   `modify` authorization. Update manifest and transition record together with
+   a continuous chain, operation, revision, authorization, applicable approval,
+   and passed validation. A legacy adapter starts at `staged` with reason
+   `legacy-migration-baseline`; never invent prior events.
+10. Refresh affected projections, then rerun acceptance/full/full validation.
+    Require eligibility, exact branch/revision binding, no active placeholders,
+    module agreement, and no blocker. Validate every branch claimed accepted.
+11. Enter the inspect-only `handoff` stage. Report `staged` or `blocked` when
+    step 10 fails; otherwise report `accepted` without another generic recheck.
 
 ## Final Evidence
 

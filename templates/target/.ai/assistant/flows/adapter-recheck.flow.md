@@ -90,6 +90,39 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/gates/team-collaboration.md`
 - Known adapter gaps: `{KNOWN_GAPS}`
 
+## Framework Update Modes
+
+Choose from the newest request:
+
+- `assessment`: assess, recheck, analyze, or compare read-only; never claim an
+  applied update.
+- `apply-and-accept`: `update Alatyr` authorizes current-scope adapter
+  `inspect` and `modify`, not commit, push, deploy, dependency, or unrelated
+  product changes.
+- `repair-and-accept`: an explicit incomplete-update repair follows the same
+  convergence contract.
+
+Protected scope still needs its owning approval; missing approval blocks rather
+than downgrades an applying request to assessment success.
+
+Applying modes:
+
+1. Assess impact, then record `controlled-update` transition to `staged`.
+2. Apply target-aware migration while preserving target facts, history, local
+   choices, and unsupported capability states.
+3. Rebuild manifests/catalogs, operation/context indexes, optional projections,
+   approval archives, recursive/recovery surfaces, bootstrap, and support state
+   last.
+4. Run acceptance/full/full validation while `staged`; this is pre-acceptance.
+5. On success, record `accepted`, refresh affected projections, and rerun on
+   the resulting branch/revision.
+6. Repair authorized findings and repeat, or stop at no progress, missing
+   facts/approval/validation, or expanded scope. Only an acceptance-eligible
+   final report proves `accepted`.
+
+Assessment, file copy, changed-scope or migration-staging success, staged
+pre-acceptance, and message templates are not completion evidence.
+
 ## Steps
 
 1. Treat `AGENTS.md` as preloaded, load the compact bootstrap, and select the
@@ -97,7 +130,9 @@ Replace placeholders with target facts before accepting installation.
    all `.ai/project` or `.ai/assistant` files before identifying the recheck
    scope.
 2. Identify whether this is a post-installation recheck, framework update
-   recheck, bridge compatibility review, or maturity audit.
+   assessment, apply-and-accept update, repair-and-accept update, bridge
+   compatibility review, or maturity audit. Treat the exact request `update
+   Alatyr` as apply-and-accept; do not silently downgrade it to assessment.
 3. Prepare or review migration assessment evidence before target changes.
    Compare rule registries, installed and next framework files, framework
    version, adapter schema version, template version, and current structural
@@ -225,10 +260,21 @@ Replace placeholders with target facts before accepting installation.
     the gate index, final-evidence gate, and operation-completion template
     require the same Project Contour Sync Decision. Preserve project-owned
     contour facts while updating this workflow contract.
+    For an applying framework-update mode, perform the staged pre-acceptance
+    run, accepted-state transition, derived-surface refresh, and final strict
+    rerun defined above. When the AlatyrCore source helper is available, use
+    `verify-upgrade` for the final read-only acceptance proof; otherwise apply
+    the same target-local acceptance/full/full contract.
 19. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Current files prove current structure only; name dated operation, approval,
     validation, or migration records before making historical claims.
-20. Report final evidence and residual risk.
+20. Report exactly one terminal outcome:
+    - `accepted`: strict final evidence is acceptance eligible on the resulting
+      branch and revision; no separate recheck request is required;
+    - `assessed`: the request was read-only and no update was applied;
+    - `staged` or `blocked`: the update is not complete, with exact findings,
+      ownership, approval or validation needs, and the smallest next action.
+    Always report residual risk.
 
 ## Final Evidence
 

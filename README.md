@@ -542,7 +542,7 @@ Explain this project to a new developer.
 Where is the source of truth for payment state?
 Review the architectural impact of this change.
 Create or repair the project blueprint.
-Recheck Alatyr after the framework update.
+Update Alatyr from the selected framework source.
 ```
 
 `Alatyr` is a conversational entry request, not a shell command. A healthy
@@ -556,6 +556,12 @@ the same request clearly asks for implementation. Implementation does not
 authorize commit or push, and commit does not authorize push. AlatyrCore keeps
 these phases separate from allowed file scope, protected-change approval, and
 tool access.
+
+`Update Alatyr` is an end-to-end target-adapter request: the assistant assesses
+the release, applies the repository-aware migration, rebuilds derived support
+surfaces, and runs final strict acceptance. It reports either `accepted` with
+no second recheck required, or an exact blocker and next action. Read-only
+assessment remains available by asking to assess or recheck an update.
 
 The full installed-operation and assistant workflow is documented in
 [AI_ASSISTANTS.md](AI_ASSISTANTS.md),
@@ -590,7 +596,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.73`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.74`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

@@ -13,9 +13,9 @@
     "target_manifest_digest": "sha256:0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.73",
-    "adapter_schema_version": "61",
-    "template_version": "68"
+    "framework_version": "0.1.0-alpha.74",
+    "adapter_schema_version": "62",
+    "template_version": "69"
   },
   "derived_from": {
     "manifest": {
@@ -32,7 +32,7 @@
     },
     "action_authorization_policy": {
       "path": ".ai/assistant/policies/action-authorization.json",
-      "sha256": "d528a86d592adbfbdc7ed6e74c6946a5d8b316666383c20569fe9fd48fe5227a"
+      "sha256": "3eb8f3fbf0c90d5ea03ef62ef4e3c070f443605701ae29d0b94ddf0b0074295f"
     },
     "session_continuity_policy": {
       "path": ".ai/assistant/policies/session-continuity.json",
@@ -48,11 +48,11 @@
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",
-      "sha256": "6e6283ce1ff34fe48df22e71745d0a61844303c0b90d0bfcc72ae4c75a967378"
+      "sha256": "48baa9efe9682127033f823a41b71b891743a4f967383def97710739b803f107"
     },
     "operation_catalog": {
       "path": ".ai/assistant/operation-catalog.json",
-      "sha256": "dfa330d770f1e196ba9f6f9b1af0e935c3387f673ed1078744c0d575f732eb2b"
+      "sha256": "84dca6f70b824e151663a8f7a8026f228440fc62e32bc5a991741760cac0c8cd"
     }
   },
   "installation": {

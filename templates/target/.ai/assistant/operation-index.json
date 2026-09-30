@@ -24,6 +24,7 @@
     "check Alatyr after installation": "recheck-after-installation",
     "recheck installation": "recheck-after-installation",
     "update Alatyr": "recheck-after-framework-update",
+    "assess Alatyr update": "recheck-after-framework-update",
     "recheck Alatyr update": "recheck-after-framework-update",
     "change business rule": "product-change",
     "product change": "product-change",

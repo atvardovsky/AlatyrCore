@@ -22,6 +22,12 @@
       "authorized_phases": ["inspect", "modify"]
     },
     {
+      "id": "framework-update-authorizes-adapter-modify",
+      "request": "update Alatyr",
+      "scope_state": "current",
+      "authorized_phases": ["inspect", "modify"]
+    },
+    {
       "id": "commit-existing-does-not-authorize-edit-or-push",
       "request": "commit the current changes",
       "scope_state": "current",

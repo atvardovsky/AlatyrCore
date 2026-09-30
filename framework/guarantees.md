@@ -189,6 +189,9 @@ Machine checks can verify only deterministic repository facts, such as:
   acceptance, bind current-state evidence to the checked-out branch/revision,
   scan live surfaces required by enabled capabilities, and reject disagreement
   between manifest-enabled modules and their human module-profile state
+- final update verification can reject assessment-only, staged, reduced-scope,
+  partial-archive, placeholder-bearing, non-accepted, or unbound evidence after
+  the accepted-state transition; it does not apply or repair migrations
 - Debug Mode and durable engineering-evidence policy indexes can be checked
   against their human policy projections so resolved machine metadata cannot
   coexist with stale placeholder or contradictory README claims

@@ -2633,6 +2633,7 @@
         "tools/target_adapter_validation/context_catalogs.py",
         "tools/target_adapter_validation/framework_baseline.py",
         "tools/target_adapter_validation/router_costs.py",
+        "tools/verify_target_upgrade.py",
         "tools/target_adapter_validation/support_state.py",
         "tools/validate_target_adapter.py",
         "tools/yaml_support.py"
@@ -2660,6 +2661,7 @@
         "tools/target_adapter_validation/context_catalogs.py",
         "tools/target_adapter_validation/framework_baseline.py",
         "tools/target_adapter_validation/router_costs.py",
+        "tools/verify_target_upgrade.py",
         "tools/target_adapter_validation/support_state.py",
         "tools/validate_target_adapter.py",
         "tools/yaml_support.py"
@@ -2707,6 +2709,7 @@
         "tools/target_adapter_validation/context_catalogs.py",
         "tools/target_adapter_validation/framework_baseline.py",
         "tools/target_adapter_validation/router_costs.py",
+        "tools/verify_target_upgrade.py",
         "tools/target_adapter_validation/support_state.py",
         "tools/validate_target_adapter.py",
         "tools/yaml_support.py"
@@ -2734,6 +2737,7 @@
         "tools/target_adapter_validation/context_catalogs.py",
         "tools/target_adapter_validation/framework_baseline.py",
         "tools/target_adapter_validation/router_costs.py",
+        "tools/verify_target_upgrade.py",
         "tools/target_adapter_validation/support_state.py",
         "tools/validate_target_adapter.py",
         "tools/yaml_support.py"

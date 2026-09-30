@@ -131,8 +131,10 @@ Rule ID: `ALATYR-AUTHORIZATION-001`
 Source owner: `framework/action-authorization.md`
 Installed owner: `.ai/framework/action-authorization.md`
 Commitment: Bind inspect, modify, commit, publish, and live-external phases to
-explicit current-scope user intent; default subject switches, backlog returns,
-reports, discussion, analysis, and ambiguous continuation to read-only; expire
+explicit current-scope user intent; classify an explicit installed-adapter
+update request as inspect plus modify while keeping assessment and recheck
+requests read-only; default subject switches, backlog returns, reports,
+discussion, analysis, and ambiguous continuation to read-only; expire
 authorization when scope completes or changes; and keep allowed actions,
 protected approval, tool permission, routing, assignment, modes, delegation,
 and validator success from granting a missing phase.
@@ -462,12 +464,13 @@ Commitment: Expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
 exact-alias index, bind common help, status, discussion, change, backlog,
 update, commit, and publish request shapes to provider-neutral static protocol
-expectations, enforce current-scope action phases independently of routing and
-allowed-action mode, expose bounded support-diff/impact review and guarded
-optional support generation alongside lazy durable engineering-evidence and
-Debug Mode operations, compose bounded capability-gated delegation, provide
-read-only adapter health, and show a pre-change preview only when risk,
-approval, or scope uncertainty requires it.
+expectations, carry an explicit adapter update through migration and strict
+acceptance without a second generic recheck request, enforce current-scope
+action phases independently of routing and allowed-action mode, expose bounded
+support-diff/impact review and guarded optional support generation alongside
+lazy durable engineering-evidence and Debug Mode operations, compose bounded
+capability-gated delegation, provide read-only adapter health, and show a
+pre-change preview only when risk, approval, or scope uncertainty requires it.
 Applies to: installed operation routing, adapter health, changes requiring
 preview.
 Enforcement: required.
@@ -564,10 +567,11 @@ generation, semantic-codebook, and bootstrap bindings from the exact
 checked-out installation before generating support state last; preserve
 current-scope authorization and project evidence; bind installation states to a
 continuous operation/revision/authorization/approval/validation transition
-record; distinguish migration staging and partial archive checks from strict
-acceptance; expand context from affected owners and migrate schemas atomically
-without replacing active state with placeholders or inferring missing
-historical evidence.
+record; require staged pre-acceptance, accepted-state transition, and final
+acceptance/full/full verification before update completion; distinguish
+migration staging and partial archive checks from strict acceptance; expand
+context from affected owners and migrate schemas atomically without replacing
+active state with placeholders or inferring missing historical evidence.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 

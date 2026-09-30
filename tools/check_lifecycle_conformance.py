@@ -47,11 +47,21 @@ from validate_target_adapter import (
     findings_payload,
     result_code,
 )
+from verify_target_upgrade import acceptance_failures
 from yaml_support import safe_load
 
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN = ROOT / "conformance" / "golden" / "lifecycle" / "accepted-profiles.json"
+POST_UPDATE_MESSAGE = (
+    ROOT
+    / "templates"
+    / "target"
+    / ".ai"
+    / "assistant"
+    / "templates"
+    / "post-update-message.md"
+)
 PROFILE_PACKS = {
     "kernel": "kernel",
     "core": "core",
@@ -766,6 +776,31 @@ def exercise_profile(
                 if finding.level in {"error", "warning"}
             )
         )
+    updated_payload = findings_payload(
+        updated_findings,
+        target=repo,
+        strict_warnings=False,
+        installation_state=updated.installation_state,
+        validation_phase="acceptance",
+        validation_scope="full",
+        approval_archive_summary=updated.approval_archive_summary,
+    )
+    if (
+        updated_payload.get("installation_state") != "accepted"
+        or updated_payload.get("placeholder_validation", {}).get(
+            "acceptance_eligible"
+        )
+        is not True
+    ):
+        failures.append(
+            f"{support_profile} final post-update run is not acceptance eligible"
+        )
+    convergence_failures = acceptance_failures(updated_payload)
+    if convergence_failures:
+        failures.append(
+            f"{support_profile} final update verifier rejected lifecycle evidence: "
+            + "; ".join(convergence_failures)
+        )
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -807,6 +842,18 @@ def main() -> int:
         return 0
 
     failures: list[str] = []
+    post_update = POST_UPDATE_MESSAGE.read_text(encoding="utf-8")
+    for required in [
+        "no separate recheck request is required",
+        "Alatyr Core update is not complete",
+        "acceptance/full/full",
+    ]:
+        if required not in post_update:
+            failures.append(f"post-update handoff missing convergence text: {required}")
+    if "Recommended follow-up:\nUse the installed Alatyr adapter" in post_update:
+        failures.append(
+            "post-update handoff must not require a second generic recheck"
+        )
     try:
         golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
         expected_phases = golden["phases"]

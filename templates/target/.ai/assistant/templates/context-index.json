@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1500,
-      "content_digest": "sha256:e2d8d6351fd8a7a6ea742c9e6e9c954d5fa7fa1243b2ce4a533309fec1dd8d33"
+      "estimated_words": 1573,
+      "content_digest": "sha256:b86a5681c1e9486c383d74d4bb9f5edd5cbad713bc2be31989b69c3c3379d777"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -699,8 +699,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 250,
-      "content_digest": "sha256:648737b641b5342e3992f892b51f02a1dcd167e198dfb50a6c73dec09c34a90e"
+      "estimated_words": 269,
+      "content_digest": "sha256:a3e4ddb11278950af4b823c318795e551643535cf67ae44b869693a9a250e8e9"
     },
     {
       "id": "assistant.content.templates-native-worker-binding-md",
@@ -810,8 +810,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1432,
-      "content_digest": "sha256:ebb402bf1d1d817bf59e0ac236be7cd72e7228316345279cb2b53b3789b8a68a"
+      "estimated_words": 1510,
+      "content_digest": "sha256:f74a79f63affd60420f91cf7ac6ce21eeacde45aa79366873b758b9f2a025254"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",

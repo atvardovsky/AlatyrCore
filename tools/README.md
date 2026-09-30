@@ -37,6 +37,7 @@ python3 tools/alatyr.py support-costs --target /path/to/target-repo
 python3 tools/alatyr.py impact --target /path/to/target-repo --diff-ref HEAD~1
 python3 tools/alatyr.py generate-support --target /path/to/target-repo --check
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
+python3 tools/alatyr.py verify-upgrade --target /path/to/target-repo --framework-source . --migration-diff tmp/upgrade-assessment/migration-report.md --output tmp/upgrade-verification.json
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout --target /path/to/target-repo
 python3 tools/alatyr.py inspect-dependency-knowledge --source /path/to/local-package-export
@@ -68,6 +69,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 impact --target C:\path\to\target-repo --diff-ref HEAD~1
 .\tools\alatyr.ps1 generate-support --target C:\path\to\target-repo --check
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
+.\tools\alatyr.ps1 verify-upgrade --target C:\path\to\target-repo --framework-source . --migration-diff tmp\upgrade-assessment\migration-report.md --output tmp\upgrade-verification.json
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
 .\tools\alatyr.ps1 inspect-dependency-knowledge --source C:\path\to\local-package-export
@@ -150,6 +152,9 @@ The stable command set is:
   no file output (use `validate-adapter` for an explicit report file)
 - `migration-report`: optional explicit report output only
 - `assess-upgrade`: explicit assessment output only; no adapter changes
+- `verify-upgrade`: explicit report output only; verifies final acceptance/full/
+  full evidence for an already applied target-aware update and never repairs or
+  mutates target files
 - `context-costs`: optional source-template or `--target` installed context-cost
   report output only
 - `inspect-extension`: read-only validation and digest calculation for a local
@@ -1685,6 +1690,15 @@ comparison. All four outputs are staged and replaced together only after
 migration evidence succeeds, so `--overwrite` preserves the previous complete
 assessment on a preflight or migration failure. A non-zero validator result
 still leaves the newly generated review evidence available.
+
+`verify_target_upgrade.py`, also available as `alatyr.py verify-upgrade`, is
+the final read-only convergence gate after target-aware migration and the
+accepted-state transition. It runs the target validator in acceptance phase
+with full validation and full approval-archive coverage, then rejects reports
+that are not acceptance eligible, retain active placeholders, lack branch or
+revision binding, contain blocking findings, or still declare a non-accepted
+installation state. Assessment and verification are deliberately separate:
+neither command applies or repairs an update.
 
 `check_migration_diff_report.py` executes the reporter against the current
 source baseline and validates the generated report shape. It is not a

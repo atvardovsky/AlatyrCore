@@ -224,6 +224,19 @@ REQUIRED_MESSAGE_TEXT = [
     "The presence of this file never proves that a chat message reached a user.",
 ]
 
+UPDATE_REQUIRED_FIELDS = [
+    "Update mode:",
+    "Terminal outcome:",
+    "Final update verification:",
+    "Separate recheck required:",
+]
+
+UPDATE_REQUIRED_TEXT = [
+    "Do not report `accepted` from assessment",
+    "accepted-state transition",
+    "requires no separate generic recheck request",
+]
+
 REQUIRED_INSTALLATION_TEXT = [
     "Adapter output contracts:",
     ".ai/assistant/templates/adapter-output-contracts.md",
@@ -371,6 +384,14 @@ def main() -> int:
         if "Migration assessment result/path:" not in blocks.get(contract, ""):
             failures.append(f"{contract} missing migration assessment evidence")
 
+    update_block = blocks.get("framework-update-output", "")
+    for field in UPDATE_REQUIRED_FIELDS:
+        if field not in update_block:
+            failures.append(f"framework-update-output missing field {field}")
+    for required in UPDATE_REQUIRED_TEXT:
+        if required not in update_block:
+            failures.append(f"framework-update-output missing {required}")
+
     for path, required_items in [
         (FINAL_EVIDENCE_GATE, FINAL_EVIDENCE_TEXT),
         (CODE_AND_TESTS_GATE, CODE_AND_TESTS_TEXT),
@@ -401,6 +422,16 @@ def main() -> int:
         for required_text in REQUIRED_MESSAGE_TEXT:
             if required_text not in message_text:
                 failures.append(f"{message.relative_to(ROOT)} missing {required_text}")
+        if filename == "post-update-message.md":
+            for required_text in [
+                "no separate recheck request is required",
+                "Alatyr Core update is not complete",
+                "acceptance/full/full",
+            ]:
+                if required_text not in message_text:
+                    failures.append(
+                        f"{message.relative_to(ROOT)} missing {required_text}"
+                    )
 
     if failures:
         for failure in failures:

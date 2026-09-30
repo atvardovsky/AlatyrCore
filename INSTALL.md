@@ -632,6 +632,22 @@ Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or
 final evidence. Do not present a scaffolder run as a completed installation.
 
+## Conversational Framework Update
+
+In an installed repository, `update Alatyr` is an assistant request for one
+target-aware update operation. It authorizes inspection and modification of
+the installed adapter for that current logical scope, but not commit, push,
+deployment, protected changes without approval, or unrelated project work.
+The assistant should assess impact, preserve target-owned facts, apply the
+migration, rebuild deterministic projections, run staged strict validation,
+record acceptance, and rerun final strict acceptance on the resulting branch
+and revision. It should finish with accepted evidence or an exact blocker; the
+user should not need to repeat the request merely to make the adapter coherent.
+
+`assess Alatyr update` and `recheck Alatyr update` are read-only unless repair
+is explicitly requested. The source helper below produces assessment evidence
+only and must never be reported as an applied update.
+
 ## Optional Migration-First Upgrade Assessment
 
 Before changing an installed adapter, a maintainer may generate source
@@ -648,6 +664,18 @@ arguments. The assessment does not install or update Alatyr. Review its
 canonical sources, target surfaces, local deviations, enabled modules, and
 validation findings. Prepare a target migration note and approval scope before
 applying approved changes separately.
+
+After the target-aware migration and accepted-state transition, the source
+checkout can provide a deterministic final verification gate:
+
+```sh
+python3 tools/alatyr.py verify-upgrade --target /path/to/target-repo --framework-source . --migration-diff tmp/upgrade-assessment/migration-report.md --output tmp/upgrade-verification.json
+```
+
+The verifier is read-only apart from its explicit report path. It requires
+acceptance phase, full validation scope, complete approval-archive coverage,
+an accepted installation state, no active placeholders, and an acceptance-
+eligible report bound to the observed branch and revision.
 
 ## Optional Target Adapter Validation
 
@@ -706,6 +734,10 @@ The default `acceptance` phase rejects those placeholders. Final update
 evidence must name the checked-out branch and revision, show manifest/module-
 profile agreement, and come from acceptance validation on that same state.
 Validation of one branch does not establish that another branch is updated.
+For an applying update, run this strict contract once while the state remains
+`staged`, record the accepted transition only after that clean pre-acceptance
+result, refresh affected projections, then run it again. Only the final
+accepted-state report may complete the operation.
 
 This validator can check generated bootstrap and routed-gate drift, router
   references, enabled-module contracts, manifest/module-profile agreement, and
@@ -738,3 +770,7 @@ Reject or stop when:
   installation is complete
 - existing target AI instructions would be overwritten without approval
 - target validation is claimed without evidence
+- an explicit `update Alatyr` request is reported complete after assessment,
+  migration staging, or file copying without final acceptance eligibility
+- an accepted post-update handoff tells the user to request another generic
+  recheck instead of having completed convergence in the update operation

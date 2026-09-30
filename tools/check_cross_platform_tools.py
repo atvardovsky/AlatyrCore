@@ -51,6 +51,7 @@ EXPECTED_COMMANDS = {
     "doctor",
     "migration-report",
     "assess-upgrade",
+    "verify-upgrade",
     "context-costs",
     "inspect-extension",
     "inspect-dependency-knowledge",

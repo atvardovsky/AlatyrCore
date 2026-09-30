@@ -156,6 +156,12 @@
       "write_scope": "explicit-evidence-output-only"
     },
     {
+      "name": "verify-upgrade",
+      "script": "verify_target_upgrade.py",
+      "purpose": "verify final strict acceptance of an applied target upgrade",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
       "name": "context-costs",
       "script": "report_context_costs.py",
       "purpose": "measure static target context routing cost",

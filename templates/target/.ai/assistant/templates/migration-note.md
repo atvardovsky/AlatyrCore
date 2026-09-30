@@ -91,15 +91,20 @@ Historical records remain immutable: `{YES_OR_BLOCKER}`
 Approval needed: `{YES_NO_REASON}`
 Approval record: `{APPROVAL_RECORD_OR_NOT_REQUIRED}`
 Assessment completed before target changes: `{YES_NO_AND_REASON}`
+Update mode: `{ASSESSMENT_APPLY_AND_ACCEPT_OR_REPAIR_AND_ACCEPT}`
 Validation run: `{VALIDATION_RUN_OR_SKIPPED_WITH_REASON}`
 Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
 Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
 Manifest/module-profile agreement: `{MATCH_OR_DRIFT_DETAILS}`
 Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+Staged pre-acceptance result: `{REPORT_PATH_RESULT_BRANCH_AND_REVISION_OR_NOT_APPLICABLE}`
+Accepted-state transition result: `{TRANSITION_SEQUENCE_VALIDATION_BINDING_AND_REVISION_OR_NOT_APPLICABLE}`
+Final update verification: `{ACCEPTANCE_FULL_SCOPE_FULL_ARCHIVE_REPORT_PATH_RESULT_BRANCH_AND_REVISION_OR_NOT_APPLICABLE}`
 Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 
 ## Final Evidence
 
-Migration result: `{COMPLETE_STAGED_PARTIAL_OR_BLOCKED}`
+Migration result: `{ACCEPTED_ASSESSED_STAGED_OR_BLOCKED}`
+Separate recheck required: `{NO_WHEN_ACCEPTED_OR_EXACT_NON_GENERIC_NEXT_ACTION}`
 Remaining gaps: `{REMAINING_GAPS_OR_NONE}`
 Residual risk: `{RESIDUAL_RISK}`

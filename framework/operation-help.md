@@ -155,6 +155,16 @@ implementation intent may authorize repository edits for the current scope,
 but it does not authorize commit or publication. Commit does not authorize
 push. A previous scope's phase authorization is never carried forward.
 
+`update Alatyr` is clear implementation intent for the installed adapter. It
+authorizes `inspect` and target-adapter `modify` for that logical scope, but
+not commit, publication, deployment, protected overwrites without approval, or
+unrelated project behavior. Route it through assessment, target-aware
+migration, deterministic derived-surface reconciliation, and strict final
+acceptance as one operation. `assess Alatyr update` and `recheck Alatyr
+update` remain read-only unless repair is explicitly requested. An applying
+operation must finish accepted or report an exact blocker; assessment-only
+evidence must not be presented as update completion.
+
 Source conformance may define provider-neutral static routing expectations for
 common request shapes such as help, status, architecture discussion, product
 change, backlog return, framework update, commit, and push. These fixtures

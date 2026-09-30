@@ -99,17 +99,17 @@
     },
     {
       "id": "recheck-after-framework-update",
-      "title": "Recheck framework update",
-      "summary": "Assess and repair target adapter impact from an Alatyr Core update.",
-      "use_when": ["framework update", "baseline change", "migration assessment"],
+      "title": "Update or recheck framework",
+      "summary": "Assess an Alatyr Core update read-only, or apply it target-aware and converge through strict acceptance when modification is requested.",
+      "use_when": ["framework update", "baseline change", "migration assessment", "incomplete update repair"],
       "context_profiles": ["framework-upgrade"],
       "required_module": "core-profile",
       "flow": ".ai/assistant/flows/adapter-recheck.flow.md",
       "minimum_inputs": ["update source or changed framework baseline"],
       "allowed_actions": ["read-only", "adapter-only", "full-with-approval"],
       "preview": "risk-gated",
-      "aliases": ["update Alatyr", "recheck Alatyr update"],
-      "final_evidence": ["migration impact", "adapter changes", "validation and residual risk"]
+      "aliases": ["update Alatyr", "assess Alatyr update", "recheck Alatyr update"],
+      "final_evidence": ["migration impact", "adapter changes", "strict acceptance or exact blocker", "validation and residual risk"]
     },
     {
       "id": "product-change",

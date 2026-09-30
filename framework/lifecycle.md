@@ -317,8 +317,12 @@ Before upgrading framework files in a target project:
     archive digests and recursive context indexes, then generate support state
     last. Historical baseline labels remain historical and must not be
     rewritten as current claims.
-16. Send a post-update assistant chat message that names updated surfaces,
-    recommended recheck operation, validation, and unresolved gaps.
+    Applying updates run acceptance/full/full while `staged`, record
+    `accepted`, refresh projections, then rerun. Only the latter is acceptance
+    eligible; stop at an exact blocker.
+16. Send a handoff: surfaces, checks, gaps; `accepted`, `assessed`,
+    `staged`, or `blocked`. Accepted needs no recheck; other outcomes name one
+    exact next action.
 
 Do not use an installer script as the framework mechanism. Do not overwrite
 target-specific rules just because the source framework changed.
@@ -435,3 +439,6 @@ Reject lifecycle changes that:
 - claim an update is complete from migration-staging evidence, unresolved
   active placeholders, module manifest/profile drift, or validation performed
   on a different branch or revision
+- stop an authorized update at assessment, file copy, changed-scope check, or
+  staged pre-acceptance when in-scope migration can continue
+- require another generic recheck after reporting `accepted`

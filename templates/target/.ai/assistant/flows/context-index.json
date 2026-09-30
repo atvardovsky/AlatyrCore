@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1934,
-      "content_digest": "sha256:cda12beeab20e2f2cb6b7b02bf6526532894cf87abfeb0fcccdcf8b5e8a2b24e"
+      "estimated_words": 2226,
+      "content_digest": "sha256:1d297b07597ee0327ad7d9a262b5d1a6e7d3961dbc97c64610551695946d2c2e"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",

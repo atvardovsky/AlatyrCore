@@ -1,0 +1,62 @@
+from __future__ import annotations
+
+import unittest
+
+from tools.verify_target_upgrade import acceptance_failures
+
+
+def accepted_payload() -> dict[str, object]:
+    return {
+        "tool": "validate_target_adapter",
+        "status": "passed",
+        "validation_phase": "acceptance",
+        "validation_scope": "full",
+        "installation_state": "accepted",
+        "placeholder_validation": {
+            "acceptance_eligible": True,
+            "unresolved_active": 0,
+        },
+        "approval_archive": {"mode": "full"},
+        "counts": {"errors": 0, "blocking_warnings": 0},
+        "evidence": {
+            "observed_revision": "a" * 40,
+            "observed_branch": "main",
+        },
+    }
+
+
+class UpgradeAcceptanceTest(unittest.TestCase):
+    def test_accepts_only_complete_strict_evidence(self) -> None:
+        self.assertEqual(acceptance_failures(accepted_payload()), [])
+
+    def test_rejects_staged_update_even_when_validation_passed(self) -> None:
+        payload = accepted_payload()
+        payload["installation_state"] = "staged"
+        payload["placeholder_validation"] = {
+            "acceptance_eligible": False,
+            "unresolved_active": 0,
+        }
+
+        failures = acceptance_failures(payload)
+
+        self.assertIn("installation state is not accepted", failures)
+        self.assertIn("validator report is not acceptance eligible", failures)
+
+    def test_rejects_reduced_scope_and_unresolved_placeholders(self) -> None:
+        payload = accepted_payload()
+        payload["validation_scope"] = "changed"
+        payload["approval_archive"] = {"mode": "changed"}
+        payload["placeholder_validation"] = {
+            "acceptance_eligible": True,
+            "unresolved_active": 2,
+        }
+
+        failures = acceptance_failures(payload)
+
+        self.assertIn("validation scope is not full", failures)
+        self.assertIn("approval archive was not fully validated", failures)
+        self.assertIn("active target placeholders remain", failures)
+
+
+if __name__ == "__main__":
+    unittest.main()

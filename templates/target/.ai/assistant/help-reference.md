@@ -136,11 +136,19 @@ Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
 Minimum input: installation note or known gaps.
 
 Operation: `recheck-after-framework-update`
-Use when: checking whether an Alatyr Core update requires target adapter
-migration.
+Use when: assessing an update read-only, applying a requested Alatyr Core
+update through target-aware migration and strict acceptance, or repairing an
+incomplete prior update.
 Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
 Minimum input: update source, changed framework baseline, or migration
 assessment path.
+Authorization: `update Alatyr` authorizes `inspect` and target-adapter
+`modify` for this scope. It does not authorize commit, push, deployment, or
+unrelated product changes. `assess Alatyr update` and `recheck Alatyr update`
+remain read-only unless repair is requested.
+Completion: do not stop after assessment or migration staging when modify is
+authorized. Finish with strict full acceptance on the resulting branch and
+revision, or report the exact blocker without calling the update complete.
 
 Operation: `product-change`
 Use when: changing accepted project behavior, architecture, data, runtime, or
@@ -458,8 +466,14 @@ Route to: `adapter-health` with `read-only` allowed actions.
 
 Alias: `update Alatyr` or `обнови Alatyr`
 Route to: `recheck-after-framework-update` when a framework update source is
-known. If no update context is known, show `help` and ask for the update
-source or intended recheck scope.
+known, with current-scope `inspect` and adapter `modify` intent. Continue
+through strict acceptance or an exact blocker; do not require a second recheck
+request. If no update context is known, show `help` and ask for the update
+source.
+
+Alias: `assess Alatyr update` or `recheck Alatyr update`
+Route to: `recheck-after-framework-update` with `read-only` intent unless the
+user also requests repair.
 
 Alias: `check Alatyr` or `проверь Alatyr`
 Route to: `recheck-after-installation` after initial installation, or

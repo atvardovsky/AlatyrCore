@@ -540,7 +540,16 @@ After installation or framework upgrade, an assistant should recheck:
 
 If a framework update adds requirements, the assistant should identify whether
 the target adapter needs migration, approval, new placeholders, or manual
-follow-up.
+follow-up. The exact request `update Alatyr` authorizes target-adapter
+modification for the current scope and should converge in one operation:
+assessment, target-aware migration, derived-surface regeneration, staged
+strict validation, accepted-state transition, and final strict acceptance on
+the resulting branch and revision. It does not authorize commit, push,
+deployment, protected changes without approval, or unrelated product work.
+Read-only assessment requests stop after impact evidence. Applying updates
+must not stop there or require a second generic recheck request; report either
+accepted completion or the exact approval, owner, fact, validation, or scope
+blocker.
 
 ## Effectiveness Review
 

@@ -415,6 +415,15 @@ List commands or manual checks:
   validation evidence:
 - migration-staging output classified as non-accepting, with active unresolved
   placeholders listed and an acceptance-phase rerun required:
+- explicit `update Alatyr` routed as current-scope adapter modification through
+  assessment, target-aware migration, projection reconciliation, and final
+  acceptance rather than stopping after read-only assessment:
+- staged strict pre-acceptance passed before the accepted-state transition,
+  and a second strict acceptance/full/full run on the resulting state is
+  acceptance eligible for the named branch and revision:
+- post-update handoff reports one terminal outcome; accepted requires no
+  second generic recheck, while assessed/staged/blocked names the exact next
+  action and does not claim completion:
 - manifest `modules.selected`, `modules.staged`, and `modules.enabled` agree
   with dependency closure and human module-profile states; scaffolding does not
   imply enablement, and no live staged capability remains at acceptance:

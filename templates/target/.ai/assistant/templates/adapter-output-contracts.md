@@ -162,6 +162,8 @@ Core baseline.
 
 - Operation id: `{OPERATION_ID}`
 - Operation type: `{FRAMEWORK_UPDATE_OR_IMPACT_REVIEW}`
+- Update mode: `{ASSESSMENT_APPLY_AND_ACCEPT_OR_REPAIR_AND_ACCEPT}`
+- Terminal outcome: `{ACCEPTED_ASSESSED_STAGED_OR_BLOCKED}`
 - Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
 - Observed at: `{OBSERVATION_DATE_TIME}`
@@ -228,6 +230,8 @@ Core baseline.
 - Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
 - Manifest/module-profile agreement: `{MATCH_OR_DRIFT_DETAILS}`
 - Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+- Final update verification: `{ACCEPTANCE_FULL_SCOPE_FULL_ARCHIVE_REPORT_PATH_RESULT_BRANCH_AND_REVISION}`
+- Separate recheck required: `{NO_WHEN_ACCEPTED_OR_EXACT_NON_GENERIC_NEXT_ACTION}`
 - Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
 - Post-update message result: `{POST_UPDATE_MESSAGE_SENT_SKIPPED_OR_BLOCKED}`
@@ -237,6 +241,13 @@ Core baseline.
 - Post-update delivery observed at: `{DELIVERY_TIMESTAMP_OR_NOT_OBSERVED}`
 - Final evidence: `{FINAL_EVIDENCE}`
 - Residual risk: `{RESIDUAL_RISK}`
+
+Do not report `accepted` from assessment, migration staging, changed-scope
+validation, copied framework files, or the staged pre-acceptance run. Applying
+updates require the accepted-state transition followed by final strict
+acceptance/full/full evidence on the resulting branch and revision. An
+accepted outcome requires no separate generic recheck request; any other
+outcome names the exact blocker and next action.
 
 ## Contract: `adapter-recheck-output`
 

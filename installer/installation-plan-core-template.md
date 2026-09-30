@@ -69,8 +69,13 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Logical integrity and affected relationship review:
 - Approval-record and actual-diff scope validation when required:
 - Installation or update state transition evidence:
+- Update mode and terminal outcome (`accepted`, `assessed`, `staged`, or
+  `blocked`):
+- Staged pre-acceptance and final acceptance/full/full evidence on the named
+  branch and revision:
 - Discovery disposition coverage and project-orientation quality review:
-- Post-install or post-update assistant handoff:
+- Post-install or post-update assistant handoff, including exact next action
+  for non-accepted outcomes and no generic second recheck for accepted updates:
 - Skipped checks and residual risks:
 
 ## Approval Disposition

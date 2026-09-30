@@ -20,6 +20,7 @@ EXPECTED_SCENARIOS = {
     "backlog-return-is-read-only": ["inspect"],
     "issue-status-is-read-only": ["inspect"],
     "fix-authorizes-working-tree-only": ["inspect", "modify"],
+    "framework-update-authorizes-adapter-modify": ["inspect", "modify"],
     "commit-existing-does-not-authorize-edit-or-push": ["inspect", "commit"],
     "stage-existing-is-local-git-only": ["inspect", "commit"],
     "pull-authorizes-working-tree-and-local-git": ["inspect", "modify", "commit"],

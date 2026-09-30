@@ -70,11 +70,11 @@
     {
       "id": "framework-update",
       "request": "update Alatyr",
-      "authorization_scenario": null,
+      "authorization_scenario": "framework-update-authorizes-adapter-modify",
       "expected_operation": "recheck-after-framework-update",
-      "expected_action_phase": "inspect",
+      "expected_action_phase": "modify",
       "expected_context_profiles": ["framework-upgrade"],
-      "minimum_evidence": ["migration impact", "adapter changes", "validation and residual risk"]
+      "minimum_evidence": ["migration impact", "adapter changes", "strict acceptance or exact blocker", "validation and residual risk"]
     },
     {
       "id": "commit",

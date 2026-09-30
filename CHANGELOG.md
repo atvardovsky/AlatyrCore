@@ -4,6 +4,17 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.74 - 2026-09-30
+
+- Routed `update Alatyr` as current-scope adapter modification while keeping
+  assessment read-only and commit, publish, deploy, and protected boundaries.
+- Required migration, projection reconciliation, staged pre-acceptance,
+  accepted transition, and final acceptance/full/full verification.
+- Added `accepted`, `assessed`, `staged`, and `blocked` handoffs: accepted needs
+  no recheck; incomplete outcomes name one blocker and next action.
+- Added cross-platform read-only `verify-upgrade` and bumped adapter schema to
+  `62` and target template to `69` for the convergence contract.
+
 ## 0.1.0-alpha.73 - 2026-09-30
 
 - Fixed changed-scope target validation so a changed package record is routed

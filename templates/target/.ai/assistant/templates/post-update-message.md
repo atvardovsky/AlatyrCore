@@ -10,7 +10,16 @@ Delivery evidence is separate from this template. Record `sent`, `skipped`, or
 The presence of this file never proves that a chat message reached a user.
 
 ```text
-Alatyr Core has been updated for `{PROJECT_NAME}`.
+Alatyr Core update outcome for `{PROJECT_NAME}`:
+`{ACCEPTED_ASSESSED_STAGED_OR_BLOCKED}`
+
+Outcome statement:
+`{ACCEPTED_AND_NO_SEPARATE_RECHECK_REQUIRED_OR_NOT_COMPLETE_WITH_EXACT_BLOCKER}`
+
+`accepted` requires applied target migration, rebuilt projections, accepted
+installation state, and acceptance-eligible final acceptance/full/full evidence
+for the named branch/revision. `assessed` applied nothing. `staged` or `blocked`
+must say "Alatyr Core update is not complete" and name one next action.
 
 Framework baseline:
 `{ALATYR_CORE_SOURCE_OR_BASELINE}`
@@ -44,7 +53,8 @@ Future assistant bootstrap:
   branches, and load canonical owner prose for unresolved or conflicting terms.
   Report stale entries, omitted live references, and fallback events.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
-- If migration impact is unclear, run `recheck-after-framework-update` before editing files.
+- If later drift or new evidence appears, use `recheck-after-framework-update`;
+  it is not a mandatory second step after an accepted update.
 - Re-evaluate `.ai/assistant/policies/action-authorization.json` at every
   action-phase boundary. Never reuse edit, commit, push, or live-action intent
   from a completed or superseded scope.
@@ -53,12 +63,8 @@ Future assistant bootstrap:
   verify packet, repository, context, and current-scope authorization before
   mutation.
 
-Recommended follow-up:
-Use the installed Alatyr adapter in this repository.
-Operation type: recheck-after-framework-update
-Goal: compare the installed adapter against the updated Alatyr Core baseline and report required migrations.
-Non-goals: do not change project behavior without approval.
-Allowed actions: read-only
+Next action:
+`{NONE_FOR_ACCEPTED_OR_EXACT_OWNER_APPROVAL_REPAIR_OR_VALIDATION_ACTION}`
 
 Migration assessment:
 `{MIGRATION_ASSESSMENT_PATH_OR_MANUAL_REVIEW}`
@@ -206,6 +212,12 @@ Validation phase and branch/revision:
 Acceptance status:
 `{ACCEPTED_OR_STAGED_WITH_ACTIVE_PLACEHOLDERS_AND_REQUIRED_STRICT_RERUN}`
 
+Final update verification:
+`{ACCEPTANCE_FULL_SCOPE_FULL_ARCHIVE_REPORT_PATH_RESULT_BRANCH_AND_REVISION}`
+
+This final verification uses the target's acceptance/full/full contract:
+acceptance phase, full validation scope, and full approval-archive coverage.
+
 Adapter health:
 `{READY_ATTENTION_BLOCKED_OR_UNVERIFIED_WITH_REASON}`
 
@@ -216,6 +228,11 @@ module profile, or evidence belongs to another branch or revision.
 Do not report adapter health as `ready` unless installation state is
 `accepted` and current strict acceptance validation passed for this branch and
 revision.
+
+When the outcome is `accepted`, state: no separate recheck request is required.
+When the outcome is not `accepted`, do not ask the user to repeat the
+generic update request; provide the exact blocker and next authorization,
+decision, repair, or validation action instead.
 
 Known adapter gaps or migrations:
 `{KNOWN_GAPS_OR_MIGRATIONS}`

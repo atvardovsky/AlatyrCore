@@ -166,7 +166,10 @@ requires `v<VERSION>` to exist and resolve to the checked-out commit.
 
 ## Target Adapter Update Message
 
-After a target project consumes a new AlatyrCore release, the installed adapter
-should route future work through its post-update message and
-`recheck-after-framework-update` operation. The target adapter decides local
-validation, approval, and migration application.
+After consuming a release, route `update Alatyr` through assessment, target-
+aware migration, projection reconciliation, staged pre-acceptance, transition,
+and final acceptance/full/full verification. Report `accepted`, `assessed`,
+`staged`, or `blocked`; accepted needs no recheck, while other outcomes name
+one next action. The target still owns validation, approval, and migration.
+`recheck-after-framework-update` remains available for read-only assessment or
+later drift.
