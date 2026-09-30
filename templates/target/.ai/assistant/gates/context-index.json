@@ -50,8 +50,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1327,
-      "content_digest": "sha256:68b7460446762af2b748d35217ee30d0cda98c9a69399716ef04a0f7d12ef953"
+      "estimated_words": 1371,
+      "content_digest": "sha256:b1ac2e8c14d7fcf03e07c3f61a9d30fa5ff6ef927b58efb1342f1e962a49f5db"
     },
     {
       "id": "assistant.content.gates-code-and-tests-md",
@@ -72,8 +72,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 221,
-      "content_digest": "sha256:414c1c11e9480bd5616acf1c77d2cbbebd5b6b6f72d878d1b47efada5ce1eb27"
+      "estimated_words": 197,
+      "content_digest": "sha256:e53396e101d5c631723eba24556e8f80b2836949edb630aba3382fdb03ee4b15"
     },
     {
       "id": "assistant.content.gates-contract-artifacts-md",
@@ -181,8 +181,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 165,
-      "content_digest": "sha256:2602ad222c061a08af51deac89c6d4e7288c5553375545788defa4f42834884c"
+      "estimated_words": 245,
+      "content_digest": "sha256:83657f8b4ab10931e59e8d719da83456900277b4ba18220a202e7bb944dfa2c9"
     },
     {
       "id": "assistant.content.gates-engineering-evidence-md",
@@ -245,8 +245,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 275,
-      "content_digest": "sha256:85e5d3d5b440c694f5ad72d295386dbffac08f471c98cb70187b3afcb36057f8"
+      "estimated_words": 260,
+      "content_digest": "sha256:4adef230c20c7f01dac973a6bea9cd03bc5cb9154ddccc7220594ea896b4210b"
     },
     {
       "id": "assistant.content.gates-index-json",
@@ -337,8 +337,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 77,
-      "content_digest": "sha256:b635c816c3768e2c4f010186161d7214ef5d51de0bd0c7a9ee12f6188db99941"
+      "estimated_words": 103,
+      "content_digest": "sha256:90ae5ace48c56b15a1487e615303ddf30a4ab9e003f2df09ef949d84961d2448"
     },
     {
       "id": "assistant.content.gates-session-continuity-md",

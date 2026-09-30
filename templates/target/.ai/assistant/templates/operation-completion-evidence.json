@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "record_kind": "alatyr-operation-completion-evidence",
   "operation": {
     "id": "{OPERATION_ID}",
@@ -142,6 +142,22 @@
   },
   "consistency": {
     "logical_integrity_result": "{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}",
+    "project_contour_sync": {
+      "decision": "{UPDATED_NOT_REQUIRED_BLOCKED_OR_UNVERIFIED}",
+      "changed_fact_ids": [
+        "{CHANGED_FACT_ID_OR_NONE}"
+      ],
+      "owners_checked": [
+        "{TARGET_RELATIVE_CANONICAL_OWNER_OR_NONE}"
+      ],
+      "affected_surfaces": [
+        "{UPDATED_OR_INTENTIONALLY_UNCHANGED_TARGET_SURFACE_OR_NONE}"
+      ],
+      "reason": "{FACT_SPECIFIC_REASON}",
+      "impact_evidence": "{CONSISTENCY_MAP_MANUAL_REVIEW_OR_TARGET_RELATIVE_EVIDENCE}",
+      "support_state_result": "{CURRENT_REFRESHED_STALE_NOT_APPLICABLE_OR_UNVERIFIED}",
+      "residual_risk": "{RESIDUAL_RISK_OR_NONE}"
+    },
     "companion_surfaces": [
       {
         "surface": "{SURFACE}",

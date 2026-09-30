@@ -28,6 +28,10 @@ Validation entry points:
 - code -> pyproject.toml
 Known contradictions, missing facts, or accepted limitations:
 - none
+
+## Maintenance
+
+Every code or test change records a Project Contour Sync Decision.
 """
 
 

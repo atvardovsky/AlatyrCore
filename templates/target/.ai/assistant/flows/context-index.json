@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1902,
-      "content_digest": "sha256:d007e33006ddd13657c345b9263da786dc5a202407d9e73e581d97a8fb267cba"
+      "estimated_words": 1934,
+      "content_digest": "sha256:cda12beeab20e2f2cb6b7b02bf6526532894cf87abfeb0fcccdcf8b5e8a2b24e"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -150,8 +150,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 634,
-      "content_digest": "sha256:c2ebca2465a284a6e330c3b540cd71997117d964e73a17e14f81dcf6772bfe2a"
+      "estimated_words": 672,
+      "content_digest": "sha256:220b0766f012e1261fdf0425a862041cdfc9bb70e63e6916f57d0f552eccb02f"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -174,8 +174,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 498,
-      "content_digest": "sha256:fca7d102e3ee96e0572857ef4a4aee9683305737b8e9644447de9a8928c217b3"
+      "estimated_words": 523,
+      "content_digest": "sha256:beb344a87238b4946d72e0bc0d31557d47c6ad29fd53c389cb00a7ef0865bdc4"
     },
     {
       "id": "assistant.content.flows-debug-mode-flow-md",
@@ -292,8 +292,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 706,
-      "content_digest": "sha256:5e3113638a4b18e41ff8902c367ed4e3264d20fc2f6a6a5cb20b96c42452d6de"
+      "estimated_words": 710,
+      "content_digest": "sha256:4288006c86377cda647d407ab94fd7f124c7266409dd673e1fbbdfe037f6e29e"
     },
     {
       "id": "assistant.content.flows-engineering-evidence-capture-flow-md",
@@ -362,8 +362,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 770,
-      "content_digest": "sha256:9a96c1866053d764f676cb144cfb3a0610a6b1754a893fbd3bffd4b218448c90"
+      "estimated_words": 809,
+      "content_digest": "sha256:75ef63ddd9ccc6f83aaddea1fde7914ffae990156c76aad7d17be62e872dacdb"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",
@@ -387,8 +387,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 538,
-      "content_digest": "sha256:54091f94c588839c5e2e6030a859f6dba2c618e7f071011c0e1e8a7416f41c33"
+      "estimated_words": 585,
+      "content_digest": "sha256:974d649cc0ab6b254c6cd15f489d6ffdc76a4f1e855863ff2855270493008cf1"
     },
     {
       "id": "assistant.content.flows-operation-routing-flow-md",
@@ -552,8 +552,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 1075,
-      "content_digest": "sha256:8497e402b323f63dcd77ecefb352e20ec5cbeb2d4085e7c02f385a906048b302"
+      "estimated_words": 1094,
+      "content_digest": "sha256:f09d01e56eed033c03002e4c9369a4d16f39589dce9d5d8c4bd6c08bbf691a9b"
     },
     {
       "id": "assistant.content.flows-support-generation-flow-md",

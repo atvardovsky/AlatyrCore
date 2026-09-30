@@ -51,6 +51,7 @@
     "security_owner_evidence",
     "actions_avoided",
     "approvals",
+    "project_contour_sync_decision",
     "validation",
     "residual_risk"
   ]

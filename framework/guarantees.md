@@ -332,6 +332,9 @@ defines:
 - approval rules and approval records when durable evidence is needed
 - adapter output contracts for installation, framework update, and recheck
   evidence when the target wants durable operation records
+- a Project Contour Sync Decision for every code or test change, including
+  checked owners, affected surfaces, evidence, and a fact-specific reason when
+  no project-owned documentation update is required
 - bridge capability matrix and selected-provider context-caching evidence for
   supported assistants
 - task-specific maturity and blocking criteria

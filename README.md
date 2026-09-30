@@ -436,6 +436,12 @@ users, architectural areas and owners, primary workflows, validation entry
 points, and known contradictions. Detailed facts remain in their canonical
 owners, while the source-of-truth registry records authority and freshness.
 
+Every code or test change ends with an explicit project-contour sync decision.
+The assistant updates affected project-owned knowledge, explains from named
+owners why no update is required, or reports the work as blocked or unverified.
+This does not force a documentation edit for every code diff: the concise
+contour changes only when its orientation or routing facts change.
+
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
 large-task planning, worker delegation, diagrams, dependency knowledge, and
@@ -584,7 +590,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.72`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.73`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

@@ -58,6 +58,7 @@
     "re_derived_invariants",
     "review_item_reconciliation",
     "affected_areas",
+    "project_contour_sync_decision",
     "validation",
     "diagram_result",
     "contract_artifact_result",

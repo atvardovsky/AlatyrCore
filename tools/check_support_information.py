@@ -34,6 +34,44 @@ def load(path: Path) -> dict[str, object]:
     return value
 
 
+def check_contour_sync_contracts(failures: list[str]) -> None:
+    contracts = {
+        "framework/support-information.md": [
+            "## Project Contour Sync Decision",
+            "`updated`",
+            "`not-required`",
+            "`blocked`",
+            "`unverified`",
+        ],
+        "framework/logical-integrity.md": [
+            "Project Contour Sync Decision",
+            "every code or test change",
+        ],
+        "templates/target/AGENTS.md": [
+            "For every code or test change",
+            "Project Contour Sync Decision",
+        ],
+        "templates/target/.ai/assistant/gates/documentation.md": [
+            "Project Contour Sync Decision",
+            "fact-specific reason",
+        ],
+        "templates/target/.ai/assistant/gates/final-evidence.md": [
+            "Project Contour Sync Decision",
+            "prevents a `complete` result",
+        ],
+    }
+    for relpath, required_text in contracts.items():
+        path = ROOT / relpath
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            failures.append(f"cannot read project-contour sync contract {relpath}: {exc}")
+            continue
+        for value in required_text:
+            if value not in text:
+                failures.append(f"{relpath} missing project-contour sync text: {value}")
+
+
 def main() -> int:
     failures: list[str] = []
     schemas = [
@@ -98,6 +136,8 @@ def main() -> int:
     for relpath in required_paths:
         if not (ROOT / relpath).is_file():
             failures.append(f"missing support-information surface: {relpath}")
+
+    check_contour_sync_contracts(failures)
 
     try:
         rules = load(ROOT / "framework/rule-registry.json")["rules"]

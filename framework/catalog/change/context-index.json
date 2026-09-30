@@ -54,8 +54,8 @@
       "owner_refs": [
         "ALATYR-PACKAGE-001"
       ],
-      "estimated_words": 1498,
-      "content_digest": "sha256:14920ff9a7a76eacdad365092933eef0689d406727a08c962a3511b3a097b2d2"
+      "estimated_words": 1540,
+      "content_digest": "sha256:34ebb86d28f4cb747a950356c1b39c20fb799457f5bbb23ac3f5934c461a0711"
     },
     {
       "id": "framework.change.consistency-model-md",

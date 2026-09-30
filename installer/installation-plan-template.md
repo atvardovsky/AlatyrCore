@@ -460,6 +460,9 @@ metadata.
 - Generated bootstrap source-hash verification:
 - Context router:
 - Task context profiles:
+- Project Contour Sync Decision routing for every code/test profile, including
+  accepted statuses, checked owners, evidence, support-state result, and
+  completion blockers:
 - Context-router bootstrap references:
 - Context budgets and exception behavior:
 - Context receipt fields:

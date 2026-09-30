@@ -85,7 +85,7 @@ Route clear requests automatically. The user does not need to name a mode.
 15. Report selected and skipped relationships, selected profile and state,
     comments changed, symbols skipped, generated output, direct-edit result,
     contract artifact result, visual validation result, validation, skipped
-    checks, approvals, and residual risk.
+    checks, approvals, Project Contour Sync Decision, and residual risk.
 
 ## Rejection Criteria
 

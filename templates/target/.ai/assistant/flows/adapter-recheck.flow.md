@@ -221,6 +221,10 @@ Replace placeholders with target facts before accepting installation.
     changed archive validation only for routine feedback; full acceptance and
     explicit archive audits must deep-check complete history. Rebuild recursive
     context indexes after any archive move and generate support state last.
+    Verify that target `AGENTS.md`, every code/test-changing context profile,
+    the gate index, final-evidence gate, and operation-completion template
+    require the same Project Contour Sync Decision. Preserve project-owned
+    contour facts while updating this workflow contract.
 19. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Current files prove current structure only; name dated operation, approval,
     validation, or migration records before making historical claims.

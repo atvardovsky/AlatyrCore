@@ -95,6 +95,29 @@ right files changed, that a semantic fact is consistent, or that a support
 update is valuable. The assistant still performs logical integrity review,
 approval-scope enforcement, and target validation.
 
+## Project Contour Sync Decision
+
+Every code or test change must end with one explicit project-contour decision:
+
+- `updated`: one or more project-owned support surfaces changed with the fact
+- `not-required`: no accepted project fact or routed support owner changed,
+  with a fact-specific reason
+- `blocked`: a required owner, decision, authorization, or update is missing
+- `unverified`: impact could not be established from current evidence
+
+Check the selected fact owner plus applicable project orientation,
+source-of-truth registry, architecture, workflow, data or API contract,
+diagram, vocabulary, validation, and known-gap surfaces. Use accepted
+consistency relationships when available and a compact manual owner review
+otherwise. Do not update `.ai/project/contour.md` merely because code changed;
+that file changes only when its concise orientation or routing facts change.
+
+The decision records changed fact IDs, owners checked, updated or intentionally
+unchanged surfaces, impact evidence, support-state result, and residual risk.
+`blocked` or `unverified` prevents a complete claim. Support hashes prove
+whether managed files changed, not whether an omitted documentation update was
+semantically unnecessary.
+
 Installed-support reports distinguish gross filesystem footprint, explicitly
 excluded local or generated state, policy-managed support, and unclassified
 surfaces. Guardrails and comparisons must name the scope they measure instead
@@ -195,6 +218,7 @@ Impact closure: <facts, areas, selected/skipped edges, concrete surfaces>
 Relationship candidates: <created/reviewed/disposition or none>
 Generated support: <planned/checked/applied/skipped artifacts>
 Support/product cost: <file and line ratios or not measured>
+Project contour sync: <updated/not-required/blocked/unverified with owners, surfaces, reason, and evidence>
 Context selected: <item IDs and bounded expansions>
 Authorization and approvals: <current evidence>
 Validation: <target checks and manual review>
@@ -213,3 +237,4 @@ Reject work that:
 - executes assistant-proposed or owner-maintained generation
 - applies output from a stale plan or changed repository base
 - refreshes support state before generated surfaces and indexes are complete
+- completes code or test work without a Project Contour Sync Decision

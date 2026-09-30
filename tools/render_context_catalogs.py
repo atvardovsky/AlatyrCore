@@ -366,6 +366,7 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
             "alatyr:risk-by-fact@1",
             "alatyr:logical-integrity@1",
             "alatyr:changed-fact-not-file@1",
+            "alatyr:project-contour-sync@1",
         ),
         "context/profiles/business-change.json": (
             "alatyr:canonical-owner@1",
@@ -373,6 +374,7 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
             "alatyr:protected-change@1",
             "alatyr:logical-integrity@1",
             "alatyr:changed-fact-not-file@1",
+            "alatyr:project-contour-sync@1",
         ),
         "context/profiles/architecture-change.json": (
             "alatyr:canonical-owner@1",
@@ -381,6 +383,7 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
             "alatyr:logical-integrity@1",
             "alatyr:changed-fact-not-file@1",
             "alatyr:observed-is-not-accepted@1",
+            "alatyr:project-contour-sync@1",
         ),
         "context/profiles/data-change.json": (
             "alatyr:canonical-owner@1",
@@ -388,6 +391,7 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
             "alatyr:protected-change@1",
             "alatyr:logical-integrity@1",
             "alatyr:changed-fact-not-file@1",
+            "alatyr:project-contour-sync@1",
         ),
         "context/profiles/security-sensitive.json": (
             "alatyr:canonical-owner@1",
@@ -395,6 +399,7 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
             "alatyr:protected-change@1",
             "alatyr:logical-integrity@1",
             "alatyr:changed-fact-not-file@1",
+            "alatyr:project-contour-sync@1",
         ),
         "context/profiles/ai-infrastructure.json": (
             "alatyr:risk-by-fact@1",

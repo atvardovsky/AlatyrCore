@@ -61,10 +61,12 @@ Replace placeholders with target facts before accepting installation.
     or excluded paths.
 15. Perform a final consistency check across changed surfaces and related
     review-item clusters.
-16. Apply `.ai/assistant/gates/engineering-evidence.md` and preserve compact
+16. Apply `.ai/assistant/gates/documentation.md` and record the Project Contour
+    Sync Decision. Regenerate support state last when managed support changed.
+17. Apply `.ai/assistant/gates/engineering-evidence.md` and preserve compact
     reusable task knowledge when triggered and authorized, or record a
     fact-specific skip or blocker.
-17. Report final evidence, skipped checks, approvals, and residual risk.
+18. Report final evidence, skipped checks, approvals, and residual risk.
 
 For large or resumable changes, use
 `.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
@@ -91,6 +93,8 @@ Report:
 - re-derived invariants and reconciled review-item clusters
 - relationship impact closure, missing links, and areas reached
 - source-of-truth or blueprint updates
+- Project Contour Sync Decision with checked owners, affected surfaces,
+  evidence, support-state result, and reason when no update was required
 - implementation, test, contract-artifact, diagram, prompt, skill, gate,
   bridge, or checker updates
 - validation run or unresolved

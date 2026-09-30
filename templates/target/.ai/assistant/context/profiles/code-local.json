@@ -83,7 +83,7 @@
     "contract_artifact_result",
     "visual_validation_result",
     "validation",
-    "doc_sync_result",
+    "project_contour_sync_decision",
     "residual_risk"
   ]
 }

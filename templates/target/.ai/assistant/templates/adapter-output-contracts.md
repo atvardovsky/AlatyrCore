@@ -28,6 +28,7 @@ a large task package.
 - Required checks: `{CHECKS_RESULTS_AND_REASONS}`
 - Skipped or unavailable checks: `{CHECKS_REASONS_AND_RESIDUAL_RISK_OR_NONE}`
 - Logical integrity result: `{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}`
+- Project contour sync decision: `{UPDATED_NOT_REQUIRED_BLOCKED_OR_UNVERIFIED_WITH_FACTS_OWNERS_SURFACES_REASON_IMPACT_SUPPORT_STATE_AND_RISK}`
 - Companion surfaces: `{SURFACES_DECISIONS_AND_EVIDENCE}`
 - Approval scope result: `{PASSED_FAILED_NOT_REQUIRED_OR_UNVERIFIED}`
 - Residual risks: `{RESIDUAL_RISKS_OR_NONE}`
@@ -39,7 +40,9 @@ a large task package.
 Do not report `complete` when current authorization is missing, required
 validation failed or was unavailable without an accepted target reason, logical
 integrity is unresolved, approval scope is required but unverified, or residual
-risk needs a target owner decision. Required proof obligations and analysis
+risk needs a target owner decision. A missing, blocked, or unverified Project
+Contour Sync Decision also prevents completion for code or test changes.
+Required proof obligations and analysis
 reviews must also be resolved with evidence. A non-trivial model must remain
 within its hard limits and its active projection must match the recorded model
 digest.

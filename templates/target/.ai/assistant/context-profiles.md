@@ -472,8 +472,8 @@ approval gate fragments only when the repair reaches those boundaries.
 Approval gates: only if the task crosses a protected category.
 
 Validation/evidence: run or report `{TARGET_CODE_VALIDATION}`, re-derive
-invariants, reconcile related review items, and explain doc sync or why none
-was needed.
+invariants, reconcile related review items, and record the Project Contour Sync
+Decision with checked owners and evidence.
 
 ## Profile: `business-change`
 
@@ -505,7 +505,7 @@ behavior.
 Validation/evidence: changed fact, owning blueprint or source of truth,
 re-derived invariants, review-item reconciliation, implementation/test/doc
 sync, diagram sync if applicable, machine-readable approval-scope result, and
-final logical integrity result.
+Project Contour Sync Decision, and final logical integrity result.
 
 ## Profile: `architecture-change`
 
@@ -538,7 +538,8 @@ production dependencies or services.
 
 Validation/evidence: architecture owner update, affected areas, re-derived
 invariants, review-item reconciliation, validation, diagrams or why none
-changed, machine-readable approval-scope result, and residual risk.
+changed, Project Contour Sync Decision, machine-readable approval-scope result,
+and residual risk.
 
 ## Profile: `data-change`
 
@@ -569,7 +570,8 @@ privacy, or migration-risk changes.
 
 Validation/evidence: canonical data owner, derived surfaces, migration or
 rollback notes where applicable, scope/identity/persistence invariants,
-observable external failure distinctions, validation, and unresolved risk.
+observable external failure distinctions, Project Contour Sync Decision,
+validation, and unresolved risk.
 
 ## Profile: `security-sensitive`
 
@@ -600,7 +602,7 @@ Approval gates: explicit approval before protected changes; use approval
 records when scope or plan evidence matters.
 
 Validation/evidence: security owner evidence, actions avoided, approvals,
-validation, skipped checks, and residual risk.
+Project Contour Sync Decision, validation, skipped checks, and residual risk.
 
 ## Profile: `ai-infrastructure`
 

@@ -33,6 +33,15 @@ Start with `.ai/project/source-of-truth-registry.md` when ownership is unclear.
 Use the architecture, vocabulary, testing, and code-documentation indexes only
 when those modules are enabled and relevant to the question.
 
+## Maintenance
+
+Every code or test change requires a Project Contour Sync Decision. Update this
+file only when purpose, users, architectural areas or owners, primary
+workflows, validation entry points, or known gaps changed. Update the selected
+detailed canonical owner instead when the orientation remains accurate. A
+fact-specific `not-required` decision is valid; missing, `blocked`, or
+`unverified` evidence prevents a complete claim.
+
 ## Owns
 
 - product purpose

@@ -78,6 +78,7 @@ Combined validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Changed-fact reconciliation: `{RESULT_OR_NOT_APPLICABLE}`
 Approval and authorization reconciliation: `{RESULT_OR_NOT_APPLICABLE}`
 Documentation diagram and support sync: `{RESULT_OR_NOT_APPLICABLE}`
+Project Contour Sync Decision: `{UPDATED_NOT_REQUIRED_BLOCKED_OR_UNVERIFIED_WITH_OWNERS_AND_EVIDENCE}`
 Proof obligations: `{PASSED_WAIVED_FAILED_BLOCKED_OPEN_AND_EVIDENCE}`
 Required review passes: `{PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}`
 Final logical integrity result: `{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}`

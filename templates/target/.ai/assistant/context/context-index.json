@@ -126,8 +126,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 332,
-      "content_digest": "sha256:1fa0a329302fc8fdee225e233b9963d0b8bcd1101cfaf3f056a981088d03d1f1"
+      "estimated_words": 337,
+      "content_digest": "sha256:e5279cc4fdb476f785ae0648deb03bc66652620f32c2d2af657217660cce7180"
     },
     {
       "id": "assistant.section.context-task-scales",

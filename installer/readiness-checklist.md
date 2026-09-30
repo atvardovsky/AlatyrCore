@@ -465,6 +465,11 @@ Final evidence must say:
   owner map recorded or explicitly unresolved
 - target adapter rewritten
 - contours created or updated
+- every code- or test-changing profile routes the final-evidence gate and a
+  Project Contour Sync Decision; `blocked` or `unverified` prevents completion,
+  while the full documentation gate remains conditional
+- operation-completion evidence records changed facts, checked project owners,
+  affected surfaces, reason, impact evidence, support-state result, and risk
 - source-of-truth registry created or updated
 - typed discovery receipt retained with every material finding projected,
   rejected, deferred, or marked not applicable with evidence

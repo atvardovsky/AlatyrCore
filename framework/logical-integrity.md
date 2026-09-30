@@ -79,13 +79,21 @@ Use this sequence when a fact may have changed:
    identity, ownership, lifecycle, and dependent contracts. State each
    invariant in testable language before choosing a repair.
 9. Choose the smallest coherent repair set that preserves those invariants.
-10. Apply required companion updates or explain why none are needed.
-11. Run target validation that exists, or record manual/unresolved checks.
-12. Make a proportional final-evidence capture decision. When durable
+10. Record a Project Contour Sync Decision for every code or test change:
+    `updated`, `not-required`, `blocked`, or `unverified`. Name the changed fact
+    IDs, project owners checked, affected support surfaces, and evidence. A
+    `not-required` decision needs a fact-specific reason; a code-only diff is
+    not evidence by itself.
+11. Apply required companion updates or explain why none are needed. Update
+    `.ai/project/contour.md` only when its orientation, areas, owners,
+    workflows, validation entry points, or known gaps changed; keep detailed
+    facts in their canonical owners.
+12. Run target validation that exists, or record manual/unresolved checks.
+13. Make a proportional final-evidence capture decision. When durable
     Engineering Evidence support is active, apply its full capture policy. If
     it is unavailable, record compact final evidence plus an unavailable,
     skipped, or blocked reason without claiming that a durable record exists.
-13. Report final evidence and residual risk.
+14. Report final evidence and residual risk.
 
 When test-first development is activated, the repair set must include the
 selected policy trigger, changed fact or invariant, valid expected RED,
@@ -177,6 +185,7 @@ Source of truth: <owning file or missing adapter fact>
 Conflicts found: <what disagreed, if anything>
 Repair set: <files or artifacts updated>
 Impact closure: <selected/skipped edges, levels, areas, and missing links>
+Project contour sync: <updated/not-required/blocked/unverified, owners, surfaces, evidence, and reason>
 Validation: <target commands or manual checks>
 Approvals: <used or not required>
 Residual risk: <skipped or unresolved checks>
@@ -195,6 +204,8 @@ Reject or revise work that:
   owner
 - updates only one surface when code, docs, tests, diagrams, prompts, skills,
   gates, or bridges also own the changed fact
+- completes a code or test change without a resolved Project Contour Sync
+  Decision and fact-specific evidence
 - weakens tests, gates, approvals, documentation-sync rules, or checker rules
   to make a change pass
 - claims validation passed without target evidence

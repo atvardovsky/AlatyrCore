@@ -227,6 +227,29 @@ def validate_completion_evidence(failures: list[str]) -> None:
             failures.append(
                 f"operation completion task_decomposition missing {required}"
             )
+    consistency = completion.get("consistency")
+    contour_sync = (
+        consistency.get("project_contour_sync")
+        if isinstance(consistency, dict)
+        else None
+    )
+    if not isinstance(contour_sync, dict):
+        failures.append("operation completion evidence lacks project_contour_sync")
+    else:
+        for required in [
+            "decision",
+            "changed_fact_ids",
+            "owners_checked",
+            "affected_surfaces",
+            "reason",
+            "impact_evidence",
+            "support_state_result",
+            "residual_risk",
+        ]:
+            if required not in contour_sync:
+                failures.append(
+                    f"operation completion project_contour_sync missing {required}"
+                )
 
 
 def main() -> int:

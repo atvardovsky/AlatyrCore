@@ -77,7 +77,11 @@ on the immediate critical path and in control of final convergence.
 12. When a change package is active, finalize its semantic scope, companion
     decisions, material corrections, and repository provenance after global
     convergence.
-13. When subagents were used, reconcile packet scope, requested and actual
+13. Record one Project Contour Sync Decision for the combined code/test
+    result. Worker-local documentation conclusions are evidence only; the
+    primary reconciles owners, affected surfaces, support state, and residual
+    risk.
+14. When subagents were used, reconcile packet scope, requested and actual
     model or unverified status, validation, fallback, rejected output, and
     primary review before accepting any workstream result.
 
@@ -95,6 +99,7 @@ Report:
   blocked tasks
 - changed facts and canonical owners
 - relationship closure, selected/skipped edges, and missing coverage
+- Project Contour Sync Decision with checked owners and evidence
 - workstream status and dependency result
 - planned, resolved, and observed semantic guidance identities and ordered
   bundle digests

@@ -59,7 +59,12 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
 14. For multi-workstream operations, reconcile the combined repair set in one
     global review after local workstream checks. Confirm shared fact owners,
     dependency order, approval scope, and generated artifacts agree.
-15. Before completion, apply
+15. For every code or test change, apply
+    `.ai/assistant/gates/documentation.md` and record the Project Contour Sync
+    Decision. Update the concise contour only when its orientation or routing
+    facts changed; otherwise name checked owners and the fact-specific reason
+    for `not-required`.
+16. Before completion, apply
     `.ai/assistant/gates/engineering-evidence.md`. Capture compact reusable
     engineering conclusions when triggered and authorized, or report a
     fact-specific skip or blocker. Do not turn capture alone into a change
@@ -84,4 +89,5 @@ Repair: <files or behavior to change>
 Gate: <target validation or manual review>
 Workstream convergence: <global result or not applicable>
 Durable engineering evidence: <captured ID/path, skipped reason, or blocker>
+Project contour sync: <updated/not-required/blocked/unverified with owners, surfaces, and evidence>
 ```

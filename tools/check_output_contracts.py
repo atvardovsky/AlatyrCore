@@ -76,6 +76,7 @@ COMPLETION_CONTRACT_FIELDS = [
     "Required checks:",
     "Skipped or unavailable checks:",
     "Logical integrity result:",
+    "Project contour sync decision:",
     "Companion surfaces:",
     "Approval scope result:",
     "Residual risks:",
@@ -104,6 +105,7 @@ FINAL_EVIDENCE_TEXT = [
     "Report `complete` only when current authorization covers performed phases",
     "Report `partial`, `blocked`, or `unverified`",
     "semantic scope it proves",
+    "Project Contour Sync Decision",
 ]
 
 CODE_AND_TESTS_TEXT = [
@@ -115,6 +117,7 @@ CODE_AND_TESTS_TEXT = [
     "`not-applicable`",
     "Completion guard:",
     "Code changes without runnable or explicitly not-applicable target validation",
+    "Project Contour Sync Decision",
 ]
 
 TESTING_GUIDANCE_TEXT = [
@@ -292,8 +295,8 @@ def main() -> int:
             f"{COMPLETION_TEMPLATE.relative_to(ROOT)} must contain a JSON object"
         )
         completion_data = {}
-    if completion_data.get("schema_version") != 3:
-        failures.append("operation-completion evidence schema_version must be 3")
+    if completion_data.get("schema_version") != 4:
+        failures.append("operation-completion evidence schema_version must be 4")
     if completion_data.get("record_kind") != "alatyr-operation-completion-evidence":
         failures.append("operation-completion evidence record_kind is invalid")
     for field in COMPLETION_TEMPLATE_FIELDS:
@@ -305,6 +308,28 @@ def main() -> int:
         "{TRUE_ONLY_WHEN_REQUIRED_EVIDENCE_PASSED_OR_IS_NOT_APPLICABLE}"
     ):
         failures.append("operation-completion evidence must gate complete claims")
+    consistency = completion_data.get("consistency")
+    contour_sync = (
+        consistency.get("project_contour_sync")
+        if isinstance(consistency, dict)
+        else None
+    )
+    required_contour_fields = {
+        "decision",
+        "changed_fact_ids",
+        "owners_checked",
+        "affected_surfaces",
+        "reason",
+        "impact_evidence",
+        "support_state_result",
+        "residual_risk",
+    }
+    if not isinstance(contour_sync, dict) or not required_contour_fields.issubset(
+        contour_sync
+    ):
+        failures.append(
+            "operation-completion evidence must define the project contour sync decision"
+        )
 
     for contract in sorted(
         REQUIRED_CONTRACTS - {"adapter-health-output", "operation-completion-evidence"}

@@ -80,6 +80,9 @@ Every project using this framework must define these structural bindings:
 - **Support-information state:** target-owned collection/classification policy,
   canonical cross-platform digests, changed-surface evidence, and bounded
   impact routing with unresolved relationship candidates kept non-authoritative.
+  Every code or test change records a Project Contour Sync Decision through
+  code- and semantic-change profiles; missing, `blocked`, or `unverified`
+  decisions prevent a complete claim.
 - **Local execution bindings:** project-specific validation, approval,
   authorization, safety, output-evidence, and checker status. A target
   validation contract must distinguish adapter health, current-change

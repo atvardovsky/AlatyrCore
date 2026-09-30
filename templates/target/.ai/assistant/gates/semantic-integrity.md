@@ -10,4 +10,7 @@ Canonical owner: `ALATYR-INTEGRITY-001`.
 - Traverse the enabled consistency map, or perform a compact manual impact
   closure across code, tests, docs, diagrams, gates, prompts, skills, and
   bridges.
+- Record the documentation gate's Project Contour Sync Decision with checked
+  owners, affected surfaces, evidence, and a fact-specific reason when no
+  project-owned documentation update is required.
 - Activate approval and security gates before protected semantic changes.

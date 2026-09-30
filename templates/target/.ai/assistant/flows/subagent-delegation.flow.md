@@ -130,14 +130,16 @@ Selected task-scale overlay: `delegated-execution`
 4. Run or repeat target validation required by combined risk.
 5. Reconcile changed facts, approvals, companion surfaces, and workstreams in
    the primary operation or large-task packet.
-6. The primary assistant performs final logical integrity review and reports
+6. Record the combined Project Contour Sync Decision in primary convergence;
+   no worker result independently establishes project documentation freshness.
+7. The primary assistant performs final logical integrity review and reports
    completion. Delegate-local success is not final success. The primary
    rechecks the newest user instruction before integrating writes, committing,
    publishing, or performing a live external action.
-7. Retry only target-declared transient or locally repairable failures. Reject
+8. Retry only target-declared transient or locally repairable failures. Reject
    scope violations, return contradictions to the primary, and revalidate
    stale results against current repository state.
-8. Review child proposals as new primary-owned decisions. For recursive work,
+9. Review child proposals as new primary-owned decisions. For recursive work,
    verify the branch envelope and checkpoint, including accepted/rejected child
    partitioning; a worker cannot expand either.
    Load accepted summaries in routine primary context and raw child evidence

@@ -34,6 +34,13 @@ ROUTER_PATH = TARGET / ".ai/assistant/context-router.json"
 GATE_INDEX_PATH = TARGET / ".ai/assistant/gates/index.json"
 FULL_CHECKLIST = ".ai/assistant/gates/checklist.md"
 PROFILE_CATALOG_PATH = TARGET / ".ai/assistant/context/profiles/context-index.json"
+PROJECT_CONTOUR_SYNC_PROFILES = {
+    "code-local",
+    "business-change",
+    "architecture-change",
+    "data-change",
+    "security-sensitive",
+}
 PROFILE_REQUIRED_TERMS = {
     "docs-local": {"alatyr:bounded-context-expansion@1"},
     "code-local": {
@@ -41,6 +48,7 @@ PROFILE_REQUIRED_TERMS = {
         "alatyr:risk-by-fact@1",
         "alatyr:logical-integrity@1",
         "alatyr:changed-fact-not-file@1",
+        "alatyr:project-contour-sync@1",
     },
     "business-change": {
         "alatyr:bounded-context-expansion@1",
@@ -49,6 +57,7 @@ PROFILE_REQUIRED_TERMS = {
         "alatyr:protected-change@1",
         "alatyr:logical-integrity@1",
         "alatyr:changed-fact-not-file@1",
+        "alatyr:project-contour-sync@1",
     },
     "architecture-change": {
         "alatyr:bounded-context-expansion@1",
@@ -58,6 +67,7 @@ PROFILE_REQUIRED_TERMS = {
         "alatyr:logical-integrity@1",
         "alatyr:changed-fact-not-file@1",
         "alatyr:observed-is-not-accepted@1",
+        "alatyr:project-contour-sync@1",
     },
     "data-change": {
         "alatyr:bounded-context-expansion@1",
@@ -66,6 +76,7 @@ PROFILE_REQUIRED_TERMS = {
         "alatyr:protected-change@1",
         "alatyr:logical-integrity@1",
         "alatyr:changed-fact-not-file@1",
+        "alatyr:project-contour-sync@1",
     },
     "security-sensitive": {
         "alatyr:bounded-context-expansion@1",
@@ -74,6 +85,7 @@ PROFILE_REQUIRED_TERMS = {
         "alatyr:protected-change@1",
         "alatyr:logical-integrity@1",
         "alatyr:changed-fact-not-file@1",
+        "alatyr:project-contour-sync@1",
     },
     "ai-infrastructure": {
         "alatyr:bounded-context-expansion@1",
@@ -249,6 +261,17 @@ def main() -> int:
                 f"profile {profile_id} eager gates differ from defaults: "
                 f"expected={sorted(expected_eager)} actual={sorted(eager_gate_paths)}"
             )
+        if profile_id in PROJECT_CONTOUR_SYNC_PROFILES:
+            final_evidence = profile.get("final_evidence")
+            final_evidence = final_evidence if isinstance(final_evidence, list) else []
+            if "final-evidence" not in defaults:
+                failures.append(
+                    f"profile {profile_id} must route the final-evidence gate"
+                )
+            if "project_contour_sync_decision" not in final_evidence:
+                failures.append(
+                    f"profile {profile_id} omits project-contour sync evidence"
+                )
 
     docs = load_object(TARGET / profile_index["docs-local"]["descriptor"])
     if ".ai/framework/testing-guidance.md" in docs.get("required_context", []):

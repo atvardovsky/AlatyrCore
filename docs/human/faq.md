@@ -85,9 +85,13 @@ of truth, validation, known gaps, and framework baseline. Reusable conclusions
 remain historical until a target decision owner reviews their promotion.
 Accepted facts are updated in canonical project sources; bounded derived route
 shards help later assistants find and reverify those sources. This maintenance
-is controlled and checked, not automatic semantic inference. See the
+is controlled and checked, not automatic semantic inference. Every code or
+test change must record whether project-contour support was updated, was not
+required for a fact-specific reason, or remains blocked or unverified. The
+concise contour itself changes only when its orientation or routing facts
+change. See the
 [project adapter contract](../../framework/project-adapter-contract.md) and
-[project-knowledge rule](../../framework/project-knowledge.md).
+[support-information rule](../../framework/support-information.md).
 
 ## What Happens When Project Documentation Contradicts The Code?
 
@@ -99,7 +103,7 @@ newest file or the implementation is automatically correct. See the
 
 ## Is The Project Production-Ready?
 
-The source [VERSION](../../VERSION) currently records `0.1.0-alpha.72`.
+The source [VERSION](../../VERSION) currently records `0.1.0-alpha.73`.
 AlatyrCore has implemented framework contracts, target templates, source
 checks, conformance fixtures, optional scaffolding, and an optional structural
 target validator. It should not be

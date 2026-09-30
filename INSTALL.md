@@ -138,6 +138,8 @@ The plan must identify:
 - generated bootstrap index, compact context router, routed gate fragments,
   selected lazy profile descriptors, and human context profiles needed for
   the target
+- mandatory Project Contour Sync Decision routing for every code or test
+  change, with detailed support owners loaded only when impact is applicable
 - target task-decomposition policy and plan template for assigning
   implementation levels, dependencies, bounded context, validation, allowed
   surfaces, and primary/worker executor decisions

@@ -2,9 +2,25 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.73 - 2026-09-30
+
 - Fixed changed-scope target validation so a changed package record is routed
   through compact entries stored in unchanged index shards, while unrelated
   historical package records remain unopened.
+- Required every code or test change to record a Project Contour Sync Decision
+  as `updated`, `not-required`, `blocked`, or `unverified`, with changed facts,
+  checked owners, affected support surfaces, evidence, and residual risk.
+- Routed a compact contour-sync decision through the already-required final-
+  evidence gate, bound it to operation and decomposition evidence, and kept
+  full documentation-sync context conditional so routine work remains at the
+  existing 850-word bootstrap ceiling.
+- Added installer and update migration checks, primary-agent convergence for
+  delegated work, target-validator enforcement, and cross-assistant bridge
+  conformance for the project-contour synchronization contract.
+- Increased adapter schema version to `61` and target template version to `68`
+  for the mandatory contour-sync evidence contract.
 
 ## 0.1.0-alpha.72 - 2026-09-29
 

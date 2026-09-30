@@ -281,6 +281,12 @@ Classify every proposed target file:
     and generator bindings during updates. Rebuild the optional consistency
     reverse index and support-generation index after their owners are final,
     then generate support state last.
+    Require every code- or test-changing profile to route the final-evidence
+    gate and Project Contour Sync Decision. The decision must be `updated`,
+    `not-required`, `blocked`, or `unverified`; it must not force
+    `.ai/project/contour.md` to change when only a detailed canonical owner is
+    affected. Keep the full documentation gate conditional unless the change
+    actually requires documentation analysis or updates.
     Generate the framework, project, and assistant recursive context indexes
     from the exact selected and projected installation. Validate acyclic
     single-parent traversal, bounded depth, one content entry per installed
@@ -606,6 +612,8 @@ accepted or ready. Before reporting installation or update completion:
    reverse/generation indexes, and the generated support state in that order.
    Validate the declared adapter-health, current-change, and archive-audit
    entry points; only complete archive validation is acceptance evidence.
+   Confirm that target `AGENTS.md`, code/semantic profiles, final evidence, and
+   operation-completion evidence use the same Project Contour Sync Decision.
 6. Confirm that every material discovery finding has an evidence-preserving
    disposition and that every projected finding names its resulting target
    artifact. Deterministic observations remain non-authoritative until target

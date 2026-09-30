@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1477,
-      "content_digest": "sha256:471b2a4b7d3e99d7fbafee91db0d6eb383d2d87e4284dd717db50404bb783981"
+      "estimated_words": 1500,
+      "content_digest": "sha256:e2d8d6351fd8a7a6ea742c9e6e9c954d5fa7fa1243b2ce4a533309fec1dd8d33"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -269,7 +269,7 @@
         "ALATYR-INTEGRITY-001"
       ],
       "estimated_words": 247,
-      "content_digest": "sha256:84a199a5401157321614ff17a338f6c36a7847a93d60a0ea2015163f7b7db03f"
+      "content_digest": "sha256:fdc7a8e18e1dabbdbcd433bb3242ace51b89556abd581c00eab3b836ac1323a5"
     },
     {
       "id": "assistant.content.templates-change-package-report-md",
@@ -745,8 +745,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 276,
-      "content_digest": "sha256:b56dbd94a1e95cb864cab8f938faf00b9081ddb5e0e68e3e0a340637e91b375e"
+      "estimated_words": 301,
+      "content_digest": "sha256:d9146f42bddea61430c76e7962c372b0d4a5e2f00b6a6051956b1e3e35b2d8b2"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -1017,8 +1017,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 283,
-      "content_digest": "sha256:af3ac2cb2e1161f093e2ce29d83d9d306a99578f1637cc5133fae7bdd21f4074"
+      "estimated_words": 288,
+      "content_digest": "sha256:057e2e466421c6dfd690b55c1524361495dfde700953c185fbef556e95a8053b"
     },
     {
       "id": "assistant.content.templates-team-checkpoint-md",

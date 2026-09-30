@@ -95,6 +95,8 @@ def validate_project_support_documentation(
         "Primary runtime or business workflows:",
         "Validation entry points:",
         "Known contradictions, missing facts, or accepted limitations:",
+        "## Maintenance",
+        "Project Contour Sync Decision",
     ]:
         if heading not in contour:
             context.error(

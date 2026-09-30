@@ -137,6 +137,12 @@ truth registry, contracts, tests, configuration, public docs, diagrams,
 changelog or release notes, prompts, skills, gates, bridges, and checkers when
 they are relevant to the changed facts.
 
+Every newly created package containing code or test changes includes a
+`project-contour-sync` companion decision. It records checked project owners,
+affected or intentionally unchanged surfaces, support-state result, and
+residual risk. Existing historical records are not rewritten solely to add
+this newer evidence convention.
+
 `not-required` needs a fact-specific reason. `missing` must become a residual
 risk or blocker under target policy. The framework does not require an ADR or
 changelog for every task; it requires an explicit decision when the surface is

@@ -87,8 +87,8 @@
       "owner_refs": [
         "ALATYR-SUPPORT-001"
       ],
-      "estimated_words": 1365,
-      "content_digest": "sha256:bda0e4beed8bf4be2476cd08ed361c5dbdf4150fa65a8172a5cc1228c8f7677f"
+      "estimated_words": 1551,
+      "content_digest": "sha256:6f0d5be6df0b45b2c82344645bcea0e4e21103cad8d799ab14fb64a455af086f"
     },
     {
       "id": "framework.support.test-first-development-md",

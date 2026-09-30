@@ -3,6 +3,13 @@
 Canonical owners: `ALATYR-SOURCE-001`, `ALATYR-INTEGRITY-001`, and
 `ALATYR-SUPPORT-001`.
 
+For every code or test change, record one Project Contour Sync Decision:
+`updated`, `not-required`, `blocked`, or `unverified`. Check the changed fact
+owner plus applicable project orientation, registry, architecture, workflow,
+data/API contract, diagram, vocabulary, validation, and known-gap surfaces.
+Name checked owners and evidence. A `not-required` decision needs a
+fact-specific reason; `blocked` or `unverified` prevents completion.
+
 - Confirm the documentation owner and whether the change is explanatory or
   changes an accepted fact.
 - Keep canonical policy and project facts in their owners; link instead of
@@ -22,3 +29,6 @@ Canonical owners: `ALATYR-SOURCE-001`, `ALATYR-INTEGRITY-001`, and
   evidence.
 - Record unanswered orientation questions as gaps. Structural validation does
   not prove documentation truth, completeness, or usefulness.
+- Update `.ai/project/contour.md` only when its concise purpose, users, areas,
+  owners, workflows, validation entry points, or known gaps changed. Keep
+  detailed facts in their canonical owners.

@@ -665,6 +665,16 @@ def main() -> int:
                 failures.append(f"change-package record missing {field}")
         if record.get("status") != CHANGE_PACKAGE_STATUS_PLACEHOLDER:
             failures.append("change-package status placeholder differs from canonical statuses")
+        companion_template = record.get("companion_decisions")
+        surface_placeholder = (
+            companion_template[0].get("surface_type")
+            if isinstance(companion_template, list)
+            and companion_template
+            and isinstance(companion_template[0], dict)
+            else ""
+        )
+        if "PROJECT_CONTOUR_SYNC" not in surface_placeholder:
+            failures.append("change-package template omits project-contour-sync evidence")
         if index.get("records") != []:
             failures.append("source change-package index must start empty")
         if index.get("shards") != []:

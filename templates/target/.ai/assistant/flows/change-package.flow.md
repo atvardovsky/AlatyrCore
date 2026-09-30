@@ -48,6 +48,9 @@ evidence. Large-task activation alone is not sufficient.
    Stop when an entry is `reapproval-required`.
 7. Decide each applicable companion surface as `updated`, `not-required`, or
    `missing`, with a fact-specific reason and evidence.
+   Every newly created package containing code or test changes records a
+   `project-contour-sync` companion decision. Historical package records are
+   not rewritten solely to add this evidence.
 8. When architecture reasoning applies, retain a compact problem,
    alternatives, direction, authority, status, and source summary. Do not keep
     raw chat by default.

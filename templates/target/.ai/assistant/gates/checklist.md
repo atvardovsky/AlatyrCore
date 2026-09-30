@@ -154,6 +154,11 @@ commands from another project.
 - Final evidence reports support-state freshness, changed support paths,
   bounded impact closure, candidate dispositions, and optional generation
   actions or explicit skips.
+- Every code or test change records a Project Contour Sync Decision as
+  `updated`, `not-required`, `blocked`, or `unverified`, with changed fact IDs,
+  checked owners, affected surfaces, evidence, support-state result, and a
+  fact-specific reason for `not-required`. Missing, `blocked`, or `unverified`
+  decisions prevent a complete claim.
 - Durable engineering evidence is classified as `captured`, `skipped`, or
   `blocked`; captured records bind task, repository result, invariant,
   root-cause, solution, regression rationale, validation, privacy, and

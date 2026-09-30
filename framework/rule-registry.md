@@ -175,32 +175,34 @@ Rule ID: `ALATYR-INTEGRITY-001`
 Source owner: `framework/logical-integrity.md`
 Installed owner: `.ai/framework/logical-integrity.md`
 Commitment: Name changed facts, re-derive testable invariants, reconcile
-related review items, identify owners and repair sets, validate, make a
-proportional final-evidence decision, apply durable Engineering Evidence policy
-only when that support is active, and report unavailable or skipped capture
-plus residual risk otherwise, using support-state changes plus bounded accepted
-relationships or manual impact closure without treating hashes or inferred
-relationships as semantic proof, global multi-workstream convergence, active
-package scope, selected code-documentation profile and generator
-reconciliation, changed project term IDs and data links, and activated
-test-first evidence as applicable.
+related review items, identify owners and repair sets, require an updated,
+not-required, blocked, or unverified Project Contour Sync Decision for every
+code or test change, validate, make a proportional final-evidence decision,
+apply durable Engineering Evidence policy only when that support is active, and
+report unavailable or skipped capture plus residual risk otherwise, using
+support-state changes plus bounded accepted relationships or manual impact
+closure without treating hashes or inferred relationships as semantic proof,
+global multi-workstream convergence, active package scope, selected
+code-documentation profile and generator reconciliation, changed project term
+IDs and data links, and activated test-first evidence as applicable.
 Applies to: semantic fact changes, drift reviews.
 Enforcement: required.
 
 Rule ID: `ALATYR-SUPPORT-001`
 Source owner: `framework/support-information.md`
 Installed owner: `.ai/framework/support-information.md`
-Commitment: Classify and hash every managed support surface, distinguish gross,
-excluded, managed, and unclassified support cost, route changed paths and facts
-through effective bounded bindings and accepted relationships, keep
-schema-valid detected relationships as non-authoritative candidates until
-target acceptance, propagate generation staleness through declared
-dependencies, reject required inputs without effective matches, require
-content-hash-bound review evidence for non-deterministic artifacts, and keep
-generation owner-bound, plan/base/output-approved when protected, regular-file
-and non-escaping, complete-set staged, command-validated, and transactionally
-restorable without bypassing current-scope authorization or loading unrelated
-project context.
+Commitment: Classify and hash every managed support surface, require a
+fact-specific Project Contour Sync Decision for every code or test change
+without forcing unnecessary contour edits, distinguish gross, excluded,
+managed, and unclassified support cost, route changed paths and facts through
+effective bounded bindings and accepted relationships, keep schema-valid
+detected relationships as non-authoritative candidates until target acceptance,
+propagate generation staleness through declared dependencies, reject required
+inputs without effective matches, require content-hash-bound review evidence
+for non-deterministic artifacts, and keep generation owner-bound,
+plan/base/output-approved when protected, regular-file and non-escaping,
+complete-set staged, command-validated, and transactionally restorable without
+bypassing current-scope authorization or loading unrelated project context.
 Applies to: all installed adapter tasks that change code or support
 information.
 Enforcement: required.

@@ -40,6 +40,17 @@
       "non_meanings": ["the graph replaces invariant derivation", "unmapped paths are safe to ignore"],
       "depends_on": ["alatyr:changed-fact-not-file@1", "alatyr:support-state-is-a-locator@1"],
       "replaced_by": null
+    },
+    {
+      "id": "alatyr:project-contour-sync@1",
+      "version": 1,
+      "definition": "Every code or test change ends with an updated, not-required, blocked, or unverified decision over the selected project-fact owners and support surfaces; the concise project contour changes only when its orientation or routing facts change.",
+      "owner_rule_id": "ALATYR-SUPPORT-001",
+      "canonical_owner": "support-information.md",
+      "scope": "code and test change completion",
+      "non_meanings": ["edit the project contour after every code diff", "an unchanged support hash proves no documentation update was needed"],
+      "depends_on": ["alatyr:logical-integrity@1", "alatyr:support-state-is-a-locator@1"],
+      "replaced_by": null
     }
   ]
 }

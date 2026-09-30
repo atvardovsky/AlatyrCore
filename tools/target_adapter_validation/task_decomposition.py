@@ -132,6 +132,30 @@ def validate_task_decomposition(validator: Any, manifest: Any) -> None:
                 "operation completion evidence must record analysis strategy and proof obligations",
                 OPERATION_COMPLETION_RELPATH,
             )
+        consistency = completion.get("consistency") if isinstance(completion, dict) else None
+        contour_sync = (
+            consistency.get("project_contour_sync")
+            if isinstance(consistency, dict)
+            else None
+        )
+        required_contour_fields = {
+            "decision",
+            "changed_fact_ids",
+            "owners_checked",
+            "affected_surfaces",
+            "reason",
+            "impact_evidence",
+            "support_state_result",
+            "residual_risk",
+        }
+        if not isinstance(contour_sync, dict) or not required_contour_fields.issubset(
+            contour_sync
+        ):
+            self.error(
+                "TASK_DECOMPOSITION_COMPLETION_EVIDENCE",
+                "operation completion evidence must record the Project Contour Sync Decision",
+                OPERATION_COMPLETION_RELPATH,
+            )
     _require_template_text(
         self,
         OPERATION_ROUTING_RELPATH,
