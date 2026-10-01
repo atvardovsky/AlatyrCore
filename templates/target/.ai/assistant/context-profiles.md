@@ -93,6 +93,11 @@ selected profiles and areas, loaded files and reasons, approximate volume,
 expansion triggers, intentional omissions, and residual risk. Source estimates
 remain benchmark evidence, not exact runtime or billing data.
 
+The profile-default budget is the compact route. An expansion receipt may
+cross that budget, but the composed end-to-end route, including bootstrap,
+must remain inside `context_budgets.expanded`. If it cannot, split the task or
+stop for an explicit context decision instead of silently loading more files.
+
 ## Project-Area Overlays
 
 Define target areas such as modules, services, packages, bounded contexts, or
@@ -267,18 +272,9 @@ Classify task scale after compact bootstrap and before loading broad profile
 prose, full help, full gate checklist, large-task packets, change packages,
 Debug Mode records, or team history.
 
-Canonical classes:
-
-- `small-task`: one base profile, one local surface or directly linked
-  neighbor set, no semantic fact change, no protected boundary, and focused
-  validation can prove the result.
-- `standard-task`: one base profile, but semantic, validation, owner, or
-  non-obvious repair reasoning is needed.
-- `large-or-resumable`: multiple profiles, areas, workstreams, approval
-  checkpoints, budget exceptions, or resumable phases are needed.
-- `protected-or-sensitive`: approval, safety, security, credentials,
-  permissions, destructive action, spend, production, public-contract, or
-  live-external boundary may apply.
+Canonical class IDs and exact criteria are owned by
+`.ai/framework/task-classes.json`. The router contains a checked execution
+projection of that registry; do not maintain another prose definition here.
 
 Ambiguity stays read-only. Select the smallest plausible class for inspection,
 ask for the missing fact, and do not edit until the current action phase is

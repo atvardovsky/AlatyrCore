@@ -9,6 +9,7 @@
     "audit pilot or publishable before-to-after provenance"
   ],
   "required_context": [
+    ".ai/assistant/gates/final-evidence.md",
     ".ai/framework/change-packages.md",
     ".ai/assistant/change-packages/index.json",
     ".ai/assistant/flows/change-package.flow.md"

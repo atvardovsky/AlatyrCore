@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_kind": "target-bootstrap-integrity",
   "bootstrap": ".ai/assistant/bootstrap-index.json",
-  "bootstrap_digest": "sha256:186e991c761abd11074cac07899b18443ac09ddaf280cf99a32d6496068aeba3",
+  "bootstrap_digest": "sha256:68ce89f4eea6a97d97de1f36b1a945fd4ea87f89d56e2eb5d28d3c7f823846e2",
   "generated_by": {
     "schema_version": 1,
     "provenance_kind": "source-template",
@@ -11,17 +11,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5",
+    "target_manifest_digest": "sha256:b0a24a8de4dd78fa6aa50ed81668767e29299ac282aa210a49d289475c313759",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.76",
-    "adapter_schema_version": "64",
-    "template_version": "71"
+    "framework_version": "0.1.0-alpha.77",
+    "adapter_schema_version": "65",
+    "template_version": "72"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5"
+      "sha256": "b0a24a8de4dd78fa6aa50ed81668767e29299ac282aa210a49d289475c313759"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -29,11 +29,11 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "384115b34abe52935d5e125657185ed38c265f391ebab3e2529c7375c42d951c"
+      "sha256": "04c57fdae2a8281b252ee8042c48fab817826dd3cab39159b4b08debfcc06ace"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "c032e26068628705b97916f47526974d6af173eaf6dc0c0ca62aa6645c7f3303"
+      "sha256": "f307473776e8918c9a6e7819511836d74535c09d7e179eded51b52de3a9360a8"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",

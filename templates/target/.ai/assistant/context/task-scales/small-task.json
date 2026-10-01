@@ -11,8 +11,7 @@
     "focused validation can prove the result"
   ],
   "required_context": [
-    ".ai/assistant/gates/core.md",
-    ".ai/assistant/gates/final-evidence.md"
+    ".ai/assistant/gates/compact-final-evidence.md"
   ],
   "conditional_context": [
     {

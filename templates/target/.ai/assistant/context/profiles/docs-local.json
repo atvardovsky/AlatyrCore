@@ -17,7 +17,6 @@
   "required_context": [
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/documentation.md",
-    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_DOC_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [

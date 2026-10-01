@@ -9,6 +9,7 @@
     "disjoint writes or read-only scope and current capability evidence exist"
   ],
   "required_context": [
+    ".ai/assistant/gates/final-evidence.md",
     ".ai/assistant/task-decomposition.json",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/workers/role-catalog.json",
@@ -35,6 +36,10 @@
     {
       "path": ".ai/assistant/templates/worker-result.json",
       "when": "normalizing or validating measured worker evidence"
+    },
+    {
+      "path": ".ai/assistant/templates/single-read-only-delegation-receipt.json",
+      "when": "exactly one depth-one inspect-only worker needs lightweight evidence and no full-tree trigger applies"
     }
   ],
   "expand_when": [

@@ -526,6 +526,7 @@ Required files:
 
 - `.ai/assistant/delegation-policy.json`
 - `.ai/assistant/context/task-scales/delegated-execution.json`
+- `.ai/assistant/context/task-scales/delegation-preflight.json`
 - `.ai/assistant/flows/subagent-delegation.flow.md`
 - `.ai/assistant/prompts/worker-orchestration.md`
 - `.ai/assistant/templates/subagent-task-packet.md`
@@ -534,6 +535,7 @@ Required files:
 - `.ai/assistant/templates/delegation-execution-tree.json`
 - `.ai/assistant/templates/worker-result.md`
 - `.ai/assistant/templates/worker-result.json`
+- `.ai/assistant/templates/single-read-only-delegation-receipt.json`
 - `.ai/assistant/templates/delegation-branch-envelope.json`
 - `.ai/assistant/templates/delegation-branch-checkpoint.json`
 - `.ai/assistant/workers/role-catalog.json`

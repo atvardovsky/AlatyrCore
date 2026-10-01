@@ -4,6 +4,24 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.77 - 2026-10-01
+
+- Replaced repeated task-class and allowed-action prose with canonical
+  machine-readable registries, added task-scale evidence overlays, and kept
+  full final-evidence context lazy for small tasks.
+- Replaced 16 repeated assistant capability source templates with deterministic
+  scaffold projections from one canonical record while preserving all 17
+  installed assistant-surface records.
+- Added capability-first delegation routing, explicit worker-context delivery
+  evidence, a lightweight receipt for one depth-one inspect-only worker,
+  structured finding references, and full-tree escalation for recursion,
+  retries, writes, overlap, or multiple workers.
+- Added end-to-end context-cost scenarios and hard expanded-route ceilings,
+  while retaining the stricter compact profile budget and expansion receipts.
+- Increased adapter schema version to `65` and target template version to `72`
+  for the canonical registries, delegation evidence tiers, and routing-budget
+  contracts.
+
 ## 0.1.0-alpha.76 - 2026-10-01
 
 - Fixed lifecycle validation so every required success, rejection, deferral,

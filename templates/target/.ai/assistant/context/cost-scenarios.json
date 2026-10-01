@@ -50,6 +50,18 @@
       "task_scale_overlays": [],
       "consistency_routing": true,
       "expected_budget_state": "compact"
+    },
+    "delegation-capability-preflight": {
+      "profile": "code-local",
+      "intent_overlays": [],
+      "task_scale_overlays": ["delegation-preflight"],
+      "expected_budget_state": "compact"
+    },
+    "delegated-governed-tree": {
+      "profile": "code-local",
+      "intent_overlays": [],
+      "task_scale_overlays": ["delegation-preflight", "delegated-execution"],
+      "expected_budget_state": "expansion-receipt-required"
     }
   }
 }

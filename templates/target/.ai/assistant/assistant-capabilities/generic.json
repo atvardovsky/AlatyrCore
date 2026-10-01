@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "capability_kind": "target-assistant-surface-capabilities",
   "assistant_surface": "generic",
   "surface_state": {
@@ -154,6 +154,7 @@
     "model_override": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "parallel_dispatch": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "actual_model_evidence": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "worker_context_mode": "{ISOLATED_EXPLICIT_INHERITED_MEASURED_INHERITED_UNMEASURED_UNSUPPORTED_OR_UNKNOWN}",
     "role_bindings": [
       {
         "role_id": "{TARGET_ENABLED_WORKER_ROLE_ID}",

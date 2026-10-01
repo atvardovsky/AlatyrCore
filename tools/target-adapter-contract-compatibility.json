@@ -43,11 +43,11 @@
     },
     "delegation-evidence": {
       "manifest_key": "operations.delegation_policy_schema",
-      "manifest_contract_version": 6,
+      "manifest_contract_version": 7,
       "artifacts": {
         "policy": {
-          "current": 6,
-          "supported": [6],
+          "current": 7,
+          "supported": [7],
           "migration_limited": [],
           "schema": "schemas/alatyr-delegation-policy.schema.json",
           "template": "templates/target/.ai/assistant/delegation-policy.json"
@@ -60,11 +60,18 @@
           "template": "templates/target/.ai/assistant/templates/delegation-execution-tree.json"
         },
         "worker-result": {
-          "current": 2,
-          "supported": [2],
+          "current": 3,
+          "supported": [3],
           "migration_limited": [],
           "schema": "schemas/alatyr-worker-result.schema.json",
           "template": "templates/target/.ai/assistant/templates/worker-result.json"
+        },
+        "single-read-only-receipt": {
+          "current": 1,
+          "supported": [1],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-single-read-only-delegation-receipt.schema.json",
+          "template": "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json"
         },
         "branch-envelope": {
           "current": 2,

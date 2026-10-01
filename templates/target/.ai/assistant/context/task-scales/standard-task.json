@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "overlay": "standard-task",
+  "use_when": ["task classifier selected standard-task"],
+  "required_context": [
+    ".ai/assistant/gates/final-evidence.md"
+  ],
+  "expand_when": [
+    "multiple profiles project areas or independently verifiable workstreams are required",
+    "a protected or sensitive boundary appears"
+  ],
+  "budget_behavior": "add the full evidence gate to the selected base profile without loading large-task or package support",
+  "final_evidence": ["full final-evidence gate result"]
+}

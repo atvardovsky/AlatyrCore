@@ -22,7 +22,6 @@
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/semantic-integrity.md",
     ".ai/assistant/gates/security-approval.md",
-    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [

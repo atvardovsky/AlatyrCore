@@ -76,6 +76,28 @@
       "content_digest": "sha256:e53396e101d5c631723eba24556e8f80b2836949edb630aba3382fdb03ee4b15"
     },
     {
+      "id": "assistant.content.gates-compact-final-evidence-md",
+      "kind": "content",
+      "path": "gates/compact-final-evidence.md",
+      "summary": "Compact Final Evidence Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "compact",
+          "final",
+          "evidence"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 87,
+      "content_digest": "sha256:da3b85a85ce4e798dc6e0d2de84e6d149ac106b9ae122f62e1701de6848a45ed"
+    },
+    {
       "id": "assistant.content.gates-contract-artifacts-md",
       "kind": "content",
       "path": "gates/contract-artifacts.md",
@@ -264,8 +286,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 270,
-      "content_digest": "sha256:a888e9e04dc695a1b1c5a340744fadd4bae4d316641763d2da1ada21cece0374"
+      "estimated_words": 273,
+      "content_digest": "sha256:9a5b120290e10146e31ded47725e72474c36c92a3c890451510049854f239392"
     },
     {
       "id": "assistant.content.gates-project-knowledge-md",

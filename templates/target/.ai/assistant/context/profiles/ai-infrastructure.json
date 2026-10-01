@@ -20,8 +20,7 @@
   "required_context": [
     ".ai/framework/ai-infrastructure-routing.md",
     ".ai/assistant/ai-infrastructure-router.json",
-    ".ai/assistant/gates/core.md",
-    ".ai/assistant/gates/final-evidence.md"
+    ".ai/assistant/gates/core.md"
   ],
   "conditional_context": [
     {

@@ -115,7 +115,7 @@
     },
     {
       "id": "DELEGATION",
-      "code_count": 98
+      "code_count": 101
     },
     {
       "id": "DEPENDENCY",
@@ -211,7 +211,7 @@
     },
     {
       "id": "ROUTER",
-      "code_count": 74
+      "code_count": 77
     },
     {
       "id": "ROUTING",
@@ -4843,6 +4843,24 @@
       ]
     },
     {
+      "code": "DELEGATION_FULL_TREE_ESCALATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_LIGHTWEIGHT_RECEIPT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_MODEL_OVERRIDE_UNSUPPORTED",
       "levels": [
         "error"
@@ -5359,6 +5377,15 @@
     },
     {
       "code": "DELEGATION_UNSUPPORTED_ROUTE_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WORKER_CONTEXT_MODE",
       "levels": [
         "error"
       ],
@@ -10088,6 +10115,15 @@
       ]
     },
     {
+      "code": "ROUTER_BUDGET_EXPANDED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
       "code": "ROUTER_BUDGET_FIRST_USE",
       "levels": [
         "error"
@@ -10611,6 +10647,15 @@
       ]
     },
     {
+      "code": "ROUTER_TASK_CLASSIFICATION_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ROUTER_TASK_CLASSIFICATION_MISSING",
       "levels": [
         "error"
@@ -10621,6 +10666,15 @@
     },
     {
       "code": "ROUTER_TASK_CLASSIFICATION_ORDER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_TASK_CLASSIFICATION_REGISTRY",
       "levels": [
         "error"
       ],

@@ -358,6 +358,59 @@ def task_scale_measurement_inputs(
     return reference, contract, surface_context
 
 
+def measure_cost_scenarios(
+    router: dict[str, Any],
+    profile_contracts: dict[str, tuple[str | None, dict[str, Any]]],
+    intent_contracts: dict[str, tuple[str | None, dict[str, Any]]],
+    task_scale_contracts: dict[str, tuple[str | None, dict[str, Any]]],
+    consistency_reference: str | None,
+    consistency_contract: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    _, scenario_contract = descriptor(router.get("cost_scenarios", {}))
+    result: dict[str, dict[str, Any]] = {}
+    for name, scenario in scenario_contract.get("scenarios", {}).items():
+        if not isinstance(scenario, dict):
+            continue
+        profile_reference, profile = profile_contracts.get(
+            scenario.get("profile"), (None, {})
+        )
+        references = [
+            value
+            for value in [profile_reference, *profile.get("required_context", [])]
+            if value
+        ]
+        for overlay_name in scenario.get("intent_overlays", []):
+            reference, contract = intent_contracts.get(overlay_name, (None, {}))
+            references.extend(
+                value
+                for value in [reference, *contract.get("required_context", [])]
+                if value
+            )
+        for overlay_name in scenario.get("task_scale_overlays", []):
+            reference, contract = task_scale_contracts.get(overlay_name, (None, {}))
+            references.extend(
+                value
+                for value in [reference, *contract.get("required_context", [])]
+                if value
+            )
+        if scenario.get("consistency_routing") is True:
+            references.extend(
+                value
+                for value in [
+                    consistency_reference,
+                    *consistency_contract.get("required_context", []),
+                ]
+                if value
+            )
+        measured = measure(references)
+        measured["end_to_end"] = measure(
+            [*first_use_references(router), *references]
+        )
+        measured["expected_budget_state"] = scenario.get("expected_budget_state")
+        result[name] = measured
+    return result
+
+
 def build_report() -> dict[str, Any]:
     router = json.loads(ROUTER.read_text(encoding="utf-8"))
     bootstrap_refs = [
@@ -752,54 +805,16 @@ def build_report() -> dict[str, Any]:
     migration_initial = measure(migration_initial_refs)
     migration_full = measure(migration_full_refs)
 
-    _, cost_scenario_contract = descriptor(router.get("cost_scenarios", {}))
-    cost_scenarios: dict[str, dict[str, Any]] = {}
-    for name, scenario in cost_scenario_contract.get("scenarios", {}).items():
-        if not isinstance(scenario, dict):
-            continue
-        references: list[str] = []
-        profile_name = scenario.get("profile")
-        profile_reference, profile_contract = profile_contracts.get(
-            profile_name, (None, {})
-        )
-        references.extend(
-            value
-            for value in [
-                profile_reference,
-                *profile_contract.get("required_context", []),
-            ]
-            if value
-        )
-        for overlay_name in scenario.get("intent_overlays", []):
-            reference, contract = intent_contracts.get(overlay_name, (None, {}))
-            references.extend(
-                value
-                for value in [reference, *contract.get("required_context", [])]
-                if value
-            )
-        for overlay_name in scenario.get("task_scale_overlays", []):
-            reference, contract = task_scale_contracts.get(overlay_name, (None, {}))
-            references.extend(
-                value
-                for value in [reference, *contract.get("required_context", [])]
-                if value
-            )
-        if scenario.get("consistency_routing") is True:
-            references.extend(
-                value
-                for value in [
-                    consistency_reference,
-                    *consistency_contract.get("required_context", []),
-                ]
-                if value
-            )
-        scenario_measure = measure(references)
-        scenario_measure["expected_budget_state"] = scenario.get(
-            "expected_budget_state"
-        )
-        cost_scenarios[name] = scenario_measure
+    cost_scenarios = measure_cost_scenarios(
+        router,
+        profile_contracts,
+        intent_contracts,
+        task_scale_contracts,
+        consistency_reference,
+        consistency_contract,
+    )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "report_kind": "static-target-context-cost",
         "source": "templates/target/.ai/assistant/context-router.json",
         "measurement": "whitespace-delimited words in resolved source templates",

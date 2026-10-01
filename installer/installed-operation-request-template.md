@@ -99,20 +99,9 @@ Vocabulary term, alias, acronym, domain, or terminology-check scope, when applic
 Test-first configuration mode, trigger, changed fact, or exception, when applicable:
 <assess/enable/revise/disable/review or changed-fact/defect/contract; trigger-or-unknown; exception-or-none>
 
-Allowed actions meaning:
-- read-only: inspect target files and report only; no file changes.
-- docs-only: docs, blueprint-equivalent docs, and diagram sources only; no
-  code changes.
-- adapter-only: adapter-owned `.ai/*` surfaces and bridge files, including
-  assistant templates, gates, flows, policies, checker rules, and normalized
-  project-process or adapter-effectiveness evidence; no product code, tests, or
-  accepted business, domain, architecture, data, runtime, or product-behavior
-  facts.
-- code-and-tests: code, tests, and required docs/diagram sync; no live external
-  actions, destructive actions, production dependencies, or broader
-  permissions.
-- full-with-approval: protected changes require explicit programmer approval
-  before they are made.
+Allowed-action IDs and their exact permitted surfaces are owned by
+`framework/allowed-actions.json` in AlatyrCore and by
+`.ai/framework/allowed-actions.json` after installation.
 
 Allowed actions are a ceiling, not user authorization. Returning to an issue,
 backlog item, report, or discussion, or asking for status, analysis, planning,

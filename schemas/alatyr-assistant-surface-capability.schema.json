@@ -16,7 +16,7 @@
     "subagent_delegation"
   ],
   "properties": {
-    "schema_version": {"const": 6},
+    "schema_version": {"const": 7},
     "capability_kind": {"const": "target-assistant-surface-capabilities"},
     "assistant_surface": {"type": "string", "minLength": 1},
     "surface_state": {"$ref": "#/definitions/surfaceState"},
@@ -127,6 +127,7 @@
         "branch_checkpoints", "artifact_references",
         "hierarchical_summary_delivery", "branch_cancellation", "model_override",
         "parallel_dispatch", "actual_model_evidence", "role_bindings",
+        "worker_context_mode",
         "verified_at", "client_version", "evidence", "expires_at",
         "review_triggers"
       ],
@@ -155,6 +156,7 @@
         "model_override": {"type": "string", "minLength": 1},
         "parallel_dispatch": {"type": "string", "minLength": 1},
         "actual_model_evidence": {"type": "string", "minLength": 1},
+        "worker_context_mode": {"type": "string", "minLength": 1},
         "role_bindings": {"type": "array", "minItems": 1, "items": {"type": "object"}},
         "verified_at": {"type": "string", "minLength": 1},
         "client_version": {"type": "string", "minLength": 1},

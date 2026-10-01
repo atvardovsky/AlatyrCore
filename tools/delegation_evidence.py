@@ -63,7 +63,7 @@ SHA256_LENGTH = 64
 PORTABLE_MAX_DEPTH = 2
 PORTABLE_MAX_DELEGATES = 8
 PORTABLE_MAX_CHILDREN = 4
-PORTABLE_MAX_CONTEXT_WORDS = 24000
+PORTABLE_MAX_CONTEXT_WORDS = 32000
 PORTABLE_MAX_RESULT_WORDS = 12000
 PORTABLE_MAX_PRIMARY_SUMMARY_WORDS = 4000
 PORTABLE_MAX_RETRIES = 2
@@ -407,13 +407,13 @@ def validate_worker_result(
         "parent_packet_id", "node_id", "depth", "base_revision", "status",
     "measurement_state", "input_context_packet_sha256", "raw_payload",
         "accepted_summary", "summary_covers_result_ids", "child_result_sha256",
-        "evidence_manifest", "touched_surfaces", "tools_used", "scope_violation",
+        "evidence_manifest", "findings", "touched_surfaces", "tools_used", "scope_violation",
         "authorization_concern", "proof_obligation_ids",
         "satisfied_proof_obligation_ids", "validation", "stop_reason_id",
         "subtree_sha256",
     }
     _exact(result, fields, "worker result")
-    if result.get("schema_version") != 2 or result.get("result_kind") != (
+    if result.get("schema_version") != 3 or result.get("result_kind") != (
         "alatyr-normalized-worker-result"
     ):
         raise DelegationEvidenceError("worker result identity is invalid")
@@ -496,6 +496,7 @@ def validate_worker_result(
     evidence_manifest = result.get("evidence_manifest")
     if not isinstance(evidence_manifest, list):
         raise DelegationEvidenceError("worker result.evidence_manifest must be a list")
+    evidence_paths: set[str] = set()
     for index, item in enumerate(evidence_manifest):
         item = _object(item, f"worker result.evidence_manifest[{index}]")
         _exact(item, {"path", "revision", "sha256", "validation"}, f"worker result.evidence_manifest[{index}]")
@@ -505,7 +506,206 @@ def validate_worker_result(
             raise DelegationEvidenceError("worker result evidence digest does not match content")
         _string(item.get("revision"), f"worker result.evidence_manifest[{index}].revision")
         _string(item.get("validation"), f"worker result.evidence_manifest[{index}].validation")
+        evidence_paths.add(item["path"])
+    findings = result.get("findings")
+    if not isinstance(findings, list):
+        raise DelegationEvidenceError("worker result.findings must be a list")
+    finding_ids: set[str] = set()
+    for index, finding_value in enumerate(findings):
+        label = f"worker result.findings[{index}]"
+        finding = _object(finding_value, label)
+        _exact(
+            finding,
+            {
+                "finding_id", "severity", "summary", "canonical_owner_refs",
+                "surface_refs", "evidence_refs", "proof_obligation_ids",
+                "recommendation",
+            },
+            label,
+        )
+        finding_id = _string(finding.get("finding_id"), f"{label}.finding_id")
+        if finding_id in finding_ids:
+            raise DelegationEvidenceError("worker finding IDs must be unique")
+        finding_ids.add(finding_id)
+        if finding.get("severity") not in {"blocking", "high", "medium", "low", "info"}:
+            raise DelegationEvidenceError(f"{label}.severity is invalid")
+        _string(finding.get("summary"), f"{label}.summary")
+        _string(finding.get("recommendation"), f"{label}.recommendation")
+        owner_refs = set(_strings(finding.get("canonical_owner_refs"), f"{label}.canonical_owner_refs"))
+        if not owner_refs <= set(node["canonical_owner_refs"]):
+            raise DelegationEvidenceError("worker finding escapes assigned canonical owners")
+        surface_refs = _strings(finding.get("surface_refs"), f"{label}.surface_refs")
+        if any(not _matches_surface(surface, node["surface_refs"]) for surface in surface_refs):
+            raise DelegationEvidenceError("worker finding escapes assigned surfaces")
+        refs = set(_strings(finding.get("evidence_refs"), f"{label}.evidence_refs"))
+        if not refs <= evidence_paths:
+            raise DelegationEvidenceError("worker finding references unknown evidence")
+        obligations = set(_strings(finding.get("proof_obligation_ids"), f"{label}.proof_obligation_ids"))
+        if not obligations <= result_obligations:
+            raise DelegationEvidenceError("worker finding uses an unassigned proof obligation")
     return result, raw["word_count"], summary["word_count"]
+
+
+def validate_single_read_only_receipt(
+    receipt: dict[str, Any],
+    policy: dict[str, Any],
+    capability: dict[str, Any],
+    *,
+    artifact_root: Path,
+) -> dict[str, Any]:
+    """Validate the compact evidence tier for exactly one inspect-only worker."""
+
+    _exact(
+        receipt,
+        {
+            "schema_version", "receipt_kind", "operation_id", "base_revision",
+            "current_user_authorization", "analysis_strategy_id",
+            "problem_model_sha256", "policy_sha256", "capability_sha256",
+            "worker_context_mode", "packet", "result", "primary_convergence",
+        },
+        "single delegation receipt",
+    )
+    if receipt.get("schema_version") != 1 or receipt.get("receipt_kind") != (
+        "alatyr-single-depth1-read-only-delegation"
+    ):
+        raise DelegationEvidenceError("single delegation receipt identity is invalid")
+    for field in ["operation_id", "base_revision", "current_user_authorization"]:
+        _string(receipt.get(field), f"single delegation receipt.{field}")
+    strategy = _string(
+        receipt.get("analysis_strategy_id"),
+        "single delegation receipt.analysis_strategy_id",
+    )
+    problem_model = receipt.get("problem_model_sha256")
+    if problem_model is not None:
+        _sha256(problem_model, "single delegation receipt.problem_model_sha256")
+    elif strategy != "direct-local":
+        raise DelegationEvidenceError(
+            "non-local strategy requires problem_model_sha256"
+        )
+    if receipt.get("policy_sha256") != _json_sha256(policy):
+        raise DelegationEvidenceError("single delegation receipt policy digest is stale")
+    if receipt.get("capability_sha256") != _json_sha256(capability):
+        raise DelegationEvidenceError("single delegation receipt capability digest is stale")
+    if policy.get("single_depth1_read_only_evidence") != "lightweight-receipt":
+        raise DelegationEvidenceError("policy does not permit the lightweight receipt")
+    context_mode = receipt.get("worker_context_mode")
+    if context_mode not in {"isolated-explicit", "inherited-measured"}:
+        raise DelegationEvidenceError("single delegation receipt uses unsafe context inheritance")
+    delegation = capability.get("subagent_delegation")
+    if not isinstance(delegation, dict) or delegation.get("worker_context_mode") != context_mode:
+        raise DelegationEvidenceError("single delegation receipt context mode lacks capability evidence")
+
+    packet = _object(receipt.get("packet"), "single delegation receipt.packet")
+    _exact(
+        packet,
+        {
+            "packet_id", "node_id", "depth", "allowed_actions", "write_scope",
+            "attempt", "child_count", "overlap_decision", "context_artifact",
+            "canonical_owner_refs", "surface_refs", "proof_obligation_ids",
+        },
+        "single delegation receipt.packet",
+    )
+    for field in ["packet_id", "node_id"]:
+        _string(packet.get(field), f"single delegation receipt.packet.{field}")
+    if packet.get("depth") != 1 or packet.get("allowed_actions") != ["inspect"]:
+        raise DelegationEvidenceError("lightweight receipt is depth-1 inspect-only")
+    if packet.get("write_scope") != "none" or packet.get("attempt") != 0:
+        raise DelegationEvidenceError("lightweight receipt forbids writes and retries")
+    if packet.get("child_count") != 0 or packet.get("overlap_decision") != "disjoint":
+        raise DelegationEvidenceError("lightweight receipt forbids children and overlap")
+    validate_artifact(
+        packet.get("context_artifact"),
+        artifact_root=artifact_root,
+        label="single delegation context",
+    )
+    owners = set(_strings(packet.get("canonical_owner_refs"), "single delegation owners"))
+    surfaces = _strings(packet.get("surface_refs"), "single delegation surfaces")
+    obligations = set(_strings(packet.get("proof_obligation_ids"), "single delegation obligations"))
+
+    result = _object(receipt.get("result"), "single delegation receipt.result")
+    _exact(
+        result,
+        {
+            "status", "raw_artifact", "accepted_summary_artifact", "findings",
+            "satisfied_proof_obligation_ids", "stop_reason_id",
+        },
+        "single delegation receipt.result",
+    )
+    if result.get("status") not in {
+        "succeeded", "failed", "blocked", "cancelled", "requires-review", "rejected"
+    }:
+        raise DelegationEvidenceError("single delegation result status is invalid")
+    raw = validate_artifact(
+        result.get("raw_artifact"), artifact_root=artifact_root,
+        label="single delegation raw result",
+    )
+    summary = validate_artifact(
+        result.get("accepted_summary_artifact"), artifact_root=artifact_root,
+        label="single delegation accepted summary",
+    )
+    if summary["word_count"] > raw["word_count"]:
+        raise DelegationEvidenceError("single delegation summary exceeds raw result")
+    satisfied = set(
+        _strings(
+            result.get("satisfied_proof_obligation_ids"),
+            "single delegation satisfied obligations",
+        )
+    )
+    if not satisfied <= obligations:
+        raise DelegationEvidenceError("single delegation satisfies an unassigned obligation")
+    stop_reasons = set((policy.get("stop_policy") or {}).get("stop_reason_ids", []))
+    if result.get("stop_reason_id") not in stop_reasons:
+        raise DelegationEvidenceError("single delegation stop reason is unknown")
+    findings = result.get("findings")
+    if not isinstance(findings, list):
+        raise DelegationEvidenceError("single delegation findings must be a list")
+    finding_ids: set[str] = set()
+    for index, finding_value in enumerate(findings):
+        label = f"single delegation finding[{index}]"
+        finding = _object(finding_value, label)
+        _exact(
+            finding,
+            {
+                "finding_id", "severity", "summary", "canonical_owner_refs",
+                "surface_refs", "proof_obligation_ids", "recommendation",
+            },
+            label,
+        )
+        finding_id = _string(finding.get("finding_id"), f"{label}.finding_id")
+        if finding_id in finding_ids:
+            raise DelegationEvidenceError("single delegation finding IDs must be unique")
+        finding_ids.add(finding_id)
+        if finding.get("severity") not in {"blocking", "high", "medium", "low", "info"}:
+            raise DelegationEvidenceError(f"{label}.severity is invalid")
+        _string(finding.get("summary"), f"{label}.summary")
+        _string(finding.get("recommendation"), f"{label}.recommendation")
+        if not set(_strings(finding.get("canonical_owner_refs"), f"{label}.owners")) <= owners:
+            raise DelegationEvidenceError("single delegation finding escapes assigned owners")
+        if any(
+            not _matches_surface(surface, surfaces)
+            for surface in _strings(finding.get("surface_refs"), f"{label}.surfaces")
+        ):
+            raise DelegationEvidenceError("single delegation finding escapes assigned surfaces")
+        if not set(_strings(finding.get("proof_obligation_ids"), f"{label}.obligations")) <= obligations:
+            raise DelegationEvidenceError("single delegation finding uses an unassigned obligation")
+
+    convergence = _object(
+        receipt.get("primary_convergence"), "single delegation primary convergence"
+    )
+    _exact(
+        convergence,
+        {"reviewed", "status", "validation", "residual_risk"},
+        "single delegation primary convergence",
+    )
+    if convergence.get("reviewed") is not True or convergence.get("status") not in {
+        "accepted", "rejected", "blocked"
+    }:
+        raise DelegationEvidenceError("single delegation requires primary convergence")
+    _strings(convergence.get("validation"), "single delegation convergence validation")
+    _string(convergence.get("residual_risk"), "single delegation convergence residual risk")
+    if result.get("status") == "succeeded" and convergence.get("status") != "accepted":
+        raise DelegationEvidenceError("successful single delegation was not accepted by primary")
+    return receipt
 
 
 def _validate_nodes(

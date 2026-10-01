@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "receipt_kind": "alatyr-single-depth1-read-only-delegation",
+  "operation_id": "{OPERATION_ID}",
+  "base_revision": "{BASE_REVISION}",
+  "current_user_authorization": "{CURRENT_INSPECT_AUTHORIZATION}",
+  "analysis_strategy_id": "{PRIMARY_ANALYSIS_STRATEGY_ID}",
+  "problem_model_sha256": null,
+  "policy_sha256": "{LOWERCASE_SHA256}",
+  "capability_sha256": "{LOWERCASE_SHA256}",
+  "worker_context_mode": "{ISOLATED_EXPLICIT_OR_INHERITED_MEASURED}",
+  "packet": {
+    "packet_id": "{PACKET_ID}",
+    "node_id": "{NODE_ID}",
+    "depth": 1,
+    "allowed_actions": ["inspect"],
+    "write_scope": "none",
+    "attempt": 0,
+    "child_count": 0,
+    "overlap_decision": "disjoint",
+    "context_artifact": {
+      "path": "{TARGET_RELATIVE_CONTEXT_PATH}",
+      "word_count": 0,
+      "character_count": 0,
+      "sha256": "{LOWERCASE_SHA256}"
+    },
+    "canonical_owner_refs": ["{CANONICAL_OWNER_REF_OR_NONE}"],
+    "surface_refs": ["{SURFACE_REF_OR_NONE}"],
+    "proof_obligation_ids": ["{ASSIGNED_PROOF_OBLIGATION_ID_OR_NONE}"]
+  },
+  "result": {
+    "status": "{SUCCEEDED_FAILED_BLOCKED_CANCELLED_REQUIRES_REVIEW_OR_REJECTED}",
+    "raw_artifact": {
+      "path": "{TARGET_RELATIVE_RAW_RESULT_PATH}",
+      "word_count": 0,
+      "character_count": 0,
+      "sha256": "{LOWERCASE_SHA256}"
+    },
+    "accepted_summary_artifact": {
+      "path": "{TARGET_RELATIVE_ACCEPTED_SUMMARY_PATH}",
+      "word_count": 0,
+      "character_count": 0,
+      "sha256": "{LOWERCASE_SHA256}"
+    },
+    "findings": [],
+    "satisfied_proof_obligation_ids": [],
+    "stop_reason_id": "{NORMALIZED_STOP_REASON_ID}"
+  },
+  "primary_convergence": {
+    "reviewed": true,
+    "status": "{ACCEPTED_REJECTED_OR_BLOCKED}",
+    "validation": ["{VALIDATION_RESULT_OR_NOT_RUN_WITH_REASON}"],
+    "residual_risk": "{NONE_OR_RESIDUAL_RISK}"
+  }
+}

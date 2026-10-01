@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "registry_kind": "alatyr-allowed-action-registry",
+  "canonical_rule": "ALATYR-AUTHORIZATION-001",
+  "policy": "Allowed actions are an operation ceiling and never grant a current action phase.",
+  "modes": [
+    {
+      "id": "read-only",
+      "permitted_surfaces": "inspect target files and report only",
+      "forbidden": "file changes"
+    },
+    {
+      "id": "docs-only",
+      "permitted_surfaces": "documentation, blueprint-equivalent documentation, and diagram sources",
+      "forbidden": "product code changes"
+    },
+    {
+      "id": "adapter-only",
+      "permitted_surfaces": "adapter-owned .ai surfaces, bridge files, assistant templates, gates, flows, policies, checker rules, and normalized project-process evidence",
+      "forbidden": "product code, tests, and accepted business, domain, architecture, data, runtime, or product-behavior facts"
+    },
+    {
+      "id": "code-and-tests",
+      "permitted_surfaces": "code, tests, and required documentation or diagram synchronization",
+      "forbidden": "live external actions, destructive actions, production dependencies, and broader permissions"
+    },
+    {
+      "id": "full-with-approval",
+      "permitted_surfaces": "the approved operation scope",
+      "forbidden": "protected changes without explicit programmer approval"
+    }
+  ]
+}

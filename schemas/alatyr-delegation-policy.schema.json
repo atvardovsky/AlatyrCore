@@ -6,7 +6,8 @@
   "additionalProperties": false,
   "required": [
     "schema_version", "policy_kind", "state", "owner", "decision_mode",
-    "default_preference", "max_parallel_delegates", "tree_policy",
+    "default_preference", "max_parallel_delegates",
+    "single_depth1_read_only_evidence", "full_tree_required_when", "tree_policy",
     "recursive_child_policy", "context_compaction", "stop_policy",
     "decomposition_policy", "role_catalog", "analysis_strategy_contract",
     "enabled_role_ids", "requirements", "eligible_work", "prohibited_work",
@@ -14,13 +15,17 @@
     "privacy_and_retention", "validation", "review_triggers"
   ],
   "properties": {
-    "schema_version": {"const": 6},
+    "schema_version": {"const": 7},
     "policy_kind": {"const": "target-subagent-delegation-policy"},
     "state": {"type": "string", "minLength": 1},
     "owner": {"type": "string", "minLength": 1},
     "decision_mode": {"type": "string", "minLength": 1},
     "default_preference": {"type": "string", "minLength": 1},
     "max_parallel_delegates": {"$ref": "#/definitions/delegateLimit"},
+    "single_depth1_read_only_evidence": {"const": "lightweight-receipt"},
+    "full_tree_required_when": {
+      "const": ["multiple-workers", "depth-two", "write-scope", "retry", "child-proposals", "semantic-overlap"]
+    },
     "tree_policy": {
       "type": "object",
       "additionalProperties": false,
@@ -148,7 +153,7 @@
     },
     "contextLimit": {
       "anyOf": [
-        {"type": "integer", "minimum": 1, "maximum": 24000},
+        {"type": "integer", "minimum": 1, "maximum": 32000},
         {"$ref": "#/definitions/placeholder"}
       ]
     },

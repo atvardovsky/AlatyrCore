@@ -84,6 +84,8 @@ CONTEXT_DESCRIPTOR_PATHS = {
     ".ai/assistant/context/intents/test-first-request.json",
     ".ai/assistant/context/intents/extension-request.json",
     ".ai/assistant/context/task-scales/small-task.json",
+    ".ai/assistant/context/task-scales/standard-task.json",
+    ".ai/assistant/context/task-scales/protected-or-sensitive.json",
     ".ai/assistant/context/task-scales/large-or-resumable.json",
     ".ai/assistant/context/task-scales/change-package.json",
 }
@@ -98,6 +100,7 @@ GENERATOR_OWNERS = {
     "project-operation-index": "tools/scaffold_projection.py",
     "project-gate-index": "tools/scaffold_projection.py",
     "project-assistant-capabilities": "tools/scaffold_projection.py",
+    "project-assistant-capability-record": "tools/assistant_capability_projection.py",
     "project-context-router": "tools/scaffold_projection.py",
     "project-entry-packet": "tools/agent_entry_packet.py",
     "project-bootstrap-index": "tools/bootstrap_index.py",
@@ -126,6 +129,8 @@ def projection_generator_id(path: str) -> str:
 
     if path in MARKDOWN_PROJECTION_PATHS:
         return "project-markdown-fragments"
+    if path.startswith(".ai/assistant/assistant-capabilities/") and path.endswith(".json"):
+        return "project-assistant-capability-record"
     if path.startswith(".ai/assistant/context/profiles/") or path in CONTEXT_DESCRIPTOR_PATHS:
         return "project-context-descriptor"
     if path.endswith("/context-index.json") and path.startswith(
@@ -191,14 +196,18 @@ def target_projection_nodes(paths: Iterable[str]) -> tuple[ProjectionNode, ...]:
             ProjectionInput("projection-output", dependency)
             for dependency in selected_dependency_paths
         )
-        source_kind = (
-            "framework-file" if path.startswith(".ai/framework/") else "template-file"
-        )
-        template_source = (
-            "framework/" + path[len(".ai/framework/") :]
-            if source_kind == "framework-file"
-            else "templates/target/" + path
-        )
+        if generator_id == "project-assistant-capability-record":
+            source_kind = "canonical-template-file"
+            template_source = "templates/target/.ai/assistant/assistant-capabilities/generic.json"
+        else:
+            source_kind = (
+                "framework-file" if path.startswith(".ai/framework/") else "template-file"
+            )
+            template_source = (
+                "framework/" + path[len(".ai/framework/") :]
+                if source_kind == "framework-file"
+                else "templates/target/" + path
+            )
         owner = GENERATOR_OWNERS.get(generator_id, template_source)
         shared = shared_surface_contract(Path(path), shared_surfaces)
         merge_strategy = (

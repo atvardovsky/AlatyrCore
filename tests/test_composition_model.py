@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from composition_model import CompositionRequest, resolve_composition  # noqa: E402
+from assistant_capability_projection import record_path, surface_ids  # noqa: E402
 from projection_graph import (  # noqa: E402
     ProjectionInput,
     ProjectionNode,
@@ -63,7 +64,8 @@ class CompositionModelTests(unittest.TestCase):
                 path.relative_to(ROOT / "templates/target").as_posix()
                 for path in (ROOT / "templates/target").rglob("*")
                 if path.is_file()
-            },
+            }
+            | {record_path(surface_id).as_posix() for surface_id in surface_ids()},
         )
         self.assertEqual(
             set(target.available_capabilities),

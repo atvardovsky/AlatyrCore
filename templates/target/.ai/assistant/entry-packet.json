@@ -10,29 +10,29 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5",
+    "target_manifest_digest": "sha256:b0a24a8de4dd78fa6aa50ed81668767e29299ac282aa210a49d289475c313759",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.76",
-    "adapter_schema_version": "64",
-    "template_version": "71"
+    "framework_version": "0.1.0-alpha.77",
+    "adapter_schema_version": "65",
+    "template_version": "72"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5"
+      "sha256": "b0a24a8de4dd78fa6aa50ed81668767e29299ac282aa210a49d289475c313759"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "384115b34abe52935d5e125657185ed38c265f391ebab3e2529c7375c42d951c"
+      "sha256": "04c57fdae2a8281b252ee8042c48fab817826dd3cab39159b4b08debfcc06ace"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
-      "sha256": "a888e9e04dc695a1b1c5a340744fadd4bae4d316641763d2da1ada21cece0374"
+      "sha256": "9a5b120290e10146e31ded47725e72474c36c92a3c890451510049854f239392"
     },
     "action_authorization_policy": {
       "path": ".ai/assistant/policies/action-authorization.json",
-      "sha256": "3eb8f3fbf0c90d5ea03ef62ef4e3c070f443605701ae29d0b94ddf0b0074295f"
+      "sha256": "ed3feb5f990e4cb0c247e16f135df3d687bcd385a0b856fca2a60dcb6ef018f7"
     },
     "session_continuity_policy": {
       "path": ".ai/assistant/policies/session-continuity.json",

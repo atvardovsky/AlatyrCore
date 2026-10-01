@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from assistant_capability_projection import render_surface_record, surface_id_for_path
 from .common import (
     DELEGATION_FIXTURE_PATHS,
     Path,
@@ -57,7 +58,11 @@ def run(target: Path, failures: list[str]) -> None:
         )
         destination = delegation_target / relpath
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(source.read_bytes())
+        surface_id = surface_id_for_path(relpath)
+        if surface_id is not None:
+            destination.write_text(render_surface_record(surface_id), encoding="utf-8")
+        else:
+            destination.write_bytes(source.read_bytes())
     write_json(
         delegation_target / ".ai/assistant/ai-infrastructure-router.json",
         {"items": [{"id": "fixture.dispatcher"}]},

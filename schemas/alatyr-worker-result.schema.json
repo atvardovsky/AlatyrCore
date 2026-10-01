@@ -9,13 +9,13 @@
     "parent_packet_id", "node_id", "depth", "base_revision", "status",
     "measurement_state", "input_context_packet_sha256", "raw_payload",
     "accepted_summary", "summary_covers_result_ids", "child_result_sha256",
-    "evidence_manifest", "touched_surfaces", "tools_used", "scope_violation",
+    "evidence_manifest", "findings", "touched_surfaces", "tools_used", "scope_violation",
     "authorization_concern", "proof_obligation_ids",
     "satisfied_proof_obligation_ids", "validation", "stop_reason_id",
     "subtree_sha256"
   ],
   "properties": {
-    "schema_version": {"const": 2},
+    "schema_version": {"const": 3},
     "result_kind": {"const": "alatyr-normalized-worker-result"},
     "result_id": {"type": "string", "minLength": 1},
     "packet_id": {"type": "string", "minLength": 1},
@@ -31,6 +31,7 @@
     "summary_covers_result_ids": {"$ref": "#/definitions/stringList"},
     "child_result_sha256": {"type": "array", "items": {"$ref": "#/definitions/sha256"}, "uniqueItems": true},
     "evidence_manifest": {"type": "array", "items": {"$ref": "#/definitions/evidence"}},
+    "findings": {"type": "array", "items": {"$ref": "#/definitions/finding"}},
     "touched_surfaces": {"$ref": "#/definitions/stringList"},
     "tools_used": {"$ref": "#/definitions/stringList"},
     "scope_violation": {"type": "string", "minLength": 1},
@@ -53,6 +54,24 @@
         "word_count": {"type": "integer", "minimum": 0},
         "character_count": {"type": "integer", "minimum": 0},
         "sha256": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id", "severity", "summary", "canonical_owner_refs",
+        "surface_refs", "evidence_refs", "proof_obligation_ids", "recommendation"
+      ],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["blocking", "high", "medium", "low", "info"]},
+        "summary": {"type": "string", "minLength": 1},
+        "canonical_owner_refs": {"$ref": "#/definitions/stringList"},
+        "surface_refs": {"$ref": "#/definitions/stringList"},
+        "evidence_refs": {"$ref": "#/definitions/stringList"},
+        "proof_obligation_ids": {"$ref": "#/definitions/stringList"},
+        "recommendation": {"type": "string", "minLength": 1}
       }
     },
     "evidence": {

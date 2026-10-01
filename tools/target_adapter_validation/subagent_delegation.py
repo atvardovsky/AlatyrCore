@@ -25,6 +25,7 @@ REQUIRED_PATHS = (
     ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/templates/worker-result.json",
+    ".ai/assistant/templates/single-read-only-delegation-receipt.json",
     ".ai/assistant/templates/delegation-branch-envelope.json",
     ".ai/assistant/templates/delegation-branch-checkpoint.json",
     ".ai/assistant/workers/role-catalog.json",
@@ -49,6 +50,7 @@ EXECUTION_TREE_RELPATH = ".ai/assistant/templates/delegation-execution-tree.json
 PACKET_TEMPLATE_RELPATH = ".ai/assistant/templates/subagent-task-packet.md"
 RESULT_TEMPLATE_RELPATH = ".ai/assistant/templates/worker-result.md"
 RESULT_JSON_RELPATH = ".ai/assistant/templates/worker-result.json"
+SINGLE_RECEIPT_RELPATH = ".ai/assistant/templates/single-read-only-delegation-receipt.json"
 BRANCH_ENVELOPE_RELPATH = ".ai/assistant/templates/delegation-branch-envelope.json"
 BRANCH_CHECKPOINT_RELPATH = ".ai/assistant/templates/delegation-branch-checkpoint.json"
 
@@ -77,6 +79,7 @@ CAPABILITY_FIELDS = {
     "model_override",
     "parallel_dispatch",
     "actual_model_evidence",
+    "worker_context_mode",
     "role_bindings",
     "verified_at",
     "client_version",
@@ -106,6 +109,13 @@ CAPABILITY_SUPPORT_FIELDS = {
 }
 
 SUPPORT_VALUES = {"supported", "unsupported", "unknown"}
+WORKER_CONTEXT_MODES = {
+    "isolated-explicit",
+    "inherited-measured",
+    "inherited-unmeasured",
+    "unsupported",
+    "unknown",
+}
 DISPATCH_BACKENDS = {
     "native",
     "external",
@@ -245,10 +255,10 @@ def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
 
 
 def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
-    if policy.get("schema_version") != 6:
+    if policy.get("schema_version") != 7:
         self.error(
             "DELEGATION_POLICY_SCHEMA",
-            "delegation policy schema_version must be 6",
+            "delegation policy schema_version must be 7",
             POLICY_RELPATH,
         )
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
@@ -320,6 +330,21 @@ def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
         self.error(
             "DELEGATION_DECOMPOSITION_POLICY",
             "delegation policy must reference the task-decomposition policy",
+            POLICY_RELPATH,
+        )
+    if policy.get("single_depth1_read_only_evidence") != "lightweight-receipt":
+        self.error(
+            "DELEGATION_LIGHTWEIGHT_RECEIPT",
+            "single depth-1 read-only delegation must use a lightweight receipt",
+            POLICY_RELPATH,
+        )
+    if policy.get("full_tree_required_when") != [
+        "multiple-workers", "depth-two", "write-scope", "retry",
+        "child-proposals", "semantic-overlap",
+    ]:
+        self.error(
+            "DELEGATION_FULL_TREE_ESCALATION",
+            "delegation full-tree escalation conditions are invalid",
             POLICY_RELPATH,
         )
 
@@ -449,7 +474,7 @@ def _validate_tree_limit_caps(
     maximums = {
         "max_total_delegates": 8,
         "max_children_per_parent": 4,
-        "max_context_words_total": 24000,
+        "max_context_words_total": 32000,
         "max_retries_total": 2,
     }
     for field, maximum in maximums.items():
@@ -697,6 +722,13 @@ def _validate_surface_capability(
                 f"assistant surface {surface_id} {field} is invalid",
                 relpath,
             )
+    context_mode = delegation.get("worker_context_mode")
+    if is_resolved_string(context_mode) and context_mode not in WORKER_CONTEXT_MODES:
+        self.error(
+            "DELEGATION_WORKER_CONTEXT_MODE",
+            f"assistant surface {surface_id} worker_context_mode is invalid",
+            relpath,
+        )
     _validate_backend(self, surface_id, relpath, delegation, ai_item_ids)
     _validate_write_isolation(self, surface_id, relpath, delegation)
     _validate_worker_definition_paths(self, surface_id, relpath, delegation)
@@ -1376,6 +1408,7 @@ def _validate_delegation_templates(self: Any) -> None:
             ),
             RESULT_JSON_RELPATH,
             "DELEGATION_RESULT_JSON_TEMPLATE",
+            3,
             "result_kind",
             "alatyr-normalized-worker-result",
             {
@@ -1383,7 +1416,7 @@ def _validate_delegation_templates(self: Any) -> None:
                 "parent_packet_id", "node_id", "depth", "base_revision",
                 "status", "measurement_state", "input_context_packet_sha256",
                 "raw_payload", "accepted_summary", "summary_covers_result_ids",
-                "child_result_sha256", "evidence_manifest", "touched_surfaces",
+                "child_result_sha256", "evidence_manifest", "findings", "touched_surfaces",
                 "tools_used", "scope_violation", "authorization_concern", "validation",
                 "proof_obligation_ids", "satisfied_proof_obligation_ids",
                 "stop_reason_id", "subtree_sha256",
@@ -1396,6 +1429,7 @@ def _validate_delegation_templates(self: Any) -> None:
             ),
             BRANCH_ENVELOPE_RELPATH,
             "DELEGATION_BRANCH_ENVELOPE_TEMPLATE",
+            2,
             "envelope_kind",
             "alatyr-delegation-branch-envelope",
             {
@@ -1418,6 +1452,7 @@ def _validate_delegation_templates(self: Any) -> None:
             ),
             BRANCH_CHECKPOINT_RELPATH,
             "DELEGATION_BRANCH_CHECKPOINT_TEMPLATE",
+            2,
             "checkpoint_kind",
             "alatyr-delegation-branch-checkpoint",
             {
@@ -1434,10 +1469,18 @@ def _validate_delegation_templates(self: Any) -> None:
             },
         ),
     ]
-    for record, relpath, code, identity_field, identity, fields in json_templates:
+    for (
+        record,
+        relpath,
+        code,
+        expected_schema_version,
+        identity_field,
+        identity,
+        fields,
+    ) in json_templates:
         if (
             not isinstance(record, dict)
-            or record.get("schema_version") != 2
+            or record.get("schema_version") != expected_schema_version
             or record.get(identity_field) != identity
             or set(record) != fields
         ):

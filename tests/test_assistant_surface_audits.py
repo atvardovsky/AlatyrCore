@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from check_assistant_surface_audits import validate_contracts  # noqa: E402
+from assistant_capability_projection import build_surface_record  # noqa: E402
 
 
 def load(name: str) -> dict:
@@ -82,9 +83,7 @@ class AssistantSurfaceAuditTests(unittest.TestCase):
         )
 
     def test_client_permissions_cannot_grant_alatyr_authorization(self) -> None:
-        record = load(
-            "templates/target/.ai/assistant/assistant-capabilities/junie.json"
-        )
+        record = build_surface_record("junie")
         record["tool_permissions"]["alatyr_authorization_separate"] = False
         self.assertTrue(
             any(

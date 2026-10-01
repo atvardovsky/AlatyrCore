@@ -9,8 +9,8 @@ from pathlib import Path
 from typing import Any
 
 
-POLICY_SCHEMA_VERSION = 7
-CAPABILITY_SCHEMA_VERSION = 2
+POLICY_SCHEMA_VERSION = 8
+CAPABILITY_SCHEMA_VERSION = 3
 PACKET_SCHEMA_VERSION = 6
 EXECUTION_TREE_SCHEMA_VERSION = 3
 POLICY_KIND = "alatyr-source-worker-policy"
@@ -18,7 +18,7 @@ CANONICAL_RULE = "ALATYR-DELEGATION-001"
 TREE_KIND = "alatyr-delegation-execution-tree"
 MAX_TOTAL_DELEGATES = 8
 MAX_CHILDREN_PER_PARENT = 4
-MAX_CONTEXT_WORDS_TOTAL = 24000
+MAX_CONTEXT_WORDS_TOTAL = 32000
 MAX_RESULT_WORDS_TOTAL = 12000
 MAX_PRIMARY_SUMMARY_WORDS_TOTAL = 4000
 MAX_RETRIES_TOTAL = 2
@@ -34,6 +34,7 @@ COMPLETION_DECISIONS = {"delegated", "kept-local"}
 DECISION_FIELDS = {
     "evaluation_status",
     "runtime_capability_status",
+    "required_workstream_count",
     "selected_workstream_ids",
     "decision",
     "reason",
@@ -527,6 +528,7 @@ def _validate_runtime_contract(contract: Any) -> None:
         "max_parallelism",
         "write_isolation",
         "result_delivery",
+        "worker_context_mode",
         "model_binding",
         "verified_at",
         "expires_at",
@@ -553,7 +555,7 @@ def _validate_runtime_contract(contract: Any) -> None:
         "runtime_capability_contract",
     )
     if set(_string_list(contract.get("required_fields"), label="capability required_fields")) != required_fields:
-        raise SourceWorkerContractError("capability required_fields do not match schema v2")
+        raise SourceWorkerContractError("capability required_fields do not match schema v3")
     expected = {
         "schema_version": CAPABILITY_SCHEMA_VERSION,
         "status": "available",
@@ -561,7 +563,7 @@ def _validate_runtime_contract(contract: Any) -> None:
         "write_isolation": "read-only",
         "result_delivery": True,
         "freshness": "current-session",
-        "minimum_parallelism": 2,
+        "minimum_parallelism": 1,
     }
     for field, value in expected.items():
         if contract.get(field) != value:
@@ -585,6 +587,7 @@ def _validate_activation(activation: Any) -> None:
     required = {
         "task_classes",
         "minimum_independent_packets",
+        "repository_audit_minimum_independent_packets",
         "repository_audit_candidate_source",
         "task_specific_candidate_source",
         "missing_large_task_packets_decision",
@@ -595,8 +598,10 @@ def _validate_activation(activation: Any) -> None:
     classes = set(_string_list(activation["task_classes"], label="activation task_classes"))
     if classes != {"large-or-resumable"} or not classes <= TASK_CLASSES:
         raise SourceWorkerContractError("activation task_classes must contain large-or-resumable")
-    if activation["minimum_independent_packets"] != 2:
-        raise SourceWorkerContractError("activation requires two independent packets")
+    if activation["minimum_independent_packets"] != 1:
+        raise SourceWorkerContractError("activation must permit one independent packet")
+    if activation["repository_audit_minimum_independent_packets"] != 2:
+        raise SourceWorkerContractError("repository audit requires two independent packets")
     expected = {
         "repository_audit_candidate_source": "built-in-workstreams",
         "task_specific_candidate_source": "explicit-worker-packets",
@@ -774,7 +779,7 @@ def _validate_decision_contract(contract: Any) -> None:
         "decision_evidence",
     )
     if set(_string_list(contract.get("required_fields"), label="decision required_fields")) != DECISION_FIELDS:
-        raise SourceWorkerContractError("decision required_fields do not match schema v2")
+        raise SourceWorkerContractError("decision required_fields do not match the current contract")
     if set(_string_list(contract.get("preflight_decisions"), label="preflight decisions")) != PREFLIGHT_DECISIONS:
         raise SourceWorkerContractError("preflight decision set is invalid")
     if set(_string_list(contract.get("completion_decisions"), label="completion decisions")) != COMPLETION_DECISIONS:
@@ -842,10 +847,13 @@ def validate_decision_evidence(
         label="selected worker workstreams",
         nonempty=False,
     )
+    required_count = evidence.get("required_workstream_count")
+    if not isinstance(required_count, int) or isinstance(required_count, bool) or required_count < 1:
+        raise SourceWorkerContractError("worker decision requires a positive workstream count")
     if decision == "delegation-recommended":
-        if runtime_status != "available" or len(selected_ids) < 2:
+        if runtime_status != "available" or len(selected_ids) < required_count:
             raise SourceWorkerContractError(
-                "delegation-recommended requires available capability and two workstreams"
+                "delegation-recommended lacks required available workstreams"
             )
     elif selected_ids:
         raise SourceWorkerContractError(
@@ -928,7 +936,10 @@ def validate_source_worker_policy(
     context_compaction = policy.get("context_compaction")
     _validate_context_compaction(context_compaction)
     _validate_activation(activation)
-    minimum_packets = activation["minimum_independent_packets"]
+    minimum_packets = max(
+        activation["minimum_independent_packets"],
+        activation["repository_audit_minimum_independent_packets"],
+    )
     for field in [
         "max_total_delegates",
         "max_parallel_delegates",
@@ -1153,6 +1164,10 @@ def validate_runtime_capability(
     maximum = record.get("max_parallelism")
     if not isinstance(maximum, int) or isinstance(maximum, bool) or maximum < contract["minimum_parallelism"]:
         raise SourceWorkerContractError("worker capability record has insufficient parallelism")
+    if record.get("worker_context_mode") not in {"isolated-explicit", "inherited-measured"}:
+        raise SourceWorkerContractError(
+            "worker capability record lacks safe measured context handling"
+        )
 
     verified_at = _parse_timestamp(record.get("verified_at"), "verified_at")
     expires_at = _parse_timestamp(record.get("expires_at"), "expires_at")

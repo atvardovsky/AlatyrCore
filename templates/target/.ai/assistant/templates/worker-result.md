@@ -33,6 +33,7 @@ Commands or tools used: `{COMMANDS_TOOLS_AND_RESULTS_OR_NONE}`
 Validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Acceptance criteria: `{PASS_FAIL_OR_BLOCKED_BY_CRITERION}`
 Assigned proof-obligation evidence: `{OBLIGATION_IDS_STATUS_AND_EVIDENCE_OR_NONE}`
+Structured findings: `{FINDING_IDS_SEVERITIES_EVIDENCE_AND_RECOMMENDATIONS_OR_NONE}`
 
 ## Boundary Evidence
 

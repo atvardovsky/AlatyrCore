@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import subprocess
 import sys
@@ -18,7 +19,9 @@ sys.path.insert(0, str(ROOT / "tools"))
 from delegation_evidence import (  # noqa: E402
     DelegationEvidenceError,
     validate_execution_tree,
+    validate_single_read_only_receipt,
 )
+from assistant_capability_projection import build_surface_record  # noqa: E402
 from source_worker_contract import (  # noqa: E402
     SourceWorkerContractError,
     validate_decision_evidence,
@@ -41,7 +44,7 @@ def policy_fixture() -> dict[str, object]:
 
 def capability_fixture() -> dict[str, object]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "status": "available",
         "surface_id": "test-surface",
         "runtime_id": "test-runtime",
@@ -50,6 +53,7 @@ def capability_fixture() -> dict[str, object]:
         "max_parallelism": 2,
         "write_isolation": "read-only",
         "result_delivery": True,
+        "worker_context_mode": "isolated-explicit",
         "model_binding": "client-default",
         "verified_at": "2026-09-03T12:00:00Z",
         "expires_at": "2026-09-03T12:20:00Z",
@@ -92,6 +96,26 @@ def packet_fixture() -> dict[str, object]:
         "relationship_refs": [],
         "overlap_decision": "disjoint",
         "expected_evidence": "Path-specific findings",
+    }
+
+
+def canonical_value_sha256(value: object) -> str:
+    encoded = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def measured_artifact(root: Path, relpath: str, text: str) -> dict[str, object]:
+    path = root / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    payload = path.read_bytes()
+    return {
+        "path": relpath,
+        "word_count": len(text.split()),
+        "character_count": len(text),
+        "sha256": hashlib.sha256(payload).hexdigest(),
     }
 
 
@@ -173,7 +197,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         raw = write_artifact(root, f"evidence/{node_id}-raw.md", f"raw finding for {node_id}\n")
         summary = write_artifact(root, f"evidence/{node_id}-summary.md", f"summary {node_id}\n")
         result = {
-            "schema_version": 2,
+            "schema_version": 3,
             "result_kind": "alatyr-normalized-worker-result",
             "result_id": f"result-{node_id}",
             "packet_id": f"packet-{node_id}",
@@ -189,6 +213,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "summary_covers_result_ids": child_ids,
             "child_result_sha256": child_digests,
             "evidence_manifest": [],
+            "findings": [],
             "touched_surfaces": [],
             "tools_used": ["read"],
             "scope_violation": "none",
@@ -345,7 +370,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "max_total_delegates": 8,
             "max_parallel_delegates": 2,
             "max_children_per_parent": 4,
-            "max_context_words_total": 24000,
+            "max_context_words_total": 32000,
             "max_result_words_total": 12000,
             "max_primary_summary_words_total": 4000,
             "max_retries_total": 2,
@@ -381,6 +406,117 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "final_stop_reason_id": "evidence-sufficient",
         },
     }
+
+
+class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
+    def build_fixture(self, root: Path) -> tuple[dict, dict, dict]:
+        policy = json.loads(
+            (ROOT / "templates/target/.ai/assistant/delegation-policy.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        capability = build_surface_record("generic")
+        capability["subagent_delegation"]["worker_context_mode"] = (
+            "isolated-explicit"
+        )
+        receipt = {
+            "schema_version": 1,
+            "receipt_kind": "alatyr-single-depth1-read-only-delegation",
+            "operation_id": "operation-1",
+            "base_revision": "base-1",
+            "current_user_authorization": "inspect-only current scope",
+            "analysis_strategy_id": "direct-local",
+            "problem_model_sha256": None,
+            "policy_sha256": canonical_value_sha256(policy),
+            "capability_sha256": canonical_value_sha256(capability),
+            "worker_context_mode": "isolated-explicit",
+            "packet": {
+                "packet_id": "packet-1",
+                "node_id": "worker-1",
+                "depth": 1,
+                "allowed_actions": ["inspect"],
+                "write_scope": "none",
+                "attempt": 0,
+                "child_count": 0,
+                "overlap_decision": "disjoint",
+                "context_artifact": measured_artifact(
+                    root, "context.txt", "bounded owner context\n"
+                ),
+                "canonical_owner_refs": ["framework/subagent-delegation.md"],
+                "surface_refs": ["tools/**"],
+                "proof_obligation_ids": ["proof-1"],
+            },
+            "result": {
+                "status": "succeeded",
+                "raw_artifact": measured_artifact(
+                    root, "raw.txt", "bounded evidence result\n"
+                ),
+                "accepted_summary_artifact": measured_artifact(
+                    root, "summary.txt", "evidence result\n"
+                ),
+                "findings": [],
+                "satisfied_proof_obligation_ids": ["proof-1"],
+                "stop_reason_id": "evidence-sufficient",
+            },
+            "primary_convergence": {
+                "reviewed": True,
+                "status": "accepted",
+                "validation": ["focused checks passed"],
+                "residual_risk": "none",
+            },
+        }
+        return receipt, policy, capability
+
+    def test_valid_single_worker_receipt_is_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt, policy, capability = self.build_fixture(root)
+            self.assertIs(
+                validate_single_read_only_receipt(
+                    receipt, policy, capability, artifact_root=root
+                ),
+                receipt,
+            )
+
+    def test_unmeasured_inherited_context_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt, policy, capability = self.build_fixture(root)
+            receipt["worker_context_mode"] = "inherited-unmeasured"
+            capability["subagent_delegation"]["worker_context_mode"] = (
+                "inherited-unmeasured"
+            )
+            receipt["capability_sha256"] = canonical_value_sha256(capability)
+            with self.assertRaisesRegex(DelegationEvidenceError, "unsafe context"):
+                validate_single_read_only_receipt(
+                    receipt, policy, capability, artifact_root=root
+                )
+
+    def test_write_scope_or_out_of_scope_finding_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt, policy, capability = self.build_fixture(root)
+            receipt["packet"]["write_scope"] = "tools/example.py"
+            with self.assertRaisesRegex(DelegationEvidenceError, "forbids writes"):
+                validate_single_read_only_receipt(
+                    receipt, policy, capability, artifact_root=root
+                )
+            receipt["packet"]["write_scope"] = "none"
+            receipt["result"]["findings"] = [
+                {
+                    "finding_id": "finding-1",
+                    "severity": "high",
+                    "summary": "Out-of-scope owner",
+                    "canonical_owner_refs": ["framework/other.md"],
+                    "surface_refs": ["tools/example.py"],
+                    "proof_obligation_ids": ["proof-1"],
+                    "recommendation": "Return to primary",
+                }
+            ]
+            with self.assertRaisesRegex(DelegationEvidenceError, "escapes assigned owners"):
+                validate_single_read_only_receipt(
+                    receipt, policy, capability, artifact_root=root
+                )
 
 
 class SourceWorkerPolicyTests(unittest.TestCase):
@@ -981,6 +1117,7 @@ class DecisionEvidenceTests(unittest.TestCase):
                     "evaluation_status": evaluation,
                     "runtime_capability_status": runtime,
                     "selected_workstream_ids": selected,
+                    "required_workstream_count": 2,
                     "decision": decision,
                     "reason": "deterministic test evidence",
                     "skip_reason_id": skip_reason_id,

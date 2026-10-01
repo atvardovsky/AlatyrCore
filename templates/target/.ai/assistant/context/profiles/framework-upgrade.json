@@ -20,8 +20,7 @@
   "required_context": [
     ".ai/assistant/context/migration-routing.json",
     "{TARGET_UPGRADE_IMPACT_REPORT}",
-    ".ai/assistant/gates/core.md",
-    ".ai/assistant/gates/final-evidence.md"
+    ".ai/assistant/gates/core.md"
   ],
   "conditional_context": [
     {"path": ".ai/framework/action-authorization.md", "when": "authorization phase semantics are disputed or the target policy requires repair"},

@@ -20,7 +20,6 @@
   "required_context": [
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/code-and-tests.md",
-    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_CODE_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [

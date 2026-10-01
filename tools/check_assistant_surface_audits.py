@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from assistant_capability_projection import build_surface_record
 from target_adapter_validation.assistant_capabilities import (
     SURFACE_CAPABILITY_SCHEMA_VERSION,
     SURFACE_STATE_SCALAR_FIELDS,
@@ -285,15 +286,15 @@ def validate_contracts(
         expected_capability = f".ai/assistant/assistant-capabilities/{audit_id}.json"
         if capability_index.get(audit_id) != expected_capability:
             failures.append(f"{audit_id} capability index path is missing")
-        capability_path = TARGET / expected_capability
-        if not capability_path.is_file():
-            failures.append(f"{audit_id} capability record is missing")
-        else:
+        try:
             capability = (
                 capability_overrides.get(audit_id)
                 if capability_overrides and audit_id in capability_overrides
-                else load_object(capability_path)
+                else build_surface_record(audit_id)
             )
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            failures.append(str(exc))
+        else:
             if capability.get("assistant_surface") != audit_id:
                 failures.append(f"{audit_id} capability record identity differs")
             if capability.get("schema_version") != SURFACE_CAPABILITY_SCHEMA_VERSION:

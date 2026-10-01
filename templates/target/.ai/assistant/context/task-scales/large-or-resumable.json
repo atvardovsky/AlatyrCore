@@ -10,6 +10,7 @@
     "separate approval or validation checkpoints"
   ],
   "required_context": [
+    ".ai/assistant/gates/final-evidence.md",
     ".ai/framework/large-task-orchestration.md",
     ".ai/assistant/flows/large-task-orchestration.flow.md",
     ".ai/assistant/templates/large-task-operation-packet.md"

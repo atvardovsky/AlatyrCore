@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1582
+Catalog entries: 1588
 
 ## Families
 
@@ -30,7 +30,7 @@ Catalog entries: 1582
 - `CONSISTENCY`: 50 codes.
 - `CONTEXT`: 23 codes.
 - `DEBUG`: 140 codes.
-- `DELEGATION`: 98 codes.
+- `DELEGATION`: 101 codes.
 - `DEPENDENCY`: 63 codes.
 - `DEVELOPMENT`: 17 codes.
 - `DIAGRAM`: 32 codes.
@@ -54,7 +54,7 @@ Catalog entries: 1582
 - `PROJECT`: 55 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
-- `ROUTER`: 74 codes.
+- `ROUTER`: 77 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `SESSION`: 67 codes.
@@ -1087,6 +1087,10 @@ Catalog entries: 1582
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_FULL_TREE_ESCALATION`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_LIGHTWEIGHT_RECEIPT`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_MODEL_OVERRIDE_UNSUPPORTED`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_MODEL_SELECTION_MODE`
@@ -1202,6 +1206,8 @@ Catalog entries: 1582
 - `DELEGATION_TREE_POLICY`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_UNSUPPORTED_ROUTE_CONFLICT`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_WORKER_CONTEXT_MODE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_FORMAT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
@@ -2249,6 +2255,8 @@ Catalog entries: 1582
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_BUDGET_BOOTSTRAP`
   Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
+- `ROUTER_BUDGET_EXPANDED`
+  Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_BUDGET_FIRST_USE`
   Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_BUDGET_ON_EXCEED`
@@ -2361,9 +2369,13 @@ Catalog entries: 1582
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_TASK_CLASSIFICATION_DEFAULT`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_TASK_CLASSIFICATION_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_TASK_CLASSIFICATION_ORDER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_REGISTRY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_TASK_CLASSIFICATION_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.

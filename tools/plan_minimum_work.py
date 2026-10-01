@@ -661,9 +661,8 @@ def _decomposition(
         workstreams, omitted = _budgeted_workstreams(policy, all_workstreams)
         budget = delegation_budget(policy, workstreams)
         workstream_ids = [packet["workstream_id"] for packet in workstreams]
-        identification_required = (
-            len(workstreams) < policy["activation"]["minimum_independent_packets"]
-        )
+        required_count = policy["activation"]["repository_audit_minimum_independent_packets"]
+        identification_required = len(workstreams) < required_count
         return {
             "required": True,
             "strategy": (
@@ -678,6 +677,7 @@ def _decomposition(
             "independent_worker_candidates": workstream_ids,
             "decision_contract": policy["decision_evidence"],
             "workstream_identification_required": identification_required,
+            "required_workstream_count": required_count,
             "primary_critical_path": [
                 "run authoritative source validation",
                 "identify additional bounded independent workstreams"
@@ -703,11 +703,12 @@ def _decomposition(
         _require_unique_values(workstreams, "semantic_scope", "semantic scopes")
         budget = delegation_budget(policy, workstreams)
         workstream_ids = [packet["workstream_id"] for packet in workstreams]
+        required_count = policy["activation"]["minimum_independent_packets"]
         return {
             "required": True,
             "strategy": (
                 "bounded-independent-read-only-review"
-                if len(workstreams) >= policy["activation"]["minimum_independent_packets"]
+                if len(workstreams) >= required_count
                 else "workstream-identification-required"
             ),
             "candidate_workstreams": workstreams,
@@ -717,9 +718,10 @@ def _decomposition(
             "independent_worker_candidates": workstream_ids,
             "decision_contract": policy["decision_evidence"],
             "workstream_identification_required": len(workstreams)
-            < policy["activation"]["minimum_independent_packets"],
+            < required_count,
+            "required_workstream_count": required_count,
             "primary_critical_path": [
-                "identify bounded independent workstreams when fewer than two are supplied",
+                "identify the configured bounded independent workstreams when insufficient packets are supplied",
                 "retain all decisions, synthesis, mutations, and validation",
             ],
         }
@@ -733,6 +735,7 @@ def _decomposition(
         "aggregate_budget": None,
         "independent_worker_candidates": [],
         "workstream_identification_required": False,
+        "required_workstream_count": 1,
         "primary_critical_path": ["plan and validate the selected source task"],
     }
 
@@ -745,6 +748,97 @@ def _validate_runtime_capability_record(
 ) -> dict[str, Any]:
     policy = _load_source_worker_policy()["runtime_capability_contract"]
     return validate_runtime_capability(record, policy, session_id=session_id, now=now)
+
+
+def _capability_preflight(
+    task_class: str,
+    *,
+    runtime_capability: str,
+    runtime_capability_record: dict[str, Any] | None,
+    worker_session_id: str | None,
+    now: datetime | None,
+) -> dict[str, Any]:
+    """Resolve worker capability before expanding decomposition packets."""
+
+    if runtime_capability not in RUNTIME_CAPABILITY_STATES:
+        raise ValueError(f"invalid worker runtime capability: {runtime_capability}")
+    if task_class != "large-or-resumable":
+        return {
+            "status": "not-required",
+            "decision": "kept-local",
+            "verified_capability": None,
+        }
+    if runtime_capability_record is not None:
+        if runtime_capability == "unavailable":
+            raise ValueError("unavailable capability conflicts with an available record")
+        verified = _validate_runtime_capability_record(
+            runtime_capability_record,
+            session_id=worker_session_id or "",
+            now=now,
+        )
+        return {
+            "status": "available",
+            "decision": "expand-bounded-decomposition",
+            "verified_capability": verified,
+        }
+    if runtime_capability == "available":
+        raise ValueError("available worker capability requires a capability record")
+    if worker_session_id is not None:
+        raise ValueError("worker session binding requires a capability record")
+    return {
+        "status": runtime_capability,
+        "decision": (
+            "runtime-verification-required"
+            if runtime_capability == "unknown"
+            else "kept-local"
+        ),
+        "verified_capability": None,
+    }
+
+
+def _deferred_decomposition(
+    source_profile: str,
+    *,
+    task_worker_packets: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    """Expose only candidate identities until capability preflight succeeds."""
+
+    policy = _load_source_worker_policy()
+    if source_profile == "repository-audit":
+        if task_worker_packets:
+            raise ValueError("repository-audit uses policy workstreams, not task packets")
+        route = _load_source_router()["profiles"][source_profile].get("decomposition")
+        candidate_ids = route.get("candidate_workstreams", []) if isinstance(route, dict) else []
+        required_count = policy["activation"]["repository_audit_minimum_independent_packets"]
+    else:
+        packet_contract = policy["worker_packet_contract"]
+        workstreams = [
+            validate_worker_packet(packet, packet_contract)
+            for packet in (task_worker_packets or [])
+        ]
+        _require_unique_values(workstreams, "workstream_id", "workstream IDs")
+        _require_unique_values(workstreams, "coverage_key", "coverage keys")
+        _require_unique_values(workstreams, "independence_key", "independence keys")
+        _require_unique_values(workstreams, "semantic_scope", "semantic scopes")
+        candidate_ids = [packet["workstream_id"] for packet in workstreams]
+        required_count = policy["activation"]["minimum_independent_packets"]
+    return {
+        "required": True,
+        "strategy": "capability-preflight-before-packet-expansion",
+        "candidate_workstreams": [],
+        "discovered_worker_candidates": candidate_ids,
+        "omitted_worker_candidates": [],
+        "aggregate_budget": None,
+        "independent_worker_candidates": candidate_ids,
+        "decision_contract": policy["decision_evidence"],
+        "workstream_identification_required": len(candidate_ids) < required_count,
+        "required_workstream_count": required_count,
+        "packet_expansion_deferred": True,
+        "primary_critical_path": [
+            "verify worker capability and context mode",
+            "expand only selected bounded packets after successful preflight",
+        ],
+    }
 
 
 def _delegation_assessment(
@@ -760,7 +854,8 @@ def _delegation_assessment(
     now: datetime | None,
 ) -> dict[str, Any]:
     candidates = decomposition["independent_worker_candidates"]
-    has_independent_set = len(candidates) >= 2
+    required_count = decomposition.get("required_workstream_count", 1)
+    has_independent_set = len(candidates) >= required_count
     evaluation_required = bool(decomposition["required"])
     if runtime_capability not in RUNTIME_CAPABILITY_STATES:
         raise ValueError(f"invalid worker runtime capability: {runtime_capability}")
@@ -801,14 +896,14 @@ def _delegation_assessment(
     if decomposition["required"] and not has_independent_set:
         if decision_override is not None or selected_ids:
             raise ValueError(
-                "large work without two independent packets requires workstream identification"
+                "large work lacks the required independent packets"
             )
         decision = "workstream-identification-required"
-        resolved_reason = "identify at least two bounded independent read-only workstreams"
+        resolved_reason = f"identify at least {required_count} bounded independent read-only workstream(s)"
         resolved_skip_reason = "insufficient-independent-work"
     elif not evaluation_required:
         if decision_override == "delegated" or selected_ids:
-            raise ValueError("delegation requires at least two independent workstreams")
+            raise ValueError("delegation requires the configured independent workstreams")
         decision = "primary-assistant"
         resolved_reason = reason or "no bounded independent worker set was identified"
         resolved_skip_reason = "insufficient-independent-work"
@@ -850,9 +945,9 @@ def _delegation_assessment(
         resolved_skip_reason = skip_reason_id
     else:
         if not selected_ids:
-            selected_ids = list(candidates[:2])
-        if len(selected_ids) < 2:
-            raise ValueError("delegation requires at least two independent workstreams")
+            selected_ids = list(candidates[:required_count])
+        if len(selected_ids) < required_count:
+            raise ValueError("delegation requires the configured independent workstreams")
         max_parallelism = verified_capability["max_parallelism"]
         if len(selected_ids) > max_parallelism:
             raise ValueError("selected workstreams exceed verified worker parallelism")
@@ -862,7 +957,7 @@ def _delegation_assessment(
 
     reasons = [resolved_reason]
     if has_independent_set:
-        reasons.insert(0, "multiple bounded independent workstreams are available")
+        reasons.insert(0, "the required bounded independent workstreams are available")
     evidence = {
         "evaluation_status": "required" if evaluation_required else "not-required",
         "evaluation_required": evaluation_required,
@@ -870,6 +965,7 @@ def _delegation_assessment(
         "candidate_workstream_ids": candidates,
         "selected_workstream_ids": selected_ids,
         "runtime_capability_status": runtime_capability,
+        "required_workstream_count": required_count,
         "runtime_capability": runtime_capability,
         "runtime_capability_evidence": verified_capability,
         "decision": decision,
@@ -965,10 +1061,24 @@ def build_plan(
         explicit_small_scope=requested_profile == "micro",
     )
     task_class = classification["task_class"]
-    decomposition = _decomposition(
-        resolved_source_profile,
+    capability_preflight = _capability_preflight(
         task_class,
-        task_worker_packets=task_worker_packets,
+        runtime_capability=runtime_capability,
+        runtime_capability_record=runtime_capability_record,
+        worker_session_id=worker_session_id,
+        now=now,
+    )
+    decomposition = (
+        _decomposition(
+            resolved_source_profile,
+            task_class,
+            task_worker_packets=task_worker_packets,
+        )
+        if capability_preflight["status"] in {"available", "not-required"}
+        else _deferred_decomposition(
+            resolved_source_profile,
+            task_worker_packets=task_worker_packets,
+        )
     )
     return {
         "schema_version": 1,
@@ -998,6 +1108,7 @@ def build_plan(
             )
         ),
         "decomposition": decomposition,
+        "delegation_capability_preflight": capability_preflight,
         "delegation_assessment": _delegation_assessment(
             decomposition,
             runtime_capability=runtime_capability,

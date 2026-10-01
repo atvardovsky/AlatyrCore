@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "id": "delegation-preflight",
+  "required_module": "subagent-delegation",
+  "use_when": [
+    "one or more independently useful worker candidates may exist"
+  ],
+  "required_context": [
+    ".ai/assistant/assistant-capabilities.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/assistant/assistant-capabilities/{SELECTED_ASSISTANT_SURFACE}.json",
+      "when": "the selected surface record is needed to verify dispatch and worker context mode"
+    }
+  ],
+  "activation_results": [
+    "kept-local",
+    "runtime-verification-required",
+    "single-depth1-read-only",
+    "governed-tree"
+  ],
+  "budget_behavior": "load capability identity and the selected surface record before decomposition or orchestration contracts",
+  "final_evidence": [
+    "capability state context mode and selected execution tier or fallback"
+  ]
+}

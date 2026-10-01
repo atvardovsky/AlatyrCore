@@ -24,6 +24,7 @@ from task_classification_contract import (
     TARGET_REQUIRED_SMALL_TASK_EXPANSION_TRIGGERS,
     TASK_CLASSES,
     TASK_CLASSIFICATION_SCHEMA_VERSION,
+    TASK_CLASS_DEFINITIONS,
     missing_required_values,
 )
 
@@ -386,11 +387,15 @@ def check_task_classification(router: dict[str, Any], failures: list[str]) -> No
         classification.get("ambiguity_behavior", "")
     ):
         failures.append("task_classification ambiguity must remain read-only")
+    if classification.get("registry") != ".ai/framework/task-classes.json":
+        failures.append("task_classification must route the canonical task-class registry")
 
     classes = classification.get("classes")
     if not isinstance(classes, dict):
         failures.append("task_classification.classes must be an object")
         classes = {}
+    elif classes != TASK_CLASS_DEFINITIONS:
+        failures.append("task_classification.classes drifted from framework/task-classes.json")
     for name in TASK_CLASSES:
         item = classes.get(name)
         if not isinstance(item, dict):
@@ -488,6 +493,78 @@ def check_task_decomposition(router: dict[str, Any], failures: list[str]) -> Non
         failures.append("task decomposition policy levels must be L0 through L7")
 
 
+def check_context_budgets(router: dict[str, Any], failures: list[str]) -> None:
+    budgets = router.get("context_budgets")
+    if not isinstance(budgets, dict):
+        failures.append("context_budgets must be an object")
+        return
+    bootstrap = budgets.get("bootstrap")
+    profile = budgets.get("profile_default")
+    expanded = budgets.get("expanded")
+    sections = [
+        ("bootstrap", bootstrap, ["max_files", "max_words", "max_characters"]),
+        (
+            "profile_default",
+            profile,
+            [
+                "max_files", "max_total_words", "max_portable_words",
+                "reserved_target_words", "max_total_characters",
+            ],
+        ),
+        (
+            "expanded",
+            expanded,
+            ["max_files", "max_total_words", "max_total_characters"],
+        ),
+    ]
+    for label, value, fields in sections:
+        if not isinstance(value, dict):
+            failures.append(f"context_budgets.{label} must be an object")
+            continue
+        for field in fields:
+            if not isinstance(value.get(field), int) or value[field] <= 0:
+                failures.append(f"context_budgets.{label}.{field} must be positive")
+    if isinstance(profile, dict):
+        total = profile.get("max_total_words")
+        portable = profile.get("max_portable_words")
+        reserved = profile.get("reserved_target_words")
+        if all(isinstance(value, int) for value in [total, portable, reserved]):
+            if portable + reserved > total:
+                failures.append(
+                    "profile max_portable_words plus reserved_target_words exceeds max_total_words"
+                )
+            if reserved * 10 < total * 3:
+                failures.append("template profile budget must reserve at least 30% for target context")
+    if isinstance(profile, dict) and isinstance(expanded, dict):
+        for field in ["max_files", "max_total_words", "max_total_characters"]:
+            compact = profile.get(field)
+            hard = expanded.get(field)
+            if isinstance(compact, int) and isinstance(hard, int) and hard < compact:
+                failures.append(
+                    f"context_budgets.expanded.{field} must not be below profile_default.{field}"
+                )
+    if isinstance(bootstrap, dict):
+        for soft_field, hard_field in [
+            ("soft_max_words", "max_words"),
+            ("soft_max_characters", "max_characters"),
+        ]:
+            soft = bootstrap.get(soft_field)
+            hard = bootstrap.get(hard_field)
+            if not isinstance(soft, int) or not isinstance(hard, int) or not 0 < soft < hard:
+                failures.append(
+                    f"bootstrap {soft_field} must be positive and below {hard_field}"
+                )
+    first_use = budgets.get("first_use")
+    if not isinstance(first_use, dict):
+        failures.append("context_budgets.first_use must be an object")
+    else:
+        for field in ["max_files", "max_words", "max_characters"]:
+            if not isinstance(first_use.get(field), int) or first_use[field] <= 0:
+                failures.append(f"context_budgets.first_use.{field} must be positive")
+    if not isinstance(budgets.get("on_exceed"), str) or not budgets["on_exceed"]:
+        failures.append("context_budgets.on_exceed must be a non-empty string")
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -519,66 +596,7 @@ def main() -> int:
     if len(bootstrap) > 1:
         failures.append("bootstrap_context must contain only the derived bootstrap index")
 
-    budgets = router.get("context_budgets")
-    if not isinstance(budgets, dict):
-        failures.append("context_budgets must be an object")
-    else:
-        bootstrap_budget = budgets.get("bootstrap")
-        if not isinstance(bootstrap_budget, dict):
-            failures.append("context_budgets.bootstrap must be an object")
-            bootstrap_budget = {}
-        for field in ["max_files", "max_words", "max_characters"]:
-            if not isinstance(bootstrap_budget.get(field), int) or bootstrap_budget[field] <= 0:
-                failures.append(f"context_budgets.bootstrap.{field} must be positive")
-        profile_budget = budgets.get("profile_default")
-        if not isinstance(profile_budget, dict):
-            failures.append("context_budgets.profile_default must be an object")
-            profile_budget = {}
-        for field in [
-            "max_files",
-            "max_total_words",
-            "max_portable_words",
-            "reserved_target_words",
-            "max_total_characters",
-        ]:
-            if not isinstance(profile_budget.get(field), int) or profile_budget[field] <= 0:
-                failures.append(f"context_budgets.profile_default.{field} must be positive")
-        total = profile_budget.get("max_total_words")
-        portable = profile_budget.get("max_portable_words")
-        reserved = profile_budget.get("reserved_target_words")
-        if all(isinstance(value, int) for value in [total, portable, reserved]):
-            if portable + reserved > total:
-                failures.append(
-                    "profile max_portable_words plus reserved_target_words exceeds max_total_words"
-                )
-            if reserved * 10 < total * 3:
-                failures.append("template profile budget must reserve at least 30% for target context")
-        soft = bootstrap_budget.get("soft_max_words")
-        hard = bootstrap_budget.get("max_words")
-        if not isinstance(soft, int) or not isinstance(hard, int) or not 0 < soft < hard:
-            failures.append("bootstrap soft_max_words must be positive and below max_words")
-        soft_characters = bootstrap_budget.get("soft_max_characters")
-        hard_characters = bootstrap_budget.get("max_characters")
-        if (
-            not isinstance(soft_characters, int)
-            or not isinstance(hard_characters, int)
-            or not 0 < soft_characters < hard_characters
-        ):
-            failures.append(
-                "bootstrap soft_max_characters must be positive and below max_characters"
-            )
-        first_use_budget = budgets.get("first_use")
-        if not isinstance(first_use_budget, dict):
-            failures.append("context_budgets.first_use must be an object")
-        else:
-            for field in ["max_files", "max_words", "max_characters"]:
-                value = first_use_budget.get(field)
-                if not isinstance(value, int) or value <= 0:
-                    failures.append(
-                        f"context_budgets.first_use.{field} must be positive"
-                    )
-        if not isinstance(budgets.get("on_exceed"), str) or not budgets["on_exceed"]:
-            failures.append("context_budgets.on_exceed must be a non-empty string")
+    check_context_budgets(router, failures)
 
     receipt = router.get("context_receipt")
     if not isinstance(receipt, dict):
@@ -1183,12 +1201,14 @@ def main() -> int:
         failures,
         {"required_context"},
     )
-    if ".ai/assistant/gates/core.md" not in small_task.get("required_context", []):
-        failures.append("small-task overlay must load the core gate fragment")
-    if ".ai/assistant/gates/final-evidence.md" not in small_task.get(
+    if ".ai/assistant/gates/compact-final-evidence.md" not in small_task.get(
         "required_context", []
     ):
-        failures.append("small-task overlay must load final-evidence gate fragment")
+        failures.append("small-task overlay must load compact final-evidence gate")
+    if ".ai/assistant/gates/final-evidence.md" in small_task.get(
+        "required_context", []
+    ):
+        failures.append("small-task overlay must not load the full evidence gate")
     if not isinstance(small_task.get("budget_behavior"), str):
         failures.append("small-task overlay needs budget_behavior")
     elif "large-task" not in small_task["budget_behavior"]:

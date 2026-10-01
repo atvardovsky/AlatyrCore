@@ -17,6 +17,7 @@ from scaffold_target_structure import (
 from composition_model import CompositionRequest, resolve_composition
 from framework_packaging import resolve_framework_files
 from capability_catalog import dependency_closure, load_modules
+from assistant_capability_projection import record_path as capability_record_path, surface_ids
 from scaffold_projection import (
     load_object,
     path_available,
@@ -171,6 +172,9 @@ def main() -> int:
             for path in TEMPLATE_ROOT.rglob("*")
             if path.is_file()
         }
+        all_templates.update(
+            capability_record_path(surface_id) for surface_id in surface_ids()
+        )
         kernel = target_paths(resolved("kernel"))
         core = target_paths(resolved("core"))
         standard = target_paths(resolved("standard"))

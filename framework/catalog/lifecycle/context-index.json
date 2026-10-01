@@ -41,8 +41,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 153,
-      "content_digest": "sha256:9381bd8cbebaa0dea0b8c989c9a4255e0a024d2848c56c1aa9f2ebf85312506e"
+      "estimated_words": 155,
+      "content_digest": "sha256:f8f354f72ad204c3ce60d96ba01bbba2a7786bbe41fb2eefbe1838c135b19c2a"
     },
     {
       "id": "framework.lifecycle.lifecycle-md",

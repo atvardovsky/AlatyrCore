@@ -20,7 +20,6 @@
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/semantic-integrity.md",
     ".ai/assistant/gates/code-and-tests.md",
-    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_DATA_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [

@@ -13,6 +13,22 @@
   },
   "entries": [
     {
+      "id": "framework.support.allowed-actions-json",
+      "kind": "content",
+      "path": "allowed-actions.json",
+      "summary": "Allowed Actions",
+      "selectors": {
+        "path_terms": [
+          "allowed",
+          "actions"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 129,
+      "content_digest": "sha256:7692d6338de50d9887a084b8828f0171f2b4f018ee744916edec988d5d9852b8"
+    },
+    {
       "id": "framework.support.ascii-diagrams-md",
       "kind": "content",
       "path": "ascii-diagrams.md",
@@ -89,6 +105,22 @@
       ],
       "estimated_words": 1551,
       "content_digest": "sha256:6f0d5be6df0b45b2c82344645bcea0e4e21103cad8d799ab14fb64a455af086f"
+    },
+    {
+      "id": "framework.support.task-classes-json",
+      "kind": "content",
+      "path": "task-classes.json",
+      "summary": "Task Classes",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "classes"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 279,
+      "content_digest": "sha256:8ff71c3275becae25f4c2301f93d87ab8ea362003f3708707c7837b0c266b5ac"
     },
     {
       "id": "framework.support.test-first-development-md",

@@ -15,6 +15,12 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from capability_catalog import dependency_closure, load_modules, minimum_pack
+from assistant_capability_projection import (
+    BASE_RECORD_PATH,
+    render_surface_record,
+    surface_ids,
+    virtual_record_contents,
+)
 from composition_model import (
     CompositionRequest,
     ResolvedComposition,
@@ -217,20 +223,15 @@ def assistant_surface_summary() -> dict[str, Any]:
             if isinstance(path, str)
         }
     )
-    capability_dir = TEMPLATE_ROOT / ".ai" / "assistant" / "assistant-capabilities"
-    unique_payloads: set[str] = set()
-    capability_files = sorted(capability_dir.glob("*.json"))
-    for path in capability_files:
-        data = json.loads(path.read_text(encoding="utf-8"))
-        if isinstance(data, dict):
-            data.pop("assistant_surface", None)
-            data.pop("surface_id", None)
-        unique_payloads.add(json.dumps(data, sort_keys=True))
+    projected_records = [render_surface_record(surface_id) for surface_id in surface_ids()]
     return {
         "known_surfaces": len(surfaces),
         "declared_bridge_paths": len(bridge_paths),
-        "capability_template_files": len(capability_files),
-        "unique_capability_payloads_without_identity": len(unique_payloads),
+        "canonical_capability_template_files": 1,
+        "projected_capability_records": len(projected_records),
+        "canonical_capability_template_words": len(WORD_RE.findall(read_text(BASE_RECORD_PATH))),
+        "projected_capability_words": sum(len(WORD_RE.findall(text)) for text in projected_records),
+        "source_duplication_avoided": len(projected_records) - 1,
     }
 
 
@@ -330,7 +331,11 @@ def projected_scaffold_measurements(
     selected_template_paths = {
         Path(path) for path in composition.selected_target_paths
     }
-    selected_template_paths.update(build_target_context_catalogs(selected_template_paths))
+    selected_template_paths.update(
+        build_target_context_catalogs(
+            selected_template_paths, virtual_record_contents(selected_template_paths)
+        )
+    )
     selected_framework_paths = resolve_framework_files(framework_pack)
     selected = selected_template_paths | {
         Path(".ai") / "framework" / name for name in selected_framework_paths

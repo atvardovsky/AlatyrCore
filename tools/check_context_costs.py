@@ -59,6 +59,47 @@ def baseline_failures(report: dict[str, object]) -> list[str]:
     return []
 
 
+def check_cost_scenarios(
+    report: dict[str, object],
+    profile_budget: dict[str, int],
+    expanded_budget: dict[str, int],
+    failures: list[str],
+) -> None:
+    for name, scenario in report["cost_scenarios"].items():
+        end_to_end = scenario.get("end_to_end")
+        if not isinstance(end_to_end, dict):
+            failures.append(f"cost scenario {name} has no end-to-end measurement")
+            continue
+        for field, budget_field in [
+            ("declared_files", "max_files"),
+            ("words", "max_total_words"),
+            ("characters", "max_total_characters"),
+        ]:
+            if end_to_end[field] > expanded_budget[budget_field]:
+                failures.append(
+                    f"cost scenario {name} exceeds the expanded {field} ceiling"
+                )
+        expected = scenario.get("expected_budget_state")
+        if expected == "compact":
+            limits = {
+                "declared_files": "max_files",
+                "portable_words": "max_portable_words",
+                "target_words": "reserved_target_words",
+                "words": "max_total_words",
+                "characters": "max_total_characters",
+            }
+            for field, budget_field in limits.items():
+                if scenario[field] > profile_budget[budget_field]:
+                    failures.append(
+                        f"compact cost scenario {name} exceeds {budget_field}"
+                    )
+        elif expected == "expansion-receipt-required":
+            if scenario["words"] <= 0:
+                failures.append(f"expansion cost scenario {name} has no measured context")
+        else:
+            failures.append(f"cost scenario {name} has no valid expected budget state")
+
+
 def main() -> int:
     failures: list[str] = []
     report = build_report()
@@ -98,6 +139,7 @@ def main() -> int:
         failures.append("recovery measurement omits entry-packet.json")
 
     profile_budget = report["budgets"]["profile_default"]
+    expanded_budget = report["budgets"]["expanded"]
     max_total_words = profile_budget["max_total_words"]
     max_total_characters = profile_budget["max_total_characters"]
     max_portable_words = profile_budget["max_portable_words"]
@@ -287,26 +329,7 @@ def main() -> int:
     if team_composition["words"] > max_total_words:
         failures.append("large-task and team compact composition exceeds profile budget")
 
-    for name, scenario in report["cost_scenarios"].items():
-        expected = scenario.get("expected_budget_state")
-        if expected == "compact":
-            if scenario["declared_files"] > profile_budget["max_files"]:
-                failures.append(f"compact cost scenario {name} exceeds the file budget")
-            if scenario["portable_words"] > max_portable_words:
-                failures.append(f"compact cost scenario {name} exceeds the portable budget")
-            if scenario["target_words"] > reserved_target_words:
-                failures.append(f"compact cost scenario {name} exceeds the reserved target budget")
-            if scenario["words"] > max_total_words:
-                failures.append(f"compact cost scenario {name} exceeds the total budget")
-            if scenario["characters"] > max_total_characters:
-                failures.append(
-                    f"compact cost scenario {name} exceeds the total character budget"
-                )
-        elif expected == "expansion-receipt-required":
-            if scenario["words"] <= 0:
-                failures.append(f"expansion cost scenario {name} has no measured context")
-        else:
-            failures.append(f"cost scenario {name} has no valid expected budget state")
+    check_cost_scenarios(report, profile_budget, expanded_budget, failures)
 
     check_semantic_review_cost(report, failures)
 

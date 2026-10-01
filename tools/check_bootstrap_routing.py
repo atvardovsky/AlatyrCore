@@ -264,10 +264,6 @@ def main() -> int:
         if profile_id in PROJECT_CONTOUR_SYNC_PROFILES:
             final_evidence = profile.get("final_evidence")
             final_evidence = final_evidence if isinstance(final_evidence, list) else []
-            if "final-evidence" not in defaults:
-                failures.append(
-                    f"profile {profile_id} must route the final-evidence gate"
-                )
             if "project_contour_sync_decision" not in final_evidence:
                 failures.append(
                     f"profile {profile_id} omits project-contour sync evidence"

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from capability_catalog import PACK_ORDER, dependency_closure, load_modules, minimum_pack
+from assistant_capability_projection import record_path, surface_ids
 from framework_packaging import project_registry, resolve_framework_files
 
 
@@ -192,10 +193,10 @@ def _assistant_selection(
     selected_paths.update(neutral)
     capability_index = ".ai/assistant/assistant-capabilities.json"
     if capability_index in selected_paths:
-        selected_paths.add(".ai/assistant/assistant-capabilities/generic.json")
+        selected_paths.add(record_path("generic").as_posix())
         selected_paths.update(
-            f".ai/assistant/assistant-capabilities/{surface_id}.json"
-            for surface_id in selected
+            record_path(surface_id).as_posix()
+            for surface_id in (surface_ids() if preserve_unselected else selected)
         )
     return (
         tuple(sorted(selected)),

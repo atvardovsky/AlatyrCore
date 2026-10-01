@@ -176,9 +176,10 @@ Before accepting a change, check:
 - Update `tools/target_adapter_validation/assistant_capabilities.py` first when
   assistant capability schema versions, capability kinds, state vocabulary, or
   per-surface record paths change. Update the canonical `generic.json` shape,
-  then run `python3 tools/render_assistant_capability_index.py --write-records
-  --write`; focused assistant-capability checks and the target validator import
-  the shared contract.
+  then run `python3 tools/render_assistant_capability_index.py --write`.
+  Scaffolding materializes per-surface records from that one source; focused
+  assistant-capability checks and the target validator import the shared
+  contract.
 - `python3 tools/check_diagram_conformance_results.py` passes when captured
   diagram result, selected capability, loaded-context, read-only, ASCII
   readability, or residual-risk evidence changes.

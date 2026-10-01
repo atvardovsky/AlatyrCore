@@ -10,6 +10,7 @@ from typing import Any
 
 import jsonschema
 
+from assistant_capability_projection import build_surface_record
 from target_adapter_validation.assistant_capabilities import (
     CAPABILITY_INDEX_SCHEMA_VERSION,
     capability_record_path,
@@ -27,6 +28,7 @@ POLICY = ASSISTANT / "delegation-policy.json"
 POLICY_SCHEMA = ROOT / "schemas" / "alatyr-delegation-policy.schema.json"
 EXECUTION_TREE_SCHEMA = ROOT / "schemas" / "alatyr-delegation-execution-tree.schema.json"
 WORKER_RESULT_SCHEMA = ROOT / "schemas" / "alatyr-worker-result.schema.json"
+SINGLE_RECEIPT_SCHEMA = ROOT / "schemas" / "alatyr-single-read-only-delegation-receipt.schema.json"
 BRANCH_ENVELOPE_SCHEMA = ROOT / "schemas" / "alatyr-delegation-branch-envelope.schema.json"
 BRANCH_CHECKPOINT_SCHEMA = ROOT / "schemas" / "alatyr-delegation-branch-checkpoint.schema.json"
 ROLE_CATALOG = ASSISTANT / "workers" / "role-catalog.json"
@@ -38,10 +40,12 @@ NATIVE_BINDING = ASSISTANT / "templates" / "native-worker-binding.md"
 PACKET = ASSISTANT / "templates" / "subagent-task-packet.md"
 RESULT = ASSISTANT / "templates" / "worker-result.md"
 RESULT_JSON = ASSISTANT / "templates" / "worker-result.json"
+SINGLE_RECEIPT = ASSISTANT / "templates" / "single-read-only-delegation-receipt.json"
 BRANCH_ENVELOPE = ASSISTANT / "templates" / "delegation-branch-envelope.json"
 BRANCH_CHECKPOINT = ASSISTANT / "templates" / "delegation-branch-checkpoint.json"
 FLOW = ASSISTANT / "flows" / "subagent-delegation.flow.md"
 OVERLAY = ASSISTANT / "context" / "task-scales" / "delegated-execution.json"
+PREFLIGHT_OVERLAY = ASSISTANT / "context" / "task-scales" / "delegation-preflight.json"
 ROUTER = ASSISTANT / "context-router.json"
 MATRIX = ASSISTANT / "bridge-capability-matrix.md"
 CAPABILITIES = ASSISTANT / "assistant-capabilities"
@@ -69,6 +73,8 @@ POLICY_FIELDS = {
     "decision_mode",
     "default_preference",
     "max_parallel_delegates",
+    "single_depth1_read_only_evidence",
+    "full_tree_required_when",
     "tree_policy",
     "recursive_child_policy",
     "context_compaction",
@@ -125,6 +131,7 @@ CAPABILITY_FIELDS = {
     "model_override",
     "parallel_dispatch",
     "actual_model_evidence",
+    "worker_context_mode",
     "role_bindings",
     "verified_at",
     "client_version",
@@ -166,6 +173,7 @@ EXPECTED_DELEGATED_CONDITIONAL_CONTEXT = {
     ".ai/assistant/templates/delegation-branch-envelope.json",
     ".ai/assistant/templates/delegation-branch-checkpoint.json",
     ".ai/assistant/templates/worker-result.json",
+    ".ai/assistant/templates/single-read-only-delegation-receipt.json",
 }
 
 
@@ -266,7 +274,10 @@ def validate_role_catalog(catalog: dict[str, Any], failures: list[str]) -> None:
 
 
 def validate_delegated_overlay(
-    overlay: dict[str, Any], router: dict[str, Any], failures: list[str]
+    overlay: dict[str, Any],
+    preflight: dict[str, Any],
+    router: dict[str, Any],
+    failures: list[str],
 ) -> None:
     overlay_context = overlay.get("required_context")
     if (
@@ -301,6 +312,24 @@ def validate_delegated_overlay(
         != ".ai/assistant/context/task-scales/delegated-execution.json"
     ):
         failures.append("context router does not select delegated-execution overlay")
+    preflight_route = (
+        task_scale_overlays.get("delegation-preflight")
+        if isinstance(task_scale_overlays, dict)
+        else None
+    )
+    if (
+        preflight.get("id") != "delegation-preflight"
+        or preflight.get("required_module") != "subagent-delegation"
+        or preflight.get("required_context")
+        != [".ai/assistant/assistant-capabilities.json"]
+    ):
+        failures.append("delegation preflight overlay is invalid")
+    if (
+        not isinstance(preflight_route, dict)
+        or preflight_route.get("descriptor")
+        != ".ai/assistant/context/task-scales/delegation-preflight.json"
+    ):
+        failures.append("context router does not select delegation-preflight overlay")
 
 
 def policy_schema_failures(policy: object, schema: object) -> list[str]:
@@ -323,6 +352,7 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "## Delegation Tree And Stop Contract",
             "## Worker Role Catalog",
             "## Capability Negotiation",
+            "## Capability-First Evidence Tier",
             "## Normalized Result Contract",
             "## Retry And Conflict Handling",
             "## Dispatch And Convergence",
@@ -347,6 +377,8 @@ def validate_static_contract_text(failures: list[str]) -> None:
             ".ai/assistant/templates/delegation-execution-tree.json",
             ".ai/assistant/templates/worker-result.md",
             "Do not write live execution state into the reusable template.",
+            ".ai/assistant/templates/single-read-only-delegation-receipt.json",
+            "## Evidence Tier",
         ],
         failures,
     )
@@ -362,6 +394,8 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "capability record",
             "Normalize every return",
             "suggestion-only or sequential-primary fallback",
+            "worker_context_mode",
+            "single-read-only-delegation-receipt.json",
         ],
         failures,
     )
@@ -497,6 +531,7 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "validate_branch_envelope(",
             "validate_branch_checkpoint(",
             "validate_worker_result(",
+            "validate_single_read_only_receipt(",
             "capability evidence digest does not match content",
             'result.get("tools_used")',
             "used_primary_summary_words",
@@ -509,6 +544,8 @@ def validate_static_contract_text(failures: list[str]) -> None:
         [
             "--target-root",
             "--tree",
+            "--receipt",
+            "--capability",
             "--policy",
             "--artifact-root",
             "validate_execution_tree(tree, policy",
@@ -540,6 +577,8 @@ def main() -> int:
         BRANCH_CHECKPOINT,
         FLOW,
         OVERLAY,
+        PREFLIGHT_OVERLAY,
+        SINGLE_RECEIPT,
     ]
     portable_paths.extend(sorted(ROLE_DIR.glob("*.md")))
     for path in portable_paths:
@@ -561,11 +600,13 @@ def main() -> int:
             policy_schema,
             load_object(EXECUTION_TREE_SCHEMA),
             load_object(WORKER_RESULT_SCHEMA),
+            load_object(SINGLE_RECEIPT_SCHEMA),
             load_object(BRANCH_ENVELOPE_SCHEMA),
             load_object(BRANCH_CHECKPOINT_SCHEMA),
         ]
         catalog = load_object(ROLE_CATALOG)
         overlay = load_object(OVERLAY)
+        preflight = load_object(PREFLIGHT_OVERLAY)
         router = load_object(ROUTER)
         capability_index = load_object(CAPABILITY_INDEX)
         surfaces = load_object(SURFACES).get("surfaces")
@@ -573,7 +614,7 @@ def main() -> int:
         bridge_manifest = load_object(BRIDGE_MANIFEST)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
-        policy, policy_schema, catalog, overlay, router, capability_index, conformance, bridge_manifest = ({},) * 8
+        policy, policy_schema, catalog, overlay, preflight, router, capability_index, conformance, bridge_manifest = ({},) * 9
         surfaces = []
 
     for schema in shipped_schemas:
@@ -586,8 +627,8 @@ def main() -> int:
     missing_policy = sorted(POLICY_FIELDS - set(policy))
     if missing_policy:
         failures.append(f"delegation policy missing fields {missing_policy}")
-    if policy.get("schema_version") != 6:
-        failures.append("delegation policy schema_version must be 6")
+    if policy.get("schema_version") != 7:
+        failures.append("delegation policy schema_version must be 7")
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
         failures.append("delegation policy kind is incorrect")
     if capability_index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
@@ -599,6 +640,13 @@ def main() -> int:
         failures.append("delegation policy role_catalog path is incorrect")
     if policy.get("decomposition_policy") != ".ai/assistant/task-decomposition.json":
         failures.append("delegation policy decomposition_policy path is incorrect")
+    if policy.get("single_depth1_read_only_evidence") != "lightweight-receipt":
+        failures.append("single depth-1 read-only delegation must use a lightweight receipt")
+    if policy.get("full_tree_required_when") != [
+        "multiple-workers", "depth-two", "write-scope", "retry",
+        "child-proposals", "semantic-overlap",
+    ]:
+        failures.append("delegation full-tree escalation conditions are invalid")
     tree_policy = policy.get("tree_policy")
     expected_tree = {
         "dispatch_owner": "primary-assistant",
@@ -630,7 +678,7 @@ def main() -> int:
             failures.append("delegation policy total delegates exceed portable maximum")
         if children is not None and children > 4:
             failures.append("delegation policy children per parent exceed portable maximum")
-        if context is not None and context > 24000:
+        if context is not None and context > 32000:
             failures.append("delegation policy context budget exceeds portable maximum")
         if retries is not None and retries > 2:
             failures.append("delegation policy retry budget exceeds portable maximum")
@@ -756,7 +804,7 @@ def main() -> int:
         failures.append("delegation result policy guards are incomplete")
 
     validate_role_catalog(catalog, failures)
-    validate_delegated_overlay(overlay, router, failures)
+    validate_delegated_overlay(overlay, preflight, router, failures)
 
     try:
         matrix_text = MATRIX.read_text(encoding="utf-8")
@@ -790,7 +838,7 @@ def main() -> int:
                 f"assistant capability index has an invalid path for {surface_id}"
             )
         try:
-            record = load_object(path)
+            record = build_surface_record(surface_id)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             failures.append(str(exc))
             continue

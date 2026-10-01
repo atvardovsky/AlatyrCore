@@ -10,6 +10,7 @@ from typing import Any
 
 import jsonschema
 
+from assistant_capability_projection import build_surface_record
 from target_adapter_validation.assistant_capabilities import (
     CACHE_FALLBACK,
     CAPABILITY_INDEX_SCHEMA_VERSION,
@@ -52,19 +53,19 @@ def main() -> int:
             for item in raw_surfaces
             if isinstance(item, dict) and isinstance(item.get("id"), str)
         }
-        records = {
+        committed_records = {
             path.stem: path
             for path in CAPABILITIES.glob("*.json")
             if path.name != "context-index.json"
         }
-        generic_shape = load_object(records["generic"])
-        generic_shape.pop("assistant_surface", None)
-        if set(records) != surface_ids:
+        if set(committed_records) != {"generic"}:
             failures.append(
-                "assistant capability records differ from surfaces: "
-                f"missing={sorted(surface_ids - set(records))} "
-                f"extra={sorted(set(records) - surface_ids)}"
+                "only generic.json may be committed; assistant-specific records are "
+                f"generated projections: {sorted(set(committed_records) - {'generic'})}"
             )
+        records = {surface_id: build_surface_record(surface_id) for surface_id in surface_ids}
+        generic_shape = dict(records["generic"])
+        generic_shape.pop("assistant_surface", None)
         capability_index = load_object(CAPABILITY_INDEX)
         if capability_index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
             failures.append(
@@ -94,8 +95,8 @@ def main() -> int:
             for surface_id in surface_ids
         ):
             failures.append("assistant capability index contains an invalid surface path")
-        for surface_id, path in sorted(records.items()):
-            record = load_object(path)
+        for surface_id, record in sorted(records.items()):
+            path = Path(capability_record_path(surface_id))
             shared_shape = dict(record)
             shared_shape.pop("assistant_surface", None)
             if shared_shape != generic_shape:
@@ -107,7 +108,7 @@ def main() -> int:
                 key=lambda error: list(error.absolute_path),
             )
             failures.extend(
-                f"{path.relative_to(ROOT)} "
+                f"templates/target/{path.as_posix()} "
                 + (".".join(str(item) for item in error.absolute_path) or "root")
                 + f": {error.message}"
                 for error in errors
@@ -209,7 +210,8 @@ def main() -> int:
         return 1
     print(
         "OK: checked assistant surface state plus instruction, skill, permission, "
-        f"context-cache, context-compaction, diagram, and delegation evidence for {len(records)} surfaces"
+        "context-cache, context-compaction, diagram, and delegation evidence for "
+        f"{len(records)} projected surfaces from one canonical base"
     )
     return 0
 

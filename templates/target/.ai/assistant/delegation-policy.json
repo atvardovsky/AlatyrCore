@@ -1,11 +1,20 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "policy_kind": "target-subagent-delegation-policy",
   "state": "{ENABLED_SUGGEST_ONLY_DISABLED_OR_BLOCKED}",
   "owner": "{TARGET_DELEGATION_POLICY_OWNER}",
   "decision_mode": "{AUTOMATIC_SUGGEST_ONLY_OR_DISABLED}",
   "default_preference": "{AUTO_ALLOW_FORBID_OR_REQUIRE_SUPPORTED}",
   "max_parallel_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+  "single_depth1_read_only_evidence": "lightweight-receipt",
+  "full_tree_required_when": [
+    "multiple-workers",
+    "depth-two",
+    "write-scope",
+    "retry",
+    "child-proposals",
+    "semantic-overlap"
+  ],
   "tree_policy": {
     "dispatch_owner": "primary-assistant",
     "worker_child_behavior": "{PROPOSE_ONLY_OR_PRIMARY_PREAUTHORIZED_READ_ONLY}",

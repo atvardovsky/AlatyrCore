@@ -136,6 +136,14 @@
       "selector": "small-task",
       "descriptor": ".ai/assistant/context/task-scales/small-task.json"
     },
+    "standard-task": {
+      "selector": "standard-task",
+      "descriptor": ".ai/assistant/context/task-scales/standard-task.json"
+    },
+    "protected-or-sensitive": {
+      "selector": "protected-or-sensitive",
+      "descriptor": ".ai/assistant/context/task-scales/protected-or-sensitive.json"
+    },
     "large-or-resumable": {
       "selector": "large-or-resumable",
       "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json",
@@ -144,6 +152,11 @@
     "delegated-execution": {
       "selector": "delegated-execution",
       "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json",
+      "required_module": "subagent-delegation"
+    },
+    "delegation-preflight": {
+      "selector": "delegation-preflight",
+      "descriptor": ".ai/assistant/context/task-scales/delegation-preflight.json",
       "required_module": "subagent-delegation"
     },
     "change-package": {

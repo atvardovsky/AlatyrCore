@@ -130,11 +130,12 @@ def main() -> int:
     surfaces = reports["full"]["assistant_surfaces"]
     if surfaces["known_surfaces"] < 10:
         failures.append("assistant surface registry unexpectedly shrank")
-    if (
-        surfaces["unique_capability_payloads_without_identity"]
-        > surfaces["capability_template_files"]
-    ):
-        failures.append("assistant capability payload summary is invalid")
+    if surfaces.get("canonical_capability_template_files") != 1:
+        failures.append("assistant capabilities must have one canonical source template")
+    if surfaces.get("projected_capability_records") != surfaces["known_surfaces"]:
+        failures.append("assistant capability projection does not cover every surface")
+    if surfaces.get("source_duplication_avoided") != surfaces["known_surfaces"] - 1:
+        failures.append("assistant capability source-deduplication summary is invalid")
 
     with tempfile.TemporaryDirectory() as directory:
         target = Path(directory) / "target"

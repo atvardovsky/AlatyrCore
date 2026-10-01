@@ -37,6 +37,7 @@ def validate_budget_shape(
 ) -> None:
     bootstrap = budgets.get("bootstrap")
     profile = budgets.get("profile_default")
+    expanded = budgets.get("expanded")
     if not isinstance(bootstrap, dict):
         sink.error("ROUTER_BUDGET_BOOTSTRAP", "bootstrap budget must be an object", SOURCE)
         bootstrap = {}
@@ -45,6 +46,11 @@ def validate_budget_shape(
             "ROUTER_BUDGET_PROFILE", "profile_default budget must be an object", SOURCE
         )
         profile = {}
+    if not isinstance(expanded, dict):
+        sink.error(
+            "ROUTER_BUDGET_EXPANDED", "expanded budget must be an object", SOURCE
+        )
+        expanded = {}
 
     for field in ["max_files", "max_words", "soft_max_words"]:
         value = bootstrap.get(field)
@@ -123,6 +129,32 @@ def validate_budget_shape(
             sink.error(
                 "ROUTER_BUDGET_ORDER",
                 "max_portable_words plus reserved_target_words exceeds max_total_words",
+                SOURCE,
+            )
+    for field in ["max_files", "max_total_words", "max_total_characters"]:
+        value = expanded.get(field)
+        if not isinstance(value, int) or value <= 0:
+            sink.error(
+                "ROUTER_BUDGET_VALUE",
+                f"context_budgets.expanded.{field} must be a positive integer",
+                SOURCE,
+            )
+    for field in ["max_files", "max_total_words"]:
+        compact = profile.get(field)
+        hard = expanded.get(field)
+        if isinstance(compact, int) and isinstance(hard, int) and hard < compact:
+            sink.error(
+                "ROUTER_BUDGET_ORDER",
+                f"expanded {field} must not be below profile_default {field}",
+                SOURCE,
+            )
+    if require_character_limits:
+        compact = profile.get("max_total_characters")
+        hard = expanded.get("max_total_characters")
+        if isinstance(compact, int) and isinstance(hard, int) and hard < compact:
+            sink.error(
+                "ROUTER_BUDGET_ORDER",
+                "expanded max_total_characters must not be below profile_default max_total_characters",
                 SOURCE,
             )
     if not isinstance(budgets.get("on_exceed"), str) or not budgets["on_exceed"]:

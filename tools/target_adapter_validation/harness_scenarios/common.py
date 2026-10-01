@@ -51,6 +51,7 @@ DELEGATION_FIXTURE_PATHS = (
     ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/templates/worker-result.json",
+    ".ai/assistant/templates/single-read-only-delegation-receipt.json",
     ".ai/assistant/templates/delegation-branch-envelope.json",
     ".ai/assistant/templates/delegation-branch-checkpoint.json",
     ".ai/assistant/workers/role-catalog.json",

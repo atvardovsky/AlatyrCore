@@ -43,7 +43,7 @@ Migration-limited versions: `1`, `2`, `3`, `4`, `5`.
 ## delegation-evidence
 
 Manifest key: `operations.delegation_policy_schema`.
-Current contract version: `6`.
+Current contract version: `7`.
 
 Artifact: `branch-checkpoint`
 Current version: `2`.
@@ -61,13 +61,18 @@ Supported versions: `3`.
 Migration-limited versions: none.
 
 Artifact: `policy`
-Current version: `6`.
-Supported versions: `6`.
+Current version: `7`.
+Supported versions: `7`.
+Migration-limited versions: none.
+
+Artifact: `single-read-only-receipt`
+Current version: `1`.
+Supported versions: `1`.
 Migration-limited versions: none.
 
 Artifact: `worker-result`
-Current version: `2`.
-Supported versions: `2`.
+Current version: `3`.
+Supported versions: `3`.
 Migration-limited versions: none.
 
 ## engineering-evidence

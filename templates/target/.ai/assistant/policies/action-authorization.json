@@ -3,6 +3,7 @@
   "policy_kind": "target-action-authorization-policy",
   "canonical_rule": "ALATYR-AUTHORIZATION-001",
   "canonical_owner": ".ai/framework/action-authorization.md",
+  "allowed_action_registry": ".ai/framework/allowed-actions.json",
   "default_phase": "inspect",
   "phases": [
     "inspect",

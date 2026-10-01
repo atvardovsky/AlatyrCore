@@ -49,8 +49,8 @@
       "owner_refs": [
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 2593,
-      "content_digest": "sha256:37cf37ae1cbb34149c0080d2c65dbb26645e09e7223aad6b222cb511e3a68191"
+      "estimated_words": 2826,
+      "content_digest": "sha256:b2d4c42dbad222960934d9320794cb5c6436ca1220f8016e9075c6217d441721"
     },
     {
       "id": "framework.collaboration.task-decomposition-md",

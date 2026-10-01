@@ -88,6 +88,33 @@ Do not delegate merely because a client supports subagents. Skip delegation
 when packet preparation, result review, or synchronization is likely to cost
 more than doing the work locally.
 
+## Capability-First Evidence Tier
+
+Resolve worker capability before loading task graphs, role catalogs, packet
+templates, or recursive evidence contracts. Load the capability index and only
+the selected assistant-surface record. The record must state how worker context
+is delivered:
+
+- `isolated-explicit`: the worker receives only the explicit bounded packet
+- `inherited-measured`: inherited context is permitted only when it is measured
+  and included in evidence
+- `inherited-unmeasured`: keep work local because the delegated context cost and
+  scope cannot be proven
+- `unsupported` or `unknown`: keep work local or request runtime verification
+
+After successful preflight, use the smallest evidence tier that preserves
+reviewability:
+
+- one depth-one, inspect-only worker with no retry, child proposal, overlap, or
+  write scope uses the lightweight single-worker receipt
+- multiple workers, depth two, any write scope, retry, child proposal, or
+  semantic overlap use the full execution-tree ledger
+
+Both tiers bind the policy and capability evidence by digest, measure context
+and result artifacts, constrain findings to assigned owners, surfaces, and
+proof obligations, and require primary convergence. A lightweight receipt is
+an evidence optimization, not a weaker authorization or review path.
+
 ## Task Planning Contract
 
 Before dispatch, the primary assistant creates or reuses the target
@@ -270,6 +297,13 @@ findings, follow-up, residual risk, depth, coverage key, semantic scope,
 changed fact IDs, canonical owner references, surface references, relationship
 references, overlap decision, execution-tree node status, child proposals, and
 a normalized stop reason.
+
+Machine results expose findings as structured records with a stable finding
+ID, severity, summary, canonical-owner and surface references, evidence
+references, assigned proof-obligation IDs, and recommendation. Free-form prose
+may explain a finding, but it cannot replace these routing fields. This lets
+the primary assistant merge and deduplicate evidence without loading every raw
+worker transcript.
 
 The execution node binds the delivered context to a measured UTF-8 artifact;
 its recorded context words must match that artifact. The machine result records

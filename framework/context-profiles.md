@@ -36,6 +36,12 @@ Load only the selected descriptor. Intent, migration, consistency, and
 task-scale descriptors compose with that profile when their trigger applies;
 they do not belong inline in every profile or in mandatory bootstrap.
 
+Budget evidence has two levels. The profile-default budget controls compact
+routing. A route that legitimately crosses it must record an expansion receipt
+and still remain inside the router's hard expanded file, word, and character
+ceilings. Crossing the hard ceiling is a routing failure: split the task,
+reduce duplicated context, or stop for an explicit context decision.
+
 An installed adapter may provide generated recovery metadata in
 `.ai/assistant/entry-packet.json`. It remains lazy during routine first use and
 is loaded only for bootstrap recovery, adapter audit, or routing conflict.
@@ -199,20 +205,10 @@ Before loading profile-owned source files, classify the request by task scale.
 The classifier is a routing gate, not approval and not a substitute for
 logical review.
 
-Use these canonical classes unless a target adapter records an equivalent
-local naming map:
-
-- `small-task`: one base profile is sufficient, one local surface or directly
-  linked neighbor set is affected, no accepted semantic or logical fact
-  changes, no protected boundary is crossed, and focused validation can prove
-  the result.
-- `standard-task`: one base profile is sufficient, but semantic, validation,
-  source-of-truth, or non-obvious repair reasoning is needed.
-- `large-or-resumable`: multiple profiles, project areas, workstreams,
-  approval checkpoints, budget exceptions, or resumable phases are needed.
-- `protected-or-sensitive`: approval, safety, security, credential,
-  permission, destructive, spend, production, public-contract, or
-  live-external boundaries may apply.
+Canonical class IDs, criteria, order, default, and expansion triggers are
+owned by `framework/task-classes.json`. Target routers may contain a checked
+execution projection of that registry, but explanatory surfaces should link
+to it instead of restating the definitions.
 
 Classification happens after host preload and compact bootstrap, then before
 loading broad profile prose, operation catalogs, full gate checklists, change
@@ -222,17 +218,7 @@ missing fact before edits.
 
 The `small-task` class is the cheapest path. It must not load a large-task
 packet, change package, Debug Mode record, team history, full help reference,
-or full gate checklist unless one of these expansion triggers appears:
-
-- semantic or logical fact changes
-- source-of-truth owner is missing, disputed, or contradicted
-- approval, safety, security, data, architecture, public-contract, or
-  live-external boundary appears
-- multiple project areas, profiles, workstreams, or changed-fact owners are
-  required
-- focused validation fails or cannot prove the changed contract
-- the user asks for broad audit, large-task orchestration, change package, or
-  debug evidence
+or full gate checklist unless a registry expansion trigger appears.
 
 When `small-task` remains valid through finalization, use compact evidence:
 classification, selected profile, direct owner or edited surface, loaded and

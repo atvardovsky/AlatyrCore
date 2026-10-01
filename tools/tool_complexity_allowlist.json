@@ -9,7 +9,7 @@
     {
       "path": "tools/check_context_router.py",
       "qualname": "main",
-      "max_lines": 1000,
+      "max_lines": 940,
       "reason": "legacy multi-contract checker; split by router contract area"
     },
     {
@@ -57,7 +57,7 @@
     {
       "path": "tools/report_context_costs.py",
       "qualname": "build_report",
-      "max_lines": 548,
+      "max_lines": 510,
       "reason": "context-cost projection builder; split profile, overlay, and scenario measures"
     },
     {

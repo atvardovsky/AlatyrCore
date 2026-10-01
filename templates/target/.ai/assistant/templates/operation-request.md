@@ -127,18 +127,8 @@ gate fragment, policy, and validation files. Record a context receipt for any
 expansion, material/protected operation, budget exception, or explicit
 context/cost claim.
 
-Classify task scale before loading broader overlays:
-
-- `small-task`: one profile, one local surface or directly linked neighbor set,
-  no semantic fact change, no protected boundary, and focused validation is
-  sufficient.
-- `standard-task`: one profile, but non-obvious semantic, owner, validation, or
-  repair reasoning is needed.
-- `large-or-resumable`: multiple areas, profiles, workstreams, approval
-  checkpoints, budget exceptions, or resumable phases are needed.
-- `protected-or-sensitive`: approval, safety, security, credential,
-  permission, destructive, spend, production, public-contract, or
-  live-external boundary may apply.
+Classify task scale from `.ai/framework/task-classes.json` before loading
+broader overlays. Use only its canonical class IDs and criteria.
 
 If classification is ambiguous, remain read-only and ask for the smallest
 missing fact. A `small-task` may use compact evidence and must not create a

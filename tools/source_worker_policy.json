@@ -1,5 +1,5 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
@@ -14,7 +14,7 @@
     "max_total_delegates": 8,
     "max_parallel_delegates": 2,
     "max_children_per_parent": 4,
-    "max_context_words_total": 24000,
+    "max_context_words_total": 32000,
     "max_retries_total": 2,
     "require_disjoint_coverage_keys": true
   },
@@ -146,6 +146,7 @@
       "max_parallelism",
       "write_isolation",
       "result_delivery",
+      "worker_context_mode",
       "model_binding",
       "verified_at",
       "expires_at",
@@ -153,7 +154,7 @@
       "session_id",
       "evidence"
     ],
-    "schema_version": 2,
+    "schema_version": 3,
     "status": "available",
     "backend_kinds": [
       "native-worker",
@@ -163,14 +164,15 @@
     "write_isolation": "read-only",
     "result_delivery": true,
     "freshness": "current-session",
-    "minimum_parallelism": 2,
+    "minimum_parallelism": 1,
     "maximum_age_seconds": 900,
     "maximum_validity_seconds": 1800,
     "maximum_future_skew_seconds": 60
   },
   "activation": {
     "task_classes": ["large-or-resumable"],
-    "minimum_independent_packets": 2,
+    "minimum_independent_packets": 1,
+    "repository_audit_minimum_independent_packets": 2,
     "repository_audit_candidate_source": "built-in-workstreams",
     "task_specific_candidate_source": "explicit-worker-packets",
     "missing_large_task_packets_decision": "workstream-identification-required",
@@ -181,6 +183,7 @@
     "required_fields": [
       "evaluation_status",
       "runtime_capability_status",
+      "required_workstream_count",
       "selected_workstream_ids",
       "decision",
       "reason",

@@ -794,18 +794,18 @@ per-surface record paths are centralized in
 first when the capability contract changes, then rerun the source renderer and
 focused checks.
 
-`generic.json` is the canonical placeholder shape for every assistant surface.
-Regenerate repeated records and the compact index together instead of editing
-surface records independently:
+`generic.json` is the only source capability template. Per-surface records are
+deterministic virtual projections materialized by scaffolding; do not commit or
+edit repeated source copies. Refresh only the compact index:
 
 ```sh
-python3 tools/render_assistant_capability_index.py --write-records --write
+python3 tools/render_assistant_capability_index.py --write
 ```
 
 Windows PowerShell or Command Prompt:
 
 ```powershell
-py -3 .\tools\render_assistant_capability_index.py --write-records --write
+py -3 .\tools\render_assistant_capability_index.py --write
 ```
 
 ```sh

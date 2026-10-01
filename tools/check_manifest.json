@@ -279,6 +279,7 @@
         "templates/target/.ai/assistant/assistant-capabilities/**"
       ],
       "implementation_paths": [
+        "tools/assistant_capability_projection.py",
         "tools/check_assistant_capability_contract.py",
         "tools/target_adapter_validation/assistant_capabilities.py"
       ],
@@ -286,6 +287,7 @@
         "conformance/runs/assistant-surfaces.json",
         "schemas/alatyr-assistant-surface-capability.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
+        "tools/assistant_capability_projection.py",
         "tools/check_assistant_capability_contract.py",
         "tools/target_adapter_validation/assistant_capabilities.py"
       ]
@@ -378,6 +380,7 @@
         "templates/target/.ai/assistant/bridge-capability-matrix.md"
       ],
       "implementation_paths": [
+        "tools/assistant_capability_projection.py",
         "tools/check_assistant_surface_audits.py",
         "tools/target_adapter_validation/assistant_capabilities.py"
       ],
@@ -389,6 +392,7 @@
         "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
+        "tools/assistant_capability_projection.py",
         "tools/check_assistant_surface_audits.py",
         "tools/target_adapter_validation/assistant_capabilities.py"
       ],
@@ -770,6 +774,7 @@
         "templates/target/.ai/assistant/assistant-capabilities.json"
       ],
       "implementation_paths": [
+        "tools/assistant_capability_projection.py",
         "tools/render_assistant_capability_index.py",
         "tools/target_adapter_validation/assistant_capabilities.py"
       ],
@@ -777,6 +782,7 @@
         "conformance/runs/assistant-surfaces.json",
         "templates/target/.ai/assistant/assistant-capabilities/*.json",
         "templates/target/.ai/assistant/assistant-capabilities.json",
+        "tools/assistant_capability_projection.py",
         "tools/render_assistant_capability_index.py",
         "tools/target_adapter_validation/assistant_capabilities.py"
       ],
@@ -1327,6 +1333,7 @@
         "templates/target/.ai/assistant/**/*diagram*"
       ],
       "implementation_paths": [
+        "tools/assistant_capability_projection.py",
         "tools/check_discussion_diagrams.py",
         "tools/target_adapter_validation/assistant_capabilities.py",
         "tools/target_adapter_validation/diagrams.py"
@@ -1334,6 +1341,7 @@
       "trigger_paths": [
         "framework/diagram*.md",
         "templates/target/.ai/assistant/**/*diagram*",
+        "tools/assistant_capability_projection.py",
         "tools/check_discussion_diagrams.py",
         "tools/target_adapter_validation/assistant_capabilities.py",
         "tools/target_adapter_validation/diagrams.py"
@@ -1525,11 +1533,13 @@
         "schemas/alatyr-delegation-branch-envelope.schema.json",
         "schemas/alatyr-delegation-execution-tree.schema.json",
         "schemas/alatyr-delegation-policy.schema.json",
+        "schemas/alatyr-single-read-only-delegation-receipt.schema.json",
         "schemas/alatyr-worker-result.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context/task-scales/delegated-execution.json",
+        "templates/target/.ai/assistant/context/task-scales/delegation-preflight.json",
         "templates/target/.ai/assistant/delegation-policy.json",
         "templates/target/.ai/assistant/task-decomposition.json",
         "templates/target/.ai/assistant/templates/task-decomposition.md",
@@ -1540,6 +1550,7 @@
         "templates/target/.ai/assistant/templates/delegation-branch-envelope.json",
         "templates/target/.ai/assistant/templates/delegation-execution-tree.json",
         "templates/target/.ai/assistant/templates/subagent-task-packet.md",
+        "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json",
         "templates/target/.ai/assistant/templates/worker-execution-plan.md",
         "templates/target/.ai/assistant/templates/worker-result.json",
         "templates/target/.ai/assistant/templates/worker-result.md",
@@ -1547,6 +1558,7 @@
         "tools/source_worker_policy.json"
       ],
       "implementation_paths": [
+        "tools/assistant_capability_projection.py",
         "tools/delegation_evidence.py",
         "tools/check_subagent_delegation.py",
         "tools/source_worker_contract.py",
@@ -1564,11 +1576,13 @@
         "schemas/alatyr-delegation-branch-envelope.schema.json",
         "schemas/alatyr-delegation-execution-tree.schema.json",
         "schemas/alatyr-delegation-policy.schema.json",
+        "schemas/alatyr-single-read-only-delegation-receipt.schema.json",
         "schemas/alatyr-worker-result.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context/task-scales/delegated-execution.json",
+        "templates/target/.ai/assistant/context/task-scales/delegation-preflight.json",
         "templates/target/.ai/assistant/delegation-policy.json",
         "templates/target/.ai/assistant/task-decomposition.json",
         "templates/target/.ai/assistant/templates/task-decomposition.md",
@@ -1579,10 +1593,12 @@
         "templates/target/.ai/assistant/templates/delegation-branch-envelope.json",
         "templates/target/.ai/assistant/templates/delegation-execution-tree.json",
         "templates/target/.ai/assistant/templates/subagent-task-packet.md",
+        "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json",
         "templates/target/.ai/assistant/templates/worker-execution-plan.md",
         "templates/target/.ai/assistant/templates/worker-result.json",
         "templates/target/.ai/assistant/templates/worker-result.md",
         "templates/target/.ai/assistant/workers/**",
+        "tools/assistant_capability_projection.py",
         "tools/source_worker_contract.py",
         "tools/source_worker_policy.json",
         "tools/delegation_evidence.py",
@@ -1973,6 +1989,7 @@
         "tools/scaffold_profiles.json"
       ],
       "implementation_paths": [
+        "tools/assistant_capability_projection.py",
         "tools/capability_catalog.py",
         "tools/check_scaffold_profiles.py",
         "tools/composition_model.py",
@@ -1982,6 +1999,7 @@
       ],
       "trigger_paths": [
         "templates/target/**",
+        "tools/assistant_capability_projection.py",
         "tools/capability_catalog.py",
         "tools/check_scaffold_profiles.py",
         "tools/composition_model.py",
@@ -2122,7 +2140,8 @@
       "schemas/alatyr-project-knowledge-shard.schema.json",
       "schemas/alatyr-problem-model-active-projection.schema.json",
       "schemas/alatyr-problem-model.schema.json",
-      "schemas/alatyr-session-continuity-packet.schema.json",
+        "schemas/alatyr-session-continuity-packet.schema.json",
+      "schemas/alatyr-single-read-only-delegation-receipt.schema.json",
       "schemas/alatyr-worker-result.schema.json",
         "templates/target/.ai/alatyr.yaml",
       "templates/target/.ai/assistant/templates/debug-session-record.json",
@@ -2136,6 +2155,7 @@
         "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json",
       "templates/target/.ai/assistant/templates/problem-model-active-projection.json",
       "templates/target/.ai/assistant/templates/session-continuity-packet.json",
+      "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json",
       "templates/target/.ai/assistant/templates/worker-result.json",
         "templates/target/.ai/project/debug/index.json",
         "templates/target/.ai/project/engineering-evidence/index.json",
@@ -2162,6 +2182,7 @@
       "schemas/alatyr-problem-model-active-projection.schema.json",
       "schemas/alatyr-problem-model.schema.json",
       "schemas/alatyr-session-continuity-packet.schema.json",
+      "schemas/alatyr-single-read-only-delegation-receipt.schema.json",
       "schemas/alatyr-worker-result.schema.json",
         "templates/target/.ai/alatyr.yaml",
       "templates/target/.ai/assistant/templates/debug-session-record.json",
@@ -2175,6 +2196,7 @@
         "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json",
       "templates/target/.ai/assistant/templates/problem-model-active-projection.json",
       "templates/target/.ai/assistant/templates/session-continuity-packet.json",
+      "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json",
       "templates/target/.ai/assistant/templates/worker-result.json",
         "templates/target/.ai/project/debug/index.json",
         "templates/target/.ai/project/engineering-evidence/index.json",

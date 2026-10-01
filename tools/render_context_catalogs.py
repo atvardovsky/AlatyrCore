@@ -468,7 +468,7 @@ def build_directory_catalog_contents(
                 ".gitignore",
             }:
                 continue
-            if not path.is_file():
+            if not path.is_file() and relpath not in (content_overrides or {}):
                 raise ValueError(
                     f"selected {contour} catalog path does not exist: {relpath}"
                 )

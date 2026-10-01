@@ -28,6 +28,7 @@
       ],
       "additional_files": [
         "README.md",
+        "allowed-actions.json",
         "semantics/index.json",
         "capabilities.json",
         "context-discovery.md",
@@ -35,7 +36,8 @@
         "contour.md",
         "framework-packs.json",
         "portability.md",
-        "support-information.md"
+        "support-information.md",
+        "task-classes.json"
       ]
     },
     "core": {

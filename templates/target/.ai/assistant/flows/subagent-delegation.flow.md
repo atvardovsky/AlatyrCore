@@ -4,7 +4,9 @@ Use this optional overlay in `{PROJECT_NAME}` only when the
 `subagent-delegation` module is enabled and the selected operation has a
 bounded delegation candidate.
 
-Selected task-scale overlay: `delegated-execution`
+Start with task-scale overlay `delegation-preflight`. Select
+`delegated-execution` only after capability and worker-context delivery are
+verified and the work requires the governed tree tier.
 
 ## Target Sources
 
@@ -23,6 +25,8 @@ Selected task-scale overlay: `delegated-execution`
   `.ai/assistant/templates/worker-execution-plan.md`
 - Execution-tree ledger template:
   `.ai/assistant/templates/delegation-execution-tree.json`
+- Single depth-one read-only receipt:
+  `.ai/assistant/templates/single-read-only-delegation-receipt.json`
 - Result template: `.ai/assistant/templates/worker-result.md`
 - Machine result template: `.ai/assistant/templates/worker-result.json`
 - Branch envelope template:
@@ -51,15 +55,20 @@ Selected task-scale overlay: `delegated-execution`
    requested worker count.
 5. Keep semantic, architecture, security, migration, approval, external-
    effect, and final-convergence work with the primary assistant.
-6. Read the selected surface `surface_state`. Proceed only when the state is
+6. Load only the capability index and selected surface record. Read the
+   selected surface `surface_state` and `worker_context_mode`. Proceed only
+   when the state is selected for the target and context delivery is
+   `isolated-explicit` or `inherited-measured` with evidence. Proceed no
+   further when context is inherited but unmeasured.
+7. Proceed only when the state is
    selected for the target, not unsupported, and backed by current evidence.
    Unknown, stale, expired, or unverified state falls back to primary
    execution or explicit user review.
 
 ## Capability And Role Selection
 
-1. Load the target decomposition policy, delegation policy, and capability
-   index, then only the current assistant-surface record.
+1. Reuse the verified selected capability record. Load the target decomposition
+   policy, delegation policy, and role catalog only after preflight succeeds.
 2. Select the surface's verified dispatch backend: `native`, `external`,
    `suggestion-only`, or `unsupported`. An external backend must reference an
    approved target AI-infrastructure dispatcher with provenance, permissions,
@@ -73,6 +82,19 @@ Selected task-scale overlay: `delegated-execution`
 5. If the requested model is unavailable, unsupported, unknown, expired,
    rate-limited, or not selectable by the client, apply the recorded fallback.
    Never report a model as used without evidence.
+
+## Evidence Tier
+
+1. Use the lightweight single-worker receipt only for exactly one depth-one,
+   inspect-only worker with no write scope, retry, child proposal, or semantic
+   overlap.
+2. Use the full execution-tree ledger for multiple workers, depth two, any
+   write scope, retry, child proposal, or semantic overlap.
+3. Both tiers must bind canonical policy and capability digests, measured
+   context/result artifacts, structured findings, normalized stop reason, and
+   primary convergence.
+4. Escalate from the receipt to the full ledger as soon as any full-tree
+   condition appears. Do not retrofit missing tree evidence after execution.
 
 ## Task Graph And Readiness
 
@@ -121,7 +143,8 @@ Selected task-scale overlay: `delegated-execution`
 1. Normalize the return through the machine result and human view; record the
    measured input-context, raw, and accepted-summary artifacts, SHA-256 identity, actual
    surface, role, model or unverified status, base
-   revision, files touched, machine-readable tool IDs, validation, findings, boundary
+   revision, files touched, machine-readable tool IDs, validation, structured
+   findings with owner/surface/evidence/proof-obligation references, boundary
    evidence, and residual risk.
 2. Reject output outside packet scope or output that changed a prohibited
    fact, action, permission, or surface.

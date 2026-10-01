@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-single-read-only-delegation-receipt.schema.json",
+  "title": "Alatyr single depth-1 read-only delegation receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "receipt_kind", "operation_id", "base_revision",
+    "current_user_authorization", "analysis_strategy_id", "problem_model_sha256",
+    "policy_sha256", "capability_sha256", "worker_context_mode", "packet",
+    "result", "primary_convergence"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "receipt_kind": {"const": "alatyr-single-depth1-read-only-delegation"},
+    "operation_id": {"type": "string", "minLength": 1},
+    "base_revision": {"type": "string", "minLength": 1},
+    "current_user_authorization": {"type": "string", "minLength": 1},
+    "analysis_strategy_id": {"type": "string", "minLength": 1},
+    "problem_model_sha256": {"anyOf": [{"$ref": "#/definitions/sha256"}, {"type": "null"}]},
+    "policy_sha256": {"$ref": "#/definitions/sha256"},
+    "capability_sha256": {"$ref": "#/definitions/sha256"},
+    "worker_context_mode": {"enum": ["isolated-explicit", "inherited-measured"]},
+    "packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packet_id", "node_id", "depth", "allowed_actions", "write_scope",
+        "attempt", "child_count", "overlap_decision", "context_artifact",
+        "canonical_owner_refs", "surface_refs", "proof_obligation_ids"
+      ],
+      "properties": {
+        "packet_id": {"type": "string", "minLength": 1},
+        "node_id": {"type": "string", "minLength": 1},
+        "depth": {"const": 1},
+        "allowed_actions": {"const": ["inspect"]},
+        "write_scope": {"const": "none"},
+        "attempt": {"const": 0},
+        "child_count": {"const": 0},
+        "overlap_decision": {"const": "disjoint"},
+        "context_artifact": {"$ref": "#/definitions/artifact"},
+        "canonical_owner_refs": {"$ref": "#/definitions/stringList"},
+        "surface_refs": {"$ref": "#/definitions/stringList"},
+        "proof_obligation_ids": {"$ref": "#/definitions/stringList"}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status", "raw_artifact", "accepted_summary_artifact", "findings",
+        "satisfied_proof_obligation_ids", "stop_reason_id"
+      ],
+      "properties": {
+        "status": {"enum": ["succeeded", "failed", "blocked", "cancelled", "requires-review", "rejected"]},
+        "raw_artifact": {"$ref": "#/definitions/artifact"},
+        "accepted_summary_artifact": {"$ref": "#/definitions/artifact"},
+        "findings": {"type": "array", "items": {"$ref": "#/definitions/finding"}},
+        "satisfied_proof_obligation_ids": {"$ref": "#/definitions/stringList"},
+        "stop_reason_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "primary_convergence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewed", "status", "validation", "residual_risk"],
+      "properties": {
+        "reviewed": {"const": true},
+        "status": {"enum": ["accepted", "rejected", "blocked"]},
+        "validation": {"$ref": "#/definitions/stringList"},
+        "residual_risk": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "definitions": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "stringList": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "word_count", "character_count", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "word_count": {"type": "integer", "minimum": 0},
+        "character_count": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "severity", "summary", "canonical_owner_refs", "surface_refs", "proof_obligation_ids", "recommendation"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["blocking", "high", "medium", "low", "info"]},
+        "summary": {"type": "string", "minLength": 1},
+        "canonical_owner_refs": {"$ref": "#/definitions/stringList"},
+        "surface_refs": {"$ref": "#/definitions/stringList"},
+        "proof_obligation_ids": {"$ref": "#/definitions/stringList"},
+        "recommendation": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -12,6 +12,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 POLICY = TARGET / ".ai" / "assistant" / "policies" / "action-authorization.json"
+ALLOWED_ACTIONS = ROOT / "framework" / "allowed-actions.json"
 SCENARIOS = ROOT / "conformance" / "authorization-intent-scenarios.json"
 
 PHASES = ["inspect", "modify", "commit", "publish", "live-external"]
@@ -152,6 +153,7 @@ def main() -> int:
     failures: list[str] = []
     try:
         policy = load_json(POLICY)
+        allowed_action_registry = load_json(ALLOWED_ACTIONS)
         scenarios = load_json(SCENARIOS)
     except AssertionError as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
@@ -163,6 +165,15 @@ def main() -> int:
         failures.append("action authorization policy kind is invalid")
     if policy.get("canonical_rule") != "ALATYR-AUTHORIZATION-001":
         failures.append("action authorization policy canonical rule is invalid")
+    if policy.get("allowed_action_registry") != ".ai/framework/allowed-actions.json":
+        failures.append("action authorization policy must route the allowed-action registry")
+    if allowed_action_registry.get("registry_kind") != "alatyr-allowed-action-registry":
+        failures.append("allowed-action registry kind is invalid")
+    action_modes = allowed_action_registry.get("modes")
+    if not isinstance(action_modes, list) or {
+        item.get("id") for item in action_modes if isinstance(item, dict)
+    } != {"read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"}:
+        failures.append("allowed-action registry must define the canonical five modes")
     if policy.get("phases") != PHASES:
         failures.append(f"action authorization phases must be {PHASES}")
     phase_effects = policy.get("phase_effects")

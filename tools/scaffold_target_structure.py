@@ -54,6 +54,11 @@ from capability_catalog import (
     load_modules,
     shared_surface_merge_requirement,
 )
+from assistant_capability_projection import (
+    surface_id_for_path,
+    render_surface_record,
+    virtual_record_contents,
+)
 from framework_packaging import (
     pack_names,
     project_registry,
@@ -208,6 +213,9 @@ def projected_template_content(
 ) -> str | None:
     src = TEMPLATE_ROOT / rel
     selected_paths = context.selected_paths
+    surface_id = surface_id_for_path(rel)
+    if surface_id is not None:
+        return render_surface_record(surface_id)
     if rel in context.context_catalogs:
         return context.context_catalogs[rel]
     if rel == Path("AGENTS.md") and framework_pack != "complete":
@@ -402,6 +410,8 @@ def projected_template_content(
         Path(".ai/assistant/context/intents/test-first-request.json"),
         Path(".ai/assistant/context/intents/extension-request.json"),
         Path(".ai/assistant/context/task-scales/small-task.json"),
+        Path(".ai/assistant/context/task-scales/standard-task.json"),
+        Path(".ai/assistant/context/task-scales/protected-or-sensitive.json"),
         Path(".ai/assistant/context/task-scales/large-or-resumable.json"),
         Path(".ai/assistant/context/task-scales/change-package.json"),
     }:
@@ -451,7 +461,9 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
     # Discover the recursive index paths before projecting the router. Its
     # contour entries must describe the exact support profile being installed.
     context_catalogs = build_target_context_catalogs(
-        selected_templates, allowed_semantic_refs=allowed_semantic_refs
+        selected_templates,
+        virtual_record_contents(selected_templates),
+        allowed_semantic_refs=allowed_semantic_refs,
     )
     selected_templates.update(context_catalogs)
     framework_files = composition.framework_paths

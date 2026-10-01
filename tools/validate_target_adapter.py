@@ -170,6 +170,7 @@ from task_classification_contract import (
     TARGET_REQUIRED_SMALL_TASK_EXPANSION_TRIGGERS,
     TASK_CLASSES,
     TASK_CLASSIFICATION_SCHEMA_VERSION,
+    TASK_CLASS_DEFINITIONS,
     missing_required_values,
 )
 ROOT = Path(__file__).resolve().parents[1]
@@ -3087,6 +3088,12 @@ class Validator:
                 "ambiguous task classification must stay read-only",
                 relpath,
             )
+        if classification.get("registry") != ".ai/framework/task-classes.json":
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_REGISTRY",
+                "task classification must route .ai/framework/task-classes.json",
+                relpath,
+            )
         classes = classification.get("classes")
         if not isinstance(classes, dict):
             self.error(
@@ -3095,6 +3102,12 @@ class Validator:
                 relpath,
             )
             classes = {}
+        elif classes != TASK_CLASS_DEFINITIONS:
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_DRIFT",
+                "task classification classes drifted from the canonical registry",
+                relpath,
+            )
         for task_class in TASK_CLASSES:
             item = classes.get(task_class)
             if not isinstance(item, dict):
@@ -3170,16 +3183,19 @@ class Validator:
             descriptor_path,
             label="task_scale_overlays.small-task.required_context",
         )
-        for required in [
-            ".ai/assistant/gates/core.md",
-            ".ai/assistant/gates/final-evidence.md",
-        ]:
+        for required in [".ai/assistant/gates/compact-final-evidence.md"]:
             if required not in required_context:
                 self.error(
                     "ROUTER_SMALL_TASK_CONTEXT",
                     f"small-task overlay missing {required}",
                     descriptor_path,
                 )
+        if ".ai/assistant/gates/final-evidence.md" in required_context:
+            self.error(
+                "ROUTER_SMALL_TASK_CONTEXT",
+                "small-task overlay must not load the full evidence gate",
+                descriptor_path,
+            )
         for reference in required_context:
             self.check_router_path(
                 reference,

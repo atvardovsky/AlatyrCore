@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "result_kind": "alatyr-normalized-worker-result",
   "result_id": "{RESULT_ID}",
   "packet_id": "{PACKET_ID}",
@@ -30,6 +30,18 @@
       "revision": "{EVIDENCE_REVISION}",
       "sha256": "{LOWERCASE_SHA256}",
       "validation": "{VALIDATION_RESULT}"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "{FINDING_ID}",
+      "severity": "{BLOCKING_HIGH_MEDIUM_LOW_OR_INFO}",
+      "summary": "{BOUNDED_FINDING_SUMMARY}",
+      "canonical_owner_refs": ["{ASSIGNED_CANONICAL_OWNER_REF_OR_NONE}"],
+      "surface_refs": ["{ASSIGNED_SURFACE_REF_OR_NONE}"],
+      "evidence_refs": ["{EVIDENCE_MANIFEST_PATH_OR_NONE}"],
+      "proof_obligation_ids": ["{ASSIGNED_PROOF_OBLIGATION_ID_OR_NONE}"],
+      "recommendation": "{PRIMARY_OWNED_NEXT_ACTION_OR_NONE}"
     }
   ],
   "touched_surfaces": ["{TARGET_RELATIVE_PATH_OR_NONE}"],

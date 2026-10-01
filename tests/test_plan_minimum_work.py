@@ -46,7 +46,7 @@ def check() -> dict[str, object]:
 
 def capability_record(max_parallelism: int = 2) -> dict[str, object]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "status": "available",
         "surface_id": "test-surface",
         "runtime_id": "test-runtime",
@@ -55,6 +55,7 @@ def capability_record(max_parallelism: int = 2) -> dict[str, object]:
         "max_parallelism": max_parallelism,
         "write_isolation": "read-only",
         "result_delivery": True,
+        "worker_context_mode": "isolated-explicit",
         "model_binding": "client-default",
         "verified_at": "2026-09-03T12:00:00Z",
         "expires_at": "2026-09-03T12:20:00Z",
@@ -313,30 +314,16 @@ class MinimumWorkPlanTests(unittest.TestCase):
         self.assertEqual(plan["task_class"], "large-or-resumable")
         self.assertTrue(plan["decomposition"]["required"])
         self.assertGreaterEqual(
-            len(plan["decomposition"]["candidate_workstreams"]),
+            len(plan["decomposition"]["discovered_worker_candidates"]),
             2,
         )
+        self.assertEqual(plan["decomposition"]["candidate_workstreams"], [])
+        self.assertIsNone(plan["decomposition"]["aggregate_budget"])
+        self.assertTrue(plan["decomposition"]["packet_expansion_deferred"])
         self.assertEqual(
-            plan["decomposition"]["aggregate_budget"]["max_total_delegates"],
-            8,
+            plan["delegation_capability_preflight"]["decision"],
+            "runtime-verification-required",
         )
-        self.assertGreater(
-            plan["decomposition"]["aggregate_budget"]["candidate_context_words"],
-            0,
-        )
-        policy = json.loads(
-            (ROOT / "tools" / "source_worker_policy.json").read_text(
-                encoding="utf-8"
-            )
-        )
-        for workstream in plan["decomposition"]["candidate_workstreams"]:
-            expected = policy["workstreams"][workstream["workstream_id"]]
-            self.assertEqual(workstream["objective"], expected["objective"])
-            self.assertEqual(
-                workstream["bounded_context"], expected["required_context"]
-            )
-            self.assertEqual(workstream["allowed_actions"], ["inspect"])
-            self.assertEqual(workstream["write_scope"], "none")
 
     def test_repository_audit_budgeted_below_two_packets_requires_identification(
         self,
@@ -351,11 +338,13 @@ class MinimumWorkPlanTests(unittest.TestCase):
             effective_profile="full",
         )
 
-        with patch("plan_minimum_work._packet_context_words", return_value=12001):
+        with patch("plan_minimum_work._packet_context_words", return_value=16001):
             plan = self.build_test_plan(
                 selection=selection,
                 expected_validation_profile="full",
                 source_profile="repository-audit",
+                runtime_capability="available",
+                runtime_capability_record=capability_record(),
             )
 
         decomposition = plan["decomposition"]
@@ -839,7 +828,7 @@ class MinimumWorkPlanTests(unittest.TestCase):
             "insufficient-independent-work",
         )
 
-    def test_one_large_task_packet_still_requires_workstream_identification(self) -> None:
+    def test_one_large_task_packet_satisfies_general_workstream_threshold(self) -> None:
         selection = SelectionResult(
             selected=[check()],
             fell_back_to_full=False,
@@ -859,9 +848,9 @@ class MinimumWorkPlanTests(unittest.TestCase):
         )
         self.assertEqual(
             plan["delegation_assessment"]["decision"],
-            "workstream-identification-required",
+            "runtime-verification-required",
         )
-        self.assertTrue(plan["decomposition"]["workstream_identification_required"])
+        self.assertFalse(plan["decomposition"]["workstream_identification_required"])
 
     def test_large_non_audit_task_can_recommend_two_explicit_packets(self) -> None:
         selection = SelectionResult(
@@ -887,7 +876,7 @@ class MinimumWorkPlanTests(unittest.TestCase):
         )
         assessment = plan["delegation_assessment"]
         self.assertEqual(assessment["decision"], "delegation-recommended")
-        self.assertEqual(assessment["selected_workstream_ids"], ["router", "policy"])
+        self.assertEqual(assessment["selected_workstream_ids"], ["router"])
 
     def test_large_task_rejects_non_independent_packets(self) -> None:
         selection = SelectionResult(

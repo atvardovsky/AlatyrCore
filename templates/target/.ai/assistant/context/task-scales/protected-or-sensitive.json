@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "overlay": "protected-or-sensitive",
+  "use_when": ["task classifier selected protected-or-sensitive"],
+  "required_context": [
+    ".ai/assistant/gates/final-evidence.md",
+    ".ai/assistant/gates/security-approval.md"
+  ],
+  "expand_when": [
+    "approval scope or current user authorization is missing disputed or stale",
+    "the protected effect expands"
+  ],
+  "budget_behavior": "load the full evidence and approval gates plus only the selected protected owner context",
+  "final_evidence": [
+    "full final-evidence gate result",
+    "authorization and protected approval scope"
+  ]
+}

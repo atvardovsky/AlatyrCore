@@ -12,9 +12,9 @@
     "bootstrap": {
       "max_files": 2,
       "max_words": 900,
-      "soft_max_words": 850,
+      "soft_max_words": 875,
       "max_characters": 12000,
-      "soft_max_characters": 11000
+      "soft_max_characters": 11100
     },
     "first_use": {
       "max_files": 2,
@@ -31,6 +31,11 @@
       "max_portable_words": 5600,
       "reserved_target_words": 2400,
       "max_total_characters": 80000
+    },
+    "expanded": {
+      "max_files": 20,
+      "max_total_words": 12000,
+      "max_total_characters": 120000
     },
     "on_exceed": "load required safety and owner evidence; record expansion reason, measured context, and omissions"
   },
@@ -135,6 +140,8 @@
   },
   "task_classification": {
     "schema_version": 1,
+    "registry": ".ai/framework/task-classes.json",
+    "projection": "derived-execution-copy",
     "classification_order": [
       "protected-or-sensitive",
       "large-or-resumable",
@@ -162,7 +169,7 @@
           "scope remains within one project area or owner set",
           "work does not need separate workstreams"
         ],
-        "task_scale_overlay": null,
+        "task_scale_overlay": "standard-task",
         "pre_change_preview": "risk-gated"
       },
       "large-or-resumable": {
@@ -179,7 +186,7 @@
           "approval safety security credential permission destructive spend production or live-external boundary may apply",
           "current user authorization or approval scope is unclear"
         ],
-        "task_scale_overlay": null,
+        "task_scale_overlay": "protected-or-sensitive",
         "pre_change_preview": "required before edits"
       }
     },
@@ -372,6 +379,14 @@
       ],
       "descriptor": ".ai/assistant/context/task-scales/small-task.json"
     },
+    "standard-task": {
+      "use_when": ["classified standard-task"],
+      "descriptor": ".ai/assistant/context/task-scales/standard-task.json"
+    },
+    "protected-or-sensitive": {
+      "use_when": ["classified protected-or-sensitive"],
+      "descriptor": ".ai/assistant/context/task-scales/protected-or-sensitive.json"
+    },
     "large-or-resumable": {
       "use_when": [
         "explicitly large phased or resumable work",
@@ -386,6 +401,11 @@
     "delegated-execution": {
       "use_when": ["delegation"],
       "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json",
+      "required_module": "subagent-delegation"
+    },
+    "delegation-preflight": {
+      "use_when": ["delegation may be useful but capability and overhead are not yet verified"],
+      "descriptor": ".ai/assistant/context/task-scales/delegation-preflight.json",
       "required_module": "subagent-delegation"
     },
     "change-package": {

@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from assistant_capability_projection import build_surface_record
 from target_adapter_validation.assistant_capabilities import (
     CAPABILITY_INDEX_KIND,
     CAPABILITY_INDEX_SCHEMA_VERSION,
@@ -285,8 +286,8 @@ def main() -> int:
             failures.append(f"assistant capability index path is invalid for {surface_id}")
             continue
         try:
-            record = load_json(TARGET / expected_path)
-        except AssertionError as exc:
+            record = build_surface_record(surface_id)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
             failures.append(str(exc))
             continue
         if record.get("capability_kind") != SURFACE_CAPABILITY_KIND:

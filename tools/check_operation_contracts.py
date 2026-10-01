@@ -24,6 +24,12 @@ OPERATION_REQUEST_SURFACES = [
     TARGET / ".ai" / "assistant" / "templates" / "operation-request.md",
     HELP_REFERENCE,
 ]
+CANONICAL_ACTION_REGISTRY_SURFACES = {
+    ROOT / "installer" / "installed-operation-request-template.md": (
+        "framework/allowed-actions.json",
+        ".ai/framework/allowed-actions.json",
+    ),
+}
 
 AUTHORIZATION_REQUIRED_TEXT = {
     INSTALLED_OPERATIONS: [
@@ -252,6 +258,13 @@ def main() -> int:
 
     for source in OPERATION_REQUEST_SURFACES:
         text = normalized_markdown(read(source))
+        canonical_refs = CANONICAL_ACTION_REGISTRY_SURFACES.get(source)
+        if canonical_refs is not None:
+            if not all(reference in text for reference in canonical_refs):
+                failures.append(
+                    f"{source.relative_to(ROOT)} must route allowed actions through the canonical registries"
+                )
+            continue
         for required_text in ADAPTER_ONLY_REQUIRED_TEXT:
             if required_text not in text:
                 failures.append(

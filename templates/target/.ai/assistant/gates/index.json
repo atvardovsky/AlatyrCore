@@ -62,16 +62,20 @@
     "final-evidence": {
       "path": ".ai/assistant/gates/final-evidence.md",
       "use_when": ["before reporting completion"]
+    },
+    "compact-final-evidence": {
+      "path": ".ai/assistant/gates/compact-final-evidence.md",
+      "use_when": ["small-task remains eligible through completion"]
     }
   },
   "profile_defaults": {
-    "docs-local": ["core", "documentation", "final-evidence"],
-    "code-local": ["core", "code-and-tests", "final-evidence"],
-    "business-change": ["core", "semantic-integrity", "final-evidence"],
-    "architecture-change": ["core", "semantic-integrity", "final-evidence"],
-    "data-change": ["core", "semantic-integrity", "code-and-tests", "final-evidence"],
-    "security-sensitive": ["core", "semantic-integrity", "security-approval", "final-evidence"],
-    "ai-infrastructure": ["core", "final-evidence"],
-    "framework-upgrade": ["core", "final-evidence"]
+    "docs-local": ["core", "documentation"],
+    "code-local": ["core", "code-and-tests"],
+    "business-change": ["core", "semantic-integrity"],
+    "architecture-change": ["core", "semantic-integrity"],
+    "data-change": ["core", "semantic-integrity", "code-and-tests"],
+    "security-sensitive": ["core", "semantic-integrity", "security-approval"],
+    "ai-infrastructure": ["core"],
+    "framework-upgrade": ["core"]
   }
 }
