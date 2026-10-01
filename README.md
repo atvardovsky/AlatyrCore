@@ -50,6 +50,13 @@ limits and a smaller digest-bound view keep current task state available without
 reloading its full history. Small settled tasks stay on the compact
 `direct-local` route.
 
+When a repair fails again, Alatyr keeps it in one incident family instead of
+starting another isolated fix. Repeated, escaped, or failed-gate work escalates
+to a bounded whole-lifecycle model that checks producers, orchestration,
+persistence, consumers, terminal outcomes, and conservation rules. This helps
+the next agent reuse the failed evidence and shared invariant without loading
+the whole repository.
+
 The agent still has to inspect the routed sources and report uncertainty.
 AlatyrCore gives the discussion a project-owned memory and source-of-truth
 map; it does not make unsupported answers authoritative.
@@ -596,7 +603,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.74`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.75`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

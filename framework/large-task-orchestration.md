@@ -160,7 +160,8 @@ Create a checkpoint before context is likely to be lost, before a handoff,
 after an approval boundary, or after a workstream reaches local validation.
 A checkpoint should record completed work, decisions, evidence, unresolved
 items, invalidated assumptions, primary strategy identity, problem-model
-digest, open proof obligations, completed reviews, the accepted resolved
+digest, incident family and corrective iteration, latest failed gate, open
+proof obligations, completed reviews, the accepted resolved
 semantic-guidance bundle digest, and the next ready action.
 
 Do not claim a workstream complete when required approval or validation is
@@ -193,6 +194,9 @@ Local workstream success is not final operation success. Before completion:
     review before accepting the workstream result.
 12. Reject completion while any required proof obligation or review remains
     open, failed, blocked, or unevidenced.
+13. When work continues a failed repair, confirm every predecessor binding,
+    lifecycle boundary, terminal outcome, and conservation rule converged in
+    the final combined result; local workstream green results are insufficient.
 
 ## Storage And Privacy
 

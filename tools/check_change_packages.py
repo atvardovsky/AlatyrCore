@@ -12,7 +12,10 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-from change_package_contract import CHANGE_PACKAGE_STATUS_PLACEHOLDER
+from change_package_contract import (
+    CHANGE_PACKAGE_STATUS_PLACEHOLDER,
+    incident_continuity_failures,
+)
 from validate_target_adapter import AdapterValidatorConfig, Validator
 
 
@@ -353,6 +356,75 @@ def validate_unchanged_shard_routing(
     historical_path.unlink()
 
 
+def validate_active_incident_routing(
+    repo: Path,
+    package_path: Path,
+    package: dict[str, object],
+    failures: list[str],
+) -> None:
+    index_path = repo / ".ai" / "assistant" / "change-packages" / "index.json"
+    active_package = copy.deepcopy(package)
+    active_package["status"] = "implementing"
+    package_path.write_text(
+        json.dumps(active_package, indent=2) + "\n", encoding="utf-8"
+    )
+    active_index = json.loads(index_path.read_text(encoding="utf-8"))
+    active_entry = active_index["records"][0]
+    active_entry.update(
+        status="implementing",
+        incident_family_id=None,
+        corrective_iteration=None,
+        latest_failed_gate_state=None,
+    )
+    index_path.write_text(json.dumps(active_index, indent=2) + "\n", encoding="utf-8")
+    validator = Validator(
+        repo,
+        framework_source=None,
+        diff_ref=None,
+        approval_records=[],
+        enforce_approval_scope=False,
+        change_packages=[],
+        enforce_change_package=False,
+        migration_diff=None,
+        allow_placeholders=True,
+        allow_local_paths=[],
+        config=AdapterValidatorConfig(),
+    )
+    validator.check_change_package_index()
+    validator.check_change_packages()
+    if not any(
+        finding.code == "PACKAGE_INCIDENT_CONTINUITY"
+        and finding.level == "error"
+        for finding in validator.findings
+    ):
+        failures.append(
+            "active indexed package was not auto-validated for incident continuity"
+        )
+
+    package_path.write_text(json.dumps(package, indent=2) + "\n", encoding="utf-8")
+    active_entry["status"] = "complete"
+    for field in (
+        "incident_family_id",
+        "corrective_iteration",
+        "latest_failed_gate_state",
+    ):
+        active_entry.pop(field, None)
+    index_path.write_text(json.dumps(active_index, indent=2) + "\n", encoding="utf-8")
+    unindexed_plan_validator = changed_index_validator(repo)
+    with patch.object(
+        unindexed_plan_validator.git,
+        "changed_files",
+        return_value=[".ai/assistant/change-packages/unbound-plan.md"],
+    ):
+        unindexed_plan_validator.check_change_packages()
+    if not any(
+        finding.code == "PACKAGE_ACTIVE_PLAN_UNINDEXED"
+        and finding.level == "error"
+        for finding in unindexed_plan_validator.findings
+    ):
+        failures.append("changed unindexed package plan was not rejected")
+
+
 def validate_fixture(failures: list[str]) -> None:
     with tempfile.TemporaryDirectory() as directory:
         repo = Path(directory)
@@ -381,6 +453,8 @@ def validate_fixture(failures: list[str]) -> None:
             )
 
         index_path = repo / ".ai" / "assistant" / "change-packages" / "index.json"
+        validate_active_incident_routing(repo, package_path, package, failures)
+
         invalid_index = json.loads(index_path.read_text(encoding="utf-8"))
         invalid_index["records"][0]["status"] = "unvalidated"
         index_path.write_text(json.dumps(invalid_index, indent=2) + "\n", encoding="utf-8")
@@ -633,12 +707,22 @@ def main() -> int:
             "## Semantic Approval Scope",
             "## Companion-Surface Decisions",
             "## Repository Provenance",
+            "## Incident Continuity",
+            "second corrective iteration",
             "selected-file-snapshot",
             "Do not create a package for a small task",
         ],
         failures,
     )
-    require_text(FLOW, ["## Activation Gate", "## Validation Boundary"], failures)
+    require_text(
+        FLOW,
+        [
+            "## Activation Gate",
+            "Use `systemic-repair` plus `recurring-correction`",
+            "## Validation Boundary",
+        ],
+        failures,
+    )
     require_text(REPORT, ["Evidence quality:", "Public claim strength:"], failures)
 
     try:
@@ -652,6 +736,7 @@ def main() -> int:
         if record.get("record_kind") != "alatyr-change-package":
             failures.append("change-package record kind is invalid")
         for field in [
+            "incident_continuity",
             "approved_scope",
             "actual_scope",
             "discoveries_and_corrections",
@@ -686,6 +771,43 @@ def main() -> int:
             failures.append("change-package shard template is invalid")
         if overlay.get("overlay") != "change-package":
             failures.append("change-package overlay identity is invalid")
+
+    valid_incident = {
+        "incident_continuity": {
+            "mode": "systemic-repair",
+            "family_id": "incident-1",
+            "trigger": "recurring-correction",
+            "corrective_iteration": 2,
+            "predecessors": [
+                {
+                    "package_id": "package-previous",
+                    "record": ".ai/assistant/change-packages/previous.json",
+                    "sha256": "0" * 64,
+                }
+            ],
+            "problem_model": {
+                "path": ".ai/assistant/problem-models/incident-1.json",
+                "sha256": "1" * 64,
+            },
+            "latest_failed_gate": {
+                "state": "resolved",
+                "id": "test-gate",
+                "evidence_refs": ["tests/incident-regression.md"],
+            },
+            "lifecycle_model_required": True,
+        }
+    }
+    if incident_continuity_failures(valid_incident):
+        failures.append("valid systemic incident continuity was rejected")
+    invalid_repeat = copy.deepcopy(valid_incident)
+    incident = invalid_repeat["incident_continuity"]
+    assert isinstance(incident, dict)
+    incident.update(mode="continuation", trigger="reported-defect")
+    if not any(
+        "second corrective iteration" in failure
+        for failure in incident_continuity_failures(invalid_repeat)
+    ):
+        failures.append("second corrective iteration did not require systemic repair")
 
     validate_fixture(failures)
 

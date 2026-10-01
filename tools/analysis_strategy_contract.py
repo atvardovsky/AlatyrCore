@@ -28,8 +28,8 @@ DESCRIPTOR_FIELDS = {
     "required_nonempty_fields",
     "completion_rule",
 }
-PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v2"
-PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v1"
+PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v3"
+PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v2"
 STRATEGY_INDEX_RELPATH = ".ai/assistant/analysis-strategies/index.json"
 PROBLEM_MODEL_TEMPLATE_RELPATH = ".ai/assistant/templates/problem-model.json"
 PROBLEM_MODEL_PROJECTION_TEMPLATE_RELPATH = (
@@ -45,6 +45,15 @@ MAX_PROBLEM_MODEL_WORDS = 6000
 MAX_PROBLEM_MODEL_FILE_BYTES = 131072
 MAX_ACTIVE_PROJECTION_UTF8_BYTES = 16384
 MAX_ACTIVE_PROJECTION_WORDS = 1200
+REQUIRED_LIFECYCLE_OUTCOMES = frozenset(
+    {"success", "rejection", "deferral", "expiry", "recovery", "failure"}
+)
+REQUIRED_LIFECYCLE_BOUNDARIES = frozenset(
+    {"producer", "orchestrator", "persistence", "consumer"}
+)
+SYSTEMIC_INCIDENT_TRIGGERS = frozenset(
+    {"escaped-defect", "failed-required-gate", "recurring-correction"}
+)
 MAX_ACTIVE_PROJECTION_FILE_BYTES = 65536
 FORBIDDEN_REASONING_KEYS = {
     "chain_of_thought",
@@ -104,6 +113,140 @@ def validate_problem_model_projection_schema(schema: dict[str, Any]) -> list[str
     return []
 
 
+def _validate_incident_continuity(model: dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    incident = model.get("incident")
+    lifecycle = model.get("lifecycle_model")
+    if not isinstance(incident, dict) or not isinstance(lifecycle, dict):
+        return failures
+
+    mode = incident.get("mode")
+    family_id = incident.get("family_id")
+    trigger = incident.get("trigger")
+    iteration = incident.get("corrective_iteration")
+    predecessor_models = incident.get("predecessor_model_ids", [])
+    predecessor_packages = incident.get("predecessor_package_ids", [])
+    failed_gate = incident.get("latest_failed_gate")
+
+    if mode == "none":
+        if family_id != "none" or trigger != "none" or iteration != 0:
+            failures.append(
+                "non-incident problem models require family_id=none, trigger=none, and corrective_iteration=0"
+            )
+        if predecessor_models or predecessor_packages:
+            failures.append("non-incident problem models cannot declare predecessors")
+    else:
+        if family_id in {None, "", "none"}:
+            failures.append("incident problem models require a stable family_id")
+        if trigger == "none":
+            failures.append("incident problem models require a concrete trigger")
+
+    if mode in {"continuation", "systemic-repair"}:
+        if not isinstance(iteration, int) or isinstance(iteration, bool) or iteration < 1:
+            failures.append("continued incident work requires corrective_iteration >= 1")
+        if not predecessor_models and not predecessor_packages:
+            failures.append("continued incident work requires predecessor lineage")
+    if isinstance(iteration, int) and not isinstance(iteration, bool) and iteration >= 2:
+        if mode != "systemic-repair":
+            failures.append(
+                "the second corrective iteration and later require systemic-repair mode"
+            )
+        if trigger != "recurring-correction":
+            failures.append(
+                "the second corrective iteration and later require recurring-correction trigger"
+            )
+    if trigger == "recurring-correction" and mode != "systemic-repair":
+        failures.append("recurring-correction requires systemic-repair mode")
+
+    gate_state = failed_gate.get("state") if isinstance(failed_gate, dict) else None
+    gate_id = failed_gate.get("id") if isinstance(failed_gate, dict) else None
+    gate_evidence = (
+        failed_gate.get("evidence_refs", []) if isinstance(failed_gate, dict) else []
+    )
+    if gate_state == "none" and (gate_id != "none" or gate_evidence):
+        failures.append("latest_failed_gate state none cannot carry identity or evidence")
+    if gate_state in {"open", "resolved"} and (
+        gate_id in {None, "", "none"} or not gate_evidence
+    ):
+        failures.append("an open or resolved failed gate requires identity and evidence")
+
+    lifecycle_required = lifecycle.get("required") is True
+    if mode == "systemic-repair" or trigger in SYSTEMIC_INCIDENT_TRIGGERS:
+        if not lifecycle_required:
+            failures.append(
+                "systemic, escaped, recurring, or failed-gate work requires a lifecycle model"
+            )
+    if lifecycle_required:
+        outcomes = set(lifecycle.get("required_outcomes", []))
+        if outcomes != REQUIRED_LIFECYCLE_OUTCOMES:
+            failures.append(
+                "required lifecycle model must cover success, rejection, deferral, expiry, recovery, and failure"
+            )
+        states = lifecycle.get("states", [])
+        transitions = lifecycle.get("transitions", [])
+        boundaries = lifecycle.get("boundaries", [])
+        conservation_rules = lifecycle.get("conservation_rules", [])
+        if not states or not transitions or not conservation_rules:
+            failures.append(
+                "required lifecycle model needs states, transitions, and conservation rules"
+            )
+        boundary_kinds = {
+            item.get("kind") for item in boundaries if isinstance(item, dict)
+        }
+        missing_boundaries = sorted(REQUIRED_LIFECYCLE_BOUNDARIES - boundary_kinds)
+        if missing_boundaries:
+            failures.append(
+                "required lifecycle model is missing boundaries: "
+                + ", ".join(missing_boundaries)
+            )
+        state_ids = {
+            item.get("id") for item in states if isinstance(item, dict)
+        }
+        for transition in transitions:
+            if not isinstance(transition, dict):
+                continue
+            if transition.get("from") not in state_ids or transition.get("to") not in state_ids:
+                failures.append(
+                    f"lifecycle transition {transition.get('id')!r} references an unknown state"
+                )
+            if not transition.get("evidence_refs"):
+                failures.append(
+                    f"lifecycle transition {transition.get('id')!r} requires evidence"
+                )
+        for boundary in boundaries:
+            if isinstance(boundary, dict) and not boundary.get("evidence_refs"):
+                failures.append(
+                    f"lifecycle boundary {boundary.get('id')!r} requires evidence"
+                )
+        for rule in conservation_rules:
+            if isinstance(rule, dict) and not rule.get("evidence_refs"):
+                failures.append(
+                    f"lifecycle conservation rule {rule.get('id')!r} requires evidence"
+                )
+
+    if gate_state == "open":
+        obligations = model.get("proof_obligations", [])
+        unresolved = [
+            item
+            for item in obligations
+            if isinstance(item, dict)
+            and item.get("required") is True
+            and item.get("status") in {"open", "failed", "blocked"}
+            and (
+                item.get("id") == gate_id
+                or gate_id in item.get("evidence_refs", [])
+                or any(ref in item.get("evidence_refs", []) for ref in gate_evidence)
+            )
+        ]
+        if not unresolved:
+            failures.append(
+                "open latest_failed_gate must remain a required unresolved proof obligation"
+            )
+        if not model.get("counterexamples"):
+            failures.append("open latest_failed_gate requires a retained counterexample")
+    return failures
+
+
 def validate_problem_model(
     model: dict[str, Any], schema: dict[str, Any]
 ) -> list[str]:
@@ -155,6 +298,7 @@ def validate_problem_model(
         "task_ids"
     ) and not task_binding.get("workstream_ids"):
         failures.append("problem model must bind at least one task or workstream")
+    failures.extend(_validate_incident_continuity(model))
 
     statement_ids: list[str] = []
     for collection in (
@@ -339,6 +483,8 @@ def build_active_problem_model_projection(
         "non_goals": model.get("non_goals", []),
         "repository_binding": model.get("repository_binding"),
         "task_binding": model.get("task_binding"),
+        "incident": model.get("incident"),
+        "lifecycle_model": model.get("lifecycle_model"),
         "primary_strategy_id": model.get("primary_strategy_id"),
         "risk_classes": model.get("risk_classes", []),
         "protected_change": model.get("protected_change"),
@@ -416,7 +562,7 @@ def build_active_problem_model_projection(
         },
     }
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "projection_kind": "alatyr-active-problem-model",
         "model_id": model.get("model_id"),
         "operation_id": model.get("operation_id"),

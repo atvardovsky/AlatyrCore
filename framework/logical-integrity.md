@@ -78,22 +78,27 @@ Use this sequence when a fact may have changed:
 8. Re-derive the invariants that connect the changed fact to its scope,
    identity, ownership, lifecycle, and dependent contracts. State each
    invariant in testable language before choosing a repair.
-9. Choose the smallest coherent repair set that preserves those invariants.
-10. Record a Project Contour Sync Decision for every code or test change:
+9. Check incident continuity. If this corrects earlier repair work, bind it to
+   predecessor evidence and the failed gate. From the second corrective
+   iteration, or after an escaped defect or failed required gate, reclassify
+   the work as systemic and derive the whole lifecycle before choosing a
+   repair.
+10. Choose the smallest coherent repair set that preserves those invariants.
+11. Record a Project Contour Sync Decision for every code or test change:
     `updated`, `not-required`, `blocked`, or `unverified`. Name the changed fact
     IDs, project owners checked, affected support surfaces, and evidence. A
     `not-required` decision needs a fact-specific reason; a code-only diff is
     not evidence by itself.
-11. Apply required companion updates or explain why none are needed. Update
+12. Apply required companion updates or explain why none are needed. Update
     `.ai/project/contour.md` only when its orientation, areas, owners,
     workflows, validation entry points, or known gaps changed; keep detailed
     facts in their canonical owners.
-12. Run target validation that exists, or record manual/unresolved checks.
-13. Make a proportional final-evidence capture decision. When durable
+13. Run target validation that exists, or record manual/unresolved checks.
+14. Make a proportional final-evidence capture decision. When durable
     Engineering Evidence support is active, apply its full capture policy. If
     it is unavailable, record compact final evidence plus an unavailable,
     skipped, or blocked reason without claiming that a durable record exists.
-14. Report final evidence and residual risk.
+15. Report final evidence and residual risk.
 
 When test-first development is activated, the repair set must include the
 selected policy trigger, changed fact or invariant, valid expected RED,
@@ -105,6 +110,14 @@ fixes, do not process each item as an isolated file edit. Cluster items by
 changed fact and contract, identify shared invariants and boundaries, and run
 one combined impact review over the proposed repair set. A local edit that
 satisfies one comment but leaves the shared invariant false must be revised.
+
+When a later failure contradicts an earlier local result, reopen the affected
+proof obligation and retain the counterexample. Do not create a fresh isolated
+problem statement merely because the next symptom appears in another file or
+layer. Trace the producer, orchestration, persistence, consumer, and
+observability path needed to explain every terminal outcome. This escalation
+expands only the incident model and named boundaries; it does not authorize a
+whole-repository context load.
 
 When no consistency map is enabled, invariant re-derivation remains mandatory.
 Use canonical owners, data and identity scope, architecture boundaries,

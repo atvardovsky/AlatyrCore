@@ -33,6 +33,8 @@ sync, logical integrity review, and final evidence.
 - bounded session continuity across compaction, resume, fork, handoff,
   client/provider/model changes, and suspected context loss
 - first-class logical integrity review
+- incident-family continuity and whole-lifecycle escalation for repeated or
+  escaped repairs
 - blueprint-driven product-change workflow
 - optional project-owned architecture knowledge, pattern discussion, review,
   and supporting-documentation maintenance

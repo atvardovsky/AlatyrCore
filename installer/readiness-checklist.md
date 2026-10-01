@@ -292,8 +292,10 @@ Collect target-specific facts before writing project docs:
   privacy, validation, and primary convergence when needed
 - change-package activation, compact root index, digest-bound bounded index
   shards, semantic and path approval scope, companion decisions,
-  implementation corrections, provenance quality, retention/redaction, and
-  validator expectations when needed
+  implementation corrections, incident family, corrective iteration,
+  predecessor and problem-model digests, failed-gate/lifecycle state,
+  provenance quality, retention/redaction, and validator expectations when
+  needed
 - team-collaboration owner, structured actor/authority/priority/transition
   policy, ignored local identity boundary, backend capabilities and
   synchronization, active-work index, per-task registry and optimistic
@@ -594,8 +596,9 @@ Final evidence must say:
   budget, semantic-overlap, cancellation, and per-surface capability fields
   added or skipped
 - change-package root index, bounded index-shard template, lazy overlay, flow,
-  machine record, redacted report, and retention/redaction policy added,
-  migrated, skipped, or blocked
+  machine record, incident/lifecycle contract, active-record auto-validation,
+  redacted report, and retention/redaction policy added, migrated, skipped, or
+  blocked
 - team policy and operating model, local ignore rule, active-work index,
   registry metadata, per-task template, backend contract, team-active overlay,
   identity/task/handoff/decision/review flows, team gate, adapted skill, and

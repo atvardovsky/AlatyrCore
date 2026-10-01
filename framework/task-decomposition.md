@@ -61,7 +61,9 @@ For every non-trivial request:
    scale, changed facts, project areas, and risk.
 2. Select exactly one primary analysis strategy and any policy-required review
    passes. Create a bounded problem model with inspectable claims and proof
-   obligations; never record private reasoning or chain-of-thought.
+   obligations. Record incident family and lifecycle state when the task
+   continues failed repair work; never record private reasoning or chain-of-
+   thought.
 3. Split the work by changed fact, canonical owner, contract, area,
    dependency, validation need, and support-surface synchronization.
 4. Assign one implementation level to each subtask.
@@ -109,6 +111,14 @@ These are inspectable conclusions and verification duties, not private
 reasoning or chain-of-thought. A required obligation must pass, be explicitly
 waived by authorized policy, or remain visibly failed or blocked; unresolved
 required obligations prohibit completion.
+
+The model also carries a compact incident contract. The first bounded defect
+repair may use `new`; its first correction uses `continuation`; the second
+corrective iteration and later use `systemic-repair`. Escaped defects, failed
+required gates, recurring corrections, and systemic repairs require an
+explicit lifecycle model with terminal outcomes, boundaries, transitions, and
+conservation rules. Keep this evidence in the active projection so a resumed
+assistant cannot silently return to isolated-file reasoning.
 
 A problem model is bounded to 65,536 canonical serialized bytes and 6,000
 structured words. Its collections and individual strings also have schema
@@ -239,6 +249,7 @@ Escalate the level or return work to the primary assistant when:
 - approval, authorization, safety, security, data, architecture, public
   contract, or live-external scope appears
 - validation fails or does not prove the changed contract
+- a repair repeats, escapes, or invalidates a previously passed local gate
 - a worker reports a scope violation, stale baseline, unexpected repository
   state, or architecture deviation
 - a new dependency or relationship appears during the task
@@ -253,7 +264,8 @@ For material work, final evidence should include:
 
 - decomposition policy and template revision
 - selected strategy, selection evidence, bounded problem model, active-
-  projection digest and measurements, and required reviews
+  projection digest and measurements, incident/lifecycle state, and required
+  reviews
 - task IDs, implementation levels, and executor decisions
 - proof-obligation assignment and final acceptance status
 - dependencies and readiness/blocker state
@@ -294,3 +306,5 @@ Reject or revise decomposition that:
 - records private reasoning or unsupported conclusions as project evidence
 - claims completion with an open, failed, blocked, or unevidenced required
   proof obligation or review
+- treats the second corrective iteration as a new isolated task or omits the
+  whole-lifecycle model after systemic escalation

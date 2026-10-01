@@ -176,17 +176,15 @@ Enforcement: required.
 Rule ID: `ALATYR-INTEGRITY-001`
 Source owner: `framework/logical-integrity.md`
 Installed owner: `.ai/framework/logical-integrity.md`
-Commitment: Name changed facts, re-derive testable invariants, reconcile
-related review items, identify owners and repair sets, require an updated,
-not-required, blocked, or unverified Project Contour Sync Decision for every
-code or test change, validate, make a proportional final-evidence decision,
-apply durable Engineering Evidence policy only when that support is active, and
-report unavailable or skipped capture plus residual risk otherwise, using
-support-state changes plus bounded accepted relationships or manual impact
-closure without treating hashes or inferred relationships as semantic proof,
-global multi-workstream convergence, active package scope, selected
-code-documentation profile and generator reconciliation, changed project term
-IDs and data links, and activated test-first evidence as applicable.
+Commitment: Name changed facts, re-derive testable invariants, reconcile review
+items, owners, and repair sets, and continue failed repairs through one
+incident family. Reopen invalidated obligations and escalate escaped,
+failed-gate, and second-or-later corrections to bounded whole-lifecycle
+reasoning. Require a reasoned Project Contour Sync Decision for code or test
+changes, validation, proportional durable evidence when active, and residual
+risk. Use bounded accepted relationships or manual impact closure without
+treating hashes as semantic proof, then reconcile applicable workstreams,
+packages, code documentation, vocabulary, and test-first evidence.
 Applies to: semantic fact changes, drift reviews.
 Enforcement: required.
 
@@ -225,14 +223,14 @@ Enforcement: required.
 Rule ID: `ALATYR-PACKAGE-001`
 Source owner: `framework/change-packages.md`
 Installed owner: `.ai/framework/change-packages.md`
-Commitment: Activate a change package only for a coherent material outcome,
-semantic multi-surface approval, audit, or publishable provenance need; bind
-changed facts, semantic and path scope, plan, approvals, companion decisions,
-implementation corrections, linked durable engineering-evidence IDs,
-validation, and before-to-after evidence without replacing canonical project
-owners or burdening ordinary local tasks; keep active indexes compact and shard
-completed evidence when context budgets require it without changing identity or
-authority.
+Commitment: Activate a package only for a coherent material outcome, semantic
+multi-surface approval, audit, or publishable provenance need. Bind facts,
+semantic/path scope, plan, approvals, companion decisions, corrections, linked
+evidence, validation, and provenance without replacing project owners or
+burdening local tasks. Project active incident family, iteration, predecessor
+digests, failed gate, and problem-model/lifecycle binding into the compact root
+index; auto-validate active records and changed plans while completed history
+stays lazy and shardable.
 Applies to: activated business changes, activated architecture changes,
 activated data changes, activated security changes, migrations, public contract
 changes.
@@ -491,21 +489,17 @@ Enforcement: required when module enabled.
 Rule ID: `ALATYR-DECOMPOSITION-001`
 Source owner: `framework/task-decomposition.md`
 Installed owner: `.ai/framework/task-decomposition.md`
-Commitment: Before non-trivial execution, select one task-matched primary
-analysis strategy, maintain a hard-bounded evidence-backed problem model, a
-digest-bound active projection, and proof obligations, and decompose the
-request by changed fact, canonical owner, contract, area, dependency,
-validation, and support-surface impact; treat strategy transitions as
-historical evidence without freezing later assumption or obligation state;
-assign exactly one implementation level, bounded context, allowed actions,
-validation, dependencies, and primary-or-worker executor decision per task;
-keep small settled work on descriptor-free direct-local execution; require
-adversarial review for protected or high-impact work; keep worker expansion
-inside a primary-owned bounded tree with obligation, coverage, and stop
-evidence; escalate only on named risk or relationship triggers; and keep
-strategy selection, obligation acceptance or waiver, semantic decisions,
-approval, protected phases, integration, and final convergence with the primary
-assistant.
+Commitment: Before non-trivial execution, select one primary strategy and
+maintain a bounded evidence-backed problem model, digest-bound active
+projection, incident/lifecycle state, and proof obligations. Decompose by fact,
+owner, contract, area, dependency, validation, and support impact. Treat
+transitions as history without freezing later state; require systemic lifecycle
+modeling for escaped, failed-gate, recurring, and second-or-later corrections.
+Give each task one level, bounded context, actions, validation, dependencies,
+and executor decision. Keep small settled work direct-local, require
+adversarial review for high impact, bound worker expansion, escalate only on
+named triggers, and retain primary ownership of strategy, obligations, semantic
+decisions, approval, integration, and convergence.
 Applies to: all installed adapter tasks, large tasks, delegated execution, team
 coordination, final evidence.
 Enforcement: required.

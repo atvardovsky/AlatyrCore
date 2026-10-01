@@ -6,9 +6,9 @@
   "plan_template": ".ai/assistant/templates/task-decomposition.md",
   "analysis_strategy": {
     "catalog": ".ai/assistant/analysis-strategies/index.json",
-    "problem_model_schema": "alatyr-problem-model-v2",
+    "problem_model_schema": "alatyr-problem-model-v3",
     "problem_model_template": ".ai/assistant/templates/problem-model.json",
-    "active_projection_schema": "alatyr-problem-model-active-projection-v1",
+    "active_projection_schema": "alatyr-problem-model-active-projection-v2",
     "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
     "problem_model_limits": {
       "max_utf8_bytes": 65536,
@@ -38,7 +38,7 @@
   "decomposition_order": [
     "classify authorization actions profile scale facts areas and risk",
     "select one primary analysis strategy and required review passes",
-    "record a bounded problem model, active projection, and proof obligations",
+    "record a bounded problem model, incident lineage, active projection, and proof obligations",
     "split by changed fact owner contract area dependency validation and support sync",
     "assign exactly one implementation level to each task",
     "record dependencies and reject cycles",
@@ -154,6 +154,9 @@
     "delegation_cannot_broaden_authorization": true,
     "escalate_on_new_relationship": true,
     "escalate_on_failed_validation": true,
+    "continue_incident_family_after_failed_validation": true,
+    "systemic_repair_after_second_corrective_iteration": true,
+    "lifecycle_model_required_for_systemic_or_escaped_failure": true,
     "escalation_loads_only_triggering_context": true,
     "exactly_one_primary_strategy": true,
     "small_task_skips_strategy_catalog": true,

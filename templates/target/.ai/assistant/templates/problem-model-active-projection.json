@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "projection_kind": "alatyr-active-problem-model",
   "model_id": "{PROBLEM_MODEL_ID}",
   "operation_id": "{OPERATION_ID}",
@@ -22,6 +22,28 @@
     "task_binding": {
       "task_ids": ["{TASK_ID}"],
       "workstream_ids": []
+    },
+    "incident": {
+      "mode": "none",
+      "family_id": "none",
+      "trigger": "none",
+      "corrective_iteration": 0,
+      "predecessor_model_ids": [],
+      "predecessor_package_ids": [],
+      "latest_failed_gate": {
+        "state": "none",
+        "id": "none",
+        "evidence_refs": []
+      }
+    },
+    "lifecycle_model": {
+      "required": false,
+      "reason": "not required for this bounded problem",
+      "required_outcomes": [],
+      "states": [],
+      "transitions": [],
+      "boundaries": [],
+      "conservation_rules": []
     },
     "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
     "risk_classes": [],

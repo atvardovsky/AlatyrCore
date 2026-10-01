@@ -347,6 +347,8 @@ Classify every proposed target file:
     large-task orchestration.
     Add the `change-package` overlay only when the target enables coherent
     material-change evidence. Keep package records outside routine bootstrap.
+    Keep active records in the root index with incident-family, corrective-
+    iteration, and failed-gate projections; archive only completed records.
     Add the `debug-mode` task-scale overlay only when the optional module and
     its `effectiveness-metrics` and `installed-operations` dependencies are
     enabled. Keep unrelated records outside context and require explicit
@@ -695,12 +697,14 @@ Report:
   aggregate budget, semantic-overlap, cancellation, retry/conflict fallback,
   validation, and primary-convergence evidence added or skipped
 - required analysis-strategy index and descriptors, problem-model schema and
-  template, strategy gate, continuity binding, and completion evidence added;
+  template, incident-family and lifecycle contract, strategy gate, continuity
+  binding, and completion evidence added;
   verify that small tasks skip the catalog and non-trivial tasks load only one
   selected descriptor
 - change-package root index, bounded digest-bound index shards, lazy overlay,
-  flow, schema, redacted report, retention policy, and validator support added,
-  migrated, skipped, or blocked
+  flow, schema, redacted report, incident/predecessor/problem-model bindings,
+  active-package auto-validation, retention policy, and validator support
+  added, migrated, skipped, or blocked
 - durable engineering-evidence owner, policy, compact index, lazy overlay,
   capture flow, gate, contract/record schema, binding lineage, validator,
   existing-record preservation, and current installation capture decision

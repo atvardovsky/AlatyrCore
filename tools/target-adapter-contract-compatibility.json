@@ -26,15 +26,15 @@
           "template": "templates/target/.ai/assistant/task-decomposition.json"
         },
         "problem-model": {
-          "current": 2,
-          "supported": [2],
+          "current": 3,
+          "supported": [3],
           "migration_limited": [],
           "schema": "schemas/alatyr-problem-model.schema.json",
           "template": "templates/target/.ai/assistant/templates/problem-model.json"
         },
         "problem-model-active-projection": {
-          "current": 1,
-          "supported": [1],
+          "current": 2,
+          "supported": [2],
           "migration_limited": [],
           "schema": "schemas/alatyr-problem-model-active-projection.schema.json",
           "template": "templates/target/.ai/assistant/templates/problem-model-active-projection.json"

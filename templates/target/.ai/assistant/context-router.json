@@ -189,6 +189,7 @@
       "approval safety security data architecture public contract or live-external boundary appears",
       "multiple project areas profiles workstreams or changed-fact owners are required",
       "focused validation fails or cannot prove the changed contract",
+      "repair repeats escapes or invalidates a previously passed gate",
       "user asks for broad audit large-task orchestration change package or debug evidence"
     ]
   },
@@ -208,6 +209,7 @@
     "use_when": [
       "non-trivial request",
       "standard large protected or delegated task",
+      "continued escaped or recurring defect repair",
       "small-task one-node evidence cannot prove enough"
     ],
     "conditional_context": [
@@ -218,7 +220,7 @@
     ],
     "small_task_behavior": "one direct-local task may be recorded without loading the policy or strategy catalog",
     "strategy_loading": "non-trivial work loads the index and exactly one selected descriptor; reviews load only when required",
-    "problem_state_loading": "load the active projection for routine work; load full model history only for a named conflict, stale projection, or transition update",
+    "problem_state_loading": "load the active projection including incident and lifecycle state for routine work; load full model history only for a named conflict, stale projection, lineage review, or transition update",
     "executor_selection": "primary first; worker only through enabled delegation policy and selected capability record"
   },
   "agent_entry_packet": {

@@ -13,6 +13,23 @@
     "large_task_packet": "{TARGET_RELATIVE_PACKET_PATH_OR_NOT_ACTIVE}",
     "active_workstream": "{WORKSTREAM_ID_OR_NOT_ACTIVE}"
   },
+  "incident_continuity": {
+    "mode": "none",
+    "family_id": "none",
+    "trigger": "none",
+    "corrective_iteration": 0,
+    "predecessors": [],
+    "problem_model": {
+      "path": ".ai/.runtime/problem-models/{PROBLEM_MODEL_ID}.json",
+      "sha256": "{LOWERCASE_SHA256_OF_PROBLEM_MODEL}"
+    },
+    "latest_failed_gate": {
+      "state": "none",
+      "id": "none",
+      "evidence_refs": []
+    },
+    "lifecycle_model_required": false
+  },
   "intent": {
     "goal": "{GOAL}",
     "non_goals": [

@@ -33,8 +33,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 143,
-      "content_digest": "sha256:41a7185d07ae3b06962c356d9ebe3f48cfe72cdbf967e6ade2958b0a3058197d"
+      "estimated_words": 158,
+      "content_digest": "sha256:d360186c9550e16fc85f8049330b7ed4e6ed8992a9b7cbe00bca990674161d97"
     },
     {
       "id": "assistant.content.context-task-scales-debug-mode-json",
@@ -164,8 +164,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 240,
-      "content_digest": "sha256:60ae1cfa6df1143baaa2059e54d9f04d2984191675afbd803f1fb9d125404075"
+      "estimated_words": 249,
+      "content_digest": "sha256:5404ca0a3073191f5ba5f25b0ce8d89e6835b70ec9d99a21db20efcade6aeaf1"
     }
   ]
 }

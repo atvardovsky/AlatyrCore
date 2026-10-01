@@ -14,6 +14,8 @@ facts remain owned by linked project sources.
 - Pull request: `{PULL_REQUEST_REFERENCE_OR_NOT_APPLICABLE}`
 - Working-tree isolation: `{START_AND_VALIDATION_STATE_PLUS_UNRELATED_CHANGE_HANDLING}`
 - Plan and approval: `{PLAN_AND_APPROVAL_REFERENCES}`
+- Incident continuity: `{FAMILY_ITERATION_PREDECESSORS_AND_LATEST_FAILED_GATE_OR_NONE}`
+- Lifecycle coverage: `{BOUNDARIES_TERMINAL_OUTCOMES_AND_CONSERVATION_RULES_OR_NOT_REQUIRED}`
 
 ## Architectural Scope
 

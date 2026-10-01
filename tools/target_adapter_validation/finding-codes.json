@@ -187,7 +187,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 93
+      "code_count": 108
     },
     {
       "id": "PLACEHOLDERS",
@@ -8522,6 +8522,15 @@
       ]
     },
     {
+      "code": "PACKAGE_ACTIVE_PLAN_UNINDEXED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "PACKAGE_ACTUAL_PATH",
       "levels": [
         "dynamic"
@@ -8840,6 +8849,132 @@
       "code": "PACKAGE_GIT_RANGE",
       "levels": [
         "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_CONTINUITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_MODEL_DIGEST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_MODEL_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_MODEL_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_MODEL_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_MODEL_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_PREDECESSOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_PREDECESSOR_DIGEST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_PREDECESSOR_FAMILY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_PREDECESSOR_INDEX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_PREDECESSOR_LINEAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_PREDECESSOR_ORDER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_PREDECESSOR_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_ACTIVE_SHARDED",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

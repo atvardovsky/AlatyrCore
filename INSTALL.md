@@ -145,7 +145,8 @@ The plan must identify:
   surfaces, and primary/worker executor decisions
 - analysis-strategy index and bounded descriptors, hard-bounded problem-model
   schema/template, digest-bound active-projection schema/template, strategy
-  gate, continuity binding, and completion evidence; keep `direct-local`
+  gate, incident-family and lifecycle contract, continuity binding, and
+  completion evidence; keep `direct-local`
   descriptor-free and load only one descriptor for non-trivial work
 - large-task task-scale routing, packet, checkpoint, and storage needs
 - worker launch/model-selection support, target delegation policy, role
@@ -750,8 +751,10 @@ absolute local path leakage, stale checker claims, manifest fields,
 target-local checker coverage, advisory legacy approval scope, and strict
 complete changed-path enforcement through explicitly selected JSON records
 bound to a supplied Git diff. It also checks optional framework baseline drift,
-explicitly selected change-package refs, hashes, declared semantic/path scope,
-companion decisions, correction impact, provenance strength, and migration-
+active root-index and explicitly selected change-package refs, incident
+lineage, problem-model binding, failed-gate/lifecycle state, hashes, declared
+semantic/path scope, companion decisions, correction impact, changed unbound
+package plans, provenance strength, and migration-
 diff evidence when supplied. Its JSON is current-state structural evidence, not
 proof of historical actions. It does not inspect target business truth,
 approve protected changes, replace target validation, or replace assistant

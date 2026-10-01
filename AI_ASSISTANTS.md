@@ -80,7 +80,11 @@ work, load `.ai/assistant/analysis-strategies/index.json`, select exactly one
 primary strategy, load only its descriptor, and maintain a bounded problem
 model with evidence-backed proof obligations and a digest-bound active
 projection. Load the projection for routine execution and recovery; load full
-history only for a named conflict, stale projection, or transition update.
+history only for a named conflict, stale projection, lineage review, or
+transition update. Continue corrections under the same incident family. From
+the second corrective iteration, or after an escaped defect or failed required
+gate, require systemic repair evidence and a bounded lifecycle model rather
+than another isolated file-level fix.
 Required adversarial review and unresolved required obligations block
 completion. Persist conclusions and evidence, never private chain-of-thought.
 

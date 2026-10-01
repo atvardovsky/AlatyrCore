@@ -9,7 +9,7 @@
     "source_model", "limits", "payload", "measurements"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "projection_kind": {"const": "alatyr-active-problem-model"},
     "model_id": {"$ref": "#/definitions/identifier"},
     "operation_id": {"$ref": "#/definitions/identifier"},
@@ -39,6 +39,7 @@
       "additionalProperties": false,
       "required": [
         "objective", "non_goals", "repository_binding", "task_binding",
+        "incident", "lifecycle_model",
         "primary_strategy_id", "risk_classes", "protected_change", "facts",
         "changed_facts", "active_assumptions", "invalidated_assumption_ids",
         "unknowns", "active_invariants", "current_hypotheses",
@@ -59,6 +60,8 @@
             "workstream_ids": {"$ref": "#/definitions/stringArray"}
           }
         },
+        "incident": {"$ref": "#/definitions/incident"},
+        "lifecycle_model": {"$ref": "#/definitions/lifecycleModel"},
         "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
         "risk_classes": {"$ref": "#/definitions/stringArray"},
         "protected_change": {"type": "boolean"},
@@ -170,6 +173,95 @@
       "maxItems": 64,
       "items": {"$ref": "#/definitions/reference"},
       "uniqueItems": true
+    },
+    "incident": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode", "family_id", "trigger", "corrective_iteration",
+        "predecessor_model_ids", "predecessor_package_ids", "latest_failed_gate"
+      ],
+      "properties": {
+        "mode": {"enum": ["none", "new", "continuation", "systemic-repair"]},
+        "family_id": {"$ref": "#/definitions/identifier"},
+        "trigger": {
+          "enum": [
+            "none", "reported-defect", "escaped-defect", "failed-required-gate",
+            "recurring-correction", "manual"
+          ]
+        },
+        "corrective_iteration": {"type": "integer", "minimum": 0},
+        "predecessor_model_ids": {"$ref": "#/definitions/stringArray"},
+        "predecessor_package_ids": {"$ref": "#/definitions/stringArray"},
+        "latest_failed_gate": {"$ref": "#/definitions/failedGate"}
+      }
+    },
+    "failedGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "id", "evidence_refs"],
+      "properties": {
+        "state": {"enum": ["none", "open", "resolved"]},
+        "id": {"$ref": "#/definitions/identifier"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "lifecycleModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required", "reason", "required_outcomes", "states", "transitions",
+        "boundaries", "conservation_rules"
+      ],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "required_outcomes": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {"enum": ["success", "rejection", "deferral", "expiry", "recovery", "failure"]},
+          "uniqueItems": true
+        },
+        "states": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/lifecycleState"}},
+        "transitions": {"type": "array", "maxItems": 128, "items": {"$ref": "#/definitions/lifecycleTransition"}},
+        "boundaries": {"type": "array", "maxItems": 32, "items": {"$ref": "#/definitions/lifecycleBoundary"}},
+        "conservation_rules": {"type": "array", "maxItems": 32, "items": {"$ref": "#/definitions/evidenceStatement"}}
+      }
+    },
+    "lifecycleState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner_ref", "terminal", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "terminal": {"type": "boolean"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "lifecycleTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to", "owner_ref", "outcome", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "from": {"$ref": "#/definitions/identifier"},
+        "to": {"$ref": "#/definitions/identifier"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "outcome": {"enum": ["success", "rejection", "deferral", "expiry", "recovery", "failure"]},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "lifecycleBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "owner_ref", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "kind": {"enum": ["producer", "orchestrator", "persistence", "consumer", "observability"]},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
     },
     "repositoryBinding": {
       "type": "object",

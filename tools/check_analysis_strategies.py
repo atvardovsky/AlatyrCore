@@ -32,13 +32,35 @@ PROJECTION_SCHEMA_PATH = (
 
 def sample_model(strategy_id: str) -> dict[str, object]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": f"fixture-{strategy_id}",
         "operation_id": "fixture-operation",
         "active_projection": {
-            "schema_version": 1,
+            "schema_version": 2,
             "path": f".ai/.runtime/problem-model-projections/fixture-{strategy_id}.json",
+        },
+        "incident": {
+            "mode": "none",
+            "family_id": "none",
+            "trigger": "none",
+            "corrective_iteration": 0,
+            "predecessor_model_ids": [],
+            "predecessor_package_ids": [],
+            "latest_failed_gate": {
+                "state": "none",
+                "id": "none",
+                "evidence_refs": [],
+            },
+        },
+        "lifecycle_model": {
+            "required": False,
+            "reason": "not required for this fixture",
+            "required_outcomes": [],
+            "states": [],
+            "transitions": [],
+            "boundaries": [],
+            "conservation_rules": [],
         },
         "primary_strategy_id": strategy_id,
         "risk_classes": [],
@@ -127,6 +149,108 @@ def main() -> int:
             "non_goals"
         ) != projected_model.get("non_goals"):
             failures.append("active projection omitted the current non-goals")
+
+        systemic = sample_model("invariant-first")
+        systemic["incident"] = {
+            "mode": "systemic-repair",
+            "family_id": "fixture-incident",
+            "trigger": "recurring-correction",
+            "corrective_iteration": 2,
+            "predecessor_model_ids": ["fixture-prior-model"],
+            "predecessor_package_ids": ["fixture-prior-package"],
+            "latest_failed_gate": {
+                "state": "resolved",
+                "id": "fixture-gate",
+                "evidence_refs": ["fixture:gate"],
+            },
+        }
+        systemic["lifecycle_model"] = {
+            "required": True,
+            "reason": "repeated repair requires whole-lifecycle convergence",
+            "required_outcomes": [
+                "success",
+                "rejection",
+                "deferral",
+                "expiry",
+                "recovery",
+                "failure",
+            ],
+            "states": [
+                {
+                    "id": "pending",
+                    "owner_ref": "fixture:orchestrator",
+                    "terminal": False,
+                    "evidence_refs": ["fixture:state"],
+                },
+                {
+                    "id": "complete",
+                    "owner_ref": "fixture:consumer",
+                    "terminal": True,
+                    "evidence_refs": ["fixture:state"],
+                },
+            ],
+            "transitions": [
+                {
+                    "id": "finish",
+                    "from": "pending",
+                    "to": "complete",
+                    "owner_ref": "fixture:orchestrator",
+                    "outcome": "success",
+                    "evidence_refs": ["fixture:transition"],
+                }
+            ],
+            "boundaries": [
+                {
+                    "id": kind,
+                    "kind": kind,
+                    "owner_ref": f"fixture:{kind}",
+                    "evidence_refs": [f"fixture:{kind}"],
+                }
+                for kind in ["producer", "orchestrator", "persistence", "consumer"]
+            ],
+            "conservation_rules": [
+                {
+                    "id": "one-terminal-outcome",
+                    "statement": "each accepted item reaches one terminal outcome",
+                    "evidence_refs": ["fixture:conservation"],
+                }
+            ],
+        }
+        systemic_failures = validate_problem_model(systemic, schema)
+        if systemic_failures:
+            failures.append(
+                "valid systemic incident model failed: " + "; ".join(systemic_failures)
+            )
+        systemic_projection = build_active_problem_model_projection(
+            systemic,
+            source_path=".ai/.runtime/problem-models/fixture-systemic.json",
+            source_sha256="0" * 64,
+        )
+        systemic_payload = systemic_projection.get("payload")
+        if (
+            not isinstance(systemic_payload, dict)
+            or systemic_payload.get("incident") != systemic.get("incident")
+            or systemic_payload.get("lifecycle_model") != systemic.get("lifecycle_model")
+        ):
+            failures.append("active projection omitted incident lifecycle evidence")
+
+        isolated_repeat = sample_model("invariant-first")
+        isolated_repeat["incident"] = dict(systemic["incident"])
+        isolated_repeat["incident"]["mode"] = "continuation"
+        isolated_repeat["incident"]["trigger"] = "reported-defect"
+        if not any(
+            "second corrective iteration" in failure
+            for failure in validate_problem_model(isolated_repeat, schema)
+        ):
+            failures.append("second corrective iteration was accepted as an isolated repair")
+
+        missing_lifecycle = sample_model("invariant-first")
+        missing_lifecycle["incident"] = dict(systemic["incident"])
+        if not any(
+            "requires a lifecycle model" in failure
+            for failure in validate_problem_model(missing_lifecycle, schema)
+        ):
+            failures.append("systemic incident without lifecycle evidence was accepted")
 
         transitioned = sample_model("invariant-first")
         transitioned["assumptions"] = [

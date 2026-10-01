@@ -10,6 +10,9 @@ Before execution:
 - select exactly one primary strategy from the target catalog
 - load only the index and selected descriptor
 - record evidence for the selection and a bounded problem model
+- preserve incident-family and failed-gate lineage when the task corrects
+  earlier repair work; from the second corrective iteration use systemic
+  repair and model the whole lifecycle
 - keep the full model within installed byte, word, collection, and statement
   limits; use successor models or evidence shards instead of truncating duties
 - load the digest-bound active projection into assistant context before full
@@ -27,6 +30,8 @@ Before completion:
   target-authorized policy
 - required reviews passed with evidence
 - failed, blocked, open, or unevidenced duties block completion
+- systemic repair covers producer, orchestrator, persistence, and consumer
+  boundaries plus success, rejection, deferral, expiry, recovery, and failure
 - invalidated assumptions and unresolved decisions remain explicit
 - historical transitions reference existing assumptions and obligations without
   requiring their current states to remain invalidated or unresolved

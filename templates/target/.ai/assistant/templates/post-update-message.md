@@ -98,8 +98,10 @@ Operation help:
   not promoted during update.
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/change-packages/index.json"]} -->
 - Recheck change-package records, semantic approval fields, provenance grades,
-  and validator support when the optional module or schema changed. Preserve
-  historical target records.
+  active incident-family/predecessor/problem-model bindings, failed-gate and
+  lifecycle state, and validator support when the optional module or schema
+  changed. Preserve completed historical target records; regenerate
+  incompatible ignored runtime models and projections.
 <!-- /alatyr:scaffold-fragment -->
 - Preserve durable engineering-evidence IDs and records. Recheck compact index
   synchronization, contract/template versions, task/revision binding state,

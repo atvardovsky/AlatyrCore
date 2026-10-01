@@ -46,13 +46,35 @@ def _git(target: Path, *args: str) -> None:
 
 def _model() -> dict[str, object]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": "fixture-problem",
         "operation_id": "fixture-operation",
         "active_projection": {
-            "schema_version": 1,
+            "schema_version": 2,
             "path": ".ai/.runtime/problem-model-projections/fixture-problem.json",
+        },
+        "incident": {
+            "mode": "none",
+            "family_id": "none",
+            "trigger": "none",
+            "corrective_iteration": 0,
+            "predecessor_model_ids": [],
+            "predecessor_package_ids": [],
+            "latest_failed_gate": {
+                "state": "none",
+                "id": "none",
+                "evidence_refs": [],
+            },
+        },
+        "lifecycle_model": {
+            "required": False,
+            "reason": "not required for this fixture",
+            "required_outcomes": [],
+            "states": [],
+            "transitions": [],
+            "boundaries": [],
+            "conservation_rules": [],
         },
         "primary_strategy_id": "invariant-first",
         "risk_classes": ["protected"],

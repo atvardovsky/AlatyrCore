@@ -28,12 +28,14 @@ TARGET_REQUIRED_EXPANSION_TRIGGERS = [
     "source-of-truth owner is missing disputed or contradicted",
     "approval safety security data architecture public contract or live-external boundary appears",
     "focused validation fails or cannot prove the changed contract",
+    "repair repeats escapes or invalidates a previously passed gate",
 ]
 
 TARGET_REQUIRED_SMALL_TASK_EXPANSION_TRIGGERS = [
     "semantic or logical fact changes",
     "source-of-truth owner is missing disputed or contradicted",
     "focused validation fails or cannot prove the changed contract",
+    "repair repeats escapes or invalidates a previously passed gate",
 ]
 
 SOURCE_REQUIRED_EXPANSION_TRIGGERS = [

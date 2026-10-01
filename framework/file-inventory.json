@@ -1,10 +1,10 @@
 {
-  "adapter_schema_version": 62,
+  "adapter_schema_version": 63,
   "files": [
     {
       "path": "framework/README.md",
       "rule_ids": [],
-      "sha256": "fa2a63405f400baa6cd7a7b78441bb0d6005ec968a65b391deef08331b480136"
+      "sha256": "b0b4ec98bdf135ce8ed0eac0cc45f7a3475629df360b326ef71416aae9947e17"
     },
     {
       "path": "framework/action-authorization.md",
@@ -69,17 +69,17 @@
     {
       "path": "framework/catalog/change/context-index.json",
       "rule_ids": [],
-      "sha256": "b93af58b6a6e30c4bfef5c414397d0d650f243ed26b1fff84d4fbda75d7bffe0"
+      "sha256": "78d00edcc63bd0257dc303165a0cd376da705982ab0ffca644ee704d4b24f7d3"
     },
     {
       "path": "framework/catalog/collaboration/context-index.json",
       "rule_ids": [],
-      "sha256": "dd07bc42a064c48e16efd17081ab0c227cfad5817087aa083e57d6fdd4b697f7"
+      "sha256": "1cc8d72f26157b5c014985b18e908dd8acd55759a66b7cab56e2a0f36d7623c6"
     },
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "0ebc8d517a1cb82e2d69859a6850073ab723e68c366595dfe3a79876d302738e"
+      "sha256": "0d8f276c5fe865439d34e21a6db8bb283a3dbc40a5fe03bdc3f06e760657247d"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -106,7 +106,7 @@
       "rule_ids": [
         "ALATYR-PACKAGE-001"
       ],
-      "sha256": "34ebb86d28f4cb747a950356c1b39c20fb799457f5bbb23ac3f5934c461a0711"
+      "sha256": "0e1f2c128b15377ae38ef5a4f942244d015168cad44506a5442a1608c8d96d09"
     },
     {
       "path": "framework/change-risk-model.md",
@@ -135,7 +135,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "b8a2f7db5cb56054e0fe90100f0cceee7bfae081ecc7a2117705cd9596759ded"
+      "sha256": "f5069891120bd77c832e48d0e67b00adbaca81ad134a3dd6460a5067a72fc0fb"
     },
     {
       "path": "framework/context-profiles.md",
@@ -214,7 +214,7 @@
     {
       "path": "framework/large-task-orchestration.md",
       "rule_ids": [],
-      "sha256": "b8c812efadb35dcf2e610f078c2836e702e2f4c5f4ed16f9ad3ddb4013a250a9"
+      "sha256": "9dadef7cba20e95159c170fdb0878f33bf66a281d3b6f8c3adce4ba0967c9df9"
     },
     {
       "path": "framework/lifecycle.md",
@@ -228,7 +228,7 @@
       "rule_ids": [
         "ALATYR-INTEGRITY-001"
       ],
-      "sha256": "d16098b678ed7e721602747bf1f8fa5ee36036fe9a63f42b88743eaf554a4f28"
+      "sha256": "d9bb6d84f140973336ea01228ae8ef22908e8c5e8964676012fa52216e8cbe26"
     },
     {
       "path": "framework/migration-diff.md",
@@ -290,12 +290,12 @@
     {
       "path": "framework/rule-registry.json",
       "rule_ids": [],
-      "sha256": "b6e55bfe7c0d184528b2930691c3bb679e437e484bfc5ab840429ba172d1a740"
+      "sha256": "d0fe4923b03eefb5fddff7d91dfbb59373785122108c58cd70ba703ec408485d"
     },
     {
       "path": "framework/rule-registry.md",
       "rule_ids": [],
-      "sha256": "6adb7905d7c8bcbd740cffdb502a097dfe5b0c27a224ac1eacaf106a5ff31510"
+      "sha256": "7a31a1fe9c6f75120e7a6922a51096eb696b761a0faea3c6cc8dc41172b07f55"
     },
     {
       "path": "framework/scaffolding.md",
@@ -332,7 +332,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "5efa8bc376cc530494f0c2ebeaa2cfb05cc86a7464a57a2284b0b051784165ea"
+      "sha256": "643fc0cfb50328c18ca5092b8839a3175bddaaa512bdc58fe596f04ecb589707"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -387,7 +387,7 @@
       "rule_ids": [
         "ALATYR-DECOMPOSITION-001"
       ],
-      "sha256": "fab8c445f198beea6e287049f2cff3633567dae9a2b57b9e51af0ff9b647e667"
+      "sha256": "28710f2de43f7cd9d47ebba765f77af2e9b74852269b6227293f14875cd82dbd"
     },
     {
       "path": "framework/team-collaboration.md",
@@ -416,8 +416,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.74",
+  "framework_version": "0.1.0-alpha.75",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 69
+  "template_version": 70
 }

@@ -31,11 +31,13 @@
     "semantic or path approval scope changes",
     "implementation discovery affects an invariant",
     "companion decision is missing",
-    "provenance cannot establish the claimed evidence quality"
+    "provenance cannot establish the claimed evidence quality",
+    "a failed repair requires incident-family or lifecycle expansion"
   ],
   "budget_behavior": "load compact package identity and active workstream first; expand only selected evidence sections",
   "final_evidence": [
     "package activation and identity",
+    "incident lineage failed-gate state and lifecycle coverage",
     "semantic and path scope reconciliation",
     "companion decisions and material corrections",
     "repository provenance and claim strength",

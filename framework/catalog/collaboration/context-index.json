@@ -26,8 +26,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1473,
-      "content_digest": "sha256:b8c812efadb35dcf2e610f078c2836e702e2f4c5f4ed16f9ad3ddb4013a250a9"
+      "estimated_words": 1511,
+      "content_digest": "sha256:9dadef7cba20e95159c170fdb0878f33bf66a281d3b6f8c3adce4ba0967c9df9"
     },
     {
       "id": "framework.collaboration.subagent-delegation-md",
@@ -70,8 +70,8 @@
       "owner_refs": [
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 1874,
-      "content_digest": "sha256:fab8c445f198beea6e287049f2cff3633567dae9a2b57b9e51af0ff9b647e667"
+      "estimated_words": 1990,
+      "content_digest": "sha256:28710f2de43f7cd9d47ebba765f77af2e9b74852269b6227293f14875cd82dbd"
     },
     {
       "id": "framework.collaboration.team-collaboration-md",

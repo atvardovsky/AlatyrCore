@@ -27,7 +27,10 @@ import jsonschema
 
 from approval_archive import INDEX_PATH as APPROVAL_ARCHIVE_INDEX_PATH, build_archive_index
 from change_package_contract import (
+    ACTIVE_CHANGE_PACKAGE_STATUSES,
     CHANGE_PACKAGE_STATUSES,
+    INCIDENT_INDEX_PROJECTION_FIELDS,
+    incident_continuity_failures,
     package_index_projection_mismatches,
 )
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
@@ -127,7 +130,12 @@ from target_adapter_validation.project_knowledge import (
 )
 from target_adapter_validation.subagent_delegation import validate_subagent_delegation
 from target_adapter_validation.task_decomposition import validate_task_decomposition
-from target_adapter_validation.analysis_strategies import validate_analysis_strategies
+from target_adapter_validation.analysis_strategies import (
+    load_problem_model_projection_schema,
+    load_problem_model_schema,
+    validate_analysis_strategies,
+    validate_selected_problem_model,
+)
 from target_adapter_validation.team_collaboration import validate_team_collaboration
 from target_adapter_validation.development_evidence import validate_development_evidence
 from target_adapter_validation.dependency_knowledge import validate_dependency_knowledge
@@ -957,6 +965,8 @@ class Validator:
         self.change_packages = self.selected_target_paths(
             change_packages, "--change-package"
         )
+        self.active_change_package_paths: set[str] = set()
+        self.validated_change_package_paths: set[str] = set()
         continuity_candidates: list[Path] = []
         for packet in continuity_packets or []:
             candidate = packet if packet.is_absolute() else self.target / packet
@@ -5186,7 +5196,12 @@ class Validator:
     def change_package_finding(
         self, code: str, message: str, path: str | None = None
     ) -> None:
-        finding = self.error if self.enforce_change_package else self.warn
+        finding = (
+            self.error
+            if self.enforce_change_package
+            or (path is not None and path in self.active_change_package_paths)
+            else self.warn
+        )
         finding(code, message, path)
 
     def check_change_package_index_entries(
@@ -5213,7 +5228,7 @@ class Validator:
                     source,
                 )
                 continue
-            for field in [
+            required_fields = [
                 "package_id",
                 "status",
                 "record",
@@ -5224,7 +5239,13 @@ class Validator:
                 "approval_records",
                 "active_workstream",
                 "residual_risk",
-            ]:
+            ]
+            if entry.get("status") in ACTIVE_CHANGE_PACKAGE_STATUSES:
+                required_fields.extend(INCIDENT_INDEX_PROJECTION_FIELDS)
+                record_value = entry.get("record")
+                if isinstance(record_value, str):
+                    self.active_change_package_paths.add(record_value)
+            for field in required_fields:
                 if field not in entry:
                     self.error(
                         "PACKAGE_INDEX_FIELD",
@@ -5262,7 +5283,10 @@ class Validator:
                 )
                 continue
             validate_projection = (
-                changed_paths is None or source_changed or record in changed_paths
+                changed_paths is None
+                or source_changed
+                or record in changed_paths
+                or status in ACTIVE_CHANGE_PACKAGE_STATUSES
             )
             if not validate_projection:
                 continue
@@ -5470,6 +5494,16 @@ class Validator:
                     f"shards[{index}].record_count differs from its file",
                     relpath,
                 )
+            for record_index, entry in enumerate(shard_records):
+                if (
+                    isinstance(entry, dict)
+                    and entry.get("status") in ACTIVE_CHANGE_PACKAGE_STATUSES
+                ):
+                    self.error(
+                        "PACKAGE_INDEX_ACTIVE_SHARDED",
+                        f"shards[{index}].records[{record_index}] is active and must remain in the root index",
+                        shard_relpath,
+                    )
             matched_records = self.check_change_package_index_entries(
                 shard_records,
                 source=shard_relpath,
@@ -5480,9 +5514,11 @@ class Validator:
             )
             pending_changed_records -= matched_records
 
-    def resolve_change_packages(self) -> list[Path]:
+    def resolve_change_packages(
+        self, candidates: list[Path] | None = None
+    ) -> list[Path]:
         resolved: list[Path] = []
-        for package in self.change_packages:
+        for package in candidates if candidates is not None else self.change_packages:
             try:
                 package.relative_to(self.target)
             except ValueError:
@@ -5590,11 +5626,93 @@ class Validator:
             digest.update(b"\0")
         return digest.hexdigest()
 
-    def indexed_change_package_paths(self, index_data: dict[str, Any]) -> set[str]:
-        indexed: set[str] = set()
-        for entry in index_data.get("records", []):
-            if isinstance(entry, dict) and isinstance(entry.get("record"), str):
-                indexed.add(entry["record"])
+    def validate_change_package_facts(
+        self, data: dict[str, Any], source: str
+    ) -> list[str]:
+        changed_facts = data.get("changed_facts")
+        declared_fact_ids: list[str] = []
+        if not isinstance(changed_facts, list) or not changed_facts:
+            self.change_package_finding(
+                "PACKAGE_CHANGED_FACTS",
+                "change package requires changed_facts",
+                source,
+            )
+            return declared_fact_ids
+        for index, fact in enumerate(changed_facts):
+            if not isinstance(fact, dict):
+                self.change_package_finding(
+                    "PACKAGE_CHANGED_FACT",
+                    f"changed_facts[{index}] must be an object",
+                    source,
+                )
+                continue
+            for field in ["id", "statement", "canonical_owner"]:
+                value = fact.get(field)
+                if not isinstance(value, str) or not value or is_placeholder(value):
+                    self.change_package_finding(
+                        "PACKAGE_CHANGED_FACT_FIELD",
+                        f"changed_facts[{index}].{field} must be resolved",
+                        source,
+                    )
+            if isinstance(fact.get("id"), str):
+                declared_fact_ids.append(fact["id"])
+            invariants = fact.get("invariants")
+            if not isinstance(invariants, list) or not invariants:
+                self.change_package_finding(
+                    "PACKAGE_INVARIANTS",
+                    f"changed_facts[{index}] requires re-derived invariants",
+                    source,
+                )
+        return declared_fact_ids
+
+    def validate_change_package_plan(
+        self, data: dict[str, Any], source: str
+    ) -> str | None:
+        plan_file = self.package_string(
+            data, ("plan", "file"), source, allow_unavailable=True
+        )
+        plan_hash_value = nested_json_value(data, ("plan", "sha256"))
+        plan_hash = normalize_hash_field(
+            plan_hash_value if isinstance(plan_hash_value, str) else ""
+        )
+        if (
+            isinstance(plan_hash_value, str)
+            and plan_hash_value
+            and not is_placeholder(plan_hash_value)
+            and "not available" not in plan_hash_value.lower()
+            and not plan_hash
+        ):
+            self.change_package_finding(
+                "PACKAGE_PLAN_HASH_FORMAT",
+                "plan.sha256 must be a SHA-256 digest or an unavailable value with reason",
+                source,
+            )
+        if not plan_file or "not available" in plan_file.lower():
+            return None
+        if not is_target_relative_path(plan_file):
+            self.change_package_finding(
+                "PACKAGE_PLAN_PATH", "plan file must be target-relative", source
+            )
+            return plan_file
+        plan_path = self.target_path(plan_file)
+        if not self.is_target_file(plan_path):
+            self.change_package_finding(
+                "PACKAGE_PLAN_MISSING", f"plan file does not exist: {plan_file}", source
+            )
+        elif plan_hash and self.context.content_digest(plan_path) != plan_hash:
+            self.change_package_finding(
+                "PACKAGE_PLAN_HASH", "plan SHA-256 does not match plan file", source
+            )
+        return plan_file
+
+    def indexed_change_package_entries(
+        self, index_data: dict[str, Any]
+    ) -> list[dict[str, Any]]:
+        indexed = [
+            entry
+            for entry in index_data.get("records", [])
+            if isinstance(entry, dict)
+        ]
         for descriptor in index_data.get("shards", []):
             if not isinstance(descriptor, dict):
                 continue
@@ -5609,33 +5727,224 @@ class Validator:
             if shard_error is not None or not isinstance(shard, dict):
                 continue
             for entry in shard.get("records", []):
-                if isinstance(entry, dict) and isinstance(entry.get("record"), str):
-                    indexed.add(entry["record"])
+                if isinstance(entry, dict):
+                    indexed.append(entry)
         return indexed
 
-    def check_change_packages(self) -> None:
-        if self.enforce_change_package and not self.change_packages:
-            self.error(
-                "PACKAGE_SELECTION_REQUIRED",
-                "--enforce-change-package requires one or more explicit "
-                "--change-package values; historical records are not auto-selected",
-            )
+    def indexed_change_package_paths(self, index_data: dict[str, Any]) -> set[str]:
+        return {
+            entry["record"]
+            for entry in self.indexed_change_package_entries(index_data)
+            if isinstance(entry.get("record"), str)
+        }
+
+    def validate_package_incident_continuity(
+        self,
+        data: dict[str, Any],
+        source: str,
+        *,
+        status: str,
+        indexed_entries: list[dict[str, Any]],
+    ) -> None:
+        if status not in ACTIVE_CHANGE_PACKAGE_STATUSES:
             return
-        if not self.change_packages:
-            self.info(
-                "PACKAGE_CHECK_SKIPPED",
-                "change-package validation skipped because no explicit record was selected",
-            )
+        incident = data.get("incident_continuity")
+        for failure in incident_continuity_failures(data):
+            self.error("PACKAGE_INCIDENT_CONTINUITY", failure, source)
+        if not isinstance(incident, dict):
             return
 
+        entry_by_id = {
+            entry.get("package_id"): entry
+            for entry in indexed_entries
+            if isinstance(entry.get("package_id"), str)
+        }
+        predecessor_ids: list[str] = []
+        predecessors = incident.get("predecessors")
+        for index, binding in enumerate(predecessors if isinstance(predecessors, list) else []):
+            if not isinstance(binding, dict):
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR",
+                    f"incident predecessors[{index}] must be an object",
+                    source,
+                )
+                continue
+            if set(binding) != {"package_id", "record", "sha256"}:
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR",
+                    f"incident predecessors[{index}] requires package_id, record, and sha256",
+                    source,
+                )
+                continue
+            predecessor_id = binding.get("package_id")
+            predecessor_record = binding.get("record")
+            predecessor_sha = binding.get("sha256")
+            if isinstance(predecessor_id, str):
+                predecessor_ids.append(predecessor_id)
+            indexed_entry = entry_by_id.get(predecessor_id)
+            if not isinstance(indexed_entry, dict) or indexed_entry.get("record") != predecessor_record:
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR_INDEX",
+                    f"predecessor {predecessor_id!r} is not bound to the declared indexed record",
+                    source,
+                )
+                continue
+            if not isinstance(predecessor_record, str) or not self.is_target_file(
+                predecessor_record
+            ):
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR_RECORD",
+                    f"predecessor record is unavailable: {predecessor_record!r}",
+                    source,
+                )
+                continue
+            predecessor_path = self.target_path(predecessor_record)
+            if (
+                not isinstance(predecessor_sha, str)
+                or not re.fullmatch(r"[a-f0-9]{64}", predecessor_sha)
+                or self.context.content_digest(predecessor_path) != predecessor_sha
+            ):
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR_DIGEST",
+                    f"predecessor {predecessor_id!r} digest does not match its record",
+                    source,
+                )
+                continue
+            predecessor, predecessor_error = self.context.read_json(predecessor_path)
+            predecessor_incident = (
+                predecessor.get("incident_continuity")
+                if predecessor_error is None and isinstance(predecessor, dict)
+                else None
+            )
+            if not isinstance(predecessor_incident, dict):
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR_LINEAGE",
+                    f"predecessor {predecessor_id!r} lacks incident continuity evidence",
+                    source,
+                )
+                continue
+            if predecessor_incident.get("family_id") != incident.get("family_id"):
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR_FAMILY",
+                    f"predecessor {predecessor_id!r} belongs to another incident family",
+                    source,
+                )
+            predecessor_iteration = predecessor_incident.get("corrective_iteration")
+            current_iteration = incident.get("corrective_iteration")
+            if (
+                not isinstance(predecessor_iteration, int)
+                or not isinstance(current_iteration, int)
+                or predecessor_iteration >= current_iteration
+            ):
+                self.error(
+                    "PACKAGE_INCIDENT_PREDECESSOR_ORDER",
+                    f"predecessor {predecessor_id!r} must have a lower corrective iteration",
+                    source,
+                )
+
+        model_binding = incident.get("problem_model")
+        if not isinstance(model_binding, dict):
+            return
+        model_relpath = model_binding.get("path")
+        model_sha = model_binding.get("sha256")
+        if (
+            not isinstance(model_relpath, str)
+            or not is_target_relative_path(model_relpath)
+            or not model_relpath.startswith(".ai/.runtime/problem-models/")
+            or not model_relpath.endswith(".json")
+        ):
+            self.error(
+                "PACKAGE_INCIDENT_MODEL_PATH",
+                "active incident continuity requires a target-runtime problem model path",
+                source,
+            )
+            return
+        model_path = self.target_path(model_relpath)
+        if not self.is_target_file(model_path):
+            self.error(
+                "PACKAGE_INCIDENT_MODEL_MISSING",
+                "active incident continuity problem model is unavailable",
+                model_relpath,
+            )
+            return
+        if (
+            not isinstance(model_sha, str)
+            or not re.fullmatch(r"[a-f0-9]{64}", model_sha)
+            or self.context.content_digest(model_path) != model_sha
+        ):
+            self.error(
+                "PACKAGE_INCIDENT_MODEL_DIGEST",
+                "incident problem-model digest differs from the selected model",
+                source,
+            )
+        try:
+            schema = load_problem_model_schema()
+            projection_schema = load_problem_model_projection_schema()
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            self.error("PACKAGE_INCIDENT_MODEL_SCHEMA", str(exc), source)
+            return
+        model = validate_selected_problem_model(
+            self,
+            model_path,
+            schema,
+            projection_schema=projection_schema,
+            require_completion=status == "validated",
+        )
+        if not isinstance(model, dict):
+            return
+        model_incident = model.get("incident")
+        model_lifecycle = model.get("lifecycle_model")
+        if not isinstance(model_incident, dict) or not isinstance(model_lifecycle, dict):
+            return
+        comparisons = {
+            "mode": incident.get("mode"),
+            "family_id": incident.get("family_id"),
+            "trigger": incident.get("trigger"),
+            "corrective_iteration": incident.get("corrective_iteration"),
+            "predecessor_package_ids": predecessor_ids,
+            "latest_failed_gate": incident.get("latest_failed_gate"),
+        }
+        for field, expected in comparisons.items():
+            if model_incident.get(field) != expected:
+                self.error(
+                    "PACKAGE_INCIDENT_MODEL_DRIFT",
+                    f"problem model incident.{field} differs from its package",
+                    source,
+                )
+        if model_lifecycle.get("required") != incident.get(
+            "lifecycle_model_required"
+        ):
+            self.error(
+                "PACKAGE_INCIDENT_MODEL_DRIFT",
+                "problem model lifecycle requirement differs from its package",
+                source,
+            )
+
+    def check_change_packages(self) -> None:
         index_path = self.target_path(".ai/assistant/change-packages/index.json")
         indexed_records: set[str] = set()
+        indexed_entries: list[dict[str, Any]] = []
+        index_data: dict[str, Any] = {}
+        loaded_historical_index_entries = False
         if self.is_target_file(index_path):
-            index_data, index_error = self.context.read_json(index_path)
+            loaded_index, index_error = self.context.read_json(index_path)
             if index_error is not None:
-                index_data = {}
-            if isinstance(index_data, dict):
-                indexed_records = self.indexed_change_package_paths(index_data)
+                loaded_index = {}
+            if isinstance(loaded_index, dict):
+                index_data = loaded_index
+                indexed_entries = [
+                    entry
+                    for entry in index_data.get("records", [])
+                    if isinstance(entry, dict)
+                ]
+                if self.change_packages:
+                    indexed_entries = self.indexed_change_package_entries(index_data)
+                    loaded_historical_index_entries = True
+                indexed_records = {
+                    entry["record"]
+                    for entry in indexed_entries
+                    if isinstance(entry.get("record"), str)
+                }
         elif self.enforce_change_package:
             self.error(
                 "PACKAGE_INDEX_REQUIRED",
@@ -5643,7 +5952,47 @@ class Validator:
                 ".ai/assistant/change-packages/index.json",
             )
 
-        packages = self.resolve_change_packages()
+        changed_paths = self.git.changed_files(self.diff_ref) if self.diff_ref else None
+        changed_plans = {
+            path
+            for path in changed_paths or []
+            if path.startswith(".ai/assistant/change-packages/")
+            and (path.endswith("-plan.md") or path.endswith("/plan.md"))
+        }
+        selected_packages = list(self.change_packages)
+        selected_relpaths = {self.rel(path) for path in selected_packages}
+        for entry in indexed_entries:
+            record = entry.get("record")
+            if (
+                entry.get("status") in ACTIVE_CHANGE_PACKAGE_STATUSES
+                and isinstance(record, str)
+                and record not in selected_relpaths
+            ):
+                self.active_change_package_paths.add(record)
+                selected_packages.append(self.target_path(record))
+                selected_relpaths.add(record)
+        if self.enforce_change_package and not selected_packages:
+            self.error(
+                "PACKAGE_SELECTION_REQUIRED",
+                "strict change-package validation requires an explicit or active indexed package",
+            )
+            return
+        if not selected_packages:
+            for plan in sorted(changed_plans):
+                self.error(
+                    "PACKAGE_ACTIVE_PLAN_UNINDEXED",
+                    "changed package plan is not bound to an active indexed change package",
+                    plan,
+                )
+            self.info(
+                "PACKAGE_CHECK_SKIPPED",
+                "change-package validation skipped because no explicit or active indexed record exists",
+            )
+            return
+
+        packages = self.resolve_change_packages(selected_packages)
+        self.validated_change_package_paths.update(self.rel(path) for path in packages)
+        referenced_active_plans: set[str] = set()
         engineering_evidence_ids: set[str] = set()
         engineering_index_path = self.target_path(
             ".ai/project/engineering-evidence/index.json"
@@ -5718,41 +6067,29 @@ class Validator:
                     "PACKAGE_STATUS", f"unsupported package status: {status}", source
                 )
             self.package_string(data, ("activation_reason",), source)
+            incident = data.get("incident_continuity")
+            if (
+                status in ACTIVE_CHANGE_PACKAGE_STATUSES
+                and isinstance(incident, dict)
+                and incident.get("predecessors")
+                and not loaded_historical_index_entries
+                and index_data
+            ):
+                indexed_entries = self.indexed_change_package_entries(index_data)
+                indexed_records = {
+                    entry["record"]
+                    for entry in indexed_entries
+                    if isinstance(entry.get("record"), str)
+                }
+                loaded_historical_index_entries = True
+            self.validate_package_incident_continuity(
+                data,
+                source,
+                status=status,
+                indexed_entries=indexed_entries,
+            )
 
-            changed_facts = data.get("changed_facts")
-            declared_fact_ids: list[str] = []
-            if not isinstance(changed_facts, list) or not changed_facts:
-                self.change_package_finding(
-                    "PACKAGE_CHANGED_FACTS",
-                    "change package requires changed_facts",
-                    source,
-                )
-            else:
-                for index, fact in enumerate(changed_facts):
-                    if not isinstance(fact, dict):
-                        self.change_package_finding(
-                            "PACKAGE_CHANGED_FACT",
-                            f"changed_facts[{index}] must be an object",
-                            source,
-                        )
-                        continue
-                    for field in ["id", "statement", "canonical_owner"]:
-                        value = fact.get(field)
-                        if not isinstance(value, str) or not value or is_placeholder(value):
-                            self.change_package_finding(
-                                "PACKAGE_CHANGED_FACT_FIELD",
-                                f"changed_facts[{index}].{field} must be resolved",
-                                source,
-                            )
-                    if isinstance(fact.get("id"), str):
-                        declared_fact_ids.append(fact["id"])
-                    invariants = fact.get("invariants")
-                    if not isinstance(invariants, list) or not invariants:
-                        self.change_package_finding(
-                            "PACKAGE_INVARIANTS",
-                            f"changed_facts[{index}] requires re-derived invariants",
-                            source,
-                        )
+            declared_fact_ids = self.validate_change_package_facts(data, source)
 
             approved_facts = self.package_list(
                 data, ("approved_scope", "changed_fact_ids"), source
@@ -5827,38 +6164,9 @@ class Validator:
                         source,
                     )
 
-            plan_file = self.package_string(
-                data, ("plan", "file"), source, allow_unavailable=True
-            )
-            plan_hash_value = nested_json_value(data, ("plan", "sha256"))
-            plan_hash = normalize_hash_field(plan_hash_value if isinstance(plan_hash_value, str) else "")
-            if (
-                isinstance(plan_hash_value, str)
-                and plan_hash_value
-                and not is_placeholder(plan_hash_value)
-                and "not available" not in plan_hash_value.lower()
-                and not plan_hash
-            ):
-                self.change_package_finding(
-                    "PACKAGE_PLAN_HASH_FORMAT",
-                    "plan.sha256 must be a SHA-256 digest or an unavailable value with reason",
-                    source,
-                )
-            if plan_file and "not available" not in plan_file.lower():
-                if not is_target_relative_path(plan_file):
-                    self.change_package_finding(
-                        "PACKAGE_PLAN_PATH", "plan file must be target-relative", source
-                    )
-                else:
-                    plan_path = self.target_path(plan_file)
-                    if not self.is_target_file(plan_path):
-                        self.change_package_finding(
-                            "PACKAGE_PLAN_MISSING", f"plan file does not exist: {plan_file}", source
-                        )
-                    elif plan_hash and self.context.content_digest(plan_path) != plan_hash:
-                        self.change_package_finding(
-                            "PACKAGE_PLAN_HASH", "plan SHA-256 does not match plan file", source
-                        )
+            plan_file = self.validate_change_package_plan(data, source)
+            if plan_file and status in ACTIVE_CHANGE_PACKAGE_STATUSES:
+                referenced_active_plans.add(plan_file)
 
             approval_refs = self.package_list(
                 data, ("approved_scope", "approval_records"), source, required=False
@@ -6203,6 +6511,14 @@ class Validator:
                 f"checked change package {package_id or source}; structural checks do not prove semantic completeness or architecture correctness",
                 source,
             )
+
+        if changed_paths is not None:
+            for plan in sorted(changed_plans - referenced_active_plans):
+                self.error(
+                    "PACKAGE_ACTIVE_PLAN_UNINDEXED",
+                    "changed package plan is not bound to an active indexed change package",
+                    plan,
+                )
 
     def check_framework_baseline(
         self,
@@ -7129,8 +7445,9 @@ def main() -> int:
         action="append",
         default=[],
         help=(
-            "Explicit target-relative change-package JSON record to validate. "
-            "May be provided multiple times; historical records are not auto-selected."
+            "Additional target-relative change-package JSON record to validate. "
+            "Active root-index records are selected automatically; completed "
+            "historical records remain lazy unless explicitly selected."
         ),
     )
     parser.add_argument(
@@ -7159,8 +7476,9 @@ def main() -> int:
         "--enforce-change-package",
         action="store_true",
         help=(
-            "Fail on invalid selected package shape, hashes, refs, declared "
-            "semantic/path scope, companion decisions, corrections, or provenance."
+            "Require at least one explicit or active indexed package and fail on "
+            "invalid shape, lineage, hashes, refs, declared semantic/path scope, "
+            "companion decisions, corrections, or provenance."
         ),
     )
     parser.add_argument(
@@ -7299,6 +7617,7 @@ def main() -> int:
         compact_archive_findings=not args.verbose_archive_findings,
     )
     findings = validator.run()
+    validated_change_packages = len(validator.validated_change_package_paths)
     payload = findings_payload(
         findings,
         target=args.target.resolve(),
@@ -7310,7 +7629,7 @@ def main() -> int:
         phase_telemetry=validator.phase_telemetry,
         diff_ref=args.diff_ref,
         approval_records_selected=len(args.approval_record),
-        change_packages_selected=len(args.change_package),
+        change_packages_selected=validated_change_packages,
         approval_scope_enforced=enforce_approval_scope,
         change_package_enforced=args.enforce_change_package,
         approval_archive_summary=validator.approval_archive_summary,
@@ -7332,7 +7651,7 @@ def main() -> int:
         validation_scope=args.validation_scope,
         diff_ref=args.diff_ref,
         approval_records_selected=len(args.approval_record),
-        change_packages_selected=len(args.change_package),
+        change_packages_selected=validated_change_packages,
         approval_scope_enforced=enforce_approval_scope,
         change_package_enforced=args.enforce_change_package,
         approval_archive_mode=approval_archive_mode,

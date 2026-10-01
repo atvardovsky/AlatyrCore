@@ -83,10 +83,40 @@ A package should record:
 - validation results, skipped checks, and residual risks
 - before and after revisions and evidence-quality classification
 - linked durable engineering-evidence IDs when that capture gate applies
+- incident-family identity, trigger, corrective iteration, digest-bound
+  predecessors, latest failed gate, and selected problem-model binding while
+  the package is active
 
 The package is historical evidence. It links to canonical project owners and
 must not become a second source of truth for business, architecture, data,
 security, runtime, or assistant policy.
+
+## Incident Continuity
+
+When a defect, failed gate, or escaped behavior leads to another correction,
+continue one incident family instead of treating the next edit as an unrelated
+task. Use `new` for the first bounded repair, `continuation` for its first
+corrective iteration, and `systemic-repair` from the second corrective
+iteration onward. A recurring correction uses the `recurring-correction`
+trigger and cannot return to an isolated local-repair classification.
+
+Every active package records a digest-bound runtime problem model. Continued
+work also records digest-bound predecessor package records from the compact
+index. The predecessor must belong to the same family and have a lower
+corrective iteration. A failed required gate remains open in the problem model
+until evidence resolves it; a prior local green result is not reusable proof
+after a later failure invalidates its assumption.
+
+An escaped defect, failed required gate, recurring correction, or systemic
+repair requires a whole-lifecycle model. It names states, transitions, owners,
+producer, orchestrator, persistence, and consumer boundaries, conservation
+rules, and explicit success, rejection, deferral, expiry, recovery, and
+failure outcomes. This is a bounded contract model, not a demand to load every
+implementation file.
+
+Ordinary non-incident packages use `mode: none`, `family_id: none`, iteration
+zero, no predecessors, and a non-required lifecycle model. Completed legacy
+packages remain historical and are not rewritten solely to add this contract.
 
 ## Semantic Approval Scope
 
@@ -203,6 +233,10 @@ A target validator may verify:
   against semantic approval lists
 - companion decisions, correction scope impact, and required reasons
 - evidence-quality prerequisites and public-claim limits
+- active package auto-discovery, incident-family projection, predecessor
+  identity and digest, problem-model synchronization, failed-gate state, and
+  lifecycle-model activation
+- changed package plans are bound to an active compact-index record
 
 It cannot infer missing domain invariants, prove semantic correctness, decide
 whether architecture is accepted, or establish that all affected facts were
@@ -211,8 +245,9 @@ declared. Those remain project reasoning, ownership, review, and test duties.
 ## Cost Control
 
 Keep the default package index compact: identity, status, changed-fact IDs,
-owners, project areas, provenance, approval references, active workstream, and
-residual risk. Load plan details, discussion evidence, companion decisions,
+owners, project areas, provenance, approval references, active workstream,
+incident family, corrective iteration, latest failed-gate state, and residual
+risk. Load plan details, discussion evidence, companion decisions,
 corrections, or validation logs only when the active task needs them.
 
 Treat the compact entry as a derived projection of its named package record.
@@ -253,6 +288,11 @@ Reject or revise a package that:
 - claims approval from path scope while semantic scope changed
 - marks a companion surface `not-required` without a reason
 - hides a correction that requires reapproval
+- starts a new unrelated package for a correction in an existing incident
+  family
+- keeps a second corrective iteration in local continuation mode
+- closes work while its latest failed gate or required lifecycle obligation is
+  unresolved
 - claims a complete public case from a selected-file snapshot
 - claims deterministic validation proved logical or architectural correctness
 - copies canonical project facts or raw private discussion into evidence

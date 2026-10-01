@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1567
+Catalog entries: 1582
 
 ## Families
 
@@ -48,7 +48,7 @@ Catalog entries: 1567
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 93 codes.
+- `PACKAGE`: 108 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -1901,6 +1901,8 @@ Catalog entries: 1567
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_ROUTING_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_ACTIVE_PLAN_UNINDEXED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_ACTUAL_PATH`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_AFTER_REF`
@@ -1973,6 +1975,34 @@ Catalog entries: 1567
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_GIT_RANGE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_CONTINUITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_MODEL_DIGEST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_MODEL_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_MODEL_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_MODEL_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_MODEL_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_PREDECESSOR`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_PREDECESSOR_DIGEST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_PREDECESSOR_FAMILY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_PREDECESSOR_INDEX`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_PREDECESSOR_LINEAGE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_PREDECESSOR_ORDER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_PREDECESSOR_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INDEX_ACTIVE_SHARDED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_DUPLICATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_ENTRY`

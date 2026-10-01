@@ -4,6 +4,24 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.75 - 2026-10-01
+
+- Added incident-family continuity to bounded problem models and active
+  projections, including corrective iteration, predecessor lineage, latest
+  failed-gate evidence, and whole-lifecycle states, transitions, boundaries,
+  outcomes, and conservation rules.
+- Required systemic repair from the second corrective iteration and for
+  recurring or escaped failures, preventing later symptoms from being handled
+  as unrelated local fixes after earlier evidence was invalidated.
+- Added compact incident projections to active change packages, automatic
+  active-package validation, digest-bound package/model predecessor checks,
+  and changed-plan rejection when no active indexed package owns the plan.
+- Preserved completed legacy packages as lazy historical evidence while
+  requiring updates to regenerate incompatible ignored problem models and
+  projections and resolve active lineage before acceptance.
+- Increased adapter schema version to `63` and target template version to `70`
+  for the incident-continuity and lifecycle-convergence contracts.
+
 ## 0.1.0-alpha.74 - 2026-09-30
 
 - Routed `update Alatyr` as current-scope adapter modification while keeping

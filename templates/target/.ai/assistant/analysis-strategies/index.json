@@ -4,9 +4,9 @@
   "portable_rule": ".ai/framework/task-decomposition.md",
   "load_mode": "index-plus-one-selected-descriptor",
   "small_task_behavior": "direct-local without loading this catalog",
-  "problem_model_schema": "alatyr-problem-model-v2",
+  "problem_model_schema": "alatyr-problem-model-v3",
   "problem_model_template": ".ai/assistant/templates/problem-model.json",
-  "active_projection_schema": "alatyr-problem-model-active-projection-v1",
+  "active_projection_schema": "alatyr-problem-model-active-projection-v2",
   "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
   "problem_model_limits": {
     "max_utf8_bytes": 65536,
