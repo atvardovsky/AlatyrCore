@@ -13,9 +13,9 @@
     "target_manifest_digest": "sha256:b0a24a8de4dd78fa6aa50ed81668767e29299ac282aa210a49d289475c313759",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.77",
+    "framework_version": "0.1.0-alpha.78",
     "adapter_schema_version": "65",
-    "template_version": "72"
+    "template_version": "73"
   },
   "derived_from": {
     "manifest": {

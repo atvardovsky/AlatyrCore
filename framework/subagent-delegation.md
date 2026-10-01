@@ -115,6 +115,13 @@ and result artifacts, constrain findings to assigned owners, surfaces, and
 proof obligations, and require primary convergence. A lightweight receipt is
 an evidence optimization, not a weaker authorization or review path.
 
+Evidence-tier optimization must preserve policy-limit parity. Both the compact
+receipt and the full execution-tree ledger must resolve the same target policy
+limits, reject missing or unresolved limits, preserve portable ceilings, and
+compare measured context, raw-result, and accepted-summary words against the
+applicable limits. Compact evidence may omit redundant ledger representation;
+it must not omit an invariant or its enforcement.
+
 ## Task Planning Contract
 
 Before dispatch, the primary assistant creates or reuses the target

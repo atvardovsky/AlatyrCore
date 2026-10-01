@@ -28,6 +28,9 @@ or under repair.
    exactly one depth-one inspect-only worker with no writes, retries, child
    proposals, or overlap. Load the full execution-tree contracts for multiple
    workers, depth two, writes, retries, child proposals, or semantic overlap.
+   Resolve and enforce the same target-policy and portable context,
+   raw-result, and accepted-summary word ceilings for either evidence tier;
+   missing, unresolved, or exceeded limits fail closed.
 7. Dispatch through the verified native or approved external backend. A
    provider-specific worker definition is a thin binding to these
    project-owned contracts, not a new policy owner. The primary assistant owns

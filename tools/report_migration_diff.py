@@ -831,7 +831,6 @@ def render_report(
             "## Safety",
             "",
             "This report is evidence only. It does not modify target files, approve changes, or complete an upgrade.",
-            "",
         ]
     )
     return "\n".join(lines)

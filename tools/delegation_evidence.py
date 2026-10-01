@@ -588,6 +588,7 @@ def validate_single_read_only_receipt(
         raise DelegationEvidenceError("single delegation receipt capability digest is stale")
     if policy.get("single_depth1_read_only_evidence") != "lightweight-receipt":
         raise DelegationEvidenceError("policy does not permit the lightweight receipt")
+    _, stop_reasons, policy_limits = _validate_policy_limits(policy)
     context_mode = receipt.get("worker_context_mode")
     if context_mode not in {"isolated-explicit", "inherited-measured"}:
         raise DelegationEvidenceError("single delegation receipt uses unsafe context inheritance")
@@ -613,10 +614,16 @@ def validate_single_read_only_receipt(
         raise DelegationEvidenceError("lightweight receipt forbids writes and retries")
     if packet.get("child_count") != 0 or packet.get("overlap_decision") != "disjoint":
         raise DelegationEvidenceError("lightweight receipt forbids children and overlap")
-    validate_artifact(
+    context = validate_artifact(
         packet.get("context_artifact"),
         artifact_root=artifact_root,
         label="single delegation context",
+    )
+    _enforce_artifact_word_limit(
+        context,
+        artifact_label="single delegation context",
+        policy_field="tree_policy.max_context_words_total",
+        limit=policy_limits["max_context_words_total"],
     )
     owners = set(_strings(packet.get("canonical_owner_refs"), "single delegation owners"))
     surfaces = _strings(packet.get("surface_refs"), "single delegation surfaces")
@@ -643,6 +650,18 @@ def validate_single_read_only_receipt(
         result.get("accepted_summary_artifact"), artifact_root=artifact_root,
         label="single delegation accepted summary",
     )
+    _enforce_artifact_word_limit(
+        raw,
+        artifact_label="single delegation raw result",
+        policy_field="context_compaction.max_result_words_total",
+        limit=policy_limits["max_result_words_total"],
+    )
+    _enforce_artifact_word_limit(
+        summary,
+        artifact_label="single delegation accepted summary",
+        policy_field="context_compaction.max_primary_summary_words_total",
+        limit=policy_limits["max_primary_summary_words_total"],
+    )
     if summary["word_count"] > raw["word_count"]:
         raise DelegationEvidenceError("single delegation summary exceeds raw result")
     satisfied = set(
@@ -653,7 +672,6 @@ def validate_single_read_only_receipt(
     )
     if not satisfied <= obligations:
         raise DelegationEvidenceError("single delegation satisfies an unassigned obligation")
-    stop_reasons = set((policy.get("stop_policy") or {}).get("stop_reason_ids", []))
     if result.get("stop_reason_id") not in stop_reasons:
         raise DelegationEvidenceError("single delegation stop reason is unknown")
     findings = result.get("findings")
@@ -706,6 +724,127 @@ def validate_single_read_only_receipt(
     if result.get("status") == "succeeded" and convergence.get("status") != "accepted":
         raise DelegationEvidenceError("successful single delegation was not accepted by primary")
     return receipt
+
+
+def _enforce_artifact_word_limit(
+    artifact: dict[str, Any],
+    *,
+    artifact_label: str,
+    policy_field: str,
+    limit: int,
+) -> None:
+    measured = artifact["word_count"]
+    if measured > limit:
+        raise DelegationEvidenceError(
+            f"{artifact_label} word count {measured} exceeds "
+            f"delegation policy.{policy_field} limit {limit}"
+        )
+
+
+def _validate_policy_limits(
+    policy: dict[str, Any],
+) -> tuple[int, set[str], dict[str, int]]:
+    """Resolve every portable execution limit shared by both evidence tiers."""
+
+    tree_policy = _object(policy.get("tree_policy"), "delegation policy.tree_policy")
+    compaction = _object(
+        policy.get("context_compaction"), "delegation policy.context_compaction"
+    )
+    stop_policy = _object(
+        policy.get("stop_policy"), "delegation policy.stop_policy"
+    )
+    allowed_stops = set(
+        _strings(
+            stop_policy.get("stop_reason_ids"),
+            "delegation policy.stop_policy.stop_reason_ids",
+        )
+    )
+    if stop_policy.get("require_stop_reason") is not True:
+        raise DelegationEvidenceError("delegation policy must require stop reasons")
+    hard_depth = _integer(
+        tree_policy.get("hard_max_depth"),
+        "delegation policy.tree_policy.hard_max_depth",
+        minimum=1,
+        maximum=PORTABLE_MAX_DEPTH,
+    )
+    child_behavior = tree_policy.get("worker_child_behavior")
+    if child_behavior not in {"propose-only", "primary-preauthorized-read-only"}:
+        raise DelegationEvidenceError(
+            "delegation policy worker_child_behavior is unresolved"
+        )
+    recursive_policy = policy.get("recursive_child_policy")
+    if recursive_policy is not None:
+        expected_recursive_policy = {
+            "require_verified_nested_capability": True,
+            "require_primary_branch_envelope": True,
+            "allowed_actions": ["inspect"],
+            "write_scope": "none",
+            "must_narrow_parent_scope": True,
+            "escalation": "return-to-primary",
+        }
+        if recursive_policy != expected_recursive_policy:
+            raise DelegationEvidenceError(
+                "delegation policy recursive_child_policy is invalid"
+            )
+    if compaction.get("mode") != "hierarchical-summary" or compaction.get(
+        "digest_algorithm"
+    ) != "sha256":
+        raise DelegationEvidenceError("delegation policy compaction contract is invalid")
+
+    limit_sources = {
+        "max_total_delegates": (
+            tree_policy.get("max_total_delegates"),
+            "tree_policy.max_total_delegates",
+            PORTABLE_MAX_DELEGATES,
+        ),
+        "max_parallel_delegates": (
+            policy.get(
+                "max_parallel_delegates",
+                tree_policy.get("max_parallel_delegates"),
+            ),
+            "max_parallel_delegates",
+            PORTABLE_MAX_DELEGATES,
+        ),
+        "max_children_per_parent": (
+            tree_policy.get("max_children_per_parent"),
+            "tree_policy.max_children_per_parent",
+            PORTABLE_MAX_CHILDREN,
+        ),
+        "max_context_words_total": (
+            tree_policy.get("max_context_words_total"),
+            "tree_policy.max_context_words_total",
+            PORTABLE_MAX_CONTEXT_WORDS,
+        ),
+        "max_result_words_total": (
+            compaction.get("max_result_words_total"),
+            "context_compaction.max_result_words_total",
+            PORTABLE_MAX_RESULT_WORDS,
+        ),
+        "max_primary_summary_words_total": (
+            compaction.get("max_primary_summary_words_total"),
+            "context_compaction.max_primary_summary_words_total",
+            PORTABLE_MAX_PRIMARY_SUMMARY_WORDS,
+        ),
+        "max_retries_total": (
+            tree_policy.get("max_retries_total"),
+            "tree_policy.max_retries_total",
+            PORTABLE_MAX_RETRIES,
+        ),
+    }
+    limits: dict[str, int] = {}
+    for field, (value, policy_path, portable_maximum) in limit_sources.items():
+        minimum = 0 if field == "max_retries_total" else 1
+        limits[field] = _integer(
+            value,
+            f"delegation policy.{policy_path}",
+            minimum=minimum,
+            maximum=portable_maximum,
+        )
+    if limits["max_primary_summary_words_total"] > limits["max_result_words_total"]:
+        raise DelegationEvidenceError(
+            "primary summary budget exceeds the aggregate result budget"
+        )
+    return hard_depth, allowed_stops, limits
 
 
 def _validate_nodes(
@@ -940,89 +1079,11 @@ def _validate_header_and_budget(
             "execution tree.current_user_authorization.approval_record",
         )
 
-    tree_policy = _object(policy.get("tree_policy"), "delegation policy.tree_policy")
-    compaction = _object(
-        policy.get("context_compaction"), "delegation policy.context_compaction"
-    )
-    stop_policy = _object(
-        policy.get("stop_policy"), "delegation policy.stop_policy"
-    )
-    allowed_stops = set(
-        _strings(
-            stop_policy.get("stop_reason_ids"),
-            "delegation policy.stop_reason_ids",
-        )
-    )
-    if stop_policy.get("require_stop_reason") is not True:
-        raise DelegationEvidenceError("delegation policy must require stop reasons")
-    hard_depth = _integer(
-        tree_policy.get("hard_max_depth"),
-        "delegation policy.hard_max_depth",
-        minimum=1,
-        maximum=PORTABLE_MAX_DEPTH,
-    )
-    child_behavior = tree_policy.get("worker_child_behavior")
-    if child_behavior not in {"propose-only", "primary-preauthorized-read-only"}:
-        raise DelegationEvidenceError(
-            "delegation policy worker_child_behavior is unresolved"
-        )
-    recursive_policy = policy.get("recursive_child_policy")
-    if recursive_policy is not None:
-        expected_recursive_policy = {
-            "require_verified_nested_capability": True,
-            "require_primary_branch_envelope": True,
-            "allowed_actions": ["inspect"],
-            "write_scope": "none",
-            "must_narrow_parent_scope": True,
-            "escalation": "return-to-primary",
-        }
-        if recursive_policy != expected_recursive_policy:
-            raise DelegationEvidenceError(
-                "delegation policy recursive_child_policy is invalid"
-            )
-    if compaction.get("mode") != "hierarchical-summary" or compaction.get(
-        "digest_algorithm"
-    ) != "sha256":
-        raise DelegationEvidenceError("delegation policy compaction contract is invalid")
-
+    hard_depth, allowed_stops, policy_limits = _validate_policy_limits(policy)
     budget = _object(tree.get("aggregate_budget"), "execution tree.aggregate_budget")
     _exact(budget, BUDGET_FIELDS, "execution tree.aggregate_budget")
-    policy_maxima = {
-        "max_total_delegates": (
-            tree_policy.get("max_total_delegates"), PORTABLE_MAX_DELEGATES
-        ),
-        "max_parallel_delegates": (
-            policy.get(
-                "max_parallel_delegates",
-                tree_policy.get("max_parallel_delegates"),
-            ),
-            PORTABLE_MAX_DELEGATES,
-        ),
-        "max_children_per_parent": (
-            tree_policy.get("max_children_per_parent"), PORTABLE_MAX_CHILDREN
-        ),
-        "max_context_words_total": (
-            tree_policy.get("max_context_words_total"), PORTABLE_MAX_CONTEXT_WORDS
-        ),
-        "max_result_words_total": (
-            compaction.get("max_result_words_total"), PORTABLE_MAX_RESULT_WORDS
-        ),
-        "max_primary_summary_words_total": (
-            compaction.get("max_primary_summary_words_total"),
-            PORTABLE_MAX_PRIMARY_SUMMARY_WORDS,
-        ),
-        "max_retries_total": (
-            tree_policy.get("max_retries_total"), PORTABLE_MAX_RETRIES
-        ),
-    }
-    for field, (policy_value, portable_maximum) in policy_maxima.items():
+    for field, policy_limit in policy_limits.items():
         minimum = 0 if field == "max_retries_total" else 1
-        policy_limit = _integer(
-            policy_value,
-            f"delegation policy.{field}",
-            minimum=minimum,
-            maximum=portable_maximum,
-        )
         _integer(
             budget.get(field),
             f"execution tree.aggregate_budget.{field}",

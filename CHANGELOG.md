@@ -4,6 +4,19 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.78 - 2026-10-01
+
+- Fixed lightweight delegation receipts so measured context, raw-result, and
+  accepted-summary words cannot exceed resolved target-policy limits or
+  portable ceilings.
+- Centralized delegation policy-limit validation across lightweight receipts
+  and full execution trees, rejecting missing, unresolved, internally
+  inconsistent, or nonportable limits through the same contract.
+- Added exact-boundary, one-word-over, malformed-policy, cross-tier parity, and
+  40,000-word CLI regression coverage for the compact evidence path.
+- Kept adapter schema version `65` and increased target template version to
+  `73` for the evidence-tier parity instructions.
+
 ## 0.1.0-alpha.77 - 2026-10-01
 
 - Replaced repeated task-class and allowed-action prose with canonical

@@ -101,6 +101,9 @@ policy wording.
 ## Operating Rules
 
 - Keep Alatyr Core assistant-neutral and Markdown-first.
+- Optimized alternate paths must share canonical invariant resolvers and pass
+  differential below/at/above-boundary tests; representation may shrink,
+  enforcement may not.
 - Treat inspect, modify, commit, publish, and live-external as separate
   current-scope authorization phases. A topic switch, backlog return, report,
   discussion, analysis, plan, or ambiguous continuation is read-only. Never

@@ -136,6 +136,22 @@ changed fact and contract, identify shared invariants and boundaries, and run
 one combined impact review over the proposed repair set. A local edit that
 satisfies one comment but leaves the shared invariant false must be revised.
 
+## Alternative Path Parity
+
+Treat a fast, compact, cached, selective, incremental, or fallback path as a
+refinement of the canonical path. Before accepting it:
+
+1. Name the canonical path and the invariants the alternative inherits.
+2. Resolve shared authorization, safety, semantic, and budget limits through
+   common owners or validators rather than duplicated checks.
+3. Distinguish omitted representation from omitted enforcement.
+4. Compare both paths with valid and invalid differential cases.
+5. Test below, exactly at, and above every affected boundary, plus malformed
+   or unresolved inputs and the public entry point.
+
+An optimized path may reduce loaded context, evidence shape, or execution
+cost. It must not weaken an inherited invariant.
+
 When a later failure contradicts an earlier local result, reopen the affected
 proof obligation and retain the counterexample. Do not create a fresh isolated
 problem statement merely because the next symptom appears in another file or

@@ -113,6 +113,14 @@ Use content-addressed sparse writes for deterministic projections. An
 unchanged desired byte stream is not rewritten. Omission and deletion remain
 separate ownership decisions and are never inferred from a sparse overlay.
 
+Treat a fast, compact, cached, selective, incremental, or fallback path as a
+refinement of its canonical path, not as an independent contract. Shared
+authorization, safety, semantic, and budget invariants belong in common
+resolvers. Acceptance requires differential evidence for both paths, including
+below-limit, exact-limit, over-limit, malformed-input, and public-entry-point
+cases. The optimized path may reduce representation or loading; it may not
+reduce enforcement.
+
 Apply least sufficient context to the source repository itself. Add indexes,
 manifests, and narrow trigger paths so agents and checks load only what the
 task actually needs.

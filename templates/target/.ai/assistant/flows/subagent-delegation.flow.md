@@ -93,7 +93,10 @@ verified and the work requires the governed tree tier.
 3. Both tiers must bind canonical policy and capability digests, measured
    context/result artifacts, structured findings, normalized stop reason, and
    primary convergence.
-4. Escalate from the receipt to the full ledger as soon as any full-tree
+4. Enforce the same resolved target-policy and portable context, raw-result,
+   and accepted-summary word ceilings in both tiers. Missing, unresolved, or
+   exceeded limits fail closed; compact evidence never weakens an invariant.
+5. Escalate from the receipt to the full ledger as soon as any full-tree
    condition appears. Do not retrofit missing tree evidence after execution.
 
 ## Task Graph And Readiness

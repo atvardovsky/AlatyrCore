@@ -353,6 +353,7 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "## Worker Role Catalog",
             "## Capability Negotiation",
             "## Capability-First Evidence Tier",
+            "Evidence-tier optimization must preserve policy-limit parity.",
             "## Normalized Result Contract",
             "## Retry And Conflict Handling",
             "## Dispatch And Convergence",
@@ -379,6 +380,7 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "Do not write live execution state into the reusable template.",
             ".ai/assistant/templates/single-read-only-delegation-receipt.json",
             "## Evidence Tier",
+            "compact evidence never weakens an invariant",
         ],
         failures,
     )
@@ -396,6 +398,7 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "suggestion-only or sequential-primary fallback",
             "worker_context_mode",
             "single-read-only-delegation-receipt.json",
+            "same target-policy and portable context",
         ],
         failures,
     )
@@ -532,6 +535,8 @@ def validate_static_contract_text(failures: list[str]) -> None:
             "validate_branch_checkpoint(",
             "validate_worker_result(",
             "validate_single_read_only_receipt(",
+            "def _validate_policy_limits(",
+            "_enforce_artifact_word_limit(",
             "capability evidence digest does not match content",
             'result.get("tools_used")',
             "used_primary_summary_words",

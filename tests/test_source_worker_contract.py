@@ -415,6 +415,23 @@ class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
+        policy["max_parallel_delegates"] = 2
+        policy["tree_policy"].update(
+            {
+                "worker_child_behavior": "propose-only",
+                "hard_max_depth": 2,
+                "max_total_delegates": 8,
+                "max_children_per_parent": 4,
+                "max_context_words_total": 32000,
+                "max_retries_total": 2,
+            }
+        )
+        policy["context_compaction"].update(
+            {
+                "max_result_words_total": 12000,
+                "max_primary_summary_words_total": 4000,
+            }
+        )
         capability = build_surface_record("generic")
         capability["subagent_delegation"]["worker_context_mode"] = (
             "isolated-explicit"
@@ -467,6 +484,14 @@ class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
         }
         return receipt, policy, capability
 
+    @staticmethod
+    def bind_policy(receipt: dict, policy: dict) -> None:
+        receipt["policy_sha256"] = canonical_value_sha256(policy)
+
+    @staticmethod
+    def words(count: int) -> str:
+        return " ".join(f"word-{index}" for index in range(count)) + "\n"
+
     def test_valid_single_worker_receipt_is_accepted(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -517,6 +542,174 @@ class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
                 validate_single_read_only_receipt(
                     receipt, policy, capability, artifact_root=root
                 )
+
+    def test_measured_artifacts_enforce_policy_boundaries(self) -> None:
+        cases = [
+            (
+                "context",
+                ("tree_policy", "max_context_words_total"),
+                ("packet", "context_artifact"),
+                "context.txt",
+                "single delegation context word count",
+            ),
+            (
+                "raw result",
+                ("context_compaction", "max_result_words_total"),
+                ("result", "raw_artifact"),
+                "raw.txt",
+                "single delegation raw result word count",
+            ),
+            (
+                "accepted summary",
+                ("context_compaction", "max_primary_summary_words_total"),
+                ("result", "accepted_summary_artifact"),
+                "summary.txt",
+                "single delegation accepted summary word count",
+            ),
+        ]
+        for label, policy_path, artifact_path, relpath, error_prefix in cases:
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                receipt, policy, capability = self.build_fixture(root)
+                policy[policy_path[0]][policy_path[1]] = 3
+                if label == "raw result":
+                    policy["context_compaction"][
+                        "max_primary_summary_words_total"
+                    ] = 2
+                if label == "accepted summary":
+                    receipt["result"]["raw_artifact"] = measured_artifact(
+                        root, "raw.txt", self.words(4)
+                    )
+                self.bind_policy(receipt, policy)
+                receipt[artifact_path[0]][artifact_path[1]] = measured_artifact(
+                    root, relpath, self.words(3)
+                )
+                self.assertIs(
+                    validate_single_read_only_receipt(
+                        receipt, policy, capability, artifact_root=root
+                    ),
+                    receipt,
+                )
+
+                receipt[artifact_path[0]][artifact_path[1]] = measured_artifact(
+                    root, relpath, self.words(4)
+                )
+                with self.assertRaisesRegex(
+                    DelegationEvidenceError,
+                    rf"{error_prefix} 4 exceeds .* limit 3",
+                ):
+                    validate_single_read_only_receipt(
+                        receipt, policy, capability, artifact_root=root
+                    )
+
+    def test_missing_unresolved_and_nonportable_policy_budgets_are_rejected(self) -> None:
+        cases = [
+            (
+                "missing context budget",
+                lambda policy: policy["tree_policy"].pop(
+                    "max_context_words_total"
+                ),
+                "tree_policy.max_context_words_total",
+            ),
+            (
+                "unresolved result budget",
+                lambda policy: policy["context_compaction"].update(
+                    {"max_result_words_total": "unresolved"}
+                ),
+                "context_compaction.max_result_words_total",
+            ),
+            (
+                "zero summary budget",
+                lambda policy: policy["context_compaction"].update(
+                    {"max_primary_summary_words_total": 0}
+                ),
+                "context_compaction.max_primary_summary_words_total",
+            ),
+            (
+                "context budget above portable ceiling",
+                lambda policy: policy["tree_policy"].update(
+                    {"max_context_words_total": 32001}
+                ),
+                "tree_policy.max_context_words_total",
+            ),
+        ]
+        for label, mutate, expected in cases:
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                receipt, policy, capability = self.build_fixture(root)
+                mutate(policy)
+                self.bind_policy(receipt, policy)
+                with self.assertRaisesRegex(DelegationEvidenceError, expected):
+                    validate_single_read_only_receipt(
+                        receipt, policy, capability, artifact_root=root
+                    )
+
+    def test_resolved_policy_limits_are_shared_by_both_evidence_tiers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt, policy, capability = self.build_fixture(root)
+            tree = recursive_execution_fixture(root)
+            policy["tree_policy"]["max_context_words_total"] = "unresolved"
+            self.bind_policy(receipt, policy)
+            tree["policy_revision"] = canonical_value_digest(policy)
+
+            for label, validate in [
+                (
+                    "lightweight receipt",
+                    lambda: validate_single_read_only_receipt(
+                        receipt, policy, capability, artifact_root=root
+                    ),
+                ),
+                (
+                    "full execution tree",
+                    lambda: validate_execution_tree(
+                        tree, policy, artifact_root=root
+                    ),
+                ),
+            ]:
+                with self.subTest(label=label), self.assertRaisesRegex(
+                    DelegationEvidenceError,
+                    "tree_policy.max_context_words_total",
+                ):
+                    validate()
+
+    def test_cli_rejects_context_above_policy_budget(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt, policy, capability = self.build_fixture(root)
+            policy["tree_policy"]["max_context_words_total"] = 1000
+            self.bind_policy(receipt, policy)
+            receipt["packet"]["context_artifact"] = measured_artifact(
+                root, "context.txt", self.words(40000)
+            )
+            receipt_path = root / "receipt.json"
+            policy_path = root / "policy.json"
+            capability_path = root / "capability.json"
+            receipt_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+            policy_path.write_text(json.dumps(policy, indent=2) + "\n", encoding="utf-8")
+            capability_path.write_text(
+                json.dumps(capability, indent=2) + "\n", encoding="utf-8"
+            )
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "tools" / "validate_delegation_execution_tree.py"),
+                    "--target-root",
+                    str(root),
+                    "--receipt",
+                    str(receipt_path),
+                    "--policy",
+                    str(policy_path),
+                    "--capability",
+                    str(capability_path),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 1, completed.stdout)
+            self.assertIn("word count 40000", completed.stderr)
+            self.assertIn("limit 1000", completed.stderr)
 
 
 class SourceWorkerPolicyTests(unittest.TestCase):
