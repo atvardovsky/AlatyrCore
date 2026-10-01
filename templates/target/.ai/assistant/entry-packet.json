@@ -13,9 +13,9 @@
     "target_manifest_digest": "sha256:0c133970cb0f9fd395504ee123c868f1e29193d65833db3e318ae00e057bc0f5",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.75",
-    "adapter_schema_version": "63",
-    "template_version": "70"
+    "framework_version": "0.1.0-alpha.76",
+    "adapter_schema_version": "64",
+    "template_version": "71"
   },
   "derived_from": {
     "manifest": {
@@ -24,7 +24,7 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "04df0d6747622e2591b67af544681eb918820ca5824e7701274b5553591ff674"
+      "sha256": "384115b34abe52935d5e125657185ed38c265f391ebab3e2529c7375c42d951c"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -44,7 +44,7 @@
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",
-      "sha256": "d90838f887ad580bcd576a3006a209328e60e01e9777b6ee20eba73f9ea36a12"
+      "sha256": "5c940f5342552387fc87d3da5166aa11c7f7b6c11f0e1140cfa4b281b3c6747f"
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",

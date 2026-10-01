@@ -28,8 +28,8 @@ DESCRIPTOR_FIELDS = {
     "required_nonempty_fields",
     "completion_rule",
 }
-PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v3"
-PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v2"
+PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v4"
+PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v3"
 STRATEGY_INDEX_RELPATH = ".ai/assistant/analysis-strategies/index.json"
 PROBLEM_MODEL_TEMPLATE_RELPATH = ".ai/assistant/templates/problem-model.json"
 PROBLEM_MODEL_PROJECTION_TEMPLATE_RELPATH = (
@@ -202,6 +202,32 @@ def _validate_incident_continuity(model: dict[str, Any]) -> list[str]:
         state_ids = {
             item.get("id") for item in states if isinstance(item, dict)
         }
+        represented_outcomes = {
+            item.get("outcome")
+            for item in transitions
+            if isinstance(item, dict)
+        }
+        missing_outcomes = sorted(REQUIRED_LIFECYCLE_OUTCOMES - represented_outcomes)
+        if missing_outcomes:
+            failures.append(
+                "required lifecycle transitions do not represent outcomes: "
+                + ", ".join(missing_outcomes)
+            )
+        for label, items in (("state", states), ("transition", transitions)):
+            identifiers = [
+                item.get("id")
+                for item in items
+                if isinstance(item, dict) and isinstance(item.get("id"), str)
+            ]
+            duplicates = sorted(
+                identifier
+                for identifier in set(identifiers)
+                if identifiers.count(identifier) > 1
+            )
+            if duplicates:
+                failures.append(
+                    f"duplicate lifecycle {label} IDs: {duplicates}"
+                )
         for transition in transitions:
             if not isinstance(transition, dict):
                 continue
@@ -400,6 +426,87 @@ def validate_problem_model(
         or protected_risks.intersection(model.get("risk_classes", []))
     ) and "adversarial-review" not in required_reviews:
         failures.append("protected or high-impact work requires adversarial-review")
+    contract_enforcement = model.get("contract_enforcement")
+    machine_contract = "machine-enforced-contract" in model.get("risk_classes", [])
+    if isinstance(contract_enforcement, dict):
+        enforcement_required = contract_enforcement.get("required") is True
+        requirements = contract_enforcement.get("requirements", [])
+        if machine_contract and not enforcement_required:
+            failures.append(
+                "machine-enforced-contract risk requires semantic enforcement closure"
+            )
+        if enforcement_required:
+            if not requirements:
+                failures.append(
+                    "semantic enforcement closure requires normative requirements"
+                )
+            if "adversarial-review" not in required_reviews:
+                failures.append(
+                    "semantic enforcement closure requires adversarial-review"
+                )
+            counterexample_ids = {
+                item.get("id")
+                for item in model.get("counterexamples", [])
+                if isinstance(item, dict) and isinstance(item.get("id"), str)
+            }
+            obligations_by_id = {
+                item.get("id"): item
+                for item in model.get("proof_obligations", [])
+                if isinstance(item, dict) and isinstance(item.get("id"), str)
+            }
+            requirement_ids = [
+                item.get("id")
+                for item in requirements
+                if isinstance(item, dict) and isinstance(item.get("id"), str)
+            ]
+            duplicate_requirements = sorted(
+                requirement_id
+                for requirement_id in set(requirement_ids)
+                if requirement_ids.count(requirement_id) > 1
+            )
+            if duplicate_requirements:
+                failures.append(
+                    "duplicate semantic enforcement requirement IDs: "
+                    f"{duplicate_requirements}"
+                )
+            for requirement in requirements:
+                if not isinstance(requirement, dict):
+                    continue
+                requirement_id = requirement.get("id")
+                unknown_counterexamples = sorted(
+                    set(requirement.get("counterexample_ids", []))
+                    - counterexample_ids
+                )
+                if unknown_counterexamples:
+                    failures.append(
+                        f"semantic enforcement requirement {requirement_id!r} "
+                        "references unknown counterexamples: "
+                        + ", ".join(unknown_counterexamples)
+                    )
+                unknown_obligations = sorted(
+                    set(requirement.get("proof_obligation_ids", []))
+                    - obligations_by_id.keys()
+                )
+                if unknown_obligations:
+                    failures.append(
+                        f"semantic enforcement requirement {requirement_id!r} "
+                        "references unknown proof obligations: "
+                        + ", ".join(unknown_obligations)
+                    )
+                non_required_obligations = sorted(
+                    obligation_id
+                    for obligation_id in requirement.get(
+                        "proof_obligation_ids", []
+                    )
+                    if obligation_id in obligations_by_id
+                    and obligations_by_id[obligation_id].get("required") is not True
+                )
+                if non_required_obligations:
+                    failures.append(
+                        f"semantic enforcement requirement {requirement_id!r} "
+                        "uses non-required proof obligations: "
+                        + ", ".join(non_required_obligations)
+                    )
     transitions = model.get("strategy_transitions", [])
     previous_to: str | None = None
     assumption_ids = {
@@ -485,6 +592,7 @@ def build_active_problem_model_projection(
         "task_binding": model.get("task_binding"),
         "incident": model.get("incident"),
         "lifecycle_model": model.get("lifecycle_model"),
+        "contract_enforcement": model.get("contract_enforcement"),
         "primary_strategy_id": model.get("primary_strategy_id"),
         "risk_classes": model.get("risk_classes", []),
         "protected_change": model.get("protected_change"),
@@ -562,7 +670,7 @@ def build_active_problem_model_projection(
         },
     }
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "projection_kind": "alatyr-active-problem-model",
         "model_id": model.get("model_id"),
         "operation_id": model.get("operation_id"),

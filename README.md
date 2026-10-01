@@ -57,6 +57,13 @@ persistence, consumers, terminal outcomes, and conservation rules. This helps
 the next agent reuse the failed evidence and shared invariant without loading
 the whole repository.
 
+When an agent changes a validator, checker, schema, gate, or generated
+projection, Alatyr treats that behavior as a machine-enforced contract. The
+agent must connect each requirement to enforcement code, a passing example, a
+weaker counterexample that must fail, a proof obligation, and adversarial
+review. This reduces the risk that one mistaken interpretation writes both the
+implementation and the tests that approve it.
+
 The agent still has to inspect the routed sources and report uncertainty.
 AlatyrCore gives the discussion a project-owned memory and source-of-truth
 map; it does not make unsupported answers authoritative.
@@ -603,7 +610,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.75`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.76`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

@@ -228,8 +228,8 @@
       "owner_refs": [
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 1466,
-      "content_digest": "sha256:d9bb6d84f140973336ea01228ae8ef22908e8c5e8964676012fa52216e8cbe26"
+      "estimated_words": 1640,
+      "content_digest": "sha256:b4f83aebe691cd4b27387f25cb262be6028d50d704f2f9451168eee705e7ba0b"
     },
     {
       "id": "framework.core.module-profile-md",
@@ -328,8 +328,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1684,
-      "content_digest": "sha256:b0b4ec98bdf135ce8ed0eac0cc45f7a3475629df360b326ef71416aae9947e17"
+      "estimated_words": 1692,
+      "content_digest": "sha256:43183141ffcc4126c1f11125c8d292a5e713b488ab65dbecfa8fc589b2739183"
     },
     {
       "id": "framework.core.rule-ownership-md",
@@ -363,8 +363,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4570,
-      "content_digest": "sha256:d0fe4923b03eefb5fddff7d91dfbb59373785122108c58cd70ba703ec408485d"
+      "estimated_words": 4572,
+      "content_digest": "sha256:bb7e2bd6ee12ca6bad9d88b85f4250b8194a635a6ad6c94a105ce55f76237d72"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -382,8 +382,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3714,
-      "content_digest": "sha256:7a31a1fe9c6f75120e7a6922a51096eb696b761a0faea3c6cc8dc41172b07f55"
+      "estimated_words": 3716,
+      "content_digest": "sha256:0aad5174cdcbb36320ee35c8fe23d54ab8dd2e2413023821dc3838682a2d6a27"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:643fc0cfb50328c18ca5092b8839a3175bddaaa512bdc58fe596f04ecb589707"
+      "content_digest": "sha256:c032e26068628705b97916f47526974d6af173eaf6dc0c0ca62aa6645c7f3303"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

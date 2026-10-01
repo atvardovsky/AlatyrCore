@@ -19,6 +19,10 @@ Before execution:
   model history, and verify its measurements and source-model binding
 - add `adversarial-review` for protected, security, destructive,
   public-contract, approval-sensitive, or similarly high-impact work
+- classify validator, checker, schema, gate, and generated-projection behavior
+  changes as `machine-enforced-contract`; bind each normative requirement to
+  enforcement, positive evidence, a retained counterexample, a required proof
+  obligation, and adversarial review
 - keep Debug Mode separate and disabled unless explicitly activated
 - assign each proof obligation to the primary or one bounded worker task
 - keep global strategy selection, obligation waiver, acceptance, and final
@@ -32,6 +36,9 @@ Before completion:
 - failed, blocked, open, or unevidenced duties block completion
 - systemic repair covers producer, orchestrator, persistence, and consumer
   boundaries plus success, rejection, deferral, expiry, recovery, and failure
+- machine-enforced contract closure rejects a weaker near-miss for every
+  normative requirement; positive fixtures and generated synchronization do
+  not count as adversarial evidence
 - invalidated assumptions and unresolved decisions remain explicit
 - historical transitions reference existing assumptions and obligations without
   requiring their current states to remain invalidated or unresolved

@@ -28,6 +28,7 @@ TARGET_REQUIRED_EXPANSION_TRIGGERS = [
     "source-of-truth owner is missing disputed or contradicted",
     "approval safety security data architecture public contract or live-external boundary appears",
     "focused validation fails or cannot prove the changed contract",
+    "validator checker schema gate or generated-projection behavior changes",
     "repair repeats escapes or invalidates a previously passed gate",
 ]
 
@@ -35,6 +36,7 @@ TARGET_REQUIRED_SMALL_TASK_EXPANSION_TRIGGERS = [
     "semantic or logical fact changes",
     "source-of-truth owner is missing disputed or contradicted",
     "focused validation fails or cannot prove the changed contract",
+    "validator checker schema gate or generated-projection behavior changes",
     "repair repeats escapes or invalidates a previously passed gate",
 ]
 
@@ -44,6 +46,7 @@ SOURCE_REQUIRED_EXPANSION_TRIGGERS = [
     "source-of-truth conflict or ownership ambiguity",
     "approval, authorization, safety, security, release, or assistant-infrastructure boundary appears",
     "focused validation fails or selected check coverage is ambiguous",
+    "validator checker schema gate or generated-projection behavior changes",
     "explicit repository audit, release readiness review, or full corpus comparison",
 ]
 

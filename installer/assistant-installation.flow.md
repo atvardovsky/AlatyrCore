@@ -696,9 +696,10 @@ Report:
   capability evidence, native definition paths, role/model bindings,
   aggregate budget, semantic-overlap, cancellation, retry/conflict fallback,
   validation, and primary-convergence evidence added or skipped
-- required analysis-strategy index and descriptors, problem-model schema and
-  template, incident-family and lifecycle contract, strategy gate, continuity
-  binding, and completion evidence added;
+- required strategy index/descriptors, problem-model schema/template,
+  incident/lifecycle and machine-contract closure, strategy gate, continuity,
+  and completion evidence added; closure binds source, enforcement,
+  positive/negative evidence, obligation, and adversarial review;
   verify that small tasks skip the catalog and non-trivial tasks load only one
   selected descriptor
 - change-package root index, bounded digest-bound index shards, lazy overlay,

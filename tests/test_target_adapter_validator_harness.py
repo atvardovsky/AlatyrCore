@@ -149,7 +149,7 @@ class TargetAdapterValidatorHarnessTests(unittest.TestCase):
         self.assertEqual(len(payload), 138)
         self.assertEqual(
             digest,
-            "23e191e73d301d04a14b1f89acb4d8bffdfdc4b0cf138453c4356bb65315b76c",
+            "3090e2fac99380565853c9b74a2a228abe402c9a7c28df93e54485741bf442ea",
         )
         self.assertEqual(
             payload[0],

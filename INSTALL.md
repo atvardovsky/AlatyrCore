@@ -145,8 +145,11 @@ The plan must identify:
   surfaces, and primary/worker executor decisions
 - analysis-strategy index and bounded descriptors, hard-bounded problem-model
   schema/template, digest-bound active-projection schema/template, strategy
-  gate, incident-family and lifecycle contract, continuity binding, and
-  completion evidence; keep `direct-local`
+  gate, incident-family and lifecycle contract, machine-enforced-contract
+  closure, continuity binding, and completion evidence; require normative
+  source, enforcement, positive evidence, retained counterexample, proof
+  obligation, and adversarial-review bindings when deterministic enforcement
+  behavior changes; keep `direct-local`
   descriptor-free and load only one descriptor for non-trivial work
 - large-task task-scale routing, packet, checkpoint, and storage needs
 - worker launch/model-selection support, target delegation policy, role
@@ -758,7 +761,10 @@ package plans, provenance strength, and migration-
 diff evidence when supplied. Its JSON is current-state structural evidence, not
 proof of historical actions. It does not inspect target business truth,
 approve protected changes, replace target validation, or replace assistant
-logical integrity review.
+logical integrity review. Problem-model validation can prove that declared
+machine-contract closure references exist; an adversarial reviewer must still
+derive counterexamples from the canonical requirement rather than trust the
+implementation's own positive fixture.
 
 ## Rejection Criteria
 

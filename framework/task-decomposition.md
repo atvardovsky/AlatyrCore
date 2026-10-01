@@ -120,6 +120,15 @@ explicit lifecycle model with terminal outcomes, boundaries, transitions, and
 conservation rules. Keep this evidence in the active projection so a resumed
 assistant cannot silently return to isolated-file reasoning.
 
+When a task changes a validator, checker, schema, gate, generated projection,
+or another machine-enforced contract, add `machine-enforced-contract` risk and
+activate semantic enforcement closure. Each normative requirement binds its
+canonical source, enforcement references, positive evidence, retained
+counterexample IDs, and required proof-obligation IDs. Such work always
+requires `adversarial-review`; the reviewer derives a weaker counterexample
+from the normative source instead of treating the author's fixture as an
+independent oracle.
+
 A problem model is bounded to 65,536 canonical serialized bytes and 6,000
 structured words. Its collections and individual strings also have schema
 limits. When that bound is insufficient, create a digest-linked successor or

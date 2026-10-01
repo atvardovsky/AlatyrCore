@@ -6,9 +6,9 @@
   "plan_template": ".ai/assistant/templates/task-decomposition.md",
   "analysis_strategy": {
     "catalog": ".ai/assistant/analysis-strategies/index.json",
-    "problem_model_schema": "alatyr-problem-model-v3",
+    "problem_model_schema": "alatyr-problem-model-v4",
     "problem_model_template": ".ai/assistant/templates/problem-model.json",
-    "active_projection_schema": "alatyr-problem-model-active-projection-v2",
+    "active_projection_schema": "alatyr-problem-model-active-projection-v3",
     "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
     "problem_model_limits": {
       "max_utf8_bytes": 65536,
@@ -27,7 +27,7 @@
     "primary_strategy_ids": ["direct-local", "invariant-first", "hypothesis-driven", "architecture-comparison", "evidence-synthesis", "exploratory-design"],
     "review_strategy_ids": ["adversarial-review"],
     "required_reviews": {
-      "security protected destructive public-contract approval-sensitive or high-impact": ["adversarial-review"]
+      "security protected destructive public-contract approval-sensitive high-impact or machine-enforced-contract": ["adversarial-review"]
     },
     "small_task_behavior": "use direct-local without loading the strategy catalog",
     "nontrivial_load_limit": "load index and one selected descriptor only",
@@ -157,6 +157,8 @@
     "continue_incident_family_after_failed_validation": true,
     "systemic_repair_after_second_corrective_iteration": true,
     "lifecycle_model_required_for_systemic_or_escaped_failure": true,
+    "semantic_enforcement_closure_for_machine_contracts": true,
+    "counterexample_required_for_each_normative_requirement": true,
     "escalation_loads_only_triggering_context": true,
     "exactly_one_primary_strategy": true,
     "small_task_skips_strategy_catalog": true,
@@ -171,7 +173,7 @@
   "final_evidence": [
     "plan ID and policy revision",
     "primary analysis strategy, bounded problem model, and active projection evidence",
-    "required review passes and proof obligation status",
+    "required review passes, proof obligation status, and machine-contract enforcement closure when applicable",
     "task IDs levels dependencies and executor decisions",
     "context selected and omitted per task",
     "worker packet and result IDs when delegation was used",

@@ -33,10 +33,10 @@
   },
   "rule_dependency_loading": {
     "default": "conditional-reference",
-    "meaning": "alatyr_doc depends_on identifies a reasoning prerequisite, not automatic whole-document preload",
-    "select_when": "the chosen rule decision depends on the prerequisite, evidence conflicts, or a named boundary is crossed",
-    "packet_evidence": "record selected and omitted dependency rule IDs with reasons",
-    "fail_closed": "load the selected dependency owner when applicability cannot be decided from compact metadata"
+    "meaning": "depends_on is a prerequisite, not automatic document preload",
+    "select_when": "selected rule needs it, evidence conflicts, or a named boundary is crossed",
+    "packet_evidence": "record selected and omitted dependency IDs with reasons",
+    "fail_closed": "load its owner when compact metadata cannot decide applicability"
   },
   "task_classification": {
     "schema_version": 1,
@@ -47,7 +47,7 @@
       "standard-task"
     ],
     "default_class": "standard-task",
-    "ambiguity_behavior": "stay read-only; choose the smallest plausible profile; request missing facts before edits",
+    "ambiguity_behavior": "stay read-only; choose the smallest profile; request missing facts",
     "small_task_eligibility": {
       "default_enabled": false,
       "maximum_changed_paths": 1,
@@ -91,6 +91,7 @@
       "source-of-truth conflict or ownership ambiguity",
       "approval, authorization, safety, security, release, or assistant-infrastructure boundary appears",
       "focused validation fails or selected check coverage is ambiguous",
+      "validator checker schema gate or generated-projection behavior changes",
       "explicit repository audit, release readiness review, or full corpus comparison"
     ]
   },
@@ -315,6 +316,7 @@
     "approval or safety boundary",
     "conflicting evidence",
     "failed focused check",
+    "machine-contract behavior change",
     "intentional full-corpus comparison or rebaseline"
   ],
   "fallback": "report an unmatched task; do not load the full framework automatically"

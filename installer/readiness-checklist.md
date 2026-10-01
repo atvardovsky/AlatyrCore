@@ -520,7 +520,11 @@ Final evidence must say:
   `direct-local`; non-trivial tasks select one strategy descriptor, bind a
   hard-bounded problem model and digest-bound active projection, track proof
   obligations, and require adversarial review for protected or high-impact
-  work; routine execution and recovery do not load full model history
+  work; validator, checker, schema, gate, or generated-projection behavior
+  changes classify `machine-enforced-contract` risk and bind each normative
+  requirement to enforcement, positive evidence, retained counterexamples,
+  required proof obligations, and adversarial review; routine execution and
+  recovery do not load full model history
 - subagent delegation is enabled or skipped from target evidence; enabled
   adapters define current per-surface capabilities, native/external/
   suggestion-only/unsupported dispatch, external dispatcher item where used,

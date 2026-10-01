@@ -46,12 +46,12 @@ def _git(target: Path, *args: str) -> None:
 
 def _model() -> dict[str, object]:
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": "fixture-problem",
         "operation_id": "fixture-operation",
         "active_projection": {
-            "schema_version": 2,
+            "schema_version": 3,
             "path": ".ai/.runtime/problem-model-projections/fixture-problem.json",
         },
         "incident": {
@@ -75,6 +75,11 @@ def _model() -> dict[str, object]:
             "transitions": [],
             "boundaries": [],
             "conservation_rules": [],
+        },
+        "contract_enforcement": {
+            "required": False,
+            "reason": "fixture does not change a machine-enforced contract",
+            "requirements": [],
         },
         "primary_strategy_id": "invariant-first",
         "risk_classes": ["protected"],

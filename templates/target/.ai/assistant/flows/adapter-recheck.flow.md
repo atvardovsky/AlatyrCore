@@ -234,6 +234,11 @@ pre-acceptance, and message templates are not completion evidence.
     completion evidence as one set. Preserve durable evidence references, but
     discard incompatible ignored runtime records and regenerate current state;
     do not fabricate migration fields or copy runtime state across branches.
+    Reclassify active validator, checker, schema, gate, and generated-
+    projection work as `machine-enforced-contract` where applicable. Rebuild
+    semantic enforcement closure from canonical normative sources; do not
+    migrate positive fixtures as if they were counterexamples or independent
+    review evidence.
     When incident continuity changes, migrate active package index projections,
     bind active package records to regenerated problem models, and preserve
     completed legacy packages as historical evidence. Do not invent incident

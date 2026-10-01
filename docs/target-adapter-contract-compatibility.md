@@ -11,13 +11,13 @@ Manifest key: `operations.task_decomposition_schema`.
 Current contract version: `2`.
 
 Artifact: `problem-model`
-Current version: `3`.
-Supported versions: `3`.
+Current version: `4`.
+Supported versions: `4`.
 Migration-limited versions: none.
 
 Artifact: `problem-model-active-projection`
-Current version: `2`.
-Supported versions: `2`.
+Current version: `3`.
+Supported versions: `3`.
 Migration-limited versions: none.
 
 Artifact: `task-decomposition`

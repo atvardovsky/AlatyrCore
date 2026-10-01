@@ -85,6 +85,11 @@ transition update. Continue corrections under the same incident family. From
 the second corrective iteration, or after an escaped defect or failed required
 gate, require systemic repair evidence and a bounded lifecycle model rather
 than another isolated file-level fix.
+When deterministic validator, checker, schema, gate, or generated-projection
+behavior changes, classify `machine-enforced-contract` risk. Bind each
+normative requirement to enforcement code, positive evidence, a retained
+weaker counterexample, a required proof obligation, and adversarial review;
+green tests written from the same interpretation are not independent proof.
 Required adversarial review and unresolved required obligations block
 completion. Persist conclusions and evidence, never private chain-of-thought.
 

@@ -180,11 +180,12 @@ Commitment: Name changed facts, re-derive testable invariants, reconcile review
 items, owners, and repair sets, and continue failed repairs through one
 incident family. Reopen invalidated obligations and escalate escaped,
 failed-gate, and second-or-later corrections to bounded whole-lifecycle
-reasoning. Require a reasoned Project Contour Sync Decision for code or test
-changes, validation, proportional durable evidence when active, and residual
-risk. Use bounded accepted relationships or manual impact closure without
-treating hashes as semantic proof, then reconcile applicable workstreams,
-packages, code documentation, vocabulary, and test-first evidence.
+reasoning. For machine-enforced contracts, bind each normative source to
+enforcement, positive evidence, a retained weaker counterexample, a required
+proof obligation, and adversarial review. Require a reasoned Project Contour
+Sync Decision, validation, proportional durable evidence when active, and
+residual risk, using bounded impact closure without treating hashes or
+implementation-authored tests as semantic proof.
 Applies to: semantic fact changes, drift reviews.
 Enforcement: required.
 
@@ -491,15 +492,16 @@ Source owner: `framework/task-decomposition.md`
 Installed owner: `.ai/framework/task-decomposition.md`
 Commitment: Before non-trivial execution, select one primary strategy and
 maintain a bounded evidence-backed problem model, digest-bound active
-projection, incident/lifecycle state, and proof obligations. Decompose by fact,
-owner, contract, area, dependency, validation, and support impact. Treat
-transitions as history without freezing later state; require systemic lifecycle
-modeling for escaped, failed-gate, recurring, and second-or-later corrections.
-Give each task one level, bounded context, actions, validation, dependencies,
-and executor decision. Keep small settled work direct-local, require
-adversarial review for high impact, bound worker expansion, escalate only on
-named triggers, and retain primary ownership of strategy, obligations, semantic
-decisions, approval, integration, and convergence.
+projection, incident/lifecycle state, contract-enforcement closure when
+applicable, and proof obligations. Decompose by fact, owner, contract, area,
+dependency, validation, and support impact. Require systemic lifecycle modeling
+for escaped, failed-gate, recurring, and second-or-later corrections, and
+adversarial counterexample review for machine-enforced contracts. Give each
+task one level, bounded context, actions, validation, dependencies, and
+executor decision. Keep small settled work direct-local, bound worker
+expansion, escalate only on named triggers, and retain primary ownership of
+strategy, obligations, semantic decisions, approval, integration, and
+convergence.
 Applies to: all installed adapter tasks, large tasks, delegated execution, team
 coordination, final evidence.
 Enforcement: required.

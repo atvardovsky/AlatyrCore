@@ -53,6 +53,12 @@
         "latest_failed_gate": "{NONE_OPEN_OR_RESOLVED_WITH_EVIDENCE}",
         "lifecycle_model": "{NOT_REQUIRED_OR_VALIDATED_WITH_BOUNDARIES_AND_OUTCOMES}"
       },
+      "contract_enforcement": {
+        "state": "{NOT_REQUIRED_OR_VALIDATED}",
+        "requirement_ids": ["{NORMATIVE_REQUIREMENT_ID_OR_NONE}"],
+        "counterexample_ids": ["{COUNTEREXAMPLE_ID_OR_NONE}"],
+        "adversarial_review": "{PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}"
+      },
       "required_review_ids": ["{ADVERSARIAL_REVIEW_OR_NONE}"],
       "review_results": ["{REVIEW_ID_PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}"]
     },

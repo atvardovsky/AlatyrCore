@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": [
     "schema_version", "model_kind", "model_id", "operation_id", "active_projection",
-    "incident", "lifecycle_model",
+    "incident", "lifecycle_model", "contract_enforcement",
     "primary_strategy_id", "risk_classes", "protected_change", "required_review_ids", "review_results", "objective", "non_goals",
     "repository_binding", "task_binding", "predecessor", "strategy_transitions",
     "facts", "assumptions", "unknowns", "changed_facts", "invariants",
@@ -14,7 +14,7 @@
     "unresolved_decisions", "evidence_refs"
   ],
   "properties": {
-    "schema_version": {"const": 3},
+    "schema_version": {"const": 4},
     "model_kind": {"const": "alatyr-bounded-problem-model"},
     "model_id": {"$ref": "#/definitions/identifier"},
     "operation_id": {"$ref": "#/definitions/identifier"},
@@ -23,7 +23,7 @@
       "additionalProperties": false,
       "required": ["schema_version", "path"],
       "properties": {
-        "schema_version": {"const": 2},
+        "schema_version": {"const": 3},
         "path": {
           "type": "string",
           "minLength": 1,
@@ -34,6 +34,7 @@
     },
     "incident": {"$ref": "#/definitions/incident"},
     "lifecycle_model": {"$ref": "#/definitions/lifecycleModel"},
+    "contract_enforcement": {"$ref": "#/definitions/contractEnforcement"},
     "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
     "risk_classes": {"$ref": "#/definitions/stringArray"},
     "protected_change": {"type": "boolean"},
@@ -290,6 +291,37 @@
         "kind": {"enum": ["producer", "orchestrator", "persistence", "consumer", "observability"]},
         "owner_ref": {"$ref": "#/definitions/reference"},
         "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "contractEnforcement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "reason", "requirements"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "requirements": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/contractEnforcementRequirement"}
+        }
+      }
+    },
+    "contractEnforcementRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "normative_source_ref", "statement", "enforcement_refs",
+        "positive_evidence_refs", "counterexample_ids", "proof_obligation_ids"
+      ],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "normative_source_ref": {"$ref": "#/definitions/reference"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "enforcement_refs": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "positive_evidence_refs": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "counterexample_ids": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "proof_obligation_ids": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
     },
     "identifiedStatement": {

@@ -78,27 +78,52 @@ Use this sequence when a fact may have changed:
 8. Re-derive the invariants that connect the changed fact to its scope,
    identity, ownership, lifecycle, and dependent contracts. State each
    invariant in testable language before choosing a repair.
-9. Check incident continuity. If this corrects earlier repair work, bind it to
+9. If a validator, checker, schema, gate, generated projection, or other
+   machine-enforced contract changes, classify `machine-enforced-contract`
+   risk and bind each normative requirement to its enforcement point, positive
+   evidence, retained counterexample, required proof obligation, and
+   adversarial review.
+10. Check incident continuity. If this corrects earlier repair work, bind it to
    predecessor evidence and the failed gate. From the second corrective
    iteration, or after an escaped defect or failed required gate, reclassify
    the work as systemic and derive the whole lifecycle before choosing a
    repair.
-10. Choose the smallest coherent repair set that preserves those invariants.
-11. Record a Project Contour Sync Decision for every code or test change:
+11. Choose the smallest coherent repair set that preserves those invariants.
+12. Record a Project Contour Sync Decision for every code or test change:
     `updated`, `not-required`, `blocked`, or `unverified`. Name the changed fact
     IDs, project owners checked, affected support surfaces, and evidence. A
     `not-required` decision needs a fact-specific reason; a code-only diff is
     not evidence by itself.
-12. Apply required companion updates or explain why none are needed. Update
+13. Apply required companion updates or explain why none are needed. Update
     `.ai/project/contour.md` only when its orientation, areas, owners,
     workflows, validation entry points, or known gaps changed; keep detailed
     facts in their canonical owners.
-13. Run target validation that exists, or record manual/unresolved checks.
-14. Make a proportional final-evidence capture decision. When durable
+14. Run target validation that exists, or record manual/unresolved checks.
+15. Make a proportional final-evidence capture decision. When durable
     Engineering Evidence support is active, apply its full capture policy. If
     it is unavailable, record compact final evidence plus an unavailable,
     skipped, or blocked reason without claiming that a durable record exists.
-15. Report final evidence and residual risk.
+16. Report final evidence and residual risk.
+
+## Machine-Enforced Contract Closure
+
+Passing automation is not independent evidence when the same interpretation
+created the rule, implementation, fixture, and acceptance check. When a task
+changes deterministic enforcement behavior, the bounded problem model must:
+
+- classify `machine-enforced-contract` risk
+- name each normative statement and canonical source
+- bind it to concrete enforcement references and positive evidence
+- retain at least one counterexample that would pass under a weaker
+  interpretation
+- bind the statement to a required proof obligation
+- require an adversarial review whose evidence starts from the normative
+  source, not from the implementation's existing tests
+
+For enumerable contracts, mutate or omit each required member in turn. A
+positive fixture proves an accepted example; it does not prove rejection of a
+weaker near-miss. Generated-surface synchronization and broad green CI remain
+separate evidence and cannot replace this semantic closure.
 
 When test-first development is activated, the repair set must include the
 selected policy trigger, changed fact or invariant, valid expected RED,

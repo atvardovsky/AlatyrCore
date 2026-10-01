@@ -144,6 +144,19 @@ def validate_analysis_strategies(validator: Any) -> None:
                 "analysis strategy policy primary IDs are incomplete or reordered",
                 POLICY_RELPATH,
             )
+        quality_gates = policy.get("quality_gates")
+        if not isinstance(quality_gates, dict) or not all(
+            quality_gates.get(key) is True
+            for key in (
+                "semantic_enforcement_closure_for_machine_contracts",
+                "counterexample_required_for_each_normative_requirement",
+            )
+        ):
+            validator.error(
+                "ANALYSIS_STRATEGY_POLICY_DRIFT",
+                "task-decomposition policy omits machine-contract closure gates",
+                POLICY_RELPATH,
+            )
 
     router = validator.load_json_object(
         validator.target_path(ROUTER_RELPATH), "ANALYSIS_STRATEGY_ROUTER"
@@ -181,11 +194,12 @@ def validate_analysis_strategies(validator: Any) -> None:
         not isinstance(decomposition, dict)
         or not isinstance(completion_strategy, dict)
         or not isinstance(completion_strategy.get("active_projection"), dict)
+        or not isinstance(completion_strategy.get("contract_enforcement"), dict)
         or not isinstance(decomposition.get("proof_obligations"), list)
     ):
         validator.error(
             "ANALYSIS_STRATEGY_COMPLETION_EVIDENCE",
-            "operation completion evidence must record strategy, reviews, and obligations",
+            "operation completion evidence must record strategy, contract closure, reviews, and obligations",
             COMPLETION_RELPATH,
         )
 
@@ -201,6 +215,21 @@ def validate_analysis_strategies(validator: Any) -> None:
             "gate index must expose the analysis-strategy gate",
             ".ai/assistant/gates/index.json",
         )
+    else:
+        gate_text = validator.context.read_text_result(
+            validator.target_path(GATE_RELPATH)
+        ).value or ""
+        for required_text in (
+            "machine-enforced-contract",
+            "retained counterexample",
+            "positive fixtures",
+        ):
+            if required_text not in gate_text:
+                validator.error(
+                    "ANALYSIS_STRATEGY_GATE_ROUTE",
+                    f"analysis-strategy gate omits {required_text}",
+                    GATE_RELPATH,
+                )
 
     try:
         schema = load_problem_model_schema()

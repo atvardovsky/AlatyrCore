@@ -52,6 +52,11 @@ Future assistant bootstrap:
 - Use the resolved core semantic definitions once, follow only selected index
   branches, and load canonical owner prose for unresolved or conflicting terms.
   Report stale entries, omitted live references, and fallback events.
+- For validator, checker, schema, gate, or generated-projection behavior
+  changes, classify `machine-enforced-contract` risk and require semantic
+  enforcement closure: canonical normative source, enforcement references,
+  positive evidence, a retained weaker counterexample, required proof
+  obligations, and adversarial review.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If later drift or new evidence appears, use `recheck-after-framework-update`;
   it is not a mandatory second step after an accepted update.

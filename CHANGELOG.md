@@ -4,6 +4,21 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.76 - 2026-10-01
+
+- Fixed lifecycle validation so every required success, rejection, deferral,
+  expiry, recovery, and failure outcome must be represented by a concrete
+  transition; missing outcomes are reported explicitly.
+- Replaced the incomplete success-only positive fixture with full lifecycle
+  coverage, retained success-only as a negative regression, and added
+  one-outcome-at-a-time mutation checks.
+- Added semantic enforcement closure for machine-enforced contract changes,
+  binding normative sources to enforcement references, positive evidence,
+  retained counterexamples, required proof obligations, and adversarial
+  review so implementation-authored tests are not the only acceptance oracle.
+- Increased adapter schema version to `64` and target template version to `71`
+  for problem-model v4 and active-projection v3.
+
 ## 0.1.0-alpha.75 - 2026-10-01
 
 - Added incident-family continuity to bounded problem models and active

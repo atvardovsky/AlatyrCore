@@ -745,8 +745,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 312,
-      "content_digest": "sha256:c93257cb99232463149454eec1e0c81a296ae45366542774a6c492db74881431"
+      "estimated_words": 323,
+      "content_digest": "sha256:584b2dac023f39ab7c75ce98e59237dc82e1efa5686cdf31c037c1755da1d589"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -810,8 +810,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1525,
-      "content_digest": "sha256:3af71277338dbd8bd138d3ea400459fe473298c3bd022e8c93e26fe5dd7639c4"
+      "estimated_words": 1560,
+      "content_digest": "sha256:c8ab01b2b6c463d1b7a1a756425448520e7a300a4eff2653a2642b00d90a96ab"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",
@@ -855,8 +855,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 147,
-      "content_digest": "sha256:7dae416d6e7893393a1c491a652e6fb734f66a4860f5e04c9d9b9ad8071fd528"
+      "estimated_words": 166,
+      "content_digest": "sha256:7427b7b9c30502bcc0626e99d3ad8e8500913e2a21a313cfac826f9f45b31be7"
     },
     {
       "id": "assistant.content.templates-problem-model-json",
@@ -876,8 +876,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 126,
-      "content_digest": "sha256:7b306e2cb79304bd992b1a688361c6f283cc84f2b81142829e19585550178592"
+      "estimated_words": 145,
+      "content_digest": "sha256:8e033ef958108bce03825da22e87426620e8680143f292aadeb4e3d1af2e0e0a"
     },
     {
       "id": "assistant.content.templates-project-knowledge-promotion-json",
@@ -1017,8 +1017,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 288,
-      "content_digest": "sha256:057e2e466421c6dfd690b55c1524361495dfde700953c185fbef556e95a8053b"
+      "estimated_words": 295,
+      "content_digest": "sha256:19800c806321d933decd217df0285af98946491c7fc80adc9453d13db47a7e50"
     },
     {
       "id": "assistant.content.templates-team-checkpoint-md",

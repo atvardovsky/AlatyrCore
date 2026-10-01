@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "projection_kind": "alatyr-active-problem-model",
   "model_id": "{PROBLEM_MODEL_ID}",
   "operation_id": "{OPERATION_ID}",
@@ -44,6 +44,11 @@
       "transitions": [],
       "boundaries": [],
       "conservation_rules": []
+    },
+    "contract_enforcement": {
+      "required": false,
+      "reason": "not required because this task does not change a machine-enforced contract",
+      "requirements": []
     },
     "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
     "risk_classes": [],

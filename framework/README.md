@@ -54,8 +54,9 @@ sync, logical integrity review, and final evidence.
   resumable checkpoints, and final convergence
 - required task decomposition with implementation levels, dependency-aware
   task graphs, bounded context, one task-matched analysis strategy,
-  evidence-backed proof obligations, executor selection, and primary-agent
-  convergence before non-trivial execution
+  evidence-backed proof obligations, machine-enforced-contract closure with
+  retained counterexamples and adversarial review, executor selection, and
+  primary-agent convergence before non-trivial execution
 - optional capability-gated worker delegation with project-owned roles and
   prompts, deterministic task/packet/result contracts, verified per-surface
   native/model bindings, primary-issued read-only recursive envelopes,

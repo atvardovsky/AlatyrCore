@@ -1,10 +1,10 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "model_kind": "alatyr-bounded-problem-model",
   "model_id": "{PROBLEM_MODEL_ID}",
   "operation_id": "{OPERATION_ID}",
   "active_projection": {
-    "schema_version": 2,
+    "schema_version": 3,
     "path": ".ai/.runtime/problem-model-projections/{PROBLEM_MODEL_ID}.json"
   },
   "incident": {
@@ -28,6 +28,11 @@
     "transitions": [],
     "boundaries": [],
     "conservation_rules": []
+  },
+  "contract_enforcement": {
+    "required": false,
+    "reason": "not required because this task does not change a machine-enforced contract",
+    "requirements": []
   },
   "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
   "risk_classes": [],

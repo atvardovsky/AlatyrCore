@@ -9,7 +9,7 @@
     "source_model", "limits", "payload", "measurements"
   ],
   "properties": {
-    "schema_version": {"const": 2},
+    "schema_version": {"const": 3},
     "projection_kind": {"const": "alatyr-active-problem-model"},
     "model_id": {"$ref": "#/definitions/identifier"},
     "operation_id": {"$ref": "#/definitions/identifier"},
@@ -39,7 +39,7 @@
       "additionalProperties": false,
       "required": [
         "objective", "non_goals", "repository_binding", "task_binding",
-        "incident", "lifecycle_model",
+        "incident", "lifecycle_model", "contract_enforcement",
         "primary_strategy_id", "risk_classes", "protected_change", "facts",
         "changed_facts", "active_assumptions", "invalidated_assumption_ids",
         "unknowns", "active_invariants", "current_hypotheses",
@@ -62,6 +62,7 @@
         },
         "incident": {"$ref": "#/definitions/incident"},
         "lifecycle_model": {"$ref": "#/definitions/lifecycleModel"},
+        "contract_enforcement": {"$ref": "#/definitions/contractEnforcement"},
         "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
         "risk_classes": {"$ref": "#/definitions/stringArray"},
         "protected_change": {"type": "boolean"},
@@ -174,6 +175,13 @@
       "items": {"$ref": "#/definitions/reference"},
       "uniqueItems": true
     },
+    "nonEmptyStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {"$ref": "#/definitions/reference"},
+      "uniqueItems": true
+    },
     "incident": {
       "type": "object",
       "additionalProperties": false,
@@ -261,6 +269,37 @@
         "kind": {"enum": ["producer", "orchestrator", "persistence", "consumer", "observability"]},
         "owner_ref": {"$ref": "#/definitions/reference"},
         "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "contractEnforcement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "reason", "requirements"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "requirements": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/contractEnforcementRequirement"}
+        }
+      }
+    },
+    "contractEnforcementRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "normative_source_ref", "statement", "enforcement_refs",
+        "positive_evidence_refs", "counterexample_ids", "proof_obligation_ids"
+      ],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "normative_source_ref": {"$ref": "#/definitions/reference"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "enforcement_refs": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "positive_evidence_refs": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "counterexample_ids": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "proof_obligation_ids": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
     },
     "repositoryBinding": {
