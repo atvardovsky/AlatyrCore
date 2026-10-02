@@ -11,10 +11,37 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from check_cross_platform_tools import (  # noqa: E402
     changed_tree_paths,
+    source_tool_surface_failures,
     tree_hashes,
     verify_upgrade_documentation_failures,
 )
-from verify_target_upgrade import required_cli_option_groups  # noqa: E402
+
+
+POSIX_PREFIX = "python3 tools/alatyr.py verify-upgrade"
+POWERSHELL_EXAMPLE = (
+    ".\\tools\\alatyr.ps1 verify-upgrade --target C:\\repo "
+    "--migration-diff migration.md --output result.json --diff-ref HEAD~1 "
+    "--approval-record approval.json"
+)
+CMD_EXAMPLE = (
+    "tools\\alatyr.cmd verify-upgrade --target C:\\repo "
+    "--migration-diff migration.md --output result.json --diff-ref HEAD~1 "
+    "--approval-record approval.json"
+)
+REQUIRED_OPTIONS = (
+    "--target",
+    "--migration-diff",
+    "--output",
+    "--diff-ref",
+    "--approval-record",
+)
+
+
+def documentation_with_posix(arguments: list[str]) -> dict[str, str]:
+    return {
+        "INSTALL.md": " ".join([POSIX_PREFIX, *arguments]) + "\n",
+        "tools/README.md": POWERSHELL_EXAMPLE + "\n" + CMD_EXAMPLE + "\n",
+    }
 
 
 class CrossPlatformToolTests(unittest.TestCase):
@@ -38,47 +65,67 @@ class CrossPlatformToolTests(unittest.TestCase):
 
             self.assertEqual(changed_tree_paths(before, after), ["project.txt"])
 
-    def test_verify_upgrade_required_options_come_from_parser(self) -> None:
-        required = {option for group in required_cli_option_groups() for option in group}
+    def test_current_verify_upgrade_documentation_uses_valid_parser_inputs(self) -> None:
+        self.assertEqual(source_tool_surface_failures(), [])
 
-        self.assertEqual(
-            required,
-            {
-                "--target",
-                "--migration-diff",
-                "--output",
-                "--diff-ref",
-                "--approval-record",
-            },
-        )
+    def test_verify_upgrade_rejects_every_missing_required_option(self) -> None:
+        complete = [
+            "--target", "/repo",
+            "--migration-diff", "migration.md",
+            "--output", "result.json",
+            "--diff-ref", "HEAD~1",
+            "--approval-record", "approval.json",
+        ]
 
-    def test_verify_upgrade_documentation_rejects_stale_example(self) -> None:
-        failures = verify_upgrade_documentation_failures(
-            {
-                "example.md": (
-                    "python3 tools/alatyr.py verify-upgrade --target /target "
-                    "--migration-diff migration.md --output result.json\n"
+        for option in REQUIRED_OPTIONS:
+            with self.subTest(option=option):
+                index = complete.index(option)
+                mutated = complete[:index] + complete[index + 2 :]
+                failures = verify_upgrade_documentation_failures(
+                    documentation_with_posix(mutated)
                 )
-            }
-        )
+                self.assertTrue(failures)
+                self.assertIn("INSTALL.md:1", failures[0])
 
-        self.assertEqual(len(failures), 1)
-        self.assertIn("--diff-ref", failures[0])
-        self.assertIn("--approval-record", failures[0])
+    def test_verify_upgrade_rejects_near_match_options(self) -> None:
+        complete = [
+            "--target", "/repo",
+            "--migration-diff", "migration.md",
+            "--output", "result.json",
+            "--diff-ref", "HEAD~1",
+            "--approval-record", "approval.json",
+        ]
 
-    def test_verify_upgrade_documentation_accepts_complete_example(self) -> None:
-        failures = verify_upgrade_documentation_failures(
-            {
-                "example.md": (
-                    "python3 tools/alatyr.py verify-upgrade --target /target "
-                    "--migration-diff migration.md --output result.json "
-                    "--diff-ref PRE_UPDATE_COMMIT "
-                    "--approval-record /target/approval.json\n"
+        for option in REQUIRED_OPTIONS:
+            with self.subTest(option=option):
+                mutated = [
+                    option + "-invalid" if token == option else token
+                    for token in complete
+                ]
+                failures = verify_upgrade_documentation_failures(
+                    documentation_with_posix(mutated)
                 )
-            }
-        )
+                self.assertTrue(failures)
+                self.assertIn("INSTALL.md:1", failures[0])
 
-        self.assertEqual(failures, [])
+    def test_verify_upgrade_rejects_missing_option_values(self) -> None:
+        complete = [
+            "--target", "/repo",
+            "--migration-diff", "migration.md",
+            "--output", "result.json",
+            "--diff-ref", "HEAD~1",
+            "--approval-record", "approval.json",
+        ]
+
+        for option in REQUIRED_OPTIONS:
+            with self.subTest(option=option):
+                index = complete.index(option)
+                mutated = complete[: index + 1] + complete[index + 2 :]
+                failures = verify_upgrade_documentation_failures(
+                    documentation_with_posix(mutated)
+                )
+                self.assertTrue(failures)
+                self.assertIn("INSTALL.md:1", failures[0])
 
 
 if __name__ == "__main__":

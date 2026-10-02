@@ -113,13 +113,11 @@ Use content-addressed sparse writes for deterministic projections. An
 unchanged desired byte stream is not rewritten. Omission and deletion remain
 separate ownership decisions and are never inferred from a sparse overlay.
 
-Treat a fast, compact, cached, selective, incremental, or fallback path as a
-refinement of its canonical path, not as an independent contract. Shared
-authorization, safety, semantic, and budget invariants belong in common
-resolvers. Acceptance requires differential evidence for both paths, including
-below-limit, exact-limit, over-limit, malformed-input, and public-entry-point
-cases. The optimized path may reduce representation or loading; it may not
-reduce enforcement.
+Treat every optimized or parity path as a refinement of its canonical path.
+Use its canonical resolver or parser as the oracle; never copy requirements or
+approximate them with substring checks. Differential tests must cover valid
+entry points and missing, malformed, near-match, below-, exact-, and over-limit
+inputs. Representation may shrink; enforcement may not.
 
 Apply least sufficient context to the source repository itself. Add indexes,
 manifests, and narrow trigger paths so agents and checks load only what the

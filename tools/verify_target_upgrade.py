@@ -112,16 +112,6 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def required_cli_option_groups() -> tuple[tuple[str, ...], ...]:
-    """Return parser-owned option aliases for every required CLI argument."""
-
-    return tuple(
-        tuple(action.option_strings)
-        for action in build_parser()._actions
-        if action.required and action.option_strings
-    )
-
-
 def parse_args() -> argparse.Namespace:
     return build_parser().parse_args()
 

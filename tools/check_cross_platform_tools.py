@@ -11,8 +11,12 @@ import tempfile
 from pathlib import Path
 from typing import Mapping
 
+from documented_command_contract import (
+    DocumentedInvocation,
+    argparse_documentation_failures,
+)
 from parallel_execution import run_commands
-from verify_target_upgrade import required_cli_option_groups
+from verify_target_upgrade import build_parser as build_verify_upgrade_parser
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,10 +34,10 @@ VERIFY_UPGRADE_DOCUMENTATION = (
     ROOT / "INSTALL.md",
     TOOLS / "README.md",
 )
-VERIFY_UPGRADE_COMMAND_MARKERS = (
-    "alatyr.py verify-upgrade",
-    "alatyr.ps1 verify-upgrade",
-    "alatyr.cmd verify-upgrade",
+VERIFY_UPGRADE_INVOCATIONS = (
+    DocumentedInvocation("python3 tools/alatyr.py verify-upgrade", "posix"),
+    DocumentedInvocation(".\\tools\\alatyr.ps1 verify-upgrade", "powershell"),
+    DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
     "check-source",
@@ -115,31 +119,11 @@ def changed_tree_paths(before: dict[str, str], after: dict[str, str]) -> list[st
 def verify_upgrade_documentation_failures(
     documents: Mapping[str, str],
 ) -> list[str]:
-    """Compare documented verify-upgrade commands with its live parser contract."""
-
-    failures: list[str] = []
-    example_count = 0
-    required_groups = required_cli_option_groups()
-    for relpath, text in documents.items():
-        for line_number, line in enumerate(text.splitlines(), start=1):
-            if not any(marker in line for marker in VERIFY_UPGRADE_COMMAND_MARKERS):
-                continue
-            if "--target" not in line:
-                continue
-            example_count += 1
-            missing = [
-                "/".join(group)
-                for group in required_groups
-                if not any(option in line for option in group)
-            ]
-            if missing:
-                failures.append(
-                    f"{relpath}:{line_number} verify-upgrade example missing required "
-                    f"options: {', '.join(missing)}"
-                )
-    if example_count == 0:
-        failures.append("no documented verify-upgrade command examples were found")
-    return failures
+    return argparse_documentation_failures(
+        documents,
+        invocations=VERIFY_UPGRADE_INVOCATIONS,
+        parser_factory=build_verify_upgrade_parser,
+    )
 
 
 def source_tool_surface_failures() -> list[str]:

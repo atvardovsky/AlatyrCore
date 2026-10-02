@@ -1464,6 +1464,7 @@
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py",
         "tools/delegation_evidence.py",
+        "tools/documented_command_contract.py",
         "tools/validate_delegation_execution_tree.py",
         "tools/verify_target_upgrade.py"
       ],
@@ -1491,6 +1492,7 @@
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py",
         "tools/delegation_evidence.py",
+        "tools/documented_command_contract.py",
         "tools/validate_delegation_execution_tree.py",
         "tools/verify_target_upgrade.py",
         "tools/runtime-compatibility.json",

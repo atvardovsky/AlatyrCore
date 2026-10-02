@@ -3,9 +3,10 @@
 ## Unreleased
 
 - Fixed every published `verify-upgrade` command example to include its required
-  current-change and approval arguments, and added parser-derived documentation
-  parity validation so later CLI requirement changes cannot leave examples
-  silently stale.
+  current-change and approval arguments. A shared non-executing documentation
+  oracle now tokenizes each recognized shell command and submits its arguments
+  to the live parser, with differential mutations for missing options, invalid
+  near matches, missing values, and unknown arguments.
 
 ## 0.1.0-alpha.79 - 2026-10-02
 
