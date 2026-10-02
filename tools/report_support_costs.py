@@ -60,6 +60,7 @@ BRIDGE_ROOTS = {
     ".gigacode",
 }
 ROOT_ENTRYPOINTS = {
+    "AGENT.md",
     "AGENTS.md",
     "AI_ASSISTANTS.md",
     "CLAUDE.md",
@@ -71,6 +72,15 @@ ROOT_ENTRYPOINTS = {
     "CODEOWNERS",
 }
 TEXT_CACHE: dict[Path, str] = {}
+INDEX_PRESSURE_MAX_ENTRIES = 64
+INDEX_PRESSURE_MAX_BYTES = 64 * 1024
+INDEX_COLLECTION_FIELDS = {
+    "entries",
+    "records",
+    "shards",
+    "promotion_records",
+    "node_shards",
+}
 
 
 def read_text(path: Path) -> str:
@@ -536,6 +546,55 @@ def classify_path(relpath: str, policy: dict[str, Any] | None) -> str:
     return "unclassified"
 
 
+def index_pressure(target: Path, paths: set[Path]) -> dict[str, Any]:
+    measurements: list[dict[str, Any]] = []
+    for relpath in sorted(paths):
+        if relpath.suffix != ".json" or "index" not in relpath.name:
+            continue
+        path = target / relpath
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        entry_count = sum(
+            len(value)
+            for key, value in data.items()
+            if key in INDEX_COLLECTION_FIELDS and isinstance(value, list)
+        )
+        byte_size = path.stat().st_size
+        pressure = (
+            entry_count > INDEX_PRESSURE_MAX_ENTRIES
+            or byte_size > INDEX_PRESSURE_MAX_BYTES
+        )
+        measurements.append(
+            {
+                "path": relpath.as_posix(),
+                "entry_count": entry_count,
+                "byte_size": byte_size,
+                "pressure": pressure,
+                "recommendation": (
+                    "review semantic or monthly sharding; do not move records automatically"
+                    if pressure
+                    else "none"
+                ),
+            }
+        )
+    return {
+        "limits": {
+            "max_entries_without_review": INDEX_PRESSURE_MAX_ENTRIES,
+            "max_bytes_without_review": INDEX_PRESSURE_MAX_BYTES,
+        },
+        "indexes_measured": len(measurements),
+        "indexes_under_pressure": sum(
+            1 for measurement in measurements if measurement["pressure"]
+        ),
+        "measurements": measurements,
+        "automatic_archival_performed": False,
+    }
+
+
 def build_installed_report(target: Path) -> dict[str, Any]:
     target = target.resolve()
     policy = load_support_policy(target)
@@ -613,6 +672,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
             },
         },
         "classifications": dict(sorted(classifications.items())),
+        "index_pressure": index_pressure(target, paths),
         "limitations": [
             "installed support cost is a filesystem measurement, not semantic correctness",
             "ignored local state is not filtered unless the target support policy excludes it",
@@ -648,6 +708,11 @@ def render_text(report: dict[str, Any]) -> str:
         ]
         for name, count in report["classifications"].items():
             lines.append(f"- {name}: {count}")
+        pressure = report["index_pressure"]
+        lines.append(
+            "Indexes requiring sharding review: "
+            f"{pressure['indexes_under_pressure']} of {pressure['indexes_measured']}"
+        )
     else:
         support = report["combined_support"]
         inventory = report["cost_scopes"]["complete_managed_inventory"]

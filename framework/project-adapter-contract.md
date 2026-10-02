@@ -174,7 +174,8 @@ and `.ai/assistant`.
 
 In a target repository, the adapter usually includes:
 
-- `AGENTS.md` and `AI_ASSISTANTS.md`
+- required root `AGENTS.md`, optional existing root `AGENT.md`, and
+  `AI_ASSISTANTS.md` when the selected profile or assistant surfaces need it
 - `.ai/alatyr.yaml` or equivalent adapter manifest
 - `.ai/framework` containing the selected portable framework pack
 - `.ai/project` containing project-owned facts, canonical-owner references,
@@ -186,3 +187,5 @@ In a target repository, the adapter usually includes:
 
 Those files apply Alatyr Core to one project. Target-owned surfaces must be
 rewritten from target evidence rather than copied from another project.
+An existing `AGENT.md` is preserved and checked as a compact compatible entry
+surface; it must route to `AGENTS.md` and must not preload the full adapter.

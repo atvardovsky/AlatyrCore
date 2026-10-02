@@ -14,7 +14,7 @@ from impact_graph import (
     ImpactGraphError,
     build_reverse_index,
     load_impact_graph,
-    matching_node_ids,
+    map_changed_paths,
     traverse_impact,
 )
 from support_state import SupportStateError, build_support_state, load_state, state_differences
@@ -75,6 +75,7 @@ def main() -> int:
     parser.add_argument("--max-depth", type=int)
     parser.add_argument("--max-nodes", type=int)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--require-mapped-paths", action="store_true")
     args = parser.parse_args()
     target = args.target.resolve()
     try:
@@ -90,10 +91,7 @@ def main() -> int:
         set(changed_paths)
         | {item["path"] for item in support_changes if isinstance(item.get("path"), str)}
     )
-    path_matches = {
-        relpath: sorted(matching_node_ids(reverse, relpath))
-        for relpath in all_changed_paths
-    }
+    path_matches, unmapped = map_changed_paths(reverse, all_changed_paths)
     start_ids = set(args.fact_id)
     for node_ids in path_matches.values():
         start_ids.update(node_ids)
@@ -142,7 +140,6 @@ def main() -> int:
                 for value in binding.get("context_ids", [])
                 if isinstance(value, str) and value and "{" not in value
             )
-    unmapped = [path for path, node_ids in path_matches.items() if not node_ids]
     discovery_triggers = [
         path
         for path in unmapped
@@ -198,6 +195,12 @@ def main() -> int:
         args.output.write_bytes(rendered.encode("utf-8"))
     else:
         print(rendered, end="")
+    if args.require_mapped_paths and unmapped:
+        print(
+            "FAIL: changed project paths are not mapped: " + ", ".join(unmapped[:8]),
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 

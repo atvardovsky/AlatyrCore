@@ -237,6 +237,9 @@ A target validator may verify:
   identity and digest, problem-model synchronization, failed-gate state, and
   lifecycle-model activation
 - changed package plans are bound to an active compact-index record
+- every project path in a final semantic package maps through the enabled
+  consistency map, while adapter/support paths remain governed by their own
+  support-state contract
 
 It cannot infer missing domain invariants, prove semantic correctness, decide
 whether architecture is accepted, or establish that all affected facts were
@@ -258,6 +261,11 @@ evidence quality derives from `provenance`; approval references derive from
 validation checks every projection. Changed-scope validation checks the index
 when it changed and otherwise checks only changed package records, so routine
 product work does not reopen historical package evidence.
+
+An unchanged index shard proves only that the shard bytes are unchanged. When
+a referenced package record changes, changed-scope validation must still open
+that record's compact entry and compare the projection without deep-loading
+unrelated historical records.
 
 When completed package records make a directory or recursive context index
 exceed its target budget, move completed records into bounded chronological

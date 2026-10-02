@@ -79,8 +79,10 @@ operation ID, repository revision, current-scope authorization evidence,
 approval evidence when applicable, validation result, reason, and observation
 time. Its final state must equal the manifest state. Direct jumps, broken
 history, or `staged` to `accepted` without passed strict validation invalidate
-acceptance. A transition record documents evidence; it does not create user
-authorization or approval.
+acceptance. An accepted transition must name an immutable Git object that
+resolves in the target repository and remains an ancestor of current `HEAD`;
+a plausible-looking hash is not evidence. A transition record documents
+evidence; it does not create user authorization or approval.
 
 An adapter installed before transition records existed must not reconstruct
 events it cannot prove. Its update may start a new record at `staged` with
@@ -319,7 +321,11 @@ Before upgrading framework files in a target project:
     rewritten as current claims.
     Applying updates run acceptance/full/full while `staged`, record
     `accepted`, refresh projections, then rerun. Only the latter is acceptance
-    eligible; stop at an exact blocker.
+    eligible. Bind the final run to one canonical Git change snapshot and
+    explicit approval-scope evidence. When the target enables change packages,
+    enforce the selected package against that same current change; do not make
+    the optional module mandatory for targets that did not enable it. Stop at
+    an exact blocker.
 16. Send a handoff: surfaces, checks, gaps; `accepted`, `assessed`,
     `staged`, or `blocked`. Accepted needs no recheck; other outcomes name one
     exact next action.
@@ -439,6 +445,9 @@ Reject lifecycle changes that:
 - claim an update is complete from migration-staging evidence, unresolved
   active placeholders, module manifest/profile drift, or validation performed
   on a different branch or revision
+- accept an unresolved, non-immutable, or non-ancestor installation revision
+- accept a current update without a canonical Git change snapshot and enforced
+  approval scope, or without package enforcement when that module is enabled
 - stop an authorized update at assessment, file copy, changed-scope check, or
   staged pre-acceptance when in-scope migration can continue
 - require another generic recheck after reporting `accepted`

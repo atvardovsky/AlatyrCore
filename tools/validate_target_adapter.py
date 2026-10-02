@@ -34,6 +34,13 @@ from change_package_contract import (
     package_index_projection_mismatches,
 )
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
+from impact_graph import (
+    ImpactGraphError,
+    build_reverse_index,
+    load_impact_graph,
+    map_changed_paths,
+    validate_graph,
+)
 from agent_entry_packet import (
     PACKET_PATH,
     build_from_target as build_entry_packet,
@@ -48,6 +55,7 @@ from target_validation_support import (
     CANONICAL_CHANGE_SET_HASH_CONTRACT,
     GitEvidenceState,
     GitEvidenceView,
+    GitChangeSet,
     ManifestData,
     PathKey,
     UNRESOLVED_WORDS,
@@ -370,7 +378,7 @@ HISTORICAL_ADAPTER_PREFIXES = (
     ".ai/project/knowledge/records/",
 )
 
-NEUTRAL_ASSISTANT_ENTRY_FILES = {"AGENTS.md", "AI_ASSISTANTS.md"}
+NEUTRAL_ASSISTANT_ENTRY_FILES = {"AGENT.md", "AGENTS.md", "AI_ASSISTANTS.md"}
 
 MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("schema_version",),
@@ -1030,6 +1038,7 @@ class Validator:
         self.phase_telemetry: list[dict[str, Any]] = []
         self._module_profile_cache: dict[str, list[ModuleProfileState]] | None = None
         self._scan_text_files_cache: tuple[Path, ...] | None = None
+        self.enabled_module_ids: set[str] = set()
 
     def error(self, code: str, message: str, path: str | None = None) -> None:
         self.add_finding("error", code, message, path)
@@ -1081,6 +1090,13 @@ class Validator:
         manifest = self.check_manifest()
         support_profile = self.manifest_support_profile(manifest)
         enabled_modules = self.enabled_modules(manifest)
+        self.enabled_module_ids = set(enabled_modules)
+        if (
+            "change-packages" in enabled_modules
+            and self.diff_ref is not None
+            and self.validation_phase == "acceptance"
+        ):
+            self.enforce_change_package = True
         for phase in self.validation_phases(
             manifest, support_profile, enabled_modules
         ):
@@ -1118,7 +1134,10 @@ class Validator:
         def installation_state() -> None:
             validate_installation_state(self.capability_validation_context(), manifest)
             self.installation_state = target_installation_state(
-                self.target, manifest, context=self.context
+                self.target,
+                manifest,
+                context=self.context,
+                git_evidence=self.git,
             )
 
         def operation_catalog() -> None:
@@ -4032,19 +4051,56 @@ class Validator:
         flush()
 
     def check_bootstrap_references(self) -> None:
-        files_to_check = ["AGENTS.md", *BRIDGE_FILES]
+        files_to_check = ["AGENT.md", "AGENTS.md", *BRIDGE_FILES]
         for relpath in files_to_check:
             path = self.target_path(relpath)
             if not self.is_target_file(path):
                 continue
             text = self.read_text(path)
             if ".ai/assistant/bootstrap-index.json" not in text:
-                level = self.error if relpath == "AGENTS.md" else self.warn
+                level = self.error if relpath in {"AGENT.md", "AGENTS.md"} else self.warn
                 level(
                     "BOOTSTRAP_INDEX_REFERENCE_MISSING",
                     "bootstrap references do not include .ai/assistant/bootstrap-index.json",
                     relpath,
                 )
+            if relpath == "AGENT.md" and "AGENTS.md" not in text:
+                self.error(
+                    "AGENT_CANONICAL_ENTRYPOINT_MISSING",
+                    "project-owned AGENT.md must route to canonical AGENTS.md",
+                    relpath,
+                )
+            if relpath == "AGENT.md":
+                positive_lines = [
+                    line
+                    for line in text.splitlines()
+                    if not re.search(
+                        r"\b(?:do not|don't|never|avoid|must not)\b.*\b(?:load|read|preload)\b",
+                        line,
+                        re.IGNORECASE,
+                    )
+                ]
+                positive_text = "\n".join(positive_lines)
+                ai_references = set(re.findall(r"`(\.ai/[^`]+)`", positive_text))
+                broad_directory = re.search(
+                    r"\b(?:load|read|preload)\b[^\n]*`\.ai/(?:framework|project|assistant)/?`",
+                    positive_text,
+                    re.IGNORECASE,
+                )
+                mandatory_many = (
+                    len(ai_references) >= 3
+                    and re.search(
+                        r"\b(?:must|required|before\b[^\n]*\b(?:load|read)|load|read|preload)\b",
+                        positive_text,
+                        re.IGNORECASE,
+                    )
+                )
+                if broad_directory or mandatory_many:
+                    self.error(
+                        "AGENT_BROAD_PRELOAD",
+                        "project-owned AGENT.md requires broad context before compact bootstrap routing",
+                        relpath,
+                    )
             if relpath == "AGENTS.md" and ".ai/assistant/entry-packet.json" not in text:
                 self.error(
                     "BOOTSTRAP_ENTRY_PACKET_MISSING",
@@ -4106,6 +4162,8 @@ class Validator:
     ) -> list[Path]:
         relpaths = set(required_files_for_support_profile(support_profile))
         relpaths.add("AGENTS.md")
+        if self.is_target_file(self.target_path("AGENT.md")):
+            relpaths.add("AGENT.md")
         relpaths.update(self.active_assistant_bridge_files(manifest))
         for module_id in enabled_modules:
             contract = self.capability_modules.get(module_id)
@@ -4279,7 +4337,7 @@ class Validator:
             relpaths = [
                 relpath
                 for relpath in inventory.paths
-                if relpath == "AGENTS.md"
+                if relpath in {"AGENT.md", "AGENTS.md"}
                 or relpath in BRIDGE_FILES
                 or relpath.startswith(".ai/")
             ]
@@ -4287,7 +4345,8 @@ class Validator:
         except RepositoryInventoryError:
             roots = [self.target_path(".ai")]
             files = [
-                self.target_path(relpath) for relpath in ["AGENTS.md", *BRIDGE_FILES]
+                self.target_path(relpath)
+                for relpath in ["AGENT.md", "AGENTS.md", *BRIDGE_FILES]
             ]
             for root in roots:
                 if not self.is_target_dir(root):
@@ -5936,6 +5995,63 @@ class Validator:
                 source,
             )
 
+    def validate_package_impact_coverage(
+        self,
+        package_type: str,
+        status: str,
+        actual_paths: list[str],
+        source: str,
+    ) -> None:
+        semantic_types = {
+            "architecture-segment",
+            "business-capability",
+            "cross-cutting-change",
+            "migration",
+            "public-contract",
+        }
+        if (
+            "consistency-map" not in self.enabled_module_ids
+            or package_type not in semantic_types
+            or status not in {"validated", "complete"}
+        ):
+            return
+        try:
+            graph = load_impact_graph(self.target)
+            failures = validate_graph(graph)
+            if failures:
+                raise ImpactGraphError("; ".join(failures[:3]))
+            reverse = build_reverse_index(graph)
+            _matches, unmapped = map_changed_paths(reverse, actual_paths)
+        except (OSError, UnicodeError, json.JSONDecodeError, ImpactGraphError) as exc:
+            self.change_package_finding(
+                "PACKAGE_IMPACT_GRAPH_UNAVAILABLE",
+                f"cannot verify final package impact coverage: {exc}",
+                source,
+            )
+            return
+        if unmapped:
+            visible = ", ".join(unmapped[:8])
+            omitted = len(unmapped) - min(len(unmapped), 8)
+            suffix = f"; {omitted} more" if omitted else ""
+            self.change_package_finding(
+                "PACKAGE_IMPACT_PATH_UNMAPPED",
+                f"final semantic package has unmapped project paths: {visible}{suffix}",
+                source,
+            )
+
+    def engineering_evidence_ids(self) -> set[str]:
+        index_path = self.target_path(".ai/project/engineering-evidence/index.json")
+        if not self.is_target_file(index_path):
+            return set()
+        index, index_error = self.context.read_json(index_path)
+        if index_error is not None or not isinstance(index, dict):
+            return set()
+        return {
+            entry.get("evidence_id")
+            for entry in index.get("records", [])
+            if isinstance(entry, dict) and isinstance(entry.get("evidence_id"), str)
+        }
+
     def check_change_packages(self) -> None:
         index_path = self.target_path(".ai/assistant/change-packages/index.json")
         indexed_records: set[str] = set()
@@ -6009,23 +6125,7 @@ class Validator:
         packages = self.resolve_change_packages(selected_packages)
         self.validated_change_package_paths.update(self.rel(path) for path in packages)
         referenced_active_plans: set[str] = set()
-        engineering_evidence_ids: set[str] = set()
-        engineering_index_path = self.target_path(
-            ".ai/project/engineering-evidence/index.json"
-        )
-        if self.is_target_file(engineering_index_path):
-            engineering_index, engineering_error = self.context.read_json(
-                engineering_index_path
-            )
-            if engineering_error is not None:
-                engineering_index = {}
-            if isinstance(engineering_index, dict):
-                engineering_evidence_ids = {
-                    entry.get("evidence_id")
-                    for entry in engineering_index.get("records", [])
-                    if isinstance(entry, dict)
-                    and isinstance(entry.get("evidence_id"), str)
-                }
+        engineering_evidence_ids = self.engineering_evidence_ids()
         for package in packages:
             source = self.rel(package)
             if self.enforce_change_package and source not in indexed_records:
@@ -6143,6 +6243,9 @@ class Validator:
             actual_paths = self.package_list(
                 data, ("actual_scope", "changed_paths"), source
             )
+            self.validate_package_impact_coverage(
+                package_type, status, actual_paths, source
+            )
 
             for label, actual, approved in [
                 ("changed fact", actual_facts, approved_facts),
@@ -6156,6 +6259,7 @@ class Validator:
                         f"actual {label} is outside approved scope: {value}",
                         source,
                     )
+
             for fact_id in sorted(set(actual_facts) - set(declared_fact_ids)):
                 self.change_package_finding(
                     "PACKAGE_FACT_DECLARATION",
@@ -7039,6 +7143,9 @@ def layered_health_state(
     change_packages_selected: int = 0,
     approval_scope_enforced: bool = False,
     change_package_enforced: bool = False,
+    change_package_required: bool = False,
+    worktree_state: str = "unavailable",
+    change_set: GitChangeSet | None = None,
 ) -> dict[str, Any]:
     installation_blocked = any(
         is_blocking_finding(finding)
@@ -7095,11 +7202,19 @@ def layered_health_state(
             )
         )
     ]
-    if diff_ref is None:
+    if diff_ref is None and worktree_state == "clean":
+        current_change_layer = "no-current-change"
+    elif diff_ref is None:
         current_change_layer = "not-evaluated"
     elif any(is_blocking_finding(finding) for finding in change_findings):
         current_change_layer = "blocked"
-    elif not (approval_records_selected or change_packages_selected):
+    elif change_set is None:
+        current_change_layer = "partial"
+    elif not (approval_records_selected and approval_scope_enforced):
+        current_change_layer = "partial"
+    elif change_package_required and not (
+        change_packages_selected and change_package_enforced
+    ):
         current_change_layer = "partial"
     else:
         current_change_layer = "structurally-checked"
@@ -7117,11 +7232,25 @@ def layered_health_state(
         "current_change": {
             "state": current_change_layer,
             "diff_ref": diff_ref,
+            "worktree_state": worktree_state,
             "approval_records_selected": approval_records_selected,
             "approval_scope_enforced": approval_scope_enforced,
             "change_packages_selected": change_packages_selected,
             "change_package_enforced": change_package_enforced,
+            "change_package_required": change_package_required,
             "semantic_correctness_proven": False,
+            "change_set": (
+                {
+                    "hash_contract": CANONICAL_CHANGE_SET_HASH_CONTRACT,
+                    "content_sha256": change_set.content_sha256,
+                    "base_revision": change_set.base_revision,
+                    "head_revision": change_set.head_revision,
+                    "selected_revision": change_set.selected_revision,
+                    "changed_path_count": len(change_set.changed_files),
+                }
+                if change_set is not None
+                else None
+            ),
             "meaning": (
                 "structural change evidence only; semantic correctness still requires "
                 "human and assistant reasoning"
@@ -7130,11 +7259,59 @@ def layered_health_state(
     }
 
 
+def acceptance_eligibility(
+    *,
+    installation_state: str,
+    validation_phase: str,
+    validation_scope: str,
+    archive_mode: str,
+    exit_code: int,
+    worktree_state: str,
+    diff_ref: str | None,
+    approval_records_selected: int,
+    change_packages_selected: int,
+    approval_scope_enforced: bool,
+    change_package_enforced: bool,
+    change_package_required: bool,
+    change_set: GitChangeSet | None,
+) -> tuple[bool, list[str]]:
+    """Return fail-closed acceptance eligibility and explicit blockers."""
+
+    blockers: list[str] = []
+    if installation_state != "accepted":
+        blockers.append("installation state is not accepted")
+    if validation_phase != "acceptance":
+        blockers.append("validation phase is not acceptance")
+    if validation_scope != "full":
+        blockers.append("validation scope is not full")
+    if archive_mode != "full":
+        blockers.append("approval archive was not fully validated")
+    if exit_code != 0:
+        blockers.append("validator findings are blocking")
+    if worktree_state == "unavailable":
+        blockers.append("repository worktree evidence is unavailable")
+
+    current_change_exists = worktree_state == "dirty" or diff_ref is not None
+    if current_change_exists:
+        if diff_ref is None:
+            blockers.append("current change has no Git diff reference")
+        if not approval_scope_enforced or approval_records_selected < 1:
+            blockers.append("current change approval scope was not enforced")
+        if change_package_required and (
+            not change_package_enforced or change_packages_selected < 1
+        ):
+            blockers.append("current change package was not enforced")
+        if change_set is None:
+            blockers.append("current change snapshot is unavailable")
+    return not blockers, blockers
+
+
 def target_installation_state(
     target: Path,
     manifest: ManifestData | None = None,
     *,
     context: ValidationContext | None = None,
+    git_evidence: GitEvidenceView | None = None,
 ) -> str:
     """Read installation state only when its transition evidence is valid."""
 
@@ -7162,6 +7339,25 @@ def target_installation_state(
         return "unverified"
     if validate_installation_state_record(record, manifest_state=scalar.value):
         return "unverified"
+    if scalar.value == "accepted":
+        git_view = git_evidence or GitEvidenceView(target)
+        head_revision = git_view.head_revision()
+        if head_revision is None:
+            return "unverified"
+        transitions = record.get("transitions", [])
+        for transition in transitions:
+            if (
+                not isinstance(transition, dict)
+                or transition.get("next_state") != "accepted"
+            ):
+                continue
+            revision = str(transition.get("repository_revision", ""))
+            resolved = git_view.resolve_ref(revision)
+            if (
+                resolved is None
+                or git_view.is_ancestor(resolved, head_revision) is not True
+            ):
+                return "unverified"
     return scalar.value
 
 
@@ -7191,7 +7387,9 @@ def render_summary(
     change_packages_selected: int = 0,
     approval_scope_enforced: bool = False,
     change_package_enforced: bool = False,
+    change_package_required: bool = False,
     approval_archive_mode: str = "full",
+    git_evidence: GitEvidenceView | None = None,
 ) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
     for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
@@ -7218,6 +7416,10 @@ def render_summary(
     print(f"Alatyr adapter health: {health}")
     print(f"Validation phase: {validation_phase}")
     print(f"Validation scope: {validation_scope}")
+    worktree_state = (
+        git_evidence.worktree_state() if git_evidence is not None else "unavailable"
+    )
+    change_set = git_evidence.change_set(diff_ref) if git_evidence and diff_ref else None
     layers = layered_health_state(
         findings,
         installation_state=installation_state,
@@ -7228,6 +7430,9 @@ def render_summary(
         change_packages_selected=change_packages_selected,
         approval_scope_enforced=approval_scope_enforced,
         change_package_enforced=change_package_enforced,
+        change_package_required=change_package_required,
+        worktree_state=worktree_state,
+        change_set=change_set,
     )
     print(
         "Health layers: "
@@ -7235,12 +7440,26 @@ def render_summary(
         f"support={layers['support']['state']} "
         f"current_change={layers['current_change']['state']}"
     )
-    if validation_phase == "migration-staging":
-        print("Acceptance eligible: no; rerun in acceptance phase after resolving active placeholders")
-    elif validation_scope == "changed":
-        print("Acceptance eligible: no; rerun with --validation-scope full for final evidence")
-    elif approval_archive_mode != "full":
-        print("Acceptance eligible: no; rerun with --approval-archive-mode full for final evidence")
+    eligible, blockers = acceptance_eligibility(
+        installation_state=installation_state,
+        validation_phase=validation_phase,
+        validation_scope=validation_scope,
+        archive_mode=approval_archive_mode,
+        exit_code=result_code(findings, strict_warnings=strict_warnings),
+        worktree_state=worktree_state,
+        diff_ref=diff_ref,
+        approval_records_selected=approval_records_selected,
+        change_packages_selected=change_packages_selected,
+        approval_scope_enforced=approval_scope_enforced,
+        change_package_enforced=change_package_enforced,
+        change_package_required=change_package_required,
+        change_set=change_set,
+    )
+    print(
+        "Acceptance eligible: yes"
+        if eligible
+        else "Acceptance eligible: no; " + "; ".join(blockers)
+    )
     repairs = prioritized_repair_operations(findings)
     if repairs:
         print("Suggested repair operations: " + ", ".join(repairs))
@@ -7277,6 +7496,7 @@ def findings_payload(
     change_packages_selected: int = 0,
     approval_scope_enforced: bool = False,
     change_package_enforced: bool = False,
+    change_package_required: bool = False,
     approval_archive_summary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     errors = sum(1 for finding in findings if finding.level == "error")
@@ -7292,7 +7512,12 @@ def findings_payload(
     observed_revision = git_view.head_revision()
     observed_branch = git_view.branch_name()
     observed_at = datetime.now(timezone.utc).isoformat()
-    resolved_installation_state = installation_state or target_installation_state(target)
+    worktree_state = git_view.worktree_state()
+    change_set = git_view.change_set(diff_ref) if diff_ref else None
+    resolved_installation_state = installation_state or target_installation_state(
+        target,
+        git_evidence=git_view,
+    )
     unresolved_active = sum(
         1
         for finding in findings
@@ -7303,12 +7528,20 @@ def findings_payload(
         if isinstance(approval_archive_summary, dict)
         else "full"
     )
-    acceptance_eligible = (
-        resolved_installation_state == "accepted"
-        and validation_phase == "acceptance"
-        and validation_scope == "full"
-        and archive_mode == "full"
-        and exit_code == 0
+    acceptance_eligible, acceptance_blockers = acceptance_eligibility(
+        installation_state=resolved_installation_state,
+        validation_phase=validation_phase,
+        validation_scope=validation_scope,
+        archive_mode=archive_mode,
+        exit_code=exit_code,
+        worktree_state=worktree_state,
+        diff_ref=diff_ref,
+        approval_records_selected=approval_records_selected,
+        change_packages_selected=change_packages_selected,
+        approval_scope_enforced=approval_scope_enforced,
+        change_package_enforced=change_package_enforced,
+        change_package_required=change_package_required,
+        change_set=change_set,
     )
     return {
         "schema_version": 3,
@@ -7319,6 +7552,7 @@ def findings_payload(
             "observed_at": observed_at,
             "observed_revision": observed_revision,
             "observed_branch": observed_branch,
+            "worktree_state": worktree_state,
             "installation_state": resolved_installation_state,
             "historical_actions_verified": False,
             "limitation": (
@@ -7340,6 +7574,7 @@ def findings_payload(
             "mode": "staging-only" if validation_phase == "migration-staging" else "strict",
             "unresolved_active": unresolved_active,
             "acceptance_eligible": acceptance_eligible,
+            "acceptance_blockers": acceptance_blockers,
             "required_final_phase": "acceptance",
             "required_final_scope": "full",
         },
@@ -7366,6 +7601,9 @@ def findings_payload(
             change_packages_selected=change_packages_selected,
             approval_scope_enforced=approval_scope_enforced,
             change_package_enforced=change_package_enforced,
+            change_package_required=change_package_required,
+            worktree_state=worktree_state,
+            change_set=change_set,
         ),
         "approval_archive": approval_archive_summary
         or {
@@ -7634,6 +7872,7 @@ def main() -> int:
     )
     findings = validator.run()
     validated_change_packages = len(validator.validated_change_package_paths)
+    change_package_required = validator.enforce_change_package
     payload = findings_payload(
         findings,
         target=args.target.resolve(),
@@ -7647,7 +7886,8 @@ def main() -> int:
         approval_records_selected=len(args.approval_record),
         change_packages_selected=validated_change_packages,
         approval_scope_enforced=enforce_approval_scope,
-        change_package_enforced=args.enforce_change_package,
+        change_package_enforced=validator.enforce_change_package,
+        change_package_required=change_package_required,
         approval_archive_summary=validator.approval_archive_summary,
     )
     if args.output:
@@ -7669,8 +7909,10 @@ def main() -> int:
         approval_records_selected=len(args.approval_record),
         change_packages_selected=validated_change_packages,
         approval_scope_enforced=enforce_approval_scope,
-        change_package_enforced=args.enforce_change_package,
+        change_package_enforced=validator.enforce_change_package,
+        change_package_required=change_package_required,
         approval_archive_mode=approval_archive_mode,
+        git_evidence=validator.git,
     )
 
 

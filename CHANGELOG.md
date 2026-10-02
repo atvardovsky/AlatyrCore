@@ -4,6 +4,29 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.79 - 2026-10-02
+
+- Bound acceptance reports to one canonical Git change snapshot, explicit
+  approval-scope enforcement, and change-package enforcement when the target
+  enables that optional module; final upgrade verification now rejects partial
+  current-change evidence.
+- Required accepted installation transitions to use an immutable, resolvable
+  Git object that is an ancestor of current `HEAD`.
+- Bound generated provenance to the complete dirty-path set with a count,
+  truncation marker, and digest instead of silently trusting a bounded display
+  sample.
+- Added installed analysis-template schema parity, recursive context-root
+  hashes in bootstrap integrity, optional root `AGENT.md` routing checks, and
+  advisory compact-index pressure reporting.
+- Made project-knowledge suggestions verify all contributing records before
+  thresholding and group only exact project-area, owner, and fact evidence.
+- Required final semantic change packages to reject unmapped project paths
+  when the target consistency map is enabled, while preserving bounded
+  changed-scope routing and support-surface exclusions.
+- Increased adapter schema version to `66` and target template version to `74`
+  for the acceptance, provenance, bootstrap-integrity, and installed-template
+  contracts.
+
 ## 0.1.0-alpha.78 - 2026-10-01
 
 - Fixed lightweight delegation receipts so measured context, raw-result, and

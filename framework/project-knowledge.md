@@ -113,13 +113,16 @@ available.
 
 The helper combines project area and canonical owner instead of emitting an
 independent broad candidate for each signal. It verifies candidate-supporting
-compact entries against their package records, retains only bounded evidence
-samples, and derives a deterministic candidate snapshot ID from the selectors
-and evidence summary. An unchanged snapshot already referenced by a promotion
-record is suppressed; new package evidence produces a new snapshot for review.
-The report binds the package and knowledge indexes by SHA-256 so an external
-cache may detect unchanged inputs, but the helper does not trust cached
-candidate content or auto-promote it.
+compact entries against all contributing package records before applying the
+configured occurrence threshold. One candidate has exactly one project area
+and one canonical owner; its fact IDs come only from facts owned by that owner,
+not from a Cartesian combination of unrelated signals. The helper retains only
+bounded evidence samples and derives a deterministic candidate snapshot ID
+from the selectors and evidence summary. An unchanged snapshot already
+referenced by a promotion record is suppressed; new package evidence produces
+a new snapshot for review. The report binds the package and knowledge indexes
+by SHA-256 so an external cache may detect unchanged inputs, but the helper
+does not trust cached candidate content or auto-promote it.
 
 Each proposal or directive should identify:
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -47,7 +48,12 @@ def write_state(target: Path, state: str) -> None:
     )
 
 
-def write_accepted_record(target: Path, *, validation_status: str = "passed") -> None:
+def write_accepted_record(
+    target: Path,
+    *,
+    validation_status: str = "passed",
+    accepted_revision: str = "b" * 40,
+) -> None:
     path = target / ".ai/assistant/installation-state.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -93,7 +99,7 @@ def write_accepted_record(target: Path, *, validation_status: str = "passed") ->
                         "next_state": "accepted",
                         "reason": "strict-acceptance",
                         "operation_id": "install",
-                        "repository_revision": "revision-2",
+                        "repository_revision": accepted_revision,
                         "current_user_authorization": "modify adapter",
                         "approval_evidence": "approval-install",
                         "validation": {
@@ -134,8 +140,29 @@ class TargetValidatorInstallationStateTests(unittest.TestCase):
     def test_accepted_state_can_be_ready_and_acceptance_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "fixture@example.invalid"],
+                cwd=target,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Fixture"], cwd=target, check=True
+            )
+            (target / "baseline.txt").write_text("baseline\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(["git", "commit", "-qm", "baseline"], cwd=target, check=True)
+            revision = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=target,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
             write_state(target, "accepted")
-            write_accepted_record(target)
+            write_accepted_record(target, accepted_revision=revision)
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(["git", "commit", "-qm", "adapter"], cwd=target, check=True)
 
             payload = findings_payload([], target=target, strict_warnings=False)
 
@@ -143,6 +170,28 @@ class TargetValidatorInstallationStateTests(unittest.TestCase):
             self.assertTrue(
                 payload["placeholder_validation"]["acceptance_eligible"]
             )
+
+    def test_direct_evidence_rejects_unresolvable_acceptance_revision(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "fixture@example.invalid"],
+                cwd=target,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Fixture"], cwd=target, check=True
+            )
+            write_state(target, "accepted")
+            write_accepted_record(target, accepted_revision="b" * 40)
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(["git", "commit", "-qm", "fixture"], cwd=target, check=True)
+
+            payload = findings_payload([], target=target, strict_warnings=False)
+
+        self.assertEqual(payload["installation_state"], "unverified")
+        self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
 
     def test_accepted_state_remains_unverified_in_migration_staging(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -277,6 +326,46 @@ class TargetValidatorInstallationStateTests(unittest.TestCase):
                     for finding in accepted.findings
                 )
             )
+
+    def test_acceptance_revision_must_resolve_and_precede_current_head(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "fixture@example.invalid"],
+                cwd=target,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Fixture"], cwd=target, check=True
+            )
+            (target / "baseline.txt").write_text("baseline\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(["git", "commit", "-qm", "baseline"], cwd=target, check=True)
+            revision = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=target,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            write_state(target, "accepted")
+            write_accepted_record(target, accepted_revision=revision)
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(["git", "commit", "-qm", "adapter"], cwd=target, check=True)
+            accepted = validator(target)
+            manifest = accepted.check_manifest()
+
+            validate_installation_state(
+                accepted.capability_validation_context(), manifest
+            )
+
+        self.assertFalse(
+            any(
+                finding.code.startswith("INSTALLATION_STATE_REVISION_")
+                for finding in accepted.findings
+            )
+        )
 
 
 if __name__ == "__main__":

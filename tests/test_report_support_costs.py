@@ -96,6 +96,31 @@ class SupportCostReportTests(unittest.TestCase):
         self.assertLess(generated["words"], complete["words"])
         self.assertLess(report["combined_support"]["words"], 75_696)
 
+    def test_index_pressure_is_advisory_and_uses_strict_boundaries(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            index = target / ".ai/project/nested/context-index.json"
+            index.parent.mkdir(parents=True)
+            index.write_text(
+                json.dumps({"entries": [{"id": str(value)} for value in range(64)]}),
+                encoding="utf-8",
+            )
+
+            at_limit = build_installed_report(target)["index_pressure"]
+            index.write_text(
+                json.dumps({"entries": [{"id": str(value)} for value in range(65)]}),
+                encoding="utf-8",
+            )
+            above_limit = build_installed_report(target)["index_pressure"]
+
+        self.assertEqual(at_limit["indexes_under_pressure"], 0)
+        self.assertEqual(above_limit["indexes_under_pressure"], 1)
+        self.assertFalse(above_limit["automatic_archival_performed"])
+        self.assertEqual(
+            above_limit["measurements"][0]["path"],
+            ".ai/project/nested/context-index.json",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

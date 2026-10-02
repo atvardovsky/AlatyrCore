@@ -35,6 +35,33 @@ def acceptance_failures(payload: dict[str, Any]) -> list[str]:
     elif placeholder.get("unresolved_active") != 0:
         failures.append("active target placeholders remain")
 
+    layers = payload.get("health_layers")
+    current_change = layers.get("current_change") if isinstance(layers, dict) else None
+    if not isinstance(current_change, dict) or current_change.get("state") != "structurally-checked":
+        failures.append("upgrade change scope was not structurally checked")
+    elif not (
+        current_change.get("approval_scope_enforced") is True
+        and current_change.get("approval_records_selected", 0) > 0
+    ):
+        failures.append("upgrade approval scope was not enforced")
+    elif current_change.get("change_package_required") is True and not (
+        current_change.get("change_package_enforced") is True
+        and current_change.get("change_packages_selected", 0) > 0
+    ):
+        failures.append("required upgrade change-package scope was not enforced")
+    else:
+        change_set = current_change.get("change_set")
+        if not isinstance(change_set, dict):
+            failures.append("upgrade change-set binding is missing")
+        else:
+            digest = change_set.get("content_sha256")
+            if not isinstance(digest, str) or len(digest) != 64:
+                failures.append("upgrade change-set digest is invalid")
+            if change_set.get("hash_contract") != "canonical-git-change-set-v1":
+                failures.append("upgrade change-set hash contract is invalid")
+            if not isinstance(change_set.get("changed_path_count"), int):
+                failures.append("upgrade changed-path count is missing")
+
     archive = payload.get("approval_archive")
     if not isinstance(archive, dict) or archive.get("mode") != "full":
         failures.append("approval archive was not fully validated")
@@ -71,8 +98,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--framework-source", default=ROOT, type=Path)
     parser.add_argument("--migration-diff", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
-    parser.add_argument("--diff-ref")
-    parser.add_argument("--approval-record", action="append", default=[], type=Path)
+    parser.add_argument("--diff-ref", required=True)
+    parser.add_argument(
+        "--approval-record", action="append", required=True, type=Path
+    )
     parser.add_argument("--change-package", action="append", default=[], type=Path)
     parser.add_argument("--strict-warnings", action="store_true")
     parser.add_argument(
@@ -118,6 +147,7 @@ def main() -> int:
         "full",
         "--approval-archive-mode",
         "full",
+        "--enforce-approval-scope",
         "--output",
         str(output),
     ]
@@ -127,6 +157,8 @@ def main() -> int:
         command.extend(["--approval-record", str(record)])
     for package in args.change_package:
         command.extend(["--change-package", str(package)])
+    if args.change_package:
+        command.append("--enforce-change-package")
     if args.strict_warnings:
         command.append("--strict-warnings")
 

@@ -50,12 +50,16 @@
   ],
   "families": [
     {
+      "id": "AGENT",
+      "code_count": 2
+    },
+    {
       "id": "AI",
       "code_count": 18
     },
     {
       "id": "ANALYSIS",
-      "code_count": 44
+      "code_count": 45
     },
     {
       "id": "APPROVAL",
@@ -163,7 +167,7 @@
     },
     {
       "id": "INSTALLATION",
-      "code_count": 5
+      "code_count": 8
     },
     {
       "id": "LOCAL",
@@ -187,7 +191,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 108
+      "code_count": 110
     },
     {
       "id": "PLACEHOLDERS",
@@ -275,6 +279,24 @@
     }
   ],
   "finding_codes": [
+    {
+      "code": "AGENT_BROAD_PRELOAD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AGENT_CANONICAL_ENTRYPOINT_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
     {
       "code": "AI_ROUTER_ALLOWED_ACTION",
       "levels": [
@@ -826,6 +848,15 @@
     },
     {
       "code": "ANALYSIS_STRATEGY_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_TEMPLATE_SCHEMA_DRIFT",
       "levels": [
         "error"
       ],
@@ -7923,6 +7954,33 @@
       ]
     },
     {
+      "code": "INSTALLATION_STATE_REVISION_NOT_ANCESTOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
+      ]
+    },
+    {
+      "code": "INSTALLATION_STATE_REVISION_UNAVAILABLE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
+      ]
+    },
+    {
+      "code": "INSTALLATION_STATE_REVISION_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
+      ]
+    },
+    {
       "code": "INSTALLATION_STATE_TRANSITION",
       "levels": [
         "error"
@@ -8874,6 +8932,24 @@
     },
     {
       "code": "PACKAGE_GIT_RANGE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_IMPACT_GRAPH_UNAVAILABLE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_IMPACT_PATH_UNMAPPED",
       "levels": [
         "dynamic"
       ],

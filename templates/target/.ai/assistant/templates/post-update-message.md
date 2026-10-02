@@ -224,6 +224,8 @@ Final update verification:
 
 This final verification uses the target's acceptance/full/full contract:
 acceptance phase, full validation scope, and full approval-archive coverage.
+It names the canonical Git change snapshot and enforced approval record; when
+the target enables `change-packages`, it also names the enforced package.
 
 Adapter health:
 `{READY_ATTENTION_BLOCKED_OR_UNVERIFIED_WITH_REASON}`

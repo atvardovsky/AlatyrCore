@@ -143,6 +143,12 @@ decisions, and the latest transition. Routine execution and continuity
 recovery load that projection. Load full model history only for a named
 conflict, a stale or invalid projection, or a transition update.
 
+Installed problem-model and active-projection authoring templates must
+materialize into instances accepted by their current canonical schemas after
+authoring placeholders are replaced with neutral values. File presence and a
+matching version number are insufficient when required fields, limits, or
+enums have drifted.
+
 Strategy transitions are historical evidence. Their assumption and obligation
 references must resolve, but a referenced assumption may remain invalidated and
 a reopened obligation may later pass. Current completion is decided from the

@@ -3,19 +3,25 @@
   "packet_kind": "target-agent-entry-packet",
   "path": ".ai/assistant/entry-packet.json",
   "generated_by": {
-    "schema_version": 1,
+    "schema_version": 2,
     "provenance_kind": "source-template",
     "tool": "render_target_entry_packet.py",
     "source_revision": "source-template",
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
+    "source_dirty_path_count": 0,
+    "source_dirty_paths_truncated": false,
+    "source_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "target_manifest": ".ai/alatyr.yaml",
     "target_manifest_digest": "sha256:b0a24a8de4dd78fa6aa50ed81668767e29299ac282aa210a49d289475c313759",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.78",
-    "adapter_schema_version": "65",
-    "template_version": "73"
+    "target_dirty_path_count": 0,
+    "target_dirty_paths_truncated": false,
+    "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "framework_version": "0.1.0-alpha.79",
+    "adapter_schema_version": "66",
+    "template_version": "74"
   },
   "derived_from": {
     "manifest": {
@@ -40,7 +46,7 @@
     },
     "support_policy": {
       "path": ".ai/project/support-policy.json",
-      "sha256": "ce8ae0131509201b8b00c3447da5304822cdb84c3089a0f037aad15eac6062d6"
+      "sha256": "0744df6114e470e31e4c7c9ea311ab7f0b6ddbfa04bf5103a67642157bce273b"
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",

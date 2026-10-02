@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -28,6 +29,10 @@ class AdapterHealthReportTests(unittest.TestCase):
         self.assertEqual(payload["adapter_health"]["state"], "unverified")
         self.assertEqual(
             payload["health_layers"]["current_change"]["state"], "not-evaluated"
+        )
+        self.assertIn(
+            "repository worktree evidence is unavailable",
+            payload["placeholder_validation"]["acceptance_blockers"],
         )
 
     def test_partial_archive_mode_never_produces_acceptance_evidence(self) -> None:
@@ -138,8 +143,40 @@ class AdapterHealthReportTests(unittest.TestCase):
             )
 
         current = payload["health_layers"]["current_change"]
-        self.assertEqual(current["state"], "structurally-checked")
+        self.assertEqual(current["state"], "partial")
         self.assertFalse(current["semantic_correctness_proven"])
+        self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
+
+    def test_dirty_change_requires_diff_approval_and_package_enforcement(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "fixture@example.invalid"],
+                cwd=target,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Fixture"], cwd=target, check=True
+            )
+            (target / "tracked.txt").write_text("before\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(["git", "commit", "-qm", "fixture"], cwd=target, check=True)
+            (target / "tracked.txt").write_text("after\n", encoding="utf-8")
+
+            payload = findings_payload(
+                [],
+                target=target,
+                strict_warnings=False,
+                installation_state="accepted",
+            )
+
+        self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
+        self.assertEqual(payload["evidence"]["worktree_state"], "dirty")
+        self.assertIn(
+            "current change has no Git diff reference",
+            payload["placeholder_validation"]["acceptance_blockers"],
+        )
 
     def test_status_mode_omits_detailed_repair_findings(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -51,7 +51,7 @@ class ScaffoldStateTests(unittest.TestCase):
                     "next_state": "accepted",
                     "reason": "strict-acceptance",
                     "operation_id": "install",
-                    "repository_revision": "revision-2",
+                    "repository_revision": "b" * 40,
                     "current_user_authorization": "modify adapter",
                     "approval_evidence": "approval-install",
                     "validation": {"status": "passed", "evidence": "strict report"},
@@ -118,6 +118,16 @@ class ScaffoldStateTests(unittest.TestCase):
         failures = validate_installation_state_record(record, manifest_state="accepted")
 
         self.assertTrue(any("requires passed strict validation" in item for item in failures))
+
+    def test_transition_record_rejects_symbolic_acceptance_revision(self) -> None:
+        record = self.record()
+        record["transitions"][-1]["repository_revision"] = "HEAD"  # type: ignore[index]
+
+        failures = validate_installation_state_record(record, manifest_state="accepted")
+
+        self.assertTrue(
+            any("immutable Git object ID" in item for item in failures)
+        )
 
     def test_transition_record_rejects_state_and_history_drift(self) -> None:
         record = self.record()

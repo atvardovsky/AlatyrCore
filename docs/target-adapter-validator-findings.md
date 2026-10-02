@@ -10,12 +10,13 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1588
+Catalog entries: 1596
 
 ## Families
 
+- `AGENT`: 2 codes.
 - `AI`: 18 codes.
-- `ANALYSIS`: 44 codes.
+- `ANALYSIS`: 45 codes.
 - `APPROVAL`: 39 codes.
 - `ARCHITECTURE`: 35 codes.
 - `ASSISTANT`: 39 codes.
@@ -42,13 +43,13 @@ Catalog entries: 1588
 - `EXTENSION`: 75 codes.
 - `FRAMEWORK`: 18 codes.
 - `GATE`: 1 codes.
-- `INSTALLATION`: 5 codes.
+- `INSTALLATION`: 8 codes.
 - `LOCAL`: 1 codes.
 - `MANIFEST`: 12 codes.
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 108 codes.
+- `PACKAGE`: 110 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -73,6 +74,10 @@ Catalog entries: 1588
 
 ## Codes
 
+- `AGENT_BROAD_PRELOAD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AGENT_CANONICAL_ENTRYPOINT_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `AI_ROUTER_ALLOWED_ACTION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AI_ROUTER_INVALID_JSON`
@@ -196,6 +201,8 @@ Catalog entries: 1588
 - `ANALYSIS_STRATEGY_ROUTER_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_STRATEGY_ROUTER_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_TEMPLATE_SCHEMA_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `APPROVAL_ARCHIVE_CHANGED_UNAVAILABLE`
   Level: warning. Source: `tools/validate_target_adapter.py`.
@@ -1771,6 +1778,12 @@ Catalog entries: 1588
   Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
 - `INSTALLATION_STATE_RECORD_PATH`
   Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
+- `INSTALLATION_STATE_REVISION_NOT_ANCESTOR`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
+- `INSTALLATION_STATE_REVISION_UNAVAILABLE`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
+- `INSTALLATION_STATE_REVISION_UNRESOLVED`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
 - `INSTALLATION_STATE_TRANSITION`
   Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
 - `LOCAL_PATH_LEAKAGE`
@@ -1980,6 +1993,10 @@ Catalog entries: 1588
 - `PACKAGE_FIELD_UNAVAILABLE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_GIT_RANGE`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_IMPACT_GRAPH_UNAVAILABLE`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_IMPACT_PATH_UNMAPPED`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_CONTINUITY`
   Level: error. Source: `tools/validate_target_adapter.py`.

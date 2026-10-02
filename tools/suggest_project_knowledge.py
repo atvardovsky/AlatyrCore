@@ -51,10 +51,30 @@ def string_values(value: Any) -> tuple[str, ...]:
     )
 
 
-def candidate_keys(entry: dict[str, Any]) -> tuple[tuple[str, str], ...]:
-    areas = string_values(entry.get("project_areas"))
-    owners = string_values(entry.get("canonical_owners"))
-    return tuple((area, owner) for area in areas for owner in owners)
+def candidate_facts(
+    record: dict[str, Any],
+) -> tuple[tuple[str, str, tuple[str, ...]], ...]:
+    routing = record.get("routing")
+    areas = string_values(
+        routing.get("project_areas") if isinstance(routing, dict) else None
+    )
+    if len(areas) != 1:
+        return ()
+    facts = record.get("changed_facts")
+    if not isinstance(facts, list):
+        return ()
+    facts_by_owner: dict[str, list[str]] = {}
+    for fact in facts:
+        if not isinstance(fact, dict):
+            continue
+        fact_id = fact.get("id")
+        owner = fact.get("canonical_owner")
+        if isinstance(fact_id, str) and fact_id and isinstance(owner, str) and owner:
+            facts_by_owner.setdefault(owner, []).append(fact_id)
+    return tuple(
+        (areas[0], owner, tuple(dict.fromkeys(fact_ids)))
+        for owner, fact_ids in sorted(facts_by_owner.items())
+    )
 
 
 @dataclass
@@ -88,7 +108,7 @@ class CandidateEvidence:
 
 def candidate_id(key: tuple[str, str], evidence: CandidateEvidence) -> str:
     identity = {
-        "contract": 1,
+        "contract": 2,
         "kind": "project-area-canonical-owner",
         "project_area": key[0],
         "canonical_owner": key[1],
@@ -182,15 +202,15 @@ def aggregate_source_sha256(source_bindings: list[dict[str, Any]]) -> str:
     return digest.hexdigest()
 
 
-def verified_entry(target: Path, entry: dict[str, Any]) -> bool:
+def verified_entry(target: Path, entry: dict[str, Any]) -> dict[str, Any] | None:
     record_path = safe_target_path(target, entry.get("record"))
     if record_path is None:
-        return False
+        return None
     try:
         record = load_object(record_path)
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError):
-        return False
-    return not package_index_projection_mismatches(entry, record)
+        return None
+    return record if not package_index_projection_mismatches(entry, record) else None
 
 
 def promoted_candidate_ids(
@@ -223,7 +243,16 @@ def promoted_candidate_ids(
     return candidate_ids, invalid_records
 
 
-def suggestions(target: Path, *, minimum_occurrences: int = 2) -> dict[str, Any]:
+def suggestions(
+    target: Path,
+    *,
+    minimum_occurrences: int = 2,
+    recommend_at_occurrences: int = 3,
+) -> dict[str, Any]:
+    if minimum_occurrences < 2:
+        raise ValueError("minimum_occurrences must be at least 2")
+    if recommend_at_occurrences < minimum_occurrences:
+        raise ValueError("recommend_at_occurrences must be at least minimum_occurrences")
     target = target.resolve()
     package_path = target / PACKAGE_INDEX
     knowledge_path = target / KNOWLEDGE_INDEX
@@ -248,6 +277,10 @@ def suggestions(target: Path, *, minimum_occurrences: int = 2) -> dict[str, Any]
     grouped_evidence: dict[tuple[str, str], CandidateEvidence] = {}
     terminal_records = 0
     duplicate_package_ids = 0
+    ambiguous_package_ids: list[str] = []
+    ambiguous_package_count = 0
+    verified_package_ids: set[str] = set()
+    rejected_package_ids: set[str] = set()
     seen_package_ids: set[str] = set()
     for record in package_records(target, package_index, source_bindings):
         if not isinstance(record, dict):
@@ -262,31 +295,36 @@ def suggestions(target: Path, *, minimum_occurrences: int = 2) -> dict[str, Any]
             continue
         seen_package_ids.add(package_id)
         terminal_records += 1
-        for key in candidate_keys(record):
-            grouped_evidence.setdefault(key, CandidateEvidence()).add(record)
+        verified = verified_entry(target, record)
+        if verified is None:
+            rejected_package_ids.add(package_id)
+            continue
+        verified_package_ids.add(package_id)
+        routing = verified.get("routing")
+        areas = string_values(
+            routing.get("project_areas") if isinstance(routing, dict) else None
+        )
+        if len(areas) != 1:
+            ambiguous_package_count += 1
+            if len(ambiguous_package_ids) < MAX_EVIDENCE_IDS:
+                ambiguous_package_ids.append(package_id)
+            continue
+        for area, owner, fact_ids in candidate_facts(verified):
+            evidence_entry = dict(record)
+            evidence_entry["project_areas"] = [area]
+            evidence_entry["canonical_owners"] = [owner]
+            evidence_entry["changed_fact_ids"] = list(fact_ids)
+            grouped_evidence.setdefault((area, owner), CandidateEvidence()).add(
+                evidence_entry
+            )
 
     existing_candidate_ids, invalid_promotions = promoted_candidate_ids(
         target, knowledge_index
     )
     candidates: list[dict[str, Any]] = []
     suppressed_candidate_ids: list[str] = []
-    projection_cache: dict[str, bool] = {}
-    verified_package_ids: set[str] = set()
-    rejected_package_ids: set[str] = set()
     for key, evidence in sorted(grouped_evidence.items()):
         if evidence.occurrences < minimum_occurrences:
-            continue
-        verified_samples = 0
-        for entry in evidence.verification_entries:
-            package_id = entry["package_id"]
-            if package_id not in projection_cache:
-                projection_cache[package_id] = verified_entry(target, entry)
-            if projection_cache[package_id]:
-                verified_samples += 1
-                verified_package_ids.add(package_id)
-            else:
-                rejected_package_ids.add(package_id)
-        if verified_samples < minimum_occurrences:
             continue
         identity = candidate_id(key, evidence)
         if identity in existing_candidate_ids:
@@ -302,29 +340,39 @@ def suggestions(target: Path, *, minimum_occurrences: int = 2) -> dict[str, Any]
                     "canonical_owner": key[1],
                 },
                 "occurrences": evidence.occurrences,
-                "verified_evidence_samples": verified_samples,
+                "verified_occurrences": evidence.occurrences,
+                "verified_evidence_samples": len(evidence.package_ids),
                 "package_ids": evidence.package_ids,
                 "changed_fact_ids": evidence.changed_fact_ids,
                 "evidence_sha256": evidence.evidence_sha256,
                 "evidence_truncated": evidence.occurrences > len(evidence.package_ids),
                 "next_action": "review-for-promotion",
+                "review_recommended": (
+                    evidence.occurrences >= recommend_at_occurrences
+                ),
             }
         )
 
     existing_promotions = knowledge_index.get("promotion_records")
     existing_count = len(existing_promotions) if isinstance(existing_promotions, list) else 0
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "report_kind": "project-knowledge-candidate-suggestions",
         "source": PACKAGE_INDEX.as_posix(),
         "source_sha256": aggregate_source_sha256(source_bindings),
         "source_files": source_bindings,
         "knowledge_index_sha256": sha256(knowledge_path),
         "minimum_occurrences": minimum_occurrences,
+        "recommend_at_occurrences": recommend_at_occurrences,
         "validated_or_completed_packages_considered": terminal_records,
         "candidate_projection_verified_packages": len(verified_package_ids),
         "candidate_projection_rejected_packages": len(rejected_package_ids),
         "duplicate_package_ids_ignored": duplicate_package_ids,
+        "ambiguous_package_count": ambiguous_package_count,
+        "ambiguous_package_ids": ambiguous_package_ids,
+        "ambiguous_evidence_truncated": (
+            ambiguous_package_count > len(ambiguous_package_ids)
+        ),
         "existing_promotions": existing_count,
         "invalid_promotion_records_ignored": invalid_promotions,
         "suppressed_existing_candidates": len(suppressed_candidate_ids),
@@ -344,12 +392,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", required=True, type=Path)
     parser.add_argument("--minimum-occurrences", type=int, default=2)
+    parser.add_argument("--recommend-at-occurrences", type=int, default=3)
     args = parser.parse_args()
     if args.minimum_occurrences < 2:
         parser.error("--minimum-occurrences must be at least 2")
+    if args.recommend_at_occurrences < args.minimum_occurrences:
+        parser.error(
+            "--recommend-at-occurrences must be at least --minimum-occurrences"
+        )
     try:
         report = suggestions(
-            args.target, minimum_occurrences=args.minimum_occurrences
+            args.target,
+            minimum_occurrences=args.minimum_occurrences,
+            recommend_at_occurrences=args.recommend_at_occurrences,
         )
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)

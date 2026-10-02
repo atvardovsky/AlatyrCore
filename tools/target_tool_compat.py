@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,10 +23,24 @@ class RepositoryState:
     available: bool
     revision: str
     dirty_paths: tuple[str, ...]
+    dirty_path_count: int
+    dirty_paths_truncated: bool
+    dirty_paths_sha256: str
+
+
+def _path_set_sha256(paths: list[str]) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(set(paths)):
+        digest.update(path.encode("utf-8", errors="surrogateescape"))
+        digest.update(b"\0")
+    return f"sha256:{digest.hexdigest()}"
 
 
 def repository_state(root: Path, *, limit: int = 50) -> RepositoryState:
     """Read revision and dirty paths from one cross-platform Git status call."""
+
+    if limit < 0:
+        raise ValueError("repository-state path limit must be non-negative")
 
     result = subprocess.run(
         ["git", "status", "--porcelain=v2", "--branch", "-z", "--untracked-files=all"],
@@ -34,7 +49,7 @@ def repository_state(root: Path, *, limit: int = 50) -> RepositoryState:
         capture_output=True,
     )
     if result.returncode != 0:
-        return RepositoryState(False, "unavailable", ())
+        return RepositoryState(False, "unavailable", (), 0, False, "unavailable")
 
     revision = "unavailable"
     paths: list[str] = []
@@ -44,8 +59,6 @@ def repository_state(root: Path, *, limit: int = 50) -> RepositoryState:
         if expect_original_path:
             paths.append(record.decode("utf-8", errors="surrogateescape"))
             expect_original_path = False
-            if len(paths) >= limit:
-                break
             continue
         if not record:
             continue
@@ -69,9 +82,15 @@ def repository_state(root: Path, *, limit: int = 50) -> RepositoryState:
             path = fields[10] if len(fields) == 11 else None
         if path is not None:
             paths.append(path.decode("utf-8", errors="surrogateescape"))
-            if len(paths) >= limit:
-                break
-    return RepositoryState(True, revision, tuple(paths))
+    unique_paths = list(dict.fromkeys(paths))
+    return RepositoryState(
+        True,
+        revision,
+        tuple(unique_paths[:limit]),
+        len(unique_paths),
+        len(unique_paths) > limit,
+        _path_set_sha256(unique_paths),
+    )
 
 
 def source_revision(source_root: Path = ROOT) -> str:
@@ -165,18 +184,24 @@ def generation_provenance(
     versions = source_versions(source_root)
     if source_template_target(target, source_root=source_root):
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "provenance_kind": "source-template",
             "tool": tool_name,
             "source_revision": "source-template",
             "source_worktree_state": "clean",
             "source_dirty_paths": [],
+            "source_dirty_path_count": 0,
+            "source_dirty_paths_truncated": False,
+            "source_dirty_paths_sha256": _path_set_sha256([]),
             "target_manifest": ".ai/alatyr.yaml",
             "target_manifest_digest": file_sha256(manifest_path)
             if manifest_path.is_file()
             else "unavailable",
             "target_worktree_state": "clean",
             "target_dirty_paths": [],
+            "target_dirty_path_count": 0,
+            "target_dirty_paths_truncated": False,
+            "target_dirty_paths_sha256": _path_set_sha256([]),
             **versions,
         }
     source_state = repository_state(source_root)
@@ -196,17 +221,23 @@ def generation_provenance(
         else ["<git-state-unavailable>"]
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "tool": tool_name,
         "source_revision": source_state.revision,
         "source_worktree_state": "dirty" if source_dirty_paths else "clean",
         "source_dirty_paths": source_dirty_paths,
+        "source_dirty_path_count": source_state.dirty_path_count,
+        "source_dirty_paths_truncated": source_state.dirty_paths_truncated,
+        "source_dirty_paths_sha256": source_state.dirty_paths_sha256,
         "target_manifest": ".ai/alatyr.yaml",
         "target_manifest_digest": file_sha256(manifest_path)
         if manifest_path.is_file()
         else "unavailable",
         "target_worktree_state": "dirty" if target_dirty_paths else "clean",
         "target_dirty_paths": target_dirty_paths,
+        "target_dirty_path_count": target_state.dirty_path_count,
+        "target_dirty_paths_truncated": target_state.dirty_paths_truncated,
+        "target_dirty_paths_sha256": target_state.dirty_paths_sha256,
         **versions,
     }
 
@@ -220,16 +251,22 @@ def generation_provenance_from_manifest_text(
 ) -> dict[str, Any]:
     if source_template_target(target, source_root=source_root):
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "provenance_kind": "source-template",
             "tool": tool_name,
             "source_revision": "source-template",
             "source_worktree_state": "clean",
             "source_dirty_paths": [],
+            "source_dirty_path_count": 0,
+            "source_dirty_paths_truncated": False,
+            "source_dirty_paths_sha256": _path_set_sha256([]),
             "target_manifest": ".ai/alatyr.yaml",
             "target_manifest_digest": text_sha256(manifest_text),
             "target_worktree_state": "clean",
             "target_dirty_paths": [],
+            "target_dirty_path_count": 0,
+            "target_dirty_paths_truncated": False,
+            "target_dirty_paths_sha256": _path_set_sha256([]),
             **source_versions(source_root),
         }
     provenance = generation_provenance(
@@ -245,8 +282,14 @@ DYNAMIC_GENERATED_BY_FIELDS = {
     "source_revision",
     "source_worktree_state",
     "source_dirty_paths",
+    "source_dirty_path_count",
+    "source_dirty_paths_truncated",
+    "source_dirty_paths_sha256",
     "target_worktree_state",
     "target_dirty_paths",
+    "target_dirty_path_count",
+    "target_dirty_paths_truncated",
+    "target_dirty_paths_sha256",
 }
 
 
@@ -284,18 +327,24 @@ def generation_provenance_errors(
         "source_revision",
         "source_worktree_state",
         "source_dirty_paths",
+        "source_dirty_path_count",
+        "source_dirty_paths_truncated",
+        "source_dirty_paths_sha256",
         "target_manifest",
         "target_manifest_digest",
         "target_worktree_state",
         "target_dirty_paths",
+        "target_dirty_path_count",
+        "target_dirty_paths_truncated",
+        "target_dirty_paths_sha256",
         "framework_version",
         "adapter_schema_version",
         "template_version",
     }
     missing = sorted(required - set(value))
     errors = [f"generated_by missing {field}" for field in missing]
-    if value.get("schema_version") != 1:
-        errors.append("generated_by.schema_version must be 1")
+    if value.get("schema_version") != 2:
+        errors.append("generated_by.schema_version must be 2")
     if expected_tool is not None and value.get("tool") != expected_tool:
         errors.append(
             f"generated_by.tool must be {expected_tool}, got {value.get('tool')}"
@@ -310,6 +359,46 @@ def generation_provenance_errors(
             isinstance(path, str) and path for path in paths
         ):
             errors.append(f"generated_by.{field} must be a string list")
+    for prefix in ["source", "target"]:
+        paths = value.get(f"{prefix}_dirty_paths")
+        count = value.get(f"{prefix}_dirty_path_count")
+        truncated = value.get(f"{prefix}_dirty_paths_truncated")
+        digest = value.get(f"{prefix}_dirty_paths_sha256")
+        if not isinstance(count, int) or isinstance(count, bool) or count < 0:
+            errors.append(
+                f"generated_by.{prefix}_dirty_path_count must be a non-negative integer"
+            )
+        if not isinstance(truncated, bool):
+            errors.append(
+                f"generated_by.{prefix}_dirty_paths_truncated must be boolean"
+            )
+        if not (
+            digest == "unavailable"
+            or isinstance(digest, str)
+            and re.fullmatch(r"sha256:[0-9a-f]{64}", digest)
+        ):
+            errors.append(f"generated_by.{prefix}_dirty_paths_sha256 is invalid")
+        if isinstance(paths, list) and isinstance(count, int):
+            unavailable_marker = (
+                paths == ["<git-state-unavailable>"]
+                and count == 0
+                and truncated is False
+                and digest == "unavailable"
+            )
+            if unavailable_marker:
+                continue
+            if count < len(paths):
+                errors.append(
+                    f"generated_by.{prefix}_dirty_path_count is smaller than retained paths"
+                )
+            if truncated is False and count != len(paths):
+                errors.append(
+                    f"generated_by.{prefix}_dirty_path_count differs from untruncated paths"
+                )
+            if truncated is True and count <= len(paths):
+                errors.append(
+                    f"generated_by.{prefix}_dirty_paths_truncated lacks omitted paths"
+                )
     return errors
 
 
@@ -335,4 +424,17 @@ def source_template_provenance_errors(
         errors.append("generated_by.source_worktree_state must be clean in source templates")
     if value.get("target_worktree_state") != "clean":
         errors.append("generated_by.target_worktree_state must be clean in source templates")
+    for prefix in ["source", "target"]:
+        if value.get(f"{prefix}_dirty_path_count") != 0:
+            errors.append(
+                f"generated_by.{prefix}_dirty_path_count must be zero in source templates"
+            )
+        if value.get(f"{prefix}_dirty_paths_truncated") is not False:
+            errors.append(
+                f"generated_by.{prefix}_dirty_paths_truncated must be false in source templates"
+            )
+        if value.get(f"{prefix}_dirty_paths_sha256") != _path_set_sha256([]):
+            errors.append(
+                f"generated_by.{prefix}_dirty_paths_sha256 must bind an empty set"
+            )
     return errors

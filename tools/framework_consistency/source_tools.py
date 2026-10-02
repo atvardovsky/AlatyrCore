@@ -446,8 +446,9 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
     bridge_matrix = context.read_text("framework/bridge-capability-matrix.md")
     ordered_artifacts = [
         "bootstrap index",
-        "bootstrap integrity sidecar",
         "recursive project and assistant context catalogs",
+        "bootstrap integrity sidecar",
+        "refresh the assistant catalog",
         "support state",
     ]
     for relpath, text, anchor in [

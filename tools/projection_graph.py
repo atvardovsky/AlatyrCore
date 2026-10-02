@@ -175,6 +175,9 @@ def target_projection_nodes(paths: Iterable[str]) -> tuple[ProjectionNode, ...]:
             ".ai/alatyr.yaml",
             ".ai/assistant/bootstrap-index.json",
             ".ai/assistant/context-router.json",
+            ".ai/framework/context-index.json",
+            ".ai/project/context-index.json",
+            ".ai/assistant/context-index.json",
         ),
     }
     nodes: list[ProjectionNode] = []

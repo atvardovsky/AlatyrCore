@@ -146,10 +146,10 @@ class TargetAdapterValidatorHarnessTests(unittest.TestCase):
             ).encode("utf-8")
         ).hexdigest()
 
-        self.assertEqual(len(payload), 138)
+        self.assertEqual(len(payload), 140)
         self.assertEqual(
             digest,
-            "3090e2fac99380565853c9b74a2a228abe402c9a7c28df93e54485741bf442ea",
+            "a6764abd8b0d7240074877de89793c930981b4be0141e2f41b619380751b1dcc",
         )
         self.assertEqual(
             payload[0],

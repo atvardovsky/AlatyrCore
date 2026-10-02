@@ -810,8 +810,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1560,
-      "content_digest": "sha256:c8ab01b2b6c463d1b7a1a756425448520e7a300a4eff2653a2642b00d90a96ab"
+      "estimated_words": 1582,
+      "content_digest": "sha256:2395786556c40b0932a715cfe8782733ef3a888c4bc6375f831d225104f3db92"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",

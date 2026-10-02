@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import unittest
@@ -9,7 +10,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from bootstrap_index import build_bootstrap_index, build_bootstrap_integrity  # noqa: E402
+from bootstrap_index import (  # noqa: E402
+    build_bootstrap_index,
+    build_bootstrap_integrity,
+    build_bundle_from_target,
+    context_root_sha256,
+)
 
 
 class BootstrapIndexTests(unittest.TestCase):
@@ -79,6 +85,31 @@ known_gaps: []
         self.assertIsInstance(integrity["rule_selector"], dict)
         self.assertRegex(integrity["bootstrap_digest"], r"^sha256:[0-9a-f]{64}$")
 
+    def test_integrity_binds_each_recursive_context_root(self) -> None:
+        manifest = "schema_version: 1\n"
+        router = json.dumps({"routing_order": []})
+        bootstrap = build_bootstrap_index(manifest, "# Project\n", router)
+        roots = {
+            "framework_context_root": '{"index_id":"framework"}\n',
+            "project_context_root": '{"index_id":"project"}\n',
+            "assistant_context_root": '{"index_id":"assistant"}\n',
+        }
+
+        integrity = build_bootstrap_integrity(
+            manifest,
+            "# Project\n",
+            router,
+            bootstrap=bootstrap,
+            context_root_texts=roots,
+        )
+
+        self.assertEqual(integrity["schema_version"], 2)
+        for name, text in roots.items():
+            self.assertEqual(
+                integrity["derived_from"][name]["sha256"],
+                hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            )
+
     def test_semantic_preload_includes_compact_rule_owner(self) -> None:
         manifest = """\
 schema_version: 12
@@ -120,6 +151,38 @@ known_gaps: []
         self.assertEqual(
             result["semantic_preload"]["terms"][0]["owner_rule_id"],
             "ALATYR-INTEGRITY-001",
+        )
+
+    def test_source_template_resolves_framework_context_root_from_source(self) -> None:
+        _bootstrap, integrity = build_bundle_from_target(ROOT / "templates/target")
+
+        self.assertEqual(
+            integrity["derived_from"]["framework_context_root"]["path"],
+            ".ai/framework/context-index.json",
+        )
+
+    def test_assistant_root_digest_excludes_only_integrity_self_digest(self) -> None:
+        before = json.dumps(
+            {
+                "entries": [
+                    {
+                        "path": "bootstrap-integrity.json",
+                        "content_digest": "sha256:before",
+                    },
+                    {"path": "help.md", "content_digest": "sha256:help"},
+                ]
+            }
+        )
+        self_changed = before.replace("sha256:before", "sha256:after")
+        other_changed = before.replace("sha256:help", "sha256:changed")
+
+        self.assertEqual(
+            context_root_sha256("assistant_context_root", before),
+            context_root_sha256("assistant_context_root", self_changed),
+        )
+        self.assertNotEqual(
+            context_root_sha256("assistant_context_root", before),
+            context_root_sha256("assistant_context_root", other_changed),
         )
 
 

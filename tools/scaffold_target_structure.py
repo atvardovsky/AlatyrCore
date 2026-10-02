@@ -46,6 +46,7 @@ from agent_entry_packet import (
 from bootstrap_index import (
     BOOTSTRAP_INTEGRITY_PATH,
     BOOTSTRAP_PATH,
+    CONTEXT_ROOT_PATHS,
     build_bootstrap_index,
     build_bootstrap_integrity,
     render as render_bootstrap_index,
@@ -352,19 +353,16 @@ def projected_template_content(
             selected_paths,
             set(context.enabled_modules),
         )
+        framework_projection = projected_framework_contents(framework_pack)
         semantic_index = FRAMEWORK_ROOT / "semantics" / "index.json"
-        projected_semantic_index = projected_framework_contents(framework_pack).get(
-            "semantics/index.json"
-        )
+        projected_semantic_index = framework_projection.get("semantics/index.json")
         semantic_index_text = (
             semantic_index.read_text(encoding="utf-8")
             if projected_semantic_index is None
             else projected_semantic_index
         )
         semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
-        projected_registry_text = projected_framework_contents(framework_pack).get(
-            "rule-registry.json"
-        )
+        projected_registry_text = framework_projection.get("rule-registry.json")
         rule_registry_text = (
             (FRAMEWORK_ROOT / "rule-registry.json").read_text(encoding="utf-8")
             if projected_registry_text is None
@@ -386,6 +384,23 @@ def projected_template_content(
         )
         if rel == BOOTSTRAP_PATH:
             return render_bootstrap_index(bootstrap)
+        required_catalogs = {
+            CONTEXT_ROOT_PATHS["project_context_root"],
+            CONTEXT_ROOT_PATHS["assistant_context_root"],
+        }
+        if not required_catalogs.issubset(context.context_catalogs):
+            # Preliminary projection computes canonical catalog contents next.
+            return None
+        context_root_texts = {
+            "framework_context_root": framework_projection.get("context-index.json")
+            or (FRAMEWORK_ROOT / "context-index.json").read_text(encoding="utf-8"),
+            "project_context_root": context.context_catalogs[
+                CONTEXT_ROOT_PATHS["project_context_root"]
+            ],
+            "assistant_context_root": context.context_catalogs[
+                CONTEXT_ROOT_PATHS["assistant_context_root"]
+            ],
+        }
         return render_bootstrap_index(
             build_bootstrap_integrity(
                 manifest_text,
@@ -394,6 +409,7 @@ def projected_template_content(
                 bootstrap=bootstrap,
                 rule_registry_text=rule_registry_text,
                 semantic_index_text=semantic_index_text,
+                context_root_texts=context_root_texts,
                 generated_by=provenance,
             )
         )

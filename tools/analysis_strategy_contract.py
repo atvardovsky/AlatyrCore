@@ -63,6 +63,18 @@ FORBIDDEN_REASONING_KEYS = {
     "internal_monologue",
     "scratchpad",
 }
+AUTHORING_PLACEHOLDER_VALUES = {
+    "{PROBLEM_MODEL_ID}": "template-model",
+    "{OPERATION_ID}": "template-operation",
+    "{PRIMARY_STRATEGY_ID}": "invariant-first",
+    "{OBJECTIVE}": "Validate the installed authoring template.",
+    "{AVAILABLE_OR_UNAVAILABLE}": "available",
+    "{BRANCH_OR_UNAVAILABLE}": "main",
+    "{BASE_REVISION_OR_UNAVAILABLE}": "0" * 40,
+    "{REVISION_OR_UNAVAILABLE}": "0" * 40,
+    "{TASK_ID}": "template-task",
+    "{LOWERCASE_SHA256_OF_PROBLEM_MODEL}": "0" * 64,
+}
 
 
 def load_json_object(path: Path) -> dict[str, Any]:
@@ -70,6 +82,61 @@ def load_json_object(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{path} must contain a JSON object")
     return value
+
+
+def materialize_authoring_template(value: Any) -> Any:
+    """Replace declared authoring placeholders without weakening schema checks."""
+
+    if isinstance(value, dict):
+        return {
+            key: materialize_authoring_template(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [materialize_authoring_template(item) for item in value]
+    if isinstance(value, str):
+        rendered = value
+        for placeholder, replacement in AUTHORING_PLACEHOLDER_VALUES.items():
+            rendered = rendered.replace(placeholder, replacement)
+        return rendered
+    return value
+
+
+def validate_installed_strategy_templates(
+    adapter_root: Path,
+    problem_schema: dict[str, Any],
+    projection_schema: dict[str, Any],
+    *,
+    object_loader: Callable[[Path], dict[str, Any]] | None = None,
+) -> dict[str, list[str]]:
+    """Validate installed authoring templates against their canonical schemas."""
+
+    load_object = object_loader or load_json_object
+    contracts = {
+        "problem_model": (PROBLEM_MODEL_TEMPLATE_RELPATH, problem_schema),
+        "active_projection": (
+            PROBLEM_MODEL_PROJECTION_TEMPLATE_RELPATH,
+            projection_schema,
+        ),
+    }
+    failures: dict[str, list[str]] = {}
+    for contract, (relpath, schema) in contracts.items():
+        try:
+            template = load_object(adapter_root / relpath)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            failures[contract] = [str(exc)]
+            continue
+        materialized = materialize_authoring_template(template)
+        errors = sorted(
+            jsonschema.Draft7Validator(schema).iter_errors(materialized),
+            key=lambda item: list(item.absolute_path),
+        )
+        if errors:
+            failures[contract] = [
+                f"{'.'.join(str(part) for part in error.absolute_path) or 'root'}: {error.message}"
+                for error in errors
+            ]
+    return failures
 
 
 def word_count(path: Path) -> int:

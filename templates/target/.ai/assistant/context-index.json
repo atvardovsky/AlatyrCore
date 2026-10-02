@@ -214,7 +214,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 345,
-      "content_digest": "sha256:932f4bb8f9a18aff6094e91fdcbe4b1f73f2707cdbe89ea3e0ed968dfc6b7cb5"
+      "content_digest": "sha256:e514f40c7af1edf045e474f18e56db78d9715d0c87eafbb6f95ff5cb73a08d3f"
     },
     {
       "id": "assistant.content.help-md",
@@ -533,7 +533,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1202,
-      "content_digest": "sha256:fa72afe13e7eb5707ed6f03aa33ff5ca7a014c9bd4d3a61a2c270243a9b9b079"
+      "content_digest": "sha256:777588329b424c4ef8522d242b3427ca845803053234550b34ac62e303ad8745"
     },
     {
       "id": "assistant.section.gates",
@@ -623,7 +623,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2082,
-      "content_digest": "sha256:bd8a32bd569a3fd3bdbfc27ae2f430664688a41843b78721aed8fa2c1bf8c67c"
+      "content_digest": "sha256:ebb433611c7011d73695ba1a2324c7a65b21a59c4ad5c5c088fa2ac513d31b00"
     },
     {
       "id": "assistant.section.workers",

@@ -101,7 +101,7 @@ class SupportStateTests(unittest.TestCase):
         target = self.make_target()
         state = build_support_state(target)
         generated_by = state["generated_by"]
-        self.assertEqual(generated_by["schema_version"], 1)
+        self.assertEqual(generated_by["schema_version"], 2)
         self.assertEqual(generated_by["tool"], "snapshot_target_support.py")
         self.assertEqual(generated_by["target_manifest"], ".ai/alatyr.yaml")
         self.assertIn(generated_by["source_worktree_state"], {"clean", "dirty"})

@@ -22,6 +22,7 @@ from analysis_strategy_contract import (
     required_obligations_resolved,
     required_reviews_passed,
     validate_active_problem_model_projection,
+    validate_installed_strategy_templates,
     validate_problem_model,
     validate_problem_model_projection_schema,
     validate_problem_model_schema,
@@ -105,6 +106,38 @@ def validate_analysis_strategies(validator: Any) -> None:
             failure,
             STRATEGY_INDEX_RELPATH,
         )
+
+    try:
+        problem_schema = load_problem_model_schema()
+        projection_schema = load_problem_model_projection_schema()
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        validator.error(
+            "ANALYSIS_TEMPLATE_SCHEMA_DRIFT",
+            f"canonical analysis schema is unavailable: {exc}",
+            STRATEGY_INDEX_RELPATH,
+        )
+        problem_schema = None
+        projection_schema = None
+    if problem_schema is not None and projection_schema is not None:
+        template_failures = validate_installed_strategy_templates(
+            validator.target,
+            problem_schema,
+            projection_schema,
+            object_loader=load_object,
+        )
+        for contract, errors in template_failures.items():
+            code = (
+                "ANALYSIS_PROBLEM_MODEL_TEMPLATE_INVALID"
+                if contract == "problem_model"
+                else "ANALYSIS_PROJECTION_TEMPLATE_INVALID"
+            )
+            relpath = (
+                PROBLEM_MODEL_TEMPLATE_RELPATH
+                if contract == "problem_model"
+                else PROBLEM_MODEL_PROJECTION_TEMPLATE_RELPATH
+            )
+            for error in errors:
+                validator.error(code, error, relpath)
 
     policy = validator.load_json_object(
         validator.target_path(POLICY_RELPATH), "ANALYSIS_STRATEGY_POLICY"

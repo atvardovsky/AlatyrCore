@@ -29,22 +29,34 @@
         "source_revision",
         "source_worktree_state",
         "source_dirty_paths",
+        "source_dirty_path_count",
+        "source_dirty_paths_truncated",
+        "source_dirty_paths_sha256",
         "target_manifest",
         "target_manifest_digest",
         "target_worktree_state",
         "target_dirty_paths",
+        "target_dirty_path_count",
+        "target_dirty_paths_truncated",
+        "target_dirty_paths_sha256",
         "framework_version",
         "adapter_schema_version",
         "template_version"
       ],
       "properties": {
-        "schema_version": {"const": 1},
+        "schema_version": {"const": 2},
         "tool": {"type": "string", "minLength": 1},
         "source_revision": {"type": "string", "minLength": 1},
         "source_worktree_state": {"enum": ["clean", "dirty"]},
         "source_dirty_paths": {
           "type": "array",
           "items": {"type": "string", "minLength": 1}
+        },
+        "source_dirty_path_count": {"type": "integer", "minimum": 0},
+        "source_dirty_paths_truncated": {"type": "boolean"},
+        "source_dirty_paths_sha256": {
+          "type": "string",
+          "pattern": "^(sha256:[0-9a-f]{64}|unavailable)$"
         },
         "target_manifest": {"const": ".ai/alatyr.yaml"},
         "target_manifest_digest": {
@@ -55,6 +67,12 @@
         "target_dirty_paths": {
           "type": "array",
           "items": {"type": "string", "minLength": 1}
+        },
+        "target_dirty_path_count": {"type": "integer", "minimum": 0},
+        "target_dirty_paths_truncated": {"type": "boolean"},
+        "target_dirty_paths_sha256": {
+          "type": "string",
+          "pattern": "^(sha256:[0-9a-f]{64}|unavailable)$"
         },
         "framework_version": {"type": "string", "minLength": 1},
         "adapter_schema_version": {"type": "string", "minLength": 1},

@@ -274,7 +274,10 @@ pre-acceptance, and message templates are not completion evidence.
     run, accepted-state transition, derived-surface refresh, and final strict
     rerun defined above. When the AlatyrCore source helper is available, use
     `verify-upgrade` for the final read-only acceptance proof; otherwise apply
-    the same target-local acceptance/full/full contract.
+    the same target-local acceptance/full/full contract. Bind that proof to a
+    canonical Git diff reference and an explicitly selected approval record.
+    When `change-packages` is enabled, select and enforce the current package
+    against the same change snapshot.
 19. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Current files prove current structure only; name dated operation, approval,
     validation, or migration records before making historical claims.

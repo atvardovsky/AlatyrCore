@@ -1,22 +1,28 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "target-bootstrap-integrity",
   "bootstrap": ".ai/assistant/bootstrap-index.json",
   "bootstrap_digest": "sha256:68ce89f4eea6a97d97de1f36b1a945fd4ea87f89d56e2eb5d28d3c7f823846e2",
   "generated_by": {
-    "schema_version": 1,
+    "schema_version": 2,
     "provenance_kind": "source-template",
     "tool": "render_target_bootstrap_index.py",
     "source_revision": "source-template",
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
+    "source_dirty_path_count": 0,
+    "source_dirty_paths_truncated": false,
+    "source_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "target_manifest": ".ai/alatyr.yaml",
     "target_manifest_digest": "sha256:b0a24a8de4dd78fa6aa50ed81668767e29299ac282aa210a49d289475c313759",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.78",
-    "adapter_schema_version": "65",
-    "template_version": "73"
+    "target_dirty_path_count": 0,
+    "target_dirty_paths_truncated": false,
+    "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "framework_version": "0.1.0-alpha.79",
+    "adapter_schema_version": "66",
+    "template_version": "74"
   },
   "derived_from": {
     "manifest": {
@@ -33,11 +39,23 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "94ec5188e95c96f949d1df2d3b946de2a153517c533780328d1b19a0ef676612"
+      "sha256": "05d1de4c0dbaf701bd0f08c4da270f8ca9e8ea8fca192c7b9b3e85bc91b56cf9"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
       "sha256": "bb7e2bd6ee12ca6bad9d88b85f4250b8194a635a6ad6c94a105ce55f76237d72"
+    },
+    "assistant_context_root": {
+      "path": ".ai/assistant/context-index.json",
+      "sha256": "8e94861cd52a0e74621fe0a0c9347c79c38fd605a00397e8b1cb76d7ea1772e0"
+    },
+    "framework_context_root": {
+      "path": ".ai/framework/context-index.json",
+      "sha256": "08646e82c9fea0710a66bd55d8d62e83c64dafc2d89b8c93a33aa871aa25b7d7"
+    },
+    "project_context_root": {
+      "path": ".ai/project/context-index.json",
+      "sha256": "64bdd3d0993ff9a8202c2999bafd2d12c4e43a33f78e0ced1fc60b0702ccc1a3"
     }
   },
   "rule_selector": {

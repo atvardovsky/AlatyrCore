@@ -59,6 +59,11 @@ paths, and previously unclassified files.
 Hashes answer which support surfaces changed. They do not decide what a change
 means or whether architecture remains correct.
 
+Generated support provenance may retain only a bounded dirty-path sample for
+display, but it must also record the complete path count, whether the sample
+was truncated, and a deterministic digest of the complete normalized path set.
+An unchanged visible sample does not prove that omitted paths are unchanged.
+
 ## Bounded Impact Routing
 
 Start review from a support delta whenever support information may have
@@ -122,6 +127,12 @@ Installed-support reports distinguish gross filesystem footprint, explicitly
 excluded local or generated state, policy-managed support, and unclassified
 surfaces. Guardrails and comparisons must name the scope they measure instead
 of charging exclusions as managed support.
+
+Large compact indexes should report entry and byte pressure against explicit
+reported limits. Pressure is an archive recommendation, not authorization to
+move or delete evidence. Any archive operation preserves identity and
+references, rebuilds recursive indexes, and follows current-scope modification
+rules.
 
 ## Relationship Discovery
 
@@ -237,4 +248,6 @@ Reject work that:
 - executes assistant-proposed or owner-maintained generation
 - applies output from a stale plan or changed repository base
 - refreshes support state before generated surfaces and indexes are complete
+- treats a bounded dirty-path sample as complete provenance
+- archives evidence automatically from an index-pressure observation
 - completes code or test work without a Project Contour Sync Decision

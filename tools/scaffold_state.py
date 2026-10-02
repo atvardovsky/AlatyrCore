@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 
@@ -114,6 +115,13 @@ def validate_installation_state_record(
                 failures.append(f"{label} validation evidence must be non-empty")
             if next_state == "accepted" and status != "passed":
                 failures.append(f"{label} acceptance requires passed strict validation")
+        if next_state == "accepted" and not re.fullmatch(
+            r"(?:[0-9a-f]{40}|[0-9a-f]{64})",
+            str(transition.get("repository_revision", "")),
+        ):
+            failures.append(
+                f"{label} acceptance repository_revision must be an immutable Git object ID"
+            )
 
         previous_next = next_state if next_state in INSTALLATION_STATES else None
 

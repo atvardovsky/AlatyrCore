@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from target_tool_compat import (  # noqa: E402
     assert_write_compatible,
     generation_provenance,
+    generation_provenance_errors,
     generation_provenance_from_manifest_text,
     repository_state,
     source_template_provenance_errors,
@@ -49,6 +50,9 @@ class TargetToolCompatTests(unittest.TestCase):
             set(state.dirty_paths),
             {"tracked file.txt", "new file.txt"},
         )
+        self.assertEqual(state.dirty_path_count, 2)
+        self.assertFalse(state.dirty_paths_truncated)
+        self.assertRegex(state.dirty_paths_sha256, r"^sha256:[0-9a-f]{64}$")
 
     def test_repository_state_reports_both_sides_of_a_staged_rename(self) -> None:
         directory = tempfile.TemporaryDirectory()
@@ -78,6 +82,24 @@ class TargetToolCompatTests(unittest.TestCase):
             ("after name.txt", "before name.txt"),
         )
 
+    def test_repository_state_binds_all_paths_when_retained_list_is_truncated(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        target = Path(directory.name)
+        subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+        for index in range(75):
+            (target / f"file-{index:03d}.txt").write_text("dirty\n", encoding="utf-8")
+
+        state = repository_state(target, limit=50)
+        repeated = repository_state(target, limit=1)
+
+        self.assertEqual(len(state.dirty_paths), 50)
+        self.assertEqual(state.dirty_path_count, 75)
+        self.assertTrue(state.dirty_paths_truncated)
+        self.assertEqual(repeated.dirty_path_count, 75)
+        self.assertEqual(repeated.dirty_paths_sha256, state.dirty_paths_sha256)
+        self.assertNotEqual(state.dirty_paths_sha256, "unavailable")
+
     def test_generation_provenance_marks_a_non_repository_target_dirty(self) -> None:
         target = self.make_target(
             version=(ROOT / "VERSION").read_text(encoding="utf-8").strip(),
@@ -91,6 +113,13 @@ class TargetToolCompatTests(unittest.TestCase):
         self.assertEqual(
             provenance["target_dirty_paths"],
             ["<git-state-unavailable>"],
+        )
+        self.assertEqual(provenance["target_dirty_path_count"], 0)
+        self.assertFalse(provenance["target_dirty_paths_truncated"])
+        self.assertEqual(provenance["target_dirty_paths_sha256"], "unavailable")
+        self.assertEqual(
+            generation_provenance_errors(provenance, expected_tool="fixture.py"),
+            [],
         )
 
     def make_target(self, *, version: str, schema: str, template: str) -> Path:
@@ -153,6 +182,12 @@ framework:
         )
         self.assertEqual(provenance["source_revision"], "source-template")
         self.assertEqual(provenance["source_dirty_paths"], [])
+        self.assertEqual(provenance["schema_version"], 2)
+        self.assertEqual(provenance["source_dirty_path_count"], 0)
+        self.assertFalse(provenance["source_dirty_paths_truncated"])
+        self.assertRegex(
+            provenance["source_dirty_paths_sha256"], r"^sha256:[0-9a-f]{64}$"
+        )
 
 
 if __name__ == "__main__":

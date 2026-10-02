@@ -74,7 +74,7 @@ PROBES = (
         "assistant-instructions",
         "assistant instructions, bridges, skills, prompts, and tool configuration",
         (
-            "AGENTS.md", "AI_ASSISTANTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules",
+            "AGENT.md", "AGENTS.md", "AI_ASSISTANTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules",
             ".windsurfrules", ".rules", ".ai/**", ".agents/**", ".claude/**",
             ".cursor/**", ".github/copilot-instructions.md", ".github/prompts/**",
             ".roo/**", ".codex/**", ".mcp.json",

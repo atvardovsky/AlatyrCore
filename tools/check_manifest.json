@@ -2637,6 +2637,7 @@
       ],
       "implementation_paths": [
         "tools/agent_entry_packet.py",
+        "tools/analysis_strategy_contract.py",
         "tools/bootstrap_index.py",
         "tools/conformance_artifacts.py",
         "tools/context_catalog.py",
@@ -2665,6 +2666,7 @@
         "framework/**",
         "templates/target/**",
         "tools/agent_entry_packet.py",
+        "tools/analysis_strategy_contract.py",
         "tools/bootstrap_index.py",
         "tools/conformance_artifacts.py",
         "tools/context_catalog.py",
@@ -2713,6 +2715,7 @@
       ],
       "implementation_paths": [
         "tools/agent_entry_packet.py",
+        "tools/analysis_strategy_contract.py",
         "tools/bootstrap_index.py",
         "tools/conformance_artifacts.py",
         "tools/context_catalog.py",
@@ -2741,6 +2744,7 @@
         "framework/**",
         "templates/target/**",
         "tools/agent_entry_packet.py",
+        "tools/analysis_strategy_contract.py",
         "tools/bootstrap_index.py",
         "tools/conformance_artifacts.py",
         "tools/context_catalog.py",

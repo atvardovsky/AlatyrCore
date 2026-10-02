@@ -134,12 +134,16 @@ selected profile or overlay context.
 
 Keep the compact bootstrap outside assistant catalog content ownership. The
 lazy integrity sidecar is cataloged so discovery can verify that it exists,
-but neither bootstrap artifact depends on recursive catalog output. After
-installed target files change, rebuild in canonical order: source-owned
-relationship indexes, recovery entry packet, bootstrap index, bootstrap
-integrity sidecar, recursive project and assistant context catalogs, then
-support state. This lets recursive catalog
-digests bind completed generated surfaces while support state observes the
+but the compact bootstrap itself does not depend on recursive catalog output.
+The integrity sidecar binds the framework, project, and assistant root context
+indexes so a stale recursive navigation tree cannot validate against a current
+bootstrap. The assistant-root digest excludes only the integrity entry's own
+content digest to prevent a generated self-reference; its path and every other
+root field remain bound. After installed target files change, rebuild in canonical order:
+source-owned relationship indexes, recovery entry packet, bootstrap index,
+recursive project and assistant context catalogs, bootstrap integrity sidecar,
+refresh the assistant catalog once, then support state. This lets the
+integrity sidecar bind completed root indexes while support state observes the
 final projection.
 
 Profile operation candidates make common routing cheap. Resolve exact IDs and

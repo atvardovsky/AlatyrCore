@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from scaffold_state import validate_installation_state_record
@@ -45,3 +46,36 @@ def validate_installation_state(
         return
     for failure in validate_installation_state_record(record, manifest_state=state):
         context.error("INSTALLATION_STATE_TRANSITION", failure, relpath)
+    transitions = record.get("transitions")
+    if not isinstance(transitions, list):
+        return
+    head_revision = context.git.head_revision()
+    for index, transition in enumerate(transitions, start=1):
+        if not isinstance(transition, dict) or transition.get("next_state") != "accepted":
+            continue
+        revision = transition.get("repository_revision")
+        if not isinstance(revision, str) or not re.fullmatch(
+            r"(?:[0-9a-f]{40}|[0-9a-f]{64})", revision
+        ):
+            continue
+        resolved = context.git.resolve_ref(revision)
+        if resolved is None:
+            context.error(
+                "INSTALLATION_STATE_REVISION_UNRESOLVED",
+                f"installation-state transition {index} acceptance revision is not resolvable",
+                relpath,
+            )
+            continue
+        if head_revision is None:
+            context.error(
+                "INSTALLATION_STATE_REVISION_UNAVAILABLE",
+                "current repository revision is unavailable",
+                relpath,
+            )
+            continue
+        if context.git.is_ancestor(resolved, head_revision) is not True:
+            context.error(
+                "INSTALLATION_STATE_REVISION_NOT_ANCESTOR",
+                f"installation-state transition {index} acceptance revision is not an ancestor of current HEAD",
+                relpath,
+            )

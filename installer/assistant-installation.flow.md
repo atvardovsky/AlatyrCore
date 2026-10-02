@@ -204,9 +204,11 @@ Classify every proposed target file:
    `ALATYR-AUTHORIZATION-001` before each state-changing phase.
 6. Identify protected changes and required approvals.
 7. If approval is required, stop until the programmer confirms it.
-8. Create or adapt target `AGENTS.md`. Add `AI_ASSISTANTS.md` only when the
-   selected support profile or an explicitly selected assistant surface
-   includes it. For every
+8. Create or adapt target `AGENTS.md`. Inspect and preserve an existing root
+   `AGENT.md` as an optional compact route to `AGENTS.md`; do not give it a
+   second full policy corpus. Add `AI_ASSISTANTS.md` only when the selected
+   support profile or an explicitly selected assistant surface includes it.
+   For every
    selected assistant, inspect all native and compatibility instruction paths,
    bind the exact client/runtime variant, and choose the bridge that actually
    wins precedence. Use `.rules` for Zed Agent's first-match bridge. Do not add
@@ -635,7 +637,10 @@ accepted or ready. Before reporting installation or update completion:
    `legacy-migration-baseline`; never invent prior events.
 10. Refresh affected projections, then rerun acceptance/full/full validation.
     Require eligibility, exact branch/revision binding, no active placeholders,
-    module agreement, and no blocker. Validate every branch claimed accepted.
+    module agreement, and no blocker. Bind the final run to a canonical Git
+    change snapshot and explicitly selected approval evidence. When the target
+    enables `change-packages`, select and enforce its current package against
+    the same snapshot. Validate every branch claimed accepted.
 11. Enter the inspect-only `handoff` stage. Report `staged` or `blocked` when
     step 10 fails; otherwise report `accepted` without another generic recheck.
 

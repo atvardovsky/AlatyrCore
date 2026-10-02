@@ -35,6 +35,27 @@ BINDING_KINDS = {
     "config-key",
     "symbol",
 }
+SUPPORT_INFORMATION_PREFIXES = (
+    ".ai/",
+    ".agents/",
+    ".cursor/",
+    ".devin/",
+    ".github/prompts/",
+    ".roo/",
+    ".windsurf/",
+)
+SUPPORT_INFORMATION_FILES = {
+    "AGENT.md",
+    "AGENTS.md",
+    "AI_ASSISTANTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "GIGACODE.md",
+    ".cursorrules",
+    ".rules",
+    ".windsurfrules",
+    ".github/copilot-instructions.md",
+}
 
 
 class ImpactGraphError(ValueError):
@@ -246,6 +267,31 @@ def matching_node_ids(reverse_index: dict[str, Any], relpath: str) -> set[str]:
         ):
             matches.add(node_id)
     return matches
+
+
+def is_support_information_path(relpath: str) -> bool:
+    normalized = relpath.replace("\\", "/")
+    return normalized in SUPPORT_INFORMATION_FILES or normalized.startswith(
+        SUPPORT_INFORMATION_PREFIXES
+    )
+
+
+def map_changed_paths(
+    reverse_index: dict[str, Any],
+    changed_paths: Iterable[str],
+) -> tuple[dict[str, list[str]], list[str]]:
+    """Map project paths and return fail-closed unmapped project surfaces."""
+
+    matches = {
+        path: sorted(matching_node_ids(reverse_index, path))
+        for path in sorted(set(changed_paths))
+    }
+    unmapped = [
+        path
+        for path, node_ids in matches.items()
+        if not node_ids and not is_support_information_path(path)
+    ]
+    return matches, unmapped
 
 
 def traverse_impact(

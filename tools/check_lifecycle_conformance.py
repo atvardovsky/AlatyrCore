@@ -17,6 +17,7 @@ from typing import Any
 
 import yaml
 
+from analysis_strategy_contract import AUTHORING_PLACEHOLDER_VALUES
 from bootstrap_index import (
     BOOTSTRAP_INTEGRITY_PATH,
     BOOTSTRAP_PATH,
@@ -83,6 +84,9 @@ def run_git(repo: Path, *arguments: str) -> str:
 
 
 def replacement(name: str) -> str:
+    authoring_value = AUTHORING_PLACEHOLDER_VALUES.get(f"{{{name}}}")
+    if authoring_value is not None:
+        return authoring_value
     exact = {
         "ALATYR_ADAPTER_SCHEMA_VERSION": (ROOT / "ADAPTER_SCHEMA_VERSION").read_text(encoding="utf-8").strip(),
         "ALATYR_CORE_VERSION": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
@@ -288,6 +292,7 @@ def transition_installation_state(
     operation_id: str,
     validation_status: str,
     validation_evidence: str,
+    approval_evidence: str = "fixture-install",
     refresh: bool = True,
 ) -> None:
     manifest_path = repo / ".ai" / "alatyr.yaml"
@@ -304,7 +309,7 @@ def transition_installation_state(
             "operation_id": operation_id,
             "repository_revision": run_git(repo, "rev-parse", "HEAD"),
             "current_user_authorization": "fixture adapter-only modify",
-            "approval_evidence": "fixture-install",
+            "approval_evidence": approval_evidence,
             "validation": {
                 "status": validation_status,
                 "evidence": validation_evidence,
@@ -323,9 +328,13 @@ def transition_installation_state(
         refresh_context_and_bootstrap(repo)
 
 
-def refresh_bootstrap(repo: Path) -> None:
-    bootstrap, integrity = build_bundle_from_target(repo)
+def refresh_bootstrap_index(repo: Path) -> None:
+    bootstrap, _integrity = build_bundle_from_target(repo)
     (repo / BOOTSTRAP_PATH).write_bytes(render(bootstrap).encode("utf-8"))
+
+
+def refresh_bootstrap_integrity(repo: Path) -> None:
+    _bootstrap, integrity = build_bundle_from_target(repo)
     (repo / BOOTSTRAP_INTEGRITY_PATH).write_bytes(
         render(integrity).encode("utf-8")
     )
@@ -339,9 +348,12 @@ def refresh_entry_packet(repo: Path) -> None:
 
 def refresh_context_and_bootstrap(repo: Path) -> None:
     refresh_entry_packet(repo)
-    refresh_bootstrap(repo)
+    refresh_bootstrap_index(repo)
     for path, content in installed_context_outputs(repo).items():
         path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content.encode("utf-8"))
+    refresh_bootstrap_integrity(repo)
+    for path, content in installed_context_outputs(repo).items():
         path.write_bytes(content.encode("utf-8"))
     support_state = build_support_state(repo)
     (repo / STATE_PATH).write_bytes(render_state(support_state).encode("utf-8"))
@@ -479,6 +491,84 @@ def make_validator(
         allow_local_paths=[],
         config=AdapterValidatorConfig(),
     )
+
+
+def accepted_findings_payload(
+    validator: Validator,
+    findings: list[Any],
+    repo: Path,
+    diff_ref: str,
+    *,
+    post_update: bool = False,
+) -> dict[str, Any]:
+    options: dict[str, Any] = {}
+    if post_update:
+        options.update(
+            validation_phase="acceptance",
+            validation_scope="full",
+            approval_archive_summary=validator.approval_archive_summary,
+        )
+    return findings_payload(
+        findings,
+        target=repo,
+        strict_warnings=False,
+        installation_state=validator.installation_state,
+        git_evidence=validator.git,
+        diff_ref=diff_ref,
+        approval_records_selected=1,
+        approval_scope_enforced=True,
+        **options,
+    )
+
+
+def write_update_approval(repo: Path, base: str, support_profile: str) -> Path:
+    path = repo / ".ai" / "assistant" / "approvals" / "fixture-update.json"
+    record = approval_record(base, support_profile)
+    record["approval_id"] = "fixture-update"
+    record["operation"] = {
+        "id": "fixture-update",
+        "type": "framework-update",
+    }
+    path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
+def build_synthetic_source(root: Path, support_profile: str) -> Path:
+    source = root / f"next-source-{support_profile}"
+    shutil.copytree(ROOT / "framework", source / "framework")
+    for name in ["VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION"]:
+        shutil.copy2(ROOT / name, source / name)
+    (source / "VERSION").write_text(
+        "0.1.0-lifecycle-fixture\n", encoding="utf-8"
+    )
+    context_path = source / "framework" / "context-profiles.md"
+    context_path.write_bytes(
+        context_path.read_bytes() + b"\nLifecycle fixture update.\n"
+    )
+    semantic_index = source / "framework" / "semantics" / "index.json"
+    semantic_index.write_text(
+        render_semantic_codebook(semantic_index.parent), encoding="utf-8"
+    )
+    for relpath, content in build_framework_catalog_contents(
+        root=source / "framework"
+    ).items():
+        destination = source / "framework" / relpath
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(content.encode("utf-8"))
+    source_inventory_path = source / "framework" / "file-inventory.json"
+    source_inventory = json.loads(source_inventory_path.read_text(encoding="utf-8"))
+    source_inventory["framework_version"] = "0.1.0-lifecycle-fixture"
+    for entry in source_inventory.get("files", []):
+        entry_path = entry.get("path")
+        if isinstance(entry_path, str):
+            framework_path = source / entry_path
+            if framework_path.is_file():
+                entry["sha256"] = hashlib.sha256(framework_path.read_bytes()).hexdigest()
+    source_inventory_path.write_text(
+        json.dumps(source_inventory, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return source
 
 
 def apply_synthetic_framework_update(repo: Path, source: Path, pack: str) -> None:
@@ -645,7 +735,7 @@ def exercise_profile(
         validation_status="passed",
         validation_evidence="strict target adapter validation passed",
     )
-    accepted = make_validator(repo, ROOT)
+    accepted = make_validator(repo, ROOT, diff_ref=base, approval=approval_path)
     accepted_findings = accepted.run()
     accepted_errors = [finding for finding in accepted_findings if finding.level == "error"]
     if accepted_errors or result_code(accepted_findings, strict_warnings=False):
@@ -657,11 +747,8 @@ def exercise_profile(
                 if finding.level in {"error", "warning"}
             )
         )
-    accepted_payload = findings_payload(
-        accepted_findings,
-        target=repo,
-        strict_warnings=False,
-        installation_state=accepted.installation_state,
+    accepted_payload = accepted_findings_payload(
+        accepted, accepted_findings, repo, base
     )
     if accepted_payload["adapter_health"]["state"] not in {"ready", "attention"} or not accepted_payload[
         "placeholder_validation"
@@ -680,42 +767,9 @@ def exercise_profile(
 
     run_git(repo, "add", ".")
     run_git(repo, "commit", "-q", "-m", f"install accepted {support_profile} adapter")
+    update_base = run_git(repo, "rev-parse", "HEAD")
 
-    source = root / f"next-source-{support_profile}"
-    (source / "framework").parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(ROOT / "framework", source / "framework")
-    for name in ["VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION"]:
-        shutil.copy2(ROOT / name, source / name)
-    (source / "VERSION").write_text("0.1.0-lifecycle-fixture\n", encoding="utf-8")
-    context_path = source / "framework" / "context-profiles.md"
-    context_path.write_bytes(
-        context_path.read_bytes() + b"\nLifecycle fixture update.\n"
-    )
-    semantic_index = source / "framework" / "semantics" / "index.json"
-    semantic_index.write_text(
-        render_semantic_codebook(semantic_index.parent), encoding="utf-8"
-    )
-    for relpath, content in build_framework_catalog_contents(
-        root=source / "framework"
-    ).items():
-        destination = source / "framework" / relpath
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(content.encode("utf-8"))
-    source_inventory_path = source / "framework" / "file-inventory.json"
-    source_inventory = json.loads(source_inventory_path.read_text(encoding="utf-8"))
-    source_inventory["framework_version"] = "0.1.0-lifecycle-fixture"
-    for entry in source_inventory.get("files", []):
-        entry_path = entry.get("path")
-        if not isinstance(entry_path, str):
-            continue
-        framework_path = source / entry_path
-        if framework_path.is_file():
-            entry["sha256"] = hashlib.sha256(framework_path.read_bytes()).hexdigest()
-    source_inventory_path.write_bytes(
-        (json.dumps(source_inventory, indent=2, sort_keys=True) + "\n").encode(
-            "utf-8"
-        )
-    )
+    source = build_synthetic_source(root, support_profile)
 
     drift = make_validator(repo, source)
     drift.check_framework_baseline()
@@ -741,11 +795,19 @@ def exercise_profile(
         operation_id="fixture-update",
         validation_status="not-run",
         validation_evidence="controlled repair started",
+        approval_evidence="fixture-update",
         refresh=False,
     )
 
+    update_approval_path = write_update_approval(repo, update_base, support_profile)
+
     apply_synthetic_framework_update(repo, source, expected_pack)
-    staged_update = make_validator(repo, source)
+    staged_update = make_validator(
+        repo,
+        source,
+        diff_ref=update_base,
+        approval=update_approval_path,
+    )
     staged_update_findings = staged_update.run()
     if result_code(staged_update_findings, strict_warnings=False):
         failures.append(
@@ -763,8 +825,14 @@ def exercise_profile(
         operation_id="fixture-update",
         validation_status="passed",
         validation_evidence="strict post-update validation passed",
+        approval_evidence="fixture-update",
     )
-    updated = make_validator(repo, source)
+    updated = make_validator(
+        repo,
+        source,
+        diff_ref=update_base,
+        approval=update_approval_path,
+    )
     updated_findings = updated.run()
     updated_errors = [finding for finding in updated_findings if finding.level == "error"]
     if updated_errors or result_code(updated_findings, strict_warnings=False):
@@ -776,14 +844,8 @@ def exercise_profile(
                 if finding.level in {"error", "warning"}
             )
         )
-    updated_payload = findings_payload(
-        updated_findings,
-        target=repo,
-        strict_warnings=False,
-        installation_state=updated.installation_state,
-        validation_phase="acceptance",
-        validation_scope="full",
-        approval_archive_summary=updated.approval_archive_summary,
+    updated_payload = accepted_findings_payload(
+        updated, updated_findings, repo, update_base, post_update=True
     )
     if (
         updated_payload.get("installation_state") != "accepted"

@@ -104,7 +104,7 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
             )
             report = suggestions(target)
 
-        self.assertEqual(report["schema_version"], 2)
+        self.assertEqual(report["schema_version"], 3)
         self.assertEqual(report["validated_or_completed_packages_considered"], 2)
         self.assertEqual(report["candidate_projection_verified_packages"], 2)
         self.assertEqual(len(report["source_sha256"]), 64)
@@ -117,6 +117,8 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
             {"project_area": "billing", "canonical_owner": "docs/billing.md"},
         )
         self.assertEqual(candidate["verified_evidence_samples"], 2)
+        self.assertEqual(candidate["verified_occurrences"], 2)
+        self.assertFalse(candidate["review_recommended"])
         self.assertFalse(report["automatic_promotion_performed"])
 
     def test_nonterminal_and_substring_statuses_are_not_candidates(self) -> None:
@@ -222,6 +224,8 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
         self.assertEqual(len(candidate["changed_fact_ids"]), 8)
         self.assertEqual(len(candidate["evidence_sha256"]), 64)
         self.assertEqual(candidate["verified_evidence_samples"], 8)
+        self.assertEqual(candidate["verified_occurrences"], 20)
+        self.assertTrue(candidate["review_recommended"])
         self.assertTrue(candidate["evidence_truncated"])
 
     def test_sharded_package_index_is_processed_with_digest_binding(self) -> None:
@@ -259,6 +263,101 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
 
         self.assertEqual(len(report["source_files"]), 2)
         self.assertEqual(len(report["candidates"]), 1)
+
+    def test_multi_area_package_does_not_invent_cartesian_relationships(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.write_target(
+                target,
+                [
+                    {
+                        "package_id": package_id,
+                        "status": "complete",
+                        "project_areas": ["billing", "orders"],
+                        "canonical_owners": ["docs/billing.md", "docs/orders.md"],
+                        "changed_fact_ids": [f"{package_id}-BILL", f"{package_id}-ORDER"],
+                    }
+                    for package_id in ["A", "B"]
+                ],
+            )
+
+            report = suggestions(target)
+
+        self.assertEqual(report["candidates"], [])
+        self.assertEqual(report["ambiguous_package_count"], 2)
+        self.assertEqual(report["ambiguous_package_ids"], ["A", "B"])
+
+    def test_single_area_multiple_owners_keep_owner_specific_fact_ids(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.write_target(
+                target,
+                [
+                    {
+                        "package_id": package_id,
+                        "status": "complete",
+                        "canonical_owners": ["docs/a.md", "docs/b.md"],
+                        "changed_fact_ids": [f"{package_id}-A", f"{package_id}-B"],
+                    }
+                    for package_id in ["A", "B"]
+                ],
+            )
+
+            report = suggestions(target)
+
+        by_owner = {
+            candidate["selector"]["canonical_owner"]: candidate
+            for candidate in report["candidates"]
+        }
+        self.assertEqual(set(by_owner), {"docs/a.md", "docs/b.md"})
+        self.assertEqual(by_owner["docs/a.md"]["changed_fact_ids"], ["A-A", "B-A"])
+        self.assertEqual(by_owner["docs/b.md"]["changed_fact_ids"], ["A-B", "B-B"])
+
+    def test_stale_record_outside_display_sample_cannot_raise_occurrences(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            records = [
+                {"package_id": f"P{index}", "status": "complete"}
+                for index in range(8)
+            ]
+            records.append(
+                {
+                    "package_id": "STALE",
+                    "status": "complete",
+                    "record_status": "implementing",
+                }
+            )
+            self.write_target(target, records)
+
+            report = suggestions(target, minimum_occurrences=9, recommend_at_occurrences=9)
+
+        self.assertEqual(report["candidates"], [])
+        self.assertEqual(report["candidate_projection_verified_packages"], 8)
+        self.assertEqual(report["candidate_projection_rejected_packages"], 1)
+
+    def test_recommendation_threshold_is_separate_from_candidate_threshold(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.write_target(
+                target,
+                [
+                    {"package_id": package_id, "status": "complete"}
+                    for package_id in ["A", "B", "C"]
+                ],
+            )
+
+            report = suggestions(target, minimum_occurrences=2, recommend_at_occurrences=3)
+
+        self.assertTrue(report["candidates"][0]["review_recommended"])
+        self.assertFalse(report["automatic_promotion_performed"])
+
+    def test_recommendation_threshold_cannot_be_lower_than_candidate_threshold(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.write_target(target, [])
+
+            with self.assertRaisesRegex(ValueError, "recommend_at_occurrences"):
+                suggestions(target, minimum_occurrences=3, recommend_at_occurrences=2)
 
 
 if __name__ == "__main__":

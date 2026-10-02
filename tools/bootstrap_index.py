@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from context_catalog import load_codebook
-from target_tool_compat import generation_provenance
+from target_tool_compat import generation_provenance, source_template_target
 from yaml_support import safe_load
 
 
@@ -20,12 +20,50 @@ SOURCE_PATHS = {
     "context_router": Path(".ai/assistant/context-router.json"),
 }
 SEMANTIC_INDEX_PATH = Path(".ai/framework/semantics/index.json")
+CONTEXT_ROOT_PATHS = {
+    "framework_context_root": Path(".ai/framework/context-index.json"),
+    "project_context_root": Path(".ai/project/context-index.json"),
+    "assistant_context_root": Path(".ai/assistant/context-index.json"),
+}
 SOURCE_SEMANTIC_INDEX = Path(__file__).resolve().parents[1] / "framework" / "semantics" / "index.json"
 SOURCE_RULE_REGISTRY = Path(__file__).resolve().parents[1] / "framework" / "rule-registry.json"
 
 
 def _sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def context_root_sha256(name: str, text: str) -> str:
+    """Hash a context root while removing the bootstrap-integrity self-edge."""
+
+    if name != "assistant_context_root":
+        return _sha256(text)
+    try:
+        root = json.loads(text)
+    except json.JSONDecodeError:
+        return _sha256(text)
+    if not isinstance(root, dict):
+        return _sha256(text)
+    normalized = json.loads(json.dumps(root))
+    entries = normalized.get("entries")
+    self_reference_found = False
+    if isinstance(entries, list):
+        for entry in entries:
+            if (
+                isinstance(entry, dict)
+                and entry.get("path") == "bootstrap-integrity.json"
+            ):
+                entry["content_digest"] = "self-reference-excluded"
+                self_reference_found = True
+    if not self_reference_found:
+        return _sha256(text)
+    canonical = json.dumps(
+        normalized,
+        ensure_ascii=True,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    return _sha256(canonical)
 
 
 def _string(value: Any, default: str = "unknown") -> str:
@@ -231,6 +269,7 @@ def build_bootstrap_integrity(
     bootstrap: dict[str, Any],
     rule_registry_text: str | None = None,
     semantic_index_text: str | None = None,
+    context_root_texts: dict[str, str] | None = None,
     generated_by: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Return lazy provenance and source-binding evidence for the bootstrap."""
@@ -252,9 +291,17 @@ def build_bootstrap_integrity(
             "path": ".ai/framework/rule-registry.json",
             "sha256": _sha256(rule_registry_text),
         }
+    for name, text in sorted((context_root_texts or {}).items()):
+        path = CONTEXT_ROOT_PATHS.get(name)
+        if path is None:
+            raise ValueError(f"unknown bootstrap context root: {name}")
+        derived_from[name] = {
+            "path": path.as_posix(),
+            "sha256": context_root_sha256(name, text),
+        }
     canonical = json.dumps(bootstrap, ensure_ascii=True, separators=(",", ":"), sort_keys=True)
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "record_kind": "target-bootstrap-integrity",
         "bootstrap": BOOTSTRAP_PATH.as_posix(),
         "bootstrap_digest": f"sha256:{_sha256(canonical)}",
@@ -277,6 +324,18 @@ def build_bundle_from_target(target: Path) -> tuple[dict[str, Any], dict[str, An
     rule_registry = (
         installed_registry if installed_registry.is_file() else SOURCE_RULE_REGISTRY
     )
+    context_root_texts: dict[str, str] = {}
+    for name, relpath in CONTEXT_ROOT_PATHS.items():
+        path = target / relpath
+        if (
+            not path.is_file()
+            and name == "framework_context_root"
+            and source_template_target(target)
+        ):
+            path = Path(__file__).resolve().parents[1] / "framework/context-index.json"
+        if not path.is_file():
+            raise ValueError(f"bootstrap context root is missing: {relpath.as_posix()}")
+        context_root_texts[name] = path.read_text(encoding="utf-8")
     semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
     provenance = generation_provenance(
         target,
@@ -298,6 +357,7 @@ def build_bundle_from_target(target: Path) -> tuple[dict[str, Any], dict[str, An
         bootstrap=bootstrap,
         rule_registry_text=rule_registry.read_text(encoding="utf-8"),
         semantic_index_text=semantic_index.read_text(encoding="utf-8"),
+        context_root_texts=context_root_texts,
         generated_by=provenance,
     )
     return bootstrap, integrity

@@ -72,19 +72,20 @@ machine index points to canonical owners. A folder may contain further
 subfolders without imposing a universal physical depth, but routine traversal
 must stop at the router's configured depth and context budgets.
 
-The generated bootstrap is the preloaded entry point and must not be indexed
-as assistant content. Rebuild generated surfaces in this canonical order:
+Do not index the preloaded bootstrap as assistant content.
+Rebuild generated surfaces in this canonical order:
 
 1. support relationships and other source-owned indexes;
 2. bootstrap index;
-3. bootstrap integrity sidecar;
-4. recursive project and assistant context catalogs;
-5. support state.
+3. recursive project and assistant context catalogs;
+4. bootstrap integrity sidecar;
+5. refresh the assistant catalog's integrity projection;
+6. support state.
 
-The recursive assistant catalog excludes the bootstrap index and includes the
-integrity sidecar, so changing this order can create stale digests or a circular
-dependency. Support state is generated last because it records the final
-installed projection.
+The assistant catalog omits bootstrap and includes integrity. Its root hash
+omits only the integrity entry's own digest, allowing one bounded refresh
+without weakening other root checks. Generate support state last to record the
+final projection.
 
 The generated `framework/file-inventory.json` is packaging and upgrade
 evidence, not recursively routed framework content. It hashes

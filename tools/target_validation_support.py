@@ -771,6 +771,11 @@ class GitEvidenceView:
     def branch_name(self) -> str | None:
         return self.initial_branch
 
+    def worktree_state(self) -> str:
+        if self.initial_state is GitEvidenceState.UNAVAILABLE:
+            return "unavailable"
+        return "dirty" if self.initial_status else "clean"
+
     def resolve_object(self, ref: str, object_kind: str = "commit") -> str | None:
         return self._cached(
             ("resolve-object", ref, object_kind),
@@ -902,6 +907,7 @@ class GitEvidenceView:
             "cache_hits": self.cache_hits,
             "cached_queries": len(self._cache),
             "stability": stability.value,
+            "worktree_state": self.worktree_state(),
         }
 
 

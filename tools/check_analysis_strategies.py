@@ -14,6 +14,7 @@ from analysis_strategy_contract import (
     required_obligations_resolved,
     required_reviews_passed,
     validate_active_problem_model_projection,
+    validate_installed_strategy_templates,
     validate_problem_model,
     validate_problem_model_projection_schema,
     validate_problem_model_schema,
@@ -333,6 +334,10 @@ def main() -> int:
             validate_problem_model_projection_schema(projection_schema)
         )
         failures.extend(validate_strategy_catalog(TARGET))
+        for contract, errors in validate_installed_strategy_templates(
+            TARGET, schema, projection_schema
+        ).items():
+            failures.extend(f"{contract} template: {error}" for error in errors)
         catalog = load_json_object(TARGET / ".ai/assistant/analysis-strategies/index.json")
         descriptors = catalog.get("descriptors", {})
         for strategy_id in PRIMARY_STRATEGY_IDS:

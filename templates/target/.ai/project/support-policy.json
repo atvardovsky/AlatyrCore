@@ -5,6 +5,7 @@
     ".ai"
   ],
   "optional_entrypoints": [
+    "AGENT.md",
     "AGENTS.md",
     "AI_ASSISTANTS.md",
     "CLAUDE.md",
@@ -46,6 +47,7 @@
       "id": "assistant-entrypoints",
       "classification": "exact-contract",
       "patterns": [
+        "AGENT.md",
         "AGENTS.md",
         "AI_ASSISTANTS.md",
         "CLAUDE.md",
