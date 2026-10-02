@@ -673,13 +673,16 @@ After the target-aware migration and accepted-state transition, the source
 checkout can provide a deterministic final verification gate:
 
 ```sh
-python3 tools/alatyr.py verify-upgrade --target /path/to/target-repo --framework-source . --migration-diff tmp/upgrade-assessment/migration-report.md --output tmp/upgrade-verification.json
+python3 tools/alatyr.py verify-upgrade --target /path/to/target-repo --framework-source . --migration-diff tmp/upgrade-assessment/migration-report.md --output tmp/upgrade-verification.json --diff-ref PRE_UPDATE_COMMIT --approval-record /path/to/target-repo/.ai/assistant/approvals/upgrade-approval.json
 ```
 
 The verifier is read-only apart from its explicit report path. It requires
 acceptance phase, full validation scope, complete approval-archive coverage,
 an accepted installation state, no active placeholders, and an acceptance-
-eligible report bound to the observed branch and revision.
+eligible report bound to the observed branch and revision. `--diff-ref` must
+identify the pre-update Git base, and each `--approval-record` must identify an
+approval record for the current update scope. Repeat `--approval-record` when
+the accepted scope uses more than one record.
 
 ## Optional Target Adapter Validation
 

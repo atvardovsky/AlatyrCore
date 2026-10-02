@@ -37,7 +37,7 @@ python3 tools/alatyr.py support-costs --target /path/to/target-repo
 python3 tools/alatyr.py impact --target /path/to/target-repo --diff-ref HEAD~1
 python3 tools/alatyr.py generate-support --target /path/to/target-repo --check
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
-python3 tools/alatyr.py verify-upgrade --target /path/to/target-repo --framework-source . --migration-diff tmp/upgrade-assessment/migration-report.md --output tmp/upgrade-verification.json
+python3 tools/alatyr.py verify-upgrade --target /path/to/target-repo --framework-source . --migration-diff tmp/upgrade-assessment/migration-report.md --output tmp/upgrade-verification.json --diff-ref PRE_UPDATE_COMMIT --approval-record /path/to/target-repo/.ai/assistant/approvals/upgrade-approval.json
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout --target /path/to/target-repo
 python3 tools/alatyr.py inspect-dependency-knowledge --source /path/to/local-package-export
@@ -69,7 +69,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 impact --target C:\path\to\target-repo --diff-ref HEAD~1
 .\tools\alatyr.ps1 generate-support --target C:\path\to\target-repo --check
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
-.\tools\alatyr.ps1 verify-upgrade --target C:\path\to\target-repo --framework-source . --migration-diff tmp\upgrade-assessment\migration-report.md --output tmp\upgrade-verification.json
+.\tools\alatyr.ps1 verify-upgrade --target C:\path\to\target-repo --framework-source . --migration-diff tmp\upgrade-assessment\migration-report.md --output tmp\upgrade-verification.json --diff-ref PRE_UPDATE_COMMIT --approval-record C:\path\to\target-repo\.ai\assistant\approvals\upgrade-approval.json
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
 .\tools\alatyr.ps1 inspect-dependency-knowledge --source C:\path\to\local-package-export
@@ -99,6 +99,8 @@ tools\alatyr.cmd support-costs
 tools\alatyr.cmd support-costs --target C:\path\to\target-repo
 tools\alatyr.cmd impact --target C:\path\to\target-repo --diff-ref HEAD~1
 tools\alatyr.cmd generate-support --target C:\path\to\target-repo --check
+tools\alatyr.cmd assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
+tools\alatyr.cmd verify-upgrade --target C:\path\to\target-repo --framework-source . --migration-diff tmp\upgrade-assessment\migration-report.md --output tmp\upgrade-verification.json --diff-ref PRE_UPDATE_COMMIT --approval-record C:\path\to\target-repo\.ai\assistant\approvals\upgrade-approval.json
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
 tools\alatyr.cmd inspect-dependency-knowledge --source C:\path\to\local-package-export
@@ -1698,7 +1700,9 @@ with full validation and full approval-archive coverage, then rejects reports
 that are not acceptance eligible, retain active placeholders, lack branch or
 revision binding, contain blocking findings, or still declare a non-accepted
 installation state. Assessment and verification are deliberately separate:
-neither command applies or repairs an update.
+neither command applies or repairs an update. Verification requires
+`--diff-ref` for the pre-update Git base and at least one `--approval-record`
+for the current update scope; repeat the approval option when needed.
 
 `check_migration_diff_report.py` executes the reporter against the current
 source baseline and validates the generated report shape. It is not a

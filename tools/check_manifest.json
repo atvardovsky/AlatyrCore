@@ -1439,8 +1439,10 @@
       "contract_inputs": [
         ".gitattributes",
         ".github/workflows/**",
+        "INSTALL.md",
         "constraints-ci.txt",
         "requirements*.txt",
+        "tools/README.md",
         "tools/runtime-compatibility.json",
         "tools/tool_commands.json"
       ],
@@ -1462,13 +1464,16 @@
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py",
         "tools/delegation_evidence.py",
-        "tools/validate_delegation_execution_tree.py"
+        "tools/validate_delegation_execution_tree.py",
+        "tools/verify_target_upgrade.py"
       ],
       "trigger_paths": [
         ".gitattributes",
         ".github/workflows/**",
+        "INSTALL.md",
         "constraints-ci.txt",
         "requirements*.txt",
+        "tools/README.md",
         "tools/alatyr.*",
         "tools/report_approval_scope.py",
         "tools/report_change_cost.py",
@@ -1487,6 +1492,7 @@
         "tools/report_adapter_health.py",
         "tools/delegation_evidence.py",
         "tools/validate_delegation_execution_tree.py",
+        "tools/verify_target_upgrade.py",
         "tools/runtime-compatibility.json",
         "tools/tool_commands.json"
       ]

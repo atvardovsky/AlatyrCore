@@ -335,10 +335,9 @@ Before accepting a change, check:
   can also compare target template surface names and content hashes.
 - `python3 tools/alatyr.py assess-upgrade --target <target-repo> --framework-source . --output-dir <assessment-dir>`
   can prepare migration and structural evidence before target upgrade changes.
-- `python3 tools/alatyr.py verify-upgrade --target <target-repo> --framework-source . --migration-diff <assessment-dir>/migration-report.md --output <verification.json>`
-  can prove final acceptance/full/full convergence after the target-aware
-  migration and accepted-state transition. It is read-only apart from its
-  explicit report and cannot repair an incomplete update.
+- The final [`verify-upgrade` command](../tools/README.md#migration-diff-report)
+  checks acceptance/full/full after migration. It writes only its report and
+  never repairs an incomplete update.
 - `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
   passes when effectiveness report tooling or sample contracts change.
 - `python3 tools/check_effectiveness_benchmark.py` and

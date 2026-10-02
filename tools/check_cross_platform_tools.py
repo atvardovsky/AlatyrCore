@@ -9,8 +9,10 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from typing import Mapping
 
 from parallel_execution import run_commands
+from verify_target_upgrade import required_cli_option_groups
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +26,15 @@ CI_CONSTRAINTS = ROOT / "constraints-ci.txt"
 FRAMEWORK_CHECKER = TOOLS / "check_framework_consistency.py"
 SCAFFOLD_CONFORMANCE = TOOLS / "run_conformance_scaffold.py"
 SOURCE_CHECK_SUMMARY = TOOLS / "summarize_source_check_report.py"
+VERIFY_UPGRADE_DOCUMENTATION = (
+    ROOT / "INSTALL.md",
+    TOOLS / "README.md",
+)
+VERIFY_UPGRADE_COMMAND_MARKERS = (
+    "alatyr.py verify-upgrade",
+    "alatyr.ps1 verify-upgrade",
+    "alatyr.cmd verify-upgrade",
+)
 EXPECTED_COMMANDS = {
     "check-source",
     "check-source-focused",
@@ -99,6 +110,52 @@ def changed_tree_paths(before: dict[str, str], after: dict[str, str]) -> list[st
         for path in before.keys() | after.keys()
         if before.get(path) != after.get(path)
     )
+
+
+def verify_upgrade_documentation_failures(
+    documents: Mapping[str, str],
+) -> list[str]:
+    """Compare documented verify-upgrade commands with its live parser contract."""
+
+    failures: list[str] = []
+    example_count = 0
+    required_groups = required_cli_option_groups()
+    for relpath, text in documents.items():
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            if not any(marker in line for marker in VERIFY_UPGRADE_COMMAND_MARKERS):
+                continue
+            if "--target" not in line:
+                continue
+            example_count += 1
+            missing = [
+                "/".join(group)
+                for group in required_groups
+                if not any(option in line for option in group)
+            ]
+            if missing:
+                failures.append(
+                    f"{relpath}:{line_number} verify-upgrade example missing required "
+                    f"options: {', '.join(missing)}"
+                )
+    if example_count == 0:
+        failures.append("no documented verify-upgrade command examples were found")
+    return failures
+
+
+def source_tool_surface_failures() -> list[str]:
+    failures: list[str] = []
+    if not SOURCE_CHECK_SUMMARY.is_file():
+        failures.append("source-check report summary helper is missing")
+    try:
+        documents = {
+            path.relative_to(ROOT).as_posix(): path.read_text(encoding="utf-8")
+            for path in VERIFY_UPGRADE_DOCUMENTATION
+        }
+    except OSError as exc:
+        failures.append(f"verify-upgrade documentation is unavailable: {exc}")
+    else:
+        failures.extend(verify_upgrade_documentation_failures(documents))
+    return failures
 
 
 def main() -> int:
@@ -285,8 +342,7 @@ def main() -> int:
         ]:
             if required not in release_workflow:
                 failures.append(f"release source workflow missing {required}")
-    if not SOURCE_CHECK_SUMMARY.is_file():
-        failures.append("source-check report summary helper is missing")
+    failures.extend(source_tool_surface_failures())
 
     with tempfile.TemporaryDirectory() as directory:
         base = Path(directory)

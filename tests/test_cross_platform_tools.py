@@ -9,7 +9,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_cross_platform_tools import changed_tree_paths, tree_hashes  # noqa: E402
+from check_cross_platform_tools import (  # noqa: E402
+    changed_tree_paths,
+    tree_hashes,
+    verify_upgrade_documentation_failures,
+)
+from verify_target_upgrade import required_cli_option_groups  # noqa: E402
 
 
 class CrossPlatformToolTests(unittest.TestCase):
@@ -32,6 +37,48 @@ class CrossPlatformToolTests(unittest.TestCase):
             after = tree_hashes(target)
 
             self.assertEqual(changed_tree_paths(before, after), ["project.txt"])
+
+    def test_verify_upgrade_required_options_come_from_parser(self) -> None:
+        required = {option for group in required_cli_option_groups() for option in group}
+
+        self.assertEqual(
+            required,
+            {
+                "--target",
+                "--migration-diff",
+                "--output",
+                "--diff-ref",
+                "--approval-record",
+            },
+        )
+
+    def test_verify_upgrade_documentation_rejects_stale_example(self) -> None:
+        failures = verify_upgrade_documentation_failures(
+            {
+                "example.md": (
+                    "python3 tools/alatyr.py verify-upgrade --target /target "
+                    "--migration-diff migration.md --output result.json\n"
+                )
+            }
+        )
+
+        self.assertEqual(len(failures), 1)
+        self.assertIn("--diff-ref", failures[0])
+        self.assertIn("--approval-record", failures[0])
+
+    def test_verify_upgrade_documentation_accepts_complete_example(self) -> None:
+        failures = verify_upgrade_documentation_failures(
+            {
+                "example.md": (
+                    "python3 tools/alatyr.py verify-upgrade --target /target "
+                    "--migration-diff migration.md --output result.json "
+                    "--diff-ref PRE_UPDATE_COMMIT "
+                    "--approval-record /target/approval.json\n"
+                )
+            }
+        )
+
+        self.assertEqual(failures, [])
 
 
 if __name__ == "__main__":
