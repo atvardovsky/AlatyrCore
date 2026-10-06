@@ -36,7 +36,7 @@
   },
   "post_result_validation": {
     "result_revision": "{CURRENT_RESULT_REVISION}",
-    "adapter_validation": "{PASSED_FAILED_BLOCKED_OR_NOT_RUN}",
+    "adapter_validation_request": "required-current-run",
     "evidence_fresh": "{TRUE_OR_FALSE}"
   },
   "limitations": ["{LIMITATION_OR_NONE}"]

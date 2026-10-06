@@ -13,6 +13,16 @@ Raw logs remain lazy evidence. The normal context artifact is a compact record
 containing counts, classifications, samples, and references to retained source
 evidence.
 
+The target runtime-observation index is the bounded selector for current
+records. `required_for_current_change: true` with no selected record is a
+blocking acceptance failure. Validators inspect selected current records, not
+the historical records directory. Each index entry binds its operation ID,
+target-relative record path, and SHA-256. Concrete record paths are explicit
+changed-scope triggers. The record uses an immutable full Git commit ID rather
+than a branch, tag, short hash, or `HEAD`. Any later committed, staged,
+unstaged, or untracked non-evidence change makes the runtime evidence stale;
+only files below the runtime-observation evidence directory may follow it.
+
 ## Claim-to-Event Contract
 
 Each runtime-dependent completion claim names:
@@ -40,7 +50,9 @@ infer business causality; it prevents silent loss of known continuity.
 After code, commit, deployment, restart, or another result that can change the
 observed revision or runtime state, acceptance evidence must be rerun or marked
 stale. Pre-result evidence may justify the action but cannot prove the resulting
-state. Publication and live actions still require current-scope authorization.
+state. A record requests current-run adapter validation; it never self-certifies
+that validation already passed. Publication and live actions still require
+current-scope authorization.
 
 ## Cost Boundary
 

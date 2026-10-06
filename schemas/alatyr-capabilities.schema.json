@@ -66,6 +66,7 @@
         "rule_ids": {"$ref": "#/definitions/stringArray"},
         "framework_files": {"$ref": "#/definitions/stringArray"},
         "target_files": {"$ref": "#/definitions/stringArray"},
+        "change_path_prefixes": {"$ref": "#/definitions/stringArray"},
         "check_ids": {"$ref": "#/definitions/stringArray", "minItems": 1}
       },
       "additionalProperties": false

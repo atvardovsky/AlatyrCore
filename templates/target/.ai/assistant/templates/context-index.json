@@ -952,7 +952,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 75,
-      "content_digest": "sha256:843f4ef076a50a7db65d575f36fc2669ca7401d799d626e0e2c72e52f81cb50a"
+      "content_digest": "sha256:4d66f02fc45172b99eebc01426dfa3f5cc7a0ddd130cc6ba4cbd4db2f7b7c0a8"
     },
     {
       "id": "assistant.content.templates-session-continuity-packet-json",

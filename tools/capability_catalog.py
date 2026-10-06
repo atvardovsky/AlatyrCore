@@ -38,6 +38,26 @@ def load_modules(path: Path = CATALOG_PATH) -> dict[str, dict[str, Any]]:
     }
     if invalid_kinds:
         raise ValueError(f"capability catalog modules have invalid kinds: {invalid_kinds}")
+    invalid_prefixes = {
+        key: value.get("change_path_prefixes")
+        for key, value in modules.items()
+        if "change_path_prefixes" in value
+        and (
+            not isinstance(value.get("change_path_prefixes"), list)
+            or not value["change_path_prefixes"]
+            or not all(
+                isinstance(item, str)
+                and item.startswith(".ai/")
+                and item.endswith("/")
+                and ".." not in Path(item).parts
+                for item in value["change_path_prefixes"]
+            )
+        )
+    }
+    if invalid_prefixes:
+        raise ValueError(
+            f"capability catalog modules have invalid change path prefixes: {invalid_prefixes}"
+        )
     return modules
 
 

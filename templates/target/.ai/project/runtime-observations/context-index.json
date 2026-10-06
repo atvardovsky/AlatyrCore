@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.runtime-observations",
+  "contour": "project",
+  "title": "Project Runtime Observations Context",
+  "summary": "Recursive navigation for the project contour at runtime-observations.",
+  "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
+  "entries": [
+    {
+      "id": "project.content.runtime-observations-index-json",
+      "kind": "content",
+      "path": "runtime-observations/index.json",
+      "summary": "Index",
+      "selectors": {
+        "path_terms": [
+          "runtime",
+          "observations"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 12,
+      "content_digest": "sha256:3c089f878ef14501751d8a36a32bafe7c7e47c551f341ed541e99dec09ca611f"
+    },
+    {
+      "id": "project.section.runtime-observations-records",
+      "kind": "index",
+      "path": "runtime-observations/records/context-index.json",
+      "summary": "Records section",
+      "selectors": {
+        "path_terms": [
+          "records"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 82,
+      "content_digest": "sha256:e0e53b81a9e05cde026b98bc7d2e8b1bcefdcc53af1104e9381c93002c538a5b"
+    }
+  ]
+}

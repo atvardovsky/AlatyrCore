@@ -258,6 +258,8 @@ change_packages:
   retention_policy: "{TARGET_CHANGE_PACKAGE_RETENTION_AND_REDACTION_POLICY}"
 runtime_observation:
   policy: ".ai/project/runtime-observation-policy.json"
+  index: ".ai/project/runtime-observations/index.json"
+  records: ".ai/project/runtime-observations/records"
   flow: ".ai/assistant/flows/runtime-observation.flow.md"
   gate: ".ai/assistant/gates/runtime-observation.md"
   record_template: ".ai/assistant/templates/runtime-observation-record.json"

@@ -695,6 +695,8 @@ Owner or file: `.ai/project/runtime-observation-policy.json`
 Required files:
 
 - `.ai/project/runtime-observation-policy.json`
+- `.ai/project/runtime-observations/index.json`
+- `.ai/project/runtime-observations/records/README.md`
 - `.ai/assistant/flows/runtime-observation.flow.md`
 - `.ai/assistant/gates/runtime-observation.md`
 - `.ai/assistant/templates/runtime-observation-record.json`

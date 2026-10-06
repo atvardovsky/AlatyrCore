@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1607
+Catalog entries: 1633
 
 ## Families
 
@@ -58,7 +58,7 @@ Catalog entries: 1607
 - `ROUTER`: 77 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
-- `RUNTIME`: 11 codes.
+- `RUNTIME`: 37 codes.
 - `SESSION`: 67 codes.
 - `SOURCE`: 13 codes.
 - `STALE`: 2 codes.
@@ -2425,11 +2425,35 @@ Catalog entries: 1607
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_COLLECTION_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_COLLECTION_SOURCE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_COLLECTION_WINDOW`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_EVENT_CATALOG`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_EVENT_CATALOG_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_EVENT_CATALOG_ENTRY`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_INDEX_CONTRACT`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_INDEX_OPERATION`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_INDEX_RECORDS_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_INDEX_REQUIRED_STATE`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_OBSERVATION_EVIDENCE_LIMIT`
   Level: info. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_OBSERVATION_FILE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_OBSERVATION_RECORD_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_OBSERVATION_REQUIRED_MISSING`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_POLICY_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
@@ -2437,11 +2461,39 @@ Catalog entries: 1607
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_POLICY_KIND`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_POLICY_LIVE_APPROVAL`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_POLICY_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_POLICY_STATE`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_POLICY_UNRESOLVED`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `RUNTIME_RAW_LOADING`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_DIGEST`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_DIGEST_MISMATCH`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_ENTRY`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_OPERATION`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_OPERATION_MISMATCH`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_PATH`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_REVISION_STALE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RECORD_REVISION_UNVERIFIED`
   Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `SESSION_CONTINUITY_ACTIVE_PROJECTION_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.

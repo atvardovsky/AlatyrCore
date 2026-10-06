@@ -4,6 +4,24 @@
 
 - None.
 
+## 0.1.0-alpha.81 - 2026-10-06
+
+- Connected runtime-observation validation to registered target-validator
+  dispatch through a bounded current-record index; runtime-dependent work now
+  fails when required evidence is absent or a selected record is invalid.
+- Required resolved repository revisions and timezone-aware ordered observation
+  timestamps before runtime evidence can support completion.
+- Required immutable full Git commit IDs and invalidated runtime evidence when
+  committed, staged, unstaged, or untracked non-evidence paths changed after
+  the observed revision.
+- Hardened counts, event references, recurrence signals, and revision checks so
+  malformed JSON-compatible values produce deterministic findings instead of
+  exceptions.
+- Added registered-dispatch regressions for contradictory, stale, missing, and
+  valid records plus adversarial malformed-field and window-boundary tests.
+- Increased adapter schema version to `68` and target template version to `76`
+  for the current-record selector and integrated acceptance behavior.
+
 ## 0.1.0-alpha.80 - 2026-10-06
 
 - Added optional target-owned runtime observation with compact event evidence,

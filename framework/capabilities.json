@@ -455,9 +455,14 @@
       "framework_files": ["runtime-observation.md", "guarantees.md", "change-packages.md"],
       "target_files": [
         ".ai/project/runtime-observation-policy.json",
+        ".ai/project/runtime-observations/index.json",
+        ".ai/project/runtime-observations/records/README.md",
         ".ai/assistant/flows/runtime-observation.flow.md",
         ".ai/assistant/gates/runtime-observation.md",
         ".ai/assistant/templates/runtime-observation-record.json"
+      ],
+      "change_path_prefixes": [
+        ".ai/project/runtime-observations/records/"
       ],
       "check_ids": ["target-adapter-validator"]
     },

@@ -286,6 +286,21 @@
       "content_digest": "sha256:2a0b48037cdced392f9bb92f6755cef90c9dde169a5af4e65e88c47e888bebb5"
     },
     {
+      "id": "project.section.runtime-observations",
+      "kind": "index",
+      "path": "runtime-observations/context-index.json",
+      "summary": "Runtime Observations section",
+      "selectors": {
+        "path_terms": [
+          "runtime-observations"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 106,
+      "content_digest": "sha256:4b26279e35b839dd61a9749f4698664e525ee480fd3a0cf60cf7a49c1e66ab78"
+    },
+    {
       "id": "project.section.support-generation",
       "kind": "index",
       "path": "support-generation/context-index.json",

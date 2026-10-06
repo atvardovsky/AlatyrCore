@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-runtime-observation-index",
+  "required_for_current_change": false,
+  "current_operation_id": "{CURRENT_OPERATION_ID_OR_NONE}",
+  "current_records": []
+}

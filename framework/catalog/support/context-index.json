@@ -73,8 +73,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 300,
-      "content_digest": "sha256:d76274a78daa637fe7080fcbce6a703d10bb673bbd15779faf287df41419651d"
+      "estimated_words": 406,
+      "content_digest": "sha256:9337c9b420ccc69ec5e3bd179abdcaa75d552cbf770be7b25d5ff1e75f168a26"
     },
     {
       "id": "framework.support.session-continuity-md",

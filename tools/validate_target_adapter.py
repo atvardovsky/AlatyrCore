@@ -1292,6 +1292,7 @@ class Validator:
             for module_id in enabled_modules:
                 capability = self.capability_modules.get(module_id, {})
                 target_files = capability.get("target_files", []) if isinstance(capability, dict) else []
+                change_prefixes = capability.get("change_path_prefixes", []) if isinstance(capability, dict) else []
                 if product_changed and capability.get("module_kind") == "project-facing":
                     selected.add(module_id)
                 elif any(
@@ -1299,6 +1300,13 @@ class Validator:
                     for path in changed
                     for declared in target_files
                     if isinstance(declared, str)
+                ):
+                    selected.add(module_id)
+                elif any(
+                    path.startswith(prefix)
+                    for path in changed
+                    for prefix in change_prefixes
+                    if isinstance(prefix, str) and prefix
                 ):
                     selected.add(module_id)
             pending = list(selected)

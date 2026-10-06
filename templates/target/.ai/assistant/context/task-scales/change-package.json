@@ -36,6 +36,10 @@
       "when": "the enabled runtime-observation module is selected"
     },
     {
+      "path": ".ai/project/runtime-observations/index.json",
+      "when": "runtime evidence is required or selected for the current change"
+    },
+    {
       "path": ".ai/assistant/templates/runtime-observation-record.json",
       "when": "capturing or validating runtime claim evidence"
     }

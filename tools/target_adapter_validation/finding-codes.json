@@ -228,7 +228,7 @@
     },
     {
       "id": "RUNTIME",
-      "code_count": 11
+      "code_count": 37
     },
     {
       "id": "SESSION",
@@ -10899,7 +10899,97 @@
       ]
     },
     {
+      "code": "RUNTIME_COLLECTION_SOURCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_COLLECTION_WINDOW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
       "code": "RUNTIME_EVENT_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_EVENT_CATALOG_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_EVENT_CATALOG_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_INDEX_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_INDEX_OPERATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_INDEX_RECORDS_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_INDEX_REQUIRED_STATE",
       "levels": [
         "error"
       ],
@@ -10918,6 +11008,24 @@
     },
     {
       "code": "RUNTIME_OBSERVATION_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_OBSERVATION_RECORD_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_OBSERVATION_REQUIRED_MISSING",
       "levels": [
         "error"
       ],
@@ -10953,7 +11061,25 @@
       ]
     },
     {
+      "code": "RUNTIME_POLICY_LIVE_APPROVAL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
       "code": "RUNTIME_POLICY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_POLICY_STATE",
       "levels": [
         "error"
       ],
@@ -10972,6 +11098,114 @@
     },
     {
       "code": "RUNTIME_RAW_LOADING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_DIGEST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_DIGEST_MISMATCH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_OPERATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_OPERATION_MISMATCH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_REVISION_STALE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RECORD_REVISION_UNVERIFIED",
       "levels": [
         "error"
       ],

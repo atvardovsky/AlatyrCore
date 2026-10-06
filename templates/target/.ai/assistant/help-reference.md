@@ -302,6 +302,8 @@ Flow: `.ai/assistant/flows/runtime-observation.flow.md`
 Minimum input: bounded claim, target event IDs, observation window, and
 repository revision. Load the compact record first and raw evidence only for a
 failure, contradiction, unknown event, dispute, or explicit review.
+The target runtime-observation index selects current records and declares when
+current evidence is required; required but absent evidence blocks acceptance.
 This capability never grants live access, restart, deployment, or publication.
 
 Operation: `diagram-discussion`
