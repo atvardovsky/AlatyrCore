@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 REVISION = "a" * 40
+INVALID_ENUM_VALUES = [{}, [], None, True, 7, "not-a-valid-enum"]
 
 from target_adapter_validation.runtime_observation import runtime_observation_failures  # noqa: E402
 from target_adapter_validation.capability import CapabilityValidationContext  # noqa: E402
@@ -71,6 +72,29 @@ def valid_record() -> dict:
         },
         "limitations": ["bounded window only"],
     }
+
+
+def set_path(value: object, path: tuple[object, ...], replacement: object) -> None:
+    current = value
+    for segment in path[:-1]:
+        current = current[segment]  # type: ignore[index]
+    current[path[-1]] = replacement  # type: ignore[index]
+
+
+def nested_paths(value: object, prefix: tuple[object, ...] = ()) -> list[tuple[object, ...]]:
+    if isinstance(value, dict):
+        return [
+            path
+            for key, item in value.items()
+            for path in [(*prefix, key), *nested_paths(item, (*prefix, key))]
+        ]
+    if isinstance(value, list):
+        return [
+            path
+            for index, item in enumerate(value)
+            for path in [(*prefix, index), *nested_paths(item, (*prefix, index))]
+        ]
+    return []
 
 
 class RuntimeObservationTests(unittest.TestCase):
@@ -135,6 +159,31 @@ class RuntimeObservationTests(unittest.TestCase):
         failures = runtime_observation_failures(record)
         self.assertTrue(any("observed_count" in item for item in failures))
         self.assertTrue(any("resolved strings" in item for item in failures))
+
+    def test_every_record_enum_rejects_all_json_value_kinds_safely(self) -> None:
+        cases = [
+            (("events", 0, "classification"), "classification is invalid", False),
+            (("events", 0, "disposition"), "disposition is invalid", False),
+            (("claims", 0, "status"), "status is invalid", False),
+            (("recurrence", "disposition"), "recurrence.disposition is invalid", True),
+        ]
+        for path, expected, recurrence_candidate in cases:
+            for invalid in INVALID_ENUM_VALUES:
+                with self.subTest(path=path, invalid=invalid):
+                    record = valid_record()
+                    if recurrence_candidate:
+                        record["recurrence"]["candidate"] = True
+                    set_path(record, path, copy.deepcopy(invalid))
+                    failures = runtime_observation_failures(record)
+                    self.assertTrue(any(expected in item for item in failures))
+
+    def test_json_node_mutations_never_interrupt_record_validation(self) -> None:
+        for path in nested_paths(valid_record()):
+            for invalid in INVALID_ENUM_VALUES:
+                with self.subTest(path=path, invalid=invalid):
+                    record = valid_record()
+                    set_path(record, path, copy.deepcopy(invalid))
+                    runtime_observation_failures(record)
 
     def test_zero_is_valid_boundary_for_forbidden_event(self) -> None:
         record = copy.deepcopy(valid_record())
@@ -277,6 +326,112 @@ class RuntimeObservationDispatchTests(unittest.TestCase):
             dispatch_capability_checks(Validator(), ["runtime-observation"], None)
         codes = [code for level, code, _message in sink.items if level == "error"]
         self.assertIn("RUNTIME_OBSERVATION_RECORD_INVALID", codes)
+
+    def test_registered_dispatch_reports_every_malformed_record_enum(self) -> None:
+        cases = [
+            ("classification", ("events", 0, "classification")),
+            ("disposition", ("events", 0, "disposition")),
+            ("status", ("claims", 0, "status")),
+            ("recurrence", ("recurrence", "disposition")),
+        ]
+        for name, path in cases:
+            with self.subTest(field=name):
+                with tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    record = valid_record()
+                    if name == "recurrence":
+                        record["recurrence"]["candidate"] = True
+                    set_path(record, path, {})
+                    self.build_target(root, required=True, record=record)
+                    sink = FindingSink()
+                    context = self.build_context(root, sink)
+
+                    class Validator:
+                        def capability_validation_context(self) -> CapabilityValidationContext:
+                            return context
+
+                    dispatch_capability_checks(
+                        Validator(), ["runtime-observation"], None
+                    )
+                self.assertIn(
+                    "RUNTIME_OBSERVATION_RECORD_INVALID",
+                    [code for level, code, _message in sink.items if level == "error"],
+                )
+
+    def test_registered_dispatch_rejects_malformed_policy_enums(self) -> None:
+        cases = [
+            (("state",), "RUNTIME_POLICY_STATE"),
+            (
+                ("event_catalog", 0, "default_classification"),
+                "RUNTIME_EVENT_CATALOG_ENTRY",
+            ),
+            (("collection", "raw_evidence_loading"), "RUNTIME_RAW_LOADING"),
+        ]
+        for path, expected_code in cases:
+            for invalid in INVALID_ENUM_VALUES:
+                with self.subTest(path=path, invalid=invalid):
+                    with tempfile.TemporaryDirectory() as directory:
+                        root = Path(directory)
+                        self.build_target(root, required=True, record=valid_record())
+                        policy_path = root / ".ai/project/runtime-observation-policy.json"
+                        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+                        set_path(policy, path, copy.deepcopy(invalid))
+                        policy_path.write_text(json.dumps(policy), encoding="utf-8")
+                        sink = FindingSink()
+                        context = self.build_context(root, sink)
+
+                        class Validator:
+                            def capability_validation_context(self) -> CapabilityValidationContext:
+                                return context
+
+                        dispatch_capability_checks(
+                            Validator(), ["runtime-observation"], None
+                        )
+                    self.assertIn(
+                        expected_code,
+                        [
+                            code
+                            for level, code, _message in sink.items
+                            if level == "error"
+                        ],
+                    )
+
+    def test_policy_json_node_mutations_never_interrupt_dispatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            fixture_root = Path(directory)
+            self.build_target(
+                fixture_root, required=True, record=valid_record()
+            )
+            policy_path = (
+                fixture_root / ".ai/project/runtime-observation-policy.json"
+            )
+            valid_policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        for path in nested_paths(valid_policy):
+            for invalid in INVALID_ENUM_VALUES:
+                with self.subTest(path=path, invalid=invalid):
+                    with tempfile.TemporaryDirectory() as directory:
+                        root = Path(directory)
+                        self.build_target(
+                            root, required=True, record=valid_record()
+                        )
+                        policy = copy.deepcopy(valid_policy)
+                        set_path(policy, path, copy.deepcopy(invalid))
+                        policy_path = (
+                            root / ".ai/project/runtime-observation-policy.json"
+                        )
+                        policy_path.write_text(
+                            json.dumps(policy), encoding="utf-8"
+                        )
+                        sink = FindingSink()
+                        context = self.build_context(root, sink)
+
+                        class Validator:
+                            def capability_validation_context(self) -> CapabilityValidationContext:
+                                return context
+
+                        dispatch_capability_checks(
+                            Validator(), ["runtime-observation"], None
+                        )
 
     def test_registered_dispatch_rejects_required_missing_record(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

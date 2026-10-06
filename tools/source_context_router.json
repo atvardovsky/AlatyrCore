@@ -227,8 +227,8 @@
         "max_required_words": 1200,
         "max_initial_words": 3400,
         "max_resolved_files": 14,
-        "max_resolved_words": 30600,
-        "max_resolved_characters": 257500,
+        "max_resolved_words": 30700,
+        "max_resolved_characters": 258500,
         "reserved_files": 2,
         "reserved_words": 2000,
         "reserved_characters": 16000

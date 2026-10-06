@@ -13,16 +13,25 @@ from target_adapter_validation.capability import (
 )
 
 
-CLASSIFICATIONS = {"expected", "forbidden", "tolerated", "unknown"}
-DISPOSITIONS = {"resolved", "accepted", "escalated", "unresolved"}
-CLAIM_STATUSES = {"supported", "narrowed", "blocked", "unverified"}
-RECURRENCE_SIGNALS = {
+CLASSIFICATIONS = frozenset({"expected", "forbidden", "tolerated", "unknown"})
+DISPOSITIONS = frozenset({"resolved", "accepted", "escalated", "unresolved"})
+CLAIM_STATUSES = frozenset({"supported", "narrowed", "blocked", "unverified"})
+RECURRENCE_SIGNALS = frozenset({
     "failed-gate", "predecessor", "repeated-fact", "runtime-contradiction", "none"
-}
+})
+RECURRENCE_DISPOSITIONS = frozenset(
+    {"continued", "new-with-reason", "not-applicable", "unresolved"}
+)
+RECURRENCE_LINEAGE_DISPOSITIONS = frozenset({"continued", "new-with-reason"})
+POLICY_STATES = frozenset({"enabled", "required"})
 
 
 def _resolved_text(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip()) and not is_placeholder(value) and not is_unresolved_value(value)
+
+
+def _enum_value(value: Any, allowed: frozenset[str]) -> bool:
+    return isinstance(value, str) and value in allowed
 
 
 def _immutable_revision(value: Any) -> bool:
@@ -95,9 +104,9 @@ def runtime_observation_failures(
         disposition = event.get("disposition")
         count = event.get("observed_count")
         refs = event.get("evidence_refs")
-        if classification not in CLASSIFICATIONS:
+        if not _enum_value(classification, CLASSIFICATIONS):
             failures.append(f"event {event_id} classification is invalid")
-        if disposition not in DISPOSITIONS:
+        if not _enum_value(disposition, DISPOSITIONS):
             failures.append(f"event {event_id} disposition is invalid")
         valid_count = isinstance(count, int) and not isinstance(count, bool) and count >= 0
         if not valid_count:
@@ -124,7 +133,7 @@ def runtime_observation_failures(
             failures.append(f"claims[{index}].id must be resolved")
             claim_id = f"claims[{index}]"
         status = claim.get("status")
-        if status not in CLAIM_STATUSES:
+        if not _enum_value(status, CLAIM_STATUSES):
             failures.append(f"claim {claim_id} status is invalid")
             continue
         required = claim.get("required_event_ids")
@@ -173,10 +182,14 @@ def runtime_observation_failures(
         if not isinstance(candidate, bool):
             failures.append("recurrence.candidate must be boolean")
         if not isinstance(signals, list) or not signals or not all(
-            isinstance(item, str) and item in RECURRENCE_SIGNALS for item in signals
+            _enum_value(item, RECURRENCE_SIGNALS) for item in signals
         ):
             failures.append("recurrence.signals contains invalid values")
-        if candidate is True and disposition in {None, "not-applicable", "unresolved"}:
+        if not _enum_value(disposition, RECURRENCE_DISPOSITIONS):
+            failures.append("recurrence.disposition is invalid")
+        elif candidate is True and not _enum_value(
+            disposition, RECURRENCE_LINEAGE_DISPOSITIONS
+        ):
             failures.append("recurrence candidate requires an incident-lineage disposition")
 
     post = record.get("post_result_validation")
@@ -237,7 +250,7 @@ def validate_runtime_observation(
         value = policy.get(field)
         if not isinstance(value, str) or not value.strip() or is_placeholder(value) or is_unresolved_value(value):
             context.error("RUNTIME_POLICY_UNRESOLVED", f"{field} must be resolved", policy_path)
-    if policy.get("state") not in {"enabled", "required"}:
+    if not _enum_value(policy.get("state"), POLICY_STATES):
         context.error("RUNTIME_POLICY_STATE", "enabled module requires enabled or required policy state", policy_path)
     if policy.get("live_access_requires_approval") is not True:
         context.error("RUNTIME_POLICY_LIVE_APPROVAL", "live access must require approval", policy_path)
@@ -274,7 +287,9 @@ def validate_runtime_observation(
             for field in ["meaning", "owner"]:
                 if not _resolved_text(event.get(field)):
                     context.error("RUNTIME_EVENT_CATALOG_ENTRY", f"event_catalog[{position}].{field} must be resolved", policy_path)
-            if event.get("default_classification") not in CLASSIFICATIONS:
+            if not _enum_value(
+                event.get("default_classification"), CLASSIFICATIONS
+            ):
                 context.error("RUNTIME_EVENT_CATALOG_ENTRY", f"event_catalog[{position}].default_classification is invalid", policy_path)
 
     index_path = required[1]

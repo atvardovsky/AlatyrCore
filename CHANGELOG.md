@@ -4,6 +4,17 @@
 
 - None.
 
+## 0.1.0-alpha.82 - 2026-10-06
+
+- Made every runtime-observation record and policy enum check type-safe so
+  malformed JSON objects, arrays, nulls, booleans, numbers, and unknown strings
+  produce field-specific findings instead of interrupting validation.
+- Added exhaustive enum mutation, registered-dispatch, and whole-record/policy
+  JSON node mutation regressions to enforce validator totality over malformed
+  input.
+- Kept adapter schema version `68` and increased target template version to
+  `77` for refreshed alpha.82 support provenance.
+
 ## 0.1.0-alpha.81 - 2026-10-06
 
 - Connected runtime-observation validation to registered target-validator

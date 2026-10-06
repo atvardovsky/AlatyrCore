@@ -19,13 +19,13 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.81",
+    "framework_version": "0.1.0-alpha.82",
     "adapter_schema_version": "68",
-    "template_version": "76"
+    "template_version": "77"
   },
   "policy": ".ai/project/support-policy.json",
   "policy_digest": "sha256:0744df6114e470e31e4c7c9ea311ab7f0b6ddbfa04bf5103a67642157bce273b",
-  "source_revision": "dd10dcddabfa924af46393212546b63fdd71b22f",
+  "source_revision": "509d8eccfb9d7534cbee8b1ad28814e4b49fe854",
   "groups": [
     {
       "id": "adapter-root",
