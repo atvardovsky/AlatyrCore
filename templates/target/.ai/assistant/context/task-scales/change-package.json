@@ -26,6 +26,18 @@
     {
       "path": ".ai/project/engineering-evidence/index.json",
       "when": "a durable engineering-evidence record is linked"
+    },
+    {
+      "path": ".ai/framework/runtime-observation.md",
+      "when": "runtime behavior is part of acceptance or a runtime contradiction is a recurrence candidate"
+    },
+    {
+      "path": ".ai/project/runtime-observation-policy.json",
+      "when": "the enabled runtime-observation module is selected"
+    },
+    {
+      "path": ".ai/assistant/templates/runtime-observation-record.json",
+      "when": "capturing or validating runtime claim evidence"
     }
   ],
   "expand_when": [

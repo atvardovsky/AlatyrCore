@@ -745,8 +745,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 323,
-      "content_digest": "sha256:584b2dac023f39ab7c75ce98e59237dc82e1efa5686cdf31c037c1755da1d589"
+      "estimated_words": 338,
+      "content_digest": "sha256:722729adf40c43786d41b9d8bc47c2b77cb3fa7f7b1cf0a32d666784f4e0c9e1"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -931,6 +931,28 @@
       ],
       "estimated_words": 26,
       "content_digest": "sha256:7467db6dc253e9360357d1b2eb3da4bdf25ae5d70f2cc3f689c7aee6c322e231"
+    },
+    {
+      "id": "assistant.content.templates-runtime-observation-record-json",
+      "kind": "content",
+      "path": "templates/runtime-observation-record.json",
+      "summary": "Runtime Observation Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "runtime",
+          "observation",
+          "record"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 75,
+      "content_digest": "sha256:843f4ef076a50a7db65d575f36fc2669ca7401d799d626e0e2c72e52f81cb50a"
     },
     {
       "id": "assistant.content.templates-session-continuity-packet-json",

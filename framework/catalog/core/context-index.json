@@ -328,8 +328,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1692,
-      "content_digest": "sha256:43183141ffcc4126c1f11125c8d292a5e713b488ab65dbecfa8fc589b2739183"
+      "estimated_words": 1704,
+      "content_digest": "sha256:75d72e3aa22966b0f3bd51485817607e22087532b95a5d80e91d01f83f0ecf71"
     },
     {
       "id": "framework.core.rule-ownership-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:05d1de4c0dbaf701bd0f08c4da270f8ca9e8ea8fca192c7b9b3e85bc91b56cf9"
+      "content_digest": "sha256:77ea74c5e66941758c059a9c0fca2151dc278747008d4e7d32628d8a0ab6ff15"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

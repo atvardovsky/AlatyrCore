@@ -315,6 +315,27 @@
       "content_digest": "sha256:6e9b911bac52585440e3d7aee1451547837f0ed7002d94dbefdf3d4d27a9cf0a"
     },
     {
+      "id": "assistant.content.gates-runtime-observation-md",
+      "kind": "content",
+      "path": "gates/runtime-observation.md",
+      "summary": "Runtime Observation Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "runtime",
+          "observation"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 101,
+      "content_digest": "sha256:a9066333a02db93d7437d51d5bb00880b2748344769e5819fed1d682d90f4b3f"
+    },
+    {
       "id": "assistant.content.gates-security-approval-md",
       "kind": "content",
       "path": "gates/security-approval.md",

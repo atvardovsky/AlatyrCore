@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "record_kind": "alatyr-operation-completion-evidence",
   "operation": {
     "id": "{OPERATION_ID}",
@@ -151,6 +151,14 @@
     "limitations": [
       "Structural checks and passing tests prove only the declared semantic scope."
     ]
+  },
+  "runtime_observation": {
+    "required": "{TRUE_OR_FALSE}",
+    "record": "{TARGET_RELATIVE_RUNTIME_OBSERVATION_RECORD_OR_NOT_APPLICABLE}",
+    "claim_status": "{SUPPORTED_NARROWED_BLOCKED_UNVERIFIED_OR_NOT_APPLICABLE}",
+    "recurrence_review": "{PASSED_BLOCKED_UNRESOLVED_OR_NOT_APPLICABLE}",
+    "post_result_adapter_validation": "{PASSED_FAILED_BLOCKED_NOT_RUN_OR_NOT_APPLICABLE}",
+    "evidence_fresh": "{TRUE_FALSE_OR_NOT_APPLICABLE}"
   },
   "consistency": {
     "logical_integrity_result": "{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}",

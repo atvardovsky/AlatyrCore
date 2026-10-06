@@ -24,6 +24,7 @@ from target_adapter_validation.development_evidence import DEVELOPMENT_EVIDENCE_
 from target_adapter_validation.diagrams import DISCUSSION_DIAGRAMS_MODULE
 from target_adapter_validation.extensions import EXTENSIONS_MODULE
 from target_adapter_validation.project_vocabulary import PROJECT_VOCABULARY_MODULE
+from target_adapter_validation.runtime_observation import RUNTIME_OBSERVATION_MODULE
 from target_adapter_validation.support_generation import SUPPORT_GENERATION_MODULE
 from target_adapter_validation.subagent_delegation import SUBAGENT_DELEGATION_MODULE
 from target_adapter_validation.team_collaboration import TEAM_COLLABORATION_MODULE
@@ -78,6 +79,7 @@ MODULE_IMPLEMENTATIONS: dict[str, CapabilityModule] = {
     DISCUSSION_DIAGRAMS_MODULE.check_id: DISCUSSION_DIAGRAMS_MODULE,
     EXTENSIONS_MODULE.check_id: EXTENSIONS_MODULE,
     PROJECT_VOCABULARY_MODULE.check_id: PROJECT_VOCABULARY_MODULE,
+    RUNTIME_OBSERVATION_MODULE.check_id: RUNTIME_OBSERVATION_MODULE,
     SUPPORT_GENERATION_MODULE.check_id: SUPPORT_GENERATION_MODULE,
     SUBAGENT_DELEGATION_MODULE.check_id: SUBAGENT_DELEGATION_MODULE,
     TEAM_COLLABORATION_MODULE.check_id: TEAM_COLLABORATION_MODULE,
@@ -154,6 +156,11 @@ CAPABILITY_ROUTES: dict[str, CapabilityRoute] = {
         "project-vocabulary",
         CapabilityRouteKind.MODULAR,
         "check_project_vocabulary",
+    ),
+    "runtime-observation": _route(
+        "runtime-observation",
+        CapabilityRouteKind.MODULAR,
+        "check_runtime_observation",
     ),
     "scaffolding": _route(
         "scaffolding", CapabilityRouteKind.STRUCTURAL_ONLY

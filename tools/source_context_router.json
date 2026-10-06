@@ -198,7 +198,7 @@
         "max_initial_words": 2500,
         "max_resolved_files": 10,
         "max_resolved_words": 24000,
-        "max_resolved_characters": 300000,
+        "max_resolved_characters": 301000,
         "reserved_files": 2,
         "reserved_words": 1600,
         "reserved_characters": 14000

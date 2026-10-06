@@ -33,8 +33,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 159,
-      "content_digest": "sha256:fb79af61af3952a7fb6f7051d6346f7648d7a2bdde5f5a6498a37f9a899fa2bd"
+      "estimated_words": 200,
+      "content_digest": "sha256:a18c9c062c7b9ae0471aad59383b7444b636bc1f433504749cea4700eed0db3a"
     },
     {
       "id": "assistant.content.context-task-scales-debug-mode-json",

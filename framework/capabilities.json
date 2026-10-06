@@ -42,7 +42,7 @@
     },
     "consistency-map": {
       "module_kind": "project-facing",
-      "min_framework_pack": "core",
+      "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-INTEGRITY-001", "ALATYR-SOURCE-001"],
       "framework_files": ["logical-integrity.md", "source-of-truth-registry.md"],
@@ -446,6 +446,20 @@
         ".ai/assistant/gates/support-generation.md"
       ],
       "check_ids": ["support-information"]
+    },
+    "runtime-observation": {
+      "module_kind": "governance-support",
+      "min_framework_pack": "complete",
+      "requires": ["installed-operations"],
+      "rule_ids": ["ALATYR-EVIDENCE-001", "ALATYR-INTEGRITY-001", "ALATYR-PACKAGE-001"],
+      "framework_files": ["runtime-observation.md", "guarantees.md", "change-packages.md"],
+      "target_files": [
+        ".ai/project/runtime-observation-policy.json",
+        ".ai/assistant/flows/runtime-observation.flow.md",
+        ".ai/assistant/gates/runtime-observation.md",
+        ".ai/assistant/templates/runtime-observation-record.json"
+      ],
+      "check_ids": ["target-adapter-validator"]
     },
     "scaffolding": {
       "module_kind": "source-repository",

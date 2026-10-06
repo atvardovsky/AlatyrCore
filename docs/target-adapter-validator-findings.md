@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1596
+Catalog entries: 1607
 
 ## Families
 
@@ -58,6 +58,7 @@ Catalog entries: 1596
 - `ROUTER`: 77 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
+- `RUNTIME`: 11 codes.
 - `SESSION`: 67 codes.
 - `SOURCE`: 13 codes.
 - `STALE`: 2 codes.
@@ -2420,6 +2421,28 @@ Catalog entries: 1596
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `RULE_REGISTRY_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `RUNTIME_COLLECTION_BOUND`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_COLLECTION_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_EVENT_CATALOG`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_OBSERVATION_EVIDENCE_LIMIT`
+  Level: info. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_OBSERVATION_FILE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_POLICY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_POLICY_KIND`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_POLICY_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_POLICY_UNRESOLVED`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
+- `RUNTIME_RAW_LOADING`
+  Level: error. Source: `tools/target_adapter_validation/runtime_observation.py`.
 - `SESSION_CONTINUITY_ACTIVE_PROJECTION_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
 - `SESSION_CONTINUITY_ACTIVE_PROJECTION_INVALID`

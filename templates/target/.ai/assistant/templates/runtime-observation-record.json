@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-runtime-observation",
+  "observation_id": "{OBSERVATION_ID}",
+  "operation_id": "{OPERATION_ID}",
+  "repository_revision": "{OBSERVED_REVISION}",
+  "window": {
+    "started_at": "{ISO_8601_TIMESTAMP}",
+    "ended_at": "{ISO_8601_TIMESTAMP}",
+    "complete": "{TRUE_OR_FALSE}"
+  },
+  "events": [
+    {
+      "id": "{STABLE_TARGET_EVENT_ID}",
+      "classification": "{EXPECTED_FORBIDDEN_TOLERATED_OR_UNKNOWN}",
+      "observed_count": "{NON_NEGATIVE_INTEGER}",
+      "disposition": "{RESOLVED_ACCEPTED_ESCALATED_OR_UNRESOLVED}",
+      "evidence_refs": ["{TARGET_RELATIVE_OR_APPROVED_EXTERNAL_REFERENCE}"]
+    }
+  ],
+  "claims": [
+    {
+      "id": "{CLAIM_ID}",
+      "statement": "{BOUNDED_COMPLETION_CLAIM}",
+      "required_event_ids": ["{EVENT_ID_OR_NONE}"],
+      "contradiction_event_ids": ["{EVENT_ID_OR_NONE}"],
+      "status": "{SUPPORTED_NARROWED_BLOCKED_OR_UNVERIFIED}",
+      "evidence": "{EVENT_IDS_AND_COUNTS_OR_REASON}"
+    }
+  ],
+  "recurrence": {
+    "candidate": "{TRUE_OR_FALSE}",
+    "signals": ["{FAILED_GATE_PREDECESSOR_REPEATED_FACT_RUNTIME_CONTRADICTION_OR_NONE}"],
+    "incident_family_id": "{INCIDENT_FAMILY_ID_OR_NONE}",
+    "disposition": "{CONTINUED_NEW_WITH_REASON_NOT_APPLICABLE_OR_UNRESOLVED}"
+  },
+  "post_result_validation": {
+    "result_revision": "{CURRENT_RESULT_REVISION}",
+    "adapter_validation": "{PASSED_FAILED_BLOCKED_OR_NOT_RUN}",
+    "evidence_fresh": "{TRUE_OR_FALSE}"
+  },
+  "limitations": ["{LIMITATION_OR_NONE}"]
+}

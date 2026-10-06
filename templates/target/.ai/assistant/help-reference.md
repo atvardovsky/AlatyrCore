@@ -295,6 +295,15 @@ authorization, an exact current plan digest, unchanged repository state,
 staged deterministic output, and protected approval when triggered.
 Aliases: `Alatyr generate support`, `Alatyr check generated support`.
 
+Capability: `runtime-observation`
+Use when: a completion claim depends on runtime logs, metrics, traces, events,
+or post-result behavior and the optional module is enabled.
+Flow: `.ai/assistant/flows/runtime-observation.flow.md`
+Minimum input: bounded claim, target event IDs, observation window, and
+repository revision. Load the compact record first and raw evidence only for a
+failure, contradiction, unknown event, dispute, or explicit review.
+This capability never grants live access, restart, deployment, or publication.
+
 Operation: `diagram-discussion`
 Use when: showing, sketching, comparing, explaining, or revising a diagram in
 the current assistant discussion.

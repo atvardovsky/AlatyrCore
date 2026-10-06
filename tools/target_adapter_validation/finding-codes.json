@@ -36,6 +36,7 @@
     "tools/target_adapter_validation/project_support_documentation.py",
     "tools/target_adapter_validation/project_vocabulary.py",
     "tools/target_adapter_validation/router_costs.py",
+    "tools/target_adapter_validation/runtime_observation.py",
     "tools/target_adapter_validation/session_continuity.py",
     "tools/target_adapter_validation/source_contracts.py",
     "tools/target_adapter_validation/subagent_delegation.py",
@@ -224,6 +225,10 @@
     {
       "id": "RULE",
       "code_count": 1
+    },
+    {
+      "id": "RUNTIME",
+      "code_count": 11
     },
     {
       "id": "SESSION",
@@ -10873,6 +10878,105 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_COLLECTION_BOUND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_COLLECTION_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_EVENT_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_OBSERVATION_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_OBSERVATION_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_POLICY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_POLICY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_POLICY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_POLICY_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "RUNTIME_RAW_LOADING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/runtime_observation.py"
       ]
     },
     {

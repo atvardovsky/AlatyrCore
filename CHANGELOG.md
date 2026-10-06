@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- None.
+
+## 0.1.0-alpha.80 - 2026-10-06
+
+- Added optional target-owned runtime observation with compact event evidence,
+  explicit claim-to-event support and contradiction checks, bounded raw-log
+  loading, recurrence candidates, and fresh post-result adapter validation.
+- Added deterministic target validation and adversarial boundary tests for
+  incomplete windows, forbidden and unresolved events, unsupported claims,
+  incident-lineage gaps, stale evidence, and revision mismatch.
+- Added capability-aware adapter health advice so task-required capabilities
+  missing from an older installation block acceptance and identify update
+  candidates without silently enabling them.
+- Increased adapter schema version to `67` and target template version to `75`
+  for runtime-observation policy, completion evidence, and installed module
+  surfaces.
+
 - Fixed every published `verify-upgrade` command example to include its required
   current-change and approval arguments. A shared non-executing documentation
   oracle now tokenizes each recognized shell command and submits its arguments

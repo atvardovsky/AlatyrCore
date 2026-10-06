@@ -422,6 +422,12 @@ Operation candidates: `documentation-sync`, `drift-review`,
 Load `.ai/framework/support-information.md` only when support diff, generation
 ownership, or relationship-candidate semantics are disputed.
 
+Load `.ai/framework/runtime-observation.md` only when runtime behavior is part
+of acceptance, a runtime contradiction is a recurrence signal, or the enabled
+runtime-observation gate is selected. Load the compact record and policy first;
+raw logs remain conditional on failure, contradiction, unknown events,
+dispute, or explicit review.
+
 Required context:
 
 - `.ai/framework/context-discovery.md`

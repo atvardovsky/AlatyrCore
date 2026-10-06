@@ -74,6 +74,27 @@
       "content_digest": "sha256:fb85b77e2437789458d477e868571293db234049c34de57771a7f1bb6df97ed5"
     },
     {
+      "id": "project.content.runtime-observation-policy-json",
+      "kind": "content",
+      "path": "runtime-observation-policy.json",
+      "summary": "Runtime Observation Policy",
+      "selectors": {
+        "path_terms": [
+          "runtime",
+          "observation",
+          "policy"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 48,
+      "content_digest": "sha256:3488df607cff72521a50ff32feaa09457b64329716056eb5ace005834018ea66"
+    },
+    {
       "id": "project.content.source-of-truth-registry-md",
       "kind": "content",
       "path": "source-of-truth-registry.md",

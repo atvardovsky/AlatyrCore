@@ -689,6 +689,23 @@ Approval needs: `{SUPPORT_GENERATION_APPROVAL_NEEDS}`
 Residual risk: `{SUPPORT_GENERATION_RESIDUAL_RISK}`
 Next action: `{SUPPORT_GENERATION_NEXT_ACTION}`
 
+Module: `runtime-observation`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/runtime-observation-policy.json`
+Required files:
+
+- `.ai/project/runtime-observation-policy.json`
+- `.ai/assistant/flows/runtime-observation.flow.md`
+- `.ai/assistant/gates/runtime-observation.md`
+- `.ai/assistant/templates/runtime-observation-record.json`
+- `.ai/framework/runtime-observation.md`
+
+Reason: `{REASON}`
+Validation or review: `{RUNTIME_OBSERVATION_VALIDATION_OR_REVIEW}`
+Approval needs: `{RUNTIME_OBSERVATION_APPROVAL_NEEDS}`
+Residual risk: `{RUNTIME_OBSERVATION_RESIDUAL_RISK}`
+Next action: `{RUNTIME_OBSERVATION_NEXT_ACTION}`
+
 Module: `scaffolding`
 State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_SCAFFOLDING_EVIDENCE_OR_NONE}`

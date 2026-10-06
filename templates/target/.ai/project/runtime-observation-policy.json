@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "policy_kind": "target-runtime-observation-policy",
+  "state": "{ENABLED_REQUIRED_OR_DISABLED}",
+  "owner": "{TARGET_OWNER}",
+  "last_reviewed": "{YYYY_MM_DD}",
+  "evidence_revision": "{TARGET_REVISION}",
+  "collection": {
+    "commands": ["{TARGET_BOUNDED_READ_ONLY_COMMAND_OR_NONE}"],
+    "sources": ["{TARGET_LOG_METRIC_TRACE_OR_EVENT_SOURCE}"],
+    "default_window": "{TARGET_WINDOW}",
+    "max_compact_events": "{POSITIVE_INTEGER}",
+    "max_samples_per_event": "{NON_NEGATIVE_INTEGER}",
+    "raw_evidence_loading": "on-failure-or-explicit-review"
+  },
+  "event_catalog": [
+    {
+      "id": "{STABLE_TARGET_EVENT_ID}",
+      "meaning": "{TARGET_EVENT_MEANING}",
+      "default_classification": "{EXPECTED_FORBIDDEN_TOLERATED_OR_UNKNOWN}",
+      "owner": "{TARGET_OWNER}"
+    }
+  ],
+  "redaction_policy": "{TARGET_REDACTION_POLICY}",
+  "retention_policy": "{TARGET_RETENTION_POLICY}",
+  "live_access_requires_approval": true
+}

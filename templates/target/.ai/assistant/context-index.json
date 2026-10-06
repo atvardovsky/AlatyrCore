@@ -113,8 +113,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3465,
-      "content_digest": "sha256:8cee6f6522a892b70f47fcb6786295d7c1e5300452d4f4a16fa9a26d92909689"
+      "estimated_words": 3509,
+      "content_digest": "sha256:8822d697332778bc964477323ad11c7ef936c7b5bd42988d346d142dba69a570"
     },
     {
       "id": "assistant.content.context-router-json",
@@ -214,7 +214,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 345,
-      "content_digest": "sha256:e514f40c7af1edf045e474f18e56db78d9715d0c87eafbb6f95ff5cb73a08d3f"
+      "content_digest": "sha256:ea5e95e9f48527c690280b88eea080511d7b17f8250ed04b6d2c672f44e43bc1"
     },
     {
       "id": "assistant.content.help-md",
@@ -252,8 +252,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3764,
-      "content_digest": "sha256:36eb499768797113beac242830ab00fb9be434484c6ca28e0ae854ec68f21309"
+      "estimated_words": 3830,
+      "content_digest": "sha256:8e879caf57730d56ea9e5ebc54d4be23d523de5295d4d2c46e94e8c9306f7a8e"
     },
     {
       "id": "assistant.content.installation-state-json",
@@ -312,8 +312,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1628,
-      "content_digest": "sha256:eed0ca631eb8ec30ebf12249040eb75f17660976fdb578bbf55a9266355add1d"
+      "estimated_words": 1663,
+      "content_digest": "sha256:7e138a81c7dc86d134c182d9b124d38491550b48b92b53f8b1480db3a6eacd0e"
     },
     {
       "id": "assistant.content.operation-catalog-json",
@@ -503,7 +503,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 260,
-      "content_digest": "sha256:8e2f1425fc467f6ab168a6c66804ab18ec7060ab4fcf4a9b44b64e44929fba59"
+      "content_digest": "sha256:03ca3e670c57128a80d2edf457c6aa5a6f5c22c0d179ab4fec2b8acc60582e4e"
     },
     {
       "id": "assistant.section.extensions",
@@ -532,8 +532,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1202,
-      "content_digest": "sha256:777588329b424c4ef8522d242b3427ca845803053234550b34ac62e303ad8745"
+      "estimated_words": 1236,
+      "content_digest": "sha256:4a8760faa4a8074fcf0b0b1b1e50ad0c9a3bfe0164210057777c2990a6c192ae"
     },
     {
       "id": "assistant.section.gates",
@@ -547,8 +547,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 792,
-      "content_digest": "sha256:70148ddf85bbe9ddc4cf82969f4178cddf0f8f6cfc4e0cc972a8e24c0cf0629d"
+      "estimated_words": 825,
+      "content_digest": "sha256:edf8dd13d6fbdad02f635592a65f0a192296755cfa485c5a3545d8710255a665"
     },
     {
       "id": "assistant.section.policies",
@@ -622,8 +622,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 2082,
-      "content_digest": "sha256:ebb433611c7011d73695ba1a2324c7a65b21a59c4ad5c5c088fa2ac513d31b00"
+      "estimated_words": 2116,
+      "content_digest": "sha256:51ec9721b6c6402ab9874aac300987958fe69d914b1fef38d7dfbb400980aa8f"
     },
     {
       "id": "assistant.section.workers",

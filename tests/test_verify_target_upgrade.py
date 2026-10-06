@@ -1,8 +1,13 @@
 from __future__ import annotations
 
 import unittest
+import sys
+from pathlib import Path
 
-from tools.verify_target_upgrade import acceptance_failures
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+
+from verify_target_upgrade import acceptance_failures  # noqa: E402
 
 
 def accepted_payload() -> dict[str, object]:

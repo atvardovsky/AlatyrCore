@@ -174,8 +174,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 615,
-      "content_digest": "sha256:3078836d28d81792fda2bc1683765bd43ef9dd2b516c3776ba421efa6fa07b60"
+      "estimated_words": 646,
+      "content_digest": "sha256:29e5be397ef2bda74213861954ad5054f744b086b0cea68568e80e8c887e38d6"
     },
     {
       "id": "assistant.content.flows-debug-mode-flow-md",
@@ -486,6 +486,28 @@
       ],
       "estimated_words": 519,
       "content_digest": "sha256:602ff6dff445c79a84114efb64acd3986a4edc375ea1dbba644a858746c7e705"
+    },
+    {
+      "id": "assistant.content.flows-runtime-observation-flow-md",
+      "kind": "content",
+      "path": "flows/runtime-observation.flow.md",
+      "summary": "Runtime Observation Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "runtime",
+          "observation",
+          "flow"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 172,
+      "content_digest": "sha256:f12d232fd03ac5de09b0cb0d4c3988295eb0dd51e983481fdc82e078785a3b3d"
     },
     {
       "id": "assistant.content.flows-session-continuity-flow-md",

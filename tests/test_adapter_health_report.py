@@ -4,17 +4,79 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from report_adapter_health import render_text  # noqa: E402
+from report_adapter_health import build_capability_advisory, render_text  # noqa: E402
 from validate_target_adapter import Finding, findings_payload  # noqa: E402
 
 
 class AdapterHealthReportTests(unittest.TestCase):
+    def test_capability_comparison_finds_missing_and_unknown_requirements(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            target = root / "target"
+            for base, modules in [
+                (source / "framework", {"installed": {}, "runtime-observation": {}}),
+                (target / ".ai/framework", {"installed": {}}),
+            ]:
+                base.mkdir(parents=True)
+                (base / "capabilities.json").write_text(
+                    json.dumps(
+                        {
+                            "schema_version": 1,
+                            "capability_kind": "alatyr-optional-module-catalog",
+                            "surfaces": {},
+                            "modules": {
+                                key: {
+                                    "module_kind": "governance-support",
+                                    "min_framework_pack": "core",
+                                    "requires": [],
+                                }
+                                for key in modules
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            advisory = build_capability_advisory(
+                target=target,
+                framework_source=source,
+                required_capabilities=["runtime-observation", "not-real"],
+            )
+        self.assertEqual(advisory["missing_from_installation"], ["runtime-observation"])
+        self.assertEqual(advisory["unknown_to_source"], ["not-real"])
+        self.assertTrue(advisory["blocking"])
+
+    def test_capability_advisory_is_visible(self) -> None:
+        payload = {
+            "adapter_health": {"state": "attention", "repair_operations": []},
+            "health_layers": {},
+            "evidence": {},
+            "counts": {},
+            "placeholder_validation": {},
+            "findings": [],
+            "capability_advisory": {
+                "missing_from_installation": ["runtime-observation"],
+                "unknown_to_source": [],
+                "available_in_source": ["runtime-observation"],
+            },
+        }
+        text = render_text(payload)
+        self.assertIn(
+            "Required capabilities missing from installation: runtime-observation",
+            text,
+        )
+        self.assertIn(
+            "Capabilities available after assessment/update: runtime-observation",
+            text,
+        )
+
     def test_changed_scope_never_produces_acceptance_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             payload = findings_payload(

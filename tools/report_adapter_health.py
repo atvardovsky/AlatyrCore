@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from capability_catalog import load_modules
+
 from validate_target_adapter import (
     AdapterValidatorConfig,
     BLOCKING_WARNING_CODES,
@@ -15,6 +17,51 @@ from validate_target_adapter import (
     findings_payload,
     load_validator_config,
 )
+
+
+def build_capability_advisory(
+    *,
+    target: Path,
+    framework_source: Path | None,
+    required_capabilities: list[str] | None,
+) -> dict[str, Any]:
+    requested = sorted(set(required_capabilities or []))
+    advisory: dict[str, Any] = {
+        "requested": requested,
+        "missing_from_installation": [],
+        "available_in_source": [],
+        "unknown_to_source": [],
+        "blocking": False,
+    }
+    if framework_source is None:
+        if requested:
+            advisory["blocking"] = True
+            advisory["source_catalog_error"] = (
+                "--framework-source is required for capability comparison"
+            )
+        return advisory
+
+    source_catalog = framework_source / "framework" / "capabilities.json"
+    target_catalog = target / ".ai" / "framework" / "capabilities.json"
+    try:
+        source_ids = set(load_modules(source_catalog))
+    except (OSError, ValueError, json.JSONDecodeError):
+        source_ids = set()
+        advisory["source_catalog_error"] = str(source_catalog)
+    try:
+        installed_ids = set(load_modules(target_catalog))
+    except (OSError, ValueError, json.JSONDecodeError):
+        installed_ids = set()
+        advisory["installed_catalog_error"] = str(target_catalog)
+    advisory["available_in_source"] = sorted(source_ids - installed_ids)
+    advisory["missing_from_installation"] = sorted(
+        (set(requested) & source_ids) - installed_ids
+    )
+    advisory["unknown_to_source"] = sorted(set(requested) - source_ids)
+    advisory["blocking"] = bool(
+        advisory["missing_from_installation"] or advisory["unknown_to_source"]
+    )
+    return advisory
 
 
 def health_payload(
@@ -26,6 +73,7 @@ def health_payload(
     strict_warnings: bool = False,
     allow_local_paths: list[str] | None = None,
     config_path: Path | None = None,
+    required_capabilities: list[str] | None = None,
 ) -> dict[str, Any]:
     phase = "migration-staging" if allow_placeholders else validation_phase
     config, config_findings = load_validator_config(target, config_path)
@@ -46,7 +94,7 @@ def health_payload(
         approval_archive_mode="changed",
     )
     findings = validator.run()
-    return findings_payload(
+    payload = findings_payload(
         findings,
         target=target.resolve(),
         strict_warnings=strict_warnings,
@@ -55,6 +103,20 @@ def health_payload(
         phase_telemetry=validator.phase_telemetry,
         approval_archive_summary=validator.approval_archive_summary,
     )
+    advisory = build_capability_advisory(
+        target=target,
+        framework_source=framework_source,
+        required_capabilities=required_capabilities,
+    )
+    payload["capability_advisory"] = advisory
+    if advisory["blocking"]:
+        payload.setdefault("adapter_health", {})["state"] = "blocked"
+        placeholder = payload.setdefault("placeholder_validation", {})
+        placeholder["acceptance_eligible"] = False
+        blockers = placeholder.setdefault("acceptance_blockers", [])
+        blockers.append("required capability is unavailable in the installed adapter")
+        payload["exit_code"] = 1
+    return payload
 
 
 def finding_line(finding: dict[str, Any]) -> str:
@@ -86,6 +148,7 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         if item.get("level") == "warning" and item not in blocking
     ]
     repairs = health.get("repair_operations") or []
+    advisory = payload.get("capability_advisory", {})
     accepted = placeholder.get("acceptance_eligible") is True
 
     def display(value: Any) -> str:
@@ -124,6 +187,15 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         ),
         "Automatic repair performed: false",
     ]
+    missing = advisory.get("missing_from_installation") or []
+    unknown = advisory.get("unknown_to_source") or []
+    available = advisory.get("available_in_source") or []
+    if missing:
+        lines.append("Required capabilities missing from installation: " + ", ".join(missing))
+    if unknown:
+        lines.append("Unknown required capabilities: " + ", ".join(unknown))
+    if available and mode == "doctor":
+        lines.append("Capabilities available after assessment/update: " + ", ".join(available))
     limitation = evidence.get("limitation")
     if isinstance(limitation, str) and limitation:
         lines.append(f"Limitation: {limitation}")
@@ -162,6 +234,12 @@ def main() -> int:
     parser.add_argument("--allow-local-path", action="append", default=[])
     parser.add_argument("--strict-warnings", action="store_true")
     parser.add_argument("--config", type=Path)
+    parser.add_argument(
+        "--required-capability",
+        action="append",
+        default=[],
+        help="Capability required by the current task; repeat as needed.",
+    )
     parser.add_argument("--json", action="store_true")
     parser.add_argument(
         "--mode",
@@ -179,6 +257,7 @@ def main() -> int:
         strict_warnings=args.strict_warnings,
         allow_local_paths=args.allow_local_path,
         config_path=args.config,
+        required_capabilities=args.required_capability,
     )
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))

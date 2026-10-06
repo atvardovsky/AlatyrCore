@@ -61,6 +61,22 @@
       "content_digest": "sha256:1b40dfe7964b099a2d37a4e395bf429c92b963f22bb3e2035180e877ecab5758"
     },
     {
+      "id": "framework.support.runtime-observation-md",
+      "kind": "content",
+      "path": "runtime-observation.md",
+      "summary": "Runtime Observation",
+      "selectors": {
+        "path_terms": [
+          "runtime",
+          "observation"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 300,
+      "content_digest": "sha256:d76274a78daa637fe7080fcbce6a703d10bb673bbd15779faf287df41419651d"
+    },
+    {
       "id": "framework.support.session-continuity-md",
       "kind": "content",
       "path": "session-continuity.md",

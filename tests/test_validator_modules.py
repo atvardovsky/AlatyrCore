@@ -122,6 +122,7 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
                 "check_discussion_diagrams",
                 "check_extensions",
                 "check_project_vocabulary",
+                "check_runtime_observation",
                 "check_support_generation",
                 "check_subagent_delegation",
                 "check_team_collaboration",

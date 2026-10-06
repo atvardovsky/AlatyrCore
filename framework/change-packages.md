@@ -118,6 +118,15 @@ Ordinary non-incident packages use `mode: none`, `family_id: none`, iteration
 zero, no predecessors, and a non-required lifecycle model. Completed legacy
 packages remain historical and are not rewritten solely to add this contract.
 
+Before declaring a corrective package isolated, perform a bounded recurrence
+preflight. An explicit predecessor, failed required gate, repeated changed-fact
+identity, or fresh runtime contradiction is a recurrence candidate. Record an
+incident-lineage disposition for each candidate. These signals prevent silent
+loss of continuity; they do not by themselves prove shared business causality.
+When acceptance depends on runtime behavior, the optional runtime-observation
+module binds completion claims to counted events and a complete post-result
+window.
+
 ## Semantic Approval Scope
 
 Path scope is necessary but not sufficient for material changes. Package and

@@ -182,6 +182,8 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/change-packages.md`: optional coherent material-change
   evidence with semantic scope, companion decisions, corrections, and
   repository provenance.
+- `.ai/framework/runtime-observation.md`: optional compact runtime evidence,
+  claim-to-event, recurrence-signal, and post-result acceptance contract.
 - `.ai/framework/engineering-evidence.md`: proportional project-owned capture
   of reusable material task conclusions without raw assistant reasoning.
 - `.ai/framework/debug-mode.md`: optional task-local observability for executor,

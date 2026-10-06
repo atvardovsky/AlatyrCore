@@ -174,20 +174,20 @@
       "words": 2863
     },
     "architecture-implementation": {
-      "bytes": 49886,
-      "characters": 49886,
+      "bytes": 51176,
+      "characters": 51176,
       "declared_files": 14,
       "end_to_end": {
-        "bytes": 60907,
-        "characters": 60907,
+        "bytes": 62197,
+        "characters": 62197,
         "declared_files": 16,
-        "estimated_tokens_4_chars": 15227,
+        "estimated_tokens_4_chars": 15550,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md",
           ".ai/framework/change-packages.md"
         ],
-        "portable_words": 3146,
+        "portable_words": 3218,
         "resolved_files": 15,
         "resolved_paths": [
           "AGENTS.md",
@@ -221,20 +221,20 @@
           ".ai/assistant/change-packages/index.json",
           ".ai/assistant/flows/change-package.flow.md"
         ],
-        "target_words": 3561,
+        "target_words": 3633,
         "unresolved_references": [
           "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
         ],
-        "words": 6707
+        "words": 6851
       },
-      "estimated_tokens_4_chars": 12472,
+      "estimated_tokens_4_chars": 12794,
       "expected_budget_state": "expansion-receipt-required",
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/architecture-knowledge.md",
         ".ai/framework/change-packages.md"
       ],
-      "portable_words": 3146,
+      "portable_words": 3218,
       "resolved_files": 13,
       "resolved_paths": [
         ".ai/assistant/context/profiles/architecture-change.json",
@@ -264,11 +264,11 @@
         ".ai/assistant/change-packages/index.json",
         ".ai/assistant/flows/change-package.flow.md"
       ],
-      "target_words": 2688,
+      "target_words": 2760,
       "unresolved_references": [
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
       ],
-      "words": 5834
+      "words": 5978
     },
     "delegated-governed-tree": {
       "bytes": 37594,
@@ -1081,10 +1081,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 469544,
-      "characters": 469544,
+      "bytes": 469960,
+      "characters": 469960,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 117386,
+      "estimated_tokens_4_chars": 117490,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -1121,7 +1121,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 57652,
+      "portable_words": 57664,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -1164,17 +1164,17 @@
         ".ai/assistant/context/migration-routing.json",
         ".ai/alatyr.yaml"
       ],
-      "target_words": 760,
+      "target_words": 769,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 58412
+      "words": 58433
     },
     "initial": {
-      "bytes": 19409,
-      "characters": 19409,
+      "bytes": 19674,
+      "characters": 19674,
       "declared_files": 3,
-      "estimated_tokens_4_chars": 4853,
+      "estimated_tokens_4_chars": 4919,
       "missing_paths": [],
       "portable_paths": [],
       "portable_words": 0,
@@ -1187,11 +1187,11 @@
         ".ai/assistant/context/migration-routing.json",
         ".ai/alatyr.yaml"
       ],
-      "target_words": 760,
+      "target_words": 769,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 760
+      "words": 769
     },
     "initial_word_reduction_percent": 98.7
   },
@@ -1228,10 +1228,10 @@
         "words": 3049
       },
       "full_reference_union": {
-        "bytes": 127692,
-        "characters": 127692,
+        "bytes": 128363,
+        "characters": 128363,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 31923,
+        "estimated_tokens_4_chars": 32091,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md",
@@ -1269,9 +1269,9 @@
           ".ai/assistant/templates/architecture-pattern.md",
           ".ai/assistant/templates/architecture-area.md"
         ],
-        "target_words": 8748,
+        "target_words": 8783,
         "unresolved_references": [],
-        "words": 12231
+        "words": 12266
       },
       "word_reduction_percent": 75.1
     },
@@ -1307,10 +1307,10 @@
         "words": 3372
       },
       "full_reference_union": {
-        "bytes": 130607,
-        "characters": 130607,
+        "bytes": 131278,
+        "characters": 131278,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 32652,
+        "estimated_tokens_4_chars": 32820,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/code-documentation.md",
@@ -1348,11 +1348,11 @@
           ".ai/assistant/templates/code-documentation-profile-review.md",
           ".ai/assistant/skills/code-documentation/SKILL.md"
         ],
-        "target_words": 8798,
+        "target_words": 8833,
         "unresolved_references": [],
-        "words": 12535
+        "words": 12570
       },
-      "word_reduction_percent": 73.1
+      "word_reduction_percent": 73.2
     },
     "dependency-knowledge": {
       "compact": {
@@ -1384,10 +1384,10 @@
         "words": 2906
       },
       "full_reference_union": {
-        "bytes": 110743,
-        "characters": 110743,
+        "bytes": 111414,
+        "characters": 111414,
         "declared_files": 13,
-        "estimated_tokens_4_chars": 27686,
+        "estimated_tokens_4_chars": 27854,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/dependency-knowledge.md"
@@ -1421,13 +1421,13 @@
           ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
           ".ai/assistant/gates/dependency-knowledge.md"
         ],
-        "target_words": 8499,
+        "target_words": 8534,
         "unresolved_references": [
           ".ai/project/dependencies/snapshots/{PACKAGE_INSTANCE_ID}/"
         ],
-        "words": 10387
+        "words": 10422
       },
-      "word_reduction_percent": 72.0
+      "word_reduction_percent": 72.1
     },
     "diagram-discussion": {
       "compact": {
@@ -1463,10 +1463,10 @@
         "words": 3967
       },
       "full_reference_union": {
-        "bytes": 152592,
-        "characters": 152592,
+        "bytes": 153263,
+        "characters": 153263,
         "declared_files": 11,
-        "estimated_tokens_4_chars": 38148,
+        "estimated_tokens_4_chars": 38316,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/diagram-guidance.md"
@@ -1498,11 +1498,11 @@
           ".ai/assistant/assistant-capabilities.json",
           ".ai/assistant/assistant-capabilities/generic.json"
         ],
-        "target_words": 11288,
+        "target_words": 11323,
         "unresolved_references": [],
-        "words": 12747
+        "words": 12782
       },
-      "word_reduction_percent": 68.9
+      "word_reduction_percent": 69.0
     },
     "extension-management": {
       "compact": {
@@ -1536,10 +1536,10 @@
         "words": 3426
       },
       "full_reference_union": {
-        "bytes": 116905,
-        "characters": 116905,
+        "bytes": 117576,
+        "characters": 117576,
         "declared_files": 16,
-        "estimated_tokens_4_chars": 29227,
+        "estimated_tokens_4_chars": 29394,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/extensions.md",
@@ -1577,14 +1577,14 @@
           ".ai/assistant/templates/extension-review.md",
           ".ai/assistant/templates/extension-lifecycle-record.md"
         ],
-        "target_words": 9068,
+        "target_words": 9103,
         "unresolved_references": [
           ".ai/assistant/extensions/{EXTENSION_ID}/manifest.json",
           ".ai/assistant/extensions/{EXTENSION_ID}/bindings.json"
         ],
-        "words": 11064
+        "words": 11099
       },
-      "word_reduction_percent": 69.0
+      "word_reduction_percent": 69.1
     },
     "project-vocabulary": {
       "compact": {
@@ -1616,10 +1616,10 @@
         "words": 2810
       },
       "full_reference_union": {
-        "bytes": 108750,
-        "characters": 108750,
+        "bytes": 109421,
+        "characters": 109421,
         "declared_files": 13,
-        "estimated_tokens_4_chars": 27188,
+        "estimated_tokens_4_chars": 27356,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/project-vocabulary.md"
@@ -1655,11 +1655,11 @@
           ".ai/assistant/templates/vocabulary-term-review.md",
           ".ai/assistant/skills/project-vocabulary/SKILL.md"
         ],
-        "target_words": 8537,
+        "target_words": 8572,
         "unresolved_references": [],
-        "words": 9895
+        "words": 9930
       },
-      "word_reduction_percent": 71.6
+      "word_reduction_percent": 71.7
     },
     "team-collaboration": {
       "compact": {
@@ -1686,10 +1686,10 @@
         "words": 1006
       },
       "full_reference_union": {
-        "bytes": 135572,
-        "characters": 135572,
+        "bytes": 136243,
+        "characters": 136243,
         "declared_files": 17,
-        "estimated_tokens_4_chars": 33893,
+        "estimated_tokens_4_chars": 34061,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/team-collaboration.md"
@@ -1733,9 +1733,9 @@
           ".ai/assistant/flows/team-decision.flow.md",
           ".ai/assistant/flows/team-review.flow.md"
         ],
-        "target_words": 10740,
+        "target_words": 10775,
         "unresolved_references": [],
-        "words": 13199
+        "words": 13234
       },
       "word_reduction_percent": 92.4
     },
@@ -1767,10 +1767,10 @@
         "words": 3274
       },
       "full_reference_union": {
-        "bytes": 117068,
-        "characters": 117068,
+        "bytes": 117739,
+        "characters": 117739,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 29267,
+        "estimated_tokens_4_chars": 29435,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/testing-guidance.md",
@@ -1808,11 +1808,11 @@
           ".ai/assistant/skills/test-first-development/SKILL.md",
           ".ai/assistant/templates/test-first-evidence.md"
         ],
-        "target_words": 8907,
+        "target_words": 8942,
         "unresolved_references": [],
-        "words": 11244
+        "words": 11279
       },
-      "word_reduction_percent": 70.9
+      "word_reduction_percent": 71.0
     },
     "workspace-mode": {
       "compact": {
@@ -1842,10 +1842,10 @@
         "words": 2311
       },
       "full_reference_union": {
-        "bytes": 101684,
-        "characters": 101684,
+        "bytes": 102355,
+        "characters": 102355,
         "declared_files": 11,
-        "estimated_tokens_4_chars": 25421,
+        "estimated_tokens_4_chars": 25589,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/workspace-modes.md"
@@ -1875,18 +1875,18 @@
           ".ai/assistant/flows/workspace-mode.flow.md",
           ".ai/assistant/gates/workspace-mode.md"
         ],
-        "target_words": 8021,
+        "target_words": 8056,
         "unresolved_references": [
           ".ai/project/workspace-modes/modes/{MODE_ID}/mode.json"
         ],
-        "words": 9403
+        "words": 9438
       },
-      "word_reduction_percent": 75.4
+      "word_reduction_percent": 75.5
     }
   },
   "pairwise_compositions": {
     "compact_pairs": 136,
-    "composition_digest": "sha256:9409881ee0b27aaaf3614cd4bd0fac1182e419d05972dea7b05b0a704a6a84f4",
+    "composition_digest": "sha256:6c516c3fd89c93cccc9f1b30ac569e7ca7f0800eed54c2ab5c59cb8fd99629fd",
     "evaluated_pairs": 152,
     "expansion_receipt_pairs": 16,
     "max_characters": 53686,
@@ -2871,10 +2871,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 770757,
-        "characters": 770757,
-        "declared_files": 64,
-        "estimated_tokens_4_chars": 192690,
+        "bytes": 774286,
+        "characters": 774286,
+        "declared_files": 65,
+        "estimated_tokens_4_chars": 193572,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -2920,6 +2920,7 @@
           ".ai/framework/rule-ownership.md",
           ".ai/framework/rule-registry.json",
           ".ai/framework/rule-registry.md",
+          ".ai/framework/runtime-observation.md",
           ".ai/framework/scaffolding.md",
           ".ai/framework/security-safety-guidance.md",
           ".ai/framework/semantics/change.json",
@@ -2942,8 +2943,8 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 95324,
-        "resolved_files": 64,
+        "portable_words": 95734,
+        "resolved_files": 65,
         "resolved_paths": [
           ".ai/framework/README.md",
           ".ai/framework/action-authorization.md",
@@ -2988,6 +2989,7 @@
           ".ai/framework/rule-ownership.md",
           ".ai/framework/rule-registry.json",
           ".ai/framework/rule-registry.md",
+          ".ai/framework/runtime-observation.md",
           ".ai/framework/scaffolding.md",
           ".ai/framework/security-safety-guidance.md",
           ".ai/framework/semantics/change.json",
@@ -3013,7 +3015,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 95324
+        "words": 95734
       },
       "selected_route": {
         "bytes": 33217,
@@ -3041,13 +3043,13 @@
       "word_reduction_percent": 96.9
     },
     "semantic_codebook": {
-      "compact_definition_and_reference_words": 1039,
-      "compact_serialized_characters": 27050,
-      "estimated_token_reduction_percent": 78.0,
-      "expanded_characters": 123073,
-      "expanded_definition_words": 16389,
+      "compact_definition_and_reference_words": 1043,
+      "compact_serialized_characters": 27198,
+      "estimated_token_reduction_percent": 78.1,
+      "expanded_characters": 124169,
+      "expanded_definition_words": 16537,
       "measurement_limit": "synthetic repeated-definition comparison; not provider telemetry or billing evidence",
-      "reference_count": 451,
+      "reference_count": 455,
       "resolved_term_count": 18,
       "word_reduction_percent": 93.7
     }
@@ -3090,15 +3092,15 @@
   },
   "task_scale_overlays": {
     "change-package": {
-      "bytes": 23159,
-      "characters": 23159,
+      "bytes": 24449,
+      "characters": 24449,
       "declared_files": 5,
-      "estimated_tokens_4_chars": 5790,
+      "estimated_tokens_4_chars": 6113,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/change-packages.md"
       ],
-      "portable_words": 1907,
+      "portable_words": 1979,
       "resolved_files": 5,
       "resolved_paths": [
         ".ai/assistant/context/task-scales/change-package.json",
@@ -3113,9 +3115,9 @@
         ".ai/assistant/change-packages/index.json",
         ".ai/assistant/flows/change-package.flow.md"
       ],
-      "target_words": 1044,
+      "target_words": 1116,
       "unresolved_references": [],
-      "words": 2951
+      "words": 3095
     },
     "debug-mode": {
       "bytes": 33802,

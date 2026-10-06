@@ -50,6 +50,10 @@ evidence. Large-task activation alone is not sufficient.
    Use `systemic-repair` plus `recurring-correction` from corrective iteration
    two onward. Escaped defects, failed required gates, recurring corrections,
    and systemic repair require the problem model's whole-lifecycle contract.
+   Before declaring a correction isolated, inspect explicit predecessors,
+   failed required gates, repeated changed-fact IDs, and fresh runtime
+   contradictions. Each candidate needs an incident-lineage disposition;
+   candidate signals do not prove shared causality.
 5. Link explicit machine approval records. Require reapproval for new
    protected fact IDs, areas, behavior categories, external effects, or paths.
 6. During implementation, record only material discoveries and corrections.

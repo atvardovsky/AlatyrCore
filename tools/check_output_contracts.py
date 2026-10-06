@@ -95,6 +95,7 @@ COMPLETION_TEMPLATE_FIELDS = [
     "learning_outcome",
     "changed_facts",
     "validation",
+    "runtime_observation",
     "consistency",
     "completion_gate",
 ]
@@ -308,8 +309,8 @@ def main() -> int:
             f"{COMPLETION_TEMPLATE.relative_to(ROOT)} must contain a JSON object"
         )
         completion_data = {}
-    if completion_data.get("schema_version") != 4:
-        failures.append("operation-completion evidence schema_version must be 4")
+    if completion_data.get("schema_version") != 5:
+        failures.append("operation-completion evidence schema_version must be 5")
     if completion_data.get("record_kind") != "alatyr-operation-completion-evidence":
         failures.append("operation-completion evidence record_kind is invalid")
     for field in COMPLETION_TEMPLATE_FIELDS:
@@ -342,6 +343,17 @@ def main() -> int:
     ):
         failures.append(
             "operation-completion evidence must define the project contour sync decision"
+        )
+    runtime_observation = completion_data.get("runtime_observation")
+    required_runtime_fields = {
+        "required", "record", "claim_status", "recurrence_review",
+        "post_result_adapter_validation", "evidence_fresh",
+    }
+    if not isinstance(runtime_observation, dict) or not required_runtime_fields.issubset(
+        runtime_observation
+    ):
+        failures.append(
+            "operation-completion evidence must define runtime observation closure"
         )
 
     for contract in sorted(
