@@ -100,11 +100,16 @@ Every project using this framework must define these structural bindings:
   shell command, or attaching unsupported arguments does not establish
   canonical delegation. The installed delegate's executable semantics must
   match the shipped portable delegate; reviewed custom implementations use
-  `target-equivalent` coverage instead. A portable target-local delegate
-  resolves the AlatyrCore source from an explicit argument, `ALATYR_CORE`, or
-  ignored local configuration and fails closed when no valid source checkout
-  is available. Committed validation commands must not contain
-  workstation-specific absolute source paths.
+  `target-equivalent` coverage instead. The shipped delegate parser is the
+  canonical owner of delegate argument syntax. A validator may append safe
+  test bindings only for required runtime options absent from a declared
+  command prefix; it must not independently reinterpret arguments or repair a
+  malformed option already present. Differential coverage must prove that
+  every contract-accepted completed invocation is accepted by that parser. A
+  portable target-local delegate resolves the AlatyrCore source from an
+  explicit argument, `ALATYR_CORE`, or ignored local configuration and fails
+  closed when no valid source checkout is available. Committed validation
+  commands must not contain workstation-specific absolute source paths.
 - **Acceptance evidence:** an explicit staged or accepted result showing that
   installed files, selected capability state, target facts, local checks, and
   unresolved placeholders were evaluated at the target revision.

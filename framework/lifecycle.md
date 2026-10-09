@@ -322,7 +322,10 @@ Before upgrading framework files in a target project:
     each entry point to its required delegate operation and allowlisted
     arguments, and verify that the installed delegate remains semantically
     equivalent to the shipped portable implementation. A path mention plus
-    matching metadata is not operation evidence.
+    matching metadata is not operation evidence. Validate argument syntax with
+    the shipped delegate parser rather than a parallel parser. Complete only
+    required bindings absent from a command prefix, never malformed bindings
+    already present, and retain differential parser-parity regressions.
     Synchronize manifest-owned current-baseline claims, transactionally
     regenerate approval/package indexes and recursive context indexes, then
     generate support state last and run canonical validation. Historical

@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 import ast
+import contextlib
+import io
 import json
 import re
+import runpy
 import shlex
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -34,10 +38,13 @@ PY_VERSION_SELECTOR = re.compile(r"^-\d+(?:\.\d+)?$")
 SHELL_CONTROL = re.compile(
     r"(?:[;&|<>`$*?]|[\r\n#]|%[A-Za-z_][A-Za-z0-9_]*%|![A-Za-z_][A-Za-z0-9_]*!)"
 )
-COMMON_DELEGATE_OPTIONS = frozenset({"--target", "--framework-source"})
-CURRENT_CHANGE_OPTIONS = frozenset(
-    {"--diff-ref", "--approval-record", "--change-package"}
-)
+REQUIRED_PREFIX_BINDINGS = {
+    "validate-current": (
+        ("--diff-ref", "ALATYR_CONTRACT_DIFF_REF"),
+        ("--approval-record", ".ai/assistant/approvals/ALATYR_CONTRACT.json"),
+        ("--change-package", ".ai/assistant/change-packages/ALATYR_CONTRACT.json"),
+    ),
+}
 EXPECTED_DELEGATES = {
     "adapter-health": {
         "delegate_operation": "status",
@@ -82,6 +89,52 @@ class FindingSink(Protocol):
     def error(self, code: str, message: str, path: str | None = None) -> None: ...
     def warn(self, code: str, message: str, path: str | None = None) -> None: ...
     def info(self, code: str, message: str, path: str | None = None) -> None: ...
+
+
+def _option_count(arguments: list[str], option: str) -> int:
+    return sum(
+        token == option or token.startswith(f"{option}=")
+        for token in arguments
+    )
+
+
+@lru_cache(maxsize=1)
+def _shipped_delegate_parser_factory() -> Any:
+    namespace = runpy.run_path(
+        str(SOURCE_DELEGATE_PATH),
+        run_name="_alatyr_shipped_delegate_contract",
+    )
+    factory = namespace.get("build_parser")
+    if not callable(factory):
+        raise ValueError("shipped delegate does not expose build_parser()")
+    return factory
+
+
+def _shipped_delegate_parser_failure(
+    arguments: list[str],
+    *,
+    expected_operation: str,
+) -> tuple[Any | None, str | None]:
+    completed = list(arguments)
+    for option, placeholder in REQUIRED_PREFIX_BINDINGS.get(
+        expected_operation, ()
+    ):
+        if _option_count(completed, option) == 0:
+            completed.extend([option, placeholder])
+
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    try:
+        parser = _shipped_delegate_parser_factory()()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            parsed = parser.parse_args(completed)
+    except SystemExit as exc:
+        output = stderr.getvalue() or stdout.getvalue()
+        detail = output.strip().splitlines()[-1] if output.strip() else "no diagnostic"
+        return None, f"exit {exc.code}: {detail}"
+    except Exception as exc:  # fail closed if the trusted parser cannot be evaluated
+        return None, f"internal failure: {exc}"
+    return parsed, None
 
 
 def _direct_delegate_invocation_failures(
@@ -136,52 +189,21 @@ def _direct_delegate_invocation_failures(
             )
         ]
     position += 1
+    delegate_arguments = tokens[position - 1 :]
+    parsed, parser_failure = _shipped_delegate_parser_failure(
+        delegate_arguments,
+        expected_operation=expected_operation,
+    )
+    if parser_failure is not None:
+        return [
+            (
+                "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+                f"{entrypoint} canonical command is rejected by the shipped "
+                f"delegate parser ({parser_failure})",
+            )
+        ]
 
-    allowed_options = set(COMMON_DELEGATE_OPTIONS)
-    if expected_operation == "validate-current":
-        allowed_options.update(CURRENT_CHANGE_OPTIONS)
-    values: dict[str, list[str]] = {}
-    while position < len(tokens):
-        token = tokens[position]
-        if not token.startswith("--"):
-            return [
-                (
-                    "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
-                    f"{entrypoint} canonical command has unsupported positional argument {token}",
-                )
-            ]
-        if "=" in token:
-            option, value = token.split("=", 1)
-            position += 1
-        else:
-            option = token
-            position += 1
-            if position >= len(tokens) or tokens[position].startswith("--"):
-                return [
-                    (
-                        "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
-                        f"{entrypoint} canonical command option {option} requires a value",
-                    )
-                ]
-            value = tokens[position]
-            position += 1
-        if option not in allowed_options:
-            return [
-                (
-                    "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
-                    f"{entrypoint} canonical command uses unsupported option {option}",
-                )
-            ]
-        if not value:
-            return [
-                (
-                    "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
-                    f"{entrypoint} canonical command option {option} has an empty value",
-                )
-            ]
-        values.setdefault(option, []).append(value)
-
-    if values.get("--target") != ["."]:
+    if _option_count(delegate_arguments, "--target") != 1 or str(parsed.target) != ".":
         return [
             (
                 "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
@@ -192,7 +214,7 @@ def _direct_delegate_invocation_failures(
     duplicates = sorted(
         option
         for option in single_value_options
-        if len(values.get(option, [])) > 1
+        if _option_count(delegate_arguments, option) > 1
     )
     if duplicates:
         return [

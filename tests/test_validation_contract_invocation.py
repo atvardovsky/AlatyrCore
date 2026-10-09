@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import copy
+import contextlib
+import importlib.util
+import io
 import json
+import shlex
 import sys
 import tempfile
 import unittest
@@ -21,6 +25,28 @@ from target_adapter_validation.validation_contract import (  # noqa: E402
     DELEGATE_PATH,
     validate_validation_contract,
 )
+
+
+DELEGATE_SOURCE = ROOT / "templates/target" / DELEGATE_PATH
+DELEGATE_SPEC = importlib.util.spec_from_file_location(
+    "alatyr_delegate_differential_test",
+    DELEGATE_SOURCE,
+)
+assert DELEGATE_SPEC is not None and DELEGATE_SPEC.loader is not None
+delegate = importlib.util.module_from_spec(DELEGATE_SPEC)
+_previous_dont_write_bytecode = sys.dont_write_bytecode
+sys.dont_write_bytecode = True
+try:
+    DELEGATE_SPEC.loader.exec_module(delegate)
+finally:
+    sys.dont_write_bytecode = _previous_dont_write_bytecode
+REQUIRED_BINDINGS = {
+    "validate-current": (
+        ("--diff-ref", "HEAD"),
+        ("--approval-record", "approval.json"),
+        ("--change-package", "package.json"),
+    )
+}
 
 
 class ValidationContractInvocationTests(unittest.TestCase):
@@ -62,6 +88,24 @@ class ValidationContractInvocationTests(unittest.TestCase):
         contract = copy.deepcopy(self.contract)
         contract["entrypoints"]["current-change"]["command"] = command
         return contract
+
+    def parser_accepts(self, command: str) -> bool:
+        arguments = shlex.split(command)[2:]
+        operation = arguments[0]
+        for option, placeholder in REQUIRED_BINDINGS.get(operation, ()):
+            if not any(
+                token == option or token.startswith(f"{option}=")
+                for token in arguments
+            ):
+                arguments.extend([option, placeholder])
+        try:
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
+                io.StringIO()
+            ):
+                delegate.build_parser().parse_args(arguments)
+        except SystemExit:
+            return False
+        return True
 
     def test_shipped_contract_passes(self) -> None:
         self.assertEqual(self.validate(), set())
@@ -125,6 +169,7 @@ class ValidationContractInvocationTests(unittest.TestCase):
             "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --diff-ref $REF",
             "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --approval-record *.json",
             "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --diff-ref %REF%",
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --diff-ref -h --approval-record approval.json --change-package package.json",
         ]
         for command in cases:
             with self.subTest(command=command):
@@ -133,7 +178,75 @@ class ValidationContractInvocationTests(unittest.TestCase):
                     self.validate(self.current_change_contract(command)),
                 )
 
-    def test_allowlisted_current_change_bindings_pass(self) -> None:
+    def test_contract_acceptance_implies_shipped_parser_acceptance(self) -> None:
+        commands = [
+            "python3 .ai/assistant/tools/alatyr_delegate.py status --target .",
+            "python3 .ai/assistant/tools/alatyr_delegate.py archive-audit --target .",
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target .",
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --diff-ref HEAD",
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --approval-record approval.json",
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --change-package package.json",
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --diff-ref HEAD --approval-record approval.json --change-package package.json",
+        ]
+        bases_and_options = [
+            (
+                "adapter-health",
+                "python3 .ai/assistant/tools/alatyr_delegate.py status --target .",
+                ["--framework-source"],
+            ),
+            (
+                "archive-audit",
+                "python3 .ai/assistant/tools/alatyr_delegate.py archive-audit --target .",
+                ["--framework-source"],
+            ),
+            (
+                "current-change",
+                "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --diff-ref HEAD --approval-record approval.json --change-package package.json",
+                [
+                    "--framework-source",
+                    "--diff-ref",
+                    "--approval-record",
+                    "--change-package",
+                ],
+            ),
+        ]
+        candidates: list[tuple[str, str]] = []
+        for entrypoint, base, options in bases_and_options:
+            for option in options:
+                for value in ("-h", "-x", "-v"):
+                    tokens = shlex.split(base)
+                    if option in tokens:
+                        tokens[tokens.index(option) + 1] = value
+                        command = shlex.join(tokens)
+                    else:
+                        command = f"{base} {option} {value}"
+                    candidates.append((entrypoint, command))
+                candidates.append((entrypoint, f"{base} {option}"))
+
+        entrypoint_for_operation = {
+            "status": "adapter-health",
+            "archive-audit": "archive-audit",
+            "validate-current": "current-change",
+        }
+        candidates.extend(
+            (
+                entrypoint_for_operation[shlex.split(command)[2]],
+                command,
+            )
+            for command in commands
+        )
+        for entrypoint, command in candidates:
+            with self.subTest(entrypoint=entrypoint, command=command):
+                contract = copy.deepcopy(self.contract)
+                contract["entrypoints"][entrypoint]["command"] = command
+                contract_accepts = not self.validate(contract)
+                parser_accepts = self.parser_accepts(command)
+                self.assertFalse(
+                    contract_accepts and not parser_accepts,
+                    "contract accepted a command rejected by the shipped delegate parser",
+                )
+
+    def test_complete_current_change_bindings_pass(self) -> None:
         command = (
             "python3 .ai/assistant/tools/alatyr_delegate.py validate-current "
             "--target . --diff-ref HEAD --approval-record approval.json "

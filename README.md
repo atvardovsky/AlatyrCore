@@ -61,7 +61,9 @@ When an agent changes a validator, checker, schema, gate, or generated
 projection, Alatyr treats that behavior as a machine-enforced contract. The
 agent must connect each requirement to enforcement code, a passing example, a
 weaker counterexample that must fail, a proof obligation, and adversarial
-review. This reduces the risk that one mistaken interpretation writes both the
+review. Alternate validators must execute or differentially compare against
+the canonical parser or resolver instead of duplicating its rules. This
+reduces the risk that one mistaken interpretation writes both the
 implementation and the tests that approve it.
 
 The agent still has to inspect the routed sources and report uncertainty.
@@ -618,7 +620,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.84`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.85`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

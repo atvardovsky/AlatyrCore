@@ -733,9 +733,12 @@ target-equivalent check, checks structure only, or remains manual. A local
 checker pass must not be presented as canonical acceptance without that
 binding and its result evidence. Canonical coverage requires a direct portable
 delegate invocation, the entrypoint-specific delegate operation, one target-
-root binding, allowlisted arguments, and an installed delegate semantically
-matching the shipped implementation. A command that only mentions the
-delegate path or selects another operation is not canonical delegation.
+root binding, arguments accepted by the shipped delegate parser, and an
+installed delegate semantically matching the shipped implementation. A
+command that only mentions the delegate path or selects another operation is
+not canonical delegation. Validation may complete required runtime bindings
+missing from a command prefix, but must not repair malformed supplied
+arguments or replace the canonical parser with parallel syntax logic.
 
 Large approval histories may be stored under monthly archive directories. The
 archive index lets routine changed-scope validation verify unchanged shards by

@@ -4,6 +4,22 @@
 
 - None.
 
+## 0.1.0-alpha.85 - 2026-10-09
+
+- Replaced duplicated validation-contract argument interpretation with the
+  trusted shipped delegate's canonical `argparse` parser.
+- Completed only genuinely absent current-change runtime bindings during
+  command-prefix validation; malformed supplied options are no longer repaired
+  or accepted by parallel syntax logic.
+- Added a differential invariant requiring every contract-accepted completed
+  invocation to be accepted by the shipped parser across adapter-health,
+  archive-audit, and current-change entrypoints.
+- Added regressions for short-option-shaped values, every delegate value-taking
+  option, missing values, partial valid prefixes, complete commands, and the
+  exact `--diff-ref -h` report.
+- Kept adapter schema version `69` and increased target template version to
+  `80` for synchronized canonical-parser guidance.
+
 ## 0.1.0-alpha.84 - 2026-10-09
 
 - Fixed schema-2 validation contracts so canonical coverage requires a direct

@@ -292,8 +292,8 @@
       "owner_refs": [
         "ALATYR-ADAPTER-001"
       ],
-      "estimated_words": 1365,
-      "content_digest": "sha256:a4b5d7e03a9dc95ad105a9559b79cdfb16641eeb9243af8e897db69b3535d0bf"
+      "estimated_words": 1422,
+      "content_digest": "sha256:7229e5fcd874fd3c4cb5211738fab59b94425850dba84ab738cddf3f3305ca5a"
     },
     {
       "id": "framework.core.prompt-injection-md",
