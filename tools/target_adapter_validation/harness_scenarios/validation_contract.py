@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 import json
 
 from .common import parse_manifest, validator, write_json
-from target_adapter_validation.validation_contract import validate_validation_contract
+from target_adapter_validation.validation_contract import (
+    DELEGATE_PATH,
+    validate_validation_contract,
+)
 
 
 def run(target: Path, failures: list[str]) -> None:
@@ -63,16 +67,28 @@ def run(target: Path, failures: list[str]) -> None:
             / "templates/target/.ai/assistant/validation-contract.json"
         ).read_text(encoding="utf-8")
     )
+    source_delegate = (
+        Path(__file__).resolve().parents[3]
+        / "templates/target"
+        / DELEGATE_PATH
+    )
+    installed_delegate = contract_target / DELEGATE_PATH
+    installed_delegate.parent.mkdir(parents=True, exist_ok=True)
+    installed_delegate.write_text(
+        source_delegate.read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
     write_json(contract_path, version2)
     valid = validator(contract_target)
     validate_validation_contract(valid, manifest)
     if any(finding.level == "error" for finding in valid.findings):
         failures.append("structured canonical delegate contract must validate")
 
-    version2["entrypoints"]["current-change"]["command"] = (
+    spoofed_contract = copy.deepcopy(version2)
+    spoofed_contract["entrypoints"]["current-change"]["command"] = (
         "python3 .ai/assistant/tools/alatyr_delegate.py-invalid validate-current"
     )
-    write_json(contract_path, version2)
+    write_json(contract_path, spoofed_contract)
     spoofed = validator(contract_target)
     validate_validation_contract(spoofed, manifest)
     if "VALIDATION_CONTRACT_DELEGATE_COMMAND" not in {
@@ -80,16 +96,58 @@ def run(target: Path, failures: list[str]) -> None:
     }:
         failures.append("near-match delegate paths must not prove canonical delegation")
 
-    version2["entrypoints"]["current-change"]["command"] = (
-        "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target ."
-    )
-    version2["entrypoints"]["current-change"]["canonical_delegate"][
+    mutation_cases = [
+        (
+            "python3 .ai/assistant/tools/alatyr_delegate.py status --target .",
+            "VALIDATION_CONTRACT_DELEGATE_OPERATION",
+            "wrong delegate operations must not prove canonical delegation",
+        ),
+        (
+            "echo .ai/assistant/tools/alatyr_delegate.py",
+            "VALIDATION_CONTRACT_DELEGATE_COMMAND",
+            "mentioning the delegate path must not prove invocation",
+        ),
+        (
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --help yes",
+            "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+            "unsupported delegate arguments must not prove canonical execution",
+        ),
+        (
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . && echo done",
+            "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+            "shell-composed commands must not prove canonical execution",
+        ),
+    ]
+    for command, expected_code, message in mutation_cases:
+        mutated_contract = copy.deepcopy(version2)
+        mutated_contract["entrypoints"]["current-change"]["command"] = command
+        write_json(contract_path, mutated_contract)
+        mutated = validator(contract_target)
+        validate_validation_contract(mutated, manifest)
+        if expected_code not in {finding.code for finding in mutated.findings}:
+            failures.append(message)
+
+    drifted_contract = copy.deepcopy(version2)
+    drifted_contract["entrypoints"]["current-change"]["canonical_delegate"][
         "requires_diff_ref"
     ] = False
-    write_json(contract_path, version2)
+    write_json(contract_path, drifted_contract)
     drifted = validator(contract_target)
     validate_validation_contract(drifted, manifest)
     if "VALIDATION_CONTRACT_DELEGATE_DRIFT" not in {
         finding.code for finding in drifted.findings
     }:
         failures.append("structured current-change enforcement drift must fail")
+
+    write_json(contract_path, version2)
+    installed_delegate.write_text(
+        source_delegate.read_text(encoding="utf-8")
+        + "\nCANONICAL_OPERATION_DISABLED = True\n",
+        encoding="utf-8",
+    )
+    content_drift = validator(contract_target)
+    validate_validation_contract(content_drift, manifest)
+    if "VALIDATION_CONTRACT_DELEGATE_CONTENT" not in {
+        finding.code for finding in content_drift.findings
+    }:
+        failures.append("modified delegate semantics must not prove canonical delegation")

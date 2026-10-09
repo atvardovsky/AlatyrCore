@@ -44,9 +44,12 @@ The portable `.ai/assistant/tools/alatyr_delegate.py` is the installed entry
 to canonical source checks. Resolve the source with `--framework-source`, the
 `ALATYR_CORE` environment variable, or the ignored local source-config path
 declared by the validation contract. Resolution fails closed; do not commit an
-absolute workstation source path. Use its `finalize-support` operation to
-converge generated indexes, bootstrap/context projections, support state, and
-canonical validation as one rollback-capable operation.
+absolute workstation source path. Canonical coverage requires a direct
+invocation of this shipped delegate and the operation assigned to that
+entrypoint; a path mention, wrapper command, or different operation is not
+canonical evidence. Use its `finalize-support` operation to converge generated
+indexes, bootstrap/context projections, support state, and canonical
+validation as one rollback-capable operation.
 
 ## Framework Area
 

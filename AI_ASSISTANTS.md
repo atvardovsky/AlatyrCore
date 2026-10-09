@@ -56,8 +56,9 @@ claim.
 Current templates install a portable target delegate. Resolve source tooling
 with an explicit path, `ALATYR_CORE`, or ignored local configuration; never
 commit a workstation-specific absolute path. Use structured validation
-metadata rather than command-name matching. After installation or update,
-prefer the transactional support finalizer so generated indexes and support
+metadata together with a directly parsed delegate invocation; metadata or a
+delegate-path token alone does not prove the selected operation. After
+installation or update, prefer the transactional support finalizer so generated indexes and support
 state either converge with canonical validation or roll back together.
 
 ### Working In An Installed Target Project

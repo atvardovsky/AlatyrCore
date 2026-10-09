@@ -318,6 +318,11 @@ Before upgrading framework files in a target project:
     become installation/update acceptance evidence.
     Require structured canonical-delegate metadata and portable fail-closed
     source resolution; reject committed workstation-specific source paths.
+    Verify the command as a direct invocation of the installed delegate, bind
+    each entry point to its required delegate operation and allowlisted
+    arguments, and verify that the installed delegate remains semantically
+    equivalent to the shipped portable implementation. A path mention plus
+    matching metadata is not operation evidence.
     Synchronize manifest-owned current-baseline claims, transactionally
     regenerate approval/package indexes and recursive context indexes, then
     generate support state last and run canonical validation. Historical

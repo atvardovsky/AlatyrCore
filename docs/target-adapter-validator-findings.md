@@ -3135,7 +3135,7 @@ Catalog entries: 1642
   Level: info. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_COMMAND_UNRESOLVED`
   Level: configured. Source: `tools/target_adapter_validation/validation_contract.py`.
-- `VALIDATION_CONTRACT_DELEGATE_COMMAND`
+- `VALIDATION_CONTRACT_DELEGATE_CONTENT`
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_DELEGATE_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.

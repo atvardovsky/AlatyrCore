@@ -93,11 +93,18 @@ Every project using this framework must define these structural bindings:
   acceptance unless the declared contract and evidence support that claim.
   Canonical delegation must be represented by structured operation, phase,
   scope, archive, and current-change requirements rather than inferred from a
-  command-name substring. A portable target-local delegate resolves the
-  AlatyrCore source from an explicit argument, `ALATYR_CORE`, or ignored local
-  configuration and fails closed when no valid source checkout is available.
-  Committed validation commands must not contain workstation-specific
-  absolute source paths.
+  command-name substring. The command must directly execute the portable
+  delegate, select the entrypoint's required delegate operation, bind the
+  target root once, and contain only arguments accepted for that operation.
+  Mentioning the delegate path, selecting another operation, wrapping it in a
+  shell command, or attaching unsupported arguments does not establish
+  canonical delegation. The installed delegate's executable semantics must
+  match the shipped portable delegate; reviewed custom implementations use
+  `target-equivalent` coverage instead. A portable target-local delegate
+  resolves the AlatyrCore source from an explicit argument, `ALATYR_CORE`, or
+  ignored local configuration and fails closed when no valid source checkout
+  is available. Committed validation commands must not contain
+  workstation-specific absolute source paths.
 - **Acceptance evidence:** an explicit staged or accepted result showing that
   installed files, selected capability state, target facts, local checks, and
   unresolved placeholders were evaluated at the target revision.

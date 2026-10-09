@@ -4,6 +4,22 @@
 
 - None.
 
+## 0.1.0-alpha.84 - 2026-10-09
+
+- Fixed schema-2 validation contracts so canonical coverage requires a direct
+  portable-delegate invocation selecting the entrypoint's assigned operation,
+  one target-root binding, and only operation-compatible arguments.
+- Rejected commands that merely mention the delegate path, select another
+  operation, use wrappers or shell composition, or rely on ambiguous and
+  unsupported arguments.
+- Bound canonical coverage to the shipped delegate's parsed Python semantics;
+  missing, symlinked, malformed, or semantically modified delegates now fail
+  instead of inheriting canonical status from metadata.
+- Added adversarial command and delegate mutation tests, including portable
+  Python launcher forms and the exact wrong-operation and `echo` regressions.
+- Kept adapter schema version `69` and increased target template version to
+  `79` for synchronized installed validation guidance.
+
 ## 0.1.0-alpha.83 - 2026-10-09
 
 - Added a portable installed target delegate with fail-closed source

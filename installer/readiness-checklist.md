@@ -493,7 +493,9 @@ Final evidence must say:
   target-equivalent, structural-only, or manual coverage
 - canonical commands route through the portable installed delegate, use
   structured operation/scope requirements, fail closed when source is
-  unavailable, and contain no workstation-specific absolute source path
+  unavailable, directly select the required delegate operation with only
+  allowlisted arguments, retain shipped delegate semantics, and contain no
+  workstation-specific absolute source path
 - current baseline claims match the manifest; historical baseline labels stay
   explicitly historical
 - completed approval history is bounded into monthly shards when needed, its

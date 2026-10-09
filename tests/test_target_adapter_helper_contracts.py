@@ -57,6 +57,7 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
             "PROBLEM_MODEL_PROJECTION_SCHEMA",
             "PROBLEM_MODEL_SCHEMA",
             "APPROVAL_ARCHIVE_INDEX_SCHEMA",
+            "SOURCE_DELEGATE_PATH",
             "VALIDATION_CONTRACT_SCHEMA",
         }
         explicitly_external_functions = {

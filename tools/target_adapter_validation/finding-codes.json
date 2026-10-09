@@ -14094,7 +14094,7 @@
       ]
     },
     {
-      "code": "VALIDATION_CONTRACT_DELEGATE_COMMAND",
+      "code": "VALIDATION_CONTRACT_DELEGATE_CONTENT",
       "levels": [
         "error"
       ],

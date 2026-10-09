@@ -731,7 +731,11 @@ health, current-change validation, and complete archive audit and states
 whether each entry point delegates to canonical validation, provides a
 target-equivalent check, checks structure only, or remains manual. A local
 checker pass must not be presented as canonical acceptance without that
-binding and its result evidence.
+binding and its result evidence. Canonical coverage requires a direct portable
+delegate invocation, the entrypoint-specific delegate operation, one target-
+root binding, allowlisted arguments, and an installed delegate semantically
+matching the shipped implementation. A command that only mentions the
+delegate path or selects another operation is not canonical delegation.
 
 Large approval histories may be stored under monthly archive directories. The
 archive index lets routine changed-scope validation verify unchanged shards by

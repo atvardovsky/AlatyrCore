@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import os
+import shlex
 import sys
 import tempfile
 import unittest
@@ -26,6 +28,70 @@ finally:
 
 
 class TargetDelegateTests(unittest.TestCase):
+    def test_validation_contract_commands_map_to_declared_canonical_operations(self) -> None:
+        contract = json.loads(
+            (
+                ROOT / "templates/target/.ai/assistant/validation-contract.json"
+            ).read_text(encoding="utf-8")
+        )
+        parser = delegate.build_parser()
+        for entrypoint, entry in contract["entrypoints"].items():
+            tokens = shlex.split(entry["command"])
+            self.assertEqual(tokens[1], ".ai/assistant/tools/alatyr_delegate.py")
+            delegate_arguments = tokens[2:]
+            if delegate_arguments[0] == "validate-current":
+                delegate_arguments.extend(
+                    [
+                        "--diff-ref",
+                        "HEAD~1",
+                        "--approval-record",
+                        "approval.json",
+                        "--change-package",
+                        "package.json",
+                    ]
+                )
+            parsed = parser.parse_args(delegate_arguments)
+            canonical = delegate.canonical_arguments(
+                parsed,
+                Path("/target"),
+                Path("/source"),
+            )
+            metadata = entry["canonical_delegate"]
+
+            def option_value(option: str, fallback: str) -> str:
+                return (
+                    canonical[canonical.index(option) + 1]
+                    if option in canonical
+                    else fallback
+                )
+
+            with self.subTest(entrypoint=entrypoint):
+                self.assertEqual(metadata["operation"], canonical[0])
+                self.assertEqual(
+                    metadata["validation_phase"],
+                    option_value("--validation-phase", "not-applicable"),
+                )
+                self.assertEqual(
+                    metadata["validation_scope"],
+                    option_value("--validation-scope", "not-applicable"),
+                )
+                self.assertEqual(
+                    metadata["approval_archive_mode"],
+                    option_value("--approval-archive-mode", "not-applicable"),
+                )
+                self.assertEqual(
+                    metadata["requires_diff_ref"],
+                    "--diff-ref" in canonical,
+                )
+                self.assertEqual(
+                    metadata["requires_approval_records"],
+                    "--approval-record" in canonical,
+                )
+                self.assertEqual(
+                    metadata["requires_change_packages"],
+                    "--change-package" in canonical,
+                )
+
     def test_source_resolution_fails_closed_without_configuration(self) -> None:
         with tempfile.TemporaryDirectory() as directory, patch.dict(
             os.environ, {}, clear=True
