@@ -53,6 +53,7 @@
         ".ai/assistant/policies/action-authorization.json",
         ".ai/assistant/policies/session-continuity.json",
         ".ai/assistant/task-decomposition.json",
+        ".ai/assistant/tools/alatyr_delegate.py",
         ".ai/assistant/templates/adapter-output-contracts.md",
         ".ai/assistant/templates/context-packet.json",
         ".ai/assistant/templates/installation-note.md",

@@ -335,6 +335,10 @@ Classify every proposed target file:
     selected profile or enabled module includes them. Generate every derived
     index from that final installed set rather than from the complete template
     tree.
+    Install the portable target delegate and structured validation contract.
+    Source resolution uses an explicit source argument, `ALATYR_CORE`, or the
+    ignored `.ai/local/framework-source` file and fails closed. Do not commit
+    workstation-specific absolute paths.
     Route enabled team operations and matched state-changing work through the
     lazy `.ai/assistant/team/context-overlay.json`. Read the compact active-work
     index first; do not put full team state in bootstrap.
@@ -615,8 +619,10 @@ accepted or ready. Before reporting installation or update completion:
 4. Synchronize machine policy indexes and their human README projections.
    Synchronize current framework, adapter-schema, template, and source-commit
    claims with the manifest while preserving explicitly historical claims.
-5. Rebuild approval archive digests, recursive context indexes, optional
-   reverse/generation indexes, and the generated support state in that order.
+5. Rebuild approval archive digests, change-package projections, recursive
+   context indexes, optional reverse/generation indexes, and the generated
+   support state in that order. Prefer the transactional source finalizer so a
+   later validation failure restores generated surfaces.
    Validate the declared adapter-health, current-change, and archive-audit
    entry points; only complete archive validation is acceptance evidence.
    Confirm that target `AGENTS.md`, code/semantic profiles, final evidence, and

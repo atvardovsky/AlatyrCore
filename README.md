@@ -547,6 +547,14 @@ selection does not silently activate them.
 
 ## After Installation
 
+The installed adapter includes a small portable delegate for canonical
+AlatyrCore source checks. It resolves the selected framework checkout from an
+explicit argument, the `ALATYR_CORE` environment variable, or ignored local
+configuration, so repository instructions do not depend on one developer's
+absolute path. Installation and updates can finish through one transactional
+support operation that refreshes derived indexes and support state, runs full
+validation, and restores generated files if validation fails.
+
 Developers continue using their supported assistant in natural language:
 
 ```text
@@ -610,7 +618,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.82`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.83`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

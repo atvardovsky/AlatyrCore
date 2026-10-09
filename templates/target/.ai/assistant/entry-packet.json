@@ -19,9 +19,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.81",
-    "adapter_schema_version": "68",
-    "template_version": "76"
+    "framework_version": "0.1.0-alpha.83",
+    "adapter_schema_version": "69",
+    "template_version": "78"
   },
   "derived_from": {
     "manifest": {
@@ -46,7 +46,7 @@
     },
     "support_policy": {
       "path": ".ai/project/support-policy.json",
-      "sha256": "0744df6114e470e31e4c7c9ea311ab7f0b6ddbfa04bf5103a67642157bce273b"
+      "sha256": "bf792697f50d02cfe1f37b963d43c34156b4c9331eb8eacccca5e092bb35d808"
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",

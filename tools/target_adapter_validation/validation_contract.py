@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import re
+import shlex
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -17,6 +19,36 @@ VALIDATION_CONTRACT_SCHEMA = (
     / "schemas/alatyr-validation-contract.schema.json"
 )
 ENTRYPOINTS = ("adapter-health", "current-change", "archive-audit")
+DELEGATE_PATH = ".ai/assistant/tools/alatyr_delegate.py"
+EXPECTED_DELEGATES = {
+    "adapter-health": {
+        "operation": "status",
+        "validation_phase": "not-applicable",
+        "validation_scope": "not-applicable",
+        "approval_archive_mode": "not-applicable",
+        "requires_diff_ref": False,
+        "requires_approval_records": False,
+        "requires_change_packages": False,
+    },
+    "current-change": {
+        "operation": "validate-adapter",
+        "validation_phase": "acceptance",
+        "validation_scope": "full",
+        "approval_archive_mode": "full",
+        "requires_diff_ref": True,
+        "requires_approval_records": True,
+        "requires_change_packages": True,
+    },
+    "archive-audit": {
+        "operation": "validate-adapter",
+        "validation_phase": "acceptance",
+        "validation_scope": "full",
+        "approval_archive_mode": "full",
+        "requires_diff_ref": False,
+        "requires_approval_records": False,
+        "requires_change_packages": False,
+    },
+}
 
 
 class FindingSink(Protocol):
@@ -62,6 +94,7 @@ def validate_validation_contract(sink: FindingSink, manifest: Any) -> None:
         )
         return
 
+    schema_version = contract["schema_version"]
     entrypoints = contract["entrypoints"]
     structural_only: list[str] = []
     for operation in ENTRYPOINTS:
@@ -75,12 +108,60 @@ def validate_validation_contract(sink: FindingSink, manifest: Any) -> None:
                 f"{operation} command is unresolved",
                 CONTRACT_PATH,
             )
-        if coverage == "canonical-delegate" and "validate_target_adapter" not in command:
+        try:
+            command_tokens = shlex.split(command)
+        except ValueError:
+            command_tokens = []
+        absolute_tokens = [
+            token
+            for token in command_tokens
+            if token.startswith("/") or re.match(r"^[A-Za-z]:[\\/]", token)
+        ]
+        if absolute_tokens:
             sink.error(
-                "VALIDATION_CONTRACT_FALSE_CANONICAL_CLAIM",
-                f"{operation} claims canonical delegation without naming the canonical validator",
+                "VALIDATION_CONTRACT_ABSOLUTE_PATH",
+                f"{operation} command contains machine-local absolute paths",
                 CONTRACT_PATH,
             )
+        if schema_version == 1:
+            if coverage == "canonical-delegate" and "validate_target_adapter" not in command:
+                sink.error(
+                    "VALIDATION_CONTRACT_FALSE_CANONICAL_CLAIM",
+                    f"{operation} claims canonical delegation without naming the canonical validator",
+                    CONTRACT_PATH,
+                )
+        else:
+            delegate = entry.get("canonical_delegate")
+            if coverage == "canonical-delegate":
+                if DELEGATE_PATH not in command_tokens:
+                    sink.error(
+                        "VALIDATION_CONTRACT_DELEGATE_COMMAND",
+                        f"{operation} canonical command must invoke {DELEGATE_PATH}",
+                        CONTRACT_PATH,
+                    )
+                if not isinstance(delegate, dict):
+                    sink.error(
+                        "VALIDATION_CONTRACT_DELEGATE_MISSING",
+                        f"{operation} canonical delegation requires structured delegate metadata",
+                        CONTRACT_PATH,
+                    )
+                else:
+                    expected = EXPECTED_DELEGATES[operation]
+                    drift = sorted(
+                        key for key, value in expected.items() if delegate.get(key) != value
+                    )
+                    if drift:
+                        sink.error(
+                            "VALIDATION_CONTRACT_DELEGATE_DRIFT",
+                            f"{operation} canonical delegate differs for: {', '.join(drift)}",
+                            CONTRACT_PATH,
+                        )
+            elif delegate is not None:
+                sink.error(
+                    "VALIDATION_CONTRACT_DELEGATE_UNCLAIMED",
+                    f"{operation} has canonical delegate metadata without canonical-delegate coverage",
+                    CONTRACT_PATH,
+                )
         if coverage in {"structural-only", "manual"}:
             structural_only.append(operation)
         if entry["final_evidence_eligible"] and coverage not in {
@@ -98,6 +179,12 @@ def validate_validation_contract(sink: FindingSink, manifest: Any) -> None:
             "VALIDATION_CONTRACT_LIMITED",
             "target-local validation is not canonical for: "
             + ", ".join(structural_only),
+            CONTRACT_PATH,
+        )
+    if schema_version == 1:
+        sink.warn(
+            "VALIDATION_CONTRACT_LEGACY",
+            "schema version 1 cannot prove canonical delegation structurally; migrate to version 2",
             CONTRACT_PATH,
         )
     sink.info(

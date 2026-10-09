@@ -53,6 +53,13 @@ structural pass with canonical acceptance, and do not collapse accepted
 installation state, support freshness, and current-change coverage into one
 claim.
 
+Current templates install a portable target delegate. Resolve source tooling
+with an explicit path, `ALATYR_CORE`, or ignored local configuration; never
+commit a workstation-specific absolute path. Use structured validation
+metadata rather than command-name matching. After installation or update,
+prefer the transactional support finalizer so generated indexes and support
+state either converge with canonical validation or roll back together.
+
 ### Working In An Installed Target Project
 
 Use the target repository's own entry points, normally:
@@ -115,7 +122,8 @@ If the user asks to install AlatyrCore:
    proposals, accepted authority, freshness, and known gaps distinct.
 10. Use `templates/target` only as placeholders.
 11. Run only validation that exists in the target or the explicitly selected
-    source tooling. Do not invent commands.
+    source tooling. Do not invent commands. When available, use the portable
+    delegate and transactional support finalizer before final acceptance.
 12. Report created or changed surfaces, discovery dispositions, approvals,
     validation, unresolved
     checks, and residual risk.

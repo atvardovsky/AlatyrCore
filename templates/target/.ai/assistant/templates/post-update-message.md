@@ -44,6 +44,9 @@ Future assistant bootstrap:
 - Preserve target-owned support classifications, accepted relationships,
   candidates, and generator bindings. Rebuild optional reverse/generation
   indexes, then generate `.ai/support-state.json` last.
+- Resolve canonical source tooling through the portable target delegate and
+  run its transactional support finalizer after adapter migration. A local
+  structural checker or one successful renderer is not final acceptance.
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json"]} -->
 - Preserve selected assistant/provider capability evidence. Recheck provider
   cache mode, exposed client controls and telemetry, and freshness before

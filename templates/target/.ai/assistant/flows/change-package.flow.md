@@ -43,6 +43,9 @@ evidence. Large-task activation alone is not sufficient.
    Keep active and recent entries in the root index. When its target budget is
    exceeded, move closed entries into bounded index shards and record each
    shard's target-relative path, SHA-256, and record count in root `shards`.
+   Use the canonical package-index renderer when source tooling is available;
+   it updates shard projections and root shard descriptors together. Keep raw
+   replay and trace evidence outside the top-level package-record directory.
 4. Record the plan version/file/hash and the approved semantic and path scope.
    Bind every active package to the digest of its ignored runtime problem
    model. If this corrects earlier repair work, keep the same incident family
@@ -78,6 +81,9 @@ evidence. Large-task activation alone is not sufficient.
     start/validation tree state plus unrelated-change handling.
 11. Produce the redacted Markdown report only when human review, audit, pilot,
     or publication needs it.
+12. Before final evidence, run the transactional support finalizer when
+    available. Bind strict current-change validation to the diff base, selected
+    approval records, and selected package.
 
 ## Validation Boundary
 

@@ -29,10 +29,12 @@
     {
       "pattern": ".ai/local/**",
       "reason": "per-user local state is ignored and must not enter committed support evidence"
-    },
+    }
+  ],
+  "ignored_paths": [
     {
       "pattern": ".ai/.runtime/**",
-      "reason": "ephemeral continuity and validator runtime state must not enter committed support evidence"
+      "reason": "ephemeral continuity and validator runtime state is not a support surface"
     }
   ],
   "classifications": [

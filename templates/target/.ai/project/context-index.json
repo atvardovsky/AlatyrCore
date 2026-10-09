@@ -132,8 +132,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 114,
-      "content_digest": "sha256:0744df6114e470e31e4c7c9ea311ab7f0b6ddbfa04bf5103a67642157bce273b"
+      "estimated_words": 116,
+      "content_digest": "sha256:bf792697f50d02cfe1f37b963d43c34156b4c9331eb8eacccca5e092bb35d808"
     },
     {
       "id": "project.content.team-operating-model-md",

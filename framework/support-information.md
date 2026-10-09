@@ -35,6 +35,11 @@ Every accepted adapter maintains a target-owned support policy and a generated
 support state. Every non-ignored file under a managed root must match one
 declared classification or an explicit exclusion with a reason.
 
+Use `ignored_paths` for local runtime, cache, or session artifacts that are
+not support surfaces. Use `exclusions` for known support surfaces intentionally
+omitted from generated state. Installed cost reports must show ignored local
+files separately and must not charge them as managed support.
+
 Use these classifications:
 
 - `exact-contract`: active policy, knowledge, instruction, or configuration
@@ -206,8 +211,14 @@ During installation or update:
    generator bindings.
 3. Rebuild generated entry packets, recursive context indexes, and optional
    reverse/generation indexes from their canonical owners.
-4. Generate support state last.
-5. Run strict validation before claiming acceptance.
+4. Refresh compact approval and change-package indexes from their records.
+5. Generate support state last.
+6. Run strict validation before claiming acceptance.
+
+When source tooling is available, prefer one transactional finalization
+operation that performs these projections in dependency order, validates the
+complete result, and restores generated surfaces if a later step fails. A
+successful individual renderer is not final acceptance evidence.
 
 For framework updates, use migration evidence plus the support delta before
 opening the full support layer. Load changed owners and selected relationship

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 
 from .common import parse_manifest, validator, write_json
 from target_adapter_validation.validation_contract import validate_validation_contract
@@ -55,3 +56,40 @@ def run(target: Path, failures: list[str]) -> None:
         finding.code for finding in false_claim.findings
     }:
         failures.append("canonical delegation claims must name the canonical validator")
+
+    version2 = json.loads(
+        (
+            Path(__file__).resolve().parents[3]
+            / "templates/target/.ai/assistant/validation-contract.json"
+        ).read_text(encoding="utf-8")
+    )
+    write_json(contract_path, version2)
+    valid = validator(contract_target)
+    validate_validation_contract(valid, manifest)
+    if any(finding.level == "error" for finding in valid.findings):
+        failures.append("structured canonical delegate contract must validate")
+
+    version2["entrypoints"]["current-change"]["command"] = (
+        "python3 .ai/assistant/tools/alatyr_delegate.py-invalid validate-current"
+    )
+    write_json(contract_path, version2)
+    spoofed = validator(contract_target)
+    validate_validation_contract(spoofed, manifest)
+    if "VALIDATION_CONTRACT_DELEGATE_COMMAND" not in {
+        finding.code for finding in spoofed.findings
+    }:
+        failures.append("near-match delegate paths must not prove canonical delegation")
+
+    version2["entrypoints"]["current-change"]["command"] = (
+        "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target ."
+    )
+    version2["entrypoints"]["current-change"]["canonical_delegate"][
+        "requires_diff_ref"
+    ] = False
+    write_json(contract_path, version2)
+    drifted = validator(contract_target)
+    validate_validation_contract(drifted, manifest)
+    if "VALIDATION_CONTRACT_DELEGATE_DRIFT" not in {
+        finding.code for finding in drifted.findings
+    }:
+        failures.append("structured current-change enforcement drift must fail")

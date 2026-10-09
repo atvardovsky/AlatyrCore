@@ -531,6 +531,11 @@ def classify_path(relpath: str, policy: dict[str, Any] | None) -> str:
             exclusion.get("pattern", ""), PathDialect.SUPPORT_TREE_V1
         ).matches(relpath):
             return "excluded"
+    for ignored in policy.get("ignored_paths", []):
+        if isinstance(ignored, dict) and PathSpec(
+            ignored.get("pattern", ""), PathDialect.SUPPORT_TREE_V1
+        ).matches(relpath):
+            return "ignored-local"
     for entry in policy.get("classifications", []):
         if not isinstance(entry, dict):
             continue
@@ -621,11 +626,12 @@ def build_installed_report(target: Path) -> dict[str, Any]:
             classifications[classification] = classifications.get(classification, 0) + 1
             classified_pairs.setdefault(classification, []).append((label, path))
     excluded = measure_files(classified_pairs.get("excluded", []))
+    ignored = measure_files(classified_pairs.get("ignored-local", []))
     managed = measure_files(
         [
             pair
             for classification, entries in classified_pairs.items()
-            if classification not in {"excluded", "unclassified"}
+            if classification not in {"excluded", "ignored-local", "unclassified"}
             for pair in entries
         ]
     )
@@ -659,6 +665,10 @@ def build_installed_report(target: Path) -> dict[str, Any]:
                 "description": "Support files omitted by explicit support-policy exclusions.",
                 **excluded,
             },
+            "ignored_local_files": {
+                "description": "Local runtime files omitted by explicit ignored-path policy.",
+                **ignored,
+            },
             "unclassified_support_files": {
                 "description": "Support files not covered by a policy classification.",
                 **unclassified,
@@ -675,7 +685,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         "index_pressure": index_pressure(target, paths),
         "limitations": [
             "installed support cost is a filesystem measurement, not semantic correctness",
-            "ignored local state is not filtered unless the target support policy excludes it",
+            "ignored local state is filtered only when the target support policy declares it",
             "runtime context depends on the selected task route",
         ],
     }
@@ -686,6 +696,7 @@ def render_text(report: dict[str, Any]) -> str:
         support = report["support_surfaces"]
         managed_support = report["cost_scopes"]["managed_support_files"]
         excluded_support = report["cost_scopes"]["excluded_support_files"]
+        ignored_support = report["cost_scopes"]["ignored_local_files"]
         inventory = report["cost_scopes"]["managed_inventory"]
         lines = [
             "Alatyr installed support cost",
@@ -697,6 +708,8 @@ def render_text(report: dict[str, Any]) -> str:
             f"Managed words: {managed_support['words']}",
             f"Excluded files: {excluded_support['files']}",
             f"Excluded words: {excluded_support['words']}",
+            f"Ignored local files: {ignored_support['files']}",
+            f"Ignored local words: {ignored_support['words']}",
             f"Gross estimated tokens at 4 chars/token: {support['estimated_tokens_4_chars']}",
             (
                 "Managed inventory records: "

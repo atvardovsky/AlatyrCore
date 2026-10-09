@@ -40,6 +40,14 @@ coverage of each target-local command are owned by
 `.ai/assistant/validation-contract.json`. A structural-only local pass is not
 canonical acceptance.
 
+The portable `.ai/assistant/tools/alatyr_delegate.py` is the installed entry
+to canonical source checks. Resolve the source with `--framework-source`, the
+`ALATYR_CORE` environment variable, or the ignored local source-config path
+declared by the validation contract. Resolution fails closed; do not commit an
+absolute workstation source path. Use its `finalize-support` operation to
+converge generated indexes, bootstrap/context projections, support state, and
+canonical validation as one rollback-capable operation.
+
 ## Framework Area
 
 `.ai/framework` contains Alatyr Core portable framework rules.

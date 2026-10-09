@@ -61,6 +61,8 @@ EXPECTED_COMMANDS = {
     "validate-adapter",
     "approval-check",
     "archive-approvals",
+    "render-package-index",
+    "finalize-support",
     "suggest-knowledge",
     "status",
     "doctor",

@@ -122,8 +122,9 @@ distinct from current-scope action authorization, use explicitly selected
 machine-readable records to enforce that the complete operation diff stays
 within approved path scope, reconcile activated package facts, architecture
 areas, behavior categories, external effects, and paths with declared semantic
-scope, and keep active approvals separate from digest-bound monthly history so
-reduced archive checks cannot become acceptance evidence.
+scope, keep active approvals separate from digest-bound monthly history so
+reduced archive checks cannot become acceptance evidence, and report archive
+pressure without moving records automatically.
 Applies to: protected changes, installed operations.
 Enforcement: required.
 
@@ -195,12 +196,13 @@ Installed owner: `.ai/framework/support-information.md`
 Commitment: Classify and hash every managed support surface, require a
 fact-specific Project Contour Sync Decision for every code or test change
 without forcing unnecessary contour edits, distinguish gross, excluded,
-managed, and unclassified support cost, route changed paths and facts through
-effective bounded bindings and accepted relationships, keep schema-valid
-detected relationships as non-authoritative candidates until target acceptance,
-propagate generation staleness through declared dependencies, reject required
-inputs without effective matches, require content-hash-bound review evidence
-for non-deterministic artifacts, and keep generation owner-bound,
+ignored-local, managed, and unclassified support cost, route changed paths and
+facts through effective bounded bindings and accepted relationships, keep
+schema-valid detected relationships as non-authoritative candidates until
+target acceptance, propagate generation staleness through declared
+dependencies, reject required inputs without effective matches, require
+content-hash-bound review evidence for non-deterministic artifacts, and keep
+generation and final projection convergence owner-bound,
 plan/base/output-approved when protected, regular-file and non-escaping,
 complete-set staged, command-validated, and transactionally restorable without
 bypassing current-scope authorization or loading unrelated project context.
@@ -229,9 +231,11 @@ multi-surface approval, audit, or publishable provenance need. Bind facts,
 semantic/path scope, plan, approvals, companion decisions, corrections, linked
 evidence, validation, and provenance without replacing project owners or
 burdening local tasks. Project active incident family, iteration, predecessor
-digests, failed gate, and problem-model/lifecycle binding into the compact root
-index; auto-validate active records and changed plans while completed history
-stays lazy and shardable.
+digests, failed gate, and problem-model/lifecycle binding into compact root or
+shard indexes; refresh shard projections with root digest/count descriptors,
+auto-validate active records and changed plans, keep completed history lazy and
+shardable, and keep untyped or large raw evidence outside the top-level
+package-record directory.
 Applies to: activated business changes, activated architecture changes,
 activated data changes, activated security changes, migrations, public contract
 changes.
@@ -270,7 +274,8 @@ completeness, classify module adoption as enabled-empty, populated, or
 reuse-observed without inventing reuse evidence, keep a compact derived sharded
 index with independent authority and freshness states, deliver only accepted
 current items through bounded initial and refined task routes, and treat
-repeated completed-package signals as review-only suggestions rather than
+verified repeated owner, incident-family, failed-gate, correction, and
+completed-package signals as typed review-only suggestions rather than
 automatic promotion.
 Applies to: material task finalization, direct decision-owner guidance, project
 knowledge promotion, non-trivial task context routing, guidance narrowing and
@@ -424,13 +429,16 @@ contract, gate index, support policy/state, capability closure, installation
 state and transition evidence, current-scope action policy, and target
 validation contract; separate installation, support, and current-change health
 and declare whether local checks are canonical delegates, target equivalents,
-structural-only, or manual; reject unclassified or stale support, live support
-placeholders, manifest/profile module disagreement, invalid installation-state
-history, and machine/human policy drift before acceptance; and preserve
-target-owned classifications, relationships, candidates, generator bindings,
-durable task engineering evidence, structured and non-canonical Debug Mode
-evidence, development-pattern evidence, routed AI infrastructure items,
-recommendation/adaptation records, and optional project-owned module state.
+structural-only, or manual; prove canonical delegation with structured
+operation/scope metadata and a fail-closed portable target delegate instead of
+command substrings or committed workstation paths; reject unclassified or stale
+support, live support placeholders, manifest/profile module disagreement,
+invalid installation-state history, and machine/human policy drift before
+acceptance; and preserve target-owned classifications, relationships,
+candidates, generator bindings, durable task engineering evidence, structured
+and non-canonical Debug Mode evidence, development-pattern evidence, routed AI
+infrastructure items, recommendation/adaptation records, and optional
+project-owned module state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
 
@@ -557,10 +565,10 @@ and template trees from exact reachable source-version evidence when available
 and otherwise report them as not compared; publish upgrade-assessment outputs
 transactionally; preserve target-owned support classifications, relationships,
 candidates, generator bindings, validation coverage, and historical claims;
-synchronize current manifest-owned baseline claims and approval archive
-digests, then rebuild recursive context, reverse relationship, optional
-generation, semantic-codebook, and bootstrap bindings from the exact
-checked-out installation before generating support state last; preserve
+synchronize current manifest-owned baseline claims and transactionally rebuild
+approval/package indexes, recursive context, reverse relationship, optional
+generation, semantic-codebook, bootstrap bindings, and final support state from
+the exact checked-out installation before canonical validation; preserve
 current-scope authorization and project evidence; bind installation states to a
 continuous operation/revision/authorization/approval/validation transition
 record; require staged pre-acceptance, accepted-state transition, and final

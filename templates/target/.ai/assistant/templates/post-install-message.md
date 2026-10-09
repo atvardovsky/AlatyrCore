@@ -20,6 +20,13 @@ Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
 Only `accepted` installation state with current strict validation can be
 reported as `ready`.
 
+Canonical source tooling:
+- Resolve it through `.ai/assistant/tools/alatyr_delegate.py` using an
+  explicit source path, `ALATYR_CORE`, or the ignored local source-config
+  path declared by the validation contract.
+- Run transactional support finalization before accepted completion; source
+  resolution or downstream validation failure is a blocker, not a local pass.
+
 Entry points:
 - `AGENTS.md`
 - `AI_ASSISTANTS.md`
@@ -32,6 +39,7 @@ Entry points:
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/policies/action-authorization.json`
 - `.ai/assistant/policies/session-continuity.json`
+- `.ai/assistant/tools/alatyr_delegate.py`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/bootstrap-index.json`
 - `.ai/assistant/bootstrap-integrity.json`
@@ -116,8 +124,9 @@ Future assistant bootstrap:
   fragments, and the installation note only when routing or unclear adapter
   state requires them. Fall back to canonical owner prose when a compact term
   cannot be resolved exactly.
-- Rebuild the entry packet, optional consistency/generation indexes, and
-  recursive context indexes before refreshing support state. Use support
+- Rebuild approval/package indexes, the entry packet, optional consistency/
+  generation indexes, and recursive context indexes before refreshing support
+  state. Prefer the portable delegate's transactional finalizer. Use support
   differences to select context; do not infer semantic correctness from
   matching hashes.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.

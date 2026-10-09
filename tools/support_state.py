@@ -87,6 +87,17 @@ def validate_policy(policy: dict[str, Any]) -> None:
         _normalized_path(exclusion.get("pattern"), f"exclusions[{index}].pattern")
         if not isinstance(exclusion.get("reason"), str) or not exclusion["reason"]:
             raise SupportStateError(f"exclusions[{index}].reason must be non-empty")
+    ignored_paths = policy.get("ignored_paths", [])
+    if not isinstance(ignored_paths, list):
+        raise SupportStateError("ignored_paths must be a list")
+    for index, ignored in enumerate(ignored_paths):
+        if not isinstance(ignored, dict):
+            raise SupportStateError(f"ignored_paths[{index}] must be an object")
+        _normalized_path(ignored.get("pattern"), f"ignored_paths[{index}].pattern")
+        if not isinstance(ignored.get("reason"), str) or not ignored["reason"]:
+            raise SupportStateError(
+                f"ignored_paths[{index}].reason must be non-empty"
+            )
 
     classifications = policy.get("classifications")
     if not isinstance(classifications, list) or not classifications:
@@ -199,7 +210,7 @@ def select_support_paths(
             "case-colliding support paths: " + ", ".join(sorted(set(collisions)))
         )
 
-    exclusions = policy["exclusions"]
+    exclusions = [*policy["exclusions"], *policy.get("ignored_paths", [])]
     classification_rules = policy["classifications"]
     selected: dict[str, tuple[str, str]] = {}
     unmanaged: list[str] = []

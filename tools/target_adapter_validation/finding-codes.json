@@ -64,7 +64,7 @@
     },
     {
       "id": "APPROVAL",
-      "code_count": 39
+      "code_count": 40
     },
     {
       "id": "ARCHITECTURE",
@@ -192,7 +192,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 110
+      "code_count": 112
     },
     {
       "id": "PLACEHOLDERS",
@@ -268,7 +268,7 @@
     },
     {
       "id": "VALIDATION",
-      "code_count": 9
+      "code_count": 15
     },
     {
       "id": "VOCABULARY",
@@ -945,6 +945,15 @@
       "code": "APPROVAL_ARCHIVE_PARTIAL",
       "levels": [
         "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_ARCHIVE_PRESSURE",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -8873,6 +8882,24 @@
       ]
     },
     {
+      "code": "PACKAGE_DIRECTORY_ARTIFACT_ROLE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_DIRECTORY_ARTIFACT_SIZE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "PACKAGE_ENGINEERING_EVIDENCE_REFERENCE",
       "levels": [
         "dynamic"
@@ -14040,6 +14067,15 @@
       ]
     },
     {
+      "code": "VALIDATION_CONTRACT_ABSOLUTE_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
       "code": "VALIDATION_CONTRACT_CHECKED",
       "levels": [
         "info"
@@ -14052,6 +14088,42 @@
       "code": "VALIDATION_CONTRACT_COMMAND_UNRESOLVED",
       "levels": [
         "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_DELEGATE_COMMAND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_DELEGATE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_DELEGATE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_DELEGATE_UNCLAIMED",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/target_adapter_validation/validation_contract.py"
@@ -14088,6 +14160,15 @@
       "code": "VALIDATION_CONTRACT_INVALID_SHAPE",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_CONTRACT_LEGACY",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/target_adapter_validation/validation_contract.py"

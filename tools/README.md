@@ -26,6 +26,9 @@ python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py approval-check --target /path/to/target-repo --diff-ref HEAD~1 --approval-record .ai/assistant/approvals/approval.json
 python3 tools/alatyr.py archive-approvals --target /path/to/target-repo
+python3 tools/alatyr.py render-package-index --target /path/to/target-repo
+python3 tools/alatyr.py finalize-support --target /path/to/target-repo
+python3 tools/alatyr.py finalize-support --target /path/to/target-repo --write --require-current-change --diff-ref HEAD~1 --approval-record /path/to/target-repo/.ai/assistant/approvals/approval.json --change-package /path/to/target-repo/.ai/assistant/change-packages/package.json
 python3 tools/alatyr.py suggest-knowledge --target /path/to/target-repo
 python3 tools/alatyr.py render-entry --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo
@@ -59,6 +62,8 @@ Windows PowerShell:
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
 .\tools\alatyr.ps1 approval-check --target C:\path\to\target-repo --diff-ref HEAD~1 --approval-record .ai\assistant\approvals\approval.json
+.\tools\alatyr.ps1 render-package-index --target C:\path\to\target-repo
+.\tools\alatyr.ps1 finalize-support --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-entry --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo --write
@@ -90,6 +95,8 @@ tools\alatyr.cmd status --target C:\path\to\target-repo
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 tools\alatyr.cmd approval-check --target C:\path\to\target-repo --diff-ref HEAD~1 --approval-record .ai\assistant\approvals\approval.json
+tools\alatyr.cmd render-package-index --target C:\path\to\target-repo
+tools\alatyr.cmd finalize-support --target C:\path\to\target-repo
 tools\alatyr.cmd render-entry --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo --write
@@ -149,6 +156,16 @@ The stable command set is:
 - `validate-adapter`: optional explicit report output only
 - `approval-check`: read-only strict diff-to-approval scope check with optional
   change-package enforcement
+- `archive-approvals`: checks or explicitly refreshes the immutable monthly
+  approval archive digest index
+- `render-package-index`: checks or explicitly refreshes compact package
+  projections, including shard digest and count descriptors
+- `finalize-support`: checks or transactionally refreshes generated approval,
+  package, entry, context, bootstrap, and support-state surfaces, then runs
+  canonical full validation; write failure restores generated files
+- `suggest-knowledge`: read-only, review-only candidates from verified
+  package history, including owner, incident-family, failed-gate, and
+  correction recurrence; it never promotes knowledge
 - `status`: compact read-only adapter health and counts; no file output
 - `doctor`: read-only adapter health with at most three repair operation routes;
   no file output (use `validate-adapter` for an explicit report file)

@@ -4,6 +4,24 @@
 
 - None.
 
+## 0.1.0-alpha.83 - 2026-10-09
+
+- Added a portable installed target delegate with fail-closed source
+  resolution and a schema-2 validation contract that proves canonical
+  operation, scope, archive, and current-change requirements structurally.
+- Added transactional target support finalization and deterministic
+  change-package projection rendering, including atomic shard descriptor
+  digests/counts and rollback after downstream validation failure.
+- Added approval-root pressure and package-directory role/size diagnostics
+  without automatically moving historical evidence.
+- Separated ignored local runtime files from managed/excluded standing support
+  cost and support-state selection.
+- Expanded project-knowledge discovery to verified cross-area owner,
+  incident-family, failed-gate, and corrective-owner recurrence while
+  retaining target review and prohibiting automatic promotion.
+- Increased adapter schema version to `69` and target template version to
+  `78` for structured canonical delegation and the installed delegate.
+
 ## 0.1.0-alpha.82 - 2026-10-06
 
 - Made every runtime-observation record and policy enum check type-safe so

@@ -491,10 +491,17 @@ Final evidence must say:
 - target validation contract distinguishes adapter health, current-change
   validation, and complete archive audit; every command declares canonical,
   target-equivalent, structural-only, or manual coverage
+- canonical commands route through the portable installed delegate, use
+  structured operation/scope requirements, fail closed when source is
+  unavailable, and contain no workstation-specific absolute source path
 - current baseline claims match the manifest; historical baseline labels stay
   explicitly historical
 - completed approval history is bounded into monthly shards when needed, its
   digest index is current, and acceptance used complete archive validation
+- change-package projections and shard descriptors are current; untyped or
+  oversized raw evidence is not mixed with top-level package records
+- final generated support was converged transactionally, support state was
+  generated last, and downstream canonical validation passed
 - consistency reverse index and optional support-generation index rebuilt from
   the final target-owned contracts
 - context profiles created or updated

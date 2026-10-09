@@ -122,6 +122,18 @@
       "write_scope": "target-structure-with-explicit-write"
     },
     {
+      "name": "render-package-index",
+      "script": "render_change_package_index.py",
+      "purpose": "check or explicitly refresh compact target change-package projections",
+      "write_scope": "target-generated-surfaces-with-explicit-apply"
+    },
+    {
+      "name": "finalize-support",
+      "script": "finalize_target_support.py",
+      "purpose": "transactionally converge generated target support and run canonical validation",
+      "write_scope": "target-generated-surfaces-with-explicit-apply"
+    },
+    {
       "name": "suggest-knowledge",
       "script": "suggest_project_knowledge.py",
       "purpose": "suggest verified, bounded, review-only project knowledge candidates from completed package summaries",

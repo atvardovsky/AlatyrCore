@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.tools",
+  "contour": "assistant",
+  "title": "Assistant Tools Context",
+  "summary": "Recursive navigation for the assistant contour at tools.",
+  "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
+  "entries": [
+    {
+      "id": "assistant.content.tools-alatyr-delegate-py",
+      "kind": "content",
+      "path": "tools/alatyr_delegate.py",
+      "summary": "Alatyr Delegate",
+      "selectors": {
+        "path_terms": [
+          "tools",
+          "alatyr",
+          "delegate"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 348,
+      "content_digest": "sha256:189394e8b868eb7cb152d7dab24e328455037f8ff049a1e41d68b802f073965e"
+    }
+  ]
+}

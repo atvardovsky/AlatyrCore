@@ -415,6 +415,8 @@
       "implementation_paths": [
         "tools/change_package_contract.py",
         "tools/check_change_packages.py",
+        "tools/render_change_package_index.py",
+        "tools/finalize_target_support.py",
         "tools/validate_target_adapter.py"
       ],
       "trigger_paths": [
@@ -422,6 +424,8 @@
         "templates/target/.ai/assistant/change-packages/**",
         "tools/change_package_contract.py",
         "tools/check_change_packages.py",
+        "tools/render_change_package_index.py",
+        "tools/finalize_target_support.py",
         "tools/validate_target_adapter.py"
       ]
     },
@@ -1463,6 +1467,8 @@
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py",
+        "tools/render_change_package_index.py",
+        "tools/finalize_target_support.py",
         "tools/delegation_evidence.py",
         "tools/documented_command_contract.py",
         "tools/validate_delegation_execution_tree.py",
@@ -1491,6 +1497,8 @@
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py",
+        "tools/render_change_package_index.py",
+        "tools/finalize_target_support.py",
         "tools/delegation_evidence.py",
         "tools/documented_command_contract.py",
         "tools/validate_delegation_execution_tree.py",

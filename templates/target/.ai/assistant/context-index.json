@@ -214,7 +214,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 345,
-      "content_digest": "sha256:af0a7d4070eebc18475c66c0800c93d7d508191f3c2d1ada2952d58be06918b4"
+      "content_digest": "sha256:8265054a214a69f4fdc8231f1d7d9dbbadd887da2a08f56a5b8eba55f0c06635"
     },
     {
       "id": "assistant.content.help-md",
@@ -412,8 +412,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 54,
-      "content_digest": "sha256:24f8afc2c91c401f2300a37e9ce3350e5ed24d8572e0d265b7e0dd632e2486da"
+      "estimated_words": 128,
+      "content_digest": "sha256:75a757f2f1abbd24c554433335d0e867eacf21a6ee600e210ec825db6aa3f133"
     },
     {
       "id": "assistant.section.analysis-strategies",
@@ -533,7 +533,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1236,
-      "content_digest": "sha256:b45d6a6ae39c9d14c555d72739fac612005eeb40b72702e1819054b933e74c62"
+      "content_digest": "sha256:e44129ee427f541da99539b20a32be0bfb4fc6d42232a86f7a56723618d185b8"
     },
     {
       "id": "assistant.section.gates",
@@ -623,7 +623,22 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2116,
-      "content_digest": "sha256:3b773e057424b8aa4b731654cff3ae20cb9712c06bc0b71a53c0cde05934badd"
+      "content_digest": "sha256:a76d87730d2c82938449a4ab6907f14df32ae2a78202d3d81e2c923b7bb1641a"
+    },
+    {
+      "id": "assistant.section.tools",
+      "kind": "index",
+      "path": "tools/context-index.json",
+      "summary": "Tools section",
+      "selectors": {
+        "path_terms": [
+          "tools"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 81,
+      "content_digest": "sha256:595ada184f2fd0e243a4232aeb488df27d500a9642c77c86e07782a957db1311"
     },
     {
       "id": "assistant.section.workers",

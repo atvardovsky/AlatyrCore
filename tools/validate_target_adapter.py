@@ -98,6 +98,10 @@ from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
 )
+
+
+COMPACT_INDEX_REVIEW_MAX_RECORDS = 64
+COMPACT_INDEX_REVIEW_MAX_BYTES = 64 * 1024
 from target_adapter_validation.action_modes import ALLOWED_ACTION_MODES
 from target_adapter_validation.assistant_capabilities import (
     CACHE_EXPOSURE_STATES,
@@ -4486,9 +4490,11 @@ class Validator:
     def check_approval_scope(self) -> None:
         approval_records = self.resolve_approval_records()
         archive_index_current = self.check_approval_archive_index()
+        discovered_records = self.discover_approval_archive_records()
+        self.check_approval_archive_pressure(discovered_records)
         archive_records = [
             record
-            for record in self.discover_approval_archive_records()
+            for record in discovered_records
             if record not in approval_records
         ]
         self.approval_archive_summary["records_discovered"] = len(archive_records)
@@ -4684,6 +4690,26 @@ class Validator:
                 "archive-index.json",
             }
         )
+
+    def check_approval_archive_pressure(self, records: list[Path]) -> None:
+        root = self.target_path(".ai/assistant/approvals")
+        direct_records = [record for record in records if record.parent == root]
+        direct_bytes = 0
+        for record in direct_records:
+            content = self.context.read_bytes_result(record)
+            if content.value is not None:
+                direct_bytes += len(content.value)
+        if (
+            len(direct_records) > COMPACT_INDEX_REVIEW_MAX_RECORDS
+            or direct_bytes > COMPACT_INDEX_REVIEW_MAX_BYTES
+        ):
+            self.warn(
+                "APPROVAL_ARCHIVE_PRESSURE",
+                "approval root contains "
+                f"{len(direct_records)} record(s) and {direct_bytes} byte(s); "
+                "review monthly archive sharding with archive-approvals",
+                ".ai/assistant/approvals/",
+            )
 
     def check_approval_archive_index(self) -> bool:
         relpath = APPROVAL_ARCHIVE_INDEX_PATH.as_posix()
@@ -6061,6 +6087,7 @@ class Validator:
         }
 
     def check_change_packages(self) -> None:
+        self.check_change_package_directory_hygiene()
         index_path = self.target_path(".ai/assistant/change-packages/index.json")
         indexed_records: set[str] = set()
         indexed_entries: list[dict[str, Any]] = []
@@ -6646,6 +6673,54 @@ class Validator:
                     "PACKAGE_ACTIVE_PLAN_UNINDEXED",
                     "changed package plan is not bound to an active indexed change package",
                     plan,
+                )
+
+    def check_change_package_directory_hygiene(self) -> None:
+        root = self.target_path(".ai/assistant/change-packages")
+        if not self.is_target_dir(root):
+            return
+        changed_paths = set(
+            self.git.changed_files(self.diff_ref) or [] if self.diff_ref else []
+        )
+        ignored = {
+            "index.json",
+            "context-index.json",
+            "change-package-template.json",
+            "change-package-index-shard.json",
+        }
+        for path in sorted(root.glob("*.json")):
+            if path.name in ignored or not self.is_target_file(path):
+                continue
+            relpath = self.rel(path)
+            data, error = self.context.read_json(path)
+            kind = data.get("record_kind") if isinstance(data, dict) else None
+            if error is not None or kind != "alatyr-change-package":
+                finding = (
+                    self.error
+                    if self.enforce_change_package and relpath in changed_paths
+                    else self.warn
+                )
+                detail = (
+                    f"invalid JSON: {error}"
+                    if error is not None
+                    else f"record_kind is {kind!r}"
+                )
+                finding(
+                    "PACKAGE_DIRECTORY_ARTIFACT_ROLE",
+                    "top-level change-package JSON is not a typed package record; "
+                    f"move raw evidence to a dedicated evidence directory ({detail})",
+                    relpath,
+                )
+            content = self.context.read_bytes_result(path)
+            if (
+                content.value is not None
+                and len(content.value) > COMPACT_INDEX_REVIEW_MAX_BYTES
+            ):
+                self.warn(
+                    "PACKAGE_DIRECTORY_ARTIFACT_SIZE",
+                    f"top-level package artifact is {len(content.value)} bytes; "
+                    "keep compact package records here and bind large evidence by reference",
+                    relpath,
                 )
 
     def check_framework_baseline(

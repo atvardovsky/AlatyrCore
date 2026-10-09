@@ -51,18 +51,10 @@ def string_values(value: Any) -> tuple[str, ...]:
     )
 
 
-def candidate_facts(
-    record: dict[str, Any],
-) -> tuple[tuple[str, str, tuple[str, ...]], ...]:
-    routing = record.get("routing")
-    areas = string_values(
-        routing.get("project_areas") if isinstance(routing, dict) else None
-    )
-    if len(areas) != 1:
-        return ()
+def fact_owners(record: dict[str, Any]) -> dict[str, tuple[str, ...]]:
     facts = record.get("changed_facts")
     if not isinstance(facts, list):
-        return ()
+        return {}
     facts_by_owner: dict[str, list[str]] = {}
     for fact in facts:
         if not isinstance(fact, dict):
@@ -71,10 +63,66 @@ def candidate_facts(
         owner = fact.get("canonical_owner")
         if isinstance(fact_id, str) and fact_id and isinstance(owner, str) and owner:
             facts_by_owner.setdefault(owner, []).append(fact_id)
-    return tuple(
-        (areas[0], owner, tuple(dict.fromkeys(fact_ids)))
+    return {
+        owner: tuple(dict.fromkeys(fact_ids))
         for owner, fact_ids in sorted(facts_by_owner.items())
+    }
+
+
+def candidate_signals(
+    record: dict[str, Any],
+) -> tuple[tuple[str, dict[str, Any], tuple[str, ...]], ...]:
+    routing = record.get("routing")
+    areas = string_values(
+        routing.get("project_areas") if isinstance(routing, dict) else None
     )
+    owners = fact_owners(record)
+    signals: list[tuple[str, dict[str, Any], tuple[str, ...]]] = []
+    for owner, fact_ids in owners.items():
+        if len(areas) == 1:
+            signals.append(
+                (
+                    "project-area-canonical-owner",
+                    {"project_area": areas[0], "canonical_owner": owner},
+                    fact_ids,
+                )
+            )
+        elif areas:
+            signals.append(
+                (
+                    "cross-area-canonical-owner",
+                    {"canonical_owner": owner},
+                    fact_ids,
+                )
+            )
+
+    incident = record.get("incident_continuity")
+    if isinstance(incident, dict):
+        family_id = incident.get("family_id")
+        if isinstance(family_id, str) and family_id not in {"", "none"}:
+            signals.append(
+                ("incident-family", {"incident_family_id": family_id}, ())
+            )
+        failed_gate = incident.get("latest_failed_gate")
+        if isinstance(failed_gate, dict):
+            gate_id = failed_gate.get("id")
+            if (
+                failed_gate.get("state") in {"open", "resolved"}
+                and isinstance(gate_id, str)
+                and gate_id not in {"", "none"}
+            ):
+                signals.append(("failed-gate", {"failed_gate_id": gate_id}, ()))
+        iteration = incident.get("corrective_iteration")
+        if isinstance(iteration, int) and not isinstance(iteration, bool) and iteration >= 1:
+            for owner, fact_ids in owners.items():
+                signals.append(
+                    (
+                        "corrective-owner",
+                        {"canonical_owner": owner},
+                        fact_ids,
+                    )
+                )
+    return tuple(signals)
 
 
 @dataclass
@@ -106,17 +154,30 @@ class CandidateEvidence:
         return self._digest.hexdigest()
 
 
-def candidate_id(key: tuple[str, str], evidence: CandidateEvidence) -> str:
-    identity = {
-        "contract": 2,
-        "kind": "project-area-canonical-owner",
-        "project_area": key[0],
-        "canonical_owner": key[1],
-        "occurrences": evidence.occurrences,
-        "package_ids": evidence.package_ids,
-        "changed_fact_ids": evidence.changed_fact_ids,
-        "evidence_sha256": evidence.evidence_sha256,
-    }
+def candidate_id(
+    kind: str, selector: dict[str, Any], evidence: CandidateEvidence
+) -> str:
+    if kind == "project-area-canonical-owner":
+        identity = {
+            "contract": 2,
+            "kind": kind,
+            "project_area": selector["project_area"],
+            "canonical_owner": selector["canonical_owner"],
+            "occurrences": evidence.occurrences,
+            "package_ids": evidence.package_ids,
+            "changed_fact_ids": evidence.changed_fact_ids,
+            "evidence_sha256": evidence.evidence_sha256,
+        }
+    else:
+        identity = {
+            "contract": 3,
+            "kind": kind,
+            "selector": selector,
+            "occurrences": evidence.occurrences,
+            "package_ids": evidence.package_ids,
+            "changed_fact_ids": evidence.changed_fact_ids,
+            "evidence_sha256": evidence.evidence_sha256,
+        }
     digest = hashlib.sha256(
         json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
@@ -308,13 +369,18 @@ def suggestions(
             ambiguous_package_count += 1
             if len(ambiguous_package_ids) < MAX_EVIDENCE_IDS:
                 ambiguous_package_ids.append(package_id)
-            continue
-        for area, owner, fact_ids in candidate_facts(verified):
+        seen_signals: set[tuple[str, str]] = set()
+        for kind, selector, fact_ids in candidate_signals(verified):
+            selector_key = json.dumps(
+                selector, sort_keys=True, separators=(",", ":")
+            )
+            key = (kind, selector_key)
+            if key in seen_signals:
+                continue
+            seen_signals.add(key)
             evidence_entry = dict(record)
-            evidence_entry["project_areas"] = [area]
-            evidence_entry["canonical_owners"] = [owner]
             evidence_entry["changed_fact_ids"] = list(fact_ids)
-            grouped_evidence.setdefault((area, owner), CandidateEvidence()).add(
+            grouped_evidence.setdefault(key, CandidateEvidence()).add(
                 evidence_entry
             )
 
@@ -326,7 +392,9 @@ def suggestions(
     for key, evidence in sorted(grouped_evidence.items()):
         if evidence.occurrences < minimum_occurrences:
             continue
-        identity = candidate_id(key, evidence)
+        kind, selector_text = key
+        selector = json.loads(selector_text)
+        identity = candidate_id(kind, selector, evidence)
         if identity in existing_candidate_ids:
             if len(suppressed_candidate_ids) < MAX_EVIDENCE_IDS:
                 suppressed_candidate_ids.append(identity)
@@ -334,11 +402,8 @@ def suggestions(
         candidates.append(
             {
                 "candidate_id": identity,
-                "candidate_kind": "project-area-canonical-owner",
-                "selector": {
-                    "project_area": key[0],
-                    "canonical_owner": key[1],
-                },
+                "candidate_kind": kind,
+                "selector": selector,
                 "occurrences": evidence.occurrences,
                 "verified_occurrences": evidence.occurrences,
                 "verified_evidence_samples": len(evidence.package_ids),

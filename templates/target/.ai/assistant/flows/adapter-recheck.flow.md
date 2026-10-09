@@ -266,6 +266,10 @@ pre-acceptance, and message templates are not completion evidence.
     changed archive validation only for routine feedback; full acceptance and
     explicit archive audits must deep-check complete history. Rebuild recursive
     context indexes after any archive move and generate support state last.
+    When canonical source tooling is available, use the portable delegate's
+    transactional finalizer to refresh approval/package indexes, entry,
+    bootstrap/context projections, and support state before the final strict
+    run. Any downstream failure must restore generated surfaces.
     Verify that target `AGENTS.md`, every code/test-changing context profile,
     the gate index, final-evidence gate, and operation-completion template
     require the same Project Contour Sync Decision. Preserve project-owned

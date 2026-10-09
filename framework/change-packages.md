@@ -276,6 +276,11 @@ a referenced package record changes, changed-scope validation must still open
 that record's compact entry and compare the projection without deep-loading
 unrelated historical records.
 
+Use the canonical projection renderer when available instead of editing
+projection fields by hand. For sharded indexes it must update the shard
+contents and the root descriptor SHA-256 and record count as one derived
+state.
+
 When completed package records make a directory or recursive context index
 exceed its target budget, move completed records into bounded chronological
 subdirectories such as `change-packages/archive/2026-09/`. Keep active records
@@ -295,6 +300,12 @@ to omit package identity, status, owners, projection checks, or evidence.
 Reuse the package across checkpoints and handoffs instead of rediscovering the
 same scope. Do not copy large source documents, raw chats, diffs, or test logs
 into the package.
+
+Keep the top-level package directory typed and compact. Machine package JSON
+uses `record_kind: alatyr-change-package`; large replay, trace, or raw evidence
+belongs in a dedicated evidence location and is linked by target-relative
+reference. Validators should report untyped or oversized top-level artifacts,
+but must not move historical evidence without authorization.
 
 ## Rejection Criteria
 

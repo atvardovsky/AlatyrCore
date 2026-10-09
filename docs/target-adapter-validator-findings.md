@@ -10,14 +10,14 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1633
+Catalog entries: 1642
 
 ## Families
 
 - `AGENT`: 2 codes.
 - `AI`: 18 codes.
 - `ANALYSIS`: 45 codes.
-- `APPROVAL`: 39 codes.
+- `APPROVAL`: 40 codes.
 - `ARCHITECTURE`: 35 codes.
 - `ASSISTANT`: 39 codes.
 - `AUTHORIZATION`: 18 codes.
@@ -49,7 +49,7 @@ Catalog entries: 1633
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 110 codes.
+- `PACKAGE`: 112 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -68,7 +68,7 @@ Catalog entries: 1633
 - `TDD`: 47 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
-- `VALIDATION`: 9 codes.
+- `VALIDATION`: 15 codes.
 - `VOCABULARY`: 52 codes.
 - `WORKER`: 2 codes.
 - `WORKSPACE`: 46 codes.
@@ -223,6 +223,8 @@ Catalog entries: 1633
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_ARCHIVE_PARTIAL`
   Level: info. Source: `tools/validate_target_adapter.py`.
+- `APPROVAL_ARCHIVE_PRESSURE`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_DIFF_BASE_MISMATCH`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_DIFF_REF_REQUIRED`
@@ -1979,6 +1981,10 @@ Catalog entries: 1633
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_CORRECTION_SCOPE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_DIRECTORY_ARTIFACT_ROLE`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_DIRECTORY_ARTIFACT_SIZE`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_ENGINEERING_EVIDENCE_REFERENCE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_EVIDENCE_CLASS`
@@ -3123,10 +3129,20 @@ Catalog entries: 1633
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `UNRESOLVED_NOT_DEFINED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `VALIDATION_CONTRACT_ABSOLUTE_PATH`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_CHECKED`
   Level: info. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_COMMAND_UNRESOLVED`
   Level: configured. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_DELEGATE_COMMAND`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_DELEGATE_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_DELEGATE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_DELEGATE_UNCLAIMED`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_FALSE_CANONICAL_CLAIM`
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_FINAL_EVIDENCE`
@@ -3135,6 +3151,8 @@ Catalog entries: 1633
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_CONTRACT_LEGACY`
+  Level: warning. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_LIMITED`
   Level: warning. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_POINTER`

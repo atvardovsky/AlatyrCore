@@ -4,7 +4,7 @@
   "snapshot_kind": "scaffolded-adapter",
   "conformance_scope": "Source scaffold output snapshot; not an assistant installation test and not a completed target adapter.",
   "claims_installation_complete": false,
-  "action_count": 117,
+  "action_count": 119,
   "blocked_count": 0,
   "created_paths": [
     ".ai/.gitignore",
@@ -75,6 +75,8 @@
     ".ai/assistant/templates/session-continuity-packet.json",
     ".ai/assistant/templates/small-task-evidence.md",
     ".ai/assistant/templates/task-decomposition.md",
+    ".ai/assistant/tools/alatyr_delegate.py",
+    ".ai/assistant/tools/context-index.json",
     ".ai/assistant/validation-contract.json",
     ".ai/framework/README.md",
     ".ai/framework/action-authorization.md",
@@ -164,7 +166,6 @@
     ".ai/assistant/templates/session-continuity-packet.json",
     ".ai/assistant/templates/small-task-evidence.md",
     ".ai/assistant/templates/task-decomposition.md",
-    ".ai/assistant/validation-contract.json",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
     "CODEOWNERS"

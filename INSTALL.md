@@ -354,6 +354,10 @@ In a typical target repository:
    digests match installed bytes. Resolve the small core codebook preload into
    the bootstrap; keep domain shards lazy and retain canonical prose fallback.
    Neither an index nor a semantic term becomes a source of truth.
+   Install `.ai/assistant/tools/alatyr_delegate.py` and validation-contract
+   schema version 2. The delegate resolves source tooling from an explicit
+   argument, `ALATYR_CORE`, or ignored `.ai/local/framework-source`; it
+   fails closed and replaces committed workstation-specific source paths.
    Adapt `.ai/project/support-policy.json` from target evidence. Rebuild the
    optional consistency reverse index and support-generation index after their
    owners are final, then generate `.ai/support-state.json` last. Do not include
@@ -427,7 +431,11 @@ In a typical target repository:
    provenance when applicable. Route AI infrastructure through target item IDs
    and keep unresolved permissions, gates, validation, or output contracts
    blocked.
-11. Run target validation that exists.
+11. Run target validation that exists. When source tooling is available,
+   converge approval/package indexes, entry/bootstrap/context projections, and
+   support state with `finalize-support`, then use its canonical validation
+   result. Bind material current-change finalization to the diff base, selected
+   approval records, and selected change package.
 12. Apply the durable engineering-evidence decision. Capture reusable material
    installation knowledge when triggered and authorized, or report a specific
    skip/block reason. When Debug Mode was active, use reciprocal Debug session

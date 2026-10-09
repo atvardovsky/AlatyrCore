@@ -145,10 +145,11 @@ Before upgrading framework files in a target project:
    projection, optional digest-bound index shards, semantic approval fields,
    provenance policy, lazy route, and validator support.
    Compare the required support policy and state contract. Preserve target-owned
-   classifications, exclusions, accepted relationships, relationship
-   candidates, and generator bindings. Rebuild affected context indexes,
-   consistency reverse index, and optional support-generation index before
-   generating support state last.
+   classifications, exclusions, ignored local paths, accepted relationships, relationship
+   candidates, and generator bindings. Rebuild approval/package indexes,
+   affected context indexes, consistency reverse index, and optional support-
+   generation index before generating support state last. Prefer transactional
+   convergence with rollback followed by canonical validation.
    For required durable engineering evidence, compare its policy, compact
    index, contract version, authoring-template record schema, lazy route,
    capture gate, repository binding state/lineage, Git object and ancestry
@@ -315,10 +316,13 @@ Before upgrading framework files in a target project:
     health, current-change validation, and complete archive audit according to
     their separate contracts. A changed-scope or partial archive run cannot
     become installation/update acceptance evidence.
-    Synchronize manifest-owned current-baseline claims, regenerate approval
-    archive digests and recursive context indexes, then generate support state
-    last. Historical baseline labels remain historical and must not be
-    rewritten as current claims.
+    Require structured canonical-delegate metadata and portable fail-closed
+    source resolution; reject committed workstation-specific source paths.
+    Synchronize manifest-owned current-baseline claims, transactionally
+    regenerate approval/package indexes and recursive context indexes, then
+    generate support state last and run canonical validation. Historical
+    baseline labels remain historical and must not be rewritten as current
+    claims.
     Applying updates run acceptance/full/full while `staged`, record
     `accepted`, refresh projections, then rerun. Only the latter is acceptance
     eligible. Bind the final run to one canonical Git change snapshot and

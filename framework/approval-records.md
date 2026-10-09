@@ -151,6 +151,11 @@ deep-validates every record. Changed-scope validation may deep-check active and
 changed records while verifying unchanged shards by digest, but that reduced
 mode is not complete historical acceptance evidence.
 
+Validators should report record-count and byte pressure when completed records
+accumulate in the directly addressable approval root. Pressure is an advisory
+to review monthly sharding; it never authorizes automatic movement, deletion,
+or a change to approval meaning.
+
 Approval records are target adapter evidence, not portable framework core.
 The target may choose whether committed records are allowed, redacted, or
 stored outside the repository.

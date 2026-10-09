@@ -2,22 +2,11 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-validation-contract.schema.json",
   "title": "Alatyr target validation contract",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["schema_version", "contract_kind", "entrypoints", "parity"],
-  "properties": {
-    "schema_version": {"const": 1},
-    "contract_kind": {"const": "target-validation-contract"},
-    "entrypoints": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["adapter-health", "current-change", "archive-audit"],
-      "properties": {
-        "adapter-health": {"$ref": "#/definitions/entrypoint"},
-        "current-change": {"$ref": "#/definitions/entrypoint"},
-        "archive-audit": {"$ref": "#/definitions/entrypoint"}
-      }
-    },
+  "oneOf": [
+    {"$ref": "#/definitions/version1"},
+    {"$ref": "#/definitions/version2"}
+  ],
+  "definitions": {
     "parity": {
       "type": "object",
       "additionalProperties": false,
@@ -27,10 +16,8 @@
         "comparison": {"const": "canonical-result-required"},
         "result_evidence": {"type": "string", "minLength": 1}
       }
-    }
-  },
-  "definitions": {
-    "entrypoint": {
+    },
+    "entrypointV1": {
       "type": "object",
       "additionalProperties": false,
       "required": ["command", "coverage", "final_evidence_eligible"],
@@ -40,6 +27,93 @@
           "enum": ["canonical-delegate", "target-equivalent", "structural-only", "manual"]
         },
         "final_evidence_eligible": {"type": "boolean"}
+      }
+    },
+    "canonicalDelegate": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "operation",
+        "validation_phase",
+        "validation_scope",
+        "approval_archive_mode",
+        "requires_diff_ref",
+        "requires_approval_records",
+        "requires_change_packages"
+      ],
+      "properties": {
+        "operation": {"enum": ["status", "doctor", "validate-adapter", "finalize-support"]},
+        "validation_phase": {"enum": ["acceptance", "migration-staging", "not-applicable"]},
+        "validation_scope": {"enum": ["changed", "full", "not-applicable"]},
+        "approval_archive_mode": {"enum": ["none", "changed", "full", "not-applicable"]},
+        "requires_diff_ref": {"type": "boolean"},
+        "requires_approval_records": {"type": "boolean"},
+        "requires_change_packages": {"type": "boolean"}
+      }
+    },
+    "entrypointV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "coverage", "final_evidence_eligible", "canonical_delegate"],
+      "properties": {
+        "command": {"type": "string", "minLength": 1},
+        "coverage": {
+          "enum": ["canonical-delegate", "target-equivalent", "structural-only", "manual"]
+        },
+        "final_evidence_eligible": {"type": "boolean"},
+        "canonical_delegate": {"$ref": "#/definitions/canonicalDelegate"}
+      }
+    },
+    "entrypointsV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter-health", "current-change", "archive-audit"],
+      "properties": {
+        "adapter-health": {"$ref": "#/definitions/entrypointV1"},
+        "current-change": {"$ref": "#/definitions/entrypointV1"},
+        "archive-audit": {"$ref": "#/definitions/entrypointV1"}
+      }
+    },
+    "entrypointsV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter-health", "current-change", "archive-audit"],
+      "properties": {
+        "adapter-health": {"$ref": "#/definitions/entrypointV2"},
+        "current-change": {"$ref": "#/definitions/entrypointV2"},
+        "archive-audit": {"$ref": "#/definitions/entrypointV2"}
+      }
+    },
+    "version1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "contract_kind", "entrypoints", "parity"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "contract_kind": {"const": "target-validation-contract"},
+        "entrypoints": {"$ref": "#/definitions/entrypointsV1"},
+        "parity": {"$ref": "#/definitions/parity"}
+      }
+    },
+    "version2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "contract_kind", "source_resolution", "entrypoints", "parity"],
+      "properties": {
+        "schema_version": {"const": 2},
+        "contract_kind": {"const": "target-validation-contract"},
+        "source_resolution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["environment_variable", "local_config", "unavailable_behavior"],
+          "properties": {
+            "environment_variable": {"const": "ALATYR_CORE"},
+            "local_config": {"const": ".ai/local/framework-source"},
+            "unavailable_behavior": {"const": "fail-closed"}
+          }
+        },
+        "entrypoints": {"$ref": "#/definitions/entrypointsV2"},
+        "parity": {"$ref": "#/definitions/parity"}
       }
     }
   }

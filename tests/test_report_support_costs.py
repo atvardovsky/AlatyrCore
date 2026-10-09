@@ -51,6 +51,43 @@ class SupportCostReportTests(unittest.TestCase):
             )
             self.assertEqual(report["classifications"]["excluded"], 1)
 
+    def test_installed_report_separates_ignored_runtime_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            policy = {
+                "schema_version": 1,
+                "policy_kind": "target-support-policy",
+                "managed_roots": [".ai"],
+                "optional_entrypoints": [],
+                "exclusions": [],
+                "ignored_paths": [
+                    {"pattern": ".ai/.runtime/**", "reason": "ephemeral runtime"}
+                ],
+                "classifications": [
+                    {
+                        "id": "adapter-support",
+                        "classification": "exact-contract",
+                        "patterns": [".ai/**"],
+                    }
+                ],
+            }
+            policy_path = target / ".ai/project/support-policy.json"
+            policy_path.parent.mkdir(parents=True)
+            policy_path.write_text(json.dumps(policy), encoding="utf-8")
+            runtime = target / ".ai/.runtime/session.log"
+            runtime.parent.mkdir(parents=True)
+            runtime.write_text("word " * 1000, encoding="utf-8")
+
+            report = build_installed_report(target)
+
+        scopes = report["cost_scopes"]
+        self.assertGreater(scopes["ignored_local_files"]["words"], 900)
+        self.assertEqual(report["classifications"]["ignored-local"], 1)
+        self.assertLess(
+            scopes["managed_support_files"]["words"],
+            scopes["installed_support_files"]["words"],
+        )
+
     def test_cached_expensive_summaries_can_be_injected(self) -> None:
         assistant_surface_report = {
             "known_surfaces": 99,

@@ -103,7 +103,8 @@ numbers, obvious declarations, complete source summaries, or facts that are
 already cheaply and reliably routed from their canonical owner.
 
 Candidate discovery should start from compact, validated change-package and
-engineering-evidence summaries. Repeated project areas, canonical owners,
+engineering-evidence summaries. Repeated project-area/owner pairs, cross-area
+canonical owners, incident families, failed gates, corrective ownership,
 stable fact IDs, invariants, rejected directions, or compatibility traps may
 trigger a read-only suggestion. A frequency signal is not semantic proof and
 must never create a promotion, edit a canonical owner, or mark guidance
@@ -111,12 +112,14 @@ accepted automatically. The source helper `tools/suggest_project_knowledge.py`
 provides this bounded suggestion route when AlatyrCore source tools are
 available.
 
-The helper combines project area and canonical owner instead of emitting an
-independent broad candidate for each signal. It verifies candidate-supporting
-compact entries against all contributing package records before applying the
-configured occurrence threshold. One candidate has exactly one project area
-and one canonical owner; its fact IDs come only from facts owned by that owner,
-not from a Cartesian combination of unrelated signals. The helper retains only
+For a single-area package, the helper combines project area and canonical
+owner instead of emitting an independent broad candidate for each signal. For
+multi-area packages it may suggest owner recurrence without inventing
+area/owner Cartesian pairs. Incident-family, failed-gate, and corrective-owner
+signals remain separately typed. It verifies candidate-supporting compact
+entries against all contributing package records before applying the
+configured occurrence threshold. Fact IDs come only from facts owned by the
+candidate owner. The helper retains only
 bounded evidence samples and derives a deterministic candidate snapshot ID
 from the selectors and evidence summary. An unchanged snapshot already
 referenced by a promotion record is suppressed; new package evidence produces

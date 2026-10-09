@@ -1,26 +1,58 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "contract_kind": "target-validation-contract",
+  "source_resolution": {
+    "environment_variable": "ALATYR_CORE",
+    "local_config": ".ai/local/framework-source",
+    "unavailable_behavior": "fail-closed"
+  },
   "entrypoints": {
     "adapter-health": {
-      "command": "{TARGET_ADAPTER_HEALTH_COMMAND_OR_MANUAL_REVIEW}",
-      "coverage": "structural-only",
-      "final_evidence_eligible": false
+      "command": "python3 .ai/assistant/tools/alatyr_delegate.py status --target .",
+      "coverage": "canonical-delegate",
+      "final_evidence_eligible": false,
+      "canonical_delegate": {
+        "operation": "status",
+        "validation_phase": "not-applicable",
+        "validation_scope": "not-applicable",
+        "approval_archive_mode": "not-applicable",
+        "requires_diff_ref": false,
+        "requires_approval_records": false,
+        "requires_change_packages": false
+      }
     },
     "current-change": {
-      "command": "{TARGET_CURRENT_CHANGE_VALIDATION_COMMAND_OR_MANUAL_REVIEW}",
-      "coverage": "structural-only",
-      "final_evidence_eligible": false
+      "command": "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target .",
+      "coverage": "canonical-delegate",
+      "final_evidence_eligible": true,
+      "canonical_delegate": {
+        "operation": "validate-adapter",
+        "validation_phase": "acceptance",
+        "validation_scope": "full",
+        "approval_archive_mode": "full",
+        "requires_diff_ref": true,
+        "requires_approval_records": true,
+        "requires_change_packages": true
+      }
     },
     "archive-audit": {
-      "command": "{TARGET_ARCHIVE_AUDIT_COMMAND_OR_MANUAL_REVIEW}",
-      "coverage": "structural-only",
-      "final_evidence_eligible": false
+      "command": "python3 .ai/assistant/tools/alatyr_delegate.py archive-audit --target .",
+      "coverage": "canonical-delegate",
+      "final_evidence_eligible": true,
+      "canonical_delegate": {
+        "operation": "validate-adapter",
+        "validation_phase": "acceptance",
+        "validation_scope": "full",
+        "approval_archive_mode": "full",
+        "requires_diff_ref": false,
+        "requires_approval_records": false,
+        "requires_change_packages": false
+      }
     }
   },
   "parity": {
     "local_pass_is_canonical": false,
     "comparison": "canonical-result-required",
-    "result_evidence": "unavailable until a target-owned result is compared with canonical validation"
+    "result_evidence": "Record the delegated command, source revision, arguments, exit code, and report path."
   }
 }

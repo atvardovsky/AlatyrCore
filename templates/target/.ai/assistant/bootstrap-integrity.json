@@ -20,9 +20,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.81",
-    "adapter_schema_version": "68",
-    "template_version": "76"
+    "framework_version": "0.1.0-alpha.83",
+    "adapter_schema_version": "69",
+    "template_version": "78"
   },
   "derived_from": {
     "manifest": {
@@ -31,7 +31,7 @@
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "2c21cb6c4926c1ec46df33f2c37090b0d88b54d0615e83d8192e42135f83618b"
+      "sha256": "221114acc928c04ae2e6832095ecf601327dd2a7b94d8b6e2cdbf4ed70c18537"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
@@ -39,27 +39,27 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "77ea74c5e66941758c059a9c0fca2151dc278747008d4e7d32628d8a0ab6ff15"
+      "sha256": "9220552ccd620cb78800df1105bb02f9a72385244040c2d1249e7a736878f7bd"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
-      "sha256": "bb7e2bd6ee12ca6bad9d88b85f4250b8194a635a6ad6c94a105ce55f76237d72"
+      "sha256": "b6ab3499408ee809113845a5b2ea36d5ebbbbb9d36b96ab89a0c1f6619810939"
     },
     "assistant_context_root": {
       "path": ".ai/assistant/context-index.json",
-      "sha256": "9dc82b760bbbb3232654d1c3a22becd3b1ffcca474498e7bfa5926dff618b3c4"
+      "sha256": "48e7a3ab772eb5b9f8c2917a586e108b511486c1a214a5742a23d35664d5b088"
     },
     "framework_context_root": {
       "path": ".ai/framework/context-index.json",
-      "sha256": "b7438fcec86e8cdfd410c7980a872e2df84d54d079d5e80ffb59948ed35c68e2"
+      "sha256": "afc77bb5ae3ac1824159a80fc706bbfc1ae1f0541e46d0f2db72c635d3b32de6"
     },
     "project_context_root": {
       "path": ".ai/project/context-index.json",
-      "sha256": "231a8c4753850c8e01da9f57d3799e2032d62623078c2dc4c6bfcbc95aadef79"
+      "sha256": "7c65c43cfe7945783fe90ea58fcec2272e540dff27017ded37c3c47e87b93400"
     }
   },
   "rule_selector": {
-    "registry_sha256": "bb7e2bd6ee12ca6bad9d88b85f4250b8194a635a6ad6c94a105ce55f76237d72",
+    "registry_sha256": "b6ab3499408ee809113845a5b2ea36d5ebbbbb9d36b96ab89a0c1f6619810939",
     "categories": {
       "CONTEXT": {
         "owner": ".ai/framework/context-profiles.md",

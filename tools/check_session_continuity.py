@@ -62,14 +62,19 @@ def main() -> int:
             failures.append("continuity policy must preserve bounded analysis state")
 
         support_policy = load_object(TARGET / ".ai/project/support-policy.json")
-        exclusions = support_policy.get("exclusions")
+        exclusions = [
+            *support_policy.get("exclusions", []),
+            *support_policy.get("ignored_paths", []),
+        ]
         patterns = {
             entry.get("pattern")
             for entry in exclusions or []
             if isinstance(entry, dict)
         }
         if ".ai/.runtime/**" not in patterns:
-            failures.append("support policy must exclude ephemeral runtime records")
+            failures.append(
+                "support policy must exclude or ignore ephemeral runtime records"
+            )
 
         scaffold = load_object(ROOT / "tools/scaffold_profiles.json")
         kernel = scaffold.get("profiles", {}).get("kernel", {})

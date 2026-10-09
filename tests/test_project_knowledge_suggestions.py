@@ -73,6 +73,8 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
                 },
                 "operation": {"active_workstream": "not active"},
             }
+            if "incident_continuity" in source:
+                package_record["incident_continuity"] = source["incident_continuity"]
             record_path = target / record_relpath
             record_path.parent.mkdir(parents=True, exist_ok=True)
             record_path.write_text(json.dumps(package_record), encoding="utf-8")
@@ -264,7 +266,7 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
         self.assertEqual(len(report["source_files"]), 2)
         self.assertEqual(len(report["candidates"]), 1)
 
-    def test_multi_area_package_does_not_invent_cartesian_relationships(self) -> None:
+    def test_multi_area_packages_suggest_owner_recurrence_without_cartesian_pairs(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
             self.write_target(
@@ -283,9 +285,65 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
 
             report = suggestions(target)
 
-        self.assertEqual(report["candidates"], [])
+        self.assertEqual(
+            {
+                (
+                    candidate["candidate_kind"],
+                    candidate["selector"]["canonical_owner"],
+                )
+                for candidate in report["candidates"]
+            },
+            {
+                ("cross-area-canonical-owner", "docs/billing.md"),
+                ("cross-area-canonical-owner", "docs/orders.md"),
+            },
+        )
         self.assertEqual(report["ambiguous_package_count"], 2)
         self.assertEqual(report["ambiguous_package_ids"], ["A", "B"])
+
+    def test_incident_and_correction_history_produce_review_only_candidates(self) -> None:
+        incident = {
+            "family_id": "INC-PAYMENTS",
+            "corrective_iteration": 1,
+            "latest_failed_gate": {"state": "resolved", "id": "GATE-42"},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.write_target(
+                target,
+                [
+                    {
+                        "package_id": package_id,
+                        "status": "complete",
+                        "incident_continuity": incident,
+                    }
+                    for package_id in ["A", "B"]
+                ],
+            )
+            report = suggestions(target)
+
+        candidates = {
+            candidate["candidate_kind"]: candidate
+            for candidate in report["candidates"]
+        }
+        self.assertEqual(
+            set(candidates),
+            {
+                "project-area-canonical-owner",
+                "incident-family",
+                "failed-gate",
+                "corrective-owner",
+            },
+        )
+        self.assertEqual(
+            candidates["incident-family"]["selector"],
+            {"incident_family_id": "INC-PAYMENTS"},
+        )
+        self.assertEqual(
+            candidates["failed-gate"]["selector"],
+            {"failed_gate_id": "GATE-42"},
+        )
+        self.assertFalse(report["automatic_promotion_performed"])
 
     def test_single_area_multiple_owners_keep_owner_specific_fact_ids(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
