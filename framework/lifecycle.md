@@ -325,7 +325,11 @@ Before upgrading framework files in a target project:
     matching metadata is not operation evidence. Validate argument syntax with
     the shipped delegate parser rather than a parallel parser. Complete only
     required bindings absent from a command prefix, never malformed bindings
-    already present, and retain differential parser-parity regressions.
+    already present. Require exact long-option spelling by disabling
+    abbreviations on the root parser and every subparser. Retain differential
+    parser-parity regressions for executable syntax plus independent
+    adversarial regressions for stricter contract cardinality and authorization
+    invariants.
     Synchronize manifest-owned current-baseline claims, transactionally
     regenerate approval/package indexes and recursive context indexes, then
     generate support state last and run canonical validation. Historical

@@ -50,8 +50,10 @@ entrypoint; a path mention, wrapper command, or different operation is not
 canonical evidence. The shipped delegate parser owns argument syntax. Contract
 checks may complete required runtime bindings that are absent from a command
 prefix, but they must reject malformed supplied arguments rather than repair
-or reinterpret them. Use its `finalize-support` operation to converge
-generated indexes, bootstrap/context projections, support state, and
+or reinterpret them. Use exact long-option names: parser abbreviations are
+disabled, and parser acceptance does not replace the contract's stricter
+single-value cardinality checks. Use its `finalize-support` operation to
+converge generated indexes, bootstrap/context projections, support state, and
 canonical validation as one rollback-capable operation.
 
 ## Framework Area

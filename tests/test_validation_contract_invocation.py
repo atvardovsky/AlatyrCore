@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import copy
 import contextlib
 import importlib.util
@@ -106,6 +107,13 @@ class ValidationContractInvocationTests(unittest.TestCase):
         except SystemExit:
             return False
         return True
+
+    def assert_parser_rejects(self, arguments: list[str]) -> None:
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
+            io.StringIO()
+        ):
+            with self.assertRaises(SystemExit):
+                delegate.build_parser().parse_args(arguments)
 
     def test_shipped_contract_passes(self) -> None:
         self.assertEqual(self.validate(), set())
@@ -246,11 +254,124 @@ class ValidationContractInvocationTests(unittest.TestCase):
                     "contract accepted a command rejected by the shipped delegate parser",
                 )
 
+    def test_delegate_parser_disables_abbreviations_recursively(self) -> None:
+        parser = delegate.build_parser()
+        self.assertFalse(parser.allow_abbrev)
+        subparsers = next(
+            action
+            for action in parser._actions
+            if isinstance(action, argparse._SubParsersAction)
+        )
+        self.assertTrue(subparsers.choices)
+        for name, child in subparsers.choices.items():
+            with self.subTest(operation=name):
+                self.assertFalse(child.allow_abbrev)
+
+        valid_arguments = {
+            "status": ["status", "--target", ".", "--framework-source", "source"],
+            "doctor": ["doctor", "--target", ".", "--framework-source", "source"],
+            "archive-audit": [
+                "archive-audit",
+                "--target",
+                ".",
+                "--framework-source",
+                "source",
+            ],
+            "validate-current": [
+                "validate-current",
+                "--target",
+                ".",
+                "--framework-source",
+                "source",
+                "--diff-ref",
+                "HEAD",
+                "--approval-record",
+                "approval.json",
+                "--change-package",
+                "package.json",
+            ],
+            "finalize-support": [
+                "finalize-support",
+                "--target",
+                ".",
+                "--framework-source",
+                "source",
+                "--write",
+                "--migration-staging",
+                "--diff-ref",
+                "HEAD",
+                "--approval-record",
+                "approval.json",
+                "--change-package",
+                "package.json",
+                "--require-current-change",
+            ],
+        }
+        for operation, arguments in valid_arguments.items():
+            delegate.build_parser().parse_args(arguments)
+            option_tokens = [token for token in arguments if token.startswith("--")]
+            for option in option_tokens:
+                for prefix_length in range(3, len(option)):
+                    abbreviated = option[:prefix_length]
+                    mutated = [
+                        abbreviated if token == option else token
+                        for token in arguments
+                    ]
+                    with self.subTest(
+                        operation=operation,
+                        option=option,
+                        abbreviation=abbreviated,
+                    ):
+                        self.assert_parser_rejects(mutated)
+
+    def test_contract_rejects_abbreviated_single_value_duplicates(self) -> None:
+        suffix = "--approval-record approval.json --change-package package.json"
+        cases = [
+            f"--target . --tar . --diff-ref HEAD {suffix}",
+            f"--tar . --target . --diff-ref HEAD {suffix}",
+            f"--target=. --tar=. --diff-ref=HEAD {suffix}",
+            f"--target . --diff-ref HEAD --diff-r OTHER {suffix}",
+            f"--target . --diff-r OTHER --diff-ref HEAD {suffix}",
+            f"--target=. --diff-ref=HEAD --diff-r=OTHER {suffix}",
+            f"--target . --framework-source first --framework-s second --diff-ref HEAD {suffix}",
+            f"--target . --framework-s first --framework-source second --diff-ref HEAD {suffix}",
+            f"--target=. --framework-source=first --framework-s=second --diff-ref=HEAD {suffix}",
+        ]
+        for arguments in cases:
+            command = (
+                "python3 .ai/assistant/tools/alatyr_delegate.py validate-current "
+                f"{arguments}"
+            )
+            with self.subTest(command=command):
+                self.assertIn(
+                    "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+                    self.validate(self.current_change_contract(command)),
+                )
+
+    def test_contract_preserves_stricter_single_value_cardinality(self) -> None:
+        suffix = "--approval-record approval.json --change-package package.json"
+        commands = [
+            f"python3 {DELEGATE_PATH} validate-current --target . --target . --diff-ref HEAD {suffix}",
+            f"python3 {DELEGATE_PATH} validate-current --target . --framework-source first --framework-source second --diff-ref HEAD {suffix}",
+            f"python3 {DELEGATE_PATH} validate-current --target . --diff-ref HEAD --diff-ref OTHER {suffix}",
+        ]
+        for command in commands:
+            with self.subTest(command=command):
+                self.assertTrue(
+                    self.parser_accepts(command),
+                    "the regression must exercise a parser-accepted command",
+                )
+                self.assertIn(
+                    "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+                    self.validate(self.current_change_contract(command)),
+                )
+
     def test_complete_current_change_bindings_pass(self) -> None:
         command = (
             "python3 .ai/assistant/tools/alatyr_delegate.py validate-current "
             "--target . --diff-ref HEAD --approval-record approval.json "
-            "--approval-record approval-2.json --change-package package.json"
+            "--approval-record approval-2.json --change-package package.json "
+            "--change-package package-2.json"
         )
         self.assertEqual(
             self.validate(self.current_change_contract(command)),

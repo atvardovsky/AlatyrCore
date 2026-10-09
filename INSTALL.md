@@ -738,7 +738,10 @@ installed delegate semantically matching the shipped implementation. A
 command that only mentions the delegate path or selects another operation is
 not canonical delegation. Validation may complete required runtime bindings
 missing from a command prefix, but must not repair malformed supplied
-arguments or replace the canonical parser with parallel syntax logic.
+arguments or replace the canonical parser with parallel syntax logic. The
+delegate accepts only exact long-option names; abbreviations cannot replace or
+duplicate canonical bindings. Parser-parity checks and stricter contract-rule
+checks are independent proof obligations.
 
 Large approval histories may be stored under monthly archive directories. The
 archive index lets routine changed-scope validation verify unchanged shards by

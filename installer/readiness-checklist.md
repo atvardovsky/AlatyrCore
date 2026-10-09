@@ -494,9 +494,10 @@ Final evidence must say:
 - canonical commands route through the portable installed delegate, use
   structured operation/scope requirements, fail closed when source is
   unavailable, directly select the required delegate operation with only
-  arguments accepted by the shipped parser, retain shipped delegate
-  semantics, pass differential parser-parity regressions, and contain no
-  workstation-specific absolute source path
+  exact long-option names accepted by the shipped parser, retain shipped
+  delegate semantics, disable abbreviations on every parser level, pass both
+  differential parser-parity and stricter contract-invariant regressions, and
+  contain no workstation-specific absolute source path
 - current baseline claims match the manifest; historical baseline labels stay
   explicitly historical
 - completed approval history is bounded into monthly shards when needed, its

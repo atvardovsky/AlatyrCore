@@ -118,6 +118,11 @@ def run(target: Path, failures: list[str]) -> None:
             "delegate-parser argument rejection must prevent canonical delegation",
         ),
         (
+            "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --diff-ref HEAD --diff-r OTHER --approval-record approval.json --change-package package.json",
+            "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+            "abbreviated duplicate options must not replace canonical bindings",
+        ),
+        (
             "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . && echo done",
             "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
             "shell-composed commands must not prove canonical execution",

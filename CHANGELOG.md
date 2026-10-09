@@ -4,6 +4,22 @@
 
 - None.
 
+## 0.1.0-alpha.86 - 2026-10-09
+
+- Disabled long-option abbreviations on the portable target delegate root
+  parser and every subparser so abbreviated aliases cannot replace canonical
+  target, framework-source, or revision bindings.
+- Added exhaustive proper-prefix mutations across every delegate operation,
+  both-order and equals-form abbreviated-duplicate regressions, and public
+  target-validator harness coverage for the reported bypass.
+- Split parser compatibility from contract authorization in policy and tests:
+  parser parity owns executable syntax, while independent adversarial checks
+  preserve exact spelling and stricter single-value cardinality.
+- Preserved intentional repeated `--approval-record` and `--change-package`
+  bindings while retaining the alpha.85 short-option-value regression.
+- Kept adapter schema version `69` and increased target template version to
+  `81` because installed delegates must be refreshed during target updates.
+
 ## 0.1.0-alpha.85 - 2026-10-09
 
 - Replaced duplicated validation-contract argument interpretation with the

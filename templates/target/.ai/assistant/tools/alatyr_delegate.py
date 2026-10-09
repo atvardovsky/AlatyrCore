@@ -48,18 +48,18 @@ def add_common(parser: argparse.ArgumentParser) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     subparsers = parser.add_subparsers(dest="operation", required=True)
     for name in ("status", "doctor", "archive-audit"):
-        add_common(subparsers.add_parser(name))
+        add_common(subparsers.add_parser(name, allow_abbrev=False))
 
-    current = subparsers.add_parser("validate-current")
+    current = subparsers.add_parser("validate-current", allow_abbrev=False)
     add_common(current)
     current.add_argument("--diff-ref", required=True)
     current.add_argument("--approval-record", action="append", required=True)
     current.add_argument("--change-package", action="append", required=True)
 
-    finalize = subparsers.add_parser("finalize-support")
+    finalize = subparsers.add_parser("finalize-support", allow_abbrev=False)
     add_common(finalize)
     finalize.add_argument("--write", action="store_true")
     finalize.add_argument("--migration-staging", action="store_true")

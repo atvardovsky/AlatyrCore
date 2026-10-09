@@ -61,8 +61,8 @@
       "owner_refs": [
         "ALATYR-LIFECYCLE-001"
       ],
-      "estimated_words": 3421,
-      "content_digest": "sha256:a168cc9935c4fdc33227c1ef98ce7432dc8a052c00d33f760fba0e8be2053118"
+      "estimated_words": 3448,
+      "content_digest": "sha256:5cb7f1977f903dd31b18ea040443d68bfbf3b81bd380ef9dee6c0421c77cb124"
     },
     {
       "id": "framework.lifecycle.migration-diff-md",

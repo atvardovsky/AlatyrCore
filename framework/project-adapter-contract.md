@@ -104,8 +104,13 @@ Every project using this framework must define these structural bindings:
   canonical owner of delegate argument syntax. A validator may append safe
   test bindings only for required runtime options absent from a declared
   command prefix; it must not independently reinterpret arguments or repair a
-  malformed option already present. Differential coverage must prove that
-  every contract-accepted completed invocation is accepted by that parser. A
+  malformed option already present. The canonical parser and every subparser
+  must disable long-option abbreviations so committed contracts use exact
+  option names. Differential coverage must prove that every contract-accepted
+  completed invocation is accepted by that parser. Separate adversarial
+  coverage must prove stricter contract invariants, including exact option
+  spelling and single-value cardinality, because parser acceptance alone does
+  not establish contract validity. A
   portable target-local delegate resolves the AlatyrCore source from an
   explicit argument, `ALATYR_CORE`, or ignored local configuration and fails
   closed when no valid source checkout is available. Committed validation

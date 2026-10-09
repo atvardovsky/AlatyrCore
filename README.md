@@ -66,6 +66,11 @@ the canonical parser or resolver instead of duplicating its rules. This
 reduces the risk that one mistaken interpretation writes both the
 implementation and the tests that approve it.
 
+For installed canonical commands, Alatyr also separates parser compatibility
+from contract authorization. Delegate parsers reject abbreviated long options,
+while independent adversarial checks preserve exact spelling, single-value
+cardinality, and intentionally repeatable evidence bindings.
+
 The agent still has to inspect the routed sources and report uncertainty.
 AlatyrCore gives the discussion a project-owned memory and source-of-truth
 map; it does not make unsupported answers authoritative.
@@ -620,7 +625,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.85`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.86`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
