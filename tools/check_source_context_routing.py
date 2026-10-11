@@ -127,7 +127,7 @@ def word_count(paths: list[str]) -> int:
 @lru_cache(maxsize=1)
 def _source_files() -> tuple[str, ...]:
     result = subprocess.run(
-        ["git", "ls-files", "-z"],
+        ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"],
         cwd=ROOT,
         capture_output=True,
         check=False,
@@ -135,9 +135,11 @@ def _source_files() -> tuple[str, ...]:
     if result.returncode == 0:
         return tuple(
             sorted(
-                path.decode("utf-8")
-                for path in result.stdout.split(b"\0")
-                if path
+                {
+                    path.decode("utf-8", errors="surrogateescape")
+                    for path in result.stdout.split(b"\0")
+                    if path
+                }
             )
         )
     return tuple(
