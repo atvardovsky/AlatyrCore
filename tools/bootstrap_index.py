@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from context_catalog import load_codebook
+from context_catalog import codebook_schema_version, load_codebook
 from target_tool_compat import generation_provenance, source_template_target
 from yaml_support import safe_load
 
@@ -166,6 +166,17 @@ def build_bootstrap_index(
     recursive_context = recursive_context if isinstance(recursive_context, dict) else {}
     semantic_codebook = router.get("semantic_codebook")
     semantic_codebook = semantic_codebook if isinstance(semantic_codebook, dict) else {}
+    semantic_schema = "unknown"
+    if semantic_index_text is not None:
+        semantic_schema = codebook_schema_version(json.loads(semantic_index_text))
+        routing = manifest.get("context_routing")
+        manifest_schema = routing.get("semantic_codebook_schema_version") if isinstance(routing, dict) else None
+        for label, declared in (
+            ("router", semantic_codebook.get("schema_version")),
+            ("manifest", manifest_schema),
+        ):
+            if type(declared) is not int or declared != semantic_schema:
+                raise ValueError(f"{label} semantic codebook schema differs from installed index: {declared!r} != {semantic_schema}")
     context_packet = router.get("context_packet")
     context_packet = context_packet if isinstance(context_packet, dict) else {}
     preload_ids = _string_list(semantic_codebook.get("preload_terms"))
@@ -201,7 +212,7 @@ def build_bootstrap_index(
         },
         "semantic_preload": {
             "index": _string(semantic_codebook.get("index"), SEMANTIC_INDEX_PATH.as_posix()),
-            "codebook_schema_version": semantic_codebook.get("schema_version", "unknown"),
+            "codebook_schema_version": semantic_schema,
             "terms": [
                 {
                     "id": term_id,
@@ -319,6 +330,8 @@ def build_bundle_from_target(target: Path) -> tuple[dict[str, Any], dict[str, An
             raise ValueError(f"bootstrap source is missing: {relpath.as_posix()}")
         texts[name] = path.read_text(encoding="utf-8")
     installed_index = target / SEMANTIC_INDEX_PATH
+    if not installed_index.is_file() and not source_template_target(target):
+        raise ValueError(f"installed semantic codebook is missing: {SEMANTIC_INDEX_PATH}")
     semantic_index = installed_index if installed_index.is_file() else SOURCE_SEMANTIC_INDEX
     installed_registry = target / ".ai/framework/rule-registry.json"
     rule_registry = (

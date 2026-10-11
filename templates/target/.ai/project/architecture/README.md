@@ -33,6 +33,10 @@ Evidence revision: `{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}`
 - `unknown`: evidence is missing or conflicting.
 
 Implementation frequency, age, or recency does not make a pattern accepted.
+Catalog `source_review` binds a separate freshness disposition to selected
+source files, reviewer, time, changed facts, and reason. Input changes require
+owner revalidation even after support hashes are refreshed. Unknown input
+coverage or legacy catalogs cannot establish reviewed-current architecture.
 
 ## Architecture Areas
 

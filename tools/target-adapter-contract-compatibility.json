@@ -38,6 +38,26 @@
           "migration_limited": [],
           "schema": "schemas/alatyr-problem-model-active-projection.schema.json",
           "template": "templates/target/.ai/assistant/templates/problem-model-active-projection.json"
+        },
+        "active-task-index": {
+          "current": 1,
+          "supported": [1],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-active-task-index.schema.json",
+          "template": "templates/target/.ai/assistant/active-tasks.json"
+        },
+        "task-closure": {
+          "current": 1,
+          "supported": [1],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-task-closure.schema.json",
+          "template": "templates/target/.ai/assistant/templates/task-closure.json"
+        },
+        "publication-receipt": {
+          "current": 1,
+          "supported": [1],
+          "migration_limited": [],
+          "schema": "schemas/alatyr-publication-receipt.schema.json"
         }
       }
     },

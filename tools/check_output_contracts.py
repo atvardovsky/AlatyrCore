@@ -70,6 +70,7 @@ COMPLETION_CONTRACT_FIELDS = [
     "Context receipt result:",
     "Analysis strategy:",
     "Proof obligations:",
+    "Task closure:",
     "Changed facts:",
     "Validation completion basis:",
     "Tests run:",
@@ -93,6 +94,7 @@ COMPLETION_TEMPLATE_FIELDS = [
     "context_receipt",
     "task_decomposition",
     "learning_outcome",
+    "task_closure",
     "changed_facts",
     "validation",
     "runtime_observation",
@@ -309,13 +311,16 @@ def main() -> int:
             f"{COMPLETION_TEMPLATE.relative_to(ROOT)} must contain a JSON object"
         )
         completion_data = {}
-    if completion_data.get("schema_version") != 5:
-        failures.append("operation-completion evidence schema_version must be 5")
+    if completion_data.get("schema_version") != 6:
+        failures.append("operation-completion evidence schema_version must be 6")
     if completion_data.get("record_kind") != "alatyr-operation-completion-evidence":
         failures.append("operation-completion evidence record_kind is invalid")
     for field in COMPLETION_TEMPLATE_FIELDS:
         if field not in completion_data:
             failures.append(f"operation-completion evidence missing {field}")
+    task_closure = completion_data.get("task_closure")
+    if not isinstance(task_closure, dict) or set(task_closure) != {"task_id", "receipt", "sha256", "implementation", "evidence_finalization", "publication"}:
+        failures.append("operation-completion task_closure must bind a receipt and separate delivery states")
     if "{" not in read(COMPLETION_TEMPLATE):
         failures.append("operation-completion evidence template must remain placeholder-based")
     if completion_data.get("completion_gate", {}).get("may_claim_complete") != (

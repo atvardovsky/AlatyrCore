@@ -56,6 +56,8 @@ def build_parser() -> argparse.ArgumentParser:
     current = subparsers.add_parser("validate-current", allow_abbrev=False)
     add_common(current)
     current.add_argument("--diff-ref", required=True)
+    current.add_argument("--task-id")
+    current.add_argument("--task-class", choices=["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"])
     current.add_argument("--approval-record", action="append", required=True)
     current.add_argument("--change-package", action="append", required=True)
 
@@ -100,6 +102,10 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
         ]
         for record in args.approval_record:
             command.extend(["--approval-record", record])
+        if getattr(args, "task_id", None):
+            command.extend(["--task-id", args.task_id])
+        if getattr(args, "task_class", None):
+            command.extend(["--task-class", args.task_class])
         for package in args.change_package:
             command.extend(["--change-package", package])
         command.extend(["--enforce-approval-scope", "--enforce-change-package"])

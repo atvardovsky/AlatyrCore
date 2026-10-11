@@ -619,6 +619,8 @@ accepted or ready. Before reporting installation or update completion:
 4. Synchronize machine policy indexes and their human README projections.
    Synchronize current framework, adapter-schema, template, and source-commit
    claims with the manifest while preserving explicitly historical claims.
+   Reconcile schemas and active-task evidence; preserve small/read-only boundaries
+   and honest history. Architecture freshness needs owner review, not hashes.
 5. Rebuild approval archive digests, change-package projections, recursive
    context indexes, optional reverse/generation indexes, and the generated
    support state in that order. Prefer the transactional source finalizer so a

@@ -6,6 +6,7 @@
     "tools/project_knowledge.py",
     "tools/target_adapter_validation/__init__.py",
     "tools/target_adapter_validation/action_modes.py",
+    "tools/target_adapter_validation/active_tasks.py",
     "tools/target_adapter_validation/ai_infrastructure.py",
     "tools/target_adapter_validation/analysis_strategies.py",
     "tools/target_adapter_validation/architecture_knowledge.py",
@@ -51,6 +52,10 @@
   ],
   "families": [
     {
+      "id": "ACTIVE",
+      "code_count": 21
+    },
+    {
       "id": "AGENT",
       "code_count": 2
     },
@@ -60,7 +65,7 @@
     },
     {
       "id": "ANALYSIS",
-      "code_count": 45
+      "code_count": 46
     },
     {
       "id": "APPROVAL",
@@ -68,7 +73,7 @@
     },
     {
       "id": "ARCHITECTURE",
-      "code_count": 35
+      "code_count": 37
     },
     {
       "id": "ASSISTANT",
@@ -112,7 +117,7 @@
     },
     {
       "id": "CONTEXT",
-      "code_count": 23
+      "code_count": 26
     },
     {
       "id": "DEBUG",
@@ -252,7 +257,7 @@
     },
     {
       "id": "TASK",
-      "code_count": 27
+      "code_count": 54
     },
     {
       "id": "TDD",
@@ -284,6 +289,195 @@
     }
   ],
   "finding_codes": [
+    {
+      "code": "ACTIVE_TASK_ARTIFACT_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_ARTIFACT_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_BASELINE_UNAVAILABLE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_BINDING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_CLASS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_COVERAGE",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_DIGEST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_INDEX_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_INDEX_LIMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_MODEL_LINEAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_NOT_CLOSED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_PREDECESSOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_PROJECTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_REMOVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_SOURCE_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_UNREGISTERED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
     {
       "code": "AGENT_BROAD_PRELOAD",
       "levels": [
@@ -462,6 +656,15 @@
       ],
       "sources": [
         "tools/target_adapter_validation/ai_infrastructure.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_MANIFEST_SCHEMA_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
       ]
     },
     {
@@ -1541,6 +1744,24 @@
       "code": "ARCHITECTURE_REQUIRED_FILE_MISSING",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_REVALIDATION_REQUIRED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_REVIEW_LEGACY",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/target_adapter_validation/architecture_knowledge.py"
@@ -3313,6 +3534,24 @@
       ]
     },
     {
+      "code": "CONTEXT_SEMANTIC_CODEBOOK_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_SEMANTIC_CODEBOOK_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
       "code": "CONTEXT_SEMANTIC_OWNER_MISSING",
       "levels": [
         "error"
@@ -3323,6 +3562,15 @@
     },
     {
       "code": "CONTEXT_SEMANTIC_PRELOAD_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_SEMANTIC_SCHEMA_DRIFT",
       "levels": [
         "error"
       ],
@@ -12384,6 +12632,132 @@
       ]
     },
     {
+      "code": "TASK_ARCHITECTURE_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_ARCHITECTURE_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_ARCHITECTURE_REVIEW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CAPTURE_RECORD_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CAPTURE_RECORD_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_BLOCKED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_FINAL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_IDENTITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_NOT_FINAL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_PROVISIONAL",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_PUBLICATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_REGISTRATION_METADATA",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_RESULT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_CLOSURE_RESULT_SCOPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
       "code": "TASK_DECOMPOSITION_ANALYSIS_DEBUG",
       "levels": [
         "error"
@@ -12624,6 +12998,123 @@
       ],
       "sources": [
         "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_BLOCKED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_DISPOSITION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LINEAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_PRESERVATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_RESULT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_UNCHECKED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_UNFINALIZED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_UNREGISTERED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_KNOWLEDGE_DISPOSITION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_PUBLICATION_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_PUBLICATION_HISTORICAL",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
       ]
     },
     {

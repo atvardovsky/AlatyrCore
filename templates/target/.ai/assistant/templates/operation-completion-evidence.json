@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "record_kind": "alatyr-operation-completion-evidence",
   "operation": {
     "id": "{OPERATION_ID}",
@@ -114,6 +114,14 @@
     "evidence": "{EVIDENCE_OR_NOT_APPLICABLE}",
     "promotion_state": "{NOT_PROPOSED_PROPOSED_APPROVED_OR_APPLIED}",
     "owner": "{TARGET_OWNER_OR_NOT_APPLICABLE}"
+  },
+  "task_closure": {
+    "task_id": "{REGISTERED_TASK_ID_OR_SMALL_TASK_INLINE}",
+    "receipt": "{TARGET_RELATIVE_TASK_CLOSURE_OR_NOT_REQUIRED_WITH_REASON}",
+    "sha256": "{LOWERCASE_RECEIPT_SHA256_OR_NOT_REQUIRED}",
+    "implementation": "{COMPLETE_PARTIAL_OR_BLOCKED}",
+    "evidence_finalization": "{FINAL_PROVISIONAL_NOT_CAPTURED_OR_BLOCKED}",
+    "publication": "{NOT_REQUESTED_UNPUBLISHED_OR_PUBLISHED}"
   },
   "changed_facts": [
     {

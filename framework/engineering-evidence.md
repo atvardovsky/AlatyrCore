@@ -17,6 +17,17 @@ alatyr_doc:
 ---
 # Durable Engineering Evidence
 
+Registered task closure records capture as captured, skipped, or blocked.
+Captured IDs resolve exactly once to task-bound, validated final engineering
+records and their declared storage, sharing the operation and closure result.
+Material skips map each changed fact ID and fact type to its registered target
+owner and preserve applicable conclusions there; unknown materiality cannot justify
+a skip. Blocked capture names the next safe action and cannot establish final
+acceptance. Reports, tests, and commit messages alone are not registered
+canonical preservation. Keep legacy absence explicit; never fabricate a
+historical capture record or change historical source evidence to satisfy a
+new contract.
+
 Durable engineering evidence preserves the compact conclusions that a future
 developer or assistant needs to understand a material change. It is
 project-owned historical evidence, not a transcript of the assistant session

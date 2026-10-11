@@ -8,6 +8,7 @@ from typing import Any, Protocol
 from context_catalog import (
     ContextCatalogError,
     PACKET_SCHEMA_VERSION,
+    codebook_schema_version,
     load_codebook,
     validate_context_catalog,
 )
@@ -422,6 +423,22 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
 
     codebook_path = sink.target_path(CODEBOOK)
     try:
+        semantic_index = sink.load_json_object(codebook_path, "CONTEXT_SEMANTIC_CODEBOOK")
+        semantic_schema = codebook_schema_version(semantic_index)
+        semantic = router.get("semantic_codebook")
+        bootstrap = sink.load_json_object(sink.target_path(".ai/assistant/bootstrap-index.json"), "CONTEXT_CATALOG_BOOTSTRAP")
+        embedded = bootstrap.get("semantic_preload") if isinstance(bootstrap, dict) else None
+        declarations = [
+            ("router", semantic.get("schema_version") if isinstance(semantic, dict) else None),
+            ("bootstrap", embedded.get("codebook_schema_version") if isinstance(embedded, dict) else None),
+        ]
+        if manifest is not None:
+            scalar = manifest.scalars.get(("context_routing", "semantic_codebook_schema_version"))
+            declarations.append(("manifest", scalar.value if scalar else None))
+        for label, declared in declarations:
+            matches = declared == str(semantic_schema) if label == "manifest" else type(declared) is int and declared == semantic_schema
+            if not matches:
+                sink.error("CONTEXT_SEMANTIC_SCHEMA_DRIFT", f"{label} codebook schema {declared!r} differs from installed index {semantic_schema}", CODEBOOK)
         terms = load_codebook(
             codebook_path,
             root=codebook_path.parent,

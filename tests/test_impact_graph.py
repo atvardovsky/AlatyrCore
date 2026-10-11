@@ -191,6 +191,14 @@ class ImpactGraphTests(unittest.TestCase):
         self.assertRegex(report["impact_plan_digest"], r"^sha256:[0-9a-f]{64}$")
         self.assertEqual(report["changed_path_summary"]["changed_path_count"], 1)
         self.assertEqual(report["changed_path_summary"]["mapped_path_count"], 1)
+        self.assertEqual(report["support_change_coverage"]["state"], "unavailable")
+        self.assertFalse(report["coverage_complete"])
+        original_argv = sys.argv
+        try:
+            sys.argv = ["plan_support_impact.py", "--target", str(target), "--diff-ref", "HEAD", "--require-mapped-paths", "--output", str(output)]
+            self.assertEqual(impact_main(), 1)
+        finally:
+            sys.argv = original_argv
 
     def test_impact_plan_can_fail_closed_for_unmapped_project_paths(self) -> None:
         _directory, target = self.make_graph()

@@ -596,28 +596,37 @@ def git_is_ancestor(target: Path, base: str, result: str) -> bool | None:
     return None
 
 
-def git_snapshot_sha256(target: Path, revision: str, paths: list[str]) -> str | None:
+def git_snapshot_sha256(target: Path, revision: str, paths: list[str], *, byte_limits: tuple[int, int] | None = None, evidence_view: GitEvidenceView | None = None) -> str | None:
     """Hash selected repository-relative file contents at an immutable revision."""
     resolved = git_resolve_object(target, revision, "commit")
     if resolved is None or not paths:
         return None
     digest = hashlib.sha256()
+    bounded = (evidence_view or GitEvidenceView(target)) if byte_limits else None
+    remaining = byte_limits[1] if byte_limits else 0
     for selected_path in sorted(set(paths)):
         normalized = selected_path.replace("\\", "/")
         if not is_target_scope_pattern(normalized):
             return None
-        result = subprocess.run(
-            ["git", "show", f"{resolved}:{normalized}"],
-            cwd=target,
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-        )
-        if result.returncode != 0:
-            return None
+        if bounded is not None and byte_limits is not None:
+            content, available = bounded.bounded_file_result_at_ref(resolved, normalized, min(byte_limits[0], remaining))
+            if not available or content is None:
+                return None
+            remaining -= len(content)
+        else:
+            result = subprocess.run(
+                ["git", "show", f"{resolved}:{normalized}"],
+                cwd=target,
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+            )
+            if result.returncode != 0:
+                return None
+            content = result.stdout
         digest.update(normalized.encode("utf-8"))
         digest.update(b"\0")
-        digest.update(result.stdout)
+        digest.update(content)
         digest.update(b"\0")
     return digest.hexdigest()
 
@@ -785,6 +794,29 @@ class GitEvidenceView:
     def resolve_ref(self, ref: str) -> str | None:
         return self.resolve_object(ref, "commit")
 
+    def bounded_file_result_at_ref(self, ref: str, path: str, max_bytes: int, *, object_kind: str = "commit") -> tuple[bytes | None, bool]:
+        revision = self.resolve_object(ref, object_kind)
+        if revision is None or not is_target_relative_path(path):
+            return None, False
+        def read() -> tuple[bytes | None, bool]:
+            entry = _git_bytes(self.target, "ls-tree", "-z", "--full-tree", revision, "--", path)
+            if entry is None:
+                return None, False
+            if not entry:
+                return None, True
+            if not entry.startswith((b"100644 blob ", b"100755 blob ")):
+                return None, False
+            object_ref = f"{revision}:{path}"
+            size = _git_bytes(self.target, "cat-file", "-s", object_ref)
+            if size is None or not size.strip().isdigit() or int(size) > max_bytes:
+                return None, False
+            content = _git_bytes(self.target, "cat-file", "blob", object_ref)
+            return content, content is not None
+        return self._cached(("bounded-file-at-ref", revision, path, max_bytes), read)
+
+    def bounded_file_at_ref(self, ref: str, path: str, max_bytes: int) -> bytes | None:
+        return self.bounded_file_result_at_ref(ref, path, max_bytes)[0]
+
     def change_set(self, diff_ref: str) -> GitChangeSet | None:
         selected_revision = self.resolve_ref(diff_ref)
         if selected_revision is None:
@@ -819,11 +851,11 @@ class GitEvidenceView:
             lambda: git_is_ancestor(self.target, base, result),
         )
 
-    def snapshot_sha256(self, revision: str, paths: list[str]) -> str | None:
+    def snapshot_sha256(self, revision: str, paths: list[str], *, byte_limits: tuple[int, int] | None = None) -> str | None:
         normalized = tuple(sorted(set(paths)))
         return self._cached(
-            ("snapshot-sha256", revision, normalized),
-            lambda: git_snapshot_sha256(self.target, revision, list(normalized)),
+            ("snapshot-sha256", revision, normalized, byte_limits),
+            lambda: git_snapshot_sha256(self.target, revision, list(normalized), byte_limits=byte_limits, evidence_view=self),
         )
 
     def is_tracked(self, path: str) -> bool | None:

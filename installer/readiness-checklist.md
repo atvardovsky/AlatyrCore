@@ -536,6 +536,10 @@ Final evidence must say:
   requirement to enforcement, positive evidence, retained counterexamples,
   required proof obligations, and adversarial review; routine execution and
   recovery do not load full model history
+- non-trivial current work is registered in the bounded active-task index, with
+  a hash-bound model and ended-work closure; small/inspect-only paths preserve
+  their cost and authorization limits. Current-task validation selects its ID;
+  capture, finalization, publication, and architecture review gaps are explicit
 - subagent delegation is enabled or skipped from target evidence; enabled
   adapters define current per-surface capabilities, native/external/
   suggestion-only/unsupported dispatch, external dispatcher item where used,

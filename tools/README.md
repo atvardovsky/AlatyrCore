@@ -1302,6 +1302,7 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-re
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --continuity-packet .ai/.runtime/continuity/task.json
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --task-id TASK-1 --task-class standard-task
 ```
 
 Windows PowerShell:
@@ -1311,6 +1312,7 @@ py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo
 .\tools\validate_target_adapter.ps1 --target C:\path\to\target-repo
 py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo --json --output tmp\alatyr-adapter-report.json
 py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo --continuity-packet .ai\.runtime\continuity\task.json
+py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo --task-id TASK-1 --task-class standard-task
 ```
 
 Windows Command Prompt:
@@ -1318,6 +1320,12 @@ Windows Command Prompt:
 ```bat
 tools\validate_target_adapter.cmd --target C:\path\to\target-repo
 ```
+
+Select current work with `--task-id` and independently classified `--task-class`
+(default `standard-task`). The bounded kernel task registry rejects absent
+selected work and keeps capture, finalization, and publication separate.
+See [task evidence validation](../docs/task-evidence-validation.md) for schemas,
+retention, read budgets, architecture freshness, recurrence coverage, and limits.
 
 ## Target Adapter Validator Contract Check
 

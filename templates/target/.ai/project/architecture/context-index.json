@@ -33,8 +33,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 76,
-      "content_digest": "sha256:e0297d4b14e316b58863fa37e12c94dff1d72da32e9e72343df43b3b0cd62553"
+      "estimated_words": 112,
+      "content_digest": "sha256:62be5880ee6afb8a09fa94a872b4ecf03ce1d72fcd252f06a201ea9e61f1f6cc"
     },
     {
       "id": "project.content.architecture-readme-md",
@@ -56,8 +56,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 287,
-      "content_digest": "sha256:703548522663186ee8e4cb64062f248d004d5ec94eac55154dc829a7625d923e"
+      "estimated_words": 325,
+      "content_digest": "sha256:57ab1c0cc16dd2a4ab4f63d91757d9d359b58a466607893cd675993591f9dcec"
     }
   ]
 }

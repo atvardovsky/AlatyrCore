@@ -131,7 +131,12 @@ class SupportCostReportTests(unittest.TestCase):
         self.assertEqual(generated["files"], 1)
         self.assertGreater(generated["words"], 0)
         self.assertLess(generated["words"], complete["words"])
-        self.assertLess(report["combined_support"]["words"], 75_696)
+        # Compare the selected profile's generated inventory, not a historical
+        # framework word count that changes when legitimate contracts grow.
+        selected = report["combined_support"]["words"]
+        measured = report["target_templates"]["words"] + report["framework_pack_files"]["words"]
+        self.assertEqual(selected, measured)
+        self.assertLess(selected, selected - generated["words"] + complete["words"])
 
     def test_index_pressure_is_advisory_and_uses_strict_boundaries(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

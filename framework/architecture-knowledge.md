@@ -168,6 +168,26 @@ require the target owner and approval policy, then normal companion updates.
 
 ## Context Economy
 
+Keep source-review freshness separate from content identity and decision status.
+Schema-2 catalogs give each area/pattern an explicit `source_review` disposition:
+reviewed, not-required, or revalidation-required, with reviewer, timestamp,
+changed-fact IDs, reason, and bounded exact-file digests. Bind selected canonical
+owners and relevant implementation, contract, dependency, and decision evidence;
+the reviewer owns completeness of that selection. File hashes cannot infer an
+omitted relationship or discover an unrecorded new source automatically.
+
+A changed or unavailable review input requires revalidation even when support
+hashes have been refreshed. Unrelated commits alone do not invalidate an
+otherwise bound review. Preserve contradictions and decision authority; never
+auto-accept architecture or resolve disagreement by refreshing metadata.
+Legacy catalogs provide structural knowledge only, not reviewed-current
+evidence. A selected semantic task must resolve relevant review gaps before
+claiming its architecture evidence is current.
+The portable validator bounds review-input reads to 1 MiB per file, 8 MiB and
+256 unique files per selected review pass, with shared digests for repeated
+inputs. Exceeding a limit means review evidence is unavailable, never fresh;
+split oversized sources or narrow the reviewed area with the responsible owner.
+
 Architecture knowledge must not enter ordinary task context by default. Start
 with the compact catalog, then load only selected area, pattern, decision, and
 evidence records.

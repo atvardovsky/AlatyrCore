@@ -62,8 +62,8 @@ def _support_changes(target: Path) -> list[dict[str, Any]]:
     try:
         baseline = load_state(target)
         current = build_support_state(target)
-    except SupportStateError:
-        return []
+    except SupportStateError as exc:
+        raise ValueError(f"support-change coverage is unavailable: {exc}") from exc
     return [difference.__dict__ for difference in state_differences(baseline, current)]
 
 
@@ -86,7 +86,12 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    support_changes = _support_changes(target)
+    try:
+        support_changes = _support_changes(target)
+        support_coverage = {"state": "available", "reason": "support delta was measured"}
+    except ValueError as exc:
+        support_changes = []
+        support_coverage = {"state": "unavailable", "reason": str(exc)}
     all_changed_paths = sorted(
         set(changed_paths)
         | {item["path"] for item in support_changes if isinstance(item.get("path"), str)}
@@ -171,11 +176,14 @@ def main() -> int:
                 "selected_node_ids": selected,
                 "selected_edges": selected_edges,
                 "skipped_edges": skipped_edges,
+                "support_change_coverage": support_coverage,
             }
         ),
         "changed_path_summary": changed_path_summary,
         "changed_paths": all_changed_paths,
         "support_changes": support_changes,
+        "support_change_coverage": support_coverage,
+        "coverage_complete": support_coverage["state"] == "available" and not unmapped and not skipped_edges,
         "path_matches": path_matches,
         "explicit_fact_ids": sorted(set(args.fact_id)),
         "selected_node_ids": selected,
@@ -200,6 +208,9 @@ def main() -> int:
             "FAIL: changed project paths are not mapped: " + ", ".join(unmapped[:8]),
             file=sys.stderr,
         )
+        return 1
+    if args.require_mapped_paths and support_coverage["state"] != "available":
+        print(f"FAIL: {support_coverage['reason']}", file=sys.stderr)
         return 1
     return 0
 

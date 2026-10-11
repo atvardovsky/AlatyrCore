@@ -133,6 +133,7 @@ from target_adapter_validation.debug_mode import validate_debug_mode
 from target_adapter_validation.diagrams import validate_discussion_diagrams
 from target_adapter_validation.engineering_evidence import (
     validate_engineering_evidence,
+    prior_repository_binding_failures,
 )
 from target_adapter_validation.framework_baseline import source_pack_expectation
 from target_adapter_validation.installation_state import validate_installation_state
@@ -148,6 +149,7 @@ from target_adapter_validation.analysis_strategies import (
     validate_analysis_strategies,
     validate_selected_problem_model,
 )
+from target_adapter_validation.active_tasks import validate_active_tasks
 from target_adapter_validation.team_collaboration import validate_team_collaboration
 from target_adapter_validation.development_evidence import validate_development_evidence
 from target_adapter_validation.dependency_knowledge import validate_dependency_knowledge
@@ -264,6 +266,8 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/templates/installation-note.md",
     ".ai/assistant/templates/operation-request.md",
     ".ai/assistant/templates/operation-completion-evidence.json",
+    ".ai/assistant/active-tasks.json",
+    ".ai/assistant/templates/task-closure.json",
     ".ai/assistant/templates/problem-model.json",
     ".ai/assistant/templates/small-task-evidence.md",
     ".ai/assistant/templates/task-decomposition.md",
@@ -962,6 +966,8 @@ class Validator:
         problem_models: list[Path] | None = None,
         approval_archive_mode: str = "full",
         compact_archive_findings: bool = True,
+        current_task_id: str | None = None,
+        current_task_class: str | None = None,
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
@@ -971,6 +977,8 @@ class Validator:
         self.config = config
         self.framework_source = framework_source.resolve() if framework_source else None
         self.diff_ref = diff_ref
+        self.current_task_id = current_task_id
+        self.current_task_class = current_task_class
         self.enforce_approval_scope = enforce_approval_scope
         self.approval_records = self.selected_target_paths(
             approval_records, "--approval-record"
@@ -1222,7 +1230,8 @@ class Validator:
             ValidationPhase("context-router", lambda: self.check_router(enabled_modules, manifest), ("module-profile",)),
             ValidationPhase("session-continuity", lambda: validate_session_continuity(self), ("action-authorization", "context-router")),
             ValidationPhase("task-decomposition", lambda: validate_task_decomposition(self, manifest), ("context-router",)),
-            ValidationPhase("analysis-strategies", lambda: validate_analysis_strategies(self), ("task-decomposition",)),
+            ValidationPhase("active-tasks", lambda: validate_active_tasks(self), ("task-decomposition",)),
+            ValidationPhase("analysis-strategies", lambda: validate_analysis_strategies(self, manifest), ("task-decomposition",)),
             ValidationPhase("context-catalogs", lambda: validate_context_catalog_contract(self, manifest), ("context-router",)),
             ValidationPhase("support-state", lambda: validate_support_state(self.capability_validation_context(), manifest), ("installation-state",)),
             ValidationPhase("operation-catalog", operation_catalog, ("required-files",)),
@@ -5140,6 +5149,8 @@ class Validator:
         record_status: str,
         schema_version: int,
         implementation_surfaces: list[str],
+        verify_current: bool = False,
+        snapshot_byte_limits: tuple[int, int] | None = None,
     ) -> tuple[str | None, str | None]:
         if not isinstance(binding, dict):
             self.error(f"{code_prefix}_BINDING", "repository_binding must be an object", record_relpath)
@@ -5152,9 +5163,24 @@ class Validator:
         base_revision = binding.get("base_revision")
         result_revision = binding.get("result_revision")
         historical_status = record_status in {"completed", "validated", "superseded"}
+        if not isinstance(binding_kind, str):
+            self.error(f"{code_prefix}_BINDING_KIND", "repository binding kind must be a string", record_relpath)
+            return None, None
+        selected_paths_value = binding.get("selected_paths", [])
+        if not isinstance(selected_paths_value, list) or not all(isinstance(value, str) and is_target_relative_path(value) for value in selected_paths_value) or len(selected_paths_value) != len(set(selected_paths_value)):
+            self.error(f"{code_prefix}_SNAPSHOT_PATH", "selected_paths must contain unique target-relative strings", record_relpath)
+            return binding_kind, None
+        if not isinstance(binding.get("prior_bindings", []), list) or not all(isinstance(value, dict) for value in binding.get("prior_bindings", [])):
+            self.error(f"{code_prefix}_BINDING_LINEAGE", "prior_bindings must be a list of objects", record_relpath)
+            return binding_kind, None
+        for previous in binding.get("prior_bindings", []):
+            for failure in prior_repository_binding_failures(previous):
+                self.error(f"{code_prefix}_BINDING_LINEAGE", failure, record_relpath)
+            if not concrete(previous.get("reason")) or not concrete(previous.get("replaced_at")):
+                self.error(f"{code_prefix}_BINDING_LINEAGE", "prior bindings require a concrete replacement reason and timestamp", record_relpath)
 
         if schema_version >= 2:
-            if binding_state not in {"provisional", "final"}:
+            if not isinstance(binding_state, str) or binding_state not in {"provisional", "final"}:
                 self.error(f"{code_prefix}_BINDING_STATE", "version-2 binding_state must be provisional or final", record_relpath)
             if historical_status and binding_state != "final":
                 self.error(f"{code_prefix}_BINDING_STATE", f"{record_status} version-2 evidence requires a final binding", record_relpath)
@@ -5201,7 +5227,9 @@ class Validator:
                 self.error(f"{code_prefix}_SNAPSHOT_PATH", "selected-file snapshot requires paths", record_relpath)
             digest = hashlib.sha256()
             current_snapshot_valid = bool(paths)
-            historical_binding = historical_status and (schema_version == 1 or binding_state == "final")
+            snapshot_limited = False
+            remaining_bytes = snapshot_byte_limits[1] if snapshot_byte_limits else None
+            historical_binding = historical_status and (schema_version == 1 or binding_state == "final") and not verify_current
             for selected_path in sorted(set(paths)):
                 path_is_valid = concrete(selected_path) and is_target_relative_path(str(selected_path))
                 if not path_is_valid:
@@ -5218,9 +5246,21 @@ class Validator:
                     )
                     current_snapshot_valid = False
                     continue
+                if snapshot_byte_limits is not None and remaining_bytes is not None:
+                    read = self.context.read_bytes_result(selected_file, max_bytes=min(snapshot_byte_limits[0], remaining_bytes))
+                    if read.value is None:
+                        finding = self.warn if historical_binding else self.error
+                        finding(f"{code_prefix}_SNAPSHOT_LIMIT", "snapshot input is unavailable or exceeds its file/total byte budget", record_relpath)
+                        current_snapshot_valid = False
+                        snapshot_limited = True
+                        continue
+                    content = read.value
+                    remaining_bytes -= len(content)
+                else:
+                    content = self.read_bytes(selected_file)
                 digest.update(str(selected_path).replace("\\", "/").encode("utf-8"))
                 digest.update(b"\0")
-                digest.update(self.read_bytes(selected_file))
+                digest.update(content)
                 digest.update(b"\0")
             recorded_digest = binding.get("snapshot_sha256")
             digest_matches = current_snapshot_valid and concrete(recorded_digest) and recorded_digest.casefold() == digest.hexdigest()
@@ -5231,9 +5271,9 @@ class Validator:
                     "historical selected-file snapshot no longer matches current files" if historical_binding else "selected-file snapshot SHA-256 does not match current files",
                     record_relpath,
                 )
-            if historical_binding and not digest_matches and concrete(recorded_digest):
+            if historical_binding and not digest_matches and concrete(recorded_digest) and not snapshot_limited:
                 head = self.git.head_revision()
-                head_digest = self.git.snapshot_sha256(head or "", [str(path) for path in paths])
+                head_digest = self.git.snapshot_sha256(head or "", [str(path) for path in paths], byte_limits=snapshot_byte_limits)
                 if head and head_digest and head_digest.casefold() == str(recorded_digest).casefold():
                     self.info(
                         f"{code_prefix}_SNAPSHOT_COMMIT_CANDIDATE",
@@ -7798,6 +7838,8 @@ def main() -> int:
             "May be provided multiple times."
         ),
     )
+    parser.add_argument("--task-id", help="Require this current task to be registered in the bounded active-task index.")
+    parser.add_argument("--task-class", choices=["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"], help="Independent expected class for --task-id; defaults to non-small standard-task.")
     parser.add_argument(
         "--problem-model",
         type=Path,
@@ -7940,6 +7982,8 @@ def main() -> int:
         change_packages=args.change_package,
         continuity_packets=args.continuity_packet,
         problem_models=args.problem_model,
+        current_task_id=args.task_id,
+        current_task_class=args.task_class,
         enforce_change_package=args.enforce_change_package,
         migration_diff=args.migration_diff,
         debug_git_state=args.debug_git_state,

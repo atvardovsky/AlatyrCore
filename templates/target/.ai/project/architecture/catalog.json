@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "catalog_kind": "target-architecture-knowledge-catalog",
   "project": "{PROJECT_NAME}",
   "module_state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
@@ -18,7 +18,15 @@
       "owner": "{ARCHITECTURE_AREA_OWNER}",
       "detail": "{TARGET_ARCHITECTURE_AREA_DOC_OR_NONE}",
       "evidence": ["{TARGET_ARCHITECTURE_AREA_EVIDENCE}"],
-      "pattern_ids": ["{ARCHITECTURE_PATTERN_ID}"]
+      "pattern_ids": ["{ARCHITECTURE_PATTERN_ID}"],
+      "source_review": {
+        "state": "{REVIEWED_NOT_REQUIRED_OR_REVALIDATION_REQUIRED}",
+        "reason": "{FACT_SPECIFIC_REVIEW_DISPOSITION}",
+        "reviewer": "{TARGET_REVIEW_OWNER}",
+        "reviewed_at": "{TIMEZONE_AWARE_REVIEW_TIMESTAMP}",
+        "changed_fact_ids": [],
+        "inputs": [{"path": "{EXACT_TARGET_SOURCE_PATH}", "sha256": "{LOWERCASE_SOURCE_SHA256}"}]
+      }
     }
   ],
   "patterns": [
@@ -35,7 +43,15 @@
       "evidence": ["{TARGET_PATTERN_EVIDENCE}"],
       "validation": ["{TARGET_PATTERN_VALIDATION_OR_MANUAL_REVIEW}"],
       "related_pattern_ids": ["{RELATED_ARCHITECTURE_PATTERN_ID_OR_NONE}"],
-      "last_verified_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}"
+      "last_verified_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+      "source_review": {
+        "state": "{REVIEWED_NOT_REQUIRED_OR_REVALIDATION_REQUIRED}",
+        "reason": "{FACT_SPECIFIC_REVIEW_DISPOSITION}",
+        "reviewer": "{TARGET_REVIEW_OWNER}",
+        "reviewed_at": "{TIMEZONE_AWARE_REVIEW_TIMESTAMP}",
+        "changed_fact_ids": [],
+        "inputs": [{"path": "{EXACT_TARGET_SOURCE_PATH}", "sha256": "{LOWERCASE_SOURCE_SHA256}"}]
+      }
     }
   ],
   "known_gaps": ["{ARCHITECTURE_KNOWLEDGE_GAP_OR_NONE}"]

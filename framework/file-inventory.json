@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 69,
+  "adapter_schema_version": 70,
   "files": [
     {
       "path": "framework/README.md",
@@ -45,7 +45,7 @@
       "rule_ids": [
         "ALATYR-ARCHITECTURE-001"
       ],
-      "sha256": "ca52641fca946c087b63e77d3fd9187cef0f74a0ead70f2e80a98a960030504c"
+      "sha256": "b04423b92db6d08edff6c48262e857b3a101e462772b762bdcc5aa6aee55f862"
     },
     {
       "path": "framework/ascii-diagrams.md",
@@ -74,17 +74,17 @@
     {
       "path": "framework/catalog/change/context-index.json",
       "rule_ids": [],
-      "sha256": "6b7e3c72cbc672c49534cb77fb71f0d45e3f751a111468be6ba1d63ce1301eab"
+      "sha256": "be56f2669e792613d303d9b83cafbb1bb3328ce9175a273164f7e657346dbbd2"
     },
     {
       "path": "framework/catalog/collaboration/context-index.json",
       "rule_ids": [],
-      "sha256": "9571704c97abe1cf1c8b2f8ca75f774f2d7c9cf6e5dee1b7efb054c1c116e3f3"
+      "sha256": "49a743aaece9a452cec4d367d9feb53d78aa362c247099599b11b0b82b710f41"
     },
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "4bf126ec7b2e9c7b1e4ab0242e2dcfadd5f89102a127e5e8b52d29c177ad691b"
+      "sha256": "90db8049f8e4d9e7872c4bee364d481dac73cb506321c10c002e7c682627e9ef"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -94,7 +94,7 @@
     {
       "path": "framework/catalog/knowledge/context-index.json",
       "rule_ids": [],
-      "sha256": "015193d31ac30ddde90165ca1fcb41a70cb6705b260acc1ac632cce8b05e807b"
+      "sha256": "d88ff25333b512d46248b7dc26408107dda3e90203ea396643c38a30f7e5bb97"
     },
     {
       "path": "framework/catalog/lifecycle/context-index.json",
@@ -111,7 +111,7 @@
       "rule_ids": [
         "ALATYR-PACKAGE-001"
       ],
-      "sha256": "d4e232d33a4675a9a9d3e30f0486e00db9e66f04db249070a7326a6b59d0bce8"
+      "sha256": "e733983e369a13ff984177a9c80ee8b546670cc23e53d3a3d6976aa147e74d40"
     },
     {
       "path": "framework/change-risk-model.md",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "4e3edf88a5d15f75aae0e803074bba2aa4af1dbe04fefdfdf05a82e39eeea893"
+      "sha256": "d028649839820bede73b5b4154a15e175201fcd48e7aca5acff3ac4447b564c9"
     },
     {
       "path": "framework/context-profiles.md",
@@ -152,7 +152,7 @@
     {
       "path": "framework/context-router.md",
       "rule_ids": [],
-      "sha256": "de5bf781c89f07abe1dd41853f61aee39929a1b9675ae6abe4a0712ca48c5172"
+      "sha256": "3a50289201dbee9a1df18b3bd5f7721ac377242254a1f4d3c584df533ee62ca2"
     },
     {
       "path": "framework/contour.md",
@@ -190,7 +190,7 @@
       "rule_ids": [
         "ALATYR-ENGINEERING-EVIDENCE-001"
       ],
-      "sha256": "7163c63e3eb66a0b5314d68388b45d87f9218e913abf2287179b40b6c40da208"
+      "sha256": "07beb993943cee3155a20d37bf753e94c73c8d5b09cd5bbe5a9c7994dbda127d"
     },
     {
       "path": "framework/extensions.md",
@@ -271,7 +271,7 @@
       "rule_ids": [
         "ALATYR-KNOWLEDGE-001"
       ],
-      "sha256": "3cda531992a7f34f3979b51aab3dda2b2c2fcef6c7593ac849ecd688add81229"
+      "sha256": "997be03f253f35cf663c7d5af76717e0f9b4035418eb18b06ae418c5f23c8b9c"
     },
     {
       "path": "framework/project-vocabulary.md",
@@ -342,7 +342,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "9220552ccd620cb78800df1105bb02f9a72385244040c2d1249e7a736878f7bd"
+      "sha256": "f91fdd8ab7b845c5f5e13264487f73f5cd90e1d921c0faeb9bf159b32eac5df5"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -402,7 +402,7 @@
       "rule_ids": [
         "ALATYR-DECOMPOSITION-001"
       ],
-      "sha256": "1521b02df5cfe765d5f1ef5601f2b87a6f3cabf18dbae62607107e9b6d2a2587"
+      "sha256": "451426a4fdeba25635dc8a2c34bd9350c92f4ee1bacad8e73c44e8029219312f"
     },
     {
       "path": "framework/team-collaboration.md",
@@ -431,8 +431,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.86",
+  "framework_version": "0.1.0-alpha.87",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 81
+  "template_version": 82
 }

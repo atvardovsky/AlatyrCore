@@ -10,6 +10,9 @@ Before execution:
 - select exactly one primary strategy from the target catalog
 - load only the index and selected descriptor
 - record evidence for the selection and a bounded problem model
+- register non-trivial authorized work in `.ai/assistant/active-tasks.json`;
+  current-task acceptance supplies `--task-id`. Small tasks stay inline;
+  inspect-only host registration does not authorize repository writes
 - preserve incident-family and failed-gate lineage when the task corrects
   earlier repair work; from the second corrective iteration use systemic
   repair and model the whole lifecycle
@@ -45,3 +48,7 @@ Before completion:
 - no private reasoning, hidden chain-of-thought, or raw scratchpad was stored
 - reusable outcomes are classified, but promotion remains an explicit
   project-owned action
+- use the hash-bound `task-closure.json` template for registered ended work;
+  separate implementation, evidence finalization, and publication. Resolve
+  capture to the engineering index or justified preservation/blocker, and
+  check relevant architecture source reviews rather than only support hashes

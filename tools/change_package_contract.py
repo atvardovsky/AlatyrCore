@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from typing import Any
 
 
@@ -32,6 +34,7 @@ INDEX_PROJECTION_FIELDS = (
     "evidence_quality",
     "approval_records",
     "active_workstream",
+    "residual_risk",
 )
 INCIDENT_INDEX_PROJECTION_FIELDS = (
     "incident_family_id",
@@ -75,6 +78,14 @@ def package_index_projection(record: dict[str, Any]) -> dict[str, Any]:
     operation = _mapping(record.get("operation"))
     incident = _mapping(record.get("incident_continuity"))
     failed_gate = _mapping(incident.get("latest_failed_gate"))
+    risks = _mapping(record.get("validation")).get("residual_risks", [])
+    if not isinstance(risks, list) or not all(isinstance(risk, str) and risk.strip() for risk in risks):
+        residual_risk = "invalid record.validation.residual_risks"
+    elif not risks:
+        residual_risk = "none"
+    else:
+        digest = hashlib.sha256(json.dumps(risks, ensure_ascii=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+        residual_risk = f"{len(risks)} residual risk(s); see record.validation.residual_risks; sha256:{digest}"
     return {
         "package_id": record.get("package_id"),
         "status": record.get("status"),
@@ -84,6 +95,7 @@ def package_index_projection(record: dict[str, Any]) -> dict[str, Any]:
         "evidence_quality": provenance.get("evidence_quality"),
         "approval_records": _string_list(approved_scope.get("approval_records")),
         "active_workstream": operation.get("active_workstream"),
+        "residual_risk": residual_risk,
         "incident_family_id": incident.get("family_id"),
         "corrective_iteration": incident.get("corrective_iteration"),
         "latest_failed_gate_state": failed_gate.get("state"),
@@ -99,7 +111,7 @@ def package_index_projection_mismatches(
     projection = package_index_projection(record)
     if include_incident is None:
         include_incident = (
-            record.get("status") in ACTIVE_CHANGE_PACKAGE_STATUSES
+            isinstance(record.get("status"), str) and record.get("status") in ACTIVE_CHANGE_PACKAGE_STATUSES
             or any(field in entry for field in INCIDENT_INDEX_PROJECTION_FIELDS)
         )
     fields = INDEX_PROJECTION_FIELDS + (

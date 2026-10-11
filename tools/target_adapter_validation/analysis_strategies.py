@@ -74,7 +74,7 @@ def load_problem_model_projection_schema() -> dict[str, Any]:
     return value
 
 
-def validate_analysis_strategies(validator: Any) -> None:
+def validate_analysis_strategies(validator: Any, manifest: Any = None) -> None:
     """Validate static strategy routing and explicitly selected problem models."""
 
     for relpath in REQUIRED_PATHS:
@@ -119,6 +119,15 @@ def validate_analysis_strategies(validator: Any) -> None:
         problem_schema = None
         projection_schema = None
     if problem_schema is not None and projection_schema is not None:
+        if manifest is not None:
+            for field, current_schema in (
+                ("problem_model_schema", problem_schema),
+                ("problem_model_projection_schema", projection_schema),
+            ):
+                version = current_schema["properties"]["schema_version"]["const"]
+                scalar = manifest.scalars.get(("operations", field))
+                if scalar is None or scalar.value != str(version):
+                    validator.error("ANALYSIS_MANIFEST_SCHEMA_DRIFT", f"operations.{field} must equal canonical schema {version}", ".ai/alatyr.yaml")
         template_failures = validate_installed_strategy_templates(
             validator.target,
             problem_schema,
@@ -157,6 +166,8 @@ def validate_analysis_strategies(validator: Any) -> None:
         )
     else:
         expected = {
+            "active_task_index": ".ai/assistant/active-tasks.json",
+            "task_closure_template": ".ai/assistant/templates/task-closure.json",
             "catalog": STRATEGY_INDEX_RELPATH,
             "problem_model_schema": PROBLEM_MODEL_SCHEMA_ID,
             "problem_model_template": PROBLEM_MODEL_TEMPLATE_RELPATH,

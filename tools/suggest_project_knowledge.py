@@ -8,15 +8,19 @@ import hashlib
 import json
 import sys
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Iterator
 
 if __package__:
+    from .task_evidence_contract import task_projection_mismatches, task_schema
+    from .target_adapter_validation.context import TargetRepositoryView
     from .change_package_contract import (
         KNOWLEDGE_CANDIDATE_STATUSES,
         package_index_projection_mismatches,
     )
 else:
+    from task_evidence_contract import task_projection_mismatches, task_schema
+    from target_adapter_validation.context import TargetRepositoryView
     from change_package_contract import (
         KNOWLEDGE_CANDIDATE_STATUSES,
         package_index_projection_mismatches,
@@ -26,6 +30,76 @@ else:
 PACKAGE_INDEX = Path(".ai/assistant/change-packages/index.json")
 KNOWLEDGE_INDEX = Path(".ai/project/knowledge/index.json")
 MAX_EVIDENCE_IDS = 8
+TASK_INDEX = Path(".ai/assistant/active-tasks.json")
+
+
+def recent_task_signals(target: Path) -> dict[str, Any]:
+    """Inspect only registered closure headers; never scan arbitrary runtime logs."""
+    try:
+        view = TargetRepositoryView(target)
+        index, index_sha = _read_task_object(view, TASK_INDEX.as_posix())
+    except (OSError, UnicodeError, ValueError, RecursionError) as exc:
+        return {"coverage": "unavailable", "reason": f"current/recent task index unavailable: {exc}", "signals": []}
+    bindings = [{"path": TASK_INDEX.as_posix(), "sha256": index_sha}]
+    if not task_schema("active-task-index").is_valid(index):
+        return {"coverage": "incomplete", "reason": "task index contract or entry limit is invalid", "source_sha256": index_sha, "source_files": bindings, "signals": []}
+    tasks = index["tasks"]
+    grouped: dict[tuple[str, str], list[str]] = {}
+    incomplete = []
+    seen = set()
+    for task in tasks:
+        if not isinstance(task, dict) or not isinstance(task.get("task_id"), str) or task["task_id"] in seen:
+            incomplete.append("invalid or duplicate task header")
+            continue
+        seen.add(task["task_id"])
+        if task.get("state") != "closed":
+            incomplete.append(f"{task['task_id']}: active work has no closed receipt")
+            continue
+        binding = task["completion_evidence"]
+        try:
+            closure, actual_sha = _read_task_object(view, binding["path"])
+        except (OSError, UnicodeError, ValueError, RecursionError):
+            incomplete.append(f"{task['task_id']}: closure cannot be read")
+            continue
+        bindings.append({"path": binding["path"], "sha256": actual_sha})
+        if actual_sha != binding["sha256"]:
+            incomplete.append(f"{task['task_id']}: closure binding is unavailable or stale")
+            continue
+        if not task_schema("task-closure").is_valid(closure) or closure.get("task_id") != task["task_id"] or task_projection_mismatches(task, closure):
+            incomplete.append(f"{task['task_id']}: closure identity or projection differs")
+            continue
+        delivery = closure.get("delivery")
+        if not isinstance(delivery, dict) or delivery.get("implementation") != "complete" or delivery.get("evidence_finalization") != "final":
+            incomplete.append(f"{task['task_id']}: closure is not finalized")
+            continue
+        owners = [owner for owner in string_values(closure.get("canonical_owners")) if target_owned_owner(owner)]
+        if not owners:
+            continue
+        for kind, value in [("canonical-owner", owner) for owner in owners] + [("incident-family", closure.get("incident_family_id")), ("failed-gate", closure.get("latest_failed_gate_id"))]:
+            if isinstance(value, str) and value not in {"", "none"}:
+                grouped.setdefault((kind, value), []).append(task["task_id"])
+    return {
+        "coverage": "incomplete" if incomplete else "registered-only",
+        "source_sha256": index_sha,
+        "source_files": bindings,
+        "registered_tasks": len(tasks),
+        "limitations": incomplete[:MAX_EVIDENCE_IDS],
+        "signals": [{"kind": key[0], "selector": key[1], "occurrences": len(ids), "task_ids": ids[:MAX_EVIDENCE_IDS], "next_action": "review-recurrence-and-existing-owner"} for key, ids in sorted(grouped.items()) if len(ids) >= 2],
+        "reasoning_boundary": "Verified header identity is a review signal, not proof of repair correctness or complete historical discovery.",
+    }
+
+
+def _read_task_object(view: TargetRepositoryView, relative: str) -> tuple[dict[str, Any], str]:
+    path = safe_target_path(view.target, relative)
+    if path is None:
+        raise ValueError(f"unavailable or unsafe artifact: {relative}")
+    result = view.read_bytes_result(path, max_bytes=512 * 1024)
+    if result.value is None or result.digest is None:
+        raise ValueError(result.error or f"unavailable bounded artifact: {relative}")
+    value = json.loads(result.value)
+    if not isinstance(value, dict):
+        raise ValueError(f"{relative} must contain a JSON object")
+    return value, result.digest
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -51,6 +125,16 @@ def string_values(value: Any) -> tuple[str, ...]:
     )
 
 
+def target_owned_owner(value: Any) -> bool:
+    """Portable installed framework rules are not target knowledge candidates."""
+    if not isinstance(value, str) or not value or "{" in value or "}" in value:
+        return False
+    path = PurePosixPath(value.replace("\\", "/"))
+    if not path.parts or path.is_absolute() or ".." in path.parts or ":" in path.parts[0]:
+        return False
+    return tuple(part.casefold() for part in path.parts[:2]) != (".ai", "framework")
+
+
 def fact_owners(record: dict[str, Any]) -> dict[str, tuple[str, ...]]:
     facts = record.get("changed_facts")
     if not isinstance(facts, list):
@@ -61,7 +145,7 @@ def fact_owners(record: dict[str, Any]) -> dict[str, tuple[str, ...]]:
             continue
         fact_id = fact.get("id")
         owner = fact.get("canonical_owner")
-        if isinstance(fact_id, str) and fact_id and isinstance(owner, str) and owner:
+        if isinstance(fact_id, str) and fact_id and target_owned_owner(owner):
             facts_by_owner.setdefault(owner, []).append(fact_id)
     return {
         owner: tuple(dict.fromkeys(fact_ids))
@@ -77,6 +161,8 @@ def candidate_signals(
         routing.get("project_areas") if isinstance(routing, dict) else None
     )
     owners = fact_owners(record)
+    if not owners:
+        return ()
     signals: list[tuple[str, dict[str, Any], tuple[str, ...]]] = []
     for owner, fact_ids in owners.items():
         if len(areas) == 1:
@@ -107,7 +193,8 @@ def candidate_signals(
         if isinstance(failed_gate, dict):
             gate_id = failed_gate.get("id")
             if (
-                failed_gate.get("state") in {"open", "resolved"}
+                isinstance(failed_gate.get("state"), str)
+                and failed_gate.get("state") in {"open", "resolved"}
                 and isinstance(gate_id, str)
                 and gate_id not in {"", "none"}
             ):
@@ -343,10 +430,11 @@ def suggestions(
     verified_package_ids: set[str] = set()
     rejected_package_ids: set[str] = set()
     seen_package_ids: set[str] = set()
+    excluded_framework_packages = 0
     for record in package_records(target, package_index, source_bindings):
         if not isinstance(record, dict):
             continue
-        if record.get("status") not in KNOWLEDGE_CANDIDATE_STATUSES:
+        if not isinstance(record.get("status"), str) or record.get("status") not in KNOWLEDGE_CANDIDATE_STATUSES:
             continue
         package_id = record.get("package_id")
         if not isinstance(package_id, str) or not package_id:
@@ -356,6 +444,10 @@ def suggestions(
             continue
         seen_package_ids.add(package_id)
         terminal_records += 1
+        compact_owners = string_values(record.get("canonical_owners"))
+        if compact_owners and all(not target_owned_owner(owner) for owner in compact_owners):
+            excluded_framework_packages += 1
+            continue
         verified = verified_entry(target, record)
         if verified is None:
             rejected_package_ids.add(package_id)
@@ -420,6 +512,8 @@ def suggestions(
 
     existing_promotions = knowledge_index.get("promotion_records")
     existing_count = len(existing_promotions) if isinstance(existing_promotions, list) else 0
+    task_discovery = recent_task_signals(target)
+    source_bindings.extend(task_discovery.get("source_files", [{"path": TASK_INDEX.as_posix(), "state": task_discovery["coverage"]}]))
     return {
         "schema_version": 3,
         "report_kind": "project-knowledge-candidate-suggestions",
@@ -433,6 +527,8 @@ def suggestions(
         "candidate_projection_verified_packages": len(verified_package_ids),
         "candidate_projection_rejected_packages": len(rejected_package_ids),
         "duplicate_package_ids_ignored": duplicate_package_ids,
+        "excluded_non_target_owner_packages": excluded_framework_packages,
+        "recent_task_discovery": task_discovery,
         "ambiguous_package_count": ambiguous_package_count,
         "ambiguous_package_ids": ambiguous_package_ids,
         "ambiguous_evidence_truncated": (

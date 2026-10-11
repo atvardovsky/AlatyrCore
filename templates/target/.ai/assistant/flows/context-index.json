@@ -127,8 +127,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 721,
-      "content_digest": "sha256:844ca87939914abafd642a3b6bf8a4226643bb4ddc46496862a406877252030e"
+      "estimated_words": 794,
+      "content_digest": "sha256:4f87d42339e516973db613f14b022671f85217ee2d1fb66e3274f26195ffaaea"
     },
     {
       "id": "assistant.content.flows-blueprint-driven-change-flow-md",

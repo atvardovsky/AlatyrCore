@@ -210,7 +210,7 @@ def _direct_delegate_invocation_failures(
                 f"{entrypoint} canonical command must contain exactly one --target . binding",
             )
         ]
-    single_value_options = {"--target", "--framework-source", "--diff-ref"}
+    single_value_options = {"--target", "--framework-source", "--diff-ref", "--task-id", "--task-class"}
     duplicates = sorted(
         option
         for option in single_value_options

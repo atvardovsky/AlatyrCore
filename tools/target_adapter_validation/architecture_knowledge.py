@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+from architecture_review import review_failures, BoundedReviewDigests
 from target_validation_support import ManifestData, dotted
 from target_adapter_validation.values import is_resolved_string
 
@@ -94,10 +95,10 @@ def validate_architecture_knowledge(
     )
     if catalog is None:
         return
-    if catalog.get("schema_version") != 1:
+    if type(catalog.get("schema_version")) is not int or catalog.get("schema_version") not in {1, 2}:
         context.error(
             "ARCHITECTURE_CATALOG_SCHEMA",
-            "schema_version should be 1",
+            "schema_version should be 1 (legacy) or 2",
             catalog_relpath,
         )
     if catalog.get("catalog_kind") != "target-architecture-knowledge-catalog":
@@ -271,11 +272,24 @@ def validate_architecture_knowledge(
         )
 
     area_fields = {"id", "name", "status", "owner", "detail", "evidence", "pattern_ids"}
+    review_digests = BoundedReviewDigests(context.filesystem)
+    def check_source_review(item: dict[str, Any], label: str) -> None:
+        if module_state != "enabled" or not concrete(item.get("id")):
+            return
+        if catalog.get("schema_version") == 1:
+            context.warn("ARCHITECTURE_REVIEW_LEGACY", f"{label} has no schema-2 source-bound review; current support hashes do not prove review freshness", catalog_relpath)
+            return
+        review = item.get("source_review")
+        for failure in review_failures(review, review_digests):
+            context.warn("ARCHITECTURE_REVALIDATION_REQUIRED", f"{label}: {failure}", catalog_relpath)
+        if isinstance(review, dict) and review.get("state") == "revalidation-required":
+            context.warn("ARCHITECTURE_REVALIDATION_REQUIRED", f"{label}: owner review remains required", catalog_relpath)
     for index, area in enumerate(areas):
         label = f"areas[{index}]"
         if not isinstance(area, dict):
             context.error("ARCHITECTURE_AREA_SHAPE", f"{label} must be an object", catalog_relpath)
             continue
+        check_source_review(area, label)
         missing = sorted(area_fields - set(area))
         if missing:
             context.error("ARCHITECTURE_AREA_FIELDS", f"{label} is missing {missing}", catalog_relpath)
@@ -324,6 +338,7 @@ def validate_architecture_knowledge(
         if not isinstance(pattern, dict):
             context.error("ARCHITECTURE_PATTERN_SHAPE", f"{label} must be an object", catalog_relpath)
             continue
+        check_source_review(pattern, label)
         missing = sorted(pattern_fields - set(pattern))
         if missing:
             context.error("ARCHITECTURE_PATTERN_FIELDS", f"{label} is missing {missing}", catalog_relpath)

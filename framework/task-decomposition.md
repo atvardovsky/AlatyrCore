@@ -83,6 +83,47 @@ create heavy operation packets when the one-task plan is enough.
 
 ## Analysis Strategy Contract
 
+### Active Task Selection
+
+Register non-trivial authorized work in the bounded target active-task index.
+Each entry identifies the task, scale, current phase, hash-bound runtime model,
+and a closure receipt when work ends. Validation selects active models even
+without a change package and applies canonical model, projection, strategy,
+obligation, and review checks. Open duties may remain during execution, never
+during completed-task acceptance.
+
+Current-task validation receives the task ID and independently classified scale;
+the record cannot downgrade itself to bypass model checks. An empty index does not prove
+that no task exists. Inspect-only work may keep host-native/in-memory
+registration instead of writing without authorization, but must report when
+machine validation of that registration is unavailable. Eligible small tasks
+remain inline and need no model or durable task receipt by default.
+
+Keep at most 128 current/recent task headers. Routine changed-scope validation
+loads active, explicitly selected, or changed receipts only. Full checks may
+review all registered entries, not arbitrary ignored history. Retain a model
+while its task header selects it; preserve ended work in the target's durable
+package/evidence store before retiring the header. Never delete evidence
+automatically. Registration and closure carry no action authorization.
+
+Closure records implementation, evidence finalization, and publication
+separately. Complete implementation may still have provisional or blocked
+evidence. Only final evidence with reproducible repository binding supports
+current-task acceptance. Publication is optional and separately authorized;
+neither task status nor a final snapshot implies a commit or push.
+If publication is claimed, retain a hash-bound local observation receipt with
+task/operation identity, an immutable observed remote-tracking revision, and a
+valid timestamp. It verifies the local observation, not current live remote
+state or publication authorization.
+
+Use the [engineering-evidence](engineering-evidence.md) capture disposition.
+Record knowledge review as reviewed, deferred, or not-required with a reason;
+do not manufacture a promotion when an existing owner already serves the task.
+Recurrence discovery uses registered task/package headers and verified closure
+bindings. Family, failed-gate, and owner matches are review signals, not causal
+proof. Missing registration, stale bindings, or exhausted limits mean incomplete
+discovery, not no recurrence. Keep scratchpads out of durable records.
+
 An analysis strategy structures evidence for the current problem. It grants no
 authority, does not replace a task profile, and cannot enable Debug Mode. Use
 exactly one primary strategy:

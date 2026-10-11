@@ -332,6 +332,16 @@ def validate_context_catalog(
     return CatalogResolution(indexes=tuple(indexes), items=tuple(items))
 
 
+def codebook_schema_version(index: Any) -> int:
+    """Resolve the semantic index version without accepting bools or unhashable input."""
+    version = index.get("schema_version") if isinstance(index, dict) else None
+    if type(version) is not int or version not in {
+        LEGACY_CODEBOOK_SCHEMA_VERSION, CODEBOOK_SCHEMA_VERSION
+    }:
+        raise ContextCatalogError("semantic codebook index schema_version is invalid")
+    return version
+
+
 def load_codebook(
     index_path: Path,
     *,
@@ -344,9 +354,7 @@ def load_codebook(
     index_path = index_path.resolve()
     root = (root or index_path.parent).resolve()
     index = load_object(index_path)
-    index_schema = index.get("schema_version")
-    if index_schema not in {LEGACY_CODEBOOK_SCHEMA_VERSION, CODEBOOK_SCHEMA_VERSION}:
-        raise ContextCatalogError("semantic codebook index schema_version is invalid")
+    index_schema = codebook_schema_version(index)
     if index.get("index_kind") != CODEBOOK_INDEX_KIND:
         raise ContextCatalogError("semantic codebook index kind is invalid")
     shards = index.get("shards")

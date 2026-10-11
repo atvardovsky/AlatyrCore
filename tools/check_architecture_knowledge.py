@@ -133,8 +133,8 @@ def main() -> int:
         router = {}
         operation_catalog = {}
 
-    if catalog.get("schema_version") != 1:
-        failures.append("architecture catalog schema_version must be 1")
+    if catalog.get("schema_version") != 2:
+        failures.append("architecture catalog schema_version must be 2")
     if catalog.get("catalog_kind") != "target-architecture-knowledge-catalog":
         failures.append("architecture catalog kind is invalid")
     if catalog.get("human_index") != ".ai/project/architecture/README.md":

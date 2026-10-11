@@ -343,6 +343,12 @@ In a typical target repository:
    promotion and route-shard templates, semantic-guidance receipt fields, and
    mapped/known-gap/unknown coverage in every accepted core profile. Keep route
    shards lazy.
+   Initialize the bounded `.ai/assistant/active-tasks.json` and task-closure
+   template. Updates preserve registered work, reconcile model/projection
+   versions, and report missing history without fabrication. Follow
+   [task evidence](framework/task-decomposition.md#active-task-selection).
+   Derive codebook schemas from the installed index; reconcile manifest/router
+   before bootstrap regeneration. Never reuse stale declarations.
    Preserve stable-prefix-first context order for every surface. Use provider
    cache controls only when the exact selected client exposes them, and require
    observed host/provider telemetry before reporting cache hits or exact

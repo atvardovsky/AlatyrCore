@@ -1,5 +1,11 @@
 # Context Router
 
+The semantic codebook schema is the installed semantic index's schema version,
+not a separate router-descriptor version. Manifest, router, and bootstrap must
+declare that same supported integer. Generate bootstrap metadata from the
+installed index and reject mismatches before trusting compact semantics; a
+source-repository fallback is permitted only when rendering source templates.
+
 The context router is the machine-readable companion to context profiles.
 
 Context profiles remain the human-readable source for task routing rationale.

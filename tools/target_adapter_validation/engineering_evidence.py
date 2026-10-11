@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from functools import lru_cache
 from typing import Any
 
 import jsonschema
@@ -29,6 +30,16 @@ ENGINEERING_EVIDENCE_SCHEMA = (
 ENGINEERING_CONTRACT = contract_compatibility("engineering-evidence")
 ENGINEERING_INDEX = artifact_compatibility("engineering-evidence", "index")
 ENGINEERING_RECORD = artifact_compatibility("engineering-evidence", "record")
+
+
+@lru_cache(maxsize=1)
+def _prior_binding_schema() -> jsonschema.Draft7Validator:
+    schema = json.loads(ENGINEERING_EVIDENCE_SCHEMA.read_text(encoding="utf-8"))
+    return jsonschema.Draft7Validator({"$ref": "#/definitions/priorRepositoryBinding", "definitions": schema["definitions"]})
+
+
+def prior_repository_binding_failures(value: Any) -> list[str]:
+    return [error.message for error in _prior_binding_schema().iter_errors(value)]
 
 
 def validate_engineering_evidence(self: DomainValidationHost, manifest: ManifestData | None) -> None:

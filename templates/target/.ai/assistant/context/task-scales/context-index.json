@@ -77,8 +77,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 249,
-      "content_digest": "sha256:54b533bce2c30b9639191e94f252928c2ded6377e2d0714b7e22f37442f005c3"
+      "estimated_words": 245,
+      "content_digest": "sha256:1cc1e5618bf0404677a8c26a05b95a4753c7948e4f42acc99822bf91466db9b3"
     },
     {
       "id": "assistant.content.context-task-scales-delegation-preflight-json",

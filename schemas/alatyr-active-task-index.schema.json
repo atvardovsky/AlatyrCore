@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "alatyr-active-task-index.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "index_kind", "tasks"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "index_kind": {"const": "target-active-task-index"},
+    "tasks": {
+      "type": "array", "maxItems": 128,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["task_id", "operation_id", "state", "task_class", "problem_model", "completion_evidence", "canonical_owners", "changed_fact_ids", "incident_family_id", "predecessor_task_ids", "latest_failed_gate_id"],
+        "properties": {
+          "task_id": {"$ref": "#/definitions/text"},
+          "operation_id": {"$ref": "#/definitions/text"},
+          "state": {"enum": ["active", "closed"]},
+          "task_class": {"enum": ["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"]},
+          "problem_model": {"anyOf": [{"$ref": "#/definitions/binding"}, {"type": "null"}]},
+          "completion_evidence": {"anyOf": [{"$ref": "#/definitions/binding"}, {"type": "null"}]},
+          "canonical_owners": {"$ref": "#/definitions/paths"},
+          "changed_fact_ids": {"$ref": "#/definitions/strings"},
+          "incident_family_id": {"$ref": "#/definitions/text"},
+          "predecessor_task_ids": {"$ref": "#/definitions/strings"},
+          "latest_failed_gate_id": {"$ref": "#/definitions/text"}
+        },
+        "allOf": [
+          {"if": {"properties": {"task_class": {"not": {"const": "small-task"}}}}, "then": {"properties": {"problem_model": {"$ref": "#/definitions/binding"}}}},
+          {"if": {"properties": {"state": {"const": "closed"}}}, "then": {"properties": {"completion_evidence": {"$ref": "#/definitions/binding"}}}, "else": {"properties": {"completion_evidence": {"type": "null"}}}}
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "text": {"type": "string", "minLength": 1, "maxLength": 1024, "pattern": "^[^{}]+$"},
+    "strings": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/definitions/text"}},
+    "path": {"allOf": [{"$ref": "#/definitions/text"}, {"pattern": "^[^\\\\]+$"}]},
+    "paths": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/definitions/path"}},
+    "binding": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/definitions/path"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+    }
+  }
+}

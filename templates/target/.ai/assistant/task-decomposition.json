@@ -5,6 +5,8 @@
   "portable_rule": ".ai/framework/task-decomposition.md",
   "plan_template": ".ai/assistant/templates/task-decomposition.md",
   "analysis_strategy": {
+    "active_task_index": ".ai/assistant/active-tasks.json",
+    "task_closure_template": ".ai/assistant/templates/task-closure.json",
     "catalog": ".ai/assistant/analysis-strategies/index.json",
     "problem_model_schema": "alatyr-problem-model-v4",
     "problem_model_template": ".ai/assistant/templates/problem-model.json",

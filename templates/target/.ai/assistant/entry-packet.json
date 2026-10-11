@@ -13,24 +13,24 @@
     "source_dirty_paths_truncated": false,
     "source_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:498b957c8b02d77e34d6139f5475b561267bc563e0beae7c7e7ab18debb974e3",
+    "target_manifest_digest": "sha256:70be92f2adf50c9f781cc7fe10a04272de53a539cfd7454557c65b16215de0df",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.86",
-    "adapter_schema_version": "69",
-    "template_version": "81"
+    "framework_version": "0.1.0-alpha.87",
+    "adapter_schema_version": "70",
+    "template_version": "82"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "498b957c8b02d77e34d6139f5475b561267bc563e0beae7c7e7ab18debb974e3"
+      "sha256": "70be92f2adf50c9f781cc7fe10a04272de53a539cfd7454557c65b16215de0df"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "04c57fdae2a8281b252ee8042c48fab817826dd3cab39159b4b08debfcc06ace"
+      "sha256": "b37a6a4a6e67ce2ba1493a1ddcbf6724529324329c4d2276d28b9de0e8f3cfc4"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -50,7 +50,7 @@
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",
-      "sha256": "5c940f5342552387fc87d3da5166aa11c7f7b6c11f0e1140cfa4b281b3c6747f"
+      "sha256": "2cf6fdec75a9f0ef06b3c29e227c2b6c7f75270f486e959470c413c81f8610df"
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",

@@ -234,7 +234,7 @@ class TargetRepositoryView:
 
         return self.status(Path(path)).exists
 
-    def read_bytes_result(self, path: Path) -> ValidationRead[bytes]:
+    def read_bytes_result(self, path: Path, *, max_bytes: int | None = None) -> ValidationRead[bytes]:
         """Read target bytes once while rechecking containment on every access."""
 
         candidate = self._candidate(path)
@@ -242,6 +242,8 @@ class TargetRepositoryView:
         resolved = self.resolve_path(candidate)
         cached = self._bytes_cache.get(key)
         if cached is not None:
+            if max_bytes is not None and len(cached.data) > max_bytes:
+                return ValidationRead(status=cached.status, value=None, error=f"target file exceeds {max_bytes} bytes")
             if cached.status.resolved_path != resolved:
                 status = replace(
                     self._status(candidate),
@@ -263,8 +265,15 @@ class TargetRepositoryView:
                 value=None,
                 error=before.error or before.state.value,
             )
+        if max_bytes is not None and before.size is not None and before.size > max_bytes:
+            self._remember(before)
+            return ValidationRead(status=before, value=None, error=f"target file exceeds {max_bytes} bytes")
         try:
-            data = resolved.read_bytes()
+            if max_bytes is None:
+                data = resolved.read_bytes()
+            else:
+                with resolved.open("rb") as handle:
+                    data = handle.read(max_bytes + 1)
         except OSError as exc:
             unreadable = replace(
                 before,
@@ -282,6 +291,9 @@ class TargetRepositoryView:
             )
             self._remember(unstable)
             return ValidationRead(status=unstable, value=None, error=unstable.error)
+        if max_bytes is not None and len(data) > max_bytes:
+            self._remember(after)
+            return ValidationRead(status=after, value=None, error=f"target file exceeds {max_bytes} bytes")
         digest = hashlib.sha256(data).hexdigest()
         snapshot = _ContentSnapshot(status=after, data=data, digest=digest)
         self._bytes_cache[key] = snapshot
@@ -364,7 +376,7 @@ class TargetRepositoryView:
             return cached
         try:
             data = json.loads(text_result.value)
-        except json.JSONDecodeError as exc:
+        except (json.JSONDecodeError, RecursionError) as exc:
             status = replace(
                 text_result.status,
                 state=TargetFileState.INVALID_JSON,

@@ -85,6 +85,15 @@ blocks safe routing.
     validation, approvals, contradictions, skipped checks, and residual risk
     using the result template.
 
+For each selected schema-2 area or pattern, record `source_review` separately
+from its decision status: disposition, responsible reviewer, timestamp, changed
+fact IDs, reason, and exact source-file digests. Include relevant canonical,
+implementation, contract, dependency, and decision sources; input completeness
+remains the reviewer's responsibility. Changed/unavailable inputs require
+revalidation. Refreshing support hashes never updates review authority. Keep
+review inputs within the portable read limits; split oversized sources or
+review areas explicitly rather than marking unavailable evidence current.
+
 ## Documentation Triggers
 
 Recommend a catalog or supporting-document update after:

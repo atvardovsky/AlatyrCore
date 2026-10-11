@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1573,
-      "content_digest": "sha256:b86a5681c1e9486c383d74d4bb9f5edd5cbad713bc2be31989b69c3c3379d777"
+      "estimated_words": 1577,
+      "content_digest": "sha256:a14839933f187ede201d64b68b4b5b01236fca747f3cdc47961f0485e28bd674"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -745,8 +745,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 338,
-      "content_digest": "sha256:722729adf40c43786d41b9d8bc47c2b77cb3fa7f7b1cf0a32d666784f4e0c9e1"
+      "estimated_words": 353,
+      "content_digest": "sha256:255cbc873ecc02c1b57510de655da562b28372c10e7bc63f5e4c640af22954f5"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -1045,6 +1045,27 @@
       ],
       "estimated_words": 348,
       "content_digest": "sha256:512f7a1067fc2dbc88f802bc81f1e3c0ed27605c15f92e94c058b738644755a9"
+    },
+    {
+      "id": "assistant.content.templates-task-closure-json",
+      "kind": "content",
+      "path": "templates/task-closure.json",
+      "summary": "Task Closure",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "task",
+          "closure"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 70,
+      "content_digest": "sha256:293253a72d1d0060d8f0e852ffc63f2fdc0a1fcb4533110cb8e4f3aa33b8b743"
     },
     {
       "id": "assistant.content.templates-task-decomposition-md",

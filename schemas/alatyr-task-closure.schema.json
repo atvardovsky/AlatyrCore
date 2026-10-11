@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "alatyr-task-closure.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_kind", "task_id", "operation_id", "delivery", "engineering_evidence", "repository_binding", "publication_evidence", "canonical_owners", "implementation_surfaces", "changed_fact_ids", "incident_family_id", "predecessor_task_ids", "latest_failed_gate_id", "knowledge_review", "architecture_review"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "record_kind": {"const": "alatyr-task-closure"},
+    "task_id": {"$ref": "#/definitions/text"},
+    "operation_id": {"$ref": "#/definitions/text"},
+    "canonical_owners": {"$ref": "#/definitions/paths"},
+    "implementation_surfaces": {"$ref": "#/definitions/paths"},
+    "changed_fact_ids": {"$ref": "#/definitions/strings"},
+    "incident_family_id": {"$ref": "#/definitions/text"},
+    "predecessor_task_ids": {"$ref": "#/definitions/strings"},
+    "latest_failed_gate_id": {"$ref": "#/definitions/text"},
+    "delivery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["implementation", "evidence_finalization", "publication"],
+      "properties": {
+        "implementation": {"enum": ["complete", "partial", "blocked"]},
+        "evidence_finalization": {"enum": ["final", "provisional", "not-captured", "blocked"]},
+        "publication": {"enum": ["not-requested", "unpublished", "published"]}
+      }
+    },
+    "engineering_evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "reason", "materiality", "record_ids", "preserved_owners", "preservation", "next_safe_action"],
+      "properties": {
+        "state": {"enum": ["captured", "skipped", "blocked"]},
+        "materiality": {"enum": ["material", "non-material", "unknown"]},
+        "reason": {"$ref": "#/definitions/text"},
+        "record_ids": {"$ref": "#/definitions/strings"},
+        "preserved_owners": {"$ref": "#/definitions/paths"},
+        "preservation": {"type": "array", "maxItems": 128, "items": {"type": "object", "additionalProperties": false, "required": ["fact_id", "fact_type", "owner"], "properties": {"fact_id": {"$ref": "#/definitions/text"}, "fact_type": {"$ref": "#/definitions/text"}, "owner": {"$ref": "#/definitions/text"}}}},
+        "next_safe_action": {"$ref": "#/definitions/text"}
+      }
+    },
+    "repository_binding": {"type": ["object", "null"]},
+    "publication_evidence": {"type": "array", "maxItems": 8, "items": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/definitions/path"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}},
+    "architecture_review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "reason", "item_ids"],
+      "properties": {
+        "state": {"enum": ["reviewed", "not-required", "blocked"]},
+        "reason": {"$ref": "#/definitions/text"},
+        "item_ids": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "knowledge_review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "reason", "candidate_ids"],
+      "properties": {
+        "state": {"enum": ["reviewed", "deferred", "not-required"]},
+        "reason": {"$ref": "#/definitions/text"},
+        "candidate_ids": {"$ref": "#/definitions/strings"}
+      }
+    }
+  },
+  "definitions": {
+    "text": {"type": "string", "minLength": 1, "pattern": "^[^{}]+$"},
+    "path": {"allOf": [{"$ref": "#/definitions/text"}, {"pattern": "^[^\\\\]+$"}]},
+    "paths": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/definitions/path"}},
+    "strings": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/definitions/text"}}
+  }
+}

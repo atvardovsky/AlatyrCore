@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-task-closure",
+  "task_id": "{TASK_ID}",
+  "operation_id": "{OPERATION_ID}",
+  "delivery": {
+    "implementation": "{COMPLETE_PARTIAL_OR_BLOCKED}",
+    "evidence_finalization": "{FINAL_PROVISIONAL_NOT_CAPTURED_OR_BLOCKED}",
+    "publication": "{NOT_REQUESTED_UNPUBLISHED_OR_PUBLISHED}"
+  },
+  "engineering_evidence": {
+    "state": "{CAPTURED_SKIPPED_OR_BLOCKED}",
+    "materiality": "{MATERIAL_NON_MATERIAL_OR_UNKNOWN}",
+    "reason": "{CONCRETE_CAPTURE_OR_DISPOSITION_REASON}",
+    "record_ids": [],
+    "preserved_owners": [],
+    "preservation": [],
+    "next_safe_action": "{NEXT_SAFE_ACTION_OR_NONE}"
+  },
+  "repository_binding": null,
+  "publication_evidence": [],
+  "canonical_owners": [],
+  "implementation_surfaces": [],
+  "changed_fact_ids": [],
+  "incident_family_id": "none",
+  "predecessor_task_ids": [],
+  "latest_failed_gate_id": "none",
+  "architecture_review": {
+    "state": "{REVIEWED_NOT_REQUIRED_OR_BLOCKED}",
+    "reason": "{FACT_SPECIFIC_ARCHITECTURE_REVIEW_DISPOSITION}",
+    "item_ids": []
+  },
+  "knowledge_review": {
+    "state": "{REVIEWED_DEFERRED_OR_NOT_REQUIRED}",
+    "reason": "{CONCRETE_REVIEW_OR_DISPOSITION_REASON}",
+    "candidate_ids": []
+  }
+}

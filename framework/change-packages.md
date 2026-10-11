@@ -266,7 +266,11 @@ Treat the compact entry as a derived projection of its named package record.
 Its package ID and status must match the record; changed-fact IDs and canonical
 owners derive from `changed_facts`; project areas derive from `routing`;
 evidence quality derives from `provenance`; approval references derive from
-`approved_scope`; and active workstream derives from `operation`. Full adapter
+`approved_scope`; and active workstream derives from `operation`.
+Residual risk derives only from `validation.residual_risks`: empty means `none`;
+otherwise retain a bounded count, digest, and pointer to that exact list, not a
+manually maintained risk sentence. Regeneration never rewrites source records.
+Full adapter
 validation checks every projection. Changed-scope validation checks the index
 when it changed and otherwise checks only changed package records, so routine
 product work does not reopen historical package evidence.

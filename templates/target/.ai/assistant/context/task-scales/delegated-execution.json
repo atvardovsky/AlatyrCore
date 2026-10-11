@@ -4,7 +4,7 @@
   "id": "delegated-execution",
   "required_module": "subagent-delegation",
   "use_when": [
-    "primary critical-path action is selected",
+    "primary critical-path selected",
     "independent locally verifiable work can run without blocking it",
     "disjoint writes or read-only scope and current capability evidence exist"
   ],
@@ -53,7 +53,7 @@
     "changed-fact owner approval or target validation must be reconciled",
     "risk scope permissions or dependencies expand"
   ],
-  "budget_behavior": "keep packets bounded; fall back when overhead or context exceeds policy",
+  "budget_behavior": "bounded packets; fall back on excess overhead or context",
   "final_evidence": [
     "parent decomposition plan and worker-eligible levels",
     "delegation decision packets and ledger",

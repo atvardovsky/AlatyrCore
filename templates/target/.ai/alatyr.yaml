@@ -162,9 +162,9 @@ operations:
   task_decomposition_plan: ".ai/assistant/templates/task-decomposition.md"
   analysis_strategy_index: ".ai/assistant/analysis-strategies/index.json"
   problem_model_template: ".ai/assistant/templates/problem-model.json"
-  problem_model_schema: 2
+  problem_model_schema: 4
   problem_model_projection_template: ".ai/assistant/templates/problem-model-active-projection.json"
-  problem_model_projection_schema: 1
+  problem_model_projection_schema: 3
   delegation_execution_tree: ".ai/assistant/templates/delegation-execution-tree.json"
   delegation_policy_schema: 7
   delegation_execution_tree_schema: 3

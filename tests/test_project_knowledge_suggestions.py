@@ -263,7 +263,7 @@ class ProjectKnowledgeSuggestionTests(unittest.TestCase):
             package_index.write_text(json.dumps(root), encoding="utf-8")
             report = suggestions(target)
 
-        self.assertEqual(len(report["source_files"]), 2)
+        self.assertEqual(len(report["source_files"]), 3)
         self.assertEqual(len(report["candidates"]), 1)
 
     def test_multi_area_packages_suggest_owner_recurrence_without_cartesian_pairs(self) -> None:

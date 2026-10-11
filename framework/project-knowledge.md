@@ -20,6 +20,14 @@ alatyr_doc:
 ---
 # Project Development Guidance And Knowledge Delivery
 
+Candidate discovery concerns target-owned knowledge, not the installed
+portable framework. Exclude `.ai/framework/` owners, including normalized path
+variants; mixed packages retain only target-owned fact/owner signals. Discovery
+may use bounded current/recent task closure headers as well as package indexes,
+and must expose unavailable, stale, or incomplete coverage. A verified compact
+projection is a suggestion for review, not proof of semantic correctness or
+authorization to promote knowledge.
+
 This rule provides the derived guidance layer of the Project Development Model.
 It closes the loop from either a material engineering discovery or an explicit
 decision-owner directive to later related work. It lets an assistant propose

@@ -32,8 +32,8 @@
       "owner_refs": [
         "ALATYR-ARCHITECTURE-001"
       ],
-      "estimated_words": 1239,
-      "content_digest": "sha256:ca52641fca946c087b63e77d3fd9187cef0f74a0ead70f2e80a98a960030504c"
+      "estimated_words": 1418,
+      "content_digest": "sha256:b04423b92db6d08edff6c48262e857b3a101e462772b762bdcc5aa6aee55f862"
     },
     {
       "id": "framework.knowledge.code-documentation-md",
@@ -116,8 +116,8 @@
       "owner_refs": [
         "ALATYR-ENGINEERING-EVIDENCE-001"
       ],
-      "estimated_words": 1486,
-      "content_digest": "sha256:7163c63e3eb66a0b5314d68388b45d87f9218e913abf2287179b40b6c40da208"
+      "estimated_words": 1586,
+      "content_digest": "sha256:07beb993943cee3155a20d37bf753e94c73c8d5b09cd5bbe5a9c7994dbda127d"
     },
     {
       "id": "framework.knowledge.project-knowledge-md",
@@ -139,8 +139,8 @@
       "owner_refs": [
         "ALATYR-KNOWLEDGE-001"
       ],
-      "estimated_words": 2237,
-      "content_digest": "sha256:3cda531992a7f34f3979b51aab3dda2b2c2fcef6c7593ac849ecd688add81229"
+      "estimated_words": 2301,
+      "content_digest": "sha256:997be03f253f35cf663c7d5af76717e0f9b4035418eb18b06ae418c5f23c8b9c"
     },
     {
       "id": "framework.knowledge.project-vocabulary-md",

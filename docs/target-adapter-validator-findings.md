@@ -10,15 +10,16 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1642
+Catalog entries: 1696
 
 ## Families
 
+- `ACTIVE`: 21 codes.
 - `AGENT`: 2 codes.
 - `AI`: 18 codes.
-- `ANALYSIS`: 45 codes.
+- `ANALYSIS`: 46 codes.
 - `APPROVAL`: 40 codes.
-- `ARCHITECTURE`: 35 codes.
+- `ARCHITECTURE`: 37 codes.
 - `ASSISTANT`: 39 codes.
 - `AUTHORIZATION`: 18 codes.
 - `BACKUP`: 1 codes.
@@ -29,7 +30,7 @@ Catalog entries: 1642
 - `CHANGED`: 2 codes.
 - `CODEDOC`: 37 codes.
 - `CONSISTENCY`: 50 codes.
-- `CONTEXT`: 23 codes.
+- `CONTEXT`: 26 codes.
 - `DEBUG`: 140 codes.
 - `DELEGATION`: 101 codes.
 - `DEPENDENCY`: 63 codes.
@@ -64,7 +65,7 @@ Catalog entries: 1642
 - `STALE`: 2 codes.
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
-- `TASK`: 27 codes.
+- `TASK`: 54 codes.
 - `TDD`: 47 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
@@ -75,6 +76,48 @@ Catalog entries: 1642
 
 ## Codes
 
+- `ACTIVE_TASK_ARTIFACT_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_ARTIFACT_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_BASELINE_UNAVAILABLE`
+  Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_BINDING`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_CLASS`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_COVERAGE`
+  Level: info. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_DIGEST`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_ENTRY`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_INDEX_CONTRACT`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_INDEX_LIMIT`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_MODEL_LINEAGE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_NOT_CLOSED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_PREDECESSOR`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_PROJECTION`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_REMOVED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_SOURCE_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_UNREGISTERED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `AGENT_BROAD_PRELOAD`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AGENT_CANONICAL_ENTRYPOINT_MISSING`
@@ -115,6 +158,8 @@ Catalog entries: 1642
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
+- `ANALYSIS_MANIFEST_SCHEMA_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_FILE_SIZE`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID`
@@ -355,6 +400,10 @@ Catalog entries: 1642
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_REQUIRED_FILE_MISSING`
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
+- `ARCHITECTURE_REVALIDATION_REQUIRED`
+  Level: warning. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
+- `ARCHITECTURE_REVIEW_LEGACY`
+  Level: warning. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ASSISTANT_AUTO_LOAD_UNPROVEN`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITIES_INVALID_JSON`
@@ -747,9 +796,15 @@ Catalog entries: 1642
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `CONTEXT_SEMANTIC_CODEBOOK_INVALID`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_SEMANTIC_CODEBOOK_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_SEMANTIC_CODEBOOK_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_SEMANTIC_OWNER_MISSING`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_SEMANTIC_PRELOAD_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_SEMANTIC_SCHEMA_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `DEBUG_MODE_ACTIVATION`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
@@ -2755,6 +2810,34 @@ Catalog entries: 1642
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_PATH_ESCAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `TASK_ARCHITECTURE_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_ARCHITECTURE_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_ARCHITECTURE_REVIEW`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CAPTURE_RECORD_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CAPTURE_RECORD_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_BLOCKED`
+  Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_FINAL`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_IDENTITY`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_NOT_FINAL`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_PROVISIONAL`
+  Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_PUBLICATION`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_REGISTRATION_METADATA`
+  Level: info. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_RESULT_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_CLOSURE_RESULT_SCOPE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_DECOMPOSITION_ANALYSIS_DEBUG`
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `TASK_DECOMPOSITION_ANALYSIS_STRATEGY`
@@ -2809,6 +2892,32 @@ Catalog entries: 1642
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `TASK_DECOMPOSITION_WORKER_ROLE_UNKNOWN`
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_EVIDENCE_BLOCKED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_DISPOSITION`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LINEAGE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_PRESERVATION`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_RESULT`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_UNCHECKED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_UNFINALIZED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_UNREGISTERED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_KNOWLEDGE_DISPOSITION`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_PUBLICATION_EVIDENCE_LIMIT`
+  Level: info. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_PUBLICATION_HISTORICAL`
+  Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TDD_COMMAND_EXTERNAL_ACTIONS`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_COMMAND_REFERENCE`

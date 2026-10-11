@@ -10,6 +10,11 @@ It does not replace portable framework rules or target-owned project facts.
 Manifest key: `operations.task_decomposition_schema`.
 Current contract version: `2`.
 
+Artifact: `active-task-index`
+Current version: `1`.
+Supported versions: `1`.
+Migration-limited versions: none.
+
 Artifact: `problem-model`
 Current version: `4`.
 Supported versions: `4`.
@@ -18,6 +23,16 @@ Migration-limited versions: none.
 Artifact: `problem-model-active-projection`
 Current version: `3`.
 Supported versions: `3`.
+Migration-limited versions: none.
+
+Artifact: `publication-receipt`
+Current version: `1`.
+Supported versions: `1`.
+Migration-limited versions: none.
+
+Artifact: `task-closure`
+Current version: `1`.
+Supported versions: `1`.
 Migration-limited versions: none.
 
 Artifact: `task-decomposition`
