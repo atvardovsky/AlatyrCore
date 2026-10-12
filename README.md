@@ -3,286 +3,119 @@
 **Your project should remember why it was built this way.**
 
 AlatyrCore is a vendor-neutral project guardian for software teams and AI
-coding agents. It makes project-specific development rules, recorded
-architectural intent, and reviewed engineering knowledge properties of the
-repository rather than of one developer or AI agent. These rules, records,
-boundaries, and validation expectations remain available as people, tools,
-agents, and time change.
+coding agents. It helps teams keep project knowledge, architectural decisions,
+and development guidance in their repository, rather than relying on a
+person's memory or an assistant's chat history.
 
-- Project-owned development rules for human and AI engineering
-- Recorded architectural intent and reviewed engineering knowledge
-- Bounded task-specific delivery of applicable rules and context
-- Task decomposition with implementation levels and executor selection
-- Task-matched analysis strategies with explicit evidence and proof obligations
-- Target-designated authority and approval boundaries
-- Project-specific validation and evidence expectations
-- Continuity across developers, compatible agents, tools, and sessions
+It connects that knowledge to compatible AI agents, helping them find relevant
+context, respect project boundaries, and keep supporting documentation aligned
+with changes. You keep using your chosen assistant; the project keeps its
+knowledge.
 
-AlatyrCore lets the project own the rules, knowledge, and recorded intent that
-guide compatible assistants.
+- **Project memory:** preserve reviewed decisions and the reasons behind them.
+- **Architectural continuity:** distinguish accepted intent from what the code
+  currently does.
+- **Project discussion:** ask questions and compare changes using recorded
+  project sources.
+- **Connected change:** coordinate code, tests, documentation, and validation
+  around the same change.
 
-**One project. Shared rules, recorded intent, and reviewed knowledge. Many human
-and AI executors.**
-
-**For humans:** use AlatyrCore when you want a project to preserve
-architectural intent, explain itself to developers, and guide AI-assisted
-changes without locking that knowledge inside one assistant.
-
-## Try Asking The Project
-
-Developers can discuss the project with a compatible agent before changing it.
-Typical questions include:
-
-- Why is this module designed this way?
-- What owns this business rule?
-- Is this behavior observed, proposed, or accepted?
-- What files or project-knowledge surfaces may need to change with this
-  behavior?
-- What validation is required before this change is safe?
-
-For non-trivial work, Alatyr selects one bounded analysis strategy that matches
-the problem: invariant-first for semantic rules, hypothesis-driven for uncertain
-defects, architecture comparison for competing designs, evidence synthesis for
-audits, or exploratory design when the problem is not yet settled. It records
-facts, assumptions, unknowns, and proof obligations as inspectable project-task
-evidence, without asking an agent to expose private reasoning. Hard model
-limits and a smaller digest-bound view keep current task state available without
-reloading its full history. Small settled tasks stay on the compact
-`direct-local` route.
-
-When a repair fails again, Alatyr keeps it in one incident family instead of
-starting another isolated fix. Repeated, escaped, or failed-gate work escalates
-to a bounded whole-lifecycle model that checks producers, orchestration,
-persistence, consumers, terminal outcomes, and conservation rules. This helps
-the next agent reuse the failed evidence and shared invariant without loading
-the whole repository.
-
-When an agent changes a validator, checker, schema, gate, or generated
-projection, Alatyr treats that behavior as a machine-enforced contract. The
-agent must connect each requirement to enforcement code, a passing example, a
-weaker counterexample that must fail, a proof obligation, and adversarial
-review. Alternate validators must execute or differentially compare against
-the canonical parser or resolver instead of duplicating its rules. This
-reduces the risk that one mistaken interpretation writes both the
-implementation and the tests that approve it.
-
-For installed canonical commands, Alatyr also separates parser compatibility
-from contract authorization. Delegate parsers reject abbreviated long options,
-while independent adversarial checks preserve exact spelling, single-value
-cardinality, and intentionally repeatable evidence bindings.
-
-The agent still has to inspect the routed sources and report uncertainty.
-AlatyrCore gives the discussion a project-owned memory and source-of-truth
-map; it does not make unsupported answers authoritative.
+**Status: alpha.** Read the [current limitations](#current-maturity-and-limitations)
+before adopting it.
 
 ## Start Here
 
-Choose the path that matches what you are doing:
-
-- **Understand the idea:** read
-  [What is AlatyrCore?](docs/human/what-is-alatyr.md).
-- **Evaluate the workflow:** follow the
-  [documentation walkthrough](docs/human/quick-demo.md) and review the
-  [current limitations](#current-maturity-and-limitations).
-- **Install it in a project:** give this repository and the target repository
-  to a capable AI coding assistant, then use the
+- **Install in an existing project:** follow the [installation guide](INSTALL.md)
+  and give your assistant the
   [installation request template](installer/assistant-request-template.md).
-- **Guide an AI assistant:** start at
-  [AI_ASSISTANTS.md](AI_ASSISTANTS.md).
-- **Contribute to AlatyrCore:** read [AGENTS.md](AGENTS.md) and the
-  [framework maintenance guide](docs/framework-maintenance.md).
+- **Explore before installing:** read [What is AlatyrCore?](docs/human/what-is-alatyr.md)
+  or follow the [documentation walkthrough](docs/human/quick-demo.md).
+- **Check your assistant:** see [supported surfaces and limitations](docs/assistant-compatibility.md).
+- **Work on AlatyrCore itself:** start with [Contributing](#contributing).
 
-Installation is assistant-driven because the adapter must be derived from the
-target repository, not copied as generic project facts. The assistant inspects
-the target, prepares an installation plan, preserves existing instructions,
-and asks for approval before protected changes.
+## Why Project Memory Belongs In The Repository
 
-Inspection starts metadata-first and can produce a typed discovery receipt:
-what was observed, which sources support it, what remains unknown, and how each
-material finding was accepted, projected, deferred, or rejected. Inventory
-evidence helps the assistant find project knowledge; it does not make code or
-file names authoritative architecture decisions.
+A project can outlast its developers, its AI tools, and the conversations that
+shaped it. Without recorded decisions, the next person or agent must
+reconstruct why a boundary exists, who owns a business rule, or which checks
+matter before changing it.
 
-## What AlatyrCore Is
+Repository-owned knowledge can be reviewed alongside code, versioned with the
+project, and shared across compatible assistants. That does not mean copying
+every conversation into a memory folder. Important facts stay in their
+existing project sources; the Alatyr adapter records where to find them and
+what remains missing, stale, or contradictory.
 
-AlatyrCore is not another coding agent. It is a repository-owned framework and
-project adapter that gives compatible AI assistants a shared way to discover
-what the project knows, distinguish evidence from decisions, route questions,
-and prepare changes with the right context, approvals, validation, and final
-evidence.
+For example, a rule against direct database writes is more useful when an
+agent can also find its owner, reason, affected subsystem, and required tests.
 
-The project remains the owner. AI assistants are replaceable interaction and
-execution surfaces over project-owned sources of truth. The same project
-memory can support onboarding, daily reference, architecture discussion,
-implementation planning, validation, review, and knowledge transfer.
+### Why Not Just `AGENTS.md`?
 
-The canonical boundaries for this model are the
+`AGENTS.md` is a useful starting point. Alatyr connects that entry point to
+project-owned sources, accepted decisions,
+freshness checks, change boundaries, and validation. The instruction file
+does not need to become one large, duplicated manual.
+
+Read the [project guardian concept](docs/human/project-guardian-concept.md) for
+the longer explanation.
+
+## How It Works
+
+The individual ideas are familiar: document decisions, provide relevant
+context, review changes, and validate results. AlatyrCore's focus is connecting
+them into a continuous project-owned workflow:
+
+**Understand -> discuss -> authorize -> implement -> synchronize knowledge -> validate**
+
+A compatible assistant uses the project's installed adapter to find the
+sources relevant to the task. It checks which decisions are accepted, which
+facts come from observed implementation, and where evidence is missing. The
+assistant can then discuss options or perform work authorized for the current
+task.
+
+When code or tests change, the assistant must review the effect on project
+knowledge: update affected sources, explain why no update is needed, or report
+blocked or unverified work. A useful discovery can be proposed for review by a
+project decision owner and preserved in its accepted source for later tasks.
+
+These parts reinforce one another. Stored knowledge helps the next task only
+if it is current and discoverable; validation helps only if its coverage is
+clear; a completed implementation is not the same as finalized evidence or
+published changes.
+
+Responsibility stays explicit:
+
+- **The project owns its knowledge and rules.** The adapter points to existing
+  sources rather than creating a competing description of the project.
+- **The agent investigates and performs authorized work.** Alatyr is not an
+  autonomous coding agent or a hosted service.
+- **Project decision owners retain authority.** An assistant's observation or
+  proposal does not become accepted architecture by itself.
+
+The canonical details are in the
 [project adapter contract](framework/project-adapter-contract.md),
-[source-of-truth registry](framework/source-of-truth-registry.md), and
-[framework guarantees and limits](framework/guarantees.md).
+[source-of-truth registry](framework/source-of-truth-registry.md),
+[context router](framework/context-router.md),
+[project knowledge workflow](framework/project-knowledge.md), and
+[support-information sync rules](framework/support-information.md).
 
-## The Project Development Model
+## Discuss The Project Before Changing It
 
-Collectively, a target's canonical sources and installed Alatyr adapter
-represent its project development model: the applicable development rules,
-recorded intent, reviewed knowledge, authority boundaries, validation, and
-known gaps that shape engineering work.
+You can use Alatyr to understand a project before deciding whether to change
+it. Ask your compatible assistant questions such as:
 
-This is a human-facing description of a distributed model, not a new source of
-truth or an active Alatyr runtime. Architecture decisions, policies, CI,
-configuration, tests, and other project facts remain owned by their registered
-canonical sources. The adapter connects compatible assistants to those owners
-and reports missing or contradictory parts instead of pretending the model is
-complete.
+- Why is this module designed this way?
+- Where is the source of truth for this business rule?
+- Is this behavior observed, proposed, or accepted?
+- Would this change conflict with our architecture?
+- Which tests and project documents would need review?
 
-## The Problem It Solves
+A discussion or recommendation does not authorize edits. The assistant should
+cite project sources, separate facts from assumptions, and name missing or
+contradictory evidence.
 
-Project knowledge is usually fragmented across code, architecture decisions,
-runbooks, tests, CI, diagrams, review history, and the memories of individual
-people. AI coding agents can produce useful local changes, but they do not
-automatically preserve the intent and constraints distributed across those
-surfaces.
-
-Each new developer, session, or assistant can therefore repeat the same
-repository archaeology: locating authority, reconstructing architecture,
-rechecking dependency behavior, and asking maintainers to explain constraints
-the project has already established. AlatyrCore is designed to reduce that
-repeated reconstruction without replacing source inspection or freshness
-checks.
-
-Executors must otherwise also infer how the project expects changes to be made:
-which boundaries are intentional, which compatibility commitments matter,
-which solution classes are restricted, what validation is required, and when a
-decision by a target-designated owner is necessary. Repeating that inference
-across people, sessions, and tools creates development-guidance drift even when
-everyone starts from the same repository. AlatyrCore makes those expectations
-explicit and routable where the target has recorded them; it does not
-automatically detect or repair every semantic disagreement.
-
-AlatyrCore gives supported assistants the same project-owned starting point.
-It routes a request to a bounded task-relevant context packet, identifies fact
-owners, separates observed implementation from accepted intent, and requires
-validation and residual-risk evidence before consistency is claimed.
-For non-trivial work, it also decomposes the request into bounded subtasks with
-implementation levels, dependencies, selected context, validation, and primary
-or worker executor decisions.
-
-When a session is compacted, resumed, forked, handed off, or otherwise loses
-context, the installed adapter provides a bounded continuity route. The agent
-rechecks packet integrity, repository state, selected context, and the newest
-user authorization before mutation; a generated summary never becomes project
-authority. Native client recovery remains capability-dependent, so the
-repository-owned route is the portable fallback.
-
-For routine development, deterministic tooling can route changed support
-surfaces to focused checks and affected optional modules. Full validation still
-remains the acceptance boundary for installations, framework updates, and
-releases; faster feedback does not replace logical integrity review.
-
-Adapter health is intentionally layered. Installation acceptance, current
-support-information freshness, and validation of the present change are
-reported separately. Target-local checker commands declare whether they call
-canonical validation, provide target-equivalent coverage, check structure
-only, or remain manual, so a fast green result is not mistaken for broader
-evidence.
-
-This is the practical distinction:
-
-- **The AI agent performs the work.** It reads, explains, investigates, and
-  proposes a solution. When the current request authorizes implementation, it
-  edits and validates within accepted project boundaries and its available
-  capabilities.
-- **The installed Alatyr adapter supplies project continuity.** It records
-  where truth is owned, which decisions are accepted, which boundaries apply,
-  and what remains unknown.
-- **Target-designated decision owners retain authority.** AlatyrCore preserves
-  recorded decisions and approval boundaries; it does not grant every
-  contributor the same authority, replace project owners, or make stale
-  decisions permanently correct.
-
-## Project-Owned Development Rules
-
-An installed adapter can route not only project facts, but also accepted rules
-for how particular changes should be made. Depending on the target, these may
-include:
-
-- public API compatibility and release policy
-- subsystem ownership and permitted dependency directions
-- validation required for specific change classes
-- protected architecture decisions and approval triggers
-- security, data, runtime, or generated-artifact boundaries
-- accepted restrictions on solution classes rejected by project decision owners
-
-The rule remains owned by its canonical project source. AlatyrCore does not
-invent target policy from common practice, source-code statistics, or agent
-consensus, and the adapter must not duplicate a rule merely to make it easier to
-route.
-
-```text
-target decision
-        -> accepted development rule
-        -> canonical project owner
-        -> bounded task-specific guidance
-        -> authorized agent execution
-        -> project validation
-```
-
-The adapter records whether guidance came from a reviewed engineering
-discovery or directly from a target-authorized decision owner. Narrower rules
-and exceptions remain scope- and authority-bound, while missing coverage is
-reported as a known gap or unknown rather than hidden behind a completeness
-score.
-
-## From Engineering Discovery To Project Knowledge
-
-AlatyrCore separates historical engineering evidence from accepted project
-knowledge. An assistant may identify an expensive, reusable conclusion, but it
-cannot promote that conclusion into project truth by itself.
-
-```text
-engineering discovery
-        -> reusable knowledge proposal
-        -> target decision-owner review
-        -> accepted canonical project source
-        -> bounded routing to later related work
-```
-
-The reviewer may accept, narrow, reject, or defer the proposal. Only accepted,
-current knowledge can become a candidate constraint, and a later executor must
-still read the canonical owner before relying on it for a material decision.
-Stale knowledge becomes a revalidation warning; contradictory knowledge blocks
-a definitive conclusion until the target owner resolves it.
-
-The adapter reports whether this capability is merely enabled with an empty
-index, populated with reviewed routes, or supported by observed later-task
-reuse evidence. An empty index is a valid starting point, but it is not evidence
-that project knowledge reduced rediscovery.
-
-The intended product criterion is straightforward: help a new developer or
-compatible AI agent begin from reviewed project knowledge and spend less effort
-reconstructing already-known context. That is a measurable goal, not a claim
-that current evidence proves the benefit for every project or assistant.
-
-Canonical behavior is defined by
-[Project Development Model guidance and knowledge delivery](framework/project-knowledge.md).
-
-## What AlatyrCore Is Not
-
-AlatyrCore is not a coding agent, hosted intelligence service, daemon, or
-universal shell command. It does not replace architects or target decision
-owners, automatically infer accepted intent from code, or turn assistant
-conclusions into project truth.
-
-It also does not copy the repository or raw conversations into one large memory
-store. Its adapter routes bounded project-owned sources and reviewed derived
-records. Structural checks can detect contract drift, but they cannot guarantee
-semantic correctness or that every assistant client loaded and followed the
-same instructions.
-
-## Illustrative Conversations
-
-The following conversations are illustrative. Angle-bracketed sources describe
-target-project evidence; they are not paths or facts from this repository.
+The following conversations are illustrative. Angle-bracketed sources are
+examples of target-project evidence, not paths or business facts in AlatyrCore.
 
 ```text
 Developer:
@@ -303,8 +136,8 @@ Developer:
 Add retry handling to payment processing.
 
 Alatyr:
-This change may affect the payment state invariant, idempotency contract,
-failure classification, observability requirements, and related tests.
+This may affect payment state, idempotency, failure handling, observability,
+and related tests.
 
 Before implementation, I need to inspect:
 - <relevant source>
@@ -312,400 +145,156 @@ Before implementation, I need to inspect:
 - <relevant validation>
 ```
 
-AlatyrCore does not contain those example business rules. An installed project
-adapter must resolve answers from the target repository or report that the
-required fact is missing. The current
-[quick demo](docs/human/quick-demo.md) is a documentation-only walkthrough;
-this repository does not yet include a complete runnable demonstration target.
-
-## Discuss The Project Before Changing It
-
-You do not need an implementation-ready request to use an installed Alatyr
-adapter. You can discuss the project with the agent before deciding whether or
-how to change it.
-
-For example, you can ask the agent to:
-
-- explain an existing business rule, workflow, architecture area, or pattern
-- check whether a proposed change conflicts with accepted project boundaries
-- compare design or architecture options against the same project constraints
-- identify affected facts, owners, contracts, tests, diagrams, and risks
-- challenge assumptions and name missing or contradictory evidence
-- refine a broad idea into a bounded proposal and implementation plan
-- review a proposed solution without editing the repository
-
-```text
-Developer:
-We are considering separating reporting from order processing. Before changing
-code, help me check whether that fits the current architecture and compare the
-reasonable options.
-
-Alatyr:
-I will treat this as a read-only architecture discussion. First I will inspect
-the accepted boundaries, current implementation evidence, data ownership,
-runtime dependencies, and relevant quality constraints.
-
-I will return:
-- what is observed versus accepted
-- viable options compared against the same criteria
-- likely impact and validation needs
-- assumptions, contradictions, and missing evidence
-- a proposed recommendation, without changing project files
-```
-
-During discussion, the agent should cite target-project evidence and keep
-`observed`, `proposed`, and `accepted` states separate. A recommendation does
-not become accepted architecture, authorize protected work, or change files by
-itself. When the project owner accepts a direction, the discussion can continue
-into a blueprint-driven change, logical integrity review, implementation, and
-validation.
-
-Canonical guidance is in
-[architecture knowledge and discussion](framework/architecture-knowledge.md)
-and [logical integrity review](framework/logical-integrity.md).
-
-## Why Not Just `AGENTS.md`?
-
-An `AGENTS.md` file is a useful assistant entry surface, and AlatyrCore supports
-it. A single instruction file can point an agent in the right direction, but it
-does not by itself provide AlatyrCore's project-level contracts for:
-
-- canonical ownership, authority, and provenance
-- accepted, observed, proposed, stale, contradicted, and historical states
-- task-specific context and project-knowledge routing
-- freshness, revalidation, conflict, and supersession handling
-- approval, validation, and final-evidence boundaries
-- reviewed promotion of reusable engineering discoveries
-
-In an installed adapter, `AGENTS.md` remains a compact bridge into those
-project-owned contracts. It is not required to duplicate the complete policy or
-project-memory model.
-
-For example, `AGENTS.md` may tell an assistant not to break public APIs in patch
-releases. The project sources behind an Alatyr route can additionally identify
-where that rule is owned, which branches and versions it covers, why it exists,
-which exceptions require approval, what validation demonstrates compliance,
-and whether its owner has changed since the rule was reviewed.
+The installed adapter must resolve real answers from the target repository.
+If the sources are absent, the assistant should report that gap instead of
+inventing an explanation. See
+[architecture discussion](framework/architecture-knowledge.md) and
+[logical integrity review](framework/logical-integrity.md).
 
 ## Who It Is For
 
-- Engineering teams using AI agents for production changes that must remain
-  consistent with project-specific rules and validation
-- Maintainers responsible for architecture, backward compatibility, release
-  policy, and known gaps
-- Architects and senior engineers whose recorded decisions need to scale across
-  developers and compatible AI agents
-- Teams using interchangeable AI coding tools or multiple AI vendors
-- Platform and developer-experience teams that need repository-owned AI
-  operating boundaries rather than vendor-specific memory
-- Developers who need a reliable explanation of an unfamiliar project before
-  making a change
+AlatyrCore is designed for:
 
-The intended outcomes require validation in real projects. AlatyrCore does not
-claim to eliminate onboarding time, prevent every AI mistake, or make project
-facts correct by itself.
+- maintainers of long-lived projects with important architecture and
+  compatibility decisions;
+- teams using different AI coding assistants on the same codebase;
+- architects and platform teams who need project guidance to survive handoffs;
+- developers who need to understand an unfamiliar project before changing it.
 
-The intended outcome is not zero human involvement. It is to concentrate human
-attention on new architecture, compatibility, risk, exception, and authority
-decisions while compatible agents perform authorized investigation,
-implementation, and validation. A correction that establishes a reusable
-project decision should be reviewed into its canonical owner so later work does
-not require the same explanation. Actual supervision savings remain an
-evidence-limited outcome.
+It is most useful when the project can provide decision owners, current
+sources, and meaningful validation. A small prototype may need only a compact
+instruction file; installing every Alatyr capability is not the goal.
 
-## How It Works
-
-Conceptually:
-
-1. The project records applicable development rules and accepted intent in
-   canonical sources.
-2. The installed adapter routes a bounded relevant subset of rules, knowledge,
-   boundaries, and validation to the current task.
-3. The agent performs the authorized engineering work within that context.
-4. Target decision owners review matters requiring project authority or
-   judgment.
-5. Reusable discoveries and corrections can be reviewed back into canonical
-   project knowledge.
-
-The installed adapter connects this model to daily work:
-
-1. It identifies where the project owns important facts, decisions, and
-   validation.
-2. It selects only the information relevant to the current question or change.
-3. The assistant explains the project, investigates, or performs an authorized
-   change within those boundaries.
-4. Automated checks verify structures and recorded relationships where
-   possible; people and assistants still reason about meaning.
-5. Useful discoveries can be reviewed into project-owned knowledge instead of
-   disappearing with the conversation.
-
-AlatyrCore includes checked integration surfaces for a growing set of coding
-assistants. Support means that the repository provides an appropriate entry
-point and capability record; it does not prove that every client loads or
-follows instructions identically. Each installed project records which
-assistant behavior it has actually verified. See
-[assistant compatibility](docs/assistant-compatibility.md).
-
-Project information is organized like navigation rather than one large manual.
-An assistant starts with a small index and follows only the branches relevant
-to the task. When a change affects related areas, recorded relationships help
-it find the additional sources that need review. The project team still decides
-whether those relationships and resulting changes are correct.
-
-The target project contour provides a concise human orientation: purpose,
-users, architectural areas and owners, primary workflows, validation entry
-points, and known contradictions. Detailed facts remain in their canonical
-owners, while the source-of-truth registry records authority and freshness.
-
-Every code or test change needs a project-contour sync decision: update affected
-knowledge, explain from named owners why no update is needed, or report blocked
-or unverified work. The concise contour changes only for orientation or routing.
-
-Tasks separate code completion, evidence, and publication;
-source-bound architecture reviews remain distinct from support hashes.
-[Task validation](docs/task-evidence-validation.md) is bounded; small tasks
-stay lightweight. Checks do not prove semantic correctness.
-
-Optional modules can add architecture knowledge, project vocabulary, generated
-code-reference documentation, test-first development, team coordination,
-large-task planning, worker delegation, diagrams, dependency knowledge, and
-adapted AI infrastructure. A project enables only the capabilities it needs and
-can maintain; generated assistance does not become a new source of truth.
-
-When the selected assistant supports workers, the optional
-[delegation module](docs/human/what-is-alatyr.md#how-large-tasks-stay-manageable)
-can divide independent, read-only investigation into smaller assignments. Each
-worker receives only the context needed for its assignment and returns a
-compact result for review by the main coordinating assistant. This is designed
-to keep large investigations from overloading one conversation and may reduce
-elapsed time, but it can increase total token use. Project decisions, writes,
-approval, integration, and final validation always remain with the main
-assistant.
-
-Workspace modes can additionally separate application, framework, library,
-skeleton, dependency, or workspace perspectives. The assistant proposes modes
-from repository evidence after installation, while users decide which modes
-are accepted. Each actual mode keeps bounded support in its own project-owned
-directory; optional root support holds only facts shared across modes.
-
-For selected tasks, optional [Debug Mode](framework/debug-mode.md) can preserve
-a reviewable record of what the assistant found, which checks guided the work,
-where human supervision changed the direction, what validation ran, and how the
-task concluded. The record is evidence, not project authority. Debug Mode must
-be enabled for the task or session, does not store raw conversations or private
-reasoning, and does not grant permission to edit, commit, publish, or perform
-protected actions.
-
-### Core Differentiators
-
-1. **The project owns its development guidance.** Development rules, recorded
-   intent, reviewed knowledge, authority boundaries, and validation expectations
-   remain in project-owned canonical sources.
-2. **Applicable rules travel with task context.** Bounded routing selects the
-   relevant project model without loading every policy or retained knowledge
-   item.
-3. **Owners retain authority while agents retain engineering freedom.** Target
-   decision owners govern accepted truth, exceptions, and protected risk;
-   compatible agents perform authorized engineering work within those
-   boundaries and their available capabilities.
-4. **Important corrections can become reusable knowledge.** Human-reviewed
-   conclusions can update canonical owners and reach later related work without
-   turning raw conversations into authority.
-5. **The guidance survives changes in compatible executors.** Project-owned
-   sources do not depend on one assistant session or vendor, while bridge
-   capabilities and limitations remain explicit.
-6. **Architecture is not inferred solely from code.** Observed implementation,
-   proposals, accepted decisions, restrictions, deprecations, contradictions,
-   and unknowns remain distinct.
-7. **Validation and evidence are part of the guidance.** Structural checks and
-   project validation complement semantic reasoning without claiming business
-   truth.
-8. **The framework adapts to the target repository.** AlatyrCore supplies the
-   portable process; each project supplies its own facts, commands, policies,
-   validation, and unresolved gaps.
-9. **The assistant performs repository-aware installation.** It inspects the
-   target, prepares a plan, and rewrites adapter placeholders from target
-   evidence.
-10. **Humans interact through natural language.** `Alatyr` and related phrases
-   are assistant request shortcuts backed by target files, not a universal
-   daemon or shell command.
+For practical examples, read the [team use cases](docs/human/team-use-cases.md)
+and [team collaboration workflow](docs/human/team-collaboration-workflow.md).
 
 ## Agent-Driven Installation
 
-AlatyrCore is installed through assistant reasoning, not blind application of
-a universal installer. The assistant reads this repository, inspects the
-target repository, creates an installation plan, and adapts only the framework
-and project-adapter surfaces the target can support. Existing instructions and
-protected changes remain subject to approval.
+Installation is repository-aware adaptation performed by an AI assistant.
+Give the assistant this repository and access to the target project, then use
+the [installation request template](installer/assistant-request-template.md).
 
-Start with the [installation guide](INSTALL.md). The assistant uses
-the repository's stage routing and file inventory to inspect only the relevant
-installation material. Unchanged framework documents do not need to be loaded
-again as prose.
+The assistant inspects the target, proposes an installation plan, preserves
+existing instructions, and asks for approval before protected changes. It
+derives project facts from target evidence instead of treating generic
+templates as accepted architecture.
 
-The optional `inspect-target` helper inventories bounded repository metadata
-without executing target code. Its output is a draft receipt, not accepted
-project truth; the installation assistant must inspect routed sources and
-resolve every material finding before acceptance.
+The result is a project-specific adapter: the files that connect Alatyr's
+portable rules to your project's sources, owners, checks, and supported
+assistants. Missing facts remain explicit gaps.
 
-Optional scaffolding can create placeholder structure, but it does not inspect
-the target, resolve project facts, approve changes, or complete installation.
-It can scaffold an explicit dependency-closed capability set instead of
-copying every optional target surface. Scaffolded optional capabilities remain
-`staged` until target facts are resolved and their capability checks pass;
-selection does not silently activate them.
+Optional scaffolding can create placeholder structure. It cannot inspect
+project truth, resolve those gaps, grant approval, or complete installation.
+
+### Start With The Smallest Profile
+
+Enable only the capabilities the project needs and can maintain. Optional
+modules cover areas such as architecture knowledge, vocabulary, code-reference
+documentation, test-first development, diagrams, team coordination, and
+adapted AI infrastructure.
+
+Task-specific routing is designed to avoid loading the complete support
+library for routine work. When workers are useful and the selected assistant
+has verified support, independent read-only investigations can be delegated
+with bounded context. The coordinating assistant still owns decisions, edits,
+integration, and final validation. Delegation can increase total token use.
+
+See the [installation guide](INSTALL.md),
+[module profile](framework/module-profile.md), and
+[large-task explanation](docs/human/what-is-alatyr.md#how-large-tasks-stay-manageable).
 
 ## After Installation
 
-The installed adapter includes a small portable delegate for canonical
-AlatyrCore source checks. It resolves the selected framework checkout from an
-explicit argument, the `ALATYR_CORE` environment variable, or ignored local
-configuration, so repository instructions do not depend on one developer's
-absolute path. Installation and updates can finish through one transactional
-support operation that refreshes derived indexes and support state, runs full
-validation, and restores generated files if validation fails.
-
-Developers continue using their supported assistant in natural language:
+Keep using your supported assistant in natural language:
 
 ```text
 Alatyr
 Alatyr status
 Explain this project to a new developer.
-Where is the source of truth for payment state?
 Review the architectural impact of this change.
 Create or repair the project blueprint.
 Update Alatyr from the selected framework source.
 ```
 
-`Alatyr` is a conversational entry request, not a shell command. A healthy
-adapter reports its current evidence status and relevant next actions. Clear,
-low-risk requests route automatically; ambiguous or protected work receives a
-bounded preview and any required approval before changes.
+These are chat requests, not universal shell commands. Clear requests can
+route to the relevant workflow; ambiguous or protected work needs clarification
+or a preview and the required approval.
 
-Action authorization is tied to the newest request and current logical task.
-Returning to an issue, backlog item, report, or discussion is read-only unless
-the same request clearly asks for implementation. Implementation does not
-authorize commit or push, and commit does not authorize push. AlatyrCore keeps
-these phases separate from allowed file scope, protected-change approval, and
-tool access.
+Inspecting, editing, committing, pushing, and live external actions have
+separate authorization boundaries. A previous request to commit or push does
+not authorize publication of a different task.
 
-`Update Alatyr` is an end-to-end target-adapter request: the assistant assesses
-the release, applies the repository-aware migration, rebuilds derived support
-surfaces, and runs final strict acceptance. It reports either `accepted` with
-no second recheck required, or an exact blocker and next action. Read-only
-assessment remains available by asking to assess or recheck an update.
+An update request includes assessing the selected framework source, adapting
+the target, refreshing supporting indexes, and final validation. The assistant
+reports acceptance or the exact blocker and next action; an assessment alone
+is not a completed upgrade.
 
-The full installed-operation and assistant workflow is documented in
-[AI_ASSISTANTS.md](AI_ASSISTANTS.md),
-[installed operations](framework/installed-operations.md), and
+The assistant-facing details, including validation coverage and the
+transactional support finalizer, remain in [AI_ASSISTANTS.md](AI_ASSISTANTS.md)
+and the [source tooling reference](tools/README.md). Installed request routing
+is defined by [installed operations](framework/installed-operations.md) and
 [operation help](framework/operation-help.md).
-
-## Start With The Smallest Profile
-
-Do not install every optional capability by default. Establish the smallest
-support profile that safely covers the target's current use of Alatyr, then
-enable optional modules only when the target needs and can maintain them. The
-installation guide defines the available profiles and their dependencies.
-Starting small reduces maintenance and context cost without removing checks
-required by the selected profile.
-
-The [module profile](framework/module-profile.md) defines required and optional
-capabilities. The [context router](framework/context-router.md) keeps routine
-tasks from loading the complete framework or project corpus.
-
-Context limits keep routine tasks from loading the entire project-support
-layer. Installation planning and repository audits also begin with a bounded
-view, then expand for a specific boundary, conflict, or failed check. Faster
-routing does not remove semantic review or final evidence when the changed
-facts require them.
-
-Alatyr also orders reusable guidance before task-specific and volatile context
-so OpenAI, Anthropic, Google Gemini/Vertex AI, Azure OpenAI, Amazon Bedrock, or
-another selected provider can reuse a prompt prefix when the exact model and
-client support it. Caching is optional: every supported assistant retains the
-same bounded-context fallback, and cached tokens still occupy the model context
-window. See the [bridge capability matrix](framework/bridge-capability-matrix.md).
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.87`. Implemented
-repository assets include portable framework contracts, target templates,
-assistant-driven installation guidance, source consistency checks, conformance
-fixtures, optional scaffolding, and an optional installed-adapter structural
-validator.
+The source [VERSION](VERSION) currently records `0.1.0-alpha.87`. Implemented assets
+include framework contracts, target templates, assistant-driven installation
+guidance, source checks, conformance fixtures, optional scaffolding, and an
+optional installed-adapter validator.
 
 Important limits:
 
-- There is no complete runnable demonstration target in this repository.
-- AlatyrCore is not a hosted service, universal runtime, autonomous coding
-  agent, or portable shell command.
-- Source checks prove selected repository structures and references, not the
-  correctness of target business facts or architecture.
-- Generated bootstrap, gate, upgrade-impact, and validator routes reduce
-  repeated structural work; they do not replace assistant logical reasoning.
-- Static bridge and prompt checks do not prove that every external assistant
-  client auto-loads or follows instructions identically.
-- Provider-neutral conformance contracts can prepare, import, collect, and
-  validate evidence across supported surfaces, but only captured reviewed runs
-  prove actual provider behavior.
-- Recursive delegation evidence can prove recorded envelope, digest, budget,
-  checkpoint, and summary consistency. It cannot prove that a provider ran the
-  workers, that their conclusions are correct, or that total cost decreased.
-- Context receipts separate planned and resolved source estimates from observed
-  host/provider telemetry; estimates are not presented as actual token savings.
-- Provider cache support is recorded separately from assistant support. Alatyr
-  cannot claim a cache hit, exposed control, or exact saving when a client hides
-  that evidence.
-- Onboarding, quality, rework, and cost benefits require broader validation in
-  real teams and projects.
-- The generated [evidence status](conformance/evidence-status.json) records
-  which assistant surfaces and effectiveness claims have current-contract
-  real-run support; same-version stale, historical, or prepared evidence is not
-  promoted to current proof.
-- Optional modules are useful only when a target provides owners, evidence,
-  maintenance, and validation.
+- **Instructions are not enforcement.** Alatyr cannot guarantee that every
+  assistant loads or follows every rule, or that a proposed change is correct.
+- **Project facts need project authority.** Automated checks do not establish
+  correct architecture or business behavior by themselves. Missing and
+  conflicting sources still require investigation and decisions.
+- **Assistant support needs evidence.** Bridge files and static checks do not
+  prove identical behavior across clients. Each target must record what it
+  has actually verified.
+- **Performance benefits are not established broadly.** Lower onboarding
+  effort, rework, supervision, and AI cost remain intended outcomes requiring
+  wider field validation. Context estimates are not measured token savings,
+  and caching benefits depend on the exact provider and client.
+- **There is no complete runnable demonstration target here.** The
+  [quick demo](docs/human/quick-demo.md) is a documentation-only walkthrough.
+- **Optional modules create maintenance obligations.** Start small rather than
+  treating more support files as evidence of better results.
 
-The authoritative claim boundaries are documented in
-[framework guarantees and limits](framework/guarantees.md).
+The [evidence status](conformance/evidence-status.json) distinguishes
+current-contract real-run coverage from prepared, stale, and historical
+evidence. The full claim boundaries, including delegation and provider limits,
+remain in [framework guarantees and limits](framework/guarantees.md).
 
 ## Documentation
 
-Human-oriented guides:
+Choose the detail you need:
 
-- [What is AlatyrCore?](docs/human/what-is-alatyr.md)
-- [The project guardian concept](docs/human/project-guardian-concept.md)
-- [Quick demonstration](docs/human/quick-demo.md)
-- [Team use cases](docs/human/team-use-cases.md)
-- [Team collaboration workflow](docs/human/team-collaboration-workflow.md)
-- [Frequently asked questions](docs/human/faq.md)
+- **Understand the concept:** [What is AlatyrCore?](docs/human/what-is-alatyr.md)
+  and the [project guardian explanation](docs/human/project-guardian-concept.md).
+- **Walk through a task:** [documentation walkthrough](docs/human/quick-demo.md).
+- **Use it with a team:** [use cases](docs/human/team-use-cases.md) and
+  [collaboration workflow](docs/human/team-collaboration-workflow.md).
+- **Resolve common questions:** [FAQ](docs/human/faq.md).
+- **Install or update:** [installation guide](INSTALL.md).
+- **Check assistant support:** [compatibility guide](docs/assistant-compatibility.md).
+- **Explore implementation:** [repository layout](docs/repository-layout.md),
+  [source architecture](docs/source-architecture.md), and
+  [tooling reference](tools/README.md).
+- **Review contracts and evidence:** [framework index](framework/README.md),
+  [task evidence validation](docs/task-evidence-validation.md),
+  [release process](docs/release-process.md), and [changelog](CHANGELOG.md).
 
-Technical entry points:
-
-- [AI assistant guide](AI_ASSISTANTS.md)
-- [Installation guide](INSTALL.md)
-- [Framework index](framework/README.md)
-- [Repository layout](docs/repository-layout.md)
-- [Source architecture](docs/source-architecture.md)
-- [Source tooling reference](tools/README.md)
-- [Release process](docs/release-process.md)
-- [Changelog](CHANGELOG.md)
-- [Assistant compatibility](docs/assistant-compatibility.md)
-- [Passive dependency knowledge](framework/dependency-knowledge.md)
-- [User-owned workspace modes](framework/workspace-modes.md)
-- [Durable engineering evidence](framework/engineering-evidence.md)
-- [Project knowledge promotion and delivery](framework/project-knowledge.md)
-- [Target adapter contract compatibility](docs/target-adapter-contract-compatibility.md)
-
-Human guides explain the product; they do not own framework policy. Canonical
-rules remain in the referenced framework documents and
-[rule registry](framework/rule-registry.md).
+Human guides explain the product. Canonical policy remains owned by the
+referenced framework documents and [rule registry](framework/rule-registry.md),
+not by this README.
 
 ## For AI Assistants
 
-Use the dedicated [AI assistant guide](AI_ASSISTANTS.md) for bootstrap,
-installation, context routing, rule ownership, and validation instructions.
-The main README intentionally explains the product for people instead of
-duplicating the assistant operating contract.
+Start with [AI_ASSISTANTS.md](AI_ASSISTANTS.md). It routes source maintenance,
+installation, and installed-project work to the appropriate instructions and
+canonical owners. This README is the human-facing overview, not an additional
+operating contract.
 
 <!--
 Machine-checked assistant rule references are intentionally kept out of the
@@ -720,21 +309,13 @@ ALATYR-DECOMPOSITION-001, ALATYR-EVIDENCE-001, ALATYR-OPERATION-001.
 
 ## Contributing
 
-Before changing AlatyrCore, read [CONTRIBUTING.md](CONTRIBUTING.md),
-[AGENTS.md](AGENTS.md), and the
-[framework maintenance guide](docs/framework-maintenance.md). Keep portable
-framework rules, installation material, target templates, and explanatory docs
-separate. Source-repository commands and checker details are owned by the
-[tooling reference](tools/README.md), not by the portable framework.
-For routine source changes, use the read-only minimum-work preflight
-(`python3 tools/alatyr.py plan-work --summary`) before choosing a broader
-validation route. The `micro` and reuse paths are optimization aids only; the
-full source-check profile remains the acceptance gate. Local per-check caching,
-lazy context loading, and content-addressed scaffold writes reduce repeated
-work without changing target facts or replacing cold acceptance validation.
+Read [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md), and the
+[framework maintenance guide](docs/framework-maintenance.md) before making
+changes. Use the documented source checks; those commands validate AlatyrCore,
+not every target project's runtime.
 
-Security reports follow [SECURITY.md](SECURITY.md). Do not place credentials,
-private target-project facts, or exploit details in public issues.
+Security reports follow [SECURITY.md](SECURITY.md). Do not put credentials,
+private project facts, or exploit details in public issues.
 
 ## License
 
