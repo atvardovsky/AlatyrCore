@@ -15,9 +15,10 @@ from pathlib import Path
 from typing import Any, Iterator
 
 from session_presence_contract import (
-    MAX_BYTES, MAX_SESSIONS, POLICY_PATH, decode_json, encoded_registry,
-    now_text, presence_policy, timestamp, uid, validate_entry, validate_registry,
+    MAX_BYTES, MAX_SESSIONS, POLICY_PATH, SOURCE_POLICY_PATH, decode_json, encoded_registry,
+    now_text, presence_policy, scope_reference, timestamp, uid, validate_entry, validate_registry,
 )
+from session_presence_summary import same_worktree, summarize
 
 
 def safe_regular(path: Path, *, missing_ok: bool = False) -> None:
@@ -41,14 +42,16 @@ def read_bounded(path: Path) -> bytes:
         return stream.read(MAX_BYTES + 1)
 
 
-def load_policy(target: Path) -> dict[str, Any]:
-    path = target / POLICY_PATH
-    for parent in (target / ".ai", path.parent.parent, path.parent):
+def load_policy(target: Path, *, source_contour: bool = False) -> dict[str, Any]:
+    path = target / (SOURCE_POLICY_PATH if source_contour else POLICY_PATH)
+    for parent in (target / ("tools" if source_contour else ".ai"), path.parent.parent, path.parent):
         if parent.is_symlink():
             raise ValueError("presence policy parent must not be a symlink")
     if not path.exists() and not path.is_symlink():
+        if source_contour:
+            raise ValueError("source presence policy is missing")
         return presence_policy({})
-    return presence_policy(decode_json(read_bounded(path)))
+    return presence_policy(decode_json(read_bounded(path)), source_contour=source_contour)
 
 
 def git_identity(target: Path) -> tuple[Path, Path, str]:
@@ -68,6 +71,8 @@ def git_identity(target: Path) -> tuple[Path, Path, str]:
     common = (common if common.is_absolute() else target / common).resolve()
     if not common.is_dir():
         raise ValueError("Git common directory is unavailable")
+    if not same_worktree(str(target), str(worktree)):
+        raise ValueError("presence target must be the worktree root")
     repository_id = hashlib.sha256(os.fsencode(str(common))).hexdigest()
     return worktree, common / "alatyr-session-presence", repository_id
 
@@ -160,27 +165,40 @@ def save_registry(hub: Path, value: dict[str, Any], repository_id: str) -> None:
 def operate(target: Path, action: str, *, write: bool = False,
             session_uid: str | None = None, parent_uid: str | None = None,
             task: str | None = None, scope: list[str] | None = None,
-            activity: str | None = None, expected_version: int | None = None) -> dict[str, Any]:
+            activity: str | None = None, expected_version: int | None = None,
+            full: bool = False, source_contour: bool = False) -> dict[str, Any]:
     target = target.resolve()
-    policy = load_policy(target)
-    if action not in ("status", "register", "update", "leave"):
+    policy = load_policy(target, source_contour=source_contour)
+    if action not in ("status", "detail", "register", "update", "leave"):
         raise ValueError("unsupported presence action")
-    if action != "status" and not write:
+    if action not in ("status", "detail") and not write:
         raise ValueError("presence mutations require --write and current-scope authorization")
     if not policy["enabled"]:
-        if action != "status":
+        if action not in ("status", "detail"):
             raise ValueError("session presence is disabled")
         return {"enabled": False, "sessions": []}
     worktree, hub, repository_id = git_identity(target)
-    if action == "status":
+    if action in ("status", "detail"):
         value = load_registry(hub, repository_id)
-        now = datetime.now(timezone.utc)
-        sessions = []
-        for entry in value["sessions"].values():
-            age = (now - timestamp(entry["updated_at"], "updated_at")).total_seconds()
-            freshness = "clock-uncertain" if age < 0 else "stale" if age >= policy["stale_after_seconds"] else "recent"
-            sessions.append({**entry, "freshness": freshness})
-        return {"enabled": True, "registry": str(hub / "sessions.json"), "sessions": sessions}
+        detail_uid = None
+        if session_uid is not None:
+            uid(session_uid)
+            selected = value["sessions"].get(session_uid)
+            if selected is None:
+                raise ValueError("session UID is not registered")
+            if action == "detail":
+                detail_uid = session_uid
+                session_uid = None
+                full = True
+            elif not same_worktree(selected["worktree"], str(worktree)):
+                raise ValueError("session belongs to a different worktree")
+        elif action == "detail":
+            raise ValueError("detail requires a session UID")
+        summary = summarize(value, str(worktree), policy, datetime.now(timezone.utc), session_uid=session_uid, full=full)
+        if detail_uid is not None:
+            summary["omitted_sessions"] = len(summary["sessions"]) - 1
+            summary["sessions"] = [entry for entry in summary["sessions"] if entry["session_uid"] == detail_uid]
+        return {"enabled": True, "registry": str(hub / "sessions.json"), **summary}
     if action == "register":
         session_uid = str(uuid.uuid4())
         created = now_text()
@@ -188,6 +206,8 @@ def operate(target: Path, action: str, *, write: bool = False,
                  "worktree": str(worktree), "task": task, "scope": scope,
                  "activity": activity if activity is not None else "inspecting", "started_at": created, "updated_at": created, "version": 1}
         validate_entry(entry)
+        for reference in entry["scope"]:
+            scope_reference(reference)
     else:
         uid(session_uid)
         if type(expected_version) is not int or expected_version < 1:
@@ -203,7 +223,7 @@ def operate(target: Path, action: str, *, write: bool = False,
             previous = sessions.get(session_uid)
             if previous is None:
                 raise ValueError("session UID is not registered")
-            if previous["worktree"] != str(worktree):
+            if not same_worktree(previous["worktree"], str(worktree)):
                 raise ValueError("session belongs to a different worktree")
             if previous["version"] != expected_version:
                 raise ValueError("session version changed; reread presence before retrying")
@@ -216,7 +236,11 @@ def operate(target: Path, action: str, *, write: bool = False,
                 entry = {**previous, "task": task, "scope": scope, "activity": activity if activity is not None else previous["activity"],
                          "updated_at": updated, "version": expected_version + 1}
                 validate_entry(entry)
+                for reference in entry["scope"]:
+                    scope_reference(reference)
                 sessions[session_uid] = entry
         save_registry(hub, value, repository_id)
+        summary = summarize(value, str(worktree), policy, datetime.now(timezone.utc),
+                            session_uid=session_uid, scope=entry["scope"] if action != "leave" else previous["scope"])
     return {"enabled": True, "action": action, "session_uid": session_uid,
-            "version": None if action == "leave" else entry["version"], "registry": str(hub / "sessions.json")}
+            "version": None if action == "leave" else entry["version"], "registry": str(hub / "sessions.json"), **summary}

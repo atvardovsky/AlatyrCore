@@ -229,11 +229,13 @@ the target, refreshing supporting indexes, and final validation. The assistant
 reports acceptance or the exact blocker and next action; an assessment alone
 is not a completed upgrade.
 
-Working in several local sessions? Optional session presence lets participating
+Working in several local sessions? Local session presence lets participating
 assistants see each other's reported tasks and maintain short entries while
-working. It is disabled by default, shared across one clone's Git worktrees,
-and cleaned up by each session on completion. It is not a scheduler or an
-exclusive work lock. See [session presence](framework/session-continuity.md#optional-concurrent-session-presence).
+working. New accepted installations enable it by default; coordination becomes
+active when multiple independent sessions report work. Existing opt-outs are
+preserved. Linked worktrees share the registry, and each session removes its
+own entry when finished. It is not a scheduler or an exclusive work lock.
+See [session presence](framework/session-continuity.md#concurrent-session-presence).
 
 The assistant-facing details, including validation coverage and the
 transactional support finalizer, remain in [AI_ASSISTANTS.md](AI_ASSISTANTS.md)
@@ -243,7 +245,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.88`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.89`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

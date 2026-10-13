@@ -219,6 +219,11 @@ context state, then re-evaluate the newest request before mutation. Do not
 promote ordinary continuation into the `large-task` operation unless its own
 activation criteria are met.
 
+At independent work-period entry, follow the installed presence route.
+New accepted installs enable discovery; coordinator-owned workers do not
+register separately. Explicit no-writes restrictions override the narrow
+own-entry allowance. See [presence rules](framework/session-continuity.md#concurrent-session-presence).
+
 Exact operation IDs and aliases come from the installed target's compact
 operation index and canonical catalog. Do not infer an operation from this
 source guide when the target adapter says otherwise.

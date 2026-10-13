@@ -19,13 +19,13 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.88",
-    "adapter_schema_version": "71",
-    "template_version": "83"
+    "framework_version": "0.1.0-alpha.89",
+    "adapter_schema_version": "72",
+    "template_version": "84"
   },
   "policy": ".ai/project/support-policy.json",
   "policy_digest": "sha256:bf792697f50d02cfe1f37b963d43c34156b4c9331eb8eacccca5e092bb35d808",
-  "source_revision": "ef319e0b966a39e6cd47ff52e251fcde5121fa18",
+  "source_revision": "842f7f337570246aa1b5d0ecba0511f3cde98133",
   "groups": [
     {
       "id": "adapter-root",
@@ -35,7 +35,7 @@
     {
       "id": "assistant",
       "file_count": 235,
-      "digest": "sha256:e93b0f46b2dbc7ee6abc27a3b7de75079a22666c85652483a3a7669607e02eac"
+      "digest": "sha256:46f9abd3768c3a9e7990df035ad882a2a3ab8d537c910463bf0bbb04c1b86570"
     },
     {
       "id": "entrypoints",
@@ -244,8 +244,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:dc656c2bc435a81779b921baf5257458d620da548c9cc04745cbe979c0c0d6f7",
-      "canonical_size": 8747
+      "digest": "sha256:876037f75840b16bb6bbb2e5ecf2aaca1c0ef6856668a6d0d841fa07508bf375",
+      "canonical_size": 8746
     },
     {
       "path": ".ai/assistant/bootstrap-integrity.json",
@@ -253,7 +253,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:030ca3fa88a0262363a37cce12b3c92ed70c2ef9a277c11ff5a1ba87eeadb7a2",
+      "digest": "sha256:71f62d3f0a294f94cca5633b5cc0c2a4658474bad407a5d149657c523cddf588",
       "canonical_size": 7531
     },
     {
@@ -316,7 +316,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:eb969f12d71f2b027f25f652077264a9cda1f5727b4689f0dd69b7ccd4588bee",
+      "digest": "sha256:59478418cda2c8d583818582b08455777bc7b4eac78ace79175bf5cd7e5a7647",
       "canonical_size": 18922
     },
     {
@@ -676,8 +676,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:fa832bf171782f7dfea6124606448573e65459a42b27dac3f05904f2a1defeae",
-      "canonical_size": 7911
+      "digest": "sha256:f7cf7c04f2eb5c29c1307bf577169ee538736212bc0410809af1476feea97d1a",
+      "canonical_size": 7910
     },
     {
       "path": ".ai/assistant/extensions/README.md",
@@ -730,8 +730,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:85233ad56dc94fea377fe49a21229450563dcb96ccaf5506693ebe6b80b6f9ce",
-      "canonical_size": 22960
+      "digest": "sha256:0667c6872479404ed1045677e76398efd8799cc56300e4ae697f31b1f9a934e0",
+      "canonical_size": 23132
     },
     {
       "path": ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
@@ -784,8 +784,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:cce8c2441a5f9e5b1ad94c287d6af81f9992659d9cabf2a95455bb8bbfc2c8e7",
-      "canonical_size": 22982
+      "digest": "sha256:a18dee97c855949f6420095ea9740f5d8cea24ac729323d873322085d8770340",
+      "canonical_size": 22984
     },
     {
       "path": ".ai/assistant/flows/debug-mode.flow.md",
@@ -928,8 +928,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:d64e904558975256898ea62107426cc2ed4d5e0272f7b45c576e0cb4e6c8b289",
-      "canonical_size": 4253
+      "digest": "sha256:bc9eca98415d3d34a154e1f0747a60e528da71dc8f92f5204847de845c7c5d95",
+      "canonical_size": 5264
     },
     {
       "path": ".ai/assistant/flows/skill-adaptation.flow.md",
@@ -1333,7 +1333,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:a83b3ecf354b5e4ec0afb1b4d561af7a0428ed6389fda6a68ec077a144a94392",
+      "digest": "sha256:f584c30ca382f2c87598ccf94e8162052669d4cc6cd712688f452bb2f7d75397",
       "canonical_size": 3188
     },
     {
@@ -1351,8 +1351,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:7a4201c5d86875e3212349ed0ae83abd61ab79a950a5ced001ec6f2e2f3c9351",
-      "canonical_size": 2278
+      "digest": "sha256:dcffb767ff53be0aad7db9d9b3dfe84476b73fbcf2b4ad7bb79480a38323bc1d",
+      "canonical_size": 2313
     },
     {
       "path": ".ai/assistant/prompts/context-index.json",
@@ -2939,5 +2939,5 @@
       "canonical_size": 1054
     }
   ],
-  "root_digest": "sha256:890c8043490c8d8110876e2ca5a02654d6bde405ff4b67ac54370b35d51b056b"
+  "root_digest": "sha256:b90c0bb8dda1488027fd063d476e249ec733bf509a17ae0e124afbc4f1a95ddc"
 }

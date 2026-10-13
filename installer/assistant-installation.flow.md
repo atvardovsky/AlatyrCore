@@ -333,8 +333,9 @@ Classify every proposed target file:
     and optional flows require selected profiles/modules. Generate indexes
     from the final installed set, not the full template.
     Install the portable delegate and validation contract.
-    Apply `session-presence.flow.md`: disabled by default, preserve opt-in/live
-    entries, refresh projections.
+    Apply `session-presence.flow.md`: new accepted installs default to discovery
+    and own-entry housekeeping; preserve existing choices/live entries, verify
+    helper availability, and refresh routes from the installed policy.
     Resolve source via explicit argument, `ALATYR_CORE`, or ignored
     `.ai/local/framework-source`; fail closed. Never commit workstation paths.
     Route enabled team operations and matched state-changing work through the

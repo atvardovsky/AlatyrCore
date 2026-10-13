@@ -4,6 +4,20 @@
 
 - None.
 
+## 0.1.0-alpha.89 - 2026-10-14
+
+- Changed `ALATYR-CONTINUITY-001` to default-enabled discovery for new accepted
+  installs and automatic coordination of independent reported sessions.
+- Added narrow own-entry housekeeping under `ALATYR-AUTHORIZATION-001`, without
+  granting code, Git, publication, worker writes, or other runtime mutations.
+- Schema `72`/templates `84`: presence policy v2 preserves explicit opt-outs,
+  housekeeping choices, legacy absence, and live records during migration.
+- Added bounded peer summaries, typed overlap hints, freshness/refresh signals,
+  selected detail, and an explicit source-contour route using the same store.
+- Reused policy merging for scaffold, bootstrap, integrity, and recovery
+  projections; retained CAS, atomic saves, and clone/worktree isolation.
+- Added lifecycle, boundary, malformed-input, actual CLI, and migration tests.
+
 ## 0.1.0-alpha.88 - 2026-10-13
 
 - Default-disabled session presence (`ALATYR-CONTINUITY-001`).

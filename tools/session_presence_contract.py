@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import json
+import re
 import uuid
 from datetime import datetime, timezone
+from pathlib import PurePosixPath
 from typing import Any
 
 
 POLICY_PATH = ".ai/assistant/policies/session-continuity.json"
 FLOW_PATH = ".ai/assistant/flows/session-presence.flow.md"
+SOURCE_POLICY_PATH = "tools/source_session_presence_policy.json"
+SOURCE_FLOW_PATH = "docs/source-session-presence.md"
 MAX_BYTES = 131072
 MAX_SESSIONS = 64
 ACTIVITIES = ("inspecting", "editing", "building", "reviewing", "blocked")
@@ -42,17 +46,23 @@ def decode_json(raw: bytes) -> Any:
         raise ValueError("presence JSON is not valid bounded UTF-8 JSON") from exc
 
 
-def presence_policy(continuity: Any) -> dict[str, Any]:
+def presence_policy(continuity: Any, *, source_contour: bool = False) -> dict[str, Any]:
     if not isinstance(continuity, dict):
         raise ValueError("continuity policy must be an object")
     value = continuity.get("presence", DEFAULT_PRESENCE)
-    if not isinstance(value, dict) or set(value) != set(DEFAULT_PRESENCE):
+    if not isinstance(value, dict):
+        raise ValueError("presence policy must be an object")
+    version = value.get("schema_version")
+    fields = set(DEFAULT_PRESENCE) | ({"own_entry_housekeeping"} if version == 2 else set())
+    if set(value) != fields:
         raise ValueError("presence policy requires schema_version, enabled, flow, stale_after_seconds")
-    if type(value["schema_version"]) is not int or value["schema_version"] != 1:
-        raise ValueError("presence policy schema_version must be 1")
+    if type(version) is not int or version not in (1, 2):
+        raise ValueError("presence policy schema_version must be 1 or 2")
+    if version == 2 and type(value["own_entry_housekeeping"]) is not bool:
+        raise ValueError("presence own_entry_housekeeping must be a boolean")
     if type(value["enabled"]) is not bool:
         raise ValueError("presence policy enabled must be a boolean")
-    if value["flow"] != FLOW_PATH:
+    if value["flow"] != (SOURCE_FLOW_PATH if source_contour else FLOW_PATH):
         raise ValueError("presence policy must reference the canonical presence flow")
     stale = value["stale_after_seconds"]
     if type(stale) is not int or not 60 <= stale <= 86400:
@@ -60,9 +70,38 @@ def presence_policy(continuity: Any) -> dict[str, Any]:
     return dict(value)
 
 
+def scope_reference(value: str) -> tuple[str, str]:
+    """Legacy or free-form references remain unknown, never evidence of isolation."""
+    kind, separator, reference = value.partition(":")
+    if not separator or kind not in ("path", "area", "resource"):
+        return "unknown", value
+    if not reference or "\\" in reference or "//" in reference or reference.strip() != reference:
+        raise ValueError("typed scope reference is invalid")
+    if kind == "path":
+        if any(char in reference for char in ":*?[]"):
+            raise ValueError("path scope must be an exact portable path, not a glob")
+    elif not re.fullmatch(r"[A-Za-z0-9_./-]+", reference):
+        raise ValueError("area/resource scope must be a stable identifier")
+    path = PurePosixPath(reference)
+    if kind == "path" and reference == ".":
+        return kind, reference
+    if path.is_absolute() or any(part in ("", ".", "..") for part in reference.rstrip("/").split("/")):
+        raise ValueError("typed scope reference must be canonical and relative")
+    if kind != "path" and reference.endswith("/"):
+        raise ValueError("area/resource reference must not end with a slash")
+    return kind, path.as_posix()
+
+
 def presence_route(continuity: Any) -> dict[str, Any]:
     policy = presence_policy(continuity)
     return {"enabled": policy["enabled"], "policy": POLICY_PATH + "#presence"}
+
+
+def merge_presence_policy(template: dict[str, Any], installed: dict[str, Any] | None) -> dict[str, Any]:
+    """New installs adopt defaults; upgrades preserve even legacy absence."""
+    presence_policy(template)
+    selected = presence_policy(installed) if installed is not None else presence_policy(template)
+    return {**template, "presence": selected}
 
 
 def uid(value: Any, field: str = "session_uid") -> str:

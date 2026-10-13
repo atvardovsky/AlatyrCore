@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2389,
-      "content_digest": "sha256:85233ad56dc94fea377fe49a21229450563dcb96ccaf5506693ebe6b80b6f9ce"
+      "estimated_words": 2408,
+      "content_digest": "sha256:0667c6872479404ed1045677e76398efd8799cc56300e4ae697f31b1f9a934e0"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -535,7 +535,7 @@
       "id": "assistant.content.flows-session-presence-flow-md",
       "kind": "content",
       "path": "flows/session-presence.flow.md",
-      "summary": "Optional Session Presence",
+      "summary": "Concurrent Session Presence",
       "selectors": {
         "path_terms": [
           "flows",
@@ -550,8 +550,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 561,
-      "content_digest": "sha256:d64e904558975256898ea62107426cc2ed4d5e0272f7b45c576e0cb4e6c8b289"
+      "estimated_words": 637,
+      "content_digest": "sha256:bc9eca98415d3d34a154e1f0747a60e528da71dc8f92f5204847de845c7c5d95"
     },
     {
       "id": "assistant.content.flows-skill-adaptation-flow-md",

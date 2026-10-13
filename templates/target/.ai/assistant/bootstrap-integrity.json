@@ -2,7 +2,7 @@
   "schema_version": 2,
   "record_kind": "target-bootstrap-integrity",
   "bootstrap": ".ai/assistant/bootstrap-index.json",
-  "bootstrap_digest": "sha256:74cbda7bdf0d302b4144d2e15168cadf1b0b25d949974e7c07e4a7625f3484bf",
+  "bootstrap_digest": "sha256:8433640a3a6a5a839bb0004d05001f80694b4def977d2c2edb6de493a197a7cb",
   "generated_by": {
     "schema_version": 2,
     "provenance_kind": "source-template",
@@ -20,9 +20,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.88",
-    "adapter_schema_version": "71",
-    "template_version": "83"
+    "framework_version": "0.1.0-alpha.89",
+    "adapter_schema_version": "72",
+    "template_version": "84"
   },
   "derived_from": {
     "manifest": {
@@ -39,11 +39,11 @@
     },
     "session_continuity_policy": {
       "path": ".ai/assistant/policies/session-continuity.json",
-      "sha256": "7a4201c5d86875e3212349ed0ae83abd61ab79a950a5ced001ec6f2e2f3c9351"
+      "sha256": "dcffb767ff53be0aad7db9d9b3dfe84476b73fbcf2b4ad7bb79480a38323bc1d"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "f91fdd8ab7b845c5f5e13264487f73f5cd90e1d921c0faeb9bf159b32eac5df5"
+      "sha256": "597cf6b843d451d69bdfca5c5d7e7fc93ddd092ed79efc1bad24e7bfb986dd98"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
@@ -51,11 +51,11 @@
     },
     "assistant_context_root": {
       "path": ".ai/assistant/context-index.json",
-      "sha256": "eb969f12d71f2b027f25f652077264a9cda1f5727b4689f0dd69b7ccd4588bee"
+      "sha256": "59478418cda2c8d583818582b08455777bc7b4eac78ace79175bf5cd7e5a7647"
     },
     "framework_context_root": {
       "path": ".ai/framework/context-index.json",
-      "sha256": "a6e8713b17a69e521d47a0c0bd29d96807bc2e5f0249c4b4333b05e79fa7dfa7"
+      "sha256": "815b4fcac78c4ab7766a077ab12de411030810328ac8062e35d915f8378debc5"
     },
     "project_context_root": {
       "path": ".ai/project/context-index.json",

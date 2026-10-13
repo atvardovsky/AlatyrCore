@@ -107,6 +107,22 @@ release, or deployment intent is required for its matching phase. When the
 subject, phase, or scope remains ambiguous, state the read-only result and ask
 the smallest confirmation.
 
+## Own Presence Housekeeping
+
+An accepted user-owned presence policy may explicitly permit bounded
+`own_entry_housekeeping`. This narrowly covers registering, refreshing, and
+removing the acting participant's own local presence entry through the
+canonical helper, including during inspect-only work. It is not a `modify`
+grant, authorization for other ignored files, or permission to write another
+participant's entry. It does not cover continuity packets, project content,
+Git index/history/refs, publication, or external actions.
+
+An explicit no-writes instruction, read-only worker envelope, host restriction,
+or disabled policy takes precedence. Without this recorded allowance, the
+current request must authorize local metadata mutation. A scaffold is not an
+accepted allowance; installation/update must preserve existing choices and
+record acceptance of new defaults. Helper flags do not prove chat authority.
+
 ## Independent Boundaries
 
 Before a state-changing action, verify all applicable controls:

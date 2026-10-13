@@ -325,6 +325,9 @@
         "assistant-capability-contract"
       ],
       "contract_inputs": [
+        "tools/source_session_presence_policy.json",
+        "tools/source_context_router.json",
+        "docs/source-session-presence.md",
         "framework/session-continuity.md",
         "schemas/alatyr-problem-model-active-projection.schema.json",
         "schemas/alatyr-problem-model.schema.json",
@@ -346,6 +349,9 @@
         "tools/validate_target_adapter.py"
       ],
       "trigger_paths": [
+        "tools/source_session_presence_policy.json",
+        "tools/source_context_router.json",
+        "docs/source-session-presence.md",
         "framework/session-continuity.md",
         "templates/target/.ai/assistant/flows/session-presence.flow.md",
         "schemas/alatyr-problem-model-active-projection.schema.json",

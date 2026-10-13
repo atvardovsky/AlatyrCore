@@ -1,0 +1,9 @@
+{
+  "presence": {
+    "schema_version": 2,
+    "enabled": true,
+    "flow": "docs/source-session-presence.md",
+    "stale_after_seconds": 3600,
+    "own_entry_housekeeping": true
+  }
+}

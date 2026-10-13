@@ -25,8 +25,13 @@ class Once(argparse.Action):
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--target", required=True, type=Path, action=Once)
+    parser.add_argument("--source-contour", action="store_true")
     actions = parser.add_subparsers(dest="action", required=True)
-    actions.add_parser("status", allow_abbrev=False)
+    status = actions.add_parser("status", allow_abbrev=False)
+    status.add_argument("--session-uid", action=Once)
+    status.add_argument("--full", action="store_true")
+    detail = actions.add_parser("detail", allow_abbrev=False)
+    detail.add_argument("--session-uid", required=True, action=Once)
     for action in ("register", "update", "leave"):
         child = actions.add_parser(action, allow_abbrev=False)
         child.add_argument("--write", required=True, action="store_true")

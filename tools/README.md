@@ -5,17 +5,19 @@ They are not portable framework requirements for target projects.
 
 ## Cross-Platform Entry Point
 
-### Optional Local Session Presence
+### Local Session Presence
 
 `manage_session_presence.py` (facade command `session-presence`) reads the
-target continuity policy. Its `presence.enabled` setting defaults to false.
-Missing legacy configuration is disabled; malformed explicit settings fail.
+target continuity policy. New accepted installs enable presence and narrow
+own-entry housekeeping; explicit opt-outs and legacy absence are preserved.
+Malformed explicit settings fail.
 Status is read-only and creates no files. Registration, updates, and leaving
-require `--write` plus applicable current-scope local-metadata authorization.
+require `--write` plus accepted own-entry housekeeping or current-scope metadata
+authorization. Explicit no-writes restrictions always take precedence.
 
 ```sh
 python3 tools/alatyr.py session-presence --target /path/to/target-repo status
-python3 tools/alatyr.py session-presence --target /path/to/target-repo register --write --task "Review API" --scope "api-contract" --activity reviewing
+python3 tools/alatyr.py session-presence --target /path/to/target-repo register --write --task "Review API" --scope "path:src/api/" --activity reviewing
 ```
 
 On Windows use `python` or the existing `.cmd`/PowerShell facade. A configured
@@ -23,6 +25,16 @@ installed delegate supports the same action arguments. The canonical parser
 owns those arguments; the delegate forwards them without interpreting them.
 Use the returned UUID and version for `update`/`leave`, never another session's
 UID. A fork registers a fresh UID, optionally with `--parent-uid` for attribution.
+Routine output is an eight-peer summary with omitted counts and overlap signals.
+`status --session-uid <own-uuid>` excludes self and reports refresh due;
+`status --full` or `detail --session-uid <peer-uuid>` exposes diagnosis.
+Registration/update include a peer snapshot, avoiding a second routine call.
+Multiple recent same-worktree entries activate coordination. Stale/future-dated
+records preserve uncertainty; worktrees still share Git/build resources.
+Use `path:`, `area:`, and `resource:` references; unknown scope is not isolation.
+Workers are represented by their coordinator. The explicit
+[source route](../docs/source-session-presence.md) uses `--source-contour`;
+target routing never selects source policy automatically.
 
 One bounded `alatyr-session-presence/sessions.json` under Git's common directory
 is shared across worktrees of a clone and is never committed. The stable OS

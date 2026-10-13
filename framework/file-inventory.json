@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 71,
+  "adapter_schema_version": 72,
   "files": [
     {
       "path": "framework/README.md",
@@ -11,7 +11,7 @@
       "rule_ids": [
         "ALATYR-AUTHORIZATION-001"
       ],
-      "sha256": "326434148b35067581890015bb7f2b2adc96c93a49dc693c6d9c98586443b9c3"
+      "sha256": "9a194f436839c0b606d38198d0bc7135fc25d6cf586d5fec5b60c93ce2dd6dd0"
     },
     {
       "path": "framework/adapter-maturity.md",
@@ -84,7 +84,7 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "90db8049f8e4d9e7872c4bee364d481dac73cb506321c10c002e7c682627e9ef"
+      "sha256": "89048c52f558d705cc11f363ce8fd2ec85164d26d88adfd65e2407f9f5105424"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -104,7 +104,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "11843cbfaae5a0db1461ede7439929e4394eacf1271d6f673cc16eaf0b4307ce"
+      "sha256": "d2b0cea1446f36a5fb3b1703111dc3e44f647a77832cc4fbe7958324b7ea2fdc"
     },
     {
       "path": "framework/change-packages.md",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "a6e8713b17a69e521d47a0c0bd29d96807bc2e5f0249c4b4333b05e79fa7dfa7"
+      "sha256": "815b4fcac78c4ab7766a077ab12de411030810328ac8062e35d915f8378debc5"
     },
     {
       "path": "framework/context-profiles.md",
@@ -342,7 +342,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "f91fdd8ab7b845c5f5e13264487f73f5cd90e1d921c0faeb9bf159b32eac5df5"
+      "sha256": "597cf6b843d451d69bdfca5c5d7e7fc93ddd092ed79efc1bad24e7bfb986dd98"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -364,7 +364,7 @@
       "rule_ids": [
         "ALATYR-CONTINUITY-001"
       ],
-      "sha256": "133bfa6f8a85b154c65938da87ec03b0d810a1a6764b8eae1a1d3e07b1396b64"
+      "sha256": "580e92a15e7d1cc07186451c17f04fc4c06d2df106c198126da2d3308919577a"
     },
     {
       "path": "framework/skill-adaptation.md",
@@ -431,8 +431,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.88",
+  "framework_version": "0.1.0-alpha.89",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 83
+  "template_version": 84
 }

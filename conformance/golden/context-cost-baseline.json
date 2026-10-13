@@ -1,7 +1,7 @@
 {
   "bootstrap": {
-    "bytes": 11086,
-    "characters": 11086,
+    "bytes": 11085,
+    "characters": 11085,
     "declared_files": 2,
     "estimated_tokens_4_chars": 2772,
     "missing_paths": [],
@@ -101,8 +101,8 @@
       "characters": 28664,
       "declared_files": 9,
       "end_to_end": {
-        "bytes": 39750,
-        "characters": 39750,
+        "bytes": 39749,
+        "characters": 39749,
         "declared_files": 11,
         "estimated_tokens_4_chars": 9938,
         "missing_paths": [],
@@ -178,8 +178,8 @@
       "characters": 55360,
       "declared_files": 14,
       "end_to_end": {
-        "bytes": 66446,
-        "characters": 66446,
+        "bytes": 66445,
+        "characters": 66445,
         "declared_files": 16,
         "estimated_tokens_4_chars": 16612,
         "missing_paths": [],
@@ -275,10 +275,10 @@
       "characters": 37703,
       "declared_files": 12,
       "end_to_end": {
-        "bytes": 48789,
-        "characters": 48789,
+        "bytes": 48788,
+        "characters": 48788,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 12198,
+        "estimated_tokens_4_chars": 12197,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
@@ -362,8 +362,8 @@
       "characters": 9421,
       "declared_files": 6,
       "end_to_end": {
-        "bytes": 20507,
-        "characters": 20507,
+        "bytes": 20506,
+        "characters": 20506,
         "declared_files": 8,
         "estimated_tokens_4_chars": 5127,
         "missing_paths": [],
@@ -425,8 +425,8 @@
       "characters": 6449,
       "declared_files": 4,
       "end_to_end": {
-        "bytes": 17535,
-        "characters": 17535,
+        "bytes": 17534,
+        "characters": 17534,
         "declared_files": 6,
         "estimated_tokens_4_chars": 4384,
         "missing_paths": [],
@@ -480,8 +480,8 @@
       "characters": 24608,
       "declared_files": 8,
       "end_to_end": {
-        "bytes": 35694,
-        "characters": 35694,
+        "bytes": 35693,
+        "characters": 35693,
         "declared_files": 10,
         "estimated_tokens_4_chars": 8924,
         "missing_paths": [],
@@ -551,8 +551,8 @@
       "characters": 7622,
       "declared_files": 6,
       "end_to_end": {
-        "bytes": 18708,
-        "characters": 18708,
+        "bytes": 18707,
+        "characters": 18707,
         "declared_files": 8,
         "estimated_tokens_4_chars": 4677,
         "missing_paths": [],
@@ -614,8 +614,8 @@
       "characters": 39314,
       "declared_files": 11,
       "end_to_end": {
-        "bytes": 50400,
-        "characters": 50400,
+        "bytes": 50399,
+        "characters": 50399,
         "declared_files": 13,
         "estimated_tokens_4_chars": 12600,
         "missing_paths": [],
@@ -699,8 +699,8 @@
       "characters": 25025,
       "declared_files": 7,
       "end_to_end": {
-        "bytes": 36111,
-        "characters": 36111,
+        "bytes": 36110,
+        "characters": 36110,
         "declared_files": 9,
         "estimated_tokens_4_chars": 9028,
         "missing_paths": [],
@@ -768,8 +768,8 @@
       "characters": 18796,
       "declared_files": 7,
       "end_to_end": {
-        "bytes": 29882,
-        "characters": 29882,
+        "bytes": 29881,
+        "characters": 29881,
         "declared_files": 9,
         "estimated_tokens_4_chars": 7471,
         "missing_paths": [],
@@ -834,8 +834,8 @@
     }
   },
   "first_use": {
-    "bytes": 11086,
-    "characters": 11086,
+    "bytes": 11085,
+    "characters": 11085,
     "declared_files": 2,
     "estimated_tokens_4_chars": 2772,
     "missing_paths": [],
@@ -1886,7 +1886,7 @@
   },
   "pairwise_compositions": {
     "compact_pairs": 136,
-    "composition_digest": "sha256:04872920b3050e22038c244791b7509ffb897d2edf9ebac38e6eeaffdab47461",
+    "composition_digest": "sha256:313e15132053e37e55dc6611a0a70e267d6f8c36d49717265aa73f8befe0f7be",
     "evaluated_pairs": 152,
     "expansion_receipt_pairs": 16,
     "max_characters": 53686,
@@ -2644,10 +2644,10 @@
       "bytes": 6449,
       "characters": 6449,
       "conditional_context": {
-        "bytes": 136865,
-        "characters": 136865,
+        "bytes": 137954,
+        "characters": 137954,
         "declared_files": 9,
-        "estimated_tokens_4_chars": 34217,
+        "estimated_tokens_4_chars": 34489,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2656,7 +2656,7 @@
           ".ai/framework/support-information.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 11539,
+        "portable_words": 11658,
         "resolved_files": 9,
         "resolved_paths": [
           ".ai/framework/action-authorization.md",
@@ -2675,17 +2675,17 @@
           ".ai/assistant/templates/migration-note.md",
           ".ai/assistant/gates/security-approval.md"
         ],
-        "target_words": 3514,
+        "target_words": 3533,
         "unresolved_references": [],
-        "words": 15053
+        "words": 15191
       },
       "declared_files": 4,
       "estimated_tokens_4_chars": 1613,
       "full_candidate_union": {
-        "bytes": 143314,
-        "characters": 143314,
+        "bytes": 144403,
+        "characters": 144403,
         "declared_files": 13,
-        "estimated_tokens_4_chars": 35829,
+        "estimated_tokens_4_chars": 36101,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2694,7 +2694,7 @@
           ".ai/framework/support-information.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 11539,
+        "portable_words": 11658,
         "resolved_files": 12,
         "resolved_paths": [
           ".ai/assistant/context/profiles/framework-upgrade.json",
@@ -2719,11 +2719,11 @@
           ".ai/assistant/templates/migration-note.md",
           ".ai/assistant/gates/security-approval.md"
         ],
-        "target_words": 4022,
+        "target_words": 4041,
         "unresolved_references": [
           "{TARGET_UPGRADE_IMPACT_REPORT}"
         ],
-        "words": 15561
+        "words": 15699
       },
       "missing_paths": [],
       "portable_paths": [],
@@ -2845,10 +2845,10 @@
     }
   },
   "recovery": {
-    "bytes": 18057,
-    "characters": 18057,
+    "bytes": 18055,
+    "characters": 18055,
     "declared_files": 3,
-    "estimated_tokens_4_chars": 4515,
+    "estimated_tokens_4_chars": 4514,
     "missing_paths": [],
     "portable_paths": [],
     "portable_words": 0,
@@ -2871,10 +2871,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 788302,
-        "characters": 788302,
+        "bytes": 790257,
+        "characters": 790257,
         "declared_files": 65,
-        "estimated_tokens_4_chars": 197076,
+        "estimated_tokens_4_chars": 197565,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -2943,7 +2943,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 97531,
+        "portable_words": 97777,
         "resolved_files": 65,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -3015,7 +3015,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 97531
+        "words": 97777
       },
       "selected_route": {
         "bytes": 33217,
@@ -3275,10 +3275,10 @@
       "words": 405
     },
     "session-continuity": {
-      "bytes": 13923,
-      "characters": 13923,
+      "bytes": 13958,
+      "characters": 13958,
       "declared_files": 4,
-      "estimated_tokens_4_chars": 3481,
+      "estimated_tokens_4_chars": 3490,
       "missing_paths": [],
       "portable_paths": [],
       "portable_words": 0,
@@ -3295,9 +3295,9 @@
         ".ai/assistant/gates/session-continuity.md",
         ".ai/assistant/assistant-capabilities/generic.json"
       ],
-      "target_words": 906,
+      "target_words": 908,
       "unresolved_references": [],
-      "words": 906
+      "words": 908
     },
     "small-task": {
       "bytes": 2895,

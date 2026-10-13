@@ -48,6 +48,9 @@ rebaseline the full framework set.
 
 ## Source-Contour Worker Routing
 
+Independent source sessions follow `docs/source-session-presence.md`.
+Workers remain represented by their coordinator; explicit no-writes wins.
+
 When AlatyrCore is active, select the source profile first and follow
 `tools/source_worker_policy.json` and `docs/source-worker-strategy.md`. For an
 explicit audit, dispatch two eligible read-only workstreams when runtime

@@ -80,6 +80,8 @@ from projection_graph import (
 from render_context_catalogs import INDEX_NAME, build_directory_catalog_contents
 from support_state import STATE_PATH, SupportStateError, build_support_state, render_state
 from sparse_overlay import overlay_decision
+from session_presence_contract import POLICY_PATH as CONTINUITY_POLICY, merge_presence_policy
+from session_presence_store import load_policy as load_presence_policy
 from target_tool_compat import generation_provenance_from_manifest_text
 
 
@@ -204,6 +206,13 @@ def build_target_context_catalogs(
     return projected
 
 
+def projected_continuity_policy(target: Path) -> str:
+    template = load_object(TEMPLATE_ROOT / CONTINUITY_POLICY)
+    installed_path = target / CONTINUITY_POLICY
+    installed = {"presence": load_presence_policy(target)} if installed_path.exists() or installed_path.is_symlink() else None
+    return render_json(merge_presence_policy(template, installed))
+
+
 def projected_template_content(
     rel: Path,
     profile: str,
@@ -213,6 +222,8 @@ def projected_template_content(
     target: Path,
 ) -> str | None:
     src = TEMPLATE_ROOT / rel
+    if rel == Path(CONTINUITY_POLICY):
+        return projected_continuity_policy(target)
     selected_paths = context.selected_paths
     surface_id = surface_id_for_path(rel)
     if surface_id is not None:
@@ -313,9 +324,7 @@ def projected_template_content(
                 (TEMPLATE_ROOT / ".ai/assistant/policies/action-authorization.json").read_text(
                     encoding="utf-8"
                 ),
-                (TEMPLATE_ROOT / ".ai/assistant/policies/session-continuity.json").read_text(
-                    encoding="utf-8"
-                ),
+                projected_continuity_policy(target),
                 (TEMPLATE_ROOT / ".ai/project/support-policy.json").read_text(
                     encoding="utf-8"
                 ),
@@ -377,7 +386,7 @@ def projected_template_content(
             manifest_text,
             project_map_text,
             router_text,
-            continuity_policy_text=(TEMPLATE_ROOT / ".ai/assistant/policies/session-continuity.json").read_text(encoding="utf-8"),
+            continuity_policy_text=projected_continuity_policy(target),
             rule_registry_text=rule_registry_text,
             semantic_index_text=semantic_index_text,
             semantic_terms=semantic_terms,
@@ -408,7 +417,7 @@ def projected_template_content(
                 project_map_text,
                 router_text,
                 bootstrap=bootstrap,
-                continuity_policy_text=(TEMPLATE_ROOT / ".ai/assistant/policies/session-continuity.json").read_text(encoding="utf-8"),
+                continuity_policy_text=projected_continuity_policy(target),
                 rule_registry_text=rule_registry_text,
                 semantic_index_text=semantic_index_text,
                 context_root_texts=context_root_texts,

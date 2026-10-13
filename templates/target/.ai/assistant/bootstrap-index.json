@@ -2,7 +2,7 @@
   "schema_version": 2,
   "index_kind": "target-bootstrap-index",
   "session_presence": {
-    "enabled": false,
+    "enabled": true,
     "policy": ".ai/assistant/policies/session-continuity.json#presence"
   },
   "integrity": {

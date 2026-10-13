@@ -650,8 +650,10 @@ final evidence. Do not present a scaffolder run as a completed installation.
 
 ## Conversational Framework Update
 
-For optional presence, apply the [target flow](templates/target/.ai/assistant/flows/session-presence.flow.md):
-preserve opt-in, refresh projections, and leave live entries untouched.
+For presence, apply the [target flow](templates/target/.ai/assistant/flows/session-presence.flow.md):
+new accepted installs default to discovery/own-entry housekeeping; preserve
+existing choices, refresh projections from installed policy, and leave live
+entries untouched. Verify helper availability or record unavailable cooperation.
 
 In an installed repository, `update Alatyr` is an assistant request for one
 target-aware update operation. It authorizes inspection and modification of

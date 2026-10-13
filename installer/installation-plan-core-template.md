@@ -61,8 +61,8 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Rejected source-repository facts, commands, fixtures, and policies:
 - Optional capability sections loaded from the detailed template and why:
 - Core session-continuity surfaces and ignored runtime storage:
-- Optional presence: existing setting, user opt-in, Git/worktree sharing,
-  helper availability, authorization for local metadata, and limitations:
+- Presence: existing setting, acceptance of new defaults/own-entry allowance,
+  Git/worktree sharing, helper availability, opt-out, and limitations:
 
 ## Validation And Evidence
 

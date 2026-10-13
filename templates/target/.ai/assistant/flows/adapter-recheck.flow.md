@@ -142,7 +142,10 @@ pre-acceptance, and message templates are not completion evidence.
    select additional context. Do not load the full framework corpus by default.
 5. Compare installed framework files against the recorded framework baseline or
    update source.
-   Preserve optional presence settings in the continuity policy. Do not change
+   Preserve explicit presence and housekeeping choices in the continuity policy.
+   Legacy absence stays disabled unless migration acceptance adopts defaults.
+   Verify helper availability; missing tools mean unavailable cooperation.
+   Do not change
    Git-common-directory runtime entries, register participants, or auto-prune.
    Regenerate bootstrap/recovery bindings from the preserved policy.
 6. Compare framework version, adapter schema version, template version, module

@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 import jsonschema
-from session_presence_contract import FLOW_PATH, presence_policy
+from session_presence_contract import FLOW_PATH, SOURCE_FLOW_PATH, SOURCE_POLICY_PATH, presence_policy
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,8 +41,16 @@ def main() -> int:
             TARGET / ".ai/assistant/policies/session-continuity.json"
         )
         presence = presence_policy(policy)
-        if presence["enabled"] is not False:
-            failures.append("source presence template must default to disabled")
+        if presence["enabled"] is not True or presence.get("own_entry_housekeeping") is not True:
+            failures.append("new presence template must enable own-entry housekeeping")
+        presence_policy(load_object(ROOT / SOURCE_POLICY_PATH), source_contour=True)
+        source_router = load_object(ROOT / "tools/source_context_router.json")
+        overlays = source_router.get("conditional_overlays")
+        route = overlays.get("source-session-presence") if isinstance(overlays, dict) else None
+        if not isinstance(route, dict) or route.get("policy") != SOURCE_POLICY_PATH or route.get("required_context") != [SOURCE_FLOW_PATH]:
+            failures.append("source presence router is inconsistent")
+        if not (ROOT / SOURCE_FLOW_PATH).is_file():
+            failures.append("source presence flow is missing")
         if not (TARGET / FLOW_PATH).is_file():
             failures.append("presence template flow is missing")
         if policy.get("schema_version") != 3:
