@@ -4,26 +4,27 @@ This file is host-preloaded.
 
 ## Bootstrap
 
-Load `.ai/assistant/bootstrap-index.json`; select its smallest route and gates.
-On failure, load the canonical owner. Load `.ai/assistant/entry-packet.json`
-only for repair, audit, or conflict. Follow child indexes without
-loading directories. Use `.ai/README.md` for recovery.
+Load `.ai/assistant/bootstrap-index.json`; select the smallest route and gates.
+On failure load the canonical owner. Repair/audit/conflict only:
+`.ai/assistant/entry-packet.json`. Follow matching indexes, not directories.
+Recovery: `.ai/README.md`. Check `session_presence` at entry; if enabled,
+follow its flow before overlap and on scope changes/completion.
 
 ## Authority
 
-Own project facts in `.ai/project`, portable rules in `.ai/framework`, and
-routing in `.ai/assistant`. Derived aids route evidence, not authority.
+Project facts: `.ai/project`; portable rules: `.ai/framework`; routing:
+`.ai/assistant`. Derived aids are not authority.
 
-Before mutation, apply `ALATYR-AUTHORIZATION-001` through
-`.ai/assistant/policies/action-authorization.json` to the newest request.
-`inspect`, `modify`, `commit`, `publish`, and `live-external` are separate.
+Before mutation: `ALATYR-AUTHORIZATION-001` via
+`.ai/assistant/policies/action-authorization.json` for the newest request.
+Separate phases: `inspect`, `modify`, `commit`, `publish`, `live-external`.
 Discussion, planning, issue return, or ambiguity are inspect-only.
-Implementation does not imply commit; commit does not imply push. Authorization
-is scoped.
+Implementation does not imply commit; commit does not imply push.
+Scoped authorization.
 
-After context loss or a session boundary, apply `ALATYR-CONTINUITY-001` through
-`session-continuity` before mutation. Re-establish scope from the newest
-request; packets and summaries are evidence only.
+After context loss/boundaries, apply `ALATYR-CONTINUITY-001` via
+`session-continuity` before mutation. Re-establish newest-request scope;
+packets/summaries are evidence only.
 
 Protected architecture, behavior, security, permissions, dependencies,
 destructive/live/production actions, spend, imports, or weaker gates require
@@ -31,23 +32,23 @@ plan-and-diff-bound approval.
 
 ## Work
 
-For semantic changes, name the fact, re-derive invariants, load its owner and
-dependents, then reconcile code, tests, contracts, docs, diagrams, gates, and
-risk. Review unknown relationships; do not infer acceptance.
+For semantic changes, name facts, re-derive invariants, load owners/dependents,
+reconcile code/tests/contracts/docs/diagrams/gates/risk, and review unknown
+relationships. Do not infer acceptance.
 
 For every code or test change, record a Project Contour Sync Decision:
 `updated`, `not-required`, `blocked`, or `unverified`. Name fact IDs, checked
 owners, affected surfaces, evidence, and any fact-specific `not-required`
-reason. Update `.ai/project/contour.md` only when orientation or routing facts
-changed. `blocked` or `unverified` blocks completion.
+reason. Update `.ai/project/contour.md` only for changed orientation/routing
+facts. `blocked`/`unverified` blocks completion.
 
-Non-trivial work uses `.ai/assistant/task-decomposition.json`: one strategy,
-bounded model, current projection, and obligations. History is conditional;
-small work stays `direct-local`. Delegate with capability evidence. The primary
-retains decisions, authorization, integration, and acceptance. Run validation.
+Non-trivial work: `.ai/assistant/task-decomposition.json`, one strategy,
+bounded model/projection/obligations. History is conditional; small work:
+`direct-local`. Delegate with capability evidence. The primary retains
+decisions, authorization, integration, and acceptance. Validate.
 
 ## Evidence
 
-Report routing, owners, facts, support impact, integrity, validation,
+Report routing/owners/facts, support impact/integrity/validation,
 project-contour sync, authorization/approval, expansion, workers, residual
 risk, and `durable_engineering_evidence` as `captured/skipped/blocked`.

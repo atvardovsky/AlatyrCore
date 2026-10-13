@@ -5,6 +5,35 @@ They are not portable framework requirements for target projects.
 
 ## Cross-Platform Entry Point
 
+### Optional Local Session Presence
+
+`manage_session_presence.py` (facade command `session-presence`) reads the
+target continuity policy. Its `presence.enabled` setting defaults to false.
+Missing legacy configuration is disabled; malformed explicit settings fail.
+Status is read-only and creates no files. Registration, updates, and leaving
+require `--write` plus applicable current-scope local-metadata authorization.
+
+```sh
+python3 tools/alatyr.py session-presence --target /path/to/target-repo status
+python3 tools/alatyr.py session-presence --target /path/to/target-repo register --write --task "Review API" --scope "api-contract" --activity reviewing
+```
+
+On Windows use `python` or the existing `.cmd`/PowerShell facade. A configured
+installed delegate supports the same action arguments. The canonical parser
+owns those arguments; the delegate forwards them without interpreting them.
+Use the returned UUID and version for `update`/`leave`, never another session's
+UID. A fork registers a fresh UID, optionally with `--parent-uid` for attribution.
+
+One bounded `alatyr-session-presence/sessions.json` under Git's common directory
+is shared across worktrees of a clone and is never committed. The stable OS
+lock protects only metadata read/modify/save. There is no automatic pruning,
+heartbeat, network service, history, task reservation, or build lock. Stale
+entries indicate uncertainty, not dead processes. See the
+[target flow](../templates/target/.ai/assistant/flows/session-presence.flow.md)
+for limits, recovery, and the cooperative identity/security boundary.
+
+### Facade Usage
+
 `alatyr.py` exposes the stable optional source tools through one command
 manifest. It does not turn Alatyr into a runtime service or replace the
 assistant-led installation process. Each command reports its write scope in

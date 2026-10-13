@@ -237,7 +237,7 @@
     },
     {
       "id": "SESSION",
-      "code_count": 67
+      "code_count": 69
     },
     {
       "id": "SOURCE",
@@ -12084,6 +12084,24 @@
     },
     {
       "code": "SESSION_CONTINUITY_STORAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_PRESENCE_FLOW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
+      ]
+    },
+    {
+      "code": "SESSION_PRESENCE_POLICY",
       "levels": [
         "error"
       ],

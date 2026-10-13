@@ -699,6 +699,9 @@ Integration mode: `{CANONICAL_INTEGRATION}`
 
 ## Target Notes
 
+Companion flow: `.ai/assistant/flows/session-presence.flow.md`
+Disabled by default; advisory local cooperation, not team governance or permission.
+
 - Supported assistants: `{SUPPORTED_ASSISTANTS}`
 - Target validation or manual checks: `{TARGET_VALIDATION}`
 - Approval constraints: `{TARGET_APPROVAL_CONSTRAINTS}`

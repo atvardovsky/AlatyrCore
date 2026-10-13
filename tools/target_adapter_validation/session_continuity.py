@@ -22,6 +22,7 @@ from target_adapter_validation.analysis_strategies import (
     validate_selected_problem_model,
 )
 from analysis_strategy_contract import MAX_ACTIVE_PROJECTION_FILE_BYTES
+from session_presence_contract import FLOW_PATH as PRESENCE_FLOW, decode_json, presence_policy
 
 
 POLICY_RELPATH = ".ai/assistant/policies/session-continuity.json"
@@ -91,6 +92,13 @@ def _check_static_contract(validator: Any) -> None:
     )
     if not isinstance(policy, dict):
         return
+    context = validator.context
+    try:
+        presence_policy(decode_json(context.read_bytes(validator.target_path(POLICY_RELPATH))))
+    except (OSError, ValueError) as exc:
+        validator.error("SESSION_PRESENCE_POLICY", str(exc), POLICY_RELPATH)
+    if "presence" in policy and not validator.is_target_file(PRESENCE_FLOW):
+        validator.error("SESSION_PRESENCE_FLOW", "presence policy requires its installed flow", PRESENCE_FLOW)
     expected = {
         "schema_version": 3,
         "policy_kind": "target-session-continuity",

@@ -581,6 +581,9 @@ Final evidence must say:
 - the core session-continuity policy, overlay, flow, gate, packet template, and
   ignored runtime path are installed; the entry packet routes recovery and no
   summary or packet restores action authority
+- optional presence is disabled unless accepted, bootstrap/recovery agree
+  with the policy, and updates preserve settings without mutating live entries;
+  helper availability and same-clone sharing limitations are explicit
 - portable ASCII baseline plus per-assistant inline/artifact capabilities,
   client version, verification time, and evidence resolved or explicitly
   unknown with reason

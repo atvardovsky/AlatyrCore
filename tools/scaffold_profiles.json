@@ -35,6 +35,7 @@
         ".ai/assistant/discovery-report.json",
         ".ai/assistant/flows/logical-integrity-review.flow.md",
         ".ai/assistant/flows/session-continuity.flow.md",
+        ".ai/assistant/flows/session-presence.flow.md",
         ".ai/assistant/gates/analysis-strategy.md",
         ".ai/assistant/gates/code-and-tests.md",
         ".ai/assistant/gates/compact-final-evidence.md",

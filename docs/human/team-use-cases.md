@@ -97,6 +97,14 @@ related work without preloading the full memory corpus.
 
 ## Coordination Between AI Assistants
 
+For simultaneous sessions in one local Git clone, optional session presence
+offers a lighter alternative to team governance. Participating assistants can
+read other reported tasks, keep a short entry while working, and remove their
+own entry when finished. Linked worktrees share the registry; separate clones
+or computers do not. It is disabled by default and grants no permission or
+exclusive work ownership. Stale entries are visible, not automatically erased.
+See [session presence](../../framework/session-continuity.md#optional-concurrent-session-presence).
+
 Thin assistant bridges can point different compatible AI tools to the same
 project-owned adapter. This is intended to reduce vendor-specific drift while
 still recording client-specific loading, permissions, presentation, and known

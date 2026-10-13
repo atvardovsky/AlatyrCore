@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1696
+Catalog entries: 1698
 
 ## Families
 
@@ -60,7 +60,7 @@ Catalog entries: 1696
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `RUNTIME`: 37 codes.
-- `SESSION`: 67 codes.
+- `SESSION`: 69 codes.
 - `SOURCE`: 13 codes.
 - `STALE`: 2 codes.
 - `SUPPORT`: 21 codes.
@@ -2689,6 +2689,10 @@ Catalog entries: 1696
 - `SESSION_CONTINUITY_SCHEMA_INVALID`
   Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
 - `SESSION_CONTINUITY_STORAGE`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_PRESENCE_FLOW`
+  Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
+- `SESSION_PRESENCE_POLICY`
   Level: error. Source: `tools/target_adapter_validation/session_continuity.py`.
 - `SOURCE_REGISTRY_APPLICABILITY`
   Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.

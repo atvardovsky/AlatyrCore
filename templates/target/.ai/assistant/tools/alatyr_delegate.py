@@ -47,9 +47,22 @@ def add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--framework-source", type=Path)
 
 
+class Once(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        seen = getattr(namespace, "_seen_options", set())
+        if self.dest in seen:
+            parser.error(f"{option_string} may be supplied only once")
+        setattr(namespace, "_seen_options", seen | {self.dest})
+        setattr(namespace, self.dest, values)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     subparsers = parser.add_subparsers(dest="operation", required=True)
+    presence = subparsers.add_parser("session-presence", allow_abbrev=False)
+    presence.add_argument("--target", type=Path, required=True, action=Once)
+    presence.add_argument("--framework-source", type=Path, action=Once)
+    presence.add_argument("arguments", nargs=argparse.REMAINDER)
     for name in ("status", "doctor", "archive-audit"):
         add_common(subparsers.add_parser(name, allow_abbrev=False))
 
@@ -73,6 +86,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) -> list[str]:
+    if args.operation == "session-presence":
+        return ["session-presence", "--target", str(target), *args.arguments]
     common = ["--target", str(target), "--framework-source", str(source)]
     if args.operation in {"status", "doctor"}:
         return [args.operation, *common]

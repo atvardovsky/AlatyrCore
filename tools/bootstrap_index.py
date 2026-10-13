@@ -10,6 +10,7 @@ from typing import Any
 from context_catalog import codebook_schema_version, load_codebook
 from target_tool_compat import generation_provenance, source_template_target
 from yaml_support import safe_load
+from session_presence_contract import POLICY_PATH, decode_json, presence_route
 
 
 BOOTSTRAP_PATH = Path(".ai/assistant/bootstrap-index.json")
@@ -18,6 +19,7 @@ SOURCE_PATHS = {
     "manifest": Path(".ai/alatyr.yaml"),
     "project_map": Path(".ai/README.md"),
     "context_router": Path(".ai/assistant/context-router.json"),
+    "session_continuity_policy": Path(POLICY_PATH),
 }
 SEMANTIC_INDEX_PATH = Path(".ai/framework/semantics/index.json")
 CONTEXT_ROOT_PATHS = {
@@ -139,6 +141,7 @@ def build_bootstrap_index(
     project_map_text: str,
     router_text: str,
     *,
+    continuity_policy_text: str | None = None,
     rule_registry_text: str | None = None,
     semantic_index_text: str | None = None,
     semantic_terms: dict[str, dict[str, Any]] | None = None,
@@ -192,9 +195,10 @@ def build_bootstrap_index(
     return {
         "schema_version": 2,
         "index_kind": "target-bootstrap-index",
+        "session_presence": presence_route(decode_json(continuity_policy_text.encode("utf-8")) if continuity_policy_text is not None else {}),
         "integrity": {
             "path": BOOTSTRAP_INTEGRITY_PATH.as_posix(),
-            "on_failure": "load integrity evidence and canonical sources; do not trust compact routing",
+            "on_failure": "load integrity and canonical sources; distrust compact routing",
         },
         "installation": {
             "framework_version": _string(framework.get("version")),
@@ -278,6 +282,7 @@ def build_bootstrap_integrity(
     router_text: str,
     *,
     bootstrap: dict[str, Any],
+    continuity_policy_text: str | None = None,
     rule_registry_text: str | None = None,
     semantic_index_text: str | None = None,
     context_root_texts: dict[str, str] | None = None,
@@ -289,7 +294,9 @@ def build_bootstrap_integrity(
         name: {"path": path.as_posix(), "sha256": _sha256(text)}
         for (name, path), text in zip(
             SOURCE_PATHS.items(),
-            [manifest_text, project_map_text, router_text],
+            [manifest_text, project_map_text, router_text] + (
+                [continuity_policy_text] if continuity_policy_text is not None else []
+            ),
         )
     }
     if semantic_index_text is not None:
@@ -358,6 +365,7 @@ def build_bundle_from_target(target: Path) -> tuple[dict[str, Any], dict[str, An
         texts["manifest"],
         texts["project_map"],
         texts["context_router"],
+        continuity_policy_text=texts["session_continuity_policy"],
         rule_registry_text=rule_registry.read_text(encoding="utf-8"),
         semantic_index_text=semantic_index.read_text(encoding="utf-8"),
         semantic_terms=semantic_terms,
@@ -368,6 +376,7 @@ def build_bundle_from_target(target: Path) -> tuple[dict[str, Any], dict[str, An
         texts["project_map"],
         texts["context_router"],
         bootstrap=bootstrap,
+        continuity_policy_text=texts["session_continuity_policy"],
         rule_registry_text=rule_registry.read_text(encoding="utf-8"),
         semantic_index_text=semantic_index.read_text(encoding="utf-8"),
         context_root_texts=context_root_texts,

@@ -19,9 +19,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.87",
-    "adapter_schema_version": "70",
-    "template_version": "82"
+    "framework_version": "0.1.0-alpha.88",
+    "adapter_schema_version": "71",
+    "template_version": "83"
   },
   "derived_from": {
     "manifest": {
@@ -42,7 +42,7 @@
     },
     "session_continuity_policy": {
       "path": ".ai/assistant/policies/session-continuity.json",
-      "sha256": "0501092e71917af30e38fc7e3be45c61cc01c0696e65e47d4ac171e195de88bd"
+      "sha256": "7a4201c5d86875e3212349ed0ae83abd61ab79a950a5ced001ec6f2e2f3c9351"
     },
     "support_policy": {
       "path": ".ai/project/support-policy.json",
@@ -169,6 +169,10 @@
       "publish",
       "live-external"
     ]
+  },
+  "session_presence": {
+    "enabled": false,
+    "policy": ".ai/assistant/policies/session-continuity.json#presence"
   },
   "session_continuity": {
     "policy": ".ai/assistant/policies/session-continuity.json",

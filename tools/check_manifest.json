@@ -330,6 +330,7 @@
         "schemas/alatyr-problem-model.schema.json",
         "schemas/alatyr-session-continuity-packet.schema.json",
         "templates/target/.ai/assistant/policies/session-continuity.json",
+        "templates/target/.ai/assistant/flows/session-presence.flow.md",
         "templates/target/.ai/assistant/context/task-scales/session-continuity.json",
         "templates/target/.ai/assistant/flows/session-continuity.flow.md",
         "templates/target/.ai/assistant/gates/session-continuity.md",
@@ -339,12 +340,14 @@
       ],
       "implementation_paths": [
         "tools/check_session_continuity.py",
+        "tools/*session_presence*.py",
         "tools/target_adapter_validation/session_continuity.py",
         "tools/target_adapter_validation/harness_scenarios/session_continuity.py",
         "tools/validate_target_adapter.py"
       ],
       "trigger_paths": [
         "framework/session-continuity.md",
+        "templates/target/.ai/assistant/flows/session-presence.flow.md",
         "schemas/alatyr-problem-model-active-projection.schema.json",
         "schemas/alatyr-problem-model.schema.json",
         "schemas/alatyr-session-continuity-packet.schema.json",
@@ -357,6 +360,7 @@
         "templates/target/.ai/assistant/**",
         "templates/target/AGENTS.md",
         "tools/check_session_continuity.py",
+        "tools/*session_presence*.py",
         "tools/scaffold_profiles.json",
         "tools/target_adapter_validation/session_continuity.py",
         "tools/target_adapter_validation/harness_scenarios/session_continuity.py",
@@ -1169,6 +1173,7 @@
         "templates/target/.ai/assistant/gates/**",
         "templates/target/.ai/assistant/operation*.json",
         "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/assistant/policies/session-continuity.json",
         "templates/target/.ai/project/support-policy.json",
         "templates/target/AGENTS.md"
       ],
@@ -1192,6 +1197,7 @@
         "templates/target/.ai/assistant/gates/**",
         "templates/target/.ai/assistant/operation*.json",
         "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/assistant/policies/session-continuity.json",
         "templates/target/.ai/project/support-policy.json",
         "templates/target/AGENTS.md",
         "tools/agent_entry_packet.py",
@@ -1227,6 +1233,7 @@
         "templates/target/.ai/assistant/operation*.json",
         "templates/target/.ai/assistant/policies/action-authorization.json",
         "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/policies/session-continuity.json",
         "templates/target/.ai/project/support-policy.json"
       ],
       "implementation_paths": [
@@ -1245,6 +1252,7 @@
         "templates/target/.ai/assistant/operation*.json",
         "templates/target/.ai/assistant/policies/action-authorization.json",
         "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/policies/session-continuity.json",
         "templates/target/.ai/project/support-policy.json",
         "tools/agent_entry_packet.py",
         "tools/check_agent_entry_packet.py",

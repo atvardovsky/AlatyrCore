@@ -8,6 +8,12 @@
   "packet_template": ".ai/assistant/templates/session-continuity-packet.json",
   "packet_schema": "alatyr-session-continuity-packet-v3",
   "runtime_directory": ".ai/.runtime/continuity",
+  "presence": {
+    "schema_version": 1,
+    "enabled": false,
+    "flow": ".ai/assistant/flows/session-presence.flow.md",
+    "stale_after_seconds": 3600
+  },
   "boundary_kinds": [
     "manual-compaction",
     "automatic-compaction",

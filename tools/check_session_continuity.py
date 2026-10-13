@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import jsonschema
+from session_presence_contract import FLOW_PATH, presence_policy
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +17,7 @@ CONTINUITY_FILES = {
     ".ai/assistant/policies/session-continuity.json",
     ".ai/assistant/context/task-scales/session-continuity.json",
     ".ai/assistant/flows/session-continuity.flow.md",
+    FLOW_PATH,
     ".ai/assistant/gates/session-continuity.md",
     ".ai/assistant/templates/session-continuity-packet.json",
 }
@@ -38,6 +40,11 @@ def main() -> int:
         policy = load_object(
             TARGET / ".ai/assistant/policies/session-continuity.json"
         )
+        presence = presence_policy(policy)
+        if presence["enabled"] is not False:
+            failures.append("source presence template must default to disabled")
+        if not (TARGET / FLOW_PATH).is_file():
+            failures.append("presence template flow is missing")
         if policy.get("schema_version") != 3:
             failures.append("continuity policy schema_version must be 3")
         if policy.get("packet_schema") != "alatyr-session-continuity-packet-v3":

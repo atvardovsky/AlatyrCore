@@ -1,9 +1,13 @@
 {
   "schema_version": 2,
   "index_kind": "target-bootstrap-index",
+  "session_presence": {
+    "enabled": false,
+    "policy": ".ai/assistant/policies/session-continuity.json#presence"
+  },
   "integrity": {
     "path": ".ai/assistant/bootstrap-integrity.json",
-    "on_failure": "load integrity evidence and canonical sources; do not trust compact routing"
+    "on_failure": "load integrity and canonical sources; distrust compact routing"
   },
   "installation": {
     "framework_version": "{ALATYR_CORE_VERSION}",

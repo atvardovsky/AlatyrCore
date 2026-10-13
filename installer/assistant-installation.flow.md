@@ -327,18 +327,16 @@ Classify every proposed target file:
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,
     backend, synchronization, storage, retention, and privacy from evidence.
-14. Create the target `kernel` assistant contour, generated hash-bound
-    bootstrap index, compact context router, routed gate fragments, selected
-    lazy descriptors, context profiles, module profile, task-specific maturity
-    profile, and minimal workflows/gates from target facts. Add operation,
-    bridge, capability-record, and optional workflow surfaces only when the
-    selected profile or enabled module includes them. Generate every derived
-    index from that final installed set rather than from the complete template
-    tree.
-    Install the portable target delegate and structured validation contract.
-    Source resolution uses an explicit source argument, `ALATYR_CORE`, or the
-    ignored `.ai/local/framework-source` file and fails closed. Do not commit
-    workstation-specific absolute paths.
+14. Derive the `kernel` contour, hash-bound bootstrap, compact router, routed
+    gates, lazy descriptors, context/module/task-specific maturity profiles,
+    and minimal workflows from target facts. Operations, bridges, capabilities,
+    and optional flows require selected profiles/modules. Generate indexes
+    from the final installed set, not the full template.
+    Install the portable delegate and validation contract.
+    Apply `session-presence.flow.md`: disabled by default, preserve opt-in/live
+    entries, refresh projections.
+    Resolve source via explicit argument, `ALATYR_CORE`, or ignored
+    `.ai/local/framework-source`; fail closed. Never commit workstation paths.
     Route enabled team operations and matched state-changing work through the
     lazy `.ai/assistant/team/context-overlay.json`. Read the compact active-work
     index first; do not put full team state in bootstrap.

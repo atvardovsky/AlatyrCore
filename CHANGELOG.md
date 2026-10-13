@@ -4,19 +4,23 @@
 
 - None.
 
+## 0.1.0-alpha.88 - 2026-10-13
+
+- Default-disabled session presence (`ALATYR-CONTINUITY-001`).
+- Schema `71`/templates `83`: preserve opt-in/live entries; install flow and
+  regenerate bootstrap/recovery.
+
 ## 0.1.0-alpha.87 - 2026-10-11
 
-- Reject codebook schema drift and derive compact residual-risk digests,
-  including changed package records in unchanged shards.
-- Register bounded non-trivial work, validate models, and bind closure/capture
-  evidence to tasks, operations, and results; small tasks remain lightweight.
-- Separate implementation, finalization, and publication. Bind architecture
-  review freshness to selected inputs independently of support hashes.
-- Exclude portable knowledge candidates; expose bounded task recurrence and
-  missing support-impact coverage.
-- Adapter schema `70`, templates `82`: reconcile schemas, register work,
-  refresh risk projections and architecture reviews; never fabricate history
-  or reauthorize publication.
+- Reject codebook drift; derive residual-risk digests, including changed records
+  in unchanged shards.
+- Register/validate bounded non-trivial work; bind closure/capture to task,
+  operation, and result. Small tasks stay lightweight.
+- Separate implementation/finalization/publication; bind architecture review
+  freshness independently of support hashes.
+- Exclude portable candidates; expose recurrence and missing support coverage.
+- Schema `70`/templates `82`: reconcile schemas, register work, refresh risk/
+  architecture projections; never fabricate history or reauthorize publication.
 
 ## 0.1.0-alpha.86 - 2026-10-09
 

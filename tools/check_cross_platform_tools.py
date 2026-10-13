@@ -40,6 +40,7 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "session-presence",
     "check-source",
     "check-source-focused",
     "plan-work",
@@ -80,6 +81,7 @@ EXPECTED_COMMANDS = {
     "clean-artifacts",
 }
 ALLOWED_WRITE_SCOPES = {
+    "git-common-local-presence-with-explicit-write",
     "none",
     "target-structure-with-explicit-write",
     "explicit-report-output-only",

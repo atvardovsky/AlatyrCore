@@ -18,6 +18,7 @@ from .common import ROOT, validator, write_json
 STATIC_PATHS = (
     ".ai/assistant/policies/session-continuity.json",
     ".ai/assistant/flows/session-continuity.flow.md",
+    ".ai/assistant/flows/session-presence.flow.md",
     ".ai/assistant/gates/session-continuity.md",
     ".ai/assistant/context/task-scales/session-continuity.json",
     ".ai/assistant/context-router.json",

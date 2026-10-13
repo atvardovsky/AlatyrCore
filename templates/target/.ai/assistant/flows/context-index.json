@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2364,
-      "content_digest": "sha256:a55a9577070cde9d62493508338bf99b81fb9d535e45fbe64fc6ee07a3cb4771"
+      "estimated_words": 2389,
+      "content_digest": "sha256:85233ad56dc94fea377fe49a21229450563dcb96ccaf5506693ebe6b80b6f9ce"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -530,6 +530,28 @@
       ],
       "estimated_words": 451,
       "content_digest": "sha256:69044de620f55d4fd90f31bafa6e5f7f7ec1dfcb22e40d0334acfb2e9b7b80a9"
+    },
+    {
+      "id": "assistant.content.flows-session-presence-flow-md",
+      "kind": "content",
+      "path": "flows/session-presence.flow.md",
+      "summary": "Optional Session Presence",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "session",
+          "presence",
+          "flow"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 561,
+      "content_digest": "sha256:d64e904558975256898ea62107426cc2ed4d5e0272f7b45c576e0cb4e6c8b289"
     },
     {
       "id": "assistant.content.flows-skill-adaptation-flow-md",

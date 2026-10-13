@@ -1,6 +1,7 @@
 """Build the compact installed-adapter recovery routing packet."""
 
 from __future__ import annotations
+from session_presence_contract import decode_json, presence_route
 
 import hashlib
 import json
@@ -206,10 +207,8 @@ def build_agent_entry_packet(
         action_authorization_text,
         ".ai/assistant/policies/action-authorization.json",
     )
-    continuity = _load_json_text(
-        session_continuity_text,
-        ".ai/assistant/policies/session-continuity.json",
-    )
+    continuity = decode_json(session_continuity_text.encode("utf-8"))
+    presence_policy_route = presence_route(continuity)
     support_policy = _load_json_text(
         support_policy_text,
         ".ai/project/support-policy.json",
@@ -353,6 +352,7 @@ def build_agent_entry_packet(
                 "live-external",
             ],
         },
+        "session_presence": presence_policy_route,
         "session_continuity": {
             "policy": SOURCE_PATHS["session_continuity_policy"].as_posix(),
             "overlay": "session-continuity",

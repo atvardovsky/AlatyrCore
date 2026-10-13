@@ -13,6 +13,7 @@ from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
 DELEGATE_PATH = (
     ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py"
 )
@@ -28,6 +29,29 @@ finally:
 
 
 class TargetDelegateTests(unittest.TestCase):
+    def test_presence_requires_explicit_unique_target_and_exact_source(self) -> None:
+        import contextlib
+        import io
+        parser = delegate.build_parser()
+        for arguments in (
+            ["session-presence", "status"],
+            ["session-presence", "--target", ".", "--target=other", "status"],
+            ["session-presence", "--target", ".", "--framework-source", "first", "--framework-source=second", "status"],
+            ["session-presence", "--tar", ".", "status"],
+        ):
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as raised:
+                parser.parse_args(arguments)
+            self.assertEqual(raised.exception.code, 2)
+
+    def test_presence_translated_arguments_use_actual_canonical_parser(self) -> None:
+        from manage_session_presence import build_parser
+        arguments = ["session-presence", "--target", ".", "register", "--write", "--task", "Review", "--scope", "api", "--scope", "tests"]
+        parsed = delegate.build_parser().parse_args(arguments)
+        canonical = delegate.canonical_arguments(parsed, Path("/target"), Path("/source"))
+        result = build_parser().parse_args(canonical[1:])
+        self.assertEqual(result.scope, ["api", "tests"])
+        self.assertEqual(result.target, Path("/target"))
+
     def test_validation_contract_commands_map_to_declared_canonical_operations(self) -> None:
         contract = json.loads(
             (

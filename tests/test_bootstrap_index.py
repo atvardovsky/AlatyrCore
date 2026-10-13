@@ -19,6 +19,22 @@ from bootstrap_index import (  # noqa: E402
 
 
 class BootstrapIndexTests(unittest.TestCase):
+    def test_presence_policy_is_projected_and_integrity_bound(self) -> None:
+        from session_presence_contract import DEFAULT_PRESENCE, POLICY_PATH
+        manifest, router = "modules: {}\n", "{}"
+        policy = json.dumps({"presence": {**DEFAULT_PRESENCE, "enabled": True}})
+        bootstrap = build_bootstrap_index(manifest, "map", router, continuity_policy_text=policy)
+        self.assertTrue(bootstrap["session_presence"]["enabled"])
+        integrity = build_bootstrap_integrity(manifest, "map", router, bootstrap=bootstrap, continuity_policy_text=policy)
+        self.assertEqual(integrity["derived_from"]["session_continuity_policy"], {"path": POLICY_PATH, "sha256": hashlib.sha256(policy.encode()).hexdigest()})
+        changed = policy.replace("true", "false")
+        self.assertFalse(build_bootstrap_index(manifest, "map", router, continuity_policy_text=changed)["session_presence"]["enabled"])
+        with self.assertRaises(ValueError):
+            build_bootstrap_index(manifest, "map", router, continuity_policy_text='{"presence": []}')
+        duplicated = policy.replace('"enabled": true', '"enabled": false, "enabled": true')
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            build_bootstrap_index(manifest, "map", router, continuity_policy_text=duplicated)
+
     def test_preserves_numeric_installed_versions_as_strings(self) -> None:
         manifest = """\
 schema_version: 12

@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "session-presence",
+      "script": "manage_session_presence.py",
+      "purpose": "inspect or explicitly maintain advisory local session presence",
+      "write_scope": "git-common-local-presence-with-explicit-write"
+    },
+    {
       "name": "check-source",
       "script": "check_all.py",
       "purpose": "run AlatyrCore source-repository checks",

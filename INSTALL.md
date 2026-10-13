@@ -320,13 +320,11 @@ In a typical target repository:
    distinct context. Propose zero or more evidence-bound modes after
    inspection, but keep them proposed until a separate user decision accepts
    them. Installation approval is not mode acceptance.
-7. Create the `kernel` assistant surfaces: `.ai/assistant/contour.md`, a
-   generated hash-bound bootstrap index, compact context router, recursive
-   framework/project/assistant `context-index.json` trees, the projected
-   semantic codebook, context-packet template, session-continuity policy,
-   overlay, flow, gate, packet template, routed gate fragments, selected
-   lazy profile descriptors, context profiles, module profile, maturity
-   profile, and minimal workflows/gates. Add the operation catalog and compact
+7. Create `kernel` surfaces: `.ai/assistant/contour.md`, hash-bound bootstrap,
+   compact router, recursive framework/project/assistant `context-index.json`
+   trees, projected codebook, context-packet template, continuity policy/
+   overlay/flow/gate/packet, routed gates, lazy context/module/maturity
+   profiles, and minimal workflows/gates. Add the operation catalog and compact
    operation index only with `standard` or an enabling module. Add the bridge
    capability matrix, projected assistant-capability index, and exactly the
    generic plus explicitly selected schema-6 records only when an enabled
@@ -651,6 +649,9 @@ approval gates, adapter rewriting, validation, logical integrity review, or
 final evidence. Do not present a scaffolder run as a completed installation.
 
 ## Conversational Framework Update
+
+For optional presence, apply the [target flow](templates/target/.ai/assistant/flows/session-presence.flow.md):
+preserve opt-in, refresh projections, and leave live entries untouched.
 
 In an installed repository, `update Alatyr` is an assistant request for one
 target-aware update operation. It authorizes inspection and modification of
