@@ -87,6 +87,8 @@ from target_adapter_validation.context import (
     TargetMutation,
     TargetPathEscapeError,
     TargetRepositoryView,
+    TargetFileState,
+    ValidationRead,
     ValidationContext,
 )
 from target_adapter_validation.context_catalogs import (
@@ -971,6 +973,7 @@ class Validator:
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
+        self.schema_context = TargetRepositoryView(Path(__file__).resolve().parents[1] / "schemas")
         self.git = GitEvidenceView(self.target)
         self.unsafe_target_paths: set[str] = set()
         self.findings: list[Finding] = list(initial_findings or [])
@@ -1179,6 +1182,12 @@ class Validator:
                 self.check_project_knowledge(manifest)
 
         def finalize_inputs() -> None:
+            for mutation in self.schema_context.finalize():
+                self.error(
+                    "VALIDATOR_SCHEMA_MUTATED",
+                    "validator schema changed during validation; discard these findings and rerun",
+                    "schemas/" + mutation.path.name,
+                )
             self.target_mutations = self.context.finalize()
             for mutation in self.target_mutations:
                 self.error(
@@ -4787,17 +4796,23 @@ class Validator:
         ] + replacements
         self.approval_archive_summary["findings_grouped"] = grouped_count
 
+    def _approval_record_json(self, record: Path) -> ValidationRead[Any]:
+        result = self.context.read_json_result(record)
+        if result.status.state is TargetFileState.OUTSIDE_TARGET:
+            self.read_text(record)
+        return result
+
     def load_approval_scope(self, record: Path) -> ApprovalScope | None:
         if record.suffix.lower() == ".json":
-            try:
-                data = json.loads(self.read_text(record))
-            except json.JSONDecodeError as exc:
+            result = self._approval_record_json(record)
+            if result.error is not None:
                 self.error(
                     "APPROVAL_RECORD_INVALID_JSON",
-                    str(exc),
+                    result.error,
                     self.rel(record),
                 )
                 return None
+            data = result.value
             if not isinstance(data, dict):
                 self.error(
                     "APPROVAL_RECORD_INVALID_SHAPE",
@@ -4836,15 +4851,15 @@ class Validator:
             relpath = self.rel(record)
             finding = self.error if self.enforce_approval_scope else self.warn
             if record.suffix.lower() == ".json":
-                try:
-                    data = json.loads(self.read_text(record))
-                except json.JSONDecodeError as exc:
+                result = self._approval_record_json(record)
+                if result.error is not None:
                     finding(
                         "APPROVAL_RECORD_INVALID_JSON",
-                        str(exc),
+                        result.error,
                         relpath,
                     )
                     continue
+                data = result.value
                 if not isinstance(data, dict):
                     finding(
                         "APPROVAL_RECORD_INVALID_SHAPE",
@@ -5604,7 +5619,7 @@ class Validator:
                     shard_relpath,
                 )
                 continue
-            actual_sha = hashlib.sha256(content.value).hexdigest()
+            actual_sha = content.digest
             if expected_sha != actual_sha:
                 self.error(
                     "PACKAGE_INDEX_SHARD_DIGEST",
@@ -6027,8 +6042,8 @@ class Validator:
                 source,
             )
         try:
-            schema = load_problem_model_schema()
-            projection_schema = load_problem_model_projection_schema()
+            schema = load_problem_model_schema(self.schema_context)
+            projection_schema = load_problem_model_projection_schema(self.schema_context)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             self.error("PACKAGE_INCIDENT_MODEL_SCHEMA", str(exc), source)
             return

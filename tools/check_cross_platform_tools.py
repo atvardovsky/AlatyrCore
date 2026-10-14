@@ -40,6 +40,8 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "refresh-source",
+    "prepare-worker-result",
     "session-presence",
     "check-source",
     "check-source-focused",

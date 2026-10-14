@@ -34,8 +34,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 141,
-      "content_digest": "sha256:683884690f73aa7c93536a252b84ad3adf632b0a86a2af3fb30f79a79185b8f4"
+      "estimated_words": 155,
+      "content_digest": "sha256:2a712785858738b0912bbab1c02e1da0f441a8769cb2467751fba55cac2ebf67"
     },
     {
       "id": "assistant.content.context-intents-code-documentation-json",

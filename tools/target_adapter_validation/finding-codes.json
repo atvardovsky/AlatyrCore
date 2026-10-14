@@ -73,7 +73,7 @@
     },
     {
       "id": "ARCHITECTURE",
-      "code_count": 37
+      "code_count": 40
     },
     {
       "id": "ASSISTANT",
@@ -274,6 +274,10 @@
     {
       "id": "VALIDATION",
       "code_count": 15
+    },
+    {
+      "id": "VALIDATOR",
+      "code_count": 1
     },
     {
       "id": "VOCABULARY",
@@ -1535,6 +1539,33 @@
     },
     {
       "code": "ARCHITECTURE_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CONTEXT_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CONTEXT_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CONTEXT_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -14708,6 +14739,15 @@
       ],
       "sources": [
         "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATOR_SCHEMA_MUTATED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
       ]
     },
     {

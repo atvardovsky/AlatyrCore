@@ -448,7 +448,7 @@ def validate_worker_packet(
         label="worker packet relationship_refs",
         nonempty=False,
     )
-    if packet.get("overlap_decision") not in OVERLAP_DECISIONS:
+    if not isinstance(packet.get("overlap_decision"), str) or packet["overlap_decision"] not in OVERLAP_DECISIONS:
         raise SourceWorkerContractError("worker packet overlap_decision is invalid")
     if packet.get("role_id") != contract["role_id"]:
         raise SourceWorkerContractError("worker packet role_id is invalid")

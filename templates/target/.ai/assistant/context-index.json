@@ -523,7 +523,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 260,
-      "content_digest": "sha256:270ccd9cb5273be7cc1d79660e5c12f0e347b767d9555128a51c8fb3fd3156ed"
+      "content_digest": "sha256:597011207972bfe66744bfb604c1ab6a07f9682276fc499b4f8a89ca4ffd9b42"
     },
     {
       "id": "assistant.section.extensions",
@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1270,
-      "content_digest": "sha256:a18dee97c855949f6420095ea9740f5d8cea24ac729323d873322085d8770340"
+      "content_digest": "sha256:00679ddf4ab7116c4d5abd9cf0a21264408e59354c977d56957b6e3e019c13ef"
     },
     {
       "id": "assistant.section.gates",

@@ -2,6 +2,18 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "refresh-source",
+      "script": "refresh_source_projections.py",
+      "purpose": "plan or explicitly refresh source projections in dependency order",
+      "write_scope": "local-source-artifacts-with-explicit-apply"
+    },
+    {
+      "name": "prepare-worker-result",
+      "script": "prepare_delegation_result.py",
+      "purpose": "measure runtime artifacts into a worker-result draft requiring primary review",
+      "write_scope": "explicit-evidence-output-only"
+    },
+    {
       "name": "session-presence",
       "script": "manage_session_presence.py",
       "purpose": "inspect or explicitly maintain advisory local session presence",

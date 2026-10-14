@@ -16,7 +16,7 @@
   "conditional_context": [
     {
       "path": ".ai/framework/context-discovery.md",
-      "when": "the selected base profile did not already load the context rule owner or routing ambiguity remains"
+      "when": "routing ambiguity, missing or disputed owner evidence, or failed compact context evidence requires the canonical context rule owner"
     },
     {
       "path": ".ai/framework/logical-integrity.md",

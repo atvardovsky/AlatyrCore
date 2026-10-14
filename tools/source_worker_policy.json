@@ -287,7 +287,7 @@
       "propose-only",
       "primary-preauthorized-read-only"
     ],
-    "result_requirement": "Return a schema-1 normalized result with measured raw and accepted-summary artifacts. Keep raw payloads reference-only by default, bind summaries and child results by SHA-256, and create a branch checkpoint for recursive work. Do not decide integration or mutate repository state."
+    "result_requirement": "Return a schema-3 normalized result with measured raw and accepted-summary artifacts. Keep raw payloads reference-only by default, bind summaries and child results by SHA-256, and create a branch checkpoint for recursive work. Do not decide integration or mutate repository state."
   },
   "workstreams": {
     "framework-rules": {

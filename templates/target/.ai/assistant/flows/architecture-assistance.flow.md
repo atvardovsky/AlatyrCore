@@ -47,6 +47,10 @@ being accepted.
 Infer the mode from a clear request. Ask only for a missing decision that
 blocks safe routing.
 
+Use the intent descriptor's `mode_context` after selecting the mode. Shared
+owner, catalog, and flow context remains required. Without a clear mode, retain
+the full mode union. Mode selection never grants write or decision authority.
+
 ## Flow
 
 1. Record mode, scope, problem or question, non-goals, allowed actions, and
@@ -82,8 +86,9 @@ blocks safe routing.
     logical integrity, diagrams, tests, implementation planning, and target
     validation.
 11. Report selected and skipped evidence, documentation updates, handoff,
-    validation, approvals, contradictions, skipped checks, and residual risk
-    using the result template.
+    validation, approvals, contradictions, skipped checks, and residual risk in
+    every mode. Use the result template when selected by `mode_context`;
+    otherwise retain applicable evidence inline without loading that template.
 
 For each selected schema-2 area or pattern, record `source_review` separately
 from its decision status: disposition, responsible reviewer, timestamp, changed

@@ -13,6 +13,9 @@ from typing import Any
 
 from context_catalog import catalog_content_bytes, load_codebook
 from render_context_catalogs import framework_base_files
+from architecture_context import architecture_context
+from session_presence_store import load_policy
+from session_presence_contract import POLICY_PATH
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -163,6 +166,24 @@ def recovery_references(router: dict[str, Any]) -> list[str]:
         *first_use_references(router),
         *([entry_packet_path] if isinstance(entry_packet_path, str) else []),
     ]
+
+
+def presence_references(target: Path, *, worker: bool = False) -> list[str]:
+    """Resolve session entry through the canonical policy, never its prose."""
+    if worker:
+        return []
+    policy = load_policy(target)
+    paths = [POLICY_PATH] if (target / POLICY_PATH).is_file() else []
+    if policy["enabled"]:
+        paths.append(policy["flow"])
+    return paths
+
+
+def entry_measurements(router: dict[str, Any], target: Path, measure_files) -> dict[str, Any]:
+    first = measure_files(first_use_references(router))
+    return {"bootstrap": first, "first_use": first,
+            "operational_entry": measure_files([*first_use_references(router), *presence_references(target)]),
+            "recovery": measure_files(recovery_references(router))}
 
 
 def reduction_percent(initial: int, full: int) -> float | str:
@@ -379,21 +400,29 @@ def measure_cost_scenarios(
             for value in [profile_reference, *profile.get("required_context", [])]
             if value
         ]
+        conditional_candidates = {
+            item["path"] for item in profile.get("conditional_context", [])
+            if isinstance(item, dict) and isinstance(item.get("path"), str)
+        }
         for overlay_name in scenario.get("intent_overlays", []):
             reference, contract = intent_contracts.get(overlay_name, (None, {}))
+            context = architecture_context(contract, scenario.get("architecture_mode")) if overlay_name == "architecture-request" else contract.get("required_context", [])
             references.extend(
                 value
-                for value in [reference, *contract.get("required_context", [])]
+                for value in [reference, *context]
                 if value
             )
+            conditional_candidates.update(item["path"] for item in contract.get("conditional_context", []) if isinstance(item, dict) and isinstance(item.get("path"), str))
         for overlay_name in scenario.get("task_scale_overlays", []):
             reference, contract = task_scale_contracts.get(overlay_name, (None, {}))
+            conditional_candidates.update(item["path"] for item in contract.get("conditional_context", []) if isinstance(item, dict) and isinstance(item.get("path"), str))
             references.extend(
                 value
                 for value in [reference, *contract.get("required_context", [])]
                 if value
             )
         if scenario.get("consistency_routing") is True:
+            conditional_candidates.update(item["path"] for item in consistency_contract.get("conditional_context", []) if isinstance(item, dict) and isinstance(item.get("path"), str))
             references.extend(
                 value
                 for value in [
@@ -402,24 +431,23 @@ def measure_cost_scenarios(
                 ]
                 if value
             )
-        measured = measure(references)
+        activated = scenario.get("activated_conditional_context", [])
+        if not isinstance(activated, list) or any(not isinstance(p, str) or p not in conditional_candidates for p in activated):
+            raise ValueError(f"cost scenario {name} selects an unknown conditional context")
+        measured = measure([*references, *activated])
         measured["end_to_end"] = measure(
-            [*first_use_references(router), *references]
+            [*first_use_references(router), *presence_references(TARGET), *references, *activated]
         )
+        measured["activated_conditional_context"] = list(dict.fromkeys(activated))
+        measured["runtime_output_measured"] = False
         measured["expected_budget_state"] = scenario.get("expected_budget_state")
         result[name] = measured
     return result
 
 
 def build_report() -> dict[str, Any]:
+    TEXT_CACHE.clear()
     router = json.loads(ROUTER.read_text(encoding="utf-8"))
-    bootstrap_refs = [
-        *router.get("preloaded_context", []),
-        *router.get("bootstrap_context", []),
-    ]
-    bootstrap = measure(bootstrap_refs)
-    first_use = measure(first_use_references(router))
-    recovery = measure(recovery_references(router))
     profiles: dict[str, dict[str, Any]] = {}
     profile_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
     for name, entry in router.get("profile_index", {}).items():
@@ -465,7 +493,7 @@ def build_report() -> dict[str, Any]:
                 value
                 for value in [
                     reference,
-                    *contract.get("required_context", []),
+                    *(architecture_context(contract) if name == "architecture-request" else contract.get("required_context", [])),
                     *surface_context,
                 ]
                 if value
@@ -819,9 +847,7 @@ def build_report() -> dict[str, Any]:
         "source": "templates/target/.ai/assistant/context-router.json",
         "measurement": "whitespace-delimited words in resolved source templates",
         "budgets": router.get("context_budgets", {}),
-        "bootstrap": bootstrap,
-        "first_use": first_use,
-        "recovery": recovery,
+        **entry_measurements(router, TARGET, measure),
         "profiles": profiles,
         "intent_overlays": intent_overlays,
         "task_scale_overlays": task_scale_overlays,
@@ -917,6 +943,7 @@ def build_report() -> dict[str, Any]:
             "runtime clients may preload hidden context not represented by repository paths",
             "placeholder target-owned context is unresolved",
             "runtime expansion depends on task evidence",
+            "end-to-end scenarios include policy-selected presence files and explicitly activated conditionals, not runtime helper output or hidden client context",
             "semantic-codebook savings compare a synthetic repeated-definition baseline with compact serialized definitions and references",
             "estimated tokens use characters divided by four and are not provider tokenizer output",
         ],
@@ -931,15 +958,6 @@ def build_installed_report(target: Path) -> dict[str, Any]:
     router = json.loads(router_path.read_text(encoding="utf-8"))
     if not isinstance(router, dict):
         raise ValueError("installed context router must contain an object")
-    bootstrap = measure_installed(
-        target,
-        [
-            *router.get("preloaded_context", []),
-            *router.get("bootstrap_context", []),
-        ],
-    )
-    first_use = measure_installed(target, first_use_references(router))
-    recovery = measure_installed(target, recovery_references(router))
     profiles: dict[str, dict[str, Any]] = {}
     for name, entry in router.get("profile_index", {}).items():
         if not isinstance(entry, dict) or not isinstance(entry.get("descriptor"), str):
@@ -987,9 +1005,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         "report_kind": "installed-target-context-cost",
         "target": str(target),
         "budgets": router.get("context_budgets", {}),
-        "bootstrap": bootstrap,
-        "first_use": first_use,
-        "recovery": recovery,
+        **entry_measurements(router, target, lambda paths: measure_installed(target, paths)),
         "profiles": profiles,
         "consistency_routing": consistency_routing,
         "limitations": [

@@ -442,7 +442,19 @@ def validate_architecture_knowledge(
             ".ai/assistant/context-router.json",
         )
 
+    validate_architecture_context_route(context, route)
     validate_architecture_text_contracts(context, required_paths)
+
+
+def validate_architecture_context_route(context: Any, route: Any) -> None:
+    if isinstance(route, dict) and isinstance(route.get("descriptor"), str):
+        from architecture_context import architecture_context
+        descriptor = context.load_json_object(context.target_path(route["descriptor"]), "ARCHITECTURE_CONTEXT")
+        if descriptor is not None:
+            try:
+                architecture_context(descriptor)
+            except ValueError as exc:
+                context.error("ARCHITECTURE_CONTEXT_INVALID", str(exc), route["descriptor"])
 
 
 ARCHITECTURE_KNOWLEDGE_MODULE = FunctionCapabilityModule(

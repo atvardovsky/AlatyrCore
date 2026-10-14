@@ -74,6 +74,9 @@ preflight evidence, not proof of client probing, dispatch, or result delivery.
 Completion is not accepted from preflight evidence. It is validated through the
 execution-tree ledger and primary convergence record.
 
+`prepare-worker-result` measures explicit runtime artifacts into review-required
+drafts. It never dispatches workers, verifies provider provenance, or accepts obligations.
+
 Every packet must carry schema version 6, its parent, depth, remaining worker
 budget, unique coverage key, workstream ID, role, objective, bounded and
 conditional context, maximum initial, result, and summary words, inherited

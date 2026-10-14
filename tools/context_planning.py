@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass, replace
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Iterable
+from architecture_context import architecture_context
 
 from context_catalog import (
     CatalogItem,
@@ -45,6 +46,7 @@ class ContextPlanRequest:
     assistant_surface: str | None = None
     max_words: int | None = None
     max_characters: int | None = None
+    architecture_mode: str | None = None
 
 
 class ContextPlanningError(ValueError):
@@ -998,7 +1000,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             details={"permitted_profiles": operation_profiles},
         )
     candidates = descriptor.get("operation_candidates")
-    if operation_profiles and (
+    if operation_id != "architecture-assistance" and operation_profiles and (
         not isinstance(candidates, list) or operation_id not in candidates
     ):
         raise ContextPlanningError(
@@ -1037,6 +1039,26 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             upgrade_required=True,
         )
     _select_path(flow, "operation-flow", catalogs, selected, reasons)
+    if request.architecture_mode is not None and operation_id != "architecture-assistance":
+        raise ContextPlanningError("ARCHITECTURE_MODE_OPERATION", "architecture mode requires architecture-assistance", status="invalid-request")
+    if operation_id == "architecture-assistance":
+        overlays = router.get("intent_overlays")
+        if not isinstance(overlays, dict):
+            raise ContextPlanningError("ARCHITECTURE_CONTEXT_INVALID", "intent_overlays must be an object", upgrade_required=True)
+        entry = overlays.get("architecture-request", {})
+        intent_path = entry.get("descriptor") if isinstance(entry, dict) else None
+        if not isinstance(intent_path, str):
+            raise ContextPlanningError("ARCHITECTURE_CONTEXT_MISSING", "architecture context descriptor is unavailable", upgrade_required=True)
+        intent = _load_json(target, intent_path, "architecture context")
+        if intent.get("intent") != "architecture-request" or intent.get("operation_candidates") != [operation_id]:
+            raise ContextPlanningError("ARCHITECTURE_CONTEXT_INVALID", "architecture intent does not route the selected operation", upgrade_required=True)
+        try:
+            architecture_paths = architecture_context(intent, request.architecture_mode)
+        except ValueError as exc:
+            raise ContextPlanningError("ARCHITECTURE_CONTEXT_INVALID", str(exc), status="invalid-request") from exc
+        _select_path(intent_path, "architecture-mode-descriptor", catalogs, selected, reasons)
+        for path in architecture_paths:
+            _select_profile_required_path(target, path, catalogs, selected, reasons)
     impact = _impact_selection(
         request, target, router, catalogs, selected, reasons
     )
@@ -1167,6 +1189,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "changed_paths": list(request.changed_paths),
             "fact_ids": list(request.fact_ids),
             "assistant_surface": surface,
+            "architecture_mode": request.architecture_mode,
             "max_words": max_words,
             "max_characters": max_characters,
         },
@@ -1217,6 +1240,7 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
             "changed_paths": list(request.changed_paths),
             "fact_ids": list(request.fact_ids),
             "assistant_surface": request.assistant_surface,
+            "architecture_mode": request.architecture_mode,
             "max_words": request.max_words,
             "max_characters": request.max_characters,
         },

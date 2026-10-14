@@ -97,23 +97,26 @@
   },
   "cost_scenarios": {
     "architecture-discussion": {
-      "bytes": 28664,
-      "characters": 28664,
+      "activated_conditional_context": [],
+      "bytes": 29275,
+      "characters": 29275,
       "declared_files": 9,
       "end_to_end": {
-        "bytes": 39749,
-        "characters": 39749,
-        "declared_files": 11,
-        "estimated_tokens_4_chars": 9938,
+        "bytes": 47937,
+        "characters": 47937,
+        "declared_files": 13,
+        "estimated_tokens_4_chars": 11985,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md"
         ],
         "portable_words": 1418,
-        "resolved_files": 10,
+        "resolved_files": 12,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/docs-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/documentation.md",
@@ -126,6 +129,8 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/docs-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/documentation.md",
@@ -134,13 +139,13 @@
           ".ai/assistant/flows/architecture-assistance.flow.md",
           ".ai/assistant/templates/architecture-discussion-result.md"
         ],
-        "target_words": 2573,
+        "target_words": 3443,
         "unresolved_references": [
           "{TARGET_DOC_SOURCE_OF_TRUTH}"
         ],
-        "words": 3991
+        "words": 4861
       },
-      "estimated_tokens_4_chars": 7166,
+      "estimated_tokens_4_chars": 7319,
       "expected_budget_state": "compact",
       "missing_paths": [],
       "portable_paths": [
@@ -158,6 +163,7 @@
         ".ai/assistant/flows/architecture-assistance.flow.md",
         ".ai/assistant/templates/architecture-discussion-result.md"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/docs-local.json",
         ".ai/assistant/gates/core.md",
@@ -167,31 +173,34 @@
         ".ai/assistant/flows/architecture-assistance.flow.md",
         ".ai/assistant/templates/architecture-discussion-result.md"
       ],
-      "target_words": 1733,
+      "target_words": 1797,
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 3151
+      "words": 3215
     },
     "architecture-implementation": {
-      "bytes": 55360,
-      "characters": 55360,
+      "activated_conditional_context": [],
+      "bytes": 55971,
+      "characters": 55971,
       "declared_files": 14,
       "end_to_end": {
-        "bytes": 66445,
-        "characters": 66445,
-        "declared_files": 16,
-        "estimated_tokens_4_chars": 16612,
+        "bytes": 74633,
+        "characters": 74633,
+        "declared_files": 18,
+        "estimated_tokens_4_chars": 18659,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md",
           ".ai/framework/change-packages.md"
         ],
         "portable_words": 3512,
-        "resolved_files": 15,
+        "resolved_files": 17,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/architecture-change.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/semantic-integrity.md",
@@ -209,6 +218,8 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/architecture-change.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/semantic-integrity.md",
@@ -221,13 +232,13 @@
           ".ai/assistant/change-packages/index.json",
           ".ai/assistant/flows/change-package.flow.md"
         ],
-        "target_words": 3779,
+        "target_words": 4649,
         "unresolved_references": [
           "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
         ],
-        "words": 7291
+        "words": 8161
       },
-      "estimated_tokens_4_chars": 13840,
+      "estimated_tokens_4_chars": 13993,
       "expected_budget_state": "expansion-receipt-required",
       "missing_paths": [],
       "portable_paths": [
@@ -251,6 +262,7 @@
         ".ai/assistant/change-packages/index.json",
         ".ai/assistant/flows/change-package.flow.md"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/architecture-change.json",
         ".ai/assistant/gates/core.md",
@@ -264,28 +276,31 @@
         ".ai/assistant/change-packages/index.json",
         ".ai/assistant/flows/change-package.flow.md"
       ],
-      "target_words": 2939,
+      "target_words": 3003,
       "unresolved_references": [
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
       ],
-      "words": 6451
+      "words": 6515
     },
     "delegated-governed-tree": {
+      "activated_conditional_context": [],
       "bytes": 37703,
       "characters": 37703,
       "declared_files": 12,
       "end_to_end": {
-        "bytes": 48788,
-        "characters": 48788,
-        "declared_files": 14,
-        "estimated_tokens_4_chars": 12197,
+        "bytes": 56365,
+        "characters": 56365,
+        "declared_files": 16,
+        "estimated_tokens_4_chars": 14092,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
-        "resolved_files": 13,
+        "resolved_files": 15,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
@@ -301,6 +316,8 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
@@ -313,11 +330,11 @@
           ".ai/assistant/workers/role-catalog.json",
           ".ai/assistant/prompts/worker-orchestration.md"
         ],
-        "target_words": 3916,
+        "target_words": 4722,
         "unresolved_references": [
           "{TARGET_CODE_SOURCE_OF_TRUTH}"
         ],
-        "words": 3916
+        "words": 4722
       },
       "estimated_tokens_4_chars": 9426,
       "expected_budget_state": "expansion-receipt-required",
@@ -338,6 +355,7 @@
         ".ai/assistant/workers/role-catalog.json",
         ".ai/assistant/prompts/worker-orchestration.md"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/code-local.json",
         ".ai/assistant/gates/core.md",
@@ -358,21 +376,24 @@
       "words": 3076
     },
     "delegation-capability-preflight": {
+      "activated_conditional_context": [],
       "bytes": 9421,
       "characters": 9421,
       "declared_files": 6,
       "end_to_end": {
-        "bytes": 20506,
-        "characters": 20506,
-        "declared_files": 8,
-        "estimated_tokens_4_chars": 5127,
+        "bytes": 28083,
+        "characters": 28083,
+        "declared_files": 10,
+        "estimated_tokens_4_chars": 7021,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
-        "resolved_files": 7,
+        "resolved_files": 9,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
@@ -382,17 +403,19 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
           ".ai/assistant/context/task-scales/delegation-preflight.json",
           ".ai/assistant/assistant-capabilities.json"
         ],
-        "target_words": 1660,
+        "target_words": 2466,
         "unresolved_references": [
           "{TARGET_CODE_SOURCE_OF_TRUTH}"
         ],
-        "words": 1660
+        "words": 2466
       },
       "estimated_tokens_4_chars": 2356,
       "expected_budget_state": "compact",
@@ -407,6 +430,7 @@
         ".ai/assistant/context/task-scales/delegation-preflight.json",
         ".ai/assistant/assistant-capabilities.json"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/code-local.json",
         ".ai/assistant/gates/core.md",
@@ -421,21 +445,24 @@
       "words": 820
     },
     "framework-upgrade": {
+      "activated_conditional_context": [],
       "bytes": 6449,
       "characters": 6449,
       "declared_files": 4,
       "end_to_end": {
-        "bytes": 17534,
-        "characters": 17534,
-        "declared_files": 6,
-        "estimated_tokens_4_chars": 4384,
+        "bytes": 25111,
+        "characters": 25111,
+        "declared_files": 8,
+        "estimated_tokens_4_chars": 6278,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
-        "resolved_files": 5,
+        "resolved_files": 7,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/framework-upgrade.json",
           ".ai/assistant/context/migration-routing.json",
           ".ai/assistant/gates/core.md"
@@ -443,15 +470,17 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/framework-upgrade.json",
           ".ai/assistant/context/migration-routing.json",
           ".ai/assistant/gates/core.md"
         ],
-        "target_words": 1348,
+        "target_words": 2154,
         "unresolved_references": [
           "{TARGET_UPGRADE_IMPACT_REPORT}"
         ],
-        "words": 1348
+        "words": 2154
       },
       "estimated_tokens_4_chars": 1613,
       "expected_budget_state": "compact",
@@ -464,6 +493,7 @@
         ".ai/assistant/context/migration-routing.json",
         ".ai/assistant/gates/core.md"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/framework-upgrade.json",
         ".ai/assistant/context/migration-routing.json",
@@ -476,21 +506,24 @@
       "words": 508
     },
     "semantic-consistency-review": {
+      "activated_conditional_context": [],
       "bytes": 24608,
       "characters": 24608,
       "declared_files": 8,
       "end_to_end": {
-        "bytes": 35693,
-        "characters": 35693,
-        "declared_files": 10,
-        "estimated_tokens_4_chars": 8924,
+        "bytes": 43270,
+        "characters": 43270,
+        "declared_files": 12,
+        "estimated_tokens_4_chars": 10818,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
-        "resolved_files": 9,
+        "resolved_files": 11,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
@@ -502,6 +535,8 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
@@ -510,11 +545,11 @@
           ".ai/project/consistency-map.json",
           ".ai/assistant/consistency-reverse-index.json"
         ],
-        "target_words": 2869,
+        "target_words": 3675,
         "unresolved_references": [
           "{TARGET_CODE_SOURCE_OF_TRUTH}"
         ],
-        "words": 2869
+        "words": 3675
       },
       "estimated_tokens_4_chars": 6152,
       "expected_budget_state": "compact",
@@ -531,6 +566,7 @@
         ".ai/project/consistency-map.json",
         ".ai/assistant/consistency-reverse-index.json"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/code-local.json",
         ".ai/assistant/gates/core.md",
@@ -547,21 +583,24 @@
       "words": 2029
     },
     "small-docs-local": {
-      "bytes": 7622,
-      "characters": 7622,
+      "activated_conditional_context": [],
+      "bytes": 7655,
+      "characters": 7655,
       "declared_files": 6,
       "end_to_end": {
-        "bytes": 18707,
-        "characters": 18707,
-        "declared_files": 8,
-        "estimated_tokens_4_chars": 4677,
+        "bytes": 26317,
+        "characters": 26317,
+        "declared_files": 10,
+        "estimated_tokens_4_chars": 6580,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
-        "resolved_files": 7,
+        "resolved_files": 9,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/docs-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/documentation.md",
@@ -571,19 +610,21 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/docs-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/documentation.md",
           ".ai/assistant/context/task-scales/small-task.json",
           ".ai/assistant/gates/compact-final-evidence.md"
         ],
-        "target_words": 1708,
+        "target_words": 2516,
         "unresolved_references": [
           "{TARGET_DOC_SOURCE_OF_TRUTH}"
         ],
-        "words": 1708
+        "words": 2516
       },
-      "estimated_tokens_4_chars": 1906,
+      "estimated_tokens_4_chars": 1914,
       "expected_budget_state": "compact",
       "missing_paths": [],
       "portable_paths": [],
@@ -596,6 +637,7 @@
         ".ai/assistant/context/task-scales/small-task.json",
         ".ai/assistant/gates/compact-final-evidence.md"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/docs-local.json",
         ".ai/assistant/gates/core.md",
@@ -603,30 +645,33 @@
         ".ai/assistant/context/task-scales/small-task.json",
         ".ai/assistant/gates/compact-final-evidence.md"
       ],
-      "target_words": 868,
+      "target_words": 870,
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 868
+      "words": 870
     },
     "team-large-change": {
+      "activated_conditional_context": [],
       "bytes": 39314,
       "characters": 39314,
       "declared_files": 11,
       "end_to_end": {
-        "bytes": 50399,
-        "characters": 50399,
-        "declared_files": 13,
-        "estimated_tokens_4_chars": 12600,
+        "bytes": 57976,
+        "characters": 57976,
+        "declared_files": 15,
+        "estimated_tokens_4_chars": 14494,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/large-task-orchestration.md"
         ],
         "portable_words": 1511,
-        "resolved_files": 12,
+        "resolved_files": 14,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/business-change.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/semantic-integrity.md",
@@ -641,6 +686,8 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/business-change.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/semantic-integrity.md",
@@ -651,11 +698,11 @@
           ".ai/assistant/team/context-overlay.json",
           ".ai/assistant/team/active-work-index.json"
         ],
-        "target_words": 3706,
+        "target_words": 4512,
         "unresolved_references": [
           "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
         ],
-        "words": 5217
+        "words": 6023
       },
       "estimated_tokens_4_chars": 9829,
       "expected_budget_state": "expansion-receipt-required",
@@ -677,6 +724,7 @@
         ".ai/assistant/team/context-overlay.json",
         ".ai/assistant/team/active-work-index.json"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/business-change.json",
         ".ai/assistant/gates/core.md",
@@ -695,24 +743,27 @@
       "words": 4377
     },
     "test-first-code-change": {
+      "activated_conditional_context": [],
       "bytes": 25025,
       "characters": 25025,
       "declared_files": 7,
       "end_to_end": {
-        "bytes": 36110,
-        "characters": 36110,
-        "declared_files": 9,
-        "estimated_tokens_4_chars": 9028,
+        "bytes": 43687,
+        "characters": 43687,
+        "declared_files": 11,
+        "estimated_tokens_4_chars": 10922,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/testing-guidance.md",
           ".ai/framework/test-first-development.md"
         ],
         "portable_words": 2337,
-        "resolved_files": 8,
+        "resolved_files": 10,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
@@ -723,16 +774,18 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
           ".ai/assistant/context/intents/test-first-request.json"
         ],
-        "target_words": 1661,
+        "target_words": 2467,
         "unresolved_references": [
           "{TARGET_CODE_SOURCE_OF_TRUTH}"
         ],
-        "words": 3998
+        "words": 4804
       },
       "estimated_tokens_4_chars": 6257,
       "expected_budget_state": "expansion-receipt-required",
@@ -751,6 +804,7 @@
         ".ai/framework/testing-guidance.md",
         ".ai/framework/test-first-development.md"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/code-local.json",
         ".ai/assistant/gates/core.md",
@@ -764,23 +818,26 @@
       "words": 3158
     },
     "workspace-mode-selection": {
+      "activated_conditional_context": [],
       "bytes": 18796,
       "characters": 18796,
       "declared_files": 7,
       "end_to_end": {
-        "bytes": 29881,
-        "characters": 29881,
-        "declared_files": 9,
-        "estimated_tokens_4_chars": 7471,
+        "bytes": 37458,
+        "characters": 37458,
+        "declared_files": 11,
+        "estimated_tokens_4_chars": 9365,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/workspace-modes.md"
         ],
         "portable_words": 1382,
-        "resolved_files": 8,
+        "resolved_files": 10,
         "resolved_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
@@ -791,17 +848,19 @@
         "target_paths": [
           "AGENTS.md",
           ".ai/assistant/bootstrap-index.json",
+          ".ai/assistant/policies/session-continuity.json",
+          ".ai/assistant/flows/session-presence.flow.md",
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/assistant/gates/core.md",
           ".ai/assistant/gates/code-and-tests.md",
           ".ai/assistant/context/intents/workspace-mode-request.json",
           ".ai/project/workspace-modes/catalog.json"
         ],
-        "target_words": 1653,
+        "target_words": 2459,
         "unresolved_references": [
           "{TARGET_CODE_SOURCE_OF_TRUTH}"
         ],
-        "words": 3035
+        "words": 3841
       },
       "estimated_tokens_4_chars": 4699,
       "expected_budget_state": "compact",
@@ -819,6 +878,7 @@
         ".ai/framework/workspace-modes.md",
         ".ai/project/workspace-modes/catalog.json"
       ],
+      "runtime_output_measured": false,
       "target_paths": [
         ".ai/assistant/context/profiles/code-local.json",
         ".ai/assistant/gates/core.md",
@@ -856,10 +916,10 @@
   },
   "intent_overlays": {
     "architecture-request": {
-      "bytes": 23937,
-      "characters": 23937,
+      "bytes": 24548,
+      "characters": 24548,
       "declared_files": 5,
-      "estimated_tokens_4_chars": 5985,
+      "estimated_tokens_4_chars": 6137,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/architecture-knowledge.md"
@@ -879,9 +939,9 @@
         ".ai/assistant/flows/architecture-assistance.flow.md",
         ".ai/assistant/templates/architecture-discussion-result.md"
       ],
-      "target_words": 1208,
+      "target_words": 1272,
       "unresolved_references": [],
-      "words": 2626
+      "words": 2690
     },
     "code-documentation": {
       "bytes": 24037,
@@ -1075,6 +1135,7 @@
     "runtime clients may preload hidden context not represented by repository paths",
     "placeholder target-owned context is unresolved",
     "runtime expansion depends on task evidence",
+    "end-to-end scenarios include policy-selected presence files and explicitly activated conditionals, not runtime helper output or hidden client context",
     "semantic-codebook savings compare a synthetic repeated-definition baseline with compact serialized definitions and references",
     "estimated tokens use characters divided by four and are not provider tokenizer output"
   ],
@@ -1198,40 +1259,38 @@
   "operation_routes": {
     "architecture-assistance": {
       "compact": {
-        "bytes": 36016,
-        "characters": 36016,
-        "declared_files": 6,
-        "estimated_tokens_4_chars": 9004,
+        "bytes": 34335,
+        "characters": 34335,
+        "declared_files": 5,
+        "estimated_tokens_4_chars": 8584,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md"
         ],
         "portable_words": 1418,
-        "resolved_files": 6,
+        "resolved_files": 5,
         "resolved_paths": [
           ".ai/assistant/operation-index.json",
           ".ai/assistant/context/intents/architecture-request.json",
           ".ai/framework/architecture-knowledge.md",
           ".ai/project/architecture/catalog.json",
-          ".ai/assistant/flows/architecture-assistance.flow.md",
-          ".ai/assistant/templates/architecture-discussion-result.md"
+          ".ai/assistant/flows/architecture-assistance.flow.md"
         ],
         "target_paths": [
           ".ai/assistant/operation-index.json",
           ".ai/assistant/context/intents/architecture-request.json",
           ".ai/project/architecture/catalog.json",
-          ".ai/assistant/flows/architecture-assistance.flow.md",
-          ".ai/assistant/templates/architecture-discussion-result.md"
+          ".ai/assistant/flows/architecture-assistance.flow.md"
         ],
-        "target_words": 1919,
+        "target_words": 1822,
         "unresolved_references": [],
-        "words": 3337
+        "words": 3240
       },
       "full_reference_union": {
-        "bytes": 131535,
-        "characters": 131535,
-        "declared_files": 14,
-        "estimated_tokens_4_chars": 32884,
+        "bytes": 129854,
+        "characters": 129854,
+        "declared_files": 13,
+        "estimated_tokens_4_chars": 32464,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md",
@@ -1239,7 +1298,7 @@
           ".ai/framework/blueprint-driven-change.md"
         ],
         "portable_words": 3662,
-        "resolved_files": 14,
+        "resolved_files": 13,
         "resolved_paths": [
           ".ai/assistant/operation-catalog.json",
           ".ai/assistant/help.md",
@@ -1249,7 +1308,6 @@
           ".ai/framework/architecture-knowledge.md",
           ".ai/project/architecture/catalog.json",
           ".ai/assistant/flows/architecture-assistance.flow.md",
-          ".ai/assistant/templates/architecture-discussion-result.md",
           ".ai/project/architecture/README.md",
           ".ai/assistant/templates/architecture-pattern.md",
           ".ai/assistant/templates/architecture-area.md",
@@ -1264,16 +1322,15 @@
           ".ai/assistant/context/intents/architecture-request.json",
           ".ai/project/architecture/catalog.json",
           ".ai/assistant/flows/architecture-assistance.flow.md",
-          ".ai/assistant/templates/architecture-discussion-result.md",
           ".ai/project/architecture/README.md",
           ".ai/assistant/templates/architecture-pattern.md",
           ".ai/assistant/templates/architecture-area.md"
         ],
-        "target_words": 8934,
+        "target_words": 8837,
         "unresolved_references": [],
-        "words": 12596
+        "words": 12499
       },
-      "word_reduction_percent": 73.5
+      "word_reduction_percent": 74.1
     },
     "code-documentation": {
       "compact": {
@@ -1884,9 +1941,34 @@
       "word_reduction_percent": 75.5
     }
   },
+  "operational_entry": {
+    "bytes": 18662,
+    "characters": 18662,
+    "declared_files": 4,
+    "estimated_tokens_4_chars": 4666,
+    "missing_paths": [],
+    "portable_paths": [],
+    "portable_words": 0,
+    "resolved_files": 4,
+    "resolved_paths": [
+      "AGENTS.md",
+      ".ai/assistant/bootstrap-index.json",
+      ".ai/assistant/policies/session-continuity.json",
+      ".ai/assistant/flows/session-presence.flow.md"
+    ],
+    "target_paths": [
+      "AGENTS.md",
+      ".ai/assistant/bootstrap-index.json",
+      ".ai/assistant/policies/session-continuity.json",
+      ".ai/assistant/flows/session-presence.flow.md"
+    ],
+    "target_words": 1646,
+    "unresolved_references": [],
+    "words": 1646
+  },
   "pairwise_compositions": {
     "compact_pairs": 136,
-    "composition_digest": "sha256:313e15132053e37e55dc6611a0a70e267d6f8c36d49717265aa73f8befe0f7be",
+    "composition_digest": "sha256:269df2ef728a683e9efc465d0b398767c8054e0f38a51e1b9a0d73d470c85ca0",
     "evaluated_pairs": 152,
     "expansion_receipt_pairs": 16,
     "max_characters": 53686,
@@ -3300,10 +3382,10 @@
       "words": 908
     },
     "small-task": {
-      "bytes": 2895,
-      "characters": 2895,
+      "bytes": 2928,
+      "characters": 2928,
       "declared_files": 2,
-      "estimated_tokens_4_chars": 724,
+      "estimated_tokens_4_chars": 732,
       "missing_paths": [],
       "portable_paths": [],
       "portable_words": 0,
@@ -3316,9 +3398,9 @@
         ".ai/assistant/context/task-scales/small-task.json",
         ".ai/assistant/gates/compact-final-evidence.md"
       ],
-      "target_words": 343,
+      "target_words": 345,
       "unresolved_references": [],
-      "words": 343
+      "words": 345
     },
     "standard-task": {
       "bytes": 2869,

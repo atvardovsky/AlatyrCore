@@ -11,10 +11,12 @@ import os
 import sys
 import time
 import unittest
+import statistics
 from pathlib import Path
 
 from parallel_execution import child_capacity, run_commands
 from local_python_import_graph import LocalPythonImportGraph
+from source_test_timing import timed_suite, observation, positive_seconds
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,11 +167,11 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
 
 def load_suite(paths: list[Path] | None, *, root: Path = ROOT) -> unittest.TestSuite:
     loader = unittest.defaultTestLoader
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
     if paths is None:
         return loader.discover(str(root / "tests"), pattern="test_*.py")
     suite = unittest.TestSuite()
-    if str(root) not in sys.path:
-        sys.path.insert(0, str(root))
     for path in paths:
         suite.addTests(loader.loadTestsFromName(_test_module_name(path, root=root)))
     return suite
@@ -191,7 +193,8 @@ def test_shards(
     shard_count = min(max(1, capacity * multiplier), len(paths))
     shards: list[list[Path]] = [[] for _ in range(shard_count)]
     weights = [0.0] * shard_count
-    hints = duration_hints or {}
+    hints = {k: seconds for k, v in (duration_hints or {}).items() if (seconds := positive_seconds(v)) is not None}
+    fallback = statistics.median(hints.values()) if hints else None
 
     def weight(path: Path) -> float:
         candidates = [path.as_posix()]
@@ -207,9 +210,15 @@ def test_shards(
             and hinted > 0
         ):
             return float(hinted)
-        return float(max(1, path.stat().st_size))
+        return float(fallback if fallback is not None else max(1, path.stat().st_size))
 
-    ordered = sorted(paths, key=lambda path: (-weight(path), path.as_posix()))
+    def hint_priority(path: Path) -> int:
+        try:
+            relative = path.relative_to(ROOT).as_posix()
+        except ValueError:
+            relative = path.as_posix()
+        return 0 if path.as_posix() in hints or relative in hints else 1
+    ordered = sorted(paths, key=lambda path: (-weight(path), hint_priority(path), path.as_posix()))
     for path in ordered:
         index = min(range(shard_count), key=lambda item: (weights[item], item))
         shards[index].append(path)
@@ -236,6 +245,8 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
+    if len(args.test_file) != len({(ROOT / p).resolve() for p in args.test_file}):
+        parser.error("duplicate --test-file arguments")
     args.verbose = args.verbose or os.environ.get("ALATYR_CHECK_VERBOSE") == "1"
     profile = os.environ.get("ALATYR_SOURCE_CHECK_PROFILE")
     changed_paths = _environment_changed_paths()
@@ -320,7 +331,9 @@ def main() -> int:
                 f"slowest shard {max(result.duration_seconds for result in results):.3f}s)"
             )
         return 1 if failed else 0
-    suite = load_suite(selected_paths)
+    durations: dict[str, float] = {}
+    timing_warnings: list[str] = []
+    suite = timed_suite(load_suite(selected_paths), durations, ROOT, warnings=timing_warnings)
     if selected_paths is not None:
         relpaths = ", ".join(path.relative_to(ROOT).as_posix() for path in selected_paths)
         print(f"INFO: running focused source unit tests: {relpaths}")
@@ -337,6 +350,20 @@ def main() -> int:
             )
         else:
             print(stream.getvalue(), end="", file=sys.stderr)
+    for warning in timing_warnings:
+        print(f"WARN: {warning}", file=sys.stderr)
+    if result.wasSuccessful() and not timing_warnings and os.environ.get("ALATYR_CONFORMANCE_ARTIFACT_ROOT"):
+        import hashlib
+        artifact_root = Path(os.environ["ALATYR_CONFORMANCE_ARTIFACT_ROOT"])
+        if artifact_root.is_absolute():
+            key = hashlib.sha256("\0".join(str(p) for p in all_paths).encode()).hexdigest()
+            try:
+                artifact_root.mkdir(parents=True, exist_ok=True)
+                (artifact_root / f"unit-timing-{key}.json").write_text(
+                    json.dumps(observation(ROOT, durations)), encoding="utf-8"
+                )
+            except (OSError, ValueError) as exc:
+                print(f"WARN: timing observations unavailable: {exc}", file=sys.stderr)
     return 0 if result.wasSuccessful() else 1
 
 

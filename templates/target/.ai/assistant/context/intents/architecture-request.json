@@ -10,9 +10,16 @@
   "required_context": [
     ".ai/framework/architecture-knowledge.md",
     ".ai/project/architecture/catalog.json",
-    ".ai/assistant/flows/architecture-assistance.flow.md",
-    ".ai/assistant/templates/architecture-discussion-result.md"
+    ".ai/assistant/flows/architecture-assistance.flow.md"
   ],
+  "mode_context": {
+    "inventory": [],
+    "explain": [],
+    "discuss": [".ai/assistant/templates/architecture-discussion-result.md"],
+    "compare": [".ai/assistant/templates/architecture-discussion-result.md"],
+    "review": [],
+    "document": [".ai/assistant/templates/architecture-discussion-result.md"]
+  },
   "conditional_context": [
     {
       "path": ".ai/project/architecture/README.md",

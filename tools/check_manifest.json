@@ -173,7 +173,8 @@
         "templates/target/.ai/project/architecture/**"
       ],
       "implementation_paths": [
-        "tools/check_architecture_knowledge.py"
+        "tools/check_architecture_knowledge.py",
+        "tools/architecture_context.py"
       ],
       "trigger_paths": [
         "framework/architecture-knowledge.md",
@@ -188,7 +189,8 @@
         "templates/target/.ai/assistant/templates/architecture-*.md",
         "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/project/architecture/**",
-        "tools/check_architecture_knowledge.py"
+        "tools/check_architecture_knowledge.py",
+        "tools/architecture_context.py"
       ]
     },
     {
@@ -3011,6 +3013,7 @@
         "tools/plan_target_context.py",
         "tools/source_check_cache.py",
         "tools/check_source_unit_tests.py",
+        "tools/source_test_timing.py",
         "tools/evidence_contract.py",
         "tools/local_python_import_graph.py",
         "tools/report_adapter_health.py",
@@ -3047,6 +3050,7 @@
         "tools/source_check_cache.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
+        "tools/source_test_timing.py",
         "tools/local_python_import_graph.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",

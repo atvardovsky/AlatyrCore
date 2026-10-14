@@ -4,6 +4,10 @@
 
 - None.
 
+## 0.1.0-alpha.90 - 2026-10-15
+
+- [Optimization release](docs/releases/0.1.0-alpha.90-notes.md): schema `73`/templates `85`.
+
 ## 0.1.0-alpha.89 - 2026-10-14
 
 - Changed `ALATYR-CONTINUITY-001` to default-enabled discovery for new accepted

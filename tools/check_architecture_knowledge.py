@@ -201,10 +201,18 @@ def main() -> int:
         ".ai/framework/architecture-knowledge.md",
         ".ai/project/architecture/catalog.json",
         ".ai/assistant/flows/architecture-assistance.flow.md",
-        ".ai/assistant/templates/architecture-discussion-result.md",
     ]:
         if not isinstance(required_context, list) or path not in required_context:
             failures.append(f"architecture intent required_context missing {path}")
+    from architecture_context import architecture_context, MODES
+    try:
+        for mode in MODES:
+            selected = architecture_context(intent, mode)
+            result_path = ".ai/assistant/templates/architecture-discussion-result.md"
+            if (result_path in selected) != (mode in {"discuss", "compare", "document"}):
+                failures.append(f"architecture result context is incorrectly selected for {mode}")
+    except ValueError as exc:
+        failures.append(str(exc))
     conditional = intent.get("conditional_context")
     conditional_paths = {
         entry.get("path")

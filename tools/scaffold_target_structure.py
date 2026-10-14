@@ -53,6 +53,7 @@ from bootstrap_index import (
 )
 from capability_catalog import (
     load_modules,
+    load_surfaces,
     shared_surface_merge_requirement,
 )
 from assistant_capability_projection import (
@@ -131,6 +132,8 @@ class ProjectionContext:
     context_catalogs: dict[Path, str]
     selected_paths: SelectedPathIndex
     generated_by: dict[str, Any] | None
+    manifest_text: str | None = None
+    continuity_policy_text: str | None = None
 
 
 @dataclass(frozen=True)
@@ -145,6 +148,8 @@ def build_projection_context(
     enabled_modules: set[str],
     context_catalogs: dict[Path, str] | None = None,
     generated_by: dict[str, Any] | None = None,
+    manifest_text: str | None = None,
+    continuity_policy_text: str | None = None,
 ) -> ProjectionContext:
     selected_paths = selected_path_index(selected)
     validate_projection_graph(
@@ -168,6 +173,8 @@ def build_projection_context(
         context_catalogs=context_catalogs or {},
         selected_paths=selected_paths,
         generated_by=generated_by,
+        manifest_text=manifest_text,
+        continuity_policy_text=continuity_policy_text,
     )
 
 
@@ -222,8 +229,11 @@ def projected_template_content(
     target: Path,
 ) -> str | None:
     src = TEMPLATE_ROOT / rel
+    continuity_text = context.continuity_policy_text
+    if rel in {Path(CONTINUITY_POLICY), PACKET_PATH, BOOTSTRAP_PATH, BOOTSTRAP_INTEGRITY_PATH} and continuity_text is None:
+        continuity_text = projected_continuity_policy(target)
     if rel == Path(CONTINUITY_POLICY):
-        return projected_continuity_policy(target)
+        return continuity_text
     selected_paths = context.selected_paths
     surface_id = surface_id_for_path(rel)
     if surface_id is not None:
@@ -238,7 +248,7 @@ def projected_template_content(
             selected_paths,
         )
     if rel == Path(".ai/alatyr.yaml"):
-        return project_manifest(
+        return context.manifest_text or project_manifest(
             src.read_text(encoding="utf-8"),
             profile,
             framework_pack,
@@ -289,7 +299,7 @@ def projected_template_content(
             project_router(load_object(src), selected_paths, set(context.operation_ids))
         )
     if rel == PACKET_PATH:
-        manifest_text = project_manifest(
+        manifest_text = context.manifest_text or project_manifest(
             (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
             profile,
             framework_pack,
@@ -306,12 +316,6 @@ def projected_template_content(
         gate_index_text = render_json(
             project_gate_index(load_object(TEMPLATE_ROOT / gate_index_rel), selected_paths)
         )
-        projected_router = load_object(TEMPLATE_ROOT / router_rel)
-        projected_router = project_router(
-            projected_router,
-            selected_paths,
-            set(context.operation_ids),
-        )
         operation_index_text = (
             render_json(build_operation_index(catalog)) if catalog is not None else None
         )
@@ -324,7 +328,7 @@ def projected_template_content(
                 (TEMPLATE_ROOT / ".ai/assistant/policies/action-authorization.json").read_text(
                     encoding="utf-8"
                 ),
-                projected_continuity_policy(target),
+                continuity_text,
                 (TEMPLATE_ROOT / ".ai/project/support-policy.json").read_text(
                     encoding="utf-8"
                 ),
@@ -343,7 +347,7 @@ def projected_template_content(
             )
         )
     if rel in {BOOTSTRAP_PATH, BOOTSTRAP_INTEGRITY_PATH}:
-        manifest_text = project_manifest(
+        manifest_text = context.manifest_text or project_manifest(
             (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
             profile,
             framework_pack,
@@ -386,7 +390,7 @@ def projected_template_content(
             manifest_text,
             project_map_text,
             router_text,
-            continuity_policy_text=projected_continuity_policy(target),
+            continuity_policy_text=continuity_text,
             rule_registry_text=rule_registry_text,
             semantic_index_text=semantic_index_text,
             semantic_terms=semantic_terms,
@@ -417,7 +421,7 @@ def projected_template_content(
                 project_map_text,
                 router_text,
                 bootstrap=bootstrap,
-                continuity_policy_text=projected_continuity_policy(target),
+                continuity_policy_text=continuity_text,
                 rule_registry_text=rule_registry_text,
                 semantic_index_text=semantic_index_text,
                 context_root_texts=context_root_texts,
@@ -521,7 +525,9 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
         manifest_text=projected_manifest_text,
     )
     initial_context = build_projection_context(
-        selected_paths, enabled_modules, generated_by=projection_provenance
+        selected_paths, enabled_modules, generated_by=projection_provenance,
+        manifest_text=projected_manifest_text,
+        continuity_policy_text=projected_continuity_policy(target),
     )
     projected_target_contents: dict[Path, str] = {}
     for rel in ordered_projection_paths:
@@ -549,10 +555,13 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
         enabled_modules,
         context_catalogs,
         generated_by=projection_provenance,
+        manifest_text=projected_manifest_text,
+        continuity_policy_text=initial_context.continuity_policy_text,
     )
     framework_contents = projected_framework_contents(framework_pack)
     actions: list[str] = []
     blocked: list[str] = []
+    surfaces = load_surfaces()
 
     if not target.exists():
         blocked.append(f"target does not exist: {target}")
@@ -569,7 +578,7 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
             dst = target / rel
             if not dst.exists():
                 continue
-            merge_strategy = shared_surface_merge_requirement(rel)
+            merge_strategy = shared_surface_merge_requirement(rel, surfaces)
             if merge_strategy is not None:
                 blocked.append(
                     "shared surface requires adapter-aware merge "
@@ -594,7 +603,7 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
             continue
         src = TEMPLATE_ROOT / rel
         dst = target / rel
-        merge_strategy = shared_surface_merge_requirement(rel)
+        merge_strategy = shared_surface_merge_requirement(rel, surfaces)
         if dst.exists() and merge_strategy is not None:
             blocked.append(
                 "shared surface requires adapter-aware merge "
@@ -608,7 +617,7 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
             src,
             dst,
             write=args.write,
-            content=projected_template_content(
+            content=projected_target_contents[rel] if rel in projected_target_contents else projected_template_content(
                 rel,
                 profile,
                 framework_pack,

@@ -30,11 +30,19 @@ def build_archive_index(target: Path) -> dict[str, Any]:
     archive_root = target / ARCHIVE_ROOT
     shards: list[dict[str, Any]] = []
     if archive_root.is_dir():
-        for directory in sorted(path for path in archive_root.iterdir() if path.is_dir()):
-            records = _shard_records(target, directory)
+        shard_records = {
+            directory: _shard_records(target, directory)
+            for directory in sorted(path for path in archive_root.iterdir() if path.is_dir())
+        }
+        all_records = [path for records in shard_records.values() for path in records]
+        entries = {
+            path: (path, kind, content)
+            for path, kind, content in (canonical_worktree_entries(target, all_records) if all_records else [])
+        }
+        for directory, records in shard_records.items():
             if not records:
                 continue
-            content_digest = digest_entries(canonical_worktree_entries(target, records))
+            content_digest = digest_entries([entries[path] for path in records if path in entries])
             digest = hashlib.sha256(
                 b"alatyr-approval-archive-v1\0" + content_digest.encode("ascii")
             ).hexdigest()

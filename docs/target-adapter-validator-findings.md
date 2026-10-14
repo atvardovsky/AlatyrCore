@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1698
+Catalog entries: 1702
 
 ## Families
 
@@ -19,7 +19,7 @@ Catalog entries: 1698
 - `AI`: 18 codes.
 - `ANALYSIS`: 46 codes.
 - `APPROVAL`: 40 codes.
-- `ARCHITECTURE`: 37 codes.
+- `ARCHITECTURE`: 40 codes.
 - `ASSISTANT`: 39 codes.
 - `AUTHORIZATION`: 18 codes.
 - `BACKUP`: 1 codes.
@@ -70,6 +70,7 @@ Catalog entries: 1698
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
 - `VALIDATION`: 15 codes.
+- `VALIDATOR`: 1 codes.
 - `VOCABULARY`: 52 codes.
 - `WORKER`: 2 codes.
 - `WORKSPACE`: 46 codes.
@@ -353,6 +354,12 @@ Catalog entries: 1698
 - `ARCHITECTURE_CATALOG_METADATA`
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
+- `ARCHITECTURE_CONTEXT_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
+- `ARCHITECTURE_CONTEXT_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
+- `ARCHITECTURE_CONTEXT_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CONTRACT_INCOMPLETE`
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
@@ -3272,6 +3279,8 @@ Catalog entries: 1698
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATOR_SCHEMA_MUTATED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `VOCABULARY_ACCEPTED_AMBIGUITY`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_ACCEPTED_UNRESOLVED`

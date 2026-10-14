@@ -9,12 +9,14 @@
       "expected_budget_state": "compact"
     },
     "architecture-discussion": {
+      "architecture_mode": "discuss",
       "profile": "docs-local",
       "intent_overlays": ["architecture-request"],
       "task_scale_overlays": [],
       "expected_budget_state": "compact"
     },
     "architecture-implementation": {
+      "architecture_mode": "document",
       "profile": "architecture-change",
       "intent_overlays": ["architecture-request"],
       "task_scale_overlays": ["change-package"],

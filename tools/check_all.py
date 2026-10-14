@@ -729,6 +729,8 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
         max(1, int(check.get("_child_capacity", 1)))
     )
     environment["ALATYR_CHECK_VERBOSE"] = "1" if check.get("_verbose") else "0"
+    if check["id"] == "source-unit-tests":
+        environment["ALATYR_TEST_DURATION_HINTS_JSON"] = json.dumps(check.get("_unit_duration_hints", {}))
     artifact_root = check.get("_run_artifact_root")
     if isinstance(artifact_root, str) and artifact_root:
         environment["ALATYR_CONFORMANCE_ARTIFACT_ROOT"] = artifact_root
@@ -2050,7 +2052,16 @@ def main() -> int:
         execution_started = time.monotonic()
         artifact_root = Path(tempfile.mkdtemp(prefix="alatyr-check-artifacts-"))
         try:
+            from source_test_timing import collect, report_hints
+            timing_warnings = []
+            try:
+                unit_hints = report_hints(timing_report, ROOT)
+            except Exception as exc:  # Optional scheduling data must not stop checks.
+                unit_hints = {}
+                timing_warnings.append(str(exc))
             for check in selected:
+                if check["id"] == "source-unit-tests":
+                    check["_unit_duration_hints"] = unit_hints
                 check["_run_artifact_root"] = str(artifact_root)
                 check["_run_artifact_required"] = bool(
                     check.get("artifact_dependencies")
@@ -2063,6 +2074,11 @@ def main() -> int:
                 initial_results=initial_results,
                 duration_estimates=duration_estimates,
             )
+            try:
+                telemetry.setdefault("_summary", {})["unit_test_durations"] = collect(artifact_root, ROOT)
+            except Exception as exc:  # Preserve check verdicts after telemetry failure.
+                timing_warnings.append(str(exc))
+            telemetry.setdefault("_summary", {})["unit_timing_warnings"] = timing_warnings
         finally:
             shutil.rmtree(artifact_root, ignore_errors=True)
         execution_finished = time.monotonic()

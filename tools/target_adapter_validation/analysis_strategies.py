@@ -30,6 +30,7 @@ from analysis_strategy_contract import (
     validate_strategy_requirements,
 )
 from target_validation_support import is_target_relative_path
+from target_adapter_validation.context import TargetRepositoryView
 
 
 PROBLEM_MODEL_SCHEMA = (
@@ -60,18 +61,22 @@ REQUIRED_PATHS = (
 )
 
 
-def load_problem_model_schema() -> dict[str, Any]:
-    value = json.loads(PROBLEM_MODEL_SCHEMA.read_text(encoding="utf-8"))
+def _schema(path: Path, context: Any = None, label: str = "problem-model schema") -> dict[str, Any]:
+    result = (context or TargetRepositoryView(path.parent)).read_json_result(path)
+    if result.error is not None:
+        raise ValueError(result.error)
+    value = result.value
     if not isinstance(value, dict):
-        raise ValueError("problem-model schema must contain an object")
+        raise ValueError(f"{label} must contain an object")
     return value
 
 
-def load_problem_model_projection_schema() -> dict[str, Any]:
-    value = json.loads(PROBLEM_MODEL_PROJECTION_SCHEMA.read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        raise ValueError("active problem-model projection schema must contain an object")
-    return value
+def load_problem_model_schema(context: Any = None) -> dict[str, Any]:
+    return _schema(PROBLEM_MODEL_SCHEMA, context)
+
+
+def load_problem_model_projection_schema(context: Any = None) -> dict[str, Any]:
+    return _schema(PROBLEM_MODEL_PROJECTION_SCHEMA, context, "active problem-model projection schema")
 
 
 def validate_analysis_strategies(validator: Any, manifest: Any = None) -> None:
@@ -108,8 +113,8 @@ def validate_analysis_strategies(validator: Any, manifest: Any = None) -> None:
         )
 
     try:
-        problem_schema = load_problem_model_schema()
-        projection_schema = load_problem_model_projection_schema()
+        problem_schema = load_problem_model_schema(validator.schema_context)
+        projection_schema = load_problem_model_projection_schema(validator.schema_context)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         validator.error(
             "ANALYSIS_TEMPLATE_SCHEMA_DRIFT",
@@ -276,8 +281,8 @@ def validate_analysis_strategies(validator: Any, manifest: Any = None) -> None:
                 )
 
     try:
-        schema = load_problem_model_schema()
-        projection_schema = load_problem_model_projection_schema()
+        schema = load_problem_model_schema(validator.schema_context)
+        projection_schema = load_problem_model_projection_schema(validator.schema_context)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         validator.error("ANALYSIS_PROBLEM_MODEL_SCHEMA", str(exc))
         return
@@ -349,7 +354,7 @@ def validate_selected_problem_model(
         selected_projection_schema = projection_schema
         if selected_projection_schema is None:
             try:
-                selected_projection_schema = load_problem_model_projection_schema()
+                selected_projection_schema = load_problem_model_projection_schema(validator.schema_context)
             except (OSError, ValueError, json.JSONDecodeError) as exc:
                 validator.error(
                     "ANALYSIS_PROBLEM_MODEL_PROJECTION_SCHEMA", str(exc), relpath

@@ -1,5 +1,32 @@
 # Alatyr Core Tools
 
+## Optimization Maintenance
+
+Plan source-generated updates with `python3 tools/alatyr.py refresh-source`.
+Use `--check` for read-only freshness validation or `--write` for an explicit
+source refresh. Installed projects and golden evidence are outside this helper.
+
+For architecture context, `context-plan` accepts `--architecture-mode inventory`,
+`explain`, `discuss`, `compare`, `review`, or `document` with
+`--operation architecture-assistance`. Omission keeps the conservative mode union.
+
+`prepare-worker-result` accepts `--packet`, `--event`, `--context`, `--raw`,
+`--summary`, and `--output-dir`. Without `--write` it previews a measured draft;
+with `--write` it creates a new evidence directory without overwriting one.
+The provider-neutral event has `schema_version: 1`,
+`event_kind: worker-result-received`, `backend_kind`, `worker_id`, `packet_id`,
+and `base_revision`, copied from actual runtime observations. This is not an
+automatic provider hook or proof of dispatch. Drafts remain `requires-review`,
+with no accepted obligations; the normal execution-tree gate remains required.
+
+Context reports distinguish bootstrap-only `first_use` from `operational_entry`.
+Scenario `end_to_end` includes presence and explicitly activated conditional
+files, but excludes unobserved runtime output and hidden provider context.
+
+Unit-test timing feedback records suite execution, excluding discovery/import
+time. Partial duration hints use a seconds-based fallback, not file bytes.
+Hints affect scheduling only and never reduce selected tests or checks.
+
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
 

@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("--changed-path", action="append", default=[])
     parser.add_argument("--fact-id", action="append", default=[])
     parser.add_argument("--assistant-surface")
+    parser.add_argument("--architecture-mode", choices=("inventory", "explain", "discuss", "compare", "review", "document"))
     parser.add_argument("--max-words", type=int)
     parser.add_argument("--max-characters", type=int)
     parser.add_argument("--output", type=Path)
@@ -40,6 +41,7 @@ def main() -> int:
         assistant_surface=args.assistant_surface,
         max_words=args.max_words,
         max_characters=args.max_characters,
+        architecture_mode=args.architecture_mode,
     )
     result = plan_target_context(request)
     if args.output and _inside_target(args.output, args.target):

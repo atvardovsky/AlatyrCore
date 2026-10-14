@@ -1,5 +1,7 @@
 # Framework Maintenance
 
+See [source optimization](source-optimization-workflow.md) for refresh and timing tools.
+
 Use this guide when changing Alatyr Core itself.
 
 ## Change Categories
