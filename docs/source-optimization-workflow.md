@@ -19,6 +19,11 @@ transaction or a replacement for the documented source checks.
 Golden cost baselines, migrations, and release evidence remain separately
 reviewed. They are intentionally not accepted by the refresh graph.
 
+The support stage preserves recorded bytes when its canonical freshness check
+passes, including historical generation revisions. A commit alone is not drift.
+Managed content, policy, and stable provenance changes still trigger refresh;
+every stage must pass its final check before a plan is accepted.
+
 ## Timing Feedback
 
 Source unit tests retain the same suites, order within each shard, fixtures,

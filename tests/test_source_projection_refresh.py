@@ -1,13 +1,16 @@
+import json
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from refresh_source_projections import Stage, prepare, apply, ordered_stages
+from refresh_source_projections import STAGES, Stage, prepare, apply, ordered_stages
 
 
 class SourceProjectionRefreshTests(unittest.TestCase):
@@ -68,6 +71,29 @@ class SourceProjectionRefreshTests(unittest.TestCase):
             (Stage("a", (), ("x",), ("a.py",), ("a.py",)), Stage("b", (), ("x",), ("b.py",), ("b.py",)))]:
             with self.assertRaises(ValueError): ordered_stages(stages)
 
+    def test_current_stage_uses_its_checker_instead_of_rewriting(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.fixture(root)
+            (root / "docs/a.txt").write_text("new")
+            (root / "tools/fail.py").write_text("raise SystemExit('must not run')\n")
+            stage = Stage("a", (), ("docs/a.txt",), ("fail.py",), ("a.py", "--check"), preserve_current=True)
+            _before, changes = prepare(root, (stage,))
+            self.assertEqual(changes, {})
+
+    def test_preserved_stage_still_repairs_stale_content_and_requires_final_check(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.fixture(root)
+            stage = Stage("a", (), ("docs/a.txt",), ("a.py",), ("a.py", "--check"), preserve_current=True)
+            _before, changes = prepare(root, (stage,))
+            self.assertEqual(changes, {"docs/a.txt": b"new"})
+            (root / "tools/fail.py").write_text("raise SystemExit('invalid canonical state')\n")
+            stage = Stage("a", (), ("docs/a.txt",), ("a.py",), ("fail.py",), preserve_current=True)
+            with self.assertRaisesRegex(ValueError, "invalid canonical state"):
+                prepare(root, (stage,))
+            self.assertEqual((root / "docs/a.txt").read_text(), "old")
+
     def test_input_mutation_during_apply_is_not_accepted(self):
         import os
         with tempfile.TemporaryDirectory() as directory:
@@ -82,3 +108,83 @@ class SourceProjectionRefreshTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "inputs changed during refresh"):
                     apply(root, before, changes, stages)
             self.assertEqual((root / "input.txt").read_text(), "concurrent owner edit")
+
+
+class CommittedSourceProjectionRefreshTests(unittest.TestCase):
+    def command(self, root, *arguments):
+        return subprocess.run(
+            [sys.executable, str(root / "tools/alatyr.py"), "refresh-source", *arguments],
+            cwd=root, capture_output=True, text=True, timeout=120,
+        )
+
+    def commit(self, root):
+        subprocess.run(["git", "add", "."], cwd=root, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid",
+             "commit", "--allow-empty", "-qm", "refresh regression fixture"],
+            cwd=root, check=True, capture_output=True,
+        )
+
+    def assert_policy_and_provenance_drift(self, root):
+        stage = replace(next(stage for stage in STAGES if stage.name == "support"), dependencies=())
+        state_path = "templates/target/.ai/support-state.json"
+        policy_path = "templates/target/.ai/project/support-policy.json"
+        for kind, relative in (("policy", policy_path), ("provenance", state_path)):
+            with self.subTest(drift=kind):
+                path = root / relative
+                original = path.read_bytes()
+                value = json.loads(original)
+                if kind == "policy":
+                    value["exclusions"][0]["reason"] += " (regression change)"
+                else:
+                    value["generated_by"]["template_version"] = "outdated"
+                mutated = (json.dumps(value, indent=2) + "\n").encode("utf-8")
+                path.write_bytes(mutated)
+                try:
+                    _before, changes = prepare(root, (stage,))
+                    self.assertIn(state_path, changes)
+                    self.assertEqual(path.read_bytes(), mutated)
+                finally:
+                    path.write_bytes(original)
+
+    def test_real_cli_preserves_current_state_after_commit_and_detects_managed_drift(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "source"
+            subprocess.run(
+                ["git", "-c", "core.autocrlf=false", "clone", "--shared", "--quiet", str(ROOT), str(root)],
+                check=True, capture_output=True,
+            )
+            shutil.copyfile(ROOT / "tools/refresh_source_projections.py", root / "tools/refresh_source_projections.py")
+            generated = self.command(root, "--write")
+            self.assertEqual(generated.returncode, 0, generated.stdout + generated.stderr)
+            self.commit(root)
+            self.assertEqual(subprocess.check_output(["git", "status", "--short"], cwd=root), b"")
+            preserved = {
+                path: ((root / path).read_bytes(), (root / path).stat().st_mtime_ns)
+                for path in ("templates/target/.ai/support-state.json", "conformance/evidence-status.json")
+            }
+            for mode in ("--check", "--write"):
+                with self.subTest(mode=mode):
+                    result = self.command(root, mode)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    self.assertEqual(json.loads(result.stdout)["changed_paths"], [])
+                    for path, expected in preserved.items():
+                        self.assertEqual(((root / path).read_bytes(), (root / path).stat().st_mtime_ns), expected)
+            self.assertEqual(subprocess.check_output(["git", "status", "--short"], cwd=root), b"")
+
+            managed = root / "templates/target/.ai/assistant/flows/architecture-assistance.flow.md"
+            managed.write_bytes(managed.read_bytes() + b"\n<!-- Genuine managed-content regression change. -->\n")
+            dirty_before = subprocess.check_output(["git", "status", "--porcelain=v1"], cwd=root)
+            drift = self.command(root, "--check")
+            self.assertEqual(drift.returncode, 1, drift.stdout + drift.stderr)
+            changed = json.loads(drift.stdout)["changed_paths"]
+            self.assertIn("templates/target/.ai/support-state.json", changed)
+            self.assertIn("conformance/evidence-status.json", changed)
+            self.assertEqual(subprocess.check_output(["git", "status", "--porcelain=v1"], cwd=root), dirty_before)
+            repaired = self.command(root, "--write")
+            self.assertEqual(repaired.returncode, 0, repaired.stdout + repaired.stderr)
+            self.commit(root)
+            result = self.command(root, "--check")
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(json.loads(result.stdout)["changed_paths"], [])
+            self.assert_policy_and_provenance_drift(root)

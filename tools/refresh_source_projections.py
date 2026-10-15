@@ -28,6 +28,7 @@ class Stage:
     outputs: tuple[str, ...]
     command: tuple[str, ...]
     check: tuple[str, ...]
+    preserve_current: bool = False
 
 
 @dataclass(frozen=True)
@@ -51,7 +52,7 @@ STAGES = (
     Stage("catalogs", ("rules", "entry", "findings", "compatibility"), ("framework/context-index.json", "framework/catalog/*/context-index.json", "templates/target/.ai/*/context-index.json", "templates/target/.ai/*/*/context-index.json", "templates/target/.ai/*/*/*/context-index.json"), ("render_context_catalogs.py",), ("render_context_catalogs.py", "--check")),
     Stage("inventory", ("catalogs",), ("framework/file-inventory.json",), ("render_framework_file_inventory.py",), ("render_framework_file_inventory.py", "--check")),
     Stage("bootstrap", ("catalogs", "inventory"), ("templates/target/.ai/assistant/bootstrap-index.json", "templates/target/.ai/assistant/bootstrap-integrity.json"), ("render_target_bootstrap_index.py", "--target", "templates/target", "--write"), ("render_target_bootstrap_index.py", "--target", "templates/target", "--check")),
-    Stage("support", ("bootstrap",), ("templates/target/.ai/support-state.json",), ("snapshot_target_support.py", "--target", "templates/target", "--write"), ("snapshot_target_support.py", "--target", "templates/target")),
+    Stage("support", ("bootstrap",), ("templates/target/.ai/support-state.json",), ("snapshot_target_support.py", "--target", "templates/target", "--write"), ("snapshot_target_support.py", "--target", "templates/target"), preserve_current=True),
     Stage("evidence", ("support",), ("conformance/evidence-status.json",), ("render_evidence_status.py",), ("render_evidence_status.py", "--check")),
 )
 
@@ -77,11 +78,12 @@ def _files(root: Path) -> dict[str, bytes]:
     return result
 
 
-def _run(root: Path, command: tuple[str, ...], env: dict[str, str]) -> None:
+def _run(root: Path, command: tuple[str, ...], env: dict[str, str], *, require_success: bool = True) -> bool:
     result = subprocess.run([sys.executable, str(root / "tools" / command[0]), *command[1:]],
                             cwd=root, env=env, capture_output=True, text=True, timeout=120)
-    if result.returncode:
+    if result.returncode and require_success:
         raise ValueError(f"projection {command[0]} failed: {result.stderr or result.stdout}")
+    return result.returncode == 0
 
 
 def verify_outputs(changes, stages: tuple[Stage, ...]) -> None:
@@ -135,6 +137,9 @@ def prepare(root: Path = ROOT, stages: tuple[Stage, ...] = STAGES):
         for _ in range(4):
             previous = _files(mirror)
             for stage in ordered:
+                # Keep historical generation metadata when the canonical check passes.
+                if stage.preserve_current and _run(mirror, stage.check, env, require_success=False):
+                    continue
                 _run(mirror, stage.command, env)
                 normalize_outputs(mirror, stage)
             current = _files(mirror)
