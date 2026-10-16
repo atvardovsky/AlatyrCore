@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1702
+Catalog entries: 1719
 
 ## Families
 
@@ -66,7 +66,7 @@ Catalog entries: 1702
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
 - `TASK`: 54 codes.
-- `TDD`: 47 codes.
+- `TDD`: 64 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
 - `VALIDATION`: 15 codes.
@@ -2929,6 +2929,14 @@ Catalog entries: 1702
   Level: info. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_PUBLICATION_HISTORICAL`
   Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TDD_CANONICAL_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_CANONICAL_POLICY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_CANONICAL_POLICY_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_COMMAND_CONFIGURATION_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_COMMAND_EXTERNAL_ACTIONS`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_COMMAND_REFERENCE`
@@ -2937,6 +2945,8 @@ Catalog entries: 1702
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_CONFIGURATION_UNROUTED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
+- `TDD_COVERAGE_OWNER_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EVIDENCE_LIMIT`
   Level: info. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EVIDENCE_REQUIREMENTS`
@@ -2949,6 +2959,24 @@ Catalog entries: 1702
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXCEPTION_UNRESOLVED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
+- `TDD_EXECUTION_CONTRACT`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_CONTRACT_MISSING`
+  Level: dynamic. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_EVIDENCE`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_EVIDENCE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_EVIDENCE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_EVIDENCE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_EVIDENCE_STALE`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_TEMPLATE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_UNROUTED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_INTENT_MODULE_BOUNDARY`
@@ -2981,6 +3009,8 @@ Catalog entries: 1702
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_POLICY_NOT_ENABLED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
+- `TDD_POLICY_PROJECTION_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_POLICY_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_RECORD_DUPLICATE`
@@ -2999,6 +3029,10 @@ Catalog entries: 1702
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_SUGGESTION_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
+- `TDD_SUITE_SELECTION_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_SURFACE_POLICY_BINDING`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_TEST_LEVEL_LIST`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TEST_LEVEL_REFERENCE`

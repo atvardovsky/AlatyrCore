@@ -75,6 +75,8 @@ List what must not be changed.
 - Canonical term sources, data-dictionary links, validation, lazy route, and
   adapted skill:
 - Test-first-development need, owner, decision authority, and module state:
+- Canonical testing owners, execution timing/authority, command effects,
+  configuration/filter support, suite exclusions, and proof boundaries:
 - Existing test strategy, defects/regressions, levels, folders, commands,
   fixtures, isolation, feedback time, CI, and merge-gate evidence:
 - Recommendation behavior, activation triggers, selected modes, exceptions,

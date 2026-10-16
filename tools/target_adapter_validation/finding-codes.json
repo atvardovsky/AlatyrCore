@@ -46,6 +46,7 @@
     "tools/target_adapter_validation/task_decomposition.py",
     "tools/target_adapter_validation/team_collaboration.py",
     "tools/target_adapter_validation/test_first_development.py",
+    "tools/target_adapter_validation/testing_execution.py",
     "tools/target_adapter_validation/validation_contract.py",
     "tools/target_adapter_validation/values.py",
     "tools/target_adapter_validation/workspace_modes.py"
@@ -261,7 +262,7 @@
     },
     {
       "id": "TDD",
-      "code_count": 47
+      "code_count": 64
     },
     {
       "id": "TEAM",
@@ -13167,6 +13168,42 @@
       ]
     },
     {
+      "code": "TDD_CANONICAL_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_CANONICAL_POLICY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_CANONICAL_POLICY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_COMMAND_CONFIGURATION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
       "code": "TDD_COMMAND_EXTERNAL_ACTIONS",
       "levels": [
         "error"
@@ -13200,6 +13237,15 @@
       ],
       "sources": [
         "tools/target_adapter_validation/test_first_development.py"
+      ]
+    },
+    {
+      "code": "TDD_COVERAGE_OWNER_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
       ]
     },
     {
@@ -13254,6 +13300,87 @@
       ],
       "sources": [
         "tools/target_adapter_validation/test_first_development.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_CONTRACT_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_EVIDENCE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_EVIDENCE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_EVIDENCE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_EVIDENCE_STALE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_TEMPLATE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
       ]
     },
     {
@@ -13401,6 +13528,15 @@
       ]
     },
     {
+      "code": "TDD_POLICY_PROJECTION_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
       "code": "TDD_POLICY_SCHEMA",
       "levels": [
         "error"
@@ -13479,6 +13615,24 @@
       ],
       "sources": [
         "tools/target_adapter_validation/test_first_development.py"
+      ]
+    },
+    {
+      "code": "TDD_SUITE_SELECTION_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_SURFACE_POLICY_BINDING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
       ]
     },
     {

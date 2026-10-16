@@ -1,3 +1,10 @@
+---
+alatyr_test_execution:
+  policy: .ai/project/testing/test-first-policy.json
+  timing: target-policy
+  red_evidence: target-policy
+  coverage_writes: canonical-owner
+---
 # Test-First Change Flow
 
 ## Purpose
@@ -17,12 +24,23 @@ fact, defect, invariant, contract, or refactor.
    asks for test-first work. For `required`, apply the target gate.
 5. Select the permitted mode and smallest proving target test level. Resolve
    the exact target command, paths, fixtures, helpers, and isolation rules.
+   Read its execution contract: canonical owners, configuration, prerequisites,
+   effects, environment, suite selection/exclusions, filter support and proof
+   boundary. Inventory membership and module enablement never authorize a run.
 6. Record observable acceptance examples, negative paths, and boundaries.
-7. Run the relevant baseline when required by target policy.
-8. Add or select the focused test and run it. Accept RED only when failure is
+7. Resolve current-scope execution authorization and target timing before any
+   baseline, RED, GREEN, coverage or broader run. If review is pending, author
+   tests and exact commands and defer execution. Continue implementation only
+   when the accepted mode permits it; otherwise report `authored`/`blocked`
+   and wait. Shared manual-review resources require their own explicit target
+   permission; disposable-runner access does not authorize their use.
+8. When authorized and required by the selected policy, run baseline/RED.
+   Accept RED only when failure is
    caused by the expected missing or incorrect behavior, not syntax, setup,
    imports, unavailable infrastructure, or unrelated failures.
-9. Make the minimum implementation change and prove GREEN with the same focused
+9. Follow the accepted timing: review-first projects may implement and present
+   the change before execution. Do not manufacture historical RED or silently
+   relax a strict mode. After authorization, prove GREEN with the same focused
    contract and command.
 10. Refactor while keeping the focused contract green, or record why refactor
     was skipped.
@@ -37,8 +55,13 @@ fact, defect, invariant, contract, or refactor.
     effects.
 14. Apply logical integrity review and synchronize required docs, diagrams,
     contracts, prompts, skills, gates, and project vocabulary.
+    Change the canonical policy/coverage matrix before their Alatyr mirrors.
+    Reconcile newly added tests with actual runner configuration and exclusions.
 15. Complete `.ai/assistant/templates/test-first-evidence.md` and report
     approvals, skipped checks, exceptions, and residual risk.
+    Keep authored, discovered, executed, passed, skipped and blocked separate.
+    Metadata/case-ID checks and mocked browser tests prove only their boundary;
+    an exit code alone or an all-skipped run cannot establish behavioral proof.
 
 ## Exception Path
 

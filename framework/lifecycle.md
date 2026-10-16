@@ -175,10 +175,9 @@ Before upgrading framework files in a target project:
    When `project-vocabulary` is enabled, compare its catalog, term, and data-
    link schemas, state and acceptance model, normalization policy, canonical-
    owner boundaries, adapted skill, lazy route, and validator support.
-   When `test-first-development` is enabled, compare policy schema and revision,
-   owners, recommendation behavior, triggers, modes, levels, commands,
-   isolation, exceptions, adapted skill/gate, lazy route, evidence contract,
-   and validator support.
+   When `test-first-development` is enabled, reconcile its policy/execution
+   contract and routed surfaces against its rule owner; preserve authority,
+   timing and history. Missing legacy contracts remain readiness gaps.
    When `extensions` is enabled, compare extension API, catalog/lock schemas,
    package compatibility, installed ownership and hashes, target bindings,
    permissions, lifecycle flow, gates, operation/bridge routing, historical
@@ -269,10 +268,8 @@ Before upgrading framework files in a target project:
     Preserve target code-documentation profiles and decisions. Never replace
     accepted frontend, backend, shared, or infrastructure conventions with
     source placeholders or a universal style.
-    Preserve target test-first policies and historical cycle evidence. Never
-    replace target commands, trigger severity, isolation, exceptions, CI, or
-    merge requirements with source placeholders or silently enable stricter
-    behavior.
+    Preserve target test-first policies and historical cycle evidence;
+    source placeholders must not replace accepted facts or strengthen gates.
     Preserve installed extension catalog and lock entries, immutable source
     provenance, target bindings, local deviations, installed-file ownership,
     permissions, approvals, and lifecycle history. Never auto-update an
@@ -415,9 +412,8 @@ Framework lifecycle notes should record:
 - project-vocabulary rule, catalog/term/data-link schemas, scoped meanings,
   acceptance decisions, normalization policy, adapted skill, lazy route, and
   validator migration when that module is enabled
-- test-first rule, policy schema, recommendation/enablement boundaries,
-  triggers, modes, commands, isolation, exceptions, evidence, adapted skill,
-  lazy route, and validator migration when that module is enabled
+- test-first rule, execution contract and policy-bound surfaces per its owner
+  when enabled
 - extension rule, extension API and package template, catalog/lock schemas,
   lifecycle operation, ownership/removal behavior, bindings, permissions,
   bridges, lazy route, inspection tooling, and validator migration when that

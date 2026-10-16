@@ -1,3 +1,10 @@
+---
+alatyr_test_execution:
+  policy: .ai/project/testing/test-first-policy.json
+  timing: target-policy
+  red_evidence: target-policy
+  coverage_writes: canonical-owner
+---
 # Test-First Development Gate
 
 Apply this gate only after the compact recommendation check or an explicit
@@ -25,10 +32,21 @@ test-first/configuration request.
 
 - Selected mode and test level match the accepted policy trigger.
 - Acceptance examples prove observable behavior or contract.
-- RED was executed and failed for the expected behavior reason.
+- Execution timing and current-scope authorization were resolved independently
+  from command availability. Pending manual review blocks execution, not test
+  authoring. A required trigger never grants permission to run tests.
+- RED was executed only when authorized and required, and failed for the
+  expected behavior reason; otherwise retain the explicit not-run disposition.
+  Missing required RED blocks test-first completion unless an accepted target
+  exception applies; a passed run record alone does not satisfy this gate.
 - GREEN used the same focused contract and passed.
 - Existing useful assertions were not weakened or removed to obtain GREEN.
 - Refactor result or skip reason is recorded.
 - Broader risk-selected validation and logical integrity were completed or
   reported unresolved.
 - Structural validation is not claimed as proof of test semantic quality.
+- Canonical policy and coverage owners precede derived Alatyr files. Command
+  configuration, environment, effects, filtering and exclusions match evidence.
+- Zero executed/all-skipped runs cannot prove behavior. Suite/full claims name
+  the selected universe and exclusions; mocked boundaries cannot prove real DB
+  persistence. Only explicitly selected current evidence records are checked.

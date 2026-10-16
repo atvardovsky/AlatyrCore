@@ -19,6 +19,10 @@ policy; it does not implement product behavior.
 1. Infer the mode from the request and keep the initial assessment read-only.
 2. Inspect existing test strategy, test folders, commands, CI, fixtures,
    isolation, recurring regressions, review corrections, and known gaps.
+   Resolve canonical project policy/coverage owners before creating mirrors.
+   Inspect actual runner configuration, migration/fixture setup, selected files,
+   skip conditions and filter forwarding. Inventory all current command types,
+   including disposable runners, without executing them merely for discovery.
 3. Evaluate whether test-first work is useful for selected target areas. Report
    expected quality value, feedback-time and maintenance cost, and exclusions.
 4. Propose owner, authority, state, recommendation behavior, activation
@@ -30,6 +34,11 @@ policy; it does not implement product behavior.
 6. Update `.ai/assistant/module-profile.md` and `.ai/alatyr.yaml` consistently.
 7. Adapt the skill and gate to target facts. Do not copy stack-specific facts
    from another project.
+   Resolve `execution_contract`; bind every skill/flow/gate/evidence surface to
+   it. Remove contradictory strict-RED instructions and stale placeholder
+   activation wording after target acceptance. Preserve manual-review timing,
+   external restrictions and historical results; unknown legacy authority is
+   not permission. Keep static metadata checks distinct from behavioral tests.
 8. Do not add dependencies, CI jobs, merge gates, permissions, or protected
    project changes without their normal explicit approval.
 9. Validate policy structure and operation routing. Structural checks do not

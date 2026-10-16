@@ -322,6 +322,9 @@ Collect target-specific facts before writing project docs:
   recommendation behavior, triggers, modes, test levels, commands, isolation,
   exceptions, RED/GREEN/refactor evidence, lazy route, gate, and adapted skill
   when the optional module is enabled
+- test execution contract, canonical policy/coverage owners, target timing,
+  current authority, command configuration/effects/filter support, actual suite
+  selection and evidence boundaries agree; missing legacy facts are unresolved
 - extension owner, source-access and prompt-injection policy, extension package
   manifest, immutable source and digest, compatibility, catalog/lock, bindings,
   permissions, approval, installed-file ownership, update/removal policy, lazy

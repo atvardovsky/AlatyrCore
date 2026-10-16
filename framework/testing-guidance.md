@@ -34,6 +34,17 @@ adapter for:
 If the target project does not define test commands or conventions, report that
 as a missing project-adapter fact. Do not invent commands.
 
+Before running any command, resolve its canonical project owner, execution
+timing and current authorization separately from availability. This applies
+even without the optional test-first module. Use a compact command inventory
+for configuration, prerequisites, effects, environment, filter support and proof
+boundary. A command named `test`, `coverage` or `check` is not necessarily a
+behavioral test or a read-only action. Shared manual-review resources need
+their own explicit target permission, not disposable-runner permission.
+New files must be reconciled with the actual
+runner selection and reasoned exclusions; historical configured omissions are
+not silently full coverage. Inventory changes do not authorize test execution.
+
 ## Analytical Test Selection
 
 Choose test levels by the changed behavior and risk:

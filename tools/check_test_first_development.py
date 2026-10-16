@@ -7,6 +7,7 @@ import json
 import sys
 from pathlib import Path
 from typing import Any
+from test_execution_contract import SURFACES as TEST_SURFACES, TestExecutionContract, surface_binding_failures
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,6 +64,8 @@ def main() -> int:
         MANIFEST, BRIDGES,
         INSTALL, INSTALL_FLOW, READINESS, PLAN, LIFECYCLE, RECHECK,
         POST_INSTALL, POST_UPDATE,
+        ROOT / "schemas/test-execution-contract.schema.json",
+        TARGET / ".ai/assistant/templates/test-execution-evidence.json",
     ]
     for path in required_files:
         if not path.is_file():
@@ -108,7 +111,7 @@ def main() -> int:
     )
     require(
         SKILL,
-        ["Do not activate this placeholder", "Do not accept syntax, setup, infrastructure, or unrelated failure as RED"],
+        ["Do not activate an unadapted or unresolved target policy", "Do not accept syntax, setup, infrastructure, or unrelated failure as RED"],
         failures,
     )
     require(
@@ -163,6 +166,9 @@ def main() -> int:
 
     if policy.get("schema_version") != 1:
         failures.append("test-first policy schema_version must be 1")
+    failures.extend(TestExecutionContract().policy_failures(policy, placeholders=True))
+    for path in TEST_SURFACES:
+        failures.extend(f"{path}: {failure}" for failure in surface_binding_failures(read(TARGET / path)))
     if policy.get("policy_kind") != "target-test-first-development-policy":
         failures.append("test-first policy_kind is invalid")
     for field in [
@@ -194,15 +200,13 @@ def main() -> int:
     expected_candidates = ["test-first-configuration", "test-first-change"]
     if intent.get("operation_candidates") != expected_candidates:
         failures.append("test-first intent operation candidates are invalid")
-    overlay = router.get("intent_overlays", {}).get("test-first-request")
+    overlays = router.get("intent_overlays")
+    overlay = overlays.get("test-first-request") if isinstance(overlays, dict) else None
     if not isinstance(overlay, dict) or overlay.get("operation_candidates") != expected_candidates:
         failures.append("context router does not expose test-first configuration and execution")
 
-    operations = {
-        operation.get("id"): operation
-        for operation in catalog.get("operations", [])
-        if isinstance(operation, dict)
-    }
+    entries = catalog.get("operations")
+    operations = {operation["id"]: operation for operation in entries if isinstance(operation, dict) and isinstance(operation.get("id"), str)} if isinstance(entries, list) else {}
     configuration = operations.get("test-first-configuration")
     execution = operations.get("test-first-change")
     if not isinstance(configuration, dict) or configuration.get("required_module") != "core-profile":

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "record_kind": "target-test-execution-evidence",
+  "command_id": "{TARGET_COMMAND_ID}",
+  "repository_revision": "{CURRENT_FULL_GIT_REVISION}",
+  "policy_sha256": "{CANONICAL_POLICY_SHA256}",
+  "input_sha256": {},
+  "state": "{AUTHORED_DISCOVERED_PASSED_FAILED_SKIPPED_OR_BLOCKED}",
+  "claim": "none",
+  "proof_boundary": "{COMMAND_PROOF_BOUNDARY}",
+  "environment": "{TARGET_OBSERVED_ENVIRONMENT}",
+  "authorization": "{AUTHORIZED_AWAITING_REVIEW_OR_NOT_AUTHORIZED}",
+  "authorization_source": "{CURRENT_SCOPE_AUTHORIZATION_OR_PENDING_REASON}",
+  "timing_disposition": "{PRE_IMPLEMENTATION_AUTHORIZED_MANUAL_REVIEW_COMPLETE_EXPLICIT_REQUEST_AUTHORIZED_OR_NOT_RUN}",
+  "availability": "{AVAILABLE_UNAVAILABLE_OR_UNKNOWN}",
+  "prerequisites_satisfied": false,
+  "filter": null,
+  "counts": {"discovered": 0, "executed": 0, "passed": 0, "failed": 0, "skipped": 0, "not_run": 0},
+  "files": {"universe": [], "selected": [], "executed": [], "excluded": []},
+  "result_artifact": null
+}

@@ -319,10 +319,9 @@ Classify every proposed target file:
     skeleton, and ownership evidence and propose zero or more modes. Keep every
     suggestion proposed until a separate user decision accepts it;
     installation approval alone is not acceptance.
-    Add `.ai/project/testing/README.md` and `test-first-policy.json` only when
-    test-first development is assessed or enabled. Derive owners, trigger
-    severity, modes, levels, commands, isolation, exceptions, and evidence from
-    the target; never infer strict TDD from the presence of tests.
+    For assessed/enabled test-first development, adapt
+    `.ai/project/testing/README.md` and `test-first-policy.json` through
+    `test-first-configuration.flow.md` per `ALATYR-TDD-001`, not test presence.
     Add `.ai/project/team-policy.json` and its human explanation only when the
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,

@@ -646,18 +646,11 @@
     },
     {
       "id": "test-first-development",
-      "command": [
-        "tools/check_test_first_development.py"
-      ],
+      "command": ["tools/check_test_first_development.py"],
       "contract_inputs": [
-        "INSTALL.md",
-        "conformance/runs/assistant-surfaces.json",
-        "framework/lifecycle.md",
-        "framework/test-first-development.md",
-        "framework/testing-guidance.md",
-        "installer/assistant-installation.flow.md",
-        "installer/installation-plan-template.md",
-        "installer/readiness-checklist.md",
+        "schemas/test-execution-contract.schema.json", "INSTALL.md", "conformance/runs/assistant-surfaces.json",
+        "framework/lifecycle.md", "framework/test-first-development.md", "framework/testing-guidance.md",
+        "installer/assistant-installation.flow.md", "installer/installation-plan-template.md", "installer/readiness-checklist.md",
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context-router.json",
@@ -668,22 +661,14 @@
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/operation-catalog.json",
         "templates/target/.ai/assistant/skills/test-first-development/**",
-        "templates/target/.ai/assistant/templates/post-*.md",
-        "templates/target/.ai/assistant/templates/test-first-*.md",
-        "templates/target/.ai/project/testing/**"
+        "templates/target/.ai/assistant/templates/post-*.md", "templates/target/.ai/assistant/templates/test-first-*.md",
+        "templates/target/.ai/assistant/templates/test-execution-evidence.json", "templates/target/.ai/project/testing/**"
       ],
-      "implementation_paths": [
-        "tools/check_test_first_development.py"
-      ],
+      "implementation_paths": ["tools/check_test_first_development.py", "tools/test_execution_contract.py"],
       "trigger_paths": [
-        "INSTALL.md",
-        "conformance/runs/assistant-surfaces.json",
-        "framework/lifecycle.md",
-        "framework/test-first-development.md",
-        "framework/testing-guidance.md",
-        "installer/assistant-installation.flow.md",
-        "installer/installation-plan-template.md",
-        "installer/readiness-checklist.md",
+        "schemas/test-execution-contract.schema.json", "INSTALL.md", "conformance/runs/assistant-surfaces.json",
+        "framework/lifecycle.md", "framework/test-first-development.md", "framework/testing-guidance.md",
+        "installer/assistant-installation.flow.md", "installer/installation-plan-template.md", "installer/readiness-checklist.md",
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context-router.json",
@@ -694,10 +679,9 @@
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/operation-catalog.json",
         "templates/target/.ai/assistant/skills/test-first-development/**",
-        "templates/target/.ai/assistant/templates/post-*.md",
-        "templates/target/.ai/assistant/templates/test-first-*.md",
-        "templates/target/.ai/project/testing/**",
-        "tools/check_test_first_development.py"
+        "templates/target/.ai/assistant/templates/post-*.md", "templates/target/.ai/assistant/templates/test-first-*.md",
+        "templates/target/.ai/assistant/templates/test-execution-evidence.json", "templates/target/.ai/project/testing/**",
+        "tools/check_test_first_development.py", "tools/test_execution_contract.py"
       ]
     },
     {
@@ -2286,6 +2270,8 @@
         "templates/target/.ai/assistant/team/**",
         "schemas/alatyr-relationship-candidates.schema.json",
         "schemas/alatyr-target-discovery-report.schema.json",
+        "schemas/test-execution-contract.schema.json",
+        "tools/test_execution_contract.py",
         "tools/report_approval_scope.py",
         "tools/check_target_adapter_validator.py",
         "tools/context_catalog.py",
@@ -2305,6 +2291,7 @@
       ],
       "contract_inputs": [
         "templates/target/**",
+        "schemas/test-execution-contract.schema.json",
         "schemas/alatyr-relationship-candidates.schema.json",
         "schemas/alatyr-target-discovery-report.schema.json",
         "schemas/alatyr-problem-model-active-projection.schema.json",
@@ -2313,6 +2300,7 @@
       ],
       "implementation_paths": [
         "tools/check_target_adapter_validator.py",
+        "tools/test_execution_contract.py",
         "tools/report_approval_scope.py",
         "tools/context_catalog.py",
         "tools/analysis_strategy_contract.py",

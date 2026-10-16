@@ -308,9 +308,9 @@ In a typical target repository:
    Derive records from target evidence, preserve scoped meanings, and keep
    observed or proposed terms unaccepted until target authority decides.
    Add `.ai/project/testing/README.md` and `test-first-policy.json` only when
-   test-first development is assessed or enabled. Enabling requires accepted
-   target commands, triggers, modes, isolation, exceptions, and evidence; do
-   not infer strict TDD from the existence of tests.
+   test-first development is assessed or enabled. Follow its canonical owner
+   for `execution_contract`, policy/coverage ownership, timing, command effects,
+   suite selection and evidence. Enablement grants no execution permission.
    Add `.ai/project/team-policy.json` and its human-oriented
    `.ai/project/team-operating-model.md` only when team collaboration is
    enabled. Derive actors, aliases, authority, priorities, review, transitions,

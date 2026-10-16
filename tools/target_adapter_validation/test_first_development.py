@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+from target_adapter_validation.testing_execution import validate_testing_execution
 from target_validation_support import ManifestData, dotted, is_placeholder, is_unresolved_value
 
 from target_adapter_validation.capability import (
@@ -19,7 +20,7 @@ def _operation_by_id(context: CapabilityValidationContext) -> dict[str, dict[str
     operations = catalog.get("operations") if isinstance(catalog, dict) else None
     return {
         item.get("id"): item
-        for item in operations or []
+        for item in (operations if isinstance(operations, list) else [])
         if isinstance(item, dict) and isinstance(item.get("id"), str)
     }
 
@@ -130,7 +131,7 @@ def validate_test_first_development(
             and not is_unresolved_value(value)
         )
 
-    if policy.get("schema_version") != 1:
+    if type(policy.get("schema_version")) is not int or policy.get("schema_version") != 1:
         context.error("TDD_POLICY_SCHEMA", "schema_version should be 1", policy_relpath)
     if policy.get("policy_kind") != "target-test-first-development-policy":
         context.error("TDD_POLICY_KIND", "policy_kind is invalid", policy_relpath)
@@ -152,11 +153,11 @@ def validate_test_first_development(
     if not isinstance(suggestion, dict):
         context.error("TDD_SUGGESTION_SHAPE", "suggestion must be an object", policy_relpath)
     else:
-        if suggestion.get("mode") not in {"off", "advisory"}:
+        if not isinstance(suggestion.get("mode"), str) or suggestion.get("mode") not in {"off", "advisory"}:
             context.error("TDD_SUGGESTION_MODE", "suggestion.mode must be off or advisory", policy_relpath)
-        if suggestion.get("minimum_result") not in {"recommended", "required"}:
+        if not isinstance(suggestion.get("minimum_result"), str) or suggestion.get("minimum_result") not in {"recommended", "required"}:
             context.error("TDD_SUGGESTION_RESULT", "suggestion.minimum_result is invalid", policy_relpath)
-        if suggestion.get("max_per_task") != 1 or suggestion.get("suppress_after_decline") is not True:
+        if type(suggestion.get("max_per_task")) is not int or suggestion.get("max_per_task") != 1 or suggestion.get("suppress_after_decline") is not True:
             context.error("TDD_SUGGESTION_BOUNDS", "suggestions must be limited to once per task and suppressed after decline", policy_relpath)
         if suggestion.get("cost_statement_required") is not True:
             context.error("TDD_SUGGESTION_COST", "suggestions must state expected cost", policy_relpath)
@@ -166,7 +167,7 @@ def validate_test_first_development(
         "contract-first", "test-after-with-reason",
     }
     modes = policy.get("available_modes")
-    if not isinstance(modes, list) or not modes or not all(mode in valid_modes for mode in modes):
+    if not isinstance(modes, list) or not modes or not all(isinstance(mode, str) and mode in valid_modes for mode in modes):
         context.error("TDD_MODES_INVALID", "available_modes must contain accepted test-first modes", policy_relpath)
 
     triggers = policy.get("activation_triggers")
@@ -190,9 +191,9 @@ def validate_test_first_development(
                         policy_relpath,
                     )
                 trigger_ids.add(trigger_id)
-            if trigger.get("state") not in {"required", "recommended", "disabled"}:
+            if not isinstance(trigger.get("state"), str) or trigger.get("state") not in {"required", "recommended", "disabled"}:
                 context.error("TDD_TRIGGER_STATE", f"activation_triggers[{index}].state is invalid", policy_relpath)
-            if trigger.get("mode") not in valid_modes:
+            if not isinstance(trigger.get("mode"), str) or trigger.get("mode") not in valid_modes:
                 context.error("TDD_TRIGGER_MODE", f"activation_triggers[{index}].mode is invalid", policy_relpath)
             elif isinstance(modes, list) and trigger.get("mode") not in modes:
                 context.error(
@@ -288,7 +289,9 @@ def validate_test_first_development(
                     f"test level {level_id}.{field} requires resolved values",
                     policy_relpath,
                 )
-        for command_id in level.get("command_ids", []):
+        for command_id in level.get("command_ids", []) if isinstance(level.get("command_ids"), list) else []:
+            if not isinstance(command_id, str):
+                continue
             if command_id not in commands:
                 context.error(
                     "TDD_COMMAND_REFERENCE",
@@ -304,7 +307,7 @@ def validate_test_first_development(
                     f"command {command_id} requires resolved {field}",
                     policy_relpath,
                 )
-        if command.get("live_external_actions") not in {
+        if not isinstance(command.get("live_external_actions"), str) or command.get("live_external_actions") not in {
             "forbidden", "allowed-with-approval", "not-applicable",
         }:
             context.error(
@@ -331,14 +334,18 @@ def validate_test_first_development(
     for index, trigger in enumerate(triggers if isinstance(triggers, list) else []):
         if not isinstance(trigger, dict):
             continue
-        for level_id in trigger.get("test_level_ids", []):
+        for level_id in trigger.get("test_level_ids", []) if isinstance(trigger.get("test_level_ids"), list) else []:
+            if not isinstance(level_id, str):
+                continue
             if level_id not in test_levels:
                 context.error(
                     "TDD_TEST_LEVEL_REFERENCE",
                     f"activation_triggers[{index}] references unknown test level {level_id}",
                     policy_relpath,
                 )
-        for exception_id in trigger.get("exceptions", []):
+        for exception_id in trigger.get("exceptions", []) if isinstance(trigger.get("exceptions"), list) else []:
+            if not isinstance(exception_id, str):
+                continue
             if exception_id not in exception_records:
                 context.error(
                     "TDD_EXCEPTION_REFERENCE",
@@ -353,6 +360,7 @@ def validate_test_first_development(
             if not resolved(isolation.get(field)):
                 context.error("TDD_ISOLATION_UNRESOLVED", f"isolation.{field} must be resolved", policy_relpath)
 
+    validate_testing_execution(context, policy, manifest)
     _check_test_first_routing(context)
 
     context.info(

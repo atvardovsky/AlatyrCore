@@ -327,6 +327,7 @@ Required files:
 - `.ai/assistant/flows/test-first-change.flow.md`
 - `.ai/assistant/gates/test-first-development.md`
 - `.ai/assistant/templates/test-first-evidence.md`
+- `.ai/assistant/templates/test-execution-evidence.json`
 - `.ai/assistant/skills/test-first-development/SKILL.md`
 
 Reason: `{REASON}`

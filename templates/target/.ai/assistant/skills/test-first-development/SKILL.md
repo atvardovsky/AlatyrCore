@@ -1,3 +1,10 @@
+---
+alatyr_test_execution:
+  policy: .ai/project/testing/test-first-policy.json
+  timing: target-policy
+  red_evidence: target-policy
+  coverage_writes: canonical-owner
+---
 # Test-First Development Skill
 
 Status: `{PROPOSED_ACCEPTED_DEPRECATED_CONTRADICTED_OR_UNKNOWN}`
@@ -18,16 +25,17 @@ Use this skill only after the target has adapted it and enabled the
 
 1. Load the accepted target policy and selected trigger only.
 2. Name the changed fact and choose the smallest proving target test level.
-3. Record observable examples and boundaries.
-4. Prove valid RED with the target command and expected behavior failure.
-5. Make the minimum implementation change and prove GREEN.
-6. Refactor while green, run broader risk-selected validation, and apply
-   logical integrity.
-7. Record the evidence template, exceptions, skipped checks, and residual risk.
+3. Follow `.ai/assistant/flows/test-first-change.flow.md`; do not maintain a
+   separate RED/GREEN sequence here. Target execution timing and current-scope
+   authorization apply before every command, including baseline and coverage.
+4. Write canonical project testing sources first; refresh Alatyr mirrors from
+   those owners, never in the reverse direction.
+5. Report actual evidence state and proof boundary. A manual-review deferral is
+   not RED, a passed test, or an automatically accepted test-after exception.
 
 ## Prohibited
 
-- Do not activate this placeholder as an accepted target skill.
+- Do not activate an unadapted or unresolved target policy.
 - Do not invent commands, fixtures, test levels, isolation, or exceptions.
 - Do not accept syntax, setup, infrastructure, or unrelated failure as RED.
 - Do not weaken useful tests or assertions to obtain GREEN.

@@ -62,6 +62,28 @@ A target policy may enable these modes:
 The target decides which modes are available and which trigger selects each
 mode. Do not silently convert a test-after project into strict TDD.
 
+## Execution Authority And Ownership
+
+Before any baseline, RED, GREEN, coverage or broader run, resolve canonical
+project testing owners, current-scope execution authorization, and target timing.
+Module enablement, command availability and an accepted recommendation grant no
+execution permission. Manual-review-first may defer execution while tests are
+authored; it does not fabricate RED or automatically approve a strict-mode
+exception. Preserve the accepted timing and report unresolved conflicts.
+
+Policy `execution_contract` version 1 records canonical policy/coverage owners,
+timing, RED requirements, review authority and explicitly selected current
+evidence paths. Keep mirrors subordinate: edit canonical sources first, then
+reconcile JSON-equivalent adapter copies. Skills, flows, gates and templates
+bind to that policy rather than maintaining independent execution sequences.
+
+Each command records kind, configuration paths, prerequisites, effects,
+environment, suite scope, proof boundary and supported/unsupported/unknown
+filtering. Distinguish disposable automated resources from the shared manual
+review application and database. Never broaden an unsupported focused command.
+Reconcile test additions and exclusions against actual runner configuration;
+metadata alone cannot establish command semantics or suite completeness.
+
 ## Enablement Contract
 
 The module is enabled only when the target records:
@@ -129,9 +151,12 @@ For an activated test-first change:
    allowed command.
 3. Record observable acceptance examples and important negative or boundary
    cases.
-4. Run the relevant baseline when the target policy requires it.
-5. Add or select the focused test and prove RED for the expected behavior
-   reason. A syntax, import, setup, unavailable-service, or unrelated failure is
+4. Resolve the execution contract and current authorization; defer commands
+   while the target's review gate is pending. Missing legacy contracts are
+   unresolved execution readiness, not automatic permission.
+5. When execution is authorized, run the selected baseline or focused test.
+   Prove RED only when required by the selected mode/policy, before implementation
+   for strict modes. A syntax, import, setup, unavailable-service, or unrelated failure is
    not valid RED evidence.
 6. Make the minimum implementation change needed to satisfy the selected
    contract and prove GREEN with the same focused command.
@@ -157,6 +182,25 @@ Evidence should record:
 - broader validation run, skipped, or unresolved
 - exception reason and authority when `test-after-with-reason` applies
 - companion updates, approvals, residual risk, and final revision when known
+
+Optional `target-test-execution-evidence` records separate authored, discovered,
+passed, failed, skipped and blocked states. Bind current revision, canonical
+policy, coverage owner, selected tests/configuration, changed implementation
+inputs and raw result artifacts by SHA-256. Deleted implementation inputs may
+use `null` in `input_sha256`, verified as contained missing paths. Selected
+tests, configuration and coverage owners always require content hashes. Record
+authorization/timing, availability, prerequisites, actual filter, proof boundary,
+environment, case counts, selected/executed files and explicit exclusions. Counts conserve
+discovered = executed + skipped + not_run (default 0) and
+executed = passed + failed. Zero-execution
+or all-skipped runs prove no behavior. Suite claims reconcile target-owned
+`suite_patterns` against current Git-visible files before runner exclusions;
+full claims cannot hide filtering, exclusions or skips. Static case-ID checks
+and mocked browser tests never establish real persistence or end-to-end proof.
+Validate only explicitly selected current records, not the historical corpus.
+`full` is limited to the declared command and proof boundary, never all project
+behavior; mocked runs retain narrower claims. These run records do not establish
+RED/GREEN ordering or satisfy the manual test-first completion gate by themselves.
 
 Command output may be summarized and linked according to target retention and
 sensitivity policy. Structural records do not prove that assertions are

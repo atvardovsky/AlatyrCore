@@ -30,7 +30,7 @@
         "ALATYR-PACKAGE-001"
       ],
       "estimated_words": 176,
-      "content_digest": "sha256:be56f2669e792613d303d9b83cafbb1bb3328ce9175a273164f7e657346dbbd2"
+      "content_digest": "sha256:38425baa8a172ec859b8752d526eb4bb8e320b73ddd56c8ab47ca4c231a39286"
     },
     {
       "id": "framework.section.collaboration",
@@ -111,7 +111,7 @@
         "ALATYR-EXTENSION-001"
       ],
       "estimated_words": 228,
-      "content_digest": "sha256:be9862978e2bf57e7f648354da3258313dab9ab2feef8d09e736ef3ca2455048"
+      "content_digest": "sha256:a77dfdce1aff95ad011403cf841f04c469e5687a25257b342a58b190bf6f49ed"
     },
     {
       "id": "framework.section.knowledge",
@@ -154,7 +154,7 @@
         "ALATYR-LIFECYCLE-001"
       ],
       "estimated_words": 217,
-      "content_digest": "sha256:ade2b85adde7a02f5d98ab9113bad4a17dcd9f7da3558bd08219a7da7342b30b"
+      "content_digest": "sha256:65c50c800ff9802501666dd21e5dd26855ab7e99ac027ff877c5a30f051085f4"
     },
     {
       "id": "framework.section.support",
@@ -177,7 +177,7 @@
         "ALATYR-TDD-001"
       ],
       "estimated_words": 288,
-      "content_digest": "sha256:d2b0cea1446f36a5fb3b1703111dc3e44f647a77832cc4fbe7958324b7ea2fdc"
+      "content_digest": "sha256:9d13d0c850ba04def8c6d1afedd31c22b2da9944cea24bd008ae35e0083cbe6d"
     }
   ]
 }

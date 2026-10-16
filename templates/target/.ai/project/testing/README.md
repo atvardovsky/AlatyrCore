@@ -7,6 +7,8 @@ Replace placeholders from target evidence before enabling the
 `test-first-development` module.
 
 Test-first policy: `.ai/project/testing/test-first-policy.json`
+Canonical project policy/matrix: resolve `execution_contract` from target
+evidence. Edit those owners first; this adapter may be a subordinate mirror.
 General portable testing guidance: `.ai/framework/testing-guidance.md`
 Portable test-first rule: `.ai/framework/test-first-development.md`
 Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
@@ -24,6 +26,16 @@ The module is enabled only when the policy records accepted target commands,
 test levels, trigger severity, isolation, exceptions, evidence requirements,
 and owners. Enabling an advisory adapter workflow does not silently add test
 dependencies, CI jobs, required merge gates, or production behavior.
+
+Resolve execution timing, review authority and current authorization before
+running baseline, RED, GREEN, coverage or other test commands. Availability is
+separate from permission. Record configuration, prerequisites, effects,
+environment, suite scope, proof boundary and filter support per command.
+Reconcile newly added tests and intentional exclusions against real selection.
+Do not treat static case-ID discovery, all-skipped runs or mocked UI tests as
+stronger behavioral evidence. The optional machine evidence template is
+`.ai/assistant/templates/test-execution-evidence.json`; select current records
+explicitly in the policy, never scan historical results during routine work.
 
 Use `Alatyr enable test-first` to assess and propose or apply this policy. This
 is an assistant request shortcut, not a shell command. Approval is required

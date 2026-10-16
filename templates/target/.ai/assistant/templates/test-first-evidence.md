@@ -1,3 +1,10 @@
+---
+alatyr_test_execution:
+  policy: .ai/project/testing/test-first-policy.json
+  timing: target-policy
+  red_evidence: target-policy
+  coverage_writes: canonical-owner
+---
 # Test-First Evidence
 
 Operation ID: `{OPERATION_ID}`
@@ -10,13 +17,22 @@ Changed fact or defect: `{CHANGED_FACT_DEFECT_INVARIANT_OR_CONTRACT}`
 Canonical owner: `{TARGET_FACT_OWNER}`
 Test level: `{TARGET_TEST_LEVEL_ID}`
 Acceptance examples: `{OBSERVABLE_EXAMPLES_AND_BOUNDARIES}`
+Canonical testing policy/matrix: `{TARGET_OWNERS_NOT_DERIVED_MIRRORS}`
+Execution timing and authorization source: `{CURRENT_SCOPE_EVIDENCE_OR_PENDING}`
+Availability/prerequisites: `{AVAILABLE_UNAVAILABLE_OR_UNKNOWN_AND_REASON}`
+Environment/effects/filter: `{ACTUAL_ENVIRONMENT_EFFECTS_AND_VERIFIED_FILTER_OR_UNSUPPORTED}`
+Evidence state: `{AUTHORED_DISCOVERED_PASSED_FAILED_SKIPPED_OR_BLOCKED}`
+Proof boundary: `{STATIC_UNIT_MOCKED_REAL_PERSISTENCE_BROWSER_OR_END_TO_END}`
+Selected/executed/excluded files and reasons: `{ACTUAL_SELECTION}`
+Discovered/executed/passed/failed/skipped/not-run counts: `{MEASURED_COUNTS_NOT_CASE_ID_MATCHES}`
+Current machine record, when used: `{PATH_BOUND_IN_POLICY_EXECUTION_CONTRACT_OR_NONE}`
 
 ## RED
 
 Test reference: `{TARGET_TEST_PATH_AND_CASE}`
 Command ID: `{TARGET_COMMAND_ID}`
 Command: `{TARGET_COMMAND_OR_REDACTED_REFERENCE}`
-Result: `{FAILED_AS_EXPECTED_OR_INVALID_RED}`
+Result: `{FAILED_AS_EXPECTED_INVALID_RED_OR_NOT_RUN_WITH_REASON}`
 Expected failure reason: `{EXPECTED_BEHAVIOR_FAILURE}`
 Observed failure reason: `{OBSERVED_FAILURE}`
 Evidence revision or artifact: `{RED_EVIDENCE_REFERENCE}`

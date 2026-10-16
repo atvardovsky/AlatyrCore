@@ -7,6 +7,16 @@
   "decision_authority": "{TARGET_TEST_FIRST_DECISION_AUTHORITY}",
   "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
   "evidence_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+  "execution_contract": {
+    "schema_version": 1,
+    "canonical_policy": "{TARGET_CANONICAL_TEST_POLICY_PATH}",
+    "canonical_coverage_matrix": "{TARGET_CANONICAL_COVERAGE_MATRIX_PATH_OR_NULL}",
+    "coverage_not_applicable_reason": null,
+    "timing": "{BEFORE_IMPLEMENTATION_AFTER_MANUAL_REVIEW_OR_EXPLICIT_REQUEST_ONLY}",
+    "red_requirement": "{REQUIRED_BEFORE_IMPLEMENTATION_WHEN_AUTHORIZED_OR_NOT_REQUIRED}",
+    "review_authority": "{TARGET_TEST_EXECUTION_AUTHORITY}",
+    "evidence_records": []
+  },
   "suggestion": {
     "mode": "{OFF_OR_ADVISORY}",
     "minimum_result": "{RECOMMENDED_OR_REQUIRED}",
@@ -43,7 +53,18 @@
       "id": "{TARGET_TEST_COMMAND_ID}",
       "command": "{TARGET_TEST_COMMAND_OR_MANUAL_REVIEW}",
       "scope": "{TARGET_COMMAND_SCOPE}",
-      "live_external_actions": "{FORBIDDEN_ALLOWED_WITH_APPROVAL_OR_NOT_APPLICABLE}"
+      "live_external_actions": "{FORBIDDEN_ALLOWED_WITH_APPROVAL_OR_NOT_APPLICABLE}",
+      "execution": {
+        "kind": "{STATIC_ANALYSIS_METADATA_CHECK_AUTOMATED_TEST_OR_MANUAL_REVIEW}",
+        "configuration_paths": ["{TARGET_COMMAND_CONFIG_PATH}"],
+        "suite_patterns": ["{TARGET_TEST_UNIVERSE_PATTERN_BEFORE_RUNNER_EXCLUSIONS}"],
+        "prerequisites": ["{TARGET_COMMAND_PREREQUISITE}"],
+        "effects": [],
+        "environment": "{NONE_DISPOSABLE_SHARED_REVIEW_EXTERNAL_OR_MANUAL}",
+        "suite_scope": "{FULL_SELECTED_FILTERED_OR_NOT_APPLICABLE}",
+        "proof_boundary": "{STATIC_METADATA_UNIT_MOCKED_INTERFACE_REAL_PERSISTENCE_BROWSER_MOCKED_END_TO_END_OR_MANUAL}",
+        "filtering": {"state": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "syntax_or_reason": "{VERIFIED_FILTER_SYNTAX_OR_REASON}"}
+      }
     }
   ],
   "isolation": {
@@ -60,7 +81,8 @@
     "changed fact and owner",
     "trigger result and selected mode",
     "observable acceptance examples",
-    "RED command result and expected failure reason",
+    "current-scope authorization and execution-timing disposition",
+    "RED only when authorized and required; otherwise not-run reason",
     "GREEN command result for the same focused contract",
     "refactor result or skip reason",
     "broader validation and residual risk"

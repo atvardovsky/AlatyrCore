@@ -152,6 +152,8 @@ Operation help:
 - When test-first development is enabled, preserve target policy ownership,
   triggers, modes, commands, isolation, exceptions, adapted skill, and
   historical evidence; recheck recommendation and RED/GREEN routing before use.
+  Reconcile execution timing, canonical owners, command selection/effects and
+  current evidence; report missing legacy contracts without running tests.
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/extensions/catalog.json"]} -->
 - When extensions are enabled, preserve catalog/lock entries, immutable source

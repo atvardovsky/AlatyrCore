@@ -231,6 +231,10 @@ pre-acceptance, and message templates are not completion evidence.
     severity, modes, levels, isolation, exceptions, policy revision, and
     historical evidence; recheck recommendation and RED/GREEN routing without
     silently enabling new CI or merge requirements.
+    Reconcile `execution_contract`, canonical owners and policy-bound skill,
+    flow, gate and evidence surfaces; inspect actual command configuration,
+    effects, filtering, suite exclusions and skip conditions without executing
+    tests for discovery. Preserve review-first restrictions and historical runs.
     When extensions are enabled, preserve catalog and lock IDs, immutable
     source revisions/digests, target bindings, permissions, approvals, local
     deviations, installed-file ownership, and historical lifecycle evidence;
