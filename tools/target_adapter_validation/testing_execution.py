@@ -6,7 +6,7 @@ from typing import Any
 
 from path_spec import select_paths
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
-from test_execution_contract import SURFACES, TestExecutionContract, has_placeholders, surface_binding_failures
+from test_execution_contract import SURFACES, TestExecutionContract, has_placeholders, surface_binding_failures, policy_projection_failures
 from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.context import TargetFileState
 
@@ -38,8 +38,9 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
         context.error("TDD_CANONICAL_POLICY_MISSING", "canonical testing policy is missing or outside the target", owner_path)
         return
     canonical = context.load_json_object(context.target_path(owner_path), "TDD_CANONICAL_POLICY")
-    if canonical is not None and canonical != policy:
-        context.error("TDD_POLICY_PROJECTION_DRIFT", "adapter policy must equal its canonical project owner; reconcile from the owner, never overwrite it from the mirror", source)
+    if canonical is not None:
+        for failure in policy_projection_failures(policy, canonical):
+            context.error("TDD_POLICY_PROJECTION_DRIFT", failure, source)
     matrix = execution["canonical_coverage_matrix"]
     if matrix is not None and not context.is_target_file(matrix):
         context.error("TDD_COVERAGE_OWNER_MISSING", "canonical coverage matrix does not exist", matrix)

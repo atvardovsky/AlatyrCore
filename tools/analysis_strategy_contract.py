@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import jsonschema
+from behavior_acceptance import behavior_failures
 
 
 PRIMARY_STRATEGY_IDS = (
@@ -28,8 +29,8 @@ DESCRIPTOR_FIELDS = {
     "required_nonempty_fields",
     "completion_rule",
 }
-PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v4"
-PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v3"
+PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v5"
+PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v4"
 STRATEGY_INDEX_RELPATH = ".ai/assistant/analysis-strategies/index.json"
 PROBLEM_MODEL_TEMPLATE_RELPATH = ".ai/assistant/templates/problem-model.json"
 PROBLEM_MODEL_PROJECTION_TEMPLATE_RELPATH = (
@@ -351,6 +352,8 @@ def validate_problem_model(
         )
     ]
     model_bytes = canonical_utf8_size(model)
+    if isinstance(model, dict) and (type(model.get("schema_version")) is not int or isinstance(model.get("active_projection"), dict) and type(model["active_projection"].get("schema_version")) is not int):
+        failures.append("problem model and projection schema versions must be integers")
     model_words = structured_word_count(model)
     if model_bytes > MAX_PROBLEM_MODEL_UTF8_BYTES:
         failures.append(
@@ -360,6 +363,10 @@ def validate_problem_model(
     if model_words > MAX_PROBLEM_MODEL_WORDS:
         failures.append(f"problem model exceeds {MAX_PROBLEM_MODEL_WORDS} words")
     failures.extend(_forbidden_reasoning_failures(model))
+    if failures:
+        return failures
+    if model.get("schema_version") == 5:
+        failures.extend(behavior_failures(model))
     projection_ref = model.get("active_projection")
     model_id = model.get("model_id")
     if isinstance(projection_ref, dict) and isinstance(model_id, str):
@@ -660,6 +667,14 @@ def build_active_problem_model_projection(
         "incident": model.get("incident"),
         "lifecycle_model": model.get("lifecycle_model"),
         "contract_enforcement": model.get("contract_enforcement"),
+        "behavior_acceptance": {
+            "required": model.get("behavior_review", {}).get("required", False),
+            "unresolved_fact_ids": [
+                delta.get("fact_id") for delta in model.get("behavior_review", {}).get("deltas", [])
+                if isinstance(delta, dict) and delta.get("authority_status") != "approved"
+            ],
+            "original_case_status": model["original_case"].get("status") if isinstance(model.get("original_case"), dict) else "not-applicable",
+        },
         "primary_strategy_id": model.get("primary_strategy_id"),
         "risk_classes": model.get("risk_classes", []),
         "protected_change": model.get("protected_change"),
@@ -736,8 +751,11 @@ def build_active_problem_model_projection(
             "previous_transitions": max(0, len(transitions) - 1),
         },
     }
+    legacy = model.get("schema_version") == 4
+    if legacy:
+        payload.pop("behavior_acceptance")
     return {
-        "schema_version": 3,
+        "schema_version": 3 if legacy else 4,
         "projection_kind": "alatyr-active-problem-model",
         "model_id": model.get("model_id"),
         "operation_id": model.get("operation_id"),
@@ -770,6 +788,10 @@ def validate_active_problem_model_projection(
             key=lambda item: list(item.absolute_path),
         )
     ]
+    if not isinstance(projection, dict):
+        return failures
+    if type(projection.get("schema_version")) is not int:
+        failures.append("active projection schema version must be an integer")
     payload = projection.get("payload")
     if isinstance(payload, dict):
         payload_bytes = canonical_utf8_size(payload)

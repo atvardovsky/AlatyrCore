@@ -30,8 +30,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 385,
-      "content_digest": "sha256:501f5321a057039ecf54583e1add365e94e3f109b318b99a136c7f7227f0bb68"
+      "estimated_words": 442,
+      "content_digest": "sha256:7b60a502729d83d459a0d54856bc8eec9c8f8dd58ced8f4a6a1395e5d9c3b2aa"
     },
     {
       "id": "assistant.content.gates-checklist-md",
@@ -50,8 +50,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1371,
-      "content_digest": "sha256:b1ac2e8c14d7fcf03e07c3f61a9d30fa5ff6ef927b58efb1342f1e962a49f5db"
+      "estimated_words": 1381,
+      "content_digest": "sha256:0f29521245c373df1ab3dba356fde16ab5bcf10e0bce602ff674d4cbbcfb5c7e"
     },
     {
       "id": "assistant.content.gates-code-and-tests-md",
@@ -267,8 +267,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 260,
-      "content_digest": "sha256:4adef230c20c7f01dac973a6bea9cd03bc5cb9154ddccc7220594ea896b4210b"
+      "estimated_words": 253,
+      "content_digest": "sha256:1e70990f3f8d5d3f6ea23fd86a774edf87f6ffa782ffbb24ef8dbe4f7ee9e90f"
     },
     {
       "id": "assistant.content.gates-index-json",
@@ -380,8 +380,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 103,
-      "content_digest": "sha256:90ae5ace48c56b15a1487e615303ddf30a4ab9e003f2df09ef949d84961d2448"
+      "estimated_words": 144,
+      "content_digest": "sha256:c126201f3ad54a865aaf263775571e4b4100bc25b60e3b84d182f35c9513300b"
     },
     {
       "id": "assistant.content.gates-session-continuity-md",
@@ -467,8 +467,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 341,
-      "content_digest": "sha256:4c05291f6389cc8a97d625e35319e46b5ee6f843b087407dc141af99c264482a"
+      "estimated_words": 370,
+      "content_digest": "sha256:1def191473f2a75b894bb88540a95bd9d3c0a29fcec6db6c09887bb56eb31420"
     },
     {
       "id": "assistant.content.gates-visual-validation-md",

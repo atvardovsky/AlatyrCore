@@ -10,7 +10,7 @@
       "type": "object",
       "required": ["schema_version", "canonical_policy", "canonical_coverage_matrix", "coverage_not_applicable_reason", "timing", "red_requirement", "review_authority", "evidence_records"],
       "properties": {
-        "schema_version": {"type": "integer", "const": 1},
+        "schema_version": {"type": "integer", "const": 2},
         "canonical_policy": {"$ref": "#/$defs/text"},
         "canonical_coverage_matrix": {"type": ["string", "null"], "minLength": 1},
         "coverage_not_applicable_reason": {"type": ["string", "null"], "minLength": 1},
@@ -22,13 +22,14 @@
     },
     "command_execution": {
       "type": "object",
-      "required": ["kind", "configuration_paths", "suite_patterns", "prerequisites", "effects", "environment", "suite_scope", "proof_boundary", "filtering"],
+      "required": ["kind", "configuration_paths", "suite_patterns", "prerequisites", "effects", "resources", "environment", "suite_scope", "proof_boundary", "filtering"],
       "properties": {
         "kind": {"enum": ["static-analysis", "metadata-check", "automated-test", "manual-review"]},
         "configuration_paths": {"$ref": "#/$defs/texts"},
         "suite_patterns": {"$ref": "#/$defs/texts"},
         "prerequisites": {"$ref": "#/$defs/texts"},
         "effects": {"type": "array", "uniqueItems": true, "items": {"enum": ["temporary-files", "disposable-db-writes", "shared-db-writes", "network", "service-start", "package-install"]}},
+        "resources": {"type": "array", "maxItems": 64, "items": {"type": "object"}},
         "environment": {"enum": ["none", "disposable", "shared-review", "external", "manual"]},
         "suite_scope": {"enum": ["full", "selected", "filtered", "not-applicable"]},
         "proof_boundary": {"$ref": "#/$defs/boundary"},
@@ -50,9 +51,9 @@
     },
     "evidence": {
       "type": "object",
-      "required": ["schema_version", "record_kind", "command_id", "repository_revision", "policy_sha256", "input_sha256", "state", "claim", "proof_boundary", "environment", "authorization", "authorization_source", "timing_disposition", "availability", "prerequisites_satisfied", "filter", "counts", "files", "result_artifact"],
+      "required": ["schema_version", "record_kind", "command_id", "repository_revision", "policy_sha256", "input_sha256", "state", "claim", "proof_boundary", "environment", "resources", "resource_coordination", "authorization", "authorization_source", "timing_disposition", "availability", "prerequisites_satisfied", "filter", "counts", "files", "result_artifact"],
       "properties": {
-        "schema_version": {"type": "integer", "const": 1},
+        "schema_version": {"type": "integer", "const": 2},
         "record_kind": {"const": "target-test-execution-evidence"},
         "command_id": {"$ref": "#/$defs/text"},
         "repository_revision": {"type": "string", "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"},
@@ -62,6 +63,8 @@
         "claim": {"enum": ["none", "static", "focused", "suite", "full"]},
         "proof_boundary": {"$ref": "#/$defs/boundary"},
         "environment": {"enum": ["none", "disposable", "shared-review", "external", "manual"]},
+        "resources": {"type": "array", "maxItems": 64, "items": {"type": "object"}},
+        "resource_coordination": {"type": "object", "additionalProperties": false, "required": ["decision", "evidence_ref"], "properties": {"decision": {"enum": ["read-only", "serialized", "isolated", "unverified"]}, "evidence_ref": {"type": ["string", "null"], "minLength": 1}}},
         "authorization": {"enum": ["authorized", "awaiting-review", "not-authorized"]},
         "authorization_source": {"$ref": "#/$defs/text"},
         "timing_disposition": {"enum": ["pre-implementation-authorized", "manual-review-complete", "explicit-request-authorized", "not-run"]},

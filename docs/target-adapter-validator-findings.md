@@ -10,11 +10,11 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1719
+Catalog entries: 1724
 
 ## Families
 
-- `ACTIVE`: 21 codes.
+- `ACTIVE`: 23 codes.
 - `AGENT`: 2 codes.
 - `AI`: 18 codes.
 - `ANALYSIS`: 46 codes.
@@ -65,7 +65,7 @@ Catalog entries: 1719
 - `STALE`: 2 codes.
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
-- `TASK`: 54 codes.
+- `TASK`: 57 codes.
 - `TDD`: 64 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
@@ -119,6 +119,10 @@ Catalog entries: 1719
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_UNREGISTERED`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_WITNESS`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_WITNESS_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `AGENT_BROAD_PRELOAD`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AGENT_CANONICAL_ENTRYPOINT_MISSING`
@@ -2821,12 +2825,18 @@ Catalog entries: 1719
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_PATH_ESCAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `TASK_ACCEPTANCE_CLOSURE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_ACCEPTANCE_LEGACY_MODEL`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `TASK_ARCHITECTURE_CATALOG_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_ARCHITECTURE_CATALOG_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_ARCHITECTURE_REVIEW`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_BEHAVIOR_ACCEPTANCE`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `TASK_CAPTURE_RECORD_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_CAPTURE_RECORD_INVALID_SHAPE`

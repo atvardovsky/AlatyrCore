@@ -16,6 +16,18 @@ from validate_target_adapter import Finding, findings_payload  # noqa: E402
 
 
 class AdapterHealthReportTests(unittest.TestCase):
+    def test_required_task_acceptance_cannot_pass_without_checked_closure(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = findings_payload(
+                [], target=Path(directory), strict_warnings=False,
+                installation_state="accepted", current_task_id="current-task",
+                current_task_class="standard-task", require_task_acceptance=True,
+            )
+        self.assertNotEqual(payload["exit_code"], 0)
+        self.assertEqual(payload["task_acceptance"]["state"], "blocked")
+        self.assertIn("TASK_ACCEPTANCE_REQUIRED", {item["code"] for item in payload["findings"]})
+        self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
+
     def test_capability_comparison_finds_missing_and_unknown_requirements(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

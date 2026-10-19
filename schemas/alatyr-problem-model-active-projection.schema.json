@@ -9,7 +9,7 @@
     "source_model", "limits", "payload", "measurements"
   ],
   "properties": {
-    "schema_version": {"const": 3},
+    "schema_version": {"const": 4},
     "projection_kind": {"const": "alatyr-active-problem-model"},
     "model_id": {"$ref": "#/definitions/identifier"},
     "operation_id": {"$ref": "#/definitions/identifier"},
@@ -39,7 +39,7 @@
       "additionalProperties": false,
       "required": [
         "objective", "non_goals", "repository_binding", "task_binding",
-        "incident", "lifecycle_model", "contract_enforcement",
+        "incident", "lifecycle_model", "contract_enforcement", "behavior_acceptance",
         "primary_strategy_id", "risk_classes", "protected_change", "facts",
         "changed_facts", "active_assumptions", "invalidated_assumption_ids",
         "unknowns", "active_invariants", "current_hypotheses",
@@ -63,6 +63,15 @@
         "incident": {"$ref": "#/definitions/incident"},
         "lifecycle_model": {"$ref": "#/definitions/lifecycleModel"},
         "contract_enforcement": {"$ref": "#/definitions/contractEnforcement"},
+        "behavior_acceptance": {
+          "type": "object", "additionalProperties": false,
+          "required": ["required", "unresolved_fact_ids", "original_case_status"],
+          "properties": {
+            "required": {"type": "boolean"},
+            "unresolved_fact_ids": {"$ref": "#/definitions/stringArray"},
+            "original_case_status": {"enum": ["not-applicable", "unverified", "still-failing", "verified-fixed", "superseded-by-owner-decision"]}
+          }
+        },
         "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
         "risk_classes": {"$ref": "#/definitions/stringArray"},
         "protected_change": {"type": "boolean"},

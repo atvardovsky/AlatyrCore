@@ -69,6 +69,11 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Structural adapter checks:
 - Target-native checks discovered from repository evidence:
 - Logical integrity and affected relationship review:
+- Business-rule authority deltas and original-case acceptance for repairs:
+- Selected task ID/class, task-acceptance binding and retained closed-task
+  model/projection witnesses; unresolved history and retention review:
+- Concrete test/worker runtime resources, access conflicts and verified
+  namespace isolation or serialization:
 - Approval-record and actual-diff scope validation when required:
 - Installation or update state transition evidence:
 - Update mode and terminal outcome (`accepted`, `assessed`, `staged`, or

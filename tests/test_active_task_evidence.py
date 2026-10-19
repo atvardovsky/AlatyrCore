@@ -160,6 +160,9 @@ class ActiveTaskTests(fixture.ActiveTaskFixture):
 
     def test_predecessor_requires_real_model_identity_and_ordering(self):
         prior = copy.deepcopy(self.model)
+        case = {"source_ref": "fixture:original-report", "actor": "caller", "input": "A failed request", "expected_outcome": "Correctly classified outcome", "status": "unverified", "evidence_refs": [], "supersession": None}
+        prior["original_case"] = copy.deepcopy(case)
+        self.model["original_case"] = copy.deepcopy(case)
         prior["model_id"] = "prior-model"
         prior["task_binding"]["task_ids"] = ["prior-task"]
         prior["active_projection"]["path"] = ".ai/.runtime/problem-model-projections/prior-model.json"

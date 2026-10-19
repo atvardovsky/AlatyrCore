@@ -2,6 +2,18 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "plan-test-resources",
+      "script": "plan_test_resources.py",
+      "purpose": "plan test-resource conflicts without executing commands",
+      "write_scope": "none"
+    },
+    {
+      "name": "archive-task-evidence",
+      "script": "archive_task_evidence.py",
+      "purpose": "freeze retention-reviewed closed-task model and projection witnesses",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
       "name": "refresh-source",
       "script": "refresh_source_projections.py",
       "purpose": "plan or explicitly refresh source projections in dependency order",

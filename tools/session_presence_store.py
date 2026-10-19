@@ -19,6 +19,7 @@ from session_presence_contract import (
     now_text, presence_policy, scope_reference, timestamp, uid, validate_entry, validate_registry,
 )
 from session_presence_summary import same_worktree, summarize
+from local_file_lock import file_lock
 
 
 def safe_regular(path: Path, *, missing_ok: bool = False) -> None:
@@ -88,42 +89,8 @@ def safe_hub(hub: Path, *, create: bool) -> None:
 def registry_lock(hub: Path, timeout: float = 5.0) -> Iterator[None]:
     safe_hub(hub, create=True)
     path = hub / "registry.lock"
-    safe_regular(path, missing_ok=True)
-    flags = os.O_RDWR | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
-    with os.fdopen(os.open(path, flags, 0o600), "r+b", buffering=0) as stream:
-        info = os.fstat(stream.fileno())
-        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
-            raise ValueError("unsafe presence lock")
-        deadline = time.monotonic() + timeout
-        acquired = False
-        while not acquired:
-            try:
-                if os.name == "nt":
-                    import msvcrt
-                    stream.seek(0)
-                    msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
-                else:
-                    import fcntl
-                    fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-                acquired = True
-            except OSError:
-                if time.monotonic() >= deadline:
-                    raise ValueError("presence registry lock timed out")
-                time.sleep(0.02)
-        try:
-            # Windows permits locking beyond EOF; initialize only under the lock.
-            if os.fstat(stream.fileno()).st_size == 0:
-                stream.seek(0)
-                stream.write(b"\0")
-            yield
-        finally:
-            if os.name == "nt":
-                import msvcrt
-                stream.seek(0)
-                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+    with file_lock(path, timeout=timeout):
+        yield
 
 
 def load_registry(hub: Path, repository_id: str) -> dict[str, Any]:

@@ -19,9 +19,15 @@ the discovery prompts in this checklist.
   selected categories, evidence selectors, exclusions, and material finding
   dispositions:
 - Existing tests:
+- Existing complaint acceptance cases, per-rule business authority and
+  before/after behavior records:
+- Closed-task durable model/projection witnesses and clean-clone validation;
+  active runtime models remain separate:
 - Existing CI:
 - Known validation commands:
 - Existing test tools, fixtures, helpers, and isolation rules:
+- Credential-free runtime resource identities, access modes, namespace-isolation
+  evidence and conflict serialization for tests and workers:
 - Existing source-of-truth/context map:
 - Existing source-of-truth registry:
 - Existing fact IDs, relationship maps, or consistency manifests:

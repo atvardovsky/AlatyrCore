@@ -64,6 +64,37 @@ def _bound_object(validator: Any, binding: Any, label: str) -> dict[str, Any] | 
     return validator.load_json_object(artifact, "ACTIVE_TASK_ARTIFACT")
 
 
+def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = None) -> tuple[Any, Any, Path | None]:
+    """Closed witnesses retain the original model identity without runtime I/O."""
+    binding = task.get("problem_model")
+    if task.get("state") == "closed" and closure is None:
+        closure = _bound_object(validator, task.get("completion_evidence"), "predecessor closure")
+    witness = closure.get("analysis_witness") if isinstance(closure, dict) else None
+    if witness is None:
+        return _bound_object(validator, binding, "problem model"), binding, None
+    if task.get("state") != "closed" or not isinstance(witness, dict) or set(witness) != {"model", "projection", "retention_review"} or not is_resolved_string(witness.get("retention_review")):
+        validator.error("ACTIVE_TASK_WITNESS", "durable evidence requires a closed task and retention review", INDEX_PATH)
+        return None, None, None
+    task_id = task["task_id"]
+    if re.fullmatch(r"[A-Za-z0-9._-]+", task_id) is None or task_id in (".", ".."):
+        validator.error("ACTIVE_TASK_WITNESS", "retained task identities must be safe path tokens", INDEX_PATH)
+        return None, None, None
+    prefix = f".ai/assistant/task-evidence/{task_id}/"
+    for name in ("model", "projection"):
+        item = witness[name]
+        if not isinstance(item, dict) or not isinstance(item.get("path"), str) or not item["path"].startswith(prefix) or validator.git.is_ignored(item["path"]) is not False:
+            validator.error("ACTIVE_TASK_WITNESS", "durable witness must be retainable below .ai/assistant/task-evidence/", INDEX_PATH)
+            return None, None, None
+    if not isinstance(binding, dict) or witness["model"].get("sha256") != binding.get("sha256"):
+        validator.error("ACTIVE_TASK_WITNESS", "durable model must preserve the registered runtime model digest", INDEX_PATH)
+        return None, None, None
+    model = _bound_object(validator, witness["model"], "durable problem model")
+    projection = _bound_object(validator, witness["projection"], "durable active projection")
+    if projection is None:
+        return None, None, None
+    return model, witness["model"], validator.target_path(witness["projection"]["path"])
+
+
 def validate_capture_disposition(validator: Any, value: Any, source: str, closure: dict[str, Any]) -> None:
     task_id = closure["task_id"]
     if not isinstance(value, dict):
@@ -361,6 +392,10 @@ def validate_active_tasks(validator: Any) -> None:
     seen_closures: set[str] = set()
     model_schema = None
     selected_task = getattr(validator, "current_task_id", None)
+    if getattr(validator, "require_task_acceptance", False):
+        selected = [task for task in tasks if task.get("task_id") == selected_task]
+        if len(selected) != 1 or selected[0].get("state") != "closed":
+            validator.error("TASK_ACCEPTANCE_CLOSURE", "current-task acceptance requires one closed selected task", INDEX_PATH)
     if selected_task is not None and not any(task.get("task_id") == selected_task for task in tasks):
         validator.error("ACTIVE_TASK_UNREGISTERED", f"current task {selected_task!r} is absent from the task index", INDEX_PATH)
     changed = validator.git.changed_files(validator.diff_ref) if validator.validation_scope == "changed" else None
@@ -412,21 +447,27 @@ def validate_active_tasks(validator: Any) -> None:
             seen_closures.add(closure_path)
         if state == "closed" and changed is not None and previous == task and task_id != selected_task and isinstance(closure_binding, dict) and closure_binding["path"] not in changed:
             model_binding = task.get("problem_model")
-            if not isinstance(model_binding, dict) or model_binding["path"] not in changed:
+            witness_changed = any(path.startswith(f".ai/assistant/task-evidence/{task_id}/") for path in changed)
+            if not witness_changed and (not isinstance(model_binding, dict) or model_binding["path"] not in changed):
                 continue
         if not isinstance(state, str) or state not in {"active", "closed"} or not isinstance(scale, str) or scale not in {"small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"}:
             validator.error("ACTIVE_TASK_ENTRY", "task state or class is invalid", INDEX_PATH)
             continue
         model_binding = task.get("problem_model")
         closure = _bound_object(validator, task.get("completion_evidence"), f"{task_id} closure") if state == "closed" else None
+        if task_id == selected_task and isinstance(closure, dict):
+            validator.task_closure_checked = True
         delivery = closure.get("delivery") if isinstance(closure, dict) else None
         require_completion = isinstance(delivery, dict) and delivery.get("evidence_finalization") == "final"
         if scale != "small-task" or model_binding is not None:
-            model = _bound_object(validator, model_binding, f"{task_id} problem model")
+            model, selected_binding, archived_projection = _task_model_evidence(validator, task, closure)
             if model is not None:
                 model_schema = model_schema or load_problem_model_schema()
-                path = validator.target_path(model_binding["path"])
-                validated_model = validate_selected_problem_model(validator, path, model_schema, require_completion=require_completion)
+                path = validator.target_path(selected_binding["path"])
+                if state == "closed" and archived_projection is None:
+                    validator.error("ACTIVE_TASK_WITNESS", "closed non-small tasks require durable model and projection witnesses", INDEX_PATH)
+                validated_model = validate_selected_problem_model(validator, path, model_schema, require_completion=require_completion,
+                    archived_projection=archived_projection, original_source_path=model_binding["path"], current_task=task_id == selected_task)
                 task_binding = validated_model.get("task_binding") if isinstance(validated_model, dict) else None
                 if isinstance(validated_model, dict) and validated_model.get("operation_id") != task["operation_id"]:
                     validator.error("ACTIVE_TASK_MODEL_LINEAGE", "problem model operation differs from the registered operation", INDEX_PATH)
@@ -451,7 +492,7 @@ def validate_active_tasks(validator: Any) -> None:
                     predecessor_models = set()
                     for predecessor in task["predecessor_task_ids"]:
                         header = task_by_id.get(predecessor)
-                        prior_model = _bound_object(validator, header.get("problem_model"), "predecessor model") if isinstance(header, dict) else None
+                        prior_model = _task_model_evidence(validator, header)[0] if isinstance(header, dict) else None
                         if not isinstance(prior_model, dict) or not isinstance(prior_model.get("model_id"), str):
                             validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor requires model evidence, not only a matching family header", INDEX_PATH)
                             continue

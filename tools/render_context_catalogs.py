@@ -473,6 +473,9 @@ def build_directory_catalog_contents(
                     f"selected {contour} catalog path does not exist: {relpath}"
                 )
             all_files.append(path)
+    if contour == "assistant":
+        # Historical witnesses are selected through the task index, never bootstrap context.
+        all_files = [path for path in all_files if path.relative_to(root).parts[0] != "task-evidence"]
     directories = {root}
     for path in all_files:
         current = path.parent

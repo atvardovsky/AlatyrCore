@@ -8,9 +8,9 @@
     "active_task_index": ".ai/assistant/active-tasks.json",
     "task_closure_template": ".ai/assistant/templates/task-closure.json",
     "catalog": ".ai/assistant/analysis-strategies/index.json",
-    "problem_model_schema": "alatyr-problem-model-v4",
+    "problem_model_schema": "alatyr-problem-model-v5",
     "problem_model_template": ".ai/assistant/templates/problem-model.json",
-    "active_projection_schema": "alatyr-problem-model-active-projection-v3",
+    "active_projection_schema": "alatyr-problem-model-active-projection-v4",
     "active_projection_template": ".ai/assistant/templates/problem-model-active-projection.json",
     "problem_model_limits": {
       "max_utf8_bytes": 65536,

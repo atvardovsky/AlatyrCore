@@ -745,8 +745,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 353,
-      "content_digest": "sha256:255cbc873ecc02c1b57510de655da562b28372c10e7bc63f5e4c640af22954f5"
+      "estimated_words": 360,
+      "content_digest": "sha256:139321570f5e55964c3cca41eac6f4e50c1f3dbc066136d4892b50c6c9be82d1"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -832,8 +832,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 202,
-      "content_digest": "sha256:2fb389f4792027130958bb7a9ba79eb986b516c0876ef1d1e52c05c462a79ace"
+      "estimated_words": 212,
+      "content_digest": "sha256:1e0fb2c0e5f0ef188f7dd9850895371f99437a442a3fe8933673c5daac4e5a60"
     },
     {
       "id": "assistant.content.templates-problem-model-active-projection-json",
@@ -855,8 +855,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 166,
-      "content_digest": "sha256:7427b7b9c30502bcc0626e99d3ad8e8500913e2a21a313cfac826f9f45b31be7"
+      "estimated_words": 173,
+      "content_digest": "sha256:3880b271cd79a9a46a86908ca7472ff89e56ccafdbdfb62623cabf532a26e9b1"
     },
     {
       "id": "assistant.content.templates-problem-model-json",
@@ -876,8 +876,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 145,
-      "content_digest": "sha256:8e033ef958108bce03825da22e87426620e8680143f292aadeb4e3d1af2e0e0a"
+      "estimated_words": 164,
+      "content_digest": "sha256:5bad387fdbed22e41da5aecec2789eb86a1f6d049558802c6b9f977afae87afc"
     },
     {
       "id": "assistant.content.templates-project-knowledge-promotion-json",
@@ -1043,8 +1043,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 348,
-      "content_digest": "sha256:512f7a1067fc2dbc88f802bc81f1e3c0ed27605c15f92e94c058b738644755a9"
+      "estimated_words": 356,
+      "content_digest": "sha256:4a93b3bbe965d86be43fccf54887dc4c0fee73948fa11eb1f3385153f578834e"
     },
     {
       "id": "assistant.content.templates-task-closure-json",
@@ -1064,8 +1064,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 70,
-      "content_digest": "sha256:293253a72d1d0060d8f0e852ffc63f2fdc0a1fcb4533110cb8e4f3aa33b8b743"
+      "estimated_words": 85,
+      "content_digest": "sha256:d45ae3f85ce118d378647f3be9184a6e4c6ef9d1efc2193d46aa4d7aefdf6640"
     },
     {
       "id": "assistant.content.templates-task-decomposition-md",
@@ -1086,8 +1086,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 295,
-      "content_digest": "sha256:19800c806321d933decd217df0285af98946491c7fc80adc9453d13db47a7e50"
+      "estimated_words": 307,
+      "content_digest": "sha256:b265149199d7d892bcedc58330fd602bc76d2b7ef7a602053a054cab4d7283ce"
     },
     {
       "id": "assistant.content.templates-team-checkpoint-md",
@@ -1226,8 +1226,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 58,
-      "content_digest": "sha256:f11d20883553df5aab371deec9f29059ff164b3e94e54f4e74a7e308370402dc"
+      "estimated_words": 65,
+      "content_digest": "sha256:8424f788d3176a97d4654511f219552d9e38afc36384a851a5307e01cafb567b"
     },
     {
       "id": "assistant.content.templates-test-first-evidence-md",
@@ -1320,8 +1320,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 296,
-      "content_digest": "sha256:44eee5ea92d2e5361171a40cdb5836e6974cb4909365ffa0410ac5bfad9b4773"
+      "estimated_words": 304,
+      "content_digest": "sha256:fffb6bf7840e9bfcd6c0bb52909bba4cf1f0c9ecabe2768bf6cd00d1e4458316"
     },
     {
       "id": "assistant.content.templates-worker-result-json",

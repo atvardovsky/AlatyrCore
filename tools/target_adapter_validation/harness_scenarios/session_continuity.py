@@ -144,42 +144,13 @@ def _packet(
 
 
 def _problem_model(*, branch: str, head: str) -> dict[str, object]:
-    return {
-        "schema_version": 2,
-        "model_kind": "alatyr-bounded-problem-model",
-        "model_id": "fixture-problem",
-        "operation_id": "ad-hoc",
-        "active_projection": {
-            "schema_version": 1,
-            "path": ".ai/.runtime/problem-model-projections/fixture-problem.json",
-        },
-        "primary_strategy_id": "direct-local",
-        "risk_classes": [],
-        "protected_change": False,
-        "required_review_ids": [],
-        "review_results": [],
-        "objective": "verify continuity",
-        "repository_binding": {
-            "state": "available",
-            "branch": branch,
-            "base_revision": head,
-        },
-        "task_binding": {"task_ids": ["fixture-task"], "workstream_ids": []},
-        "predecessor": {"state": "none", "model_id": "none", "sha256": "none"},
-        "strategy_transitions": [],
-        "non_goals": [],
-        "facts": [],
-        "assumptions": [],
-        "unknowns": [],
-        "changed_facts": [],
-        "invariants": [],
-        "hypotheses": [],
-        "alternatives": [],
-        "proof_obligations": [],
-        "counterexamples": [],
-        "unresolved_decisions": [],
-        "evidence_refs": [],
-    }
+    from analysis_strategy_contract import materialize_authoring_template
+    model = materialize_authoring_template(json.loads((ROOT / "templates/target/.ai/assistant/templates/problem-model.json").read_text(encoding="utf-8")))
+    model.update(model_id="fixture-problem", operation_id="ad-hoc", primary_strategy_id="direct-local", objective="verify continuity")
+    model["active_projection"]["path"] = ".ai/.runtime/problem-model-projections/fixture-problem.json"
+    model["repository_binding"].update(branch=branch, base_revision=head)
+    model["task_binding"]["task_ids"] = ["fixture-task"]
+    return model
 
 
 def run(target: Path, failures: list[str]) -> None:
@@ -311,7 +282,7 @@ def run(target: Path, failures: list[str]) -> None:
     validate_session_continuity(valid_analysis)
     if any(
         finding.level == "error"
-        and finding.code.startswith("SESSION_CONTINUITY_ANALYSIS")
+        and finding.code.startswith(("SESSION_CONTINUITY_ANALYSIS", "ANALYSIS_"))
         for finding in valid_analysis.findings
     ):
         failures.append("valid continuity problem-model binding was rejected")

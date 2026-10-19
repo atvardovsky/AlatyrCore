@@ -149,7 +149,13 @@ Before upgrading framework files in a target project:
    candidates, and generator bindings. Rebuild approval/package indexes,
    affected context indexes, consistency reverse index, and optional support-
    generation index before generating support state last. Prefer transactional
-   convergence with rollback followed by canonical validation.
+   convergence followed by canonical validation. Cooperative writers serialize
+   shared generated outputs. Failure restores only outputs still matching that
+   transaction's known postimages; preserve and report peer changes or unsafe
+   paths rather than overwriting them. A rollback conflict is not acceptance.
+   Freeze retention-reviewed closed-task witnesses; upgrade active models and
+   projections together without fabricating authority or original-case results.
+   Bind registered update-task completion separately from installation health.
    For required durable engineering evidence, compare its policy, compact
    index, contract version, authoring-template record schema, lazy route,
    capture gate, repository binding state/lineage, Git object and ancestry

@@ -1,10 +1,10 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "model_kind": "alatyr-bounded-problem-model",
   "model_id": "{PROBLEM_MODEL_ID}",
   "operation_id": "{OPERATION_ID}",
   "active_projection": {
-    "schema_version": 3,
+    "schema_version": 4,
     "path": ".ai/.runtime/problem-model-projections/{PROBLEM_MODEL_ID}.json"
   },
   "incident": {
@@ -35,6 +35,8 @@
     "requirements": []
   },
   "primary_strategy_id": "{PRIMARY_STRATEGY_ID}",
+  "behavior_review": {"required": false, "reason": "No business behavior changes in this bounded task; reassess after classification", "deltas": []},
+  "original_case": null,
   "risk_classes": [],
   "protected_change": false,
   "required_review_ids": [],

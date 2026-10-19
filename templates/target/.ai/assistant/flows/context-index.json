@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2442,
-      "content_digest": "sha256:02eab98e8d1937fe41f02b3725af3110e122680e689764cfc4f6e474c1c2fb2b"
+      "estimated_words": 2486,
+      "content_digest": "sha256:465371fa3577f85f6af653452bd8d8e93635e4ceab1fe3b7a211cf4bc365d4a6"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -150,8 +150,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 672,
-      "content_digest": "sha256:220b0766f012e1261fdf0425a862041cdfc9bb70e63e6916f57d0f552eccb02f"
+      "estimated_words": 688,
+      "content_digest": "sha256:110ba4611945c88b2bb5f6cbd970845de6d8e595da515e95d3ddef0c0833e04f"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -387,8 +387,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 585,
-      "content_digest": "sha256:974d649cc0ab6b254c6cd15f489d6ffdc76a4f1e855863ff2855270493008cf1"
+      "estimated_words": 619,
+      "content_digest": "sha256:58cbe2623535ab53db447642100d6bad9bade7635826a94199f9cd6d00c0472a"
     },
     {
       "id": "assistant.content.flows-operation-routing-flow-md",

@@ -90,6 +90,7 @@ class ActiveTaskFixture(unittest.TestCase):
     def close(self):
         self.closure = {"schema_version": 1, "record_kind": "alatyr-task-closure", "task_id": "fixture-task", "delivery": {"implementation": "complete", "evidence_finalization": "final", "publication": "not-requested"}, "engineering_evidence": {"state": "skipped", "materiality": "non-material", "reason": "No reusable finding beyond existing design", "record_ids": [], "preserved_owners": [], "next_safe_action": "none"}, "repository_binding": {"kind": "commit", "binding_state": "final", "base_revision": self.base, "result_revision": self.result, "prior_bindings": []}, "publication_evidence": [], "canonical_owners": ["design.md"], "implementation_surfaces": ["src/example.txt"], "changed_fact_ids": ["change-1"], "incident_family_id": "none", "predecessor_task_ids": [], "latest_failed_gate_id": "none", "knowledge_review": {"state": "not-required", "reason": "Existing owner is already routable", "candidate_ids": []}}
         self.task["state"] = "closed"
+        self.closure["task_id"] = self.task["task_id"]
         self.closure["operation_id"] = self.task["operation_id"]
         self.closure["engineering_evidence"]["preservation"] = []
         self.closure["architecture_review"] = {"state": "not-required", "reason": "No architecture item changes in this fixture", "item_ids": []}
@@ -97,7 +98,16 @@ class ActiveTaskFixture(unittest.TestCase):
 
 
     def write_closure(self):
-        path = self.target / ".ai/assistant/task-closures/fixture-task.json"
+        if self.model_path.is_file():
+            directory = self.target / ".ai/assistant/task-evidence" / self.task["task_id"]
+            directory.mkdir(parents=True, exist_ok=True)
+            retained_model = directory / "model.json"
+            retained_projection = directory / "projection.json"
+            retained_model.write_bytes(self.model_path.read_bytes())
+            projection = self.target / self.model["active_projection"]["path"]
+            retained_projection.write_bytes(projection.read_bytes())
+            self.closure["analysis_witness"] = {"model": self.bind(retained_model), "projection": self.bind(retained_projection), "retention_review": "fixture:retention-reviewed"}
+        path = self.target / ".ai/assistant/task-closures" / (self.task["task_id"] + ".json")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(self.closure), encoding="utf-8")
         self.task["completion_evidence"] = self.bind(path)

@@ -11,10 +11,17 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from report_support_costs import build_installed_report, build_scaffold_report  # noqa: E402
+from report_support_costs import build_installed_report, build_scaffold_report, measure_text_entries  # noqa: E402
 
 
 class SupportCostReportTests(unittest.TestCase):
+    def test_minified_json_size_does_not_depend_on_whitespace_words(self) -> None:
+        small = measure_text_entries([("state.json", json.dumps({"files": ["one"]}, separators=(",", ":")))])
+        large = measure_text_entries([("state.json", json.dumps({"files": ["one", "two"]}, separators=(",", ":")))])
+        self.assertEqual(small["words"], large["words"])
+        self.assertLess(small["bytes"], large["bytes"])
+        self.assertLess(small["estimated_tokens_4_chars"], large["estimated_tokens_4_chars"])
+
     def test_installed_report_separates_policy_exclusions(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
@@ -130,13 +137,15 @@ class SupportCostReportTests(unittest.TestCase):
         self.assertTrue(generated["present"])
         self.assertEqual(generated["files"], 1)
         self.assertGreater(generated["words"], 0)
-        self.assertLess(generated["words"], complete["words"])
+        self.assertLess(generated["bytes"], complete["bytes"])
         # Compare the selected profile's generated inventory, not a historical
         # framework word count that changes when legitimate contracts grow.
-        selected = report["combined_support"]["words"]
-        measured = report["target_templates"]["words"] + report["framework_pack_files"]["words"]
-        self.assertEqual(selected, measured)
-        self.assertLess(selected, selected - generated["words"] + complete["words"])
+        for metric in ("words", "bytes"):
+            selected = report["combined_support"][metric]
+            measured = report["target_templates"][metric] + report["framework_pack_files"][metric]
+            self.assertEqual(selected, measured)
+        selected = report["combined_support"]["bytes"]
+        self.assertLess(selected, selected - generated["bytes"] + complete["bytes"])
 
     def test_index_pressure_is_advisory_and_uses_strict_boundaries(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

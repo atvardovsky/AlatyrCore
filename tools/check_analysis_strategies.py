@@ -33,12 +33,12 @@ PROJECTION_SCHEMA_PATH = (
 
 def sample_model(strategy_id: str) -> dict[str, object]:
     return {
-        "schema_version": 4,
+        "schema_version": 5,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": f"fixture-{strategy_id}",
         "operation_id": "fixture-operation",
         "active_projection": {
-            "schema_version": 3,
+            "schema_version": 4,
             "path": f".ai/.runtime/problem-model-projections/fixture-{strategy_id}.json",
         },
         "incident": {
@@ -68,6 +68,8 @@ def sample_model(strategy_id: str) -> dict[str, object]:
             "reason": "fixture does not change a machine-enforced contract",
             "requirements": [],
         },
+        "behavior_review": {"required": False, "reason": "No business rules change", "deltas": []},
+        "original_case": None,
         "primary_strategy_id": strategy_id,
         "risk_classes": [],
         "protected_change": False,
@@ -115,6 +117,7 @@ def check_lifecycle_contract(
     schema: dict[str, object], failures: list[str]
 ) -> None:
     systemic = sample_model("invariant-first")
+    systemic["original_case"] = {"source_ref": "fixture:original-report", "actor": "caller", "input": "All terminal outcomes", "expected_outcome": "Each outcome is handled", "status": "verified-fixed", "evidence_refs": ["fixture:outcome-checks"], "supersession": None}
     systemic["incident"] = {
         "mode": "systemic-repair",
         "family_id": "fixture-incident",

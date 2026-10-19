@@ -16,6 +16,7 @@ from typing import Any, Protocol
 import jsonschema
 
 from target_validation_support import is_placeholder
+from task_acceptance_binding import task_arguments
 
 
 CONTRACT_PATH = ".ai/assistant/validation-contract.json"
@@ -121,6 +122,10 @@ def _shipped_delegate_parser_failure(
     ):
         if _option_count(completed, option) == 0:
             completed.extend([option, placeholder])
+    if expected_operation == "validate-current" and "--require-task-acceptance" in completed:
+        for option, placeholder in (("--task-id", "ALATYR_CONTRACT_TASK"), ("--task-class", "standard-task")):
+            if _option_count(completed, option) == 0:
+                completed.extend([option, placeholder])
 
     stdout = io.StringIO()
     stderr = io.StringIO()
@@ -128,10 +133,13 @@ def _shipped_delegate_parser_failure(
         parser = _shipped_delegate_parser_factory()()
         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
             parsed = parser.parse_args(completed)
+        task_arguments(task_id=getattr(parsed, "task_id", None), task_class=getattr(parsed, "task_class", None), required=getattr(parsed, "require_task_acceptance", False))
     except SystemExit as exc:
         output = stderr.getvalue() or stdout.getvalue()
         detail = output.strip().splitlines()[-1] if output.strip() else "no diagnostic"
         return None, f"exit {exc.code}: {detail}"
+    except ValueError as exc:
+        return None, str(exc)
     except Exception as exc:  # fail closed if the trusted parser cannot be evaluated
         return None, f"internal failure: {exc}"
     return parsed, None

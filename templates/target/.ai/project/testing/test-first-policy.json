@@ -8,7 +8,7 @@
   "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
   "evidence_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
   "execution_contract": {
-    "schema_version": 1,
+    "schema_version": 2,
     "canonical_policy": "{TARGET_CANONICAL_TEST_POLICY_PATH}",
     "canonical_coverage_matrix": "{TARGET_CANONICAL_COVERAGE_MATRIX_PATH_OR_NULL}",
     "coverage_not_applicable_reason": null,
@@ -60,6 +60,7 @@
         "suite_patterns": ["{TARGET_TEST_UNIVERSE_PATTERN_BEFORE_RUNNER_EXCLUSIONS}"],
         "prerequisites": ["{TARGET_COMMAND_PREREQUISITE}"],
         "effects": [],
+        "resources": [],
         "environment": "{NONE_DISPOSABLE_SHARED_REVIEW_EXTERNAL_OR_MANUAL}",
         "suite_scope": "{FULL_SELECTED_FILTERED_OR_NOT_APPLICABLE}",
         "proof_boundary": "{STATIC_METADATA_UNIT_MOCKED_INTERFACE_REAL_PERSISTENCE_BROWSER_MOCKED_END_TO_END_OR_MANUAL}",

@@ -2,34 +2,34 @@
 
 Owner: `ALATYR-EVIDENCE-001`.
 
-Before completion, report:
+Before completion:
 
-- profile, task class, areas, facts/files, owners, gates, and synchronized
+- profile, task class, areas, facts/files, owners, gates, synchronized
   surfaces
 - `current_user_authorization`: source/scope, allowed phases, invalidation,
   latest commit/publish/live confirmation/effects
-- invariant/review reconciliation and Project Contour Sync Decision with
-  status, fact IDs, checked owners, affected/unchanged surfaces, evidence,
-  support-state result, and risk
-- analysis strategy, problem model, required reviews, and accepted proof
+- Project Contour Sync Decision: invariant/review reconciliation, status, fact
+  IDs, checked owners, affected/unchanged surfaces, evidence, support-state
+  result, risk
+- analysis strategy, problem model, required reviews, accepted proof
   obligations
+- rule authority, original-case acceptance, retained task witnesses, selected
+  task acceptance; distinguish implementation/tests/deployment/publication
 - validation/unresolved checks, approval scope, avoided protected actions,
   residual risk, and next owner/action
 - context index chain, obligation and selected-item IDs/digests, semantic term
   versions, packet/fallback, and budget expansion
-- after continuity, packet/repository verification, selective reload, and
-  re-established current-scope authorization
+- continuity verification of packet and repository, selective reload and
+  renewed current-scope authorization
 - `durable_engineering_evidence`: captured/skipped/blocked,
   ID/path/repository binding, or reason
 - `validation_evidence_classes`: declared, locally observed, tool verified,
   CI verified, reviewer verified, production verified, or explicit skipped
   evidence without stronger claims
-- each selected gate's evidence; do not imply an unselected module ran
+- selected gate evidence; never imply unselected modules ran
 
-For material file changes, commits, publication, live-external actions, or
-large-package closure, fill
-`.ai/assistant/templates/operation-completion-evidence.json` or report the same
-fields.
+For material changes or state-changing phases, complete
+`.ai/assistant/templates/operation-completion-evidence.json` or equivalent fields.
 
 Completion semantics:
 
@@ -43,8 +43,5 @@ Completion semantics:
 - Report `partial`, `blocked`, or `unverified` when validation failed, was
   skipped/unavailable, authorization/approval is missing, or evidence is
   narrower than changed facts.
-- Tie each check to the semantic scope it proves; structure does not prove
-  unrelated invariants.
-
-Structural checks do not prove semantics; unverified capabilities are not
-observed evidence.
+- Bind each check to the semantic scope it proves; structural checks cannot prove semantics
+  or turn unverified capabilities into observed evidence.

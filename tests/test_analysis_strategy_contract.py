@@ -64,9 +64,9 @@ class InstalledAnalysisTemplateTests(unittest.TestCase):
 
         self.assertIn("problem_model", failures)
         self.assertIn("active_projection", failures)
-        self.assertTrue(any("4 was expected" in error for error in failures["problem_model"]))
+        self.assertTrue(any("5 was expected" in error for error in failures["problem_model"]))
         self.assertTrue(
-            any("3 was expected" in error for error in failures["active_projection"])
+            any("4 was expected" in error for error in failures["active_projection"])
         )
 
     def test_missing_required_template_field_is_rejected(self) -> None:

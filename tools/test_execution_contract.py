@@ -12,6 +12,7 @@ from yaml import YAMLError
 from target_adapter_validation.context import TargetRepositoryView
 from target_validation_support import is_placeholder, is_target_relative_path, is_unresolved_value
 from yaml_support import safe_load
+from resource_access import resource_failures, effect_resource_failures
 
 SCHEMA = Path(__file__).resolve().parents[1] / "schemas/test-execution-contract.schema.json"
 BINDING = {"policy": ".ai/project/testing/test-first-policy.json", "timing": "target-policy",
@@ -30,6 +31,10 @@ def has_placeholders(value: Any) -> bool:
     if isinstance(value, list):
         return any(has_placeholders(item) for item in value)
     return is_placeholder(value)
+
+
+def policy_projection_failures(projected: Any, canonical: Any) -> list[str]:
+    return [] if isinstance(canonical, dict) and projected == canonical else ["adapter policy must equal its canonical project owner; reconcile from the owner, never overwrite it from the mirror"]
 
 
 class TestExecutionContract:
@@ -56,8 +61,8 @@ class TestExecutionContract:
         # JSON Schema treats 1.0 as an integer; version and count contracts do not.
         if isinstance(value, dict):
             version = value.get("schema_version") if definition == "evidence" else value.get("execution_contract", {}).get("schema_version") if isinstance(value.get("execution_contract"), dict) else None
-            if type(version) is not int or version != 1:
-                failures.append("schema_version must be integer 1")
+            if type(version) is not int or version != 2:
+                failures.append("execution/evidence schema_version must be integer 2")
             if definition == "evidence" and isinstance(value.get("counts"), dict):
                 if any(type(n) is not int for n in value["counts"].values()):
                     failures.append("counts must contain integers, not booleans or floats")
@@ -78,6 +83,10 @@ class TestExecutionContract:
             paths.append(contract["canonical_coverage_matrix"])
         for command in policy["commands"]:
             execution = command["execution"]
+            resource_errors = resource_failures(execution["resources"])
+            failures.extend(f"{command['id']}: {failure}" for failure in resource_errors)
+            if not resource_errors:
+                failures.extend(f"{command['id']}: {failure}" for failure in effect_resource_failures(execution["effects"], execution["resources"]))
             paths.extend(execution["configuration_paths"])
             if execution["kind"] == "automated-test" and not execution["suite_patterns"]:
                 failures.append(f"{command['id']}: automated tests need target-owned suite patterns")
@@ -113,7 +122,19 @@ class TestExecutionContract:
         if failures:
             return failures
         execution = command["execution"]
+        failures.extend(resource_failures(record["resources"]))
+        if failures:
+            return failures
+        resource_key = lambda item: (item["kind"], item["id"], item["namespace"] or "", item["access"], item["isolation"])
+        if sorted(record["resources"], key=resource_key) != sorted(execution["resources"], key=resource_key):
+            failures.append("observed resources must match the selected command contract")
         counts, files = record["counts"], record["files"]
+        coordination = record["resource_coordination"]
+        writes = any(resource["access"] != "read" for resource in record["resources"])
+        if counts["executed"] > 0 and writes and (coordination["decision"] not in ("serialized", "isolated") or not isinstance(coordination["evidence_ref"], str) or not coordination["evidence_ref"].strip() or is_placeholder(coordination["evidence_ref"]) or is_unresolved_value(coordination["evidence_ref"])):
+            failures.append("executed resource writes require resolved serialization or verified-isolation evidence")
+        if counts["executed"] > 0 and writes and coordination["decision"] == "isolated" and any(item["access"] != "read" and (item["namespace"] is None or item["isolation"] != "verified-isolated") for item in record["resources"]):
+            failures.append("isolated execution requires verified, concrete writable namespaces")
         if counts["executed"] != counts["passed"] + counts["failed"] or counts["discovered"] != counts["executed"] + counts["skipped"] + counts.get("not_run", 0):
             failures.append("test counts do not conserve discovered, executed, passed, failed, skipped and not_run cases")
         if record["proof_boundary"] != execution["proof_boundary"]:

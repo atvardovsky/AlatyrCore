@@ -46,6 +46,8 @@ Apply this sequence before claiming the change is complete:
 1. Record change intent and non-goals.
 2. Load target context from the adapter and project source-of-truth docs.
 3. Run logical integrity review for the proposed or discovered change.
+   Retain per-rule authority and the source-derived original case for repairs;
+   inferred restrictions cannot become accepted facts through implementation.
 4. Re-derive testable scope, identity, ownership, lifecycle, dependency, and
    external-boundary invariants, then identify affected project areas,
    contracts, tests, diagrams, and assistant governance surfaces.
@@ -55,8 +57,9 @@ Apply this sequence before claiming the change is complete:
    those facts change.
 7. Prepare an implementation plan that names affected boundaries and validation.
 8. When an enabled target test-first trigger applies, run its selected
-   RED/GREEN/refactor workflow before or around implementation and preserve
-   evidence. Then change code, tests, diagrams, prompts, skills, bridge files,
+   workflow under its accepted execution timing and current authorization.
+   Preserve conditional RED/GREEN/refactor evidence or explicit not-run status;
+   module enablement grants no execution permission. Then change code, tests, diagrams, prompts, skills, bridge files,
    gates, or checker rules as required by the accepted fact change.
 9. Run target validation that exists, or record manual/unresolved checks.
 10. Perform a final consistency check across changed surfaces.

@@ -6,13 +6,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from finalize_target_support import build_steps, generated_paths, restore, snapshot  # noqa: E402
+from finalize_target_support import Step, build_steps, execute_write_steps, generated_paths, restore, snapshot  # noqa: E402
 from render_change_package_index import expected_outputs  # noqa: E402
 
 
@@ -144,6 +145,35 @@ class ChangePackageProjectionTests(unittest.TestCase):
 
 
 class FinalizeTargetSupportTests(unittest.TestCase):
+    def test_unexpected_builder_failure_restores_only_owned_outputs(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            entry = target / ".ai/assistant/entry-packet.json"
+            entry.parent.mkdir(parents=True)
+            entry.write_bytes(b"before")
+            peer = target / ".ai/assistant/peer-note.md"
+            peer.write_bytes(b"peer work")
+            steps = [Step("entry-packet", "unused", ()), Step("bootstrap-pass-1", "unused", ())]
+            with patch("finalize_target_support.step_outputs", side_effect=[{entry: b"after"}, RuntimeError("builder failed")]):
+                result, failed, conflicts = execute_write_steps(target, steps)
+            self.assertNotEqual(result, 0)
+            self.assertEqual(failed, "bootstrap-pass-1")
+            self.assertEqual(conflicts, [])
+            self.assertEqual(entry.read_bytes(), b"before")
+            self.assertEqual(peer.read_bytes(), b"peer work")
+
+    def test_task_binding_and_models_reach_canonical_validation(self) -> None:
+        steps = build_steps(target=Path("/target"), write=False, migration_staging=False,
+            diff_ref="HEAD~1", approval_records=[], change_packages=[], task_id="task-1",
+            task_class="protected-or-sensitive", problem_models=[Path("model.json")], require_task_acceptance=True)
+        arguments = steps[-1].arguments
+        for option, value in (("--task-id", "task-1"), ("--task-class", "protected-or-sensitive"), ("--problem-model", "model.json")):
+            self.assertEqual(arguments[arguments.index(option) + 1], value)
+        self.assertIn("--require-task-acceptance", arguments)
+        with self.assertRaises(ValueError):
+            build_steps(target=Path("/target"), write=False, migration_staging=False,
+                diff_ref=None, approval_records=[], change_packages=[], require_task_acceptance=True)
+
     def test_conformance_scaffold_converges_end_to_end(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
@@ -224,13 +254,14 @@ class FinalizeTargetSupportTests(unittest.TestCase):
             entry = target / ".ai/assistant/entry-packet.json"
             entry.parent.mkdir(parents=True)
             entry.write_text("before", encoding="utf-8")
-            before = snapshot(generated_paths(target))
+            before = snapshot(generated_paths(target), target=target)
             entry.write_text("after", encoding="utf-8")
             generated = target / ".ai/assistant/nested/context-index.json"
             generated.parent.mkdir(parents=True)
             generated.write_text("new", encoding="utf-8")
 
-            restore(target, before)
+            before[generated] = None
+            restore(target, before, owned={entry: b"after", generated: b"new"})
 
             self.assertEqual(entry.read_text(encoding="utf-8"), "before")
             self.assertFalse(generated.exists())

@@ -66,8 +66,9 @@ commands from another project.
   evidence, shown at most once per task, and remains non-blocking unless an
   enabled accepted target policy marks the trigger required. When activated,
   `.ai/assistant/gates/test-first-development.md` verifies policy state,
-  selected level, valid expected RED, same-contract GREEN, refactor evidence,
-  broader validation, exceptions, and structural-check limitations.
+  selected level, target-policy timing/authorization, conditional RED/GREEN or
+  explicit not-run evidence, refactor state, broader validation, accepted
+  exceptions, and structural-check limitations. Review deferral is not an exception.
 - Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.

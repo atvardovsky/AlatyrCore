@@ -622,7 +622,9 @@ accepted or ready. Before reporting installation or update completion:
 5. Rebuild approval archive digests, change-package projections, recursive
    context indexes, optional reverse/generation indexes, and the generated
    support state in that order. Prefer the transactional source finalizer so a
-   later validation failure restores generated surfaces.
+   failure restores only unchanged owned outputs; preserve/report peer conflicts.
+   Retain reviewed closed-task witnesses outside ignored runtime state and
+   migrate active model/projection schemas per `ALATYR-DECOMPOSITION-001`.
    Validate the declared adapter-health, current-change, and archive-audit
    entry points; only complete archive validation is acceptance evidence.
    Confirm that target `AGENTS.md`, code/semantic profiles, final evidence, and
@@ -647,6 +649,9 @@ accepted or ready. Before reporting installation or update completion:
     change snapshot and explicitly selected approval evidence. When the target
     enables `change-packages`, select and enforce its current package against
     the same snapshot. Validate every branch claimed accepted.
+    For registered update-task completion, forward its ID, independently
+    selected class and explicit task-acceptance requirement through finalization
+    and verification. Adapter health alone is not current-task acceptance.
 11. Enter the inspect-only `handoff` stage. Report `staged` or `blocked` when
     step 10 fails; otherwise report `accepted` without another generic recheck.
 

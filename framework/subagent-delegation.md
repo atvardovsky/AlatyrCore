@@ -263,6 +263,10 @@ Before dispatch:
    fallback condition.
 6. Confirm allowed actions, tools, context, write scope, approval, privacy,
    validation, and maximum concurrency.
+   Include target-bound runtime resource claims, not only file ownership.
+   Apply the resource conflict rules in `testing-guidance.md`; shared databases,
+   fixture data, ports and generated outputs may conflict across worktrees.
+   Coordinate or isolate them before dispatch, without treating presence as a lock.
 
 If model selection is unavailable, the target may inherit the primary model,
 use a verified client default, suggest delegation without executing it, or

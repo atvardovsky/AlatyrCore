@@ -27,6 +27,11 @@ tool onto every repository.
 Concrete test commands, frameworks, folders, fixtures, isolation rules,
 feedback-time limits, trigger severity, exceptions, and merge policy belong to
 the target project contour.
+Command/evidence execution contract version 2 also binds concrete credential-free
+runtime resources and access modes. Resolve concurrent use through
+`testing-guidance.md`; an effect or disposable-environment label alone does not
+establish resource isolation. Actual write runs retain serialization or verified
+namespace-isolation evidence without granting permission to execute.
 
 ## Purpose
 

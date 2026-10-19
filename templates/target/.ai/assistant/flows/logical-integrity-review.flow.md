@@ -11,6 +11,10 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
 
 1. Apply the Semantic Change Decision Gate.
 2. List changed facts in concrete language.
+   Before implementation, record business-rule before/after behavior and exact
+   authority from accepted target sources or scoped owner decisions. Preserve
+   the original complaint's actor, input and approved expected outcome. Apply
+   `ALATYR-INTEGRITY-001` rather than accepting assistant-derived restrictions.
 3. Resolve each changed fact's stable ID and canonical owner from
    `.ai/project/source-of-truth-registry.md`.
 4. Re-derive testable scope, identity, ownership, lifecycle, persistence,

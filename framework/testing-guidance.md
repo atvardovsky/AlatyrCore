@@ -45,6 +45,14 @@ New files must be reconciled with the actual
 runner selection and reasoned exclusions; historical configured omissions are
 not silently full coverage. Inventory changes do not authorize test execution.
 
+Before concurrent commands, bind credential-free identities for databases,
+fixture namespaces, ports, output directories and other mutable resources.
+Equal identities conflict when either claim writes; read/read may coexist.
+Distinct namespaces are independent only with verified isolation. A reset or
+exclusive operation claims the enclosing resource and conflicts with all its
+namespaces. Unknown identities never prove safe parallelism. Serialize conflicts
+or use proven separate resources; disjoint test files do not imply isolation.
+
 ## Analytical Test Selection
 
 Choose test levels by the changed behavior and risk:

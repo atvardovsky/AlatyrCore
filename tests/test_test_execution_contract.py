@@ -27,17 +27,19 @@ def policy():
         "activation_triggers": [{"id": "contract", "state": "required", "mode": "contract-first", "changed_fact_classes": ["behavior"], "conditions": ["contract change"], "test_level_ids": ["unit"], "exceptions": []}],
         "test_levels": [{"id": "unit", "purpose": "unit contract", "feedback_time": "fast", "paths": ["tests/a.py"], "command_ids": ["unit"], "fixtures_and_helpers": ["deterministic fixtures"]}],
         "commands": [{"id": "unit", "command": "never-execute-this-policy-command", "scope": "selected tests", "live_external_actions": "forbidden", "execution": {
-            "kind": "automated-test", "configuration_paths": ["test.cfg"], "suite_patterns": ["tests/*.py"], "prerequisites": ["isolated runtime"], "effects": ["temporary-files"], "environment": "disposable", "suite_scope": "full", "proof_boundary": "unit", "filtering": {"state": "supported", "syntax_or_reason": "explicit file argument"}
+            "kind": "automated-test", "configuration_paths": ["test.cfg"], "suite_patterns": ["tests/*.py"], "prerequisites": ["isolated runtime"], "effects": ["temporary-files"], "resources": [{"kind": "directory", "id": "unit-output", "namespace": None, "access": "write", "isolation": "shared"}], "environment": "disposable", "suite_scope": "full", "proof_boundary": "unit", "filtering": {"state": "supported", "syntax_or_reason": "explicit file argument"}
         }}],
         "isolation": {k: "isolated fixture" for k in ("clock", "randomness", "database", "queue", "filesystem", "network", "secrets")},
         "exceptions": [], "evidence_requirements": ["actual result"], "known_gaps": [],
-        "execution_contract": {"schema_version": 1, "canonical_policy": ".ai/project/testing/test-first-policy.json", "canonical_coverage_matrix": None, "coverage_not_applicable_reason": "No coverage matrix in this fixture", "timing": "after-manual-review", "red_requirement": "when-authorized", "review_authority": "maintainer", "evidence_records": []},
+        "execution_contract": {"schema_version": 2, "canonical_policy": ".ai/project/testing/test-first-policy.json", "canonical_coverage_matrix": None, "coverage_not_applicable_reason": "No coverage matrix in this fixture", "timing": "after-manual-review", "red_requirement": "when-authorized", "review_authority": "maintainer", "evidence_records": []},
     }
 
 
 def record():
     return {
-        "schema_version": 1, "record_kind": "target-test-execution-evidence", "command_id": "unit", "repository_revision": "a" * 40,
+        "schema_version": 2, "record_kind": "target-test-execution-evidence", "command_id": "unit", "repository_revision": "a" * 40,
+        "resources": [{"kind": "directory", "id": "unit-output", "namespace": None, "access": "write", "isolation": "shared"}],
+        "resource_coordination": {"decision": "serialized", "evidence_ref": "fixture:single-run"},
         "policy_sha256": "b" * 64, "input_sha256": {"tests/a.py": "c" * 64, "test.cfg": "d" * 64},
         "state": "passed", "claim": "full", "proof_boundary": "unit", "environment": "disposable", "authorization": "authorized", "authorization_source": "current task request", "timing_disposition": "manual-review-complete", "availability": "available", "prerequisites_satisfied": True, "filter": None,
         "counts": {"discovered": 1, "executed": 1, "passed": 1, "failed": 0, "skipped": 0},
@@ -107,7 +109,7 @@ class TestExecutionContractTests(unittest.TestCase):
         for reason in ['', 'unknown', '{EXPLAIN}']:
             item['files']['excluded'][0]['reason'] = reason
             self.assertTrue(self.failures(item))
-        for version in [True, 1.0, 0, 2]:
+        for version in [True, 2.0, 0, 1]:
             item = record(); item['schema_version'] = version
             with self.subTest(version=version): self.assertTrue(self.failures(item))
         item = record(); item['counts']['executed'] = True

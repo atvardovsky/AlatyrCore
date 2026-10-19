@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import jsonschema
+from task_acceptance_binding import task_arguments
 
 from approval_archive import INDEX_PATH as APPROVAL_ARCHIVE_INDEX_PATH, build_archive_index
 from change_package_contract import (
@@ -970,6 +971,7 @@ class Validator:
         compact_archive_findings: bool = True,
         current_task_id: str | None = None,
         current_task_class: str | None = None,
+        require_task_acceptance: bool = False,
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
@@ -982,6 +984,8 @@ class Validator:
         self.diff_ref = diff_ref
         self.current_task_id = current_task_id
         self.current_task_class = current_task_class
+        self.require_task_acceptance = require_task_acceptance
+        self.task_closure_checked = False
         self.enforce_approval_scope = enforce_approval_scope
         self.approval_records = self.selected_target_paths(
             approval_records, "--approval-record"
@@ -7636,6 +7640,10 @@ def findings_payload(
     change_package_enforced: bool = False,
     change_package_required: bool = False,
     approval_archive_summary: dict[str, Any] | None = None,
+    current_task_id: str | None = None,
+    current_task_class: str | None = None,
+    require_task_acceptance: bool = False,
+    task_closure_checked: bool = False,
 ) -> dict[str, Any]:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
@@ -7681,6 +7689,13 @@ def findings_payload(
         change_package_required=change_package_required,
         change_set=change_set,
     )
+    task_accepted = bool(require_task_acceptance and current_task_id and current_task_class and task_closure_checked and acceptance_eligible)
+    if require_task_acceptance and not task_accepted and exit_code == 0:
+        findings = [*findings, Finding("error", "TASK_ACCEPTANCE_REQUIRED", "Selected task acceptance is unavailable; adapter health alone does not establish current-task closure.")]
+        errors += 1
+        exit_code = 1
+        acceptance_eligible = False
+        acceptance_blockers = [*acceptance_blockers, "selected-task-acceptance-unavailable"]
     return {
         "schema_version": 3,
         "tool": "validate_target_adapter",
@@ -7707,6 +7722,12 @@ def findings_payload(
         ),
         "validation_phase": validation_phase,
         "validation_scope": validation_scope,
+        "task_acceptance": {
+            "state": "accepted" if task_accepted else "blocked" if require_task_acceptance else "not-requested",
+            "task_id": current_task_id,
+            "task_class": current_task_class,
+            "meaning": "Selected task closure only; adapter health and semantic correctness are separate claims.",
+        },
         "installation_state": resolved_installation_state,
         "placeholder_validation": {
             "mode": "staging-only" if validation_phase == "migration-staging" else "strict",
@@ -7854,6 +7875,7 @@ def main() -> int:
         ),
     )
     parser.add_argument("--task-id", help="Require this current task to be registered in the bounded active-task index.")
+    parser.add_argument("--require-task-acceptance", action="store_true", help="Require final selected-task closure; general adapter health alone cannot satisfy this claim.")
     parser.add_argument("--task-class", choices=["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"], help="Independent expected class for --task-id; defaults to non-small standard-task.")
     parser.add_argument(
         "--problem-model",
@@ -7969,6 +7991,10 @@ def main() -> int:
         help="Write machine-readable JSON findings to this file.",
     )
     args = parser.parse_args()
+    try:
+        task_arguments(task_id=args.task_id, task_class=args.task_class, required=args.require_task_acceptance)
+    except ValueError as exc:
+        parser.error(str(exc))
     if args.validation_scope == "changed" and not args.diff_ref:
         parser.error("--validation-scope changed requires --diff-ref")
     validation_phase = (
@@ -7999,6 +8025,7 @@ def main() -> int:
         problem_models=args.problem_model,
         current_task_id=args.task_id,
         current_task_class=args.task_class,
+        require_task_acceptance=args.require_task_acceptance,
         enforce_change_package=args.enforce_change_package,
         migration_diff=args.migration_diff,
         debug_git_state=args.debug_git_state,
@@ -8031,7 +8058,13 @@ def main() -> int:
         change_package_enforced=validator.enforce_change_package,
         change_package_required=change_package_required,
         approval_archive_summary=validator.approval_archive_summary,
+        current_task_id=args.task_id,
+        current_task_class=args.task_class,
+        require_task_acceptance=args.require_task_acceptance,
+        task_closure_checked=validator.task_closure_checked,
     )
+    if any(item["code"] == "TASK_ACCEPTANCE_REQUIRED" for item in payload["findings"]):
+        findings = [*findings, *(Finding(item["level"], item["code"], item["message"]) for item in payload["findings"] if item["code"] == "TASK_ACCEPTANCE_REQUIRED")]
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(

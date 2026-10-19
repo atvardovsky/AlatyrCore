@@ -11,7 +11,9 @@ Before execution:
 - load only the index and selected descriptor
 - record evidence for the selection and a bounded problem model
 - register non-trivial authorized work in `.ai/assistant/active-tasks.json`;
-  current-task acceptance supplies `--task-id`. Small tasks stay inline;
+  current-task acceptance supplies `--task-id`, independently selected
+  `--task-class`, and `--require-task-acceptance` when canonical tooling is used.
+  General adapter health does not close a task. Small tasks stay inline;
   inspect-only host registration does not authorize repository writes
 - preserve incident-family and failed-gate lineage when the task corrects
   earlier repair work; from the second corrective iteration use systemic
@@ -36,6 +38,8 @@ Before completion:
 - required obligations are passed with evidence or waived under explicit
   target-authorized policy
 - required reviews passed with evidence
+- schema-5 business authority and original-case acceptance are resolved;
+  owner supersession remains distinct from fixing the original expectation
 - failed, blocked, open, or unevidenced duties block completion
 - systemic repair covers producer, orchestrator, persistence, and consumer
   boundaries plus success, rejection, deferral, expiry, recovery, and failure
@@ -49,6 +53,9 @@ Before completion:
 - reusable outcomes are classified, but promotion remains an explicit
   project-owned action
 - use the hash-bound `task-closure.json` template for registered ended work;
+  retain reviewed model/projection witnesses under `.ai/assistant/task-evidence/`
+  before closing non-small work; full checks must not require ignored runtime
+  files for closed tasks
   separate implementation, evidence finalization, and publication. Resolve
   capture to the engineering index or justified preservation/blocker, and
   check relevant architecture source reviews rather than only support hashes

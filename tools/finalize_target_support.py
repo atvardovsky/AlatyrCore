@@ -11,6 +11,9 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from target_tool_compat import assert_write_compatible
+from task_acceptance_binding import add_task_arguments, task_arguments
+from support_write_transaction import SupportTransaction, read_output, support_writer_lock
+from target_support_outputs import step_outputs
 
 
 TOOLS = Path(__file__).resolve().parent
@@ -45,6 +48,10 @@ def build_steps(
     approval_records: Iterable[Path],
     change_packages: Iterable[Path],
     require_current_change: bool = False,
+    task_id: str | None = None,
+    task_class: str | None = None,
+    problem_models: Iterable[Path] = (),
+    require_task_acceptance: bool = False,
 ) -> list[Step]:
     approval_records = tuple(approval_records)
     packages = tuple(change_packages)
@@ -112,6 +119,8 @@ def build_steps(
         validator_arguments.append("--enforce-change-package")
     if require_current_change:
         validator_arguments.append("--enforce-approval-scope")
+    validator_arguments.extend(task_arguments(task_id=task_id, task_class=task_class,
+        problem_models=problem_models, required=require_task_acceptance))
     steps.append(
         Step("canonical-validation", "validate_target_adapter.py", tuple(validator_arguments))
     )
@@ -135,20 +144,14 @@ def generated_paths(target: Path) -> set[Path]:
     return paths
 
 
-def snapshot(paths: Iterable[Path]) -> dict[Path, bytes | None]:
-    return {path: path.read_bytes() if path.is_file() else None for path in paths}
+def snapshot(paths: Iterable[Path], *, target: Path) -> dict[Path, bytes | None]:
+    return {path: read_output(target, path) for path in paths}
 
 
-def restore(target: Path, before: dict[Path, bytes | None]) -> None:
-    all_paths = set(before) | generated_paths(target)
-    for path in sorted(all_paths):
-        original = before.get(path)
-        if original is None:
-            if path.is_file():
-                path.unlink()
-            continue
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(original)
+def restore(target: Path, before: dict[Path, bytes | None], *, owned: dict[Path, bytes | None]) -> list[str]:
+    transaction = SupportTransaction(target)
+    transaction.before, transaction.owned = before, owned
+    return transaction.rollback()
 
 
 def execute_steps(
@@ -167,8 +170,31 @@ def execute_steps(
     return 0, None
 
 
+def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subprocess.run) -> tuple[int, str | None, list[str]]:
+    """Derive owned postimages in-process; never infer ownership from a later read."""
+    transaction = SupportTransaction(target)
+    failed_step = None
+    with support_writer_lock(target):
+        try:
+            expected = snapshot(generated_paths(target), target=target)
+            for step in steps:
+                failed_step = step.step_id
+                if step.step_id == "canonical-validation":
+                    result, failed = execute_steps([step], runner=runner)
+                    if result:
+                        return result, failed, transaction.rollback()
+                else:
+                    outputs = step_outputs(step.step_id, target)
+                    transaction.apply(outputs, expected_inputs={path: expected.get(path) for path in outputs})
+                    expected.update(outputs)
+        except Exception as exc:
+            print(f"FAIL: {failed_step}: {type(exc).__name__}: {exc}", file=sys.stderr)
+            return 2, failed_step, transaction.rollback()
+    return 0, None, []
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--target", required=True, type=Path)
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--migration-staging", action="store_true")
@@ -176,7 +202,12 @@ def main() -> int:
     parser.add_argument("--approval-record", action="append", type=Path, default=[])
     parser.add_argument("--change-package", action="append", type=Path, default=[])
     parser.add_argument("--require-current-change", action="store_true")
+    add_task_arguments(parser)
     args = parser.parse_args()
+    try:
+        task_arguments(task_id=args.task_id, task_class=args.task_class, required=args.require_task_acceptance)
+    except ValueError as exc:
+        parser.error(str(exc))
     if args.require_current_change and not (
         args.diff_ref and args.approval_record and args.change_package
     ):
@@ -203,14 +234,24 @@ def main() -> int:
         approval_records=args.approval_record,
         change_packages=args.change_package,
         require_current_change=args.require_current_change,
+        task_id=args.task_id,
+        task_class=args.task_class,
+        problem_models=args.problem_model,
+        require_task_acceptance=args.require_task_acceptance,
     )
-    before = snapshot(generated_paths(target)) if args.write else {}
-    result, failed_step = execute_steps(steps)
+    try:
+        if args.write:
+            result, failed_step, conflicts = execute_write_steps(target, steps)
+        else:
+            result, failed_step = execute_steps(steps)
+            conflicts = []
+    except (OSError, ValueError) as exc:
+        print(f"FAIL: support writer unavailable: {exc}", file=sys.stderr)
+        return 2
     if result:
         if args.write:
-            restore(target, before)
             print(
-                f"FAIL: {failed_step} failed; restored generated support files",
+                f"FAIL: {failed_step} failed; restored only unchanged transaction-owned outputs; rollback conflicts preserved: {conflicts}",
                 file=sys.stderr,
             )
         else:
@@ -218,6 +259,8 @@ def main() -> int:
         return result
     action = "converged" if args.write else "checked"
     print(f"OK: {action} generated support and canonical validation")
+    if not args.require_task_acceptance:
+        print("Current-task acceptance was not requested; this result is not task-completion evidence.")
     return 0
 
 

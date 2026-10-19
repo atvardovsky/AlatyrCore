@@ -31,8 +31,8 @@
       "owner_refs": [
         "ALATYR-CHANGE-001"
       ],
-      "estimated_words": 785,
-      "content_digest": "sha256:6b3f19cc18bbf7905ded90051ac258066a5cca29a3b4f7417bdef4aaa3a1c89a"
+      "estimated_words": 817,
+      "content_digest": "sha256:c7bca7b7adc7a59d7635e7c56aef9a1c1465f3b2dc28cffa349a602df53c1995"
     },
     {
       "id": "framework.change.change-packages-md",
@@ -86,8 +86,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1281,
-      "content_digest": "sha256:678f6b15b19750346952fa48e4d0d3b6bd1237430adb2a283f50a0ccde0bcf19"
+      "estimated_words": 1351,
+      "content_digest": "sha256:fe297afc7e14ac5e08d878681b531b93edaab65d049b511a8f988aab32fd2b55"
     }
   ]
 }

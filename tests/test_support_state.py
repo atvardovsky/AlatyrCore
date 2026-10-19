@@ -36,6 +36,14 @@ def policy() -> dict[str, object]:
 
 
 class SupportStateTests(unittest.TestCase):
+    def test_compact_records_preserve_every_parsed_field_and_order(self):
+        value = {"schema_version": 1, "files": [{"path": "a.md", "digest": "sha256:first", "canonical_size": 3}, {"path": "b.md", "digest": "sha256:second", "canonical_size": 4}], "metadata": {"description": "Unicode and nested values: \u00e9", "items": [1, 2]}}
+        rendered = render_state(value)
+        self.assertEqual(json.loads(rendered), value)
+        self.assertEqual(rendered, render_state(value))
+        self.assertEqual(json.loads(rendered)["files"], value["files"])
+        self.assertLess(len(rendered), len(json.dumps(value, indent=2, ensure_ascii=True)))
+
     def make_target(self) -> Path:
         root = Path(self.addCleanupDirectory())
         (root / ".ai/project").mkdir(parents=True)

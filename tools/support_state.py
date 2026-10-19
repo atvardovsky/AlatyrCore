@@ -440,4 +440,4 @@ def state_is_current(recorded: dict[str, Any], current: dict[str, Any]) -> bool:
 
 
 def render_state(state: dict[str, Any]) -> str:
-    return json.dumps(state, indent=2, ensure_ascii=True) + "\n"
+    return json.dumps(state, ensure_ascii=True, separators=(",", ":")) + "\n"

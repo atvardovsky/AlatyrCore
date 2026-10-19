@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": [
     "schema_version", "model_kind", "model_id", "operation_id", "active_projection",
-    "incident", "lifecycle_model", "contract_enforcement",
+    "incident", "lifecycle_model", "contract_enforcement", "behavior_review", "original_case",
     "primary_strategy_id", "risk_classes", "protected_change", "required_review_ids", "review_results", "objective", "non_goals",
     "repository_binding", "task_binding", "predecessor", "strategy_transitions",
     "facts", "assumptions", "unknowns", "changed_facts", "invariants",
@@ -14,7 +14,7 @@
     "unresolved_decisions", "evidence_refs"
   ],
   "properties": {
-    "schema_version": {"const": 4},
+    "schema_version": {"const": 5},
     "model_kind": {"const": "alatyr-bounded-problem-model"},
     "model_id": {"$ref": "#/definitions/identifier"},
     "operation_id": {"$ref": "#/definitions/identifier"},
@@ -23,7 +23,7 @@
       "additionalProperties": false,
       "required": ["schema_version", "path"],
       "properties": {
-        "schema_version": {"const": 3},
+        "schema_version": {"const": 4},
         "path": {
           "type": "string",
           "minLength": 1,
@@ -35,6 +35,8 @@
     "incident": {"$ref": "#/definitions/incident"},
     "lifecycle_model": {"$ref": "#/definitions/lifecycleModel"},
     "contract_enforcement": {"$ref": "#/definitions/contractEnforcement"},
+    "behavior_review": {"$ref": "#/definitions/behaviorReview"},
+    "original_case": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/originalCase"}]},
     "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
     "risk_classes": {"$ref": "#/definitions/stringArray"},
     "protected_change": {"type": "boolean"},
@@ -153,6 +155,48 @@
     "evidence_refs": {"$ref": "#/definitions/stringArray"}
   },
   "definitions": {
+    "behaviorReview": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required", "reason", "deltas"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "deltas": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/behaviorDelta"}}
+      }
+    },
+    "behaviorDelta": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fact_id", "before", "after", "effect", "authority_status", "authority_kind", "authority_ref", "decision_owner", "scope", "evidence_refs"],
+      "properties": {
+        "fact_id": {"$ref": "#/definitions/identifier"},
+        "before": {"$ref": "#/definitions/statement"},
+        "after": {"$ref": "#/definitions/statement"},
+        "effect": {"enum": ["add", "restrict", "restore", "remove", "clarify"]},
+        "authority_status": {"enum": ["approved", "proposed", "conflicting", "unknown"]},
+        "authority_kind": {"enum": ["canonical-source", "owner-decision", "inference"]},
+        "authority_ref": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "decision_owner": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "scope": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "originalCase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_ref", "actor", "input", "expected_outcome", "status", "evidence_refs", "supersession"],
+      "properties": {
+        "source_ref": {"$ref": "#/definitions/reference"},
+        "actor": {"$ref": "#/definitions/statement"},
+        "input": {"$ref": "#/definitions/statement"},
+        "expected_outcome": {"$ref": "#/definitions/statement"},
+        "status": {"enum": ["unverified", "still-failing", "verified-fixed", "superseded-by-owner-decision"]},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "supersession": {"oneOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false,
+          "required": ["source_ref", "decision_owner", "reason"],
+          "properties": {"source_ref": {"$ref": "#/definitions/reference"}, "decision_owner": {"$ref": "#/definitions/reference"}, "reason": {"$ref": "#/definitions/statement"}}
+        }]}
+      }
+    },
     "identifier": {
       "type": "string",
       "minLength": 1,

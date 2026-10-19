@@ -49,6 +49,16 @@ def accepted_payload() -> dict[str, object]:
 
 
 class UpgradeAcceptanceTest(unittest.TestCase):
+    def test_general_health_cannot_satisfy_selected_task_acceptance(self) -> None:
+        payload = accepted_payload()
+        arguments = {"task_id": "task-1", "task_class": "protected-or-sensitive", "require_task_acceptance": True}
+        self.assertTrue(acceptance_failures(payload, **arguments))
+        payload["task_acceptance"] = {"state": "accepted", "task_id": "task-1", "task_class": "protected-or-sensitive"}
+        self.assertEqual(acceptance_failures(payload, **arguments), [])
+        for field, value in (("task_id", "other-task"), ("task_class", "small-task"), ("state", "not-requested")):
+            changed = dict(payload, task_acceptance=dict(payload["task_acceptance"], **{field: value}))
+            self.assertTrue(acceptance_failures(changed, **arguments))
+
     def test_accepts_only_complete_strict_evidence(self) -> None:
         self.assertEqual(acceptance_failures(accepted_payload()), [])
 

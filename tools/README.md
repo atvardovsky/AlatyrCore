@@ -30,6 +30,33 @@ Hints affect scheduling only and never reduce selected tests or checks.
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
 
+## Task Acceptance And Shared Resources
+
+For final task closure, add `--task-id TASK_ID`, `--task-class standard-task`,
+and `--require-task-acceptance` to `finalize-support` or `verify-upgrade` (choose the
+actual independent task class). Both forward optional repeatable
+`--problem-model` selections. `validate-current` on the installed delegate
+forwards the same bindings. A generic adapter check remains useful, but its
+`task_acceptance.state: not-requested` is not completion evidence.
+
+`archive-task-evidence --target <repo> --task-id <id> --retention-review <source>`
+previews frozen closed-task model and projection witnesses. Add `--write` only
+after retention/privacy review; use `--migration-staging` for an explicitly
+authorized cross-version migration. It preserves original model hashes, updates
+the closure/index bindings, and neither deletes runtime files nor sanitizes
+secrets automatically. Missing history is a blocker, not permission to invent it.
+
+`plan-test-resources --target <repo> --command <id> --command <other-id>`
+reports conflicts in the target's execution-contract-2 resources without running
+commands. Identity/access, namespace isolation and observed write coordination
+must come from the target; no universal database names or ports are supplied.
+
+Finalization composes canonical renderers in-process under a local writer lock,
+then invokes canonical validation. Rollback restores only known owned postimages
+and reports conflicts without overwriting peer changes. The lock coordinates
+participating local writers; it is not authorization or protection against
+uncooperative filesystem races, external services, or arbitrary editors.
+
 ## Cross-Platform Entry Point
 
 ### Local Session Presence

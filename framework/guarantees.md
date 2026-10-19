@@ -143,6 +143,12 @@ The framework commits to giving an assistant a defined process for:
 
 ## Machine-Checkable Expectations
 
+Adapter health, approval-scope consistency, selected-task acceptance, original
+complaint acceptance, deployment and publication are separate claims. A generic
+green validator result cannot stand in for the selected task's closure. Business
+authority references and original-case evidence must remain inspectable; their
+structural presence does not establish semantic correctness or human approval.
+
 Machine checks can verify only deterministic repository facts, such as:
 
 - required source files and template files exist

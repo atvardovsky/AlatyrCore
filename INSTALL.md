@@ -342,9 +342,11 @@ In a typical target repository:
    mapped/known-gap/unknown coverage in every accepted core profile. Keep route
    shards lazy.
    Initialize the bounded `.ai/assistant/active-tasks.json` and task-closure
-   template. Updates preserve registered work, reconcile model/projection
-   versions, and report missing history without fabrication. Follow
+   template. Preserve work; migrate active models/projections to 5/4 and retain
+   reviewed closed-task witnesses per
    [task evidence](framework/task-decomposition.md#active-task-selection).
+   Missing history, authority and complaint outcomes stay unresolved, never
+   fabricated; schema-4 history remains historical evidence.
    Derive codebook schemas from the installed index; reconcile manifest/router
    before bootstrap regeneration. Never reuse stale declarations.
    Preserve stable-prefix-first context order for every surface. Use provider
@@ -440,6 +442,8 @@ In a typical target repository:
    support state with `finalize-support`, then use its canonical validation
    result. Bind material current-change finalization to the diff base, selected
    approval records, and selected change package.
+   Registered task completion also binds task ID, independent class and
+   `--require-task-acceptance`; adapter health alone does not close the task.
 12. Apply the durable engineering-evidence decision. Capture reusable material
    installation knowledge when triggered and authorized, or report a specific
    skip/block reason. When Debug Mode was active, use reciprocal Debug session

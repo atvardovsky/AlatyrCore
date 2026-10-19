@@ -9,15 +9,20 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+from task_acceptance_binding import add_task_arguments, task_arguments
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def acceptance_failures(payload: dict[str, Any]) -> list[str]:
+def acceptance_failures(payload: dict[str, Any], *, task_id: str | None = None, task_class: str | None = None, require_task_acceptance: bool = False) -> list[str]:
     """Return contract failures that prevent a completed-update claim."""
 
     failures: list[str] = []
+    if require_task_acceptance:
+        task = payload.get("task_acceptance")
+        if not task_id or not task_class or not isinstance(task, dict) or task.get("state") != "accepted" or task.get("task_id") != task_id or task.get("task_class") != task_class:
+            failures.append("current-task acceptance is missing, blocked or bound to another task")
     if payload.get("tool") != "validate_target_adapter":
         failures.append("report was not produced by validate_target_adapter")
     if payload.get("status") != "passed":
@@ -88,6 +93,7 @@ def acceptance_failures(payload: dict[str, Any]) -> list[str]:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
+        allow_abbrev=False,
         description=(
             "Run the portable target validator with the final update-acceptance "
             "contract. This command verifies an already applied update and never "
@@ -104,6 +110,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--change-package", action="append", default=[], type=Path)
     parser.add_argument("--strict-warnings", action="store_true")
+    add_task_arguments(parser)
     parser.add_argument(
         "--overwrite",
         action="store_true",
@@ -113,7 +120,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def parse_args() -> argparse.Namespace:
-    return build_parser().parse_args()
+    parser = build_parser()
+    args = parser.parse_args()
+    try:
+        task_arguments(task_id=args.task_id, task_class=args.task_class, required=args.require_task_acceptance)
+    except ValueError as exc:
+        parser.error(str(exc))
+    return args
 
 
 def main() -> int:
@@ -165,6 +178,8 @@ def main() -> int:
         command.append("--enforce-change-package")
     if args.strict_warnings:
         command.append("--strict-warnings")
+    command.extend(task_arguments(task_id=args.task_id, task_class=args.task_class,
+        problem_models=args.problem_model, required=args.require_task_acceptance))
 
     result = subprocess.run(
         command,
@@ -184,7 +199,7 @@ def main() -> int:
         print(f"Upgrade verification report is invalid: {exc}", file=sys.stderr)
         return 1
 
-    failures = acceptance_failures(payload)
+    failures = acceptance_failures(payload, task_id=args.task_id, task_class=args.task_class, require_task_acceptance=args.require_task_acceptance)
     if result.returncode != 0 and not failures:
         failures.append(f"validator exited with status {result.returncode}")
     if failures:

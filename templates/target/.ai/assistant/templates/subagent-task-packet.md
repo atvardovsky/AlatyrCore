@@ -60,6 +60,8 @@ Allowed files or surfaces: `{ALLOWED_PATHS_OR_SURFACES}`
 Allowed tools: `{ALLOWED_TOOLS_OR_NONE}`
 Prohibited actions: approval/project decisions; permission, network, destructive, production, spend, migration, external, out-of-packet files/facts/tools/surfaces; `{TARGET_ADDITIONAL_PROHIBITED_ACTION}`
 Concurrent packets and write-isolation decision: `{PACKET_IDS_AND_DISJOINT_SCOPE_EVIDENCE_OR_READ_ONLY}`
+Runtime resource claims: `{KIND_OPAQUE_ID_NAMESPACE_ACCESS_ISOLATION_OR_NONE}`
+Resource conflict disposition: `{VERIFIED_ISOLATED_SERIALIZED_BLOCKED_OR_READ_ONLY_WITH_EVIDENCE}`
 
 ## Delegation Selection
 

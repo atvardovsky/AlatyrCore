@@ -300,7 +300,7 @@ def unreleased_section_is_empty(changelog: str) -> bool:
     if match is None:
         return False
     body = [line.strip() for line in match.group("body").splitlines() if line.strip()]
-    return body == ["- No unreleased changes."]
+    return body in (["- No unreleased changes."], ["- None."])
 
 
 def nearest_tagged_baseline(current_version: str) -> tuple[str, list[str]]:

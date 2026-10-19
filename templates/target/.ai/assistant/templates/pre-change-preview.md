@@ -16,6 +16,8 @@ authorize the next state-changing phase.
 - Selected context profile and overlays: `{PROFILE_AND_OVERLAYS}`
 - Changed facts or suspected facts: `{CHANGED_FACT_IDS_AND_SUMMARIES}`
 - Canonical owners: `{SOURCE_OF_TRUTH_OWNERS}`
+- Behavior delta and authority: `{PER_RULE_BEFORE_AFTER_SCOPE_STATUS_AND_ACCEPTED_SOURCE_OR_NOT_REQUIRED}`
+- Original case: `{SOURCE_ACTOR_INPUT_AND_APPROVED_OBSERVABLE_OUTCOME_OR_NOT_APPLICABLE}`
 - Affected contours, project areas, and external surfaces:
   `{AFFECTED_SURFACES}`
 - Risk classes: `{RISK_CLASSES}`

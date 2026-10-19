@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "target-test-execution-evidence",
   "command_id": "{TARGET_COMMAND_ID}",
   "repository_revision": "{CURRENT_FULL_GIT_REVISION}",
@@ -9,6 +9,8 @@
   "claim": "none",
   "proof_boundary": "{COMMAND_PROOF_BOUNDARY}",
   "environment": "{TARGET_OBSERVED_ENVIRONMENT}",
+  "resources": [],
+  "resource_coordination": {"decision": "unverified", "evidence_ref": null},
   "authorization": "{AUTHORIZED_AWAITING_REVIEW_OR_NOT_AUTHORIZED}",
   "authorization_source": "{CURRENT_SCOPE_AUTHORIZATION_OR_PENDING_REASON}",
   "timing_disposition": "{PRE_IMPLEMENTATION_AUTHORIZED_MANUAL_REVIEW_COMPLETE_EXPLICIT_REQUEST_AUTHORIZED_OR_NOT_RUN}",

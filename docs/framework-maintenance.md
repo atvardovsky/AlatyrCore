@@ -340,6 +340,15 @@ Before accepting a change, check:
 - The final [`verify-upgrade` command](../tools/README.md#migration-diff-report)
   checks acceptance/full/full after migration. It writes only its report and
   never repairs an incomplete update.
+  Registered task completion additionally uses `--task-id`, `--task-class`, and
+  `--require-task-acceptance`; general health has a separate non-task result.
+- `python3 tools/alatyr.py archive-task-evidence --target <target-repo> --task-id <task-id> --retention-review <review-source>`
+  previews durable closed-task witnesses. Add `--write` only after explicit
+  retention/privacy review and current-scope authorization. Historical model 4
+  remains historical; current tasks use model 5 and projection 4.
+- `python3 tools/alatyr.py plan-test-resources --target <target-repo> --command <id> --command <other-id>`
+  reports declared resource conflicts without executing tests or granting
+  authorization. Test execution/evidence contract 2 owns those identities.
 - `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
   passes when effectiveness report tooling or sample contracts change.
 - `python3 tools/check_effectiveness_benchmark.py` and

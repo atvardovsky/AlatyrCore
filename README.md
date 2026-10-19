@@ -73,6 +73,10 @@ facts come from observed implementation, and where evidence is missing. The
 assistant can then discuss options or perform work authorized for the current
 task.
 
+For business changes, the assistant must distinguish approved requirements from
+its own inferences. A repair retains the original reported case, so passing
+tests or a healthy adapter cannot by themselves mean the user's problem is fixed.
+
 When code or tests change, the assistant must review the effect on project
 knowledge: update affected sources, explain why no update is needed, or report
 blocked or unverified work. A useful discovery can be proposed for review by a
@@ -245,7 +249,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.91`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.92`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

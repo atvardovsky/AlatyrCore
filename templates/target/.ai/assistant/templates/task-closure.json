@@ -3,6 +3,11 @@
   "record_kind": "alatyr-task-closure",
   "task_id": "{TASK_ID}",
   "operation_id": "{OPERATION_ID}",
+  "analysis_witness": {
+    "model": {"path": ".ai/assistant/task-evidence/{TASK_ID}/{MODEL_SHA256}/model.json", "sha256": "{MODEL_SHA256}"},
+    "projection": {"path": ".ai/assistant/task-evidence/{TASK_ID}/{MODEL_SHA256}/projection.json", "sha256": "{PROJECTION_SHA256}"},
+    "retention_review": "{TARGET_RETENTION_REVIEW_SOURCE}"
+  },
   "delivery": {
     "implementation": "{COMPLETE_PARTIAL_OR_BLOCKED}",
     "evidence_finalization": "{FINAL_PROVISIONAL_NOT_CAPTURED_OR_BLOCKED}",

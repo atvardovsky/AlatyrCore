@@ -47,6 +47,9 @@ test-first/configuration request.
 - Structural validation is not claimed as proof of test semantic quality.
 - Canonical policy and coverage owners precede derived Alatyr files. Command
   configuration, environment, effects, filtering and exclusions match evidence.
+- Runtime resources match the command contract; concurrent database/fixture,
+  port and output-directory use is serialized or independently isolated with
+  evidence. Separate file scopes alone do not establish resource isolation.
 - Zero executed/all-skipped runs cannot prove behavior. Suite/full claims name
   the selected universe and exclusions; mocked boundaries cannot prove real DB
   persistence. Only explicitly selected current evidence records are checked.

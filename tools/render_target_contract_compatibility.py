@@ -164,7 +164,7 @@ def render(catalog: dict[str, Any]) -> str:
         "",
         "This generated source-maintainer reference projects the canonical",
         "compatibility data in",
-        "`tools/target_adapter_validation/contract-compatibility.json`.",
+        f"`{CATALOG_PATH.relative_to(ROOT).as_posix()}`.",
         "It does not replace portable framework rules or target-owned project facts.",
         "",
     ]

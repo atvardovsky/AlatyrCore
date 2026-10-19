@@ -71,6 +71,8 @@ def build_parser() -> argparse.ArgumentParser:
     current.add_argument("--diff-ref", required=True)
     current.add_argument("--task-id")
     current.add_argument("--task-class", choices=["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"])
+    current.add_argument("--problem-model", action="append", default=[])
+    current.add_argument("--require-task-acceptance", action="store_true")
     current.add_argument("--approval-record", action="append", required=True)
     current.add_argument("--change-package", action="append", required=True)
 
@@ -82,6 +84,10 @@ def build_parser() -> argparse.ArgumentParser:
     finalize.add_argument("--approval-record", action="append", default=[])
     finalize.add_argument("--change-package", action="append", default=[])
     finalize.add_argument("--require-current-change", action="store_true")
+    finalize.add_argument("--task-id")
+    finalize.add_argument("--task-class", choices=["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"])
+    finalize.add_argument("--problem-model", action="append", default=[])
+    finalize.add_argument("--require-task-acceptance", action="store_true")
     return parser
 
 
@@ -121,6 +127,10 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
             command.extend(["--task-id", args.task_id])
         if getattr(args, "task_class", None):
             command.extend(["--task-class", args.task_class])
+        for model in getattr(args, "problem_model", []):
+            command.extend(["--problem-model", model])
+        if getattr(args, "require_task_acceptance", False):
+            command.append("--require-task-acceptance")
         for package in args.change_package:
             command.extend(["--change-package", package])
         command.extend(["--enforce-approval-scope", "--enforce-change-package"])
@@ -139,6 +149,13 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
         command.extend(["--change-package", package])
     if args.require_current_change:
         command.append("--require-current-change")
+    for name in ("task_id", "task_class"):
+        if getattr(args, name, None):
+            command.extend(["--" + name.replace("_", "-"), getattr(args, name)])
+    for model in getattr(args, "problem_model", []):
+        command.extend(["--problem-model", model])
+    if getattr(args, "require_task_acceptance", False):
+        command.append("--require-task-acceptance")
     return command
 
 

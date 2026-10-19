@@ -2,7 +2,7 @@
 
 This generated source-maintainer reference projects the canonical
 compatibility data in
-`tools/target_adapter_validation/contract-compatibility.json`.
+`tools/target-adapter-contract-compatibility.json`.
 It does not replace portable framework rules or target-owned project facts.
 
 ## analysis-strategies
@@ -16,13 +16,13 @@ Supported versions: `1`.
 Migration-limited versions: none.
 
 Artifact: `problem-model`
-Current version: `4`.
-Supported versions: `4`.
+Current version: `5`.
+Supported versions: `5`.
 Migration-limited versions: none.
 
 Artifact: `problem-model-active-projection`
-Current version: `3`.
-Supported versions: `3`.
+Current version: `4`.
+Supported versions: `4`.
 Migration-limited versions: none.
 
 Artifact: `publication-receipt`

@@ -51,6 +51,13 @@ REQUIRED_BINDINGS = {
 
 
 class ValidationContractInvocationTests(unittest.TestCase):
+    def test_task_acceptance_prefixes_use_shared_bindings_without_repairing_bad_values(self):
+        from target_adapter_validation.validation_contract import _direct_delegate_invocation_failures
+        prefix = "python3 .ai/assistant/tools/alatyr_delegate.py validate-current --target . --require-task-acceptance"
+        self.assertEqual(_direct_delegate_invocation_failures(prefix, entrypoint="current-change", expected_operation="validate-current"), [])
+        for tail in (" --task-id -h", " --task-class -h", " --task-class invalid", " --task-id first --task-id second"):
+            self.assertTrue(_direct_delegate_invocation_failures(prefix + tail, entrypoint="current-change", expected_operation="validate-current"))
+
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
         self.target = Path(self.temporary.name)

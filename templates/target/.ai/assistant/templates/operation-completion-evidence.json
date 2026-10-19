@@ -59,6 +59,10 @@
         "counterexample_ids": ["{COUNTEREXAMPLE_ID_OR_NONE}"],
         "adversarial_review": "{PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}"
       },
+      "behavior_acceptance": {
+        "authority": "{PER_RULE_APPROVED_PROPOSED_CONFLICTING_UNKNOWN_OR_NOT_REQUIRED}",
+        "original_case": "{VERIFIED_FIXED_STILL_FAILING_UNVERIFIED_SUPERSEDED_OR_NOT_APPLICABLE}"
+      },
       "required_review_ids": ["{ADVERSARIAL_REVIEW_OR_NONE}"],
       "review_results": ["{REVIEW_ID_PASSED_FAILED_BLOCKED_OR_NOT_REQUIRED}"]
     },

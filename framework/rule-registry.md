@@ -177,16 +177,16 @@ Enforcement: required.
 Rule ID: `ALATYR-INTEGRITY-001`
 Source owner: `framework/logical-integrity.md`
 Installed owner: `.ai/framework/logical-integrity.md`
-Commitment: Name changed facts, re-derive testable invariants, reconcile review
-items, owners, and repair sets, and continue failed repairs through one
-incident family. Reopen invalidated obligations and escalate escaped,
-failed-gate, and second-or-later corrections to bounded whole-lifecycle
-reasoning. For machine-enforced contracts, bind each normative source to
-enforcement, positive evidence, a retained weaker counterexample, a required
-proof obligation, and adversarial review. Require a reasoned Project Contour
-Sync Decision, validation, proportional durable evidence when active, and
-residual risk, using bounded impact closure without treating hashes or
-implementation-authored tests as semantic proof.
+Commitment: Name changed facts, re-derive invariants, reconcile owners and
+repair sets, and preserve incident continuity. Bind per-rule business deltas to
+accepted authority and retain the original complaint's observable acceptance
+separately from implementation and green tests. Escalate escaped, failed-gate
+and recurring repairs to whole-lifecycle reasoning. Machine contracts bind
+normative sources to enforcement, positive evidence, retained weaker
+counterexamples, required obligations and adversarial review. Require Project
+Contour Sync, policy-authorized conditional test evidence, durable capture when
+active and residual risk; hashes, plans and tests cannot authorize inferred
+restrictions or prove semantic truth.
 Applies to: semantic fact changes, drift reviews.
 Enforcement: required.
 
@@ -350,11 +350,13 @@ Enforcement: required when module enabled.
 Rule ID: `ALATYR-TDD-001`
 Source owner: `framework/test-first-development.md`
 Installed owner: `.ai/framework/test-first-development.md`
-Commitment: When the optional test-first-development module is enabled, apply
-an accepted target policy with project-specific triggers, modes, commands,
-isolation, exceptions, and RED GREEN refactor evidence; when it is not enabled,
-recommend bounded assessment only from supported changed-fact and risk evidence
-without silently imposing TDD or blocking ordinary work.
+Commitment: When optional test-first development is enabled, apply accepted
+target triggers, modes, commands, concrete resource/access isolation,
+exceptions and conditional RED/GREEN/refactor evidence. Resolve target timing
+and current authorization before execution; manual-review deferral is not RED
+or an automatic exception. Retain observed resource coordination and proof
+boundaries. Otherwise recommend bounded assessment only from supported
+fact/risk evidence without imposing TDD or blocking ordinary work.
 Applies to: test-first policy configuration, regression fixes, invariant and
 contract changes, risky refactoring, target-activated code changes.
 Enforcement: required when module enabled or target policy trigger requires it.
@@ -499,17 +501,15 @@ Rule ID: `ALATYR-DECOMPOSITION-001`
 Source owner: `framework/task-decomposition.md`
 Installed owner: `.ai/framework/task-decomposition.md`
 Commitment: Before non-trivial execution, select one primary strategy and
-maintain a bounded evidence-backed problem model, digest-bound active
-projection, incident/lifecycle state, contract-enforcement closure when
-applicable, and proof obligations. Decompose by fact, owner, contract, area,
-dependency, validation, and support impact. Require systemic lifecycle modeling
-for escaped, failed-gate, recurring, and second-or-later corrections, and
-adversarial counterexample review for machine-enforced contracts. Give each
-task one level, bounded context, actions, validation, dependencies, and
-executor decision. Keep small settled work direct-local, bound worker
-expansion, escalate only on named triggers, and retain primary ownership of
-strategy, obligations, semantic decisions, approval, integration, and
-convergence.
+maintain a bounded model, digest-bound projection, authority/original-case
+evidence, incident/lifecycle state, machine-contract closure and obligations.
+Decompose by fact, owner, contract, dependency, validation, resource and
+support impact. Bind task acceptance to an independently selected current
+task/class; general adapter health does not prove closure. Retain reviewed
+hash-bound model/projection witnesses for closed non-small tasks without
+ignored-runtime dependencies. Require systemic repairs and adversarial
+machine-contract counterexamples. Keep small work direct-local and decisions,
+approvals, integration and convergence primary-owned.
 Applies to: all installed adapter tasks, large tasks, delegated execution, team
 coordination, final evidence.
 Enforcement: required.

@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-- None.
+- No unreleased changes.
+
+## 0.1.0-alpha.92 - 2026-10-19
+
+- [Task acceptance and resource safeguards](docs/releases/0.1.0-alpha.92-notes.md): schema `75`/templates `87`.
 
 ## 0.1.0-alpha.91 - 2026-10-16
 

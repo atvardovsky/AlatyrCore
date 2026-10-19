@@ -125,10 +125,38 @@ positive fixture proves an accepted example; it does not prove rejection of a
 weaker near-miss. Generated-surface synchronization and broad green CI remain
 separate evidence and cannot replace this semantic closure.
 
-When test-first development is activated, the repair set must include the
-selected policy trigger, changed fact or invariant, valid expected RED,
-same-contract GREEN, refactor state, broader validation, and any accepted
-exception. These records support but do not replace semantic review.
+When test-first development is activated, record the selected policy trigger,
+changed fact or invariant, execution timing and current authorization. Include
+valid expected RED and same-contract GREEN only when the accepted target policy
+requires and authorizes those runs; otherwise retain the not-run reason and
+pending acceptance. Manual-review deferral is neither fabricated RED nor an
+automatic strict-mode exception. Record refactor, broader validation and any
+explicitly accepted exception under `ALATYR-TDD-001`.
+
+## Behavior Authority And Original-Case Acceptance
+
+Before implementing a business-rule change, record each changed rule's before
+and after behavior, allowed/rejected or skipped cases, affected scope, and
+canonical accepted source or explicit scoped decision owner. Keep its authority
+`approved`, `proposed`, `conflicting`, or `unknown`. Plans, assistant-derived
+invariants, code, generated documentation and passing tests do not authorize a
+new restriction. Unresolved authority blocks that behavioral addition, not
+unrelated inspection. Restoring already accepted behavior may cite its existing
+authority without requesting redundant approval.
+
+For defect or complaint repairs, retain the source-derived actor, decisive
+input/condition and approved expected observable outcome before choosing the
+repair. Preserve this original case across review and implementation. Do not
+make rejection tests green by redefining the complaint. Report original-case
+acceptance separately as `verified-fixed`, `still-failing`, `unverified`, or
+`superseded-by-owner-decision`; the last requires a concrete scoped owner
+decision and never means the original expectation was fixed. Unavailable
+original-case evidence stays unverified.
+
+Required adversarial review starts from those sources and the original case,
+not the implementer's summary or existing test expectations. Keep review
+proportional to risk; a worker review is not business approval. Machine checks
+validate trace completeness, not whether a cited decision is truly authoritative.
 
 When work begins from review comments, defect reports, or a list of requested
 fixes, do not process each item as an isolated file edit. Cluster items by
@@ -236,6 +264,8 @@ Review-item reconciliation: <clusters, shared contracts, and combined repair dec
 Risk classes: <all applicable framework and adapter categories>
 Risk severity: <low, moderate, high, or protected>
 Source of truth: <owning file or missing adapter fact>
+Behavior authority: <per-rule before/after, scope, status and accepted source or decision; not-required reason>
+Original-case acceptance: <source, actor, input, approved outcome and observed status; not-applicable>
 Conflicts found: <what disagreed, if anything>
 Repair set: <files or artifacts updated>
 Impact closure: <selected/skipped edges, levels, areas, and missing links>

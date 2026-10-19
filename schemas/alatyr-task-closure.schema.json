@@ -9,6 +9,15 @@
     "record_kind": {"const": "alatyr-task-closure"},
     "task_id": {"$ref": "#/definitions/text"},
     "operation_id": {"$ref": "#/definitions/text"},
+    "analysis_witness": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model", "projection", "retention_review"],
+      "properties": {
+        "model": {"$ref": "#/definitions/binding"},
+        "projection": {"$ref": "#/definitions/binding"},
+        "retention_review": {"$ref": "#/definitions/text"}
+      }
+    },
     "canonical_owners": {"$ref": "#/definitions/paths"},
     "implementation_surfaces": {"$ref": "#/definitions/paths"},
     "changed_fact_ids": {"$ref": "#/definitions/strings"},
@@ -59,6 +68,7 @@
     }
   },
   "definitions": {
+    "binding": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/definitions/path"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}},
     "text": {"type": "string", "minLength": 1, "pattern": "^[^{}]+$"},
     "path": {"allOf": [{"$ref": "#/definitions/text"}, {"pattern": "^[^\\\\]+$"}]},
     "paths": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/definitions/path"}},

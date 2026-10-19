@@ -54,7 +54,7 @@
   "families": [
     {
       "id": "ACTIVE",
-      "code_count": 21
+      "code_count": 23
     },
     {
       "id": "AGENT",
@@ -258,7 +258,7 @@
     },
     {
       "id": "TASK",
-      "code_count": 54
+      "code_count": 57
     },
     {
       "id": "TDD",
@@ -481,6 +481,24 @@
       ],
       "sources": [
         "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_WITNESS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_WITNESS_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
       ]
     },
     {
@@ -12682,6 +12700,24 @@
       ]
     },
     {
+      "code": "TASK_ACCEPTANCE_CLOSURE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_ACCEPTANCE_LEGACY_MODEL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
       "code": "TASK_ARCHITECTURE_CATALOG_INVALID_JSON",
       "levels": [
         "error"
@@ -12706,6 +12742,15 @@
       ],
       "sources": [
         "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_BEHAVIOR_ACCEPTANCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
       ]
     },
     {

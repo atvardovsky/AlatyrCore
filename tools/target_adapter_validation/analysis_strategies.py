@@ -31,6 +31,7 @@ from analysis_strategy_contract import (
 )
 from target_validation_support import is_target_relative_path
 from target_adapter_validation.context import TargetRepositoryView
+from behavior_acceptance import behavior_failures
 
 
 PROBLEM_MODEL_SCHEMA = (
@@ -307,26 +308,32 @@ def validate_selected_problem_model(
     *,
     projection_schema: dict[str, Any] | None = None,
     require_completion: bool,
+    archived_projection: Path | None = None,
+    original_source_path: str | None = None,
+    current_task: bool = False,
 ) -> dict[str, Any] | None:
     relpath = validator.rel(model_path)
-    if not relpath.startswith(PROBLEM_MODEL_RUNTIME_PREFIX) or not relpath.endswith(
+    archived = archived_projection is not None
+    prefix = ".ai/assistant/task-evidence/" if archived else PROBLEM_MODEL_RUNTIME_PREFIX
+    if not relpath.startswith(prefix) or not relpath.endswith(
         ".json"
     ):
         validator.error(
             "ANALYSIS_PROBLEM_MODEL_LOCATION",
-            f"problem models must be JSON below {PROBLEM_MODEL_RUNTIME_PREFIX}",
+            f"problem models must be JSON below {prefix}",
             relpath,
         )
-    if validator.git.is_tracked(relpath) is True:
+    if not archived and validator.git.is_tracked(relpath) is True:
         validator.error(
             "ANALYSIS_PROBLEM_MODEL_TRACKED",
             "runtime problem models must not be tracked by Git",
             relpath,
         )
-    if validator.git.is_ignored(relpath) is not True:
+    ignored = validator.git.is_ignored(relpath)
+    if (archived and ignored is not False) or (not archived and ignored is not True):
         validator.error(
             "ANALYSIS_PROBLEM_MODEL_NOT_IGNORED",
-            "runtime problem models must be ignored by Git",
+            "archived witnesses must be retainable by Git" if archived else "runtime problem models must be ignored by Git",
             relpath,
         )
     model_read = validator.context.read_bytes_result(model_path)
@@ -347,9 +354,20 @@ def validate_selected_problem_model(
     model = validator.load_json_object(model_path, "ANALYSIS_PROBLEM_MODEL")
     if not isinstance(model, dict):
         return None
+    if archived and model.get("schema_version") == 4:
+        try:
+            schema = _schema(PROBLEM_MODEL_SCHEMA.with_name("alatyr-problem-model-v4.schema.json"), validator.schema_context)
+            projection_schema = _schema(PROBLEM_MODEL_SCHEMA.with_name("alatyr-problem-model-active-projection-v3.schema.json"), validator.schema_context)
+        except (OSError, ValueError) as exc:
+            validator.error("ACTIVE_TASK_WITNESS_SCHEMA", str(exc), relpath)
+            return None
+        if current_task and require_completion and getattr(validator, "require_task_acceptance", False):
+            validator.error("TASK_ACCEPTANCE_LEGACY_MODEL", "historical schema-4 evidence cannot establish new task acceptance; re-evaluate the current task with schema 5", relpath)
     model_failures = validate_problem_model(model, schema)
     for failure in model_failures:
         validator.error("ANALYSIS_PROBLEM_MODEL_INVALID", failure, relpath)
+    if model_failures:
+        return None
     if not model_failures:
         selected_projection_schema = projection_schema
         if selected_projection_schema is None:
@@ -365,6 +383,8 @@ def validate_selected_problem_model(
                 model_path,
                 model,
                 selected_projection_schema,
+                archived_path=archived_projection,
+                original_source_path=original_source_path,
             )
     strategy_id = model.get("primary_strategy_id")
     descriptor = None
@@ -389,6 +409,9 @@ def validate_selected_problem_model(
             "selected problem model has an incomplete required review",
             relpath,
         )
+    if require_completion and model.get("schema_version") == 5 and not model_failures:
+        for failure in behavior_failures(model, completion=True):
+            validator.error("TASK_BEHAVIOR_ACCEPTANCE", failure, relpath)
     return model
 
 
@@ -397,6 +420,9 @@ def validate_selected_problem_model_projection(
     model_path: Path,
     model: dict[str, Any],
     schema: dict[str, Any],
+    *,
+    archived_path: Path | None = None,
+    original_source_path: str | None = None,
 ) -> dict[str, Any] | None:
     projection_ref = model.get("active_projection")
     if not isinstance(projection_ref, dict):
@@ -414,7 +440,7 @@ def validate_selected_problem_model_projection(
             validator.rel(model_path),
         )
         return None
-    projection_path = validator.target_path(projection_relpath)
+    projection_path = archived_path or validator.target_path(projection_relpath)
     if not validator.is_target_file(projection_path):
         validator.error(
             "ANALYSIS_PROBLEM_MODEL_PROJECTION_MISSING",
@@ -422,13 +448,13 @@ def validate_selected_problem_model_projection(
             projection_relpath,
         )
         return None
-    if validator.git.is_tracked(projection_relpath) is True:
+    if archived_path is None and validator.git.is_tracked(projection_relpath) is True:
         validator.error(
             "ANALYSIS_PROBLEM_MODEL_PROJECTION_TRACKED",
             "runtime active problem-model projections must not be tracked by Git",
             projection_relpath,
         )
-    if validator.git.is_ignored(projection_relpath) is not True:
+    if archived_path is None and validator.git.is_ignored(projection_relpath) is not True:
         validator.error(
             "ANALYSIS_PROBLEM_MODEL_PROJECTION_NOT_IGNORED",
             "runtime active problem-model projections must be ignored by Git",
@@ -457,7 +483,7 @@ def validate_selected_problem_model_projection(
         return None
     expected = build_active_problem_model_projection(
         model,
-        source_path=validator.rel(model_path),
+        source_path=original_source_path or validator.rel(model_path),
         source_sha256=validator.context.content_digest(model_path),
     )
     for failure in validate_active_problem_model_projection(

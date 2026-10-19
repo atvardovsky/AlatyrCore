@@ -41,7 +41,9 @@ Replace placeholders with target facts before accepting installation.
 8. Evaluate the target test-first recommendation gate. When an enabled required
    trigger applies, or a recommendation is accepted, run
    `.ai/assistant/flows/test-first-change.flow.md` and preserve valid
-   RED/GREEN/refactor evidence before completing implementation. Otherwise
+   policy-authorized RED/GREEN/refactor evidence or an explicit not-run state.
+   Manual-review timing may defer execution without fabricating RED or granting
+   a strict-mode exception. Otherwise
    record why test-first was not indicated or was declined when material.
 9. Apply `.ai/assistant/gates/contract-artifacts.md` when the changed fact
    crosses API, data, event, generated-reference, public-interface,

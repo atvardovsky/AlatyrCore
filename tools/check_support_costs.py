@@ -81,8 +81,8 @@ def main() -> int:
         failures.append("scaffold report is missing complete_managed_inventory")
     elif managed_inventory.get("present") is not True:
         failures.append("template managed inventory must be present")
-    complete_inventory_words = (
-        managed_inventory.get("words", 0) if isinstance(managed_inventory, dict) else 0
+    complete_inventory_bytes = (
+        managed_inventory.get("bytes", 0) if isinstance(managed_inventory, dict) else 0
     )
     generated_state = default_report.get("cost_scopes", {}).get(
         "profile_generated_support_state"
@@ -91,7 +91,7 @@ def main() -> int:
         failures.append("scaffold report is missing profile_generated_support_state")
     elif generated_state.get("present") is not True:
         failures.append("scaffold report did not project generated support state")
-    elif generated_state.get("words", 0) >= complete_inventory_words:
+    elif generated_state.get("bytes", 0) >= complete_inventory_bytes:
         failures.append(
             "kernel generated support-state must be smaller than the complete "
             "template inventory"

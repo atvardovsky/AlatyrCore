@@ -441,7 +441,7 @@ def build_scaffold_report(
     return {
         "schema_version": 1,
         "report_kind": "alatyr-standing-support-cost",
-        "measurement": "whitespace-delimited words in projected installed support files",
+        "measurement": "whitespace-delimited words in projected installed support files; compare minified JSON by bytes or characters, not whitespace words or billing claims",
         "profile": profile,
         "profile_recommendation": {
             "default": "kernel",

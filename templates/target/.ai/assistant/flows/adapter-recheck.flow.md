@@ -113,6 +113,11 @@ Applying modes:
 3. Rebuild manifests/catalogs, operation/context indexes, optional projections,
    approval archives, recursive/recovery surfaces, bootstrap, and support state
    last.
+   Preserve closed-task model/projection witnesses with reviewed retention;
+   never rewrite historical model authority or manufacture missing evidence.
+   For task completion, bind task ID, independently classified task scale,
+   and current model through finalization and verification, and require task
+   acceptance. General adapter health is not selected-task closure.
 4. Run acceptance/full/full validation while `staged`; this is pre-acceptance.
 5. On success, record `accepted`, refresh affected projections, and rerun on
    the resulting branch/revision.

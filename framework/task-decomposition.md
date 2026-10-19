@@ -102,9 +102,22 @@ remain inline and need no model or durable task receipt by default.
 Keep at most 128 current/recent task headers. Routine changed-scope validation
 loads active, explicitly selected, or changed receipts only. Full checks may
 review all registered entries, not arbitrary ignored history. Retain a model
-while its task header selects it; preserve ended work in the target's durable
-package/evidence store before retiring the header. Never delete evidence
+while its task is active. A closed non-small task retains a sanitized,
+hash-bound model and active-projection witness under the target's durable
+task-evidence store, explicitly bound from its closure. Preserve the original
+runtime model digest and task/operation/fact lineage. Historical full validation
+uses those frozen witnesses without reopening ignored runtime files; active
+tasks still require their live model and projection. Retention requires target
+privacy review and excludes secrets, raw chats and private reasoning. Schema-4
+historical witnesses remain historical evidence, never new task acceptance.
+Preserve ended work before retiring the header. Never delete evidence
 automatically. Registration and closure carry no action authorization.
+
+Task completion binds the current task ID and independently selected task class
+through finalization, upgrade verification and canonical validation. Require the
+explicit task-acceptance result, including original-case acceptance when
+applicable. General adapter health or current-change scope alone does not prove
+task closure. Read-only health checks need no invented task binding.
 
 Closure records implementation, evidence finalization, and publication
 separately. Complete implementation may still have provisional or blocked
