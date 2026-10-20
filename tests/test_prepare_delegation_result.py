@@ -31,7 +31,7 @@ class DelegationDraftTests(unittest.TestCase):
     def test_unicode_draft_hash_round_trips_through_production_validator(self):
         for worker_id in ("worker-ascii", "worker-\u00e9", "worker-\u65e5\u672c"):
             with self.subTest(worker_id=worker_id), tempfile.TemporaryDirectory() as directory:
-                root = Path(directory)
+                root = Path(directory).resolve()
                 event = dict(self.event, worker_id=worker_id)
                 (root / "packet.json").write_text(json.dumps(self.packet))
                 (root / "event.json").write_text(json.dumps(event))
@@ -54,6 +54,26 @@ class DelegationDraftTests(unittest.TestCase):
                 validate_worker_result(path, artifact_root=output, node=node, expected_base_revision=event["base_revision"],
                     allowed_stop_reasons={"semantic-decision-required"})
                 self.assertEqual(worker_result_sha256(dict(reversed(list(result.items())))), result["subtree_sha256"])
+
+    def test_cli_rejects_symlinked_output_ancestors(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            alias = root / "alias"
+            try:
+                alias.symlink_to(root, target_is_directory=True)
+            except OSError as error:
+                self.skipTest("Directory symlinks unavailable: " + str(error))
+            for name, value in (("packet", self.packet), ("event", self.event)):
+                (root / (name + ".json")).write_text(json.dumps(value))
+            for name, content in self.contents.items():
+                (root / (name + ".txt")).write_bytes(content)
+            args = [sys.executable, str(ROOT / "tools/prepare_delegation_result.py")]
+            for name in ("packet", "event", "context", "raw", "summary"):
+                args.extend(["--" + name, str(root / (name + (".json" if name in {"packet", "event"} else ".txt")))])
+            rejected = subprocess.run([*args, "--output-dir", str(alias / "draft"), "--write"], capture_output=True, text=True)
+            self.assertEqual(rejected.returncode, 2, rejected.stderr)
+            self.assertIn("must not cross symbolic links", rejected.stderr)
+            self.assertFalse((root / "draft").exists())
 
     def test_cli_malformed_json_inputs_are_bounded_diagnostics(self):
         with tempfile.TemporaryDirectory() as directory:
