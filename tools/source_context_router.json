@@ -3,7 +3,7 @@
   "router_kind": "alatyr-source-context-router",
   "canonical_rule": "ALATYR-CONTEXT-001",
   "preloaded_context": ["AGENTS.md"],
-  "bootstrap_context": ["tools/source_context_router.json"],
+  "bootstrap_context": ["tools/source-context/index.json"],
   "recursive_context": {"schema_version":1,"framework_index":"framework/context-index.json","max_depth":8,"selection":"follow only entries matched by the selected profile, rule owner, path, contract, dependency, risk, conflict, or failed check"},
   "semantic_codebook": {"schema_version":2,"index":"framework/semantics/index.json","load_mode":"lazy-before-first-compact-semantic-reference","preload_terms":["alatyr:current-scope-authorization@1","alatyr:canonical-owner@1","alatyr:risk-by-fact@1","alatyr:protected-change@1","alatyr:logical-integrity@1","alatyr:bounded-context-expansion@1"],"fallback":"load canonical owner prose and stop compact interpretation"},
   "budgets": {"bootstrap_max_words":2500,"minimum_headroom_words":100,"on_exceed":"stop and repair or report routing drift"},
@@ -35,7 +35,7 @@
         {"id": "framework-installer-surface", "resolver": "path-pattern", "path_or_registry_query": "installer/**", "when": "a changed rule affects installer behavior"},
         {"id": "framework-target-template-surface", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "a changed rule affects an installed target surface"}
       ],
-      "context_budget": {"max_required_files":2,"max_required_words":700,"max_initial_words":2900,"max_resolved_files":10,"max_resolved_words":18400,"max_resolved_characters":175000,"reserved_files":2,"reserved_words":1500,"reserved_characters":12000},
+      "context_budget": {"max_required_files":2,"max_required_words":700,"max_initial_words":2900,"max_resolved_files":11,"max_resolved_words":18400,"max_resolved_characters":175000,"reserved_files":2,"reserved_words":1500,"reserved_characters":12000},
       "check_profile": "fast",
       "checks": ["framework-metadata", "rule-ownership", "framework-consistency"]
     },
@@ -51,7 +51,7 @@
         {"id": "installer-target-template", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "an installed target projection is affected"},
         {"id": "installer-rule-owner", "resolver": "indexed-query", "path_or_registry_query": "framework/context-index.json#selector=rule_ids", "when": "installer behavior depends on a portable rule", "owner_rule_id": "$rule_id"}
       ],
-      "context_budget": {"max_required_files":1,"max_required_words":900,"max_initial_words":3400,"max_resolved_files":10,"max_resolved_words":20200,"max_resolved_characters":181000,"reserved_files":2,"reserved_words":1600,"reserved_characters":14000},
+      "context_budget": {"max_required_files":1,"max_required_words":900,"max_initial_words":3400,"max_resolved_files":11,"max_resolved_words":20200,"max_resolved_characters":181000,"reserved_files":2,"reserved_words":1600,"reserved_characters":14000},
       "check_profile": "fast",
       "checks": ["source-context-routing", "scaffold-profiles", "framework-consistency"]
     },
@@ -86,7 +86,7 @@
         {"id": "release-rule-owner", "resolver": "indexed-query", "path_or_registry_query": "framework/context-index.json#selector=rule_ids", "when": "changed release behavior is owned by a portable rule", "owner_rule_id": "$rule_id"},
         {"id": "release-target-template", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "the release changes an installed target projection"}
       ],
-      "context_budget": {"max_required_files":4,"max_required_words":1200,"max_initial_words":3400,"max_resolved_files":14,"max_resolved_words":31300,"max_resolved_characters":264000,"reserved_files":2,"reserved_words":2000,"reserved_characters":16000},
+      "context_budget": {"max_required_files":4,"max_required_words":1200,"max_initial_words":3400,"max_resolved_files":15,"max_resolved_words":31300,"max_resolved_characters":264000,"reserved_files":2,"reserved_words":2000,"reserved_characters":16000},
       "check_profile": "full",
       "additional_check_profiles": ["release"],
       "checks": ["versioning", "release-drift-release", "migration-diff-report"]
@@ -129,7 +129,7 @@
         {"id": "audit-target-template-surface", "resolver": "path-pattern", "path_or_registry_query": "templates/target/**", "when": "audit evidence reaches target projections"},
         {"id": "audit-release-context", "resolver": "indexed-query", "path_or_registry_query": "docs/release-process.md#selector=release_failure_ids", "when": "one or more release checks fail", "owner_rule_id": "ALATYR-LIFECYCLE-001"}
       ],
-      "context_budget": {"max_required_files":2,"max_required_words":1950,"max_initial_words":4400,"max_resolved_files":18,"max_resolved_words":30500,"max_resolved_characters":355000,"reserved_files":4,"reserved_words":3500,"reserved_characters":30000},
+      "context_budget": {"max_required_files":2,"max_required_words":1950,"max_initial_words":4400,"max_resolved_files":19,"max_resolved_words":30500,"max_resolved_characters":355000,"reserved_files":4,"reserved_words":3500,"reserved_characters":30000},
       "check_profile": "full",
       "decomposition": {
         "required": true,

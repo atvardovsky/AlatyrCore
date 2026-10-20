@@ -1,0 +1,175 @@
+{
+  "bootstrap_context": [
+    "tools/source-context/index.json"
+  ],
+  "budgets": {
+    "bootstrap_max_words": 2500,
+    "minimum_headroom_words": 100,
+    "on_exceed": "stop and repair or report routing drift"
+  },
+  "canonical_rule": "ALATYR-CONTEXT-001",
+  "conditional_overlays": {
+    "source-session-presence": {
+      "activate_when": "independent source session work-period checkpoints",
+      "canonical_rule": "ALATYR-CONTINUITY-001",
+      "fallback": "report unavailable cooperation; never manually edit the registry",
+      "policy": "tools/source_session_presence_policy.json",
+      "required_context": [
+        "docs/source-session-presence.md"
+      ]
+    },
+    "source-worker-strategy": {
+      "activate_when": "profile-required or beneficial bounded delegation",
+      "canonical_rule": "ALATYR-DELEGATION-001",
+      "fallback": "continue with the primary assistant",
+      "required_context": [
+        "docs/source-worker-strategy.md"
+      ],
+      "runtime_capability_owner": "active-assistant",
+      "skip_evidence": "required for eligible local work",
+      "worker_policy": "tools/source_worker_policy.json"
+    }
+  },
+  "expansion_triggers": [
+    "canonical owner dependency",
+    "cross-contour change",
+    "approval or safety boundary",
+    "conflicting evidence",
+    "failed focused check",
+    "machine-contract behavior change",
+    "intentional full-corpus comparison or rebaseline"
+  ],
+  "fallback": "report an unmatched task; do not load the full framework automatically",
+  "preloaded_context": [
+    "AGENTS.md"
+  ],
+  "profiles": {
+    "ai-infrastructure-bridge": {
+      "check_profile": "full",
+      "content_sha256": "ad77963690e5d204aceb47059605c0039763d36eabfeb824d231eb919e2a44f4",
+      "path": "tools/source-context/profiles/ai-infrastructure-bridge.json"
+    },
+    "docs-local": {
+      "check_profile": "fast",
+      "content_sha256": "70ab960756dfbdb2f53944c14990b2872d4a760bcd3607db7c71f143ec5094dd",
+      "path": "tools/source-context/profiles/docs-local.json"
+    },
+    "framework-rule": {
+      "check_profile": "fast",
+      "content_sha256": "425ab03d734d5fe5afd48afa12ac2548aa0cbc21298932dea0762b23a995bd77",
+      "path": "tools/source-context/profiles/framework-rule.json"
+    },
+    "installer-template": {
+      "check_profile": "fast",
+      "content_sha256": "2ce67306562fe3e700f1d39c1a97db417164fa3459038df58c79e0470400910b",
+      "path": "tools/source-context/profiles/installer-template.json"
+    },
+    "release-versioning": {
+      "check_profile": "full",
+      "content_sha256": "308680ec9780c16f411a8f24add21e7d649e07549eb6f1700d90a1445c3de785",
+      "path": "tools/source-context/profiles/release-versioning.json"
+    },
+    "repository-audit": {
+      "check_profile": "full",
+      "content_sha256": "20400c77452e77d8da4734676f5cadbec5c861f7900184c3fa1b0ad7d41840d1",
+      "path": "tools/source-context/profiles/repository-audit.json"
+    },
+    "source-tooling": {
+      "check_profile": "fast",
+      "content_sha256": "f0853d2410a23baf7609f012939f6acda255c879ca83711761c2fc764efe8246",
+      "path": "tools/source-context/profiles/source-tooling.json"
+    }
+  },
+  "recursive_context": {
+    "framework_index": "framework/context-index.json",
+    "max_depth": 8,
+    "schema_version": 1,
+    "selection": "follow only entries matched by the selected profile, rule owner, path, contract, dependency, risk, conflict, or failed check"
+  },
+  "router_kind": "alatyr-source-context-router",
+  "rule_dependency_loading": {
+    "default": "conditional-reference",
+    "fail_closed": "load its owner when compact metadata cannot decide applicability",
+    "meaning": "depends_on is a prerequisite, not automatic document preload",
+    "packet_evidence": "record selected and omitted dependency IDs with reasons",
+    "select_when": "selected rule needs it, evidence conflicts, or a named boundary is crossed"
+  },
+  "schema_version": 1,
+  "semantic_codebook": {
+    "fallback": "load canonical owner prose and stop compact interpretation",
+    "index": "framework/semantics/index.json",
+    "load_mode": "lazy-before-first-compact-semantic-reference",
+    "preload_terms": [
+      "alatyr:current-scope-authorization@1",
+      "alatyr:canonical-owner@1",
+      "alatyr:risk-by-fact@1",
+      "alatyr:protected-change@1",
+      "alatyr:logical-integrity@1",
+      "alatyr:bounded-context-expansion@1"
+    ],
+    "schema_version": 2
+  },
+  "task_classification": {
+    "ambiguity_behavior": "stay read-only; choose the smallest profile; request missing facts",
+    "classification_order": [
+      "protected-or-sensitive",
+      "large-or-resumable",
+      "small-task",
+      "standard-task"
+    ],
+    "default_class": "standard-task",
+    "expansion_triggers": [
+      "framework rule or lifecycle behavior changes",
+      "adapter schema or target template contract changes",
+      "source-of-truth conflict or ownership ambiguity",
+      "approval, authorization, safety, security, release, or assistant-infrastructure boundary appears",
+      "focused validation fails or selected check coverage is ambiguous",
+      "validator checker schema gate or generated-projection behavior changes",
+      "explicit repository audit, release readiness review, or full corpus comparison"
+    ],
+    "schema_version": 1,
+    "small_task_eligibility": {
+      "boundary_path_patterns": [
+        "AGENTS.md",
+        "AI_ASSISTANTS.md",
+        "INSTALL.md",
+        "CHANGELOG.md",
+        "VERSION",
+        "ADAPTER_SCHEMA_VERSION",
+        "TEMPLATE_VERSION",
+        "framework/**",
+        "installer/**",
+        "templates/**",
+        ".github/**",
+        "tools/check_manifest.json",
+        "tools/source_context_router.json",
+        "tools/source_worker_policy.json"
+      ],
+      "default_enabled": false,
+      "maximum_changed_paths": 1,
+      "profiles": {
+        "docs-local": {
+          "allowed_path_patterns": [
+            "README.md",
+            "docs/**"
+          ]
+        },
+        "source-tooling": {
+          "allowed_path_patterns": [
+            "tools/**",
+            "tests/**"
+          ]
+        }
+      },
+      "requires_focused_check_coverage": true,
+      "requires_no_full_fallback": true,
+      "requires_no_unmatched_paths": true
+    },
+    "small_task_use_when": [
+      "one source profile",
+      "one local file",
+      "no protected boundaries",
+      "focused source checks prove the result"
+    ]
+  }
+}

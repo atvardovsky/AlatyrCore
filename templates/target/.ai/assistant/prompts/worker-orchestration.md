@@ -1,8 +1,8 @@
 # Worker Orchestration Prompt
 
-Use after the parent operation, profile, changed facts, risk, authorization,
+Use after parent operation/profile, changed facts, risk, authorization,
 task decomposition and critical path are known. The primary assistant remains responsible
-for decisions and convergence. This prompt is the normal authoritative route;
+for decisions and convergence. This is the normal authoritative route;
 load the full flow only for ambiguity, conflict or repair.
 
 1. Load `.ai/assistant/assistant-capabilities.json` and only the selected
@@ -20,17 +20,19 @@ load the full flow only for ambiguity, conflict or repair.
    allow it. Strategy and global obligation acceptance remain primary-owned.
 4. Prefer primary execution when packet/review overhead outweighs
    benefit. Never delegate non-delegable work.
-5. Select an enabled role whose action ceiling contains the packet action.
-   Bind it through current capability evidence, else use suggestion-only or sequential-primary fallback.
+5. Select an enabled role within its action ceiling. Bind current capability
+   evidence, else use suggestion-only or sequential-primary fallback.
 6. Use `.ai/assistant/templates/single-read-only-delegation-receipt.json` for
    exactly one depth-one inspect-only worker with no writes, retries, child
    proposals, or overlap. Load the full execution-tree contracts for multiple
    workers, depth two, writes, retries, child proposals, or semantic overlap.
    Resolve and enforce the same target-policy and portable context,
-   raw-result, and accepted-summary word ceilings for either evidence tier;
+   raw-result, and accepted-summary word ceilings and their 12-times character
+   ceilings for either evidence tier;
    missing, unresolved, or exceeded limits fail closed.
 7. Dispatch through the verified native or approved external backend. A
    frozen payload measures visible prompt, bootstrap, metadata and content;
+   keep stable guidance/sources before variable packet/task data;
    reserve sibling/expansion capacity and recheck before expansion. Missing
    context returns to the primary, not guesses. Native cutoffs remain unverified. A
    provider-specific worker definition is a thin binding to these
@@ -55,9 +57,9 @@ load the full flow only for ambiguity, conflict or repair.
    validation, authority, or cost boundary is reached. Record
    the policy stop-reason ID for every branch.
 
-A worker may return evidence for assigned local proof obligations. It must not
-change the primary strategy, waive an obligation, accept a primary-owned
-obligation, or turn a review pass into operation completion.
+Workers report assigned local proof evidence. They cannot change the primary
+strategy, waive obligations, accept primary-owned obligations, or promote a
+review pass to operation completion.
 
 Parallelism, model identity, speed, cost and quality claims require matching
 capability record and result evidence.

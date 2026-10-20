@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "suite_kind": "alatyr-effectiveness-task-class-suite",
-  "suite_version": 1,
+  "suite_version": 2,
   "status": "coverage-contract-not-executed",
   "required_adapter_modes": ["none", "minimal", "full"],
   "recommended_minimum_repetitions": 3,
@@ -98,6 +98,20 @@
       "task_scale": "large-or-resumable+team-active",
       "risk_focus": "active-work conflicts, handoff continuity, bounded delegation, and final convergence",
       "purpose": "Measure context reuse and consistency across a coordinated multi-contributor change."
+    },
+    {
+      "id": "incident-systemic-repair",
+      "task_profile": "code-local",
+      "task_scale": "large-or-resumable",
+      "risk_focus": "original complaint, lifecycle outcomes, recurrence and companion repair closure",
+      "purpose": "Compare systemic repair against isolated local fixes without losing original-case acceptance."
+    },
+    {
+      "id": "delegated-context-review",
+      "task_profile": "ai-infrastructure",
+      "task_scale": "large-or-resumable",
+      "risk_focus": "dense context limits, stable delivery, worker isolation and primary convergence",
+      "purpose": "Measure complete worker preparation, delivered context and review overhead, not worker latency alone."
     }
   ],
   "claim_boundary": "This suite defines required coverage only. It contains no execution results and supports no effectiveness or cost claim by itself."

@@ -5,6 +5,28 @@
 Plan source-generated updates with `python3 tools/alatyr.py refresh-source`.
 Use `--check` for read-only freshness validation or `--write` for an explicit
 source refresh. Installed projects and golden evidence are outside this helper.
+Refresh reuses canonical checks only within one call and only for an identical
+complete source snapshot and isolated Git index. It rejects checker mutations;
+new, deleted, modified or generated inputs invalidate affected reuse. No
+persistent cache or reduced final acceptance is introduced.
+Only verified exact-output checks may skip rendering. Entry/bootstrap
+provenance remains on the canonical generator path; output changes switch
+back to full repair rather than adding a probe before every renderer.
+
+Source agents start at `tools/source-context/index.json` and one linked profile,
+not the full machine router. Check or regenerate these derived files with
+`python3 tools/alatyr.py render-source-context --check` or `--write`.
+Word/character limits and reserves are unchanged; four profile file-count
+ceilings account for the additional bounded descriptor.
+
+Use `python3 tools/alatyr.py plan-work --source-profile framework-rule --context-selector rule_ids=ALATYR-CONTEXT-001 --compact`
+for a bounded agent view. Selectors name exact JSON record IDs or unique
+Markdown heading slugs. Unknown/ambiguous selectors require expansion; required
+owners and changed whole files are never replaced by excerpts. Detailed and
+compact views share readiness, check selection and authorization boundaries.
+Omit `--compact` for the full machine receipt. This reduces presentation, not
+the planner's validation work. A full check profile does not by itself require
+large-task orchestration for a narrow docs/tool task; real boundaries still do.
 
 For architecture context, `context-plan` accepts `--architecture-mode inventory`,
 `explain`, `discuss`, `compare`, `review`, or `document` with
@@ -95,6 +117,11 @@ Pass `--context-preflight <bundle-dir>/preflight.json` to
 the frozen payload and stay within its worker/aggregate allocation. Existing raw
 and summary limits still apply. Both tools produce evidence for review, never
 proof of provider provenance, dispatch, semantic correctness, or acceptance.
+Every resolved word allocation also imposes a character ceiling of 12 times
+that limit, including initial delivery, siblings, expansions, raw results,
+summaries and recursive branches. Both evidence tiers use the same resolver;
+this dense-text bound is not a provider-token or billing estimate. Stable
+instructions, bootstrap and selected sources precede variable packet/task data.
 
 ## Task Acceptance And Shared Resources
 
@@ -408,8 +435,8 @@ all state-changing phases. The plan also names the target-adapter
 `support-delta` and `impact` route for installed projects, but it does not
 replace target logical integrity review.
 
-For non-audit `large-or-resumable` work, first create at least two independent
-inspect-only packet JSON files and pass each with `--worker-packet <packet>`.
+For non-audit `large-or-resumable` work, supply the policy-required number of
+independent inspect-only packet JSON files with `--worker-packet <packet>`.
 Without that bounded set the planner returns
 `workstream-identification-required`; it does not invent workstreams from a
 broad task description. Repository audits continue to use the built-in policy

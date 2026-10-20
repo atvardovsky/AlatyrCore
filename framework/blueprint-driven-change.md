@@ -51,15 +51,16 @@ Apply this sequence before claiming the change is complete:
 4. Re-derive testable scope, identity, ownership, lifecycle, dependency, and
    external-boundary invariants, then identify affected project areas,
    contracts, tests, diagrams, and assistant governance surfaces.
-5. Update the owning blueprint or source-of-truth docs when accepted facts
-   change.
-6. Update project flow, use-case, data, runtime, or architecture docs when
-   those facts change.
+5. Plan owning blueprint or source-of-truth updates when accepted facts change.
+6. Plan project flow, use-case, data, runtime, or architecture documentation
+   updates. Analysis and proposed updates remain read-only until authorized.
 7. Prepare an implementation plan that names affected boundaries and validation.
 8. When an enabled target test-first trigger applies, run its selected
    workflow under its accepted execution timing and current authorization.
    Preserve conditional RED/GREEN/refactor evidence or explicit not-run status;
-   module enablement grants no execution permission. Then change code, tests, diagrams, prompts, skills, bridge files,
+   module enablement grants no execution permission. Apply the authorized
+   blueprint and flow updates before implementation depends on their new
+   accepted facts. Then change code, tests, diagrams, prompts, skills, bridge files,
    gates, or checker rules as required by the accepted fact change.
 9. Run target validation that exists, or record manual/unresolved checks.
 10. Perform a final consistency check across changed surfaces.
@@ -103,6 +104,11 @@ Approval is required before protected changes, including:
 
 If approval is missing, stop before applying the protected change. Planning and
 analysis may continue when they do not modify protected behavior.
+
+Compose reused procedures by Analyze, Plan, Apply and Verify phases, not by
+invoking an entire repair-and-completion flow during analysis. Retain one
+task/operation-bound result per obligation. Reuse requires current canonical
+input bindings; final global review remains after local workstream checks.
 
 ## Adapter Responsibilities
 

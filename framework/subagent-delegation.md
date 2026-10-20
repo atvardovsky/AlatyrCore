@@ -122,6 +122,13 @@ compare measured context, raw-result, and accepted-summary words against the
 applicable limits. Compact evidence may omit redundant ledger representation;
 it must not omit an invariant or its enforcement.
 
+Also enforce a character ceiling of 12 times each resolved word allocation,
+including aggregate context, raw results, primary summaries and recursive
+branch limits. This independent dense-text bound is not a tokenizer estimate.
+It preserves existing record shapes and cannot replace word limits. Measure
+the complete visible artifacts before applying either ceiling; minified data,
+long identifiers and Unicode cannot evade it through whitespace counting.
+
 Before dispatch, measure the actual visible packet, including prompt, supplied
 bootstrap, metadata and selected content, not only file estimates. Freeze that
 payload and reserve capacity for conditional expansion and other workers.

@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "render-source-context",
+      "script": "source_context_selection.py",
+      "purpose": "check or explicitly regenerate compact source routing views",
+      "write_scope": "local-source-artifacts-with-explicit-apply"
+    },
+    {
       "name": "prepare-worker-context",
       "script": "prepare_delegation_context.py",
       "purpose": "freeze measured bounded context before worker dispatch or expansion",

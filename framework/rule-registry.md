@@ -213,12 +213,12 @@ Enforcement: required.
 Rule ID: `ALATYR-CHANGE-001`
 Source owner: `framework/blueprint-driven-change.md`
 Installed owner: `.ai/framework/blueprint-driven-change.md`
-Commitment: Carry accepted product changes through invariant re-derivation,
-source-of-truth and flow updates, implementation planning, code and tests,
-companion sync, proportional durable engineering-evidence capture, and final
-evidence, reconciling related review items and large workstreams globally,
-composing an enabled target test-first flow when its trigger applies, and
-activating a change package only when its separate gate passes.
+Commitment: Compose product change through read-only analysis and planning,
+authorized blueprint/flow and implementation updates, then final verification.
+Re-derive invariants, preserve code/test and companion sync, proportional
+engineering evidence, global review-item/workstream reconciliation, applicable
+test-first behavior and separate change-package activation. Reuse current bound
+evidence without merging approval, checkpoint, closure or publication roles.
 Applies to: business changes, architecture changes, data changes, runtime
 changes, public contract changes.
 Enforcement: required.
@@ -526,12 +526,13 @@ coverage keys, depth/worker/context/result/summary/retry limits, evidence
 saturation, normalized stop reasons, measured hash-bound results, compact
 accepted summaries, resumable checkpoints, and primary convergence for
 target-verified native workers, external dispatchers, and suggestion-only
-handoff; permit inspect-only depth-2 dispatch only inside an immutable
-primary-issued branch envelope and otherwise require child proposals; keep
-descendant raw evidence lazy but reviewable; keep provider-native definitions
-as thin target bindings; preserve context, action, tool, write, privacy,
-validation, model, runtime-capability, and concurrency boundaries; and fall
-back without unsupported quality, latency, or cost claims.
+handoff; enforce word limits and their 12-times character ceilings in both
+evidence tiers and during preparation; permit inspect-only depth-2 dispatch
+only inside an immutable primary-issued branch envelope and otherwise require
+child proposals; keep descendant raw evidence lazy but reviewable; keep
+provider-native definitions as thin target bindings; preserve context, action,
+tool, write, privacy, validation, model, runtime-capability, and concurrency
+boundaries; and fall back without unsupported quality, latency, or cost claims.
 Applies to: delegated execution, parallel workstreams, fast focused coding,
 large tasks.
 Enforcement: required when module enabled or delegated execution is attempted.

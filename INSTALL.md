@@ -61,6 +61,13 @@ semantic owner.
 
 ## Target Repository Inspection
 
+When updating delegation or change workflows, preserve historical evidence and
+reconcile active records with the current canonical owners. Worker character
+ceilings apply in addition to word limits; refresh the tooling and flows
+together. Analyze/Plan must not invoke an entire repair-and-completion flow.
+Do not overwrite target facts, fabricate measurements or treat old receipts as
+new acceptance. Follow [release migration evidence](docs/release-process.md).
+
 Use `installer/discovery-contract.json` as the source-owned category map for
 target repository discovery. The bullets below are examples and planning
 prompts within those categories; they do not replace the contract.

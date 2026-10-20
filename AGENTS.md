@@ -13,8 +13,10 @@ Agents working here must preserve the separation between:
 ## Bootstrap Context
 
 Treat this file as host-preloaded context and do not reread it. Read
-`tools/source_context_router.json`, choose the smallest matching source task
-profile, classify task scale before expansion, resolve its bounded semantic
+`tools/source-context/index.json`, choose the smallest matching source task
+profile and load only its linked descriptor. The canonical machine router is
+`tools/source_context_router.json`; do not preload it in full. First classify task scale before expansion,
+resolve its bounded semantic
 preload, and load only that profile's required paths and rule owners. For
 framework context, start from
 `framework/context-index.json` and follow only matching child entries; never

@@ -10,7 +10,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from delegation_evidence import _validate_policy_limits
+from delegation_evidence import _validate_policy_limits, enforce_character_limit
 from source_worker_contract import load_source_worker_policy, validate_worker_packet
 from prepare_delegation_context import validate_preflight, measurement, canonical_digest
 
@@ -47,6 +47,7 @@ def prepare(packet: dict, event: dict, contents: dict[str, bytes], policy: dict,
     for name, limit in ceilings.items():
         if artifacts[name]["word_count"] > limit:
             raise ValueError(f"{name} has {artifacts[name]['word_count']} words; limit is {limit}")
+        enforce_character_limit(artifacts[name]["character_count"], limit, name)
     if artifacts["summary"]["word_count"] > artifacts["raw"]["word_count"]:
         raise ValueError("accepted-summary candidate exceeds raw result size")
     if preflight is not None:
@@ -57,6 +58,11 @@ def prepare(packet: dict, event: dict, contents: dict[str, bytes], policy: dict,
         words = artifacts["context"]["word_count"]
         if words > preflight["max_context_words"] or words + preflight["other_context_words"] > limits["max_context_words_total"]:
             raise ValueError(f"observed context has {words} words; frozen worker limit is {preflight['max_context_words']}")
+        enforce_character_limit(artifacts["context"]["character_count"], preflight["max_context_words"], "observed worker context")
+        enforce_character_limit(
+            artifacts["context"]["character_count"] + sum(item["character_count"] for item in preflight["other_contexts"]),
+            limits["max_context_words_total"], "observed aggregate context",
+        )
     result = {"schema_version": 3, "result_kind": "alatyr-normalized-worker-result",
         "result_id": event["worker_id"] + ":result", "packet_id": event["packet_id"],
         "parent_packet_id": packet["parent_packet_id"], "node_id": event["worker_id"],

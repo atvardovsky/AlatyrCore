@@ -17,58 +17,59 @@ Replace placeholders with target facts before accepting installation.
 
 ## Steps
 
+### Analyze
+
 1. State change intent and non-goals.
 2. Use `.ai/assistant/context-router.json` to load the smallest matching
    profile and project-area overlays plus the target source-of-truth docs.
    Activate the `large-or-resumable` scale overlay when its conditions apply.
-3. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
-4. List changed fact IDs and canonical owners, re-derive testable invariants,
-   and cluster related review items by shared fact or contract. When the `consistency-map`
-   module is enabled, resolve exact registry-to-node identity from
-   `.ai/project/source-of-truth-registry.md` and
-   `.ai/project/consistency-map.json`, then derive affected contracts, areas,
-   and surfaces and record selected/skipped edges.
-5. Update target blueprint or equivalent source-of-truth docs when accepted
-   facts change.
-6. Update project flow, use-case, data, runtime, architecture, or public docs
-   when those facts change.
-7. Prepare an implementation plan that names affected boundaries, tests,
+3. Invoke only [Analyze](logical-integrity-review.flow.md#analyze) from
+   `.ai/assistant/flows/logical-integrity-review.flow.md`. Reuse its changed
+   fact IDs, canonical owners, re-derived invariants, review-item clusters and
+   registry/consistency-map impact closure. Do not run repair or finalization.
+
+### Plan
+
+4. Plan blueprint, project flow, use-case, data, runtime, architecture and
+   public-documentation updates; proposals do not change accepted facts.
+5. Prepare an implementation plan that names affected boundaries, tests,
    contract artifacts, diagrams, visual validation, approvals,
    machine-readable scope records, and validation.
    Apply `.ai/assistant/flows/change-package.flow.md` when coherent material
    outcome, semantic multi-surface approval, audit, or publishable provenance
    needs pass its activation gate.
-8. Evaluate the target test-first recommendation gate. When an enabled required
+
+### Apply
+
+6. Verify current modification authorization and applicable protected approval
+   before writing. Commit, publish and live-external actions require separate
+   current-scope authorization. Update accepted blueprint and flow owners before
+   implementation depends on the new facts, within this approved repair set.
+7. Evaluate the target test-first recommendation gate. When an enabled required
    trigger applies, or a recommendation is accepted, run
    `.ai/assistant/flows/test-first-change.flow.md` and preserve valid
    policy-authorized RED/GREEN/refactor evidence or an explicit not-run state.
    Manual-review timing may defer execution without fabricating RED or granting
    a strict-mode exception. Otherwise
    record why test-first was not indicated or was declined when material.
-9. Apply `.ai/assistant/gates/contract-artifacts.md` when the changed fact
-   crosses API, data, event, generated-reference, public-interface,
-   persistence, or external-boundary contracts.
-10. Change remaining code, tests, contract artifacts, diagrams, prompts,
-    skills, bridge files, gates, or checker rules as required by the accepted
-    fact change.
-11. Apply `.ai/assistant/gates/visual-validation.md` when UI, layout,
-    accessibility-relevant, rendered diagram, visual artifact, or discussion
-    diagram presentation facts changed.
-12. Run target validation that exists. Do not invent commands.
-13. When relevant tooling exists, record support/product change cost for mixed
-    support and product changes; treat it as structural cost evidence, not
-    semantic proof.
-14. When approval was used, compare the complete Git change set with the
+8. Invoke [Apply](logical-integrity-review.flow.md#apply) for the smallest
+   coherent implementation and companion repair set. This owns applicable
+   contract-artifact and visual-validation gates; retain their results once.
+
+### Verify
+
+9. Invoke [Verify](logical-integrity-review.flow.md#verify) after local checks.
+   This owns target validation, global workstream reconciliation, documentation
+   sync, Project Contour Sync Decision and engineering-evidence verification.
+   Do not invent commands. A required correction returns to authorized Apply
+   and invalidates affected verification evidence.
+10. When approval was used, compare the complete Git change set with the
     explicitly selected machine-readable approval scope and fail on uncovered
     or excluded paths.
-15. Perform a final consistency check across changed surfaces and related
-    review-item clusters.
-16. Apply `.ai/assistant/gates/documentation.md` and record the Project Contour
-    Sync Decision. Regenerate support state last when managed support changed.
-17. Apply `.ai/assistant/gates/engineering-evidence.md` and preserve compact
-    reusable task knowledge when triggered and authorized, or record a
-    fact-specific skip or blocker.
-18. Report final evidence, skipped checks, approvals, and residual risk.
+11. Regenerate support state last when authorized managed support changed, then
+    refresh validation of the final result. A workstream-local pass is not the
+    final consistency check across the combined changed surfaces.
+12. Report final evidence, skipped checks, approvals, and residual risk.
 
 For large or resumable changes, use
 `.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
@@ -88,6 +89,10 @@ Require explicit programmer approval before:
 - integrating third-party assistant infrastructure into canonical target files
 
 ## Final Evidence
+
+Reuse the same task/operation-bound evidence from each phase; these fields are
+views, not instructions to create one artifact per field. Do not merge distinct
+approval, checkpoint, closure, or publication roles or reuse stale bindings.
 
 Report:
 

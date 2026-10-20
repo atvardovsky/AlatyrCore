@@ -150,8 +150,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 688,
-      "content_digest": "sha256:110ba4611945c88b2bb5f6cbd970845de6d8e595da515e95d3ddef0c0833e04f"
+      "estimated_words": 687,
+      "content_digest": "sha256:2d553d6bd769895480c01dfa98cbad6795adf4684c7a87dbae1fe7bec4828a40"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -387,8 +387,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 619,
-      "content_digest": "sha256:58cbe2623535ab53db447642100d6bad9bade7635826a94199f9cd6d00c0472a"
+      "estimated_words": 698,
+      "content_digest": "sha256:ef169c8bdb8497059e00e8be05ce068833f346d569812604c62c839476a20fa3"
     },
     {
       "id": "assistant.content.flows-operation-routing-flow-md",

@@ -9,6 +9,13 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
 
 ## Steps
 
+Invoke only the phase needed by the calling flow. Analyze is read-only; Apply
+requires an approved plan, current modification authorization, and applicable
+protected approval. Verify cannot authorize repairs: return to Apply when a
+check exposes work, then refresh the affected verification evidence.
+
+### Analyze
+
 1. Apply the Semantic Change Decision Gate.
 2. List changed facts in concrete language.
    Before implementation, record business-rule before/after behavior and exact
@@ -50,29 +57,36 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
    prompts, skills, bridge files, gates, generated artifacts, and assistant
    rules.
 9. Choose the source of truth.
+
+### Apply
+
 10. Repair the smallest coherent set of files that preserves the re-derived
-   invariants across all related review items.
+   invariants across all related review items. Include authorized documentation
+   sync and triggered engineering-evidence capture in this same repair set.
 11. Apply `.ai/assistant/gates/contract-artifacts.md` when the changed fact
     crosses a public or generated contract. Apply
     `.ai/assistant/gates/visual-validation.md` when visual, UI, rendered
     diagram, or presentation evidence is part of the fact.
 12. Record support/product change cost when relevant tooling exists and the
     patch mixes project support surfaces with product surfaces.
+
+### Verify
+
 13. Run target validation that exists, including observable failure-class
     distinctions when external callers or operators depend on them.
+    Reuse a current result only when its canonical policy permits reuse and
+    repository/input bindings still match; a repeated gate name is not evidence.
 14. For multi-workstream operations, reconcile the combined repair set in one
     global review after local workstream checks. Confirm shared fact owners,
     dependency order, approval scope, and generated artifacts agree.
-15. For every code or test change, apply
-    `.ai/assistant/gates/documentation.md` and record the Project Contour Sync
-    Decision. Update the concise contour only when its orientation or routing
-    facts changed; otherwise name checked owners and the fact-specific reason
-    for `not-required`.
-16. Before completion, apply
-    `.ai/assistant/gates/engineering-evidence.md`. Capture compact reusable
-    engineering conclusions when triggered and authorized, or report a
-    fact-specific skip or blocker. Do not turn capture alone into a change
-    package.
+15. For every code or test change, verify
+    `.ai/assistant/gates/documentation.md` and its Project Contour Sync
+    Decision. A stale contour returns to Apply; `not-required` names checked
+    owners and a fact-specific reason. Missing, blocked or unverified sync
+    cannot support completion.
+16. Verify `.ai/assistant/gates/engineering-evidence.md`: retain the authorized
+    captured record, fact-specific skip, or blocker. Missing required capture
+    returns to Apply. Capture alone does not activate a change package.
 
 ## Explanation Format
 

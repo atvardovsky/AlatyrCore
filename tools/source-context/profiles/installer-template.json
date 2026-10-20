@@ -1,0 +1,64 @@
+{
+  "canonical_source": "tools/source_context_router.json",
+  "check_profile": "fast",
+  "checks": [
+    "source-context-routing",
+    "scaffold-profiles",
+    "framework-consistency"
+  ],
+  "conditional_context": [
+    {
+      "id": "installer-stage-context",
+      "path_or_registry_query": "installer/context-router.json#selector=installer_stage_ids",
+      "resolver": "indexed-query",
+      "when": "one or more installer stages are in scope"
+    },
+    {
+      "id": "installer-public-contract",
+      "path_or_registry_query": "INSTALL.md",
+      "resolver": "exact-path",
+      "when": "public installation behavior is affected"
+    },
+    {
+      "id": "installer-execution-flow",
+      "path_or_registry_query": "installer/assistant-installation.flow.md",
+      "resolver": "exact-path",
+      "when": "assistant execution behavior is affected"
+    },
+    {
+      "id": "installer-readiness-or-plan",
+      "path_or_registry_query": "readiness_or_plan_paths",
+      "resolver": "selector-paths",
+      "when": "a readiness or installation-plan surface is affected"
+    },
+    {
+      "id": "installer-target-template",
+      "path_or_registry_query": "templates/target/**",
+      "resolver": "path-pattern",
+      "when": "an installed target projection is affected"
+    },
+    {
+      "id": "installer-rule-owner",
+      "owner_rule_id": "$rule_id",
+      "path_or_registry_query": "framework/context-index.json#selector=rule_ids",
+      "resolver": "indexed-query",
+      "when": "installer behavior depends on a portable rule"
+    }
+  ],
+  "context_budget": {
+    "max_initial_words": 3400,
+    "max_required_files": 1,
+    "max_required_words": 900,
+    "max_resolved_characters": 181000,
+    "max_resolved_files": 11,
+    "max_resolved_words": 20200,
+    "reserved_characters": 14000,
+    "reserved_files": 2,
+    "reserved_words": 1600
+  },
+  "required_context": [
+    "installer/context-router.json"
+  ],
+  "schema_version": 1,
+  "source_profile": "installer-template"
+}

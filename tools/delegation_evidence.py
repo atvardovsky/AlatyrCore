@@ -67,6 +67,7 @@ PORTABLE_MAX_CONTEXT_WORDS = 32000
 PORTABLE_MAX_RESULT_WORDS = 12000
 PORTABLE_MAX_PRIMARY_SUMMARY_WORDS = 4000
 PORTABLE_MAX_RETRIES = 2
+CHARACTERS_PER_WORD_LIMIT = 12
 PRIMARY_ANALYSIS_STRATEGIES = {
     "direct-local",
     "invariant-first",
@@ -447,6 +448,8 @@ def validate_worker_result(
         raise DelegationEvidenceError("worker result exceeds node max_result_words")
     if summary["word_count"] > node["max_summary_words"]:
         raise DelegationEvidenceError("worker summary exceeds node max_summary_words")
+    enforce_character_limit(raw["character_count"], node["max_result_words"], "worker raw result")
+    enforce_character_limit(summary["character_count"], node["max_summary_words"], "worker summary")
     if summary["word_count"] > raw["word_count"]:
         raise DelegationEvidenceError("accepted summary is larger than raw result")
     if result.get("accepted_summary") != node.get("accepted_summary_evidence"):
@@ -619,7 +622,7 @@ def validate_single_read_only_receipt(
         artifact_root=artifact_root,
         label="single delegation context",
     )
-    _enforce_artifact_word_limit(
+    _enforce_artifact_limits(
         context,
         artifact_label="single delegation context",
         policy_field="tree_policy.max_context_words_total",
@@ -650,13 +653,13 @@ def validate_single_read_only_receipt(
         result.get("accepted_summary_artifact"), artifact_root=artifact_root,
         label="single delegation accepted summary",
     )
-    _enforce_artifact_word_limit(
+    _enforce_artifact_limits(
         raw,
         artifact_label="single delegation raw result",
         policy_field="context_compaction.max_result_words_total",
         limit=policy_limits["max_result_words_total"],
     )
-    _enforce_artifact_word_limit(
+    _enforce_artifact_limits(
         summary,
         artifact_label="single delegation accepted summary",
         policy_field="context_compaction.max_primary_summary_words_total",
@@ -726,7 +729,7 @@ def validate_single_read_only_receipt(
     return receipt
 
 
-def _enforce_artifact_word_limit(
+def _enforce_artifact_limits(
     artifact: dict[str, Any],
     *,
     artifact_label: str,
@@ -738,6 +741,20 @@ def _enforce_artifact_word_limit(
         raise DelegationEvidenceError(
             f"{artifact_label} word count {measured} exceeds "
             f"delegation policy.{policy_field} limit {limit}"
+        )
+    enforce_character_limit(artifact["character_count"], limit, artifact_label)
+
+
+def enforce_character_limit(characters: int, word_limit: int, label: str) -> None:
+    """Bound dense text independently of whitespace; not a token estimate."""
+    if type(word_limit) is not int or word_limit < 0:
+        raise DelegationEvidenceError(f"{label} word limit must be a resolved integer")
+    maximum = word_limit * CHARACTERS_PER_WORD_LIMIT
+    if type(characters) is not int or characters < 0:
+        raise DelegationEvidenceError(f"{label} character count must be a resolved integer")
+    if characters > maximum:
+        raise DelegationEvidenceError(
+            f"{label} character count {characters} exceeds character limit {maximum}"
         )
 
 
@@ -1306,6 +1323,20 @@ def validate_execution_tree(
         artifact_root=artifact_root,
         allowed_stop_reasons=allowed_stop_reasons,
     )
+    worker_nodes = [node for node in nodes.values() if node["depth"] > 0]
+    enforce_character_limit(
+        sum(node["context_evidence"]["character_count"] for node in worker_nodes),
+        budget["max_context_words_total"], "aggregate worker context",
+    )
+    enforce_character_limit(
+        sum(result["raw_payload"]["character_count"] for result in result_by_id.values()),
+        budget["max_result_words_total"], "aggregate raw results",
+    )
+    enforce_character_limit(
+        sum(node["accepted_summary_evidence"]["character_count"] for node in worker_nodes
+            if node["depth"] == 1 and node["accepted_summary_evidence"] is not None),
+        budget["max_primary_summary_words_total"], "aggregate primary summaries",
+    )
     checkpoint_rejected_ids: set[str] = set()
     for node in nodes.values():
         if node["depth"] == 1 and children.get(node["node_id"]):
@@ -1345,6 +1376,18 @@ def validate_execution_tree(
                 raise DelegationEvidenceError("branch envelope child budget exceeded")
             if sum(item["context_words"] for item in branch_children) > envelope["max_context_words"]:
                 raise DelegationEvidenceError("branch envelope context budget exceeded")
+            enforce_character_limit(
+                sum(item["context_evidence"]["character_count"] for item in branch_children),
+                envelope["max_context_words"], "branch context",
+            )
+            enforce_character_limit(
+                sum(result_by_id[item["result_id"]]["raw_payload"]["character_count"] for item in branch_children),
+                envelope["max_result_words"], "branch raw results",
+            )
+            enforce_character_limit(
+                result_by_id[node["result_id"]]["accepted_summary"]["character_count"],
+                envelope["max_summary_words"], "branch summary",
+            )
             if sum(result_by_id[item["result_id"]]["raw_payload"]["word_count"] for item in branch_children) > envelope["max_result_words"]:
                 raise DelegationEvidenceError("branch envelope result budget exceeded")
             if result_by_id[node["result_id"]]["accepted_summary"]["word_count"] > envelope["max_summary_words"]:

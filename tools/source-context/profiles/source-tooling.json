@@ -1,0 +1,69 @@
+{
+  "canonical_source": "tools/source_context_router.json",
+  "check_profile": "fast",
+  "check_selection": "select fast changed-path checks by trigger_paths",
+  "checks": [
+    "check-manifest",
+    "support-costs",
+    "source-unit-tests",
+    "framework-consistency"
+  ],
+  "conditional_context": [
+    {
+      "id": "source-tool-changed-path",
+      "path_or_registry_query": "tools/**",
+      "resolver": "path-pattern",
+      "when": "a source tool path is changed"
+    },
+    {
+      "id": "source-test-changed-path",
+      "path_or_registry_query": "tests/**",
+      "resolver": "path-pattern",
+      "when": "a source tool test path is changed"
+    },
+    {
+      "id": "source-tool-contract",
+      "path_or_registry_query": "contract_paths",
+      "resolver": "selector-paths",
+      "when": "the tool validates a named contract surface"
+    },
+    {
+      "id": "source-check-manifest-entry",
+      "path_or_registry_query": "tools/check_manifest.json#selector=check_ids",
+      "resolver": "indexed-query",
+      "when": "one or more exact source check IDs are selected"
+    },
+    {
+      "id": "source-architecture-section",
+      "path_or_registry_query": "docs/source-architecture.md#selector=architecture_topics",
+      "resolver": "indexed-query",
+      "when": "the affected component has source architecture guidance"
+    },
+    {
+      "id": "source-cli-section",
+      "path_or_registry_query": "tools/README.md#selector=cli_topics",
+      "resolver": "indexed-query",
+      "when": "the tool command or public CLI usage changes"
+    },
+    {
+      "id": "source-maintenance-fallback",
+      "path_or_registry_query": "docs/framework-maintenance.md#selector=acceptance_or_lifecycle_topics",
+      "resolver": "indexed-query",
+      "when": "acceptance or lifecycle routing is ambiguous"
+    }
+  ],
+  "context_budget": {
+    "max_initial_words": 2500,
+    "max_required_files": 0,
+    "max_required_words": 0,
+    "max_resolved_characters": 303000,
+    "max_resolved_files": 10,
+    "max_resolved_words": 24000,
+    "reserved_characters": 14000,
+    "reserved_files": 2,
+    "reserved_words": 1600
+  },
+  "required_context": [],
+  "schema_version": 1,
+  "source_profile": "source-tooling"
+}

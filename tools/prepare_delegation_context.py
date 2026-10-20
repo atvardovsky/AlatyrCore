@@ -10,7 +10,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from delegation_evidence import _validate_policy_limits
+from delegation_evidence import _validate_policy_limits, enforce_character_limit
 from source_worker_contract import load_source_worker_policy, validate_worker_packet
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +80,11 @@ def validate_preflight(record: dict, packet: dict, policy: dict) -> None:
             raise ValueError("preflight sibling artifacts require valid measurements")
     if record["other_context_words"] != sum(item["word_count"] for item in record["other_contexts"]):
         raise ValueError("preflight sibling context total differs from its measurements")
+    enforce_character_limit(context["character_count"], record["max_context_words"], "worker context")
+    enforce_character_limit(
+        context["character_count"] + sum(item["character_count"] for item in record["other_contexts"]),
+        limits["max_context_words_total"], "aggregate worker context",
+    )
 
 
 def prepare(packet: dict, policy: dict, *, root: Path, prompt: bytes | None,
@@ -91,17 +96,20 @@ def prepare(packet: dict, policy: dict, *, root: Path, prompt: bytes | None,
     if previous is None:
         if prompt is None or not prompt.strip() or not bootstrap:
             raise ValueError("initial dispatch requires the actual prompt and explicit visible bootstrap artifacts")
-        content = INSTRUCTIONS.encode() + _part("packet", "inspect-only", json.dumps(packet, sort_keys=True, indent=2).encode())
-        content += _part("prompt", "current task", prompt)
+        content = INSTRUCTIONS.encode()
         for name, value in bootstrap.items():
             content += _part("bootstrap", name, value)
         for path in packet["bounded_context"]:
             value = read_artifact(root / path)
             source_inputs[path] = digest(value)
             content += _part("source", path, value)
-        initial_words = measurement(content)["word_count"]
+        content += _part("packet", "inspect-only", json.dumps(packet, sort_keys=True, indent=2).encode())
+        content += _part("prompt", "current task", prompt)
+        initial_measurement = measurement(content)
+        initial_words = initial_measurement["word_count"]
         if initial_words > packet["max_initial_words"]:
             raise ValueError(f"initial context has {initial_words} words; packet limit is {packet['max_initial_words']}")
+        enforce_character_limit(initial_measurement["character_count"], packet["max_initial_words"], "initial context")
         limit = packet["max_initial_words"] if max_context_words is None else max_context_words
     else:
         prior, content = previous

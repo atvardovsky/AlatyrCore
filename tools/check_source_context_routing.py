@@ -20,6 +20,7 @@ from context_catalog import (
     validate_context_catalog,
 )
 from path_spec import PathDialect, matches_any
+from source_context_selection import BOOTSTRAP, bootstrap_outputs, selectable_values
 from plan_minimum_work import (
     SOURCE_CONDITIONAL_REQUIRED_FIELDS,
     SOURCE_CONDITIONAL_RESOLVERS,
@@ -171,7 +172,7 @@ def _fixture_selectors(entries: list[dict[str, Any]]) -> dict[str, list[str]]:
         resolver = entry["resolver"]
         query = entry["path_or_registry_query"]
         if resolver == "selector-paths":
-            append(query, "tools/source_context_router.json")
+            append(query, BOOTSTRAP)
         elif resolver == "exact-path":
             append("requested_paths", query)
         elif resolver == "path-pattern":
@@ -181,16 +182,11 @@ def _fixture_selectors(entries: list[dict[str, Any]]) -> dict[str, list[str]]:
         elif resolver == "indexed-query":
             parsed = parse_source_indexed_query(query)
             if parsed is not None:
-                _, selector = parsed
-                append(
-                    selector,
-                    (
-                        "ALATYR-CONTEXT-001"
-                        if selector.endswith("rule_ids")
-                        or str(entry.get("owner_rule_id", "")).startswith("$")
-                        else "fixture-value"
-                    ),
-                )
+                source_path, selector = parsed
+                candidates = selectable_values(ROOT / source_path)
+                if not candidates:
+                    raise ValueError(f"source index has no selectable identity: {source_path}")
+                append(selector, "ALATYR-CONTEXT-001" if "ALATYR-CONTEXT-001" in candidates else candidates[-1])
     return selectors
 
 
@@ -308,7 +304,9 @@ def validate_source_conditionals(
         )
     planned = budget_evidence.get("planned", {})
     resolved = budget_evidence.get("resolved", {})
-    measured = measure_source_context(planned.get("paths", []))
+    measured = measure_source_context(planned.get("paths", []), projections={
+        path: view["content"] for path, view in packet.get("context_projections", {}).items()
+    })
     if (
         planned.get("files") != measured["planned_files"]
         or resolved.get("files") != measured["resolved_files"]
@@ -510,7 +508,7 @@ def validate_source_profile_budget(
                 f"source profile {profile_id} has invalid resolved {dimension} reserve"
             )
     required_words = word_count(required)
-    initial = measure_source_context([*source_bootstrap, *required])
+    initial = measure_source_context([*source_bootstrap, f"tools/source-context/profiles/{profile_id}.json", *required])
     initial_words = initial["resolved_words"]
     if len(required) > budget["max_required_files"]:
         failures.append(f"source profile {profile_id} exceeds required-file budget")
@@ -545,6 +543,14 @@ def main() -> int:
         *source.get("preloaded_context", []),
         *source.get("bootstrap_context", []),
     ]
+    try:
+        for name, content in bootstrap_outputs(ROOT).items():
+            if not (ROOT / name).is_file() or (ROOT / name).read_bytes() != content.encode("utf-8"):
+                failures.append(f"source context projection is stale or missing: {name}")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        failures.append(f"source bootstrap projection failed: {exc}")
+    if source.get("bootstrap_context") != [BOOTSTRAP]:
+        failures.append("source bootstrap must use its compact derived index")
     profiles = source.get("profiles")
     if not isinstance(profiles, dict) or set(profiles) != EXPECTED_SOURCE_PROFILES:
         failures.append("source context router profile set is incomplete")
@@ -738,7 +744,7 @@ def main() -> int:
         failures.append("framework/file-inventory.json is stale")
 
     entry_points = {
-        "AGENTS.md": "tools/source_context_router.json",
+        "AGENTS.md": "tools/source-context/index.json",
         "README.md": "installer/context-router.json",
         "INSTALL.md": "installer/context-router.json",
         "AI_ASSISTANTS.md": "installer/context-router.json",

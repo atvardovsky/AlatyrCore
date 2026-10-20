@@ -1,0 +1,48 @@
+{
+  "canonical_source": "tools/source_context_router.json",
+  "check_profile": "fast",
+  "checks": [
+    "markdown-links",
+    "framework-consistency"
+  ],
+  "conditional_context": [
+    {
+      "id": "docs-edited-path",
+      "path_or_registry_query": "docs/**",
+      "resolver": "path-pattern",
+      "when": "a documentation path is edited"
+    },
+    {
+      "id": "docs-root-readme",
+      "path_or_registry_query": "README.md",
+      "resolver": "exact-path",
+      "when": "the repository README is edited"
+    },
+    {
+      "id": "docs-linked-neighbor",
+      "path_or_registry_query": "linked_paths",
+      "resolver": "selector-paths",
+      "when": "a direct local link can change with the edited document"
+    },
+    {
+      "id": "docs-maintenance-section",
+      "path_or_registry_query": "docs/framework-maintenance.md#selector=acceptance_or_lifecycle_topics",
+      "resolver": "indexed-query",
+      "when": "acceptance or lifecycle routing is ambiguous"
+    }
+  ],
+  "context_budget": {
+    "max_initial_words": 2500,
+    "max_required_files": 0,
+    "max_required_words": 0,
+    "max_resolved_characters": 130000,
+    "max_resolved_files": 8,
+    "max_resolved_words": 14100,
+    "reserved_characters": 12000,
+    "reserved_files": 2,
+    "reserved_words": 1500
+  },
+  "required_context": [],
+  "schema_version": 1,
+  "source_profile": "docs-local"
+}

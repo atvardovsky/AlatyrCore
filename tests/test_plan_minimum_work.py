@@ -745,10 +745,25 @@ class MinimumWorkPlanTests(unittest.TestCase):
             source_profile="docs-local",
         )
         self.assertEqual(plan["task_class"], "large-or-resumable")
-        self.assertEqual(
-            plan["delegation_assessment"]["decision"],
-            "workstream-identification-required",
+        self.assertEqual(plan["delegation_assessment"]["decision"], "workstream-identification-required")
+
+    def test_full_validation_does_not_promote_a_narrow_docs_task_to_large(self):
+        selection = SelectionResult(
+            selected=[check()], fell_back_to_full=False,
+            changed_paths=["docs/human/faq.md"], unmatched_changed_paths=[], platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"], "matched_changed_paths": ["docs/human/faq.md"]}},
+            effective_profile="full",
         )
+        plan = self.build_test_plan(selection=selection, requested_profile="full", expected_validation_profile="full", source_profile="docs-local")
+        self.assertEqual(plan["task_class"], "standard-task")
+        self.assertEqual(plan["validation_profile"], "full")
+        self.assertIn("full", plan["check_plan"]["command"])
+        from source_context_selection import compact_plan
+        compact = compact_plan(plan)
+        self.assertEqual(compact["check_plan"], plan["check_plan"])
+        self.assertEqual(compact["task_classification"], plan["task_classification"])
+        self.assertEqual(compact["context_readiness"], plan["context_packet"]["readiness"])
+        self.assertEqual(compact["quality_boundary"], plan["quality_boundary"])
 
     def test_one_covered_source_tool_path_remains_small(self) -> None:
         selection = SelectionResult(

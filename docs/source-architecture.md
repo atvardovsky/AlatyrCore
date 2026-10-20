@@ -132,6 +132,25 @@ available. Profile budgets cover the complete resolved packet in files, words,
 and characters while preserving declared reserve capacity; initial bootstrap
 limits remain an additional, narrower guard.
 
+The machine router generates `tools/source-context/index.json` and per-profile
+descriptors. Agents load this compact entry and one descriptor; canonical router
+data remains machine-owned, not a second manually maintained policy. Exact JSON
+records and Markdown sections carry source/projection digests. Whole-file
+requirements, changed paths and canonical owners take precedence over excerpts.
+Unknown or ambiguous selectors remain explicit readiness blockers in both full
+and compact plan views; a projection is never accepted architecture or approval.
+
+Source refresh uses a conservative complete-snapshot dependency closure and
+run-scoped canonical check reuse. A check is reusable only for identical source
+bytes/membership, checker invocation and isolated Git index within that call.
+Checkers must not mutate the snapshot. Final output ownership, convergence,
+normalization and concurrency guards remain active. Narrow per-stage inputs
+only after dependency completeness is established; do not infer them from the
+ordering DAG or persist this optimization as release evidence.
+Checker-first generation is opt-in. Entry/bootstrap provenance normalizers
+retain their canonical generators; once outputs change, the full repair path
+runs instead of probing every remaining stage for possible reuse.
+
 ## Extraction Rules
 
 - Extract pure helpers before moving CLI behavior.

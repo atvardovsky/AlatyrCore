@@ -1,0 +1,60 @@
+{
+  "canonical_source": "tools/source_context_router.json",
+  "check_profile": "fast",
+  "checks": [
+    "framework-metadata",
+    "rule-ownership",
+    "framework-consistency"
+  ],
+  "conditional_context": [
+    {
+      "id": "framework-rule-registry-entry",
+      "path_or_registry_query": "framework/rule-registry.json#selector=rule_ids",
+      "resolver": "indexed-query",
+      "when": "an exact changed rule ID is known"
+    },
+    {
+      "id": "framework-canonical-owner",
+      "owner_rule_id": "$rule_id",
+      "path_or_registry_query": "framework/context-index.json#selector=rule_ids",
+      "resolver": "indexed-query",
+      "when": "a rule decision requires its canonical owner"
+    },
+    {
+      "id": "framework-dependency-owner",
+      "owner_rule_id": "$dependency_rule_id",
+      "path_or_registry_query": "framework/context-index.json#selector=dependency_rule_ids",
+      "resolver": "indexed-query",
+      "when": "the selected rule depends on a prerequisite"
+    },
+    {
+      "id": "framework-installer-surface",
+      "path_or_registry_query": "installer/**",
+      "resolver": "path-pattern",
+      "when": "a changed rule affects installer behavior"
+    },
+    {
+      "id": "framework-target-template-surface",
+      "path_or_registry_query": "templates/target/**",
+      "resolver": "path-pattern",
+      "when": "a changed rule affects an installed target surface"
+    }
+  ],
+  "context_budget": {
+    "max_initial_words": 2900,
+    "max_required_files": 2,
+    "max_required_words": 700,
+    "max_resolved_characters": 175000,
+    "max_resolved_files": 11,
+    "max_resolved_words": 18400,
+    "reserved_characters": 12000,
+    "reserved_files": 2,
+    "reserved_words": 1500
+  },
+  "required_context": [
+    "framework/context-index.json",
+    "framework/semantics/index.json"
+  ],
+  "schema_version": 1,
+  "source_profile": "framework-rule"
+}

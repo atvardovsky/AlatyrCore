@@ -4,6 +4,13 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.95 - 2026-10-20
+
+- [Bounded context and canonical check reuse](docs/releases/0.1.0-alpha.95-notes.md):
+  schema `77`/templates `90`. Character-limit parity, stable worker delivery,
+  exact source projections, compact plans, phase-aware change flows and
+  snapshot-bound source refresh; no reduced acceptance or measured AI savings.
+
 ## 0.1.0-alpha.94 - 2026-10-20
 
 - [Testing docs parity](docs/releases/0.1.0-alpha.94-notes.md).

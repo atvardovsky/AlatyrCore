@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-delegation-policy.schema.json",
   "title": "Alatyr target subagent delegation policy",
+  "$comment": "Resolved word allocations also impose a measured-character ceiling of 12 times each limit; the shared validator enforces both, including aggregate and recursive budgets.",
   "type": "object",
   "additionalProperties": false,
   "required": [

@@ -363,8 +363,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4630,
-      "content_digest": "sha256:2338c562e8c83d1885f32d9933f8ef3ff6cdeb513e967e17965844ae03c1b3bd"
+      "estimated_words": 4639,
+      "content_digest": "sha256:211841ecff6c5bbb0042713d92154f12144e010e610a0a1529a292837392cb3f"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -382,8 +382,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3774,
-      "content_digest": "sha256:946a671b820c10c555c98c0c25fb408d3187a88143d0db49e3f8582e12f868ee"
+      "estimated_words": 3783,
+      "content_digest": "sha256:5e9629e3d766682a88c40be60afc171467c5ea742e50896bba6ec5d1128c88a7"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:b7d6db17948ee89719389f6ad82d6db93d26d0b8f3a8562ec126cff859c6d88c"
+      "content_digest": "sha256:7b50605268da8145ce8a8f8e8167f7e8e0d1813815b38804504c9166ab2a6d4c"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

@@ -1,0 +1,77 @@
+{
+  "canonical_source": "tools/source_context_router.json",
+  "check_profile": "full",
+  "checks": [
+    "assistant-surface-conformance",
+    "assistant-capability-contract",
+    "assistant-surface-audits",
+    "bridge-capability-matrix"
+  ],
+  "conditional_context": [
+    {
+      "id": "assistant-source-entry",
+      "owner_rule_id": "ALATYR-BRIDGE-001",
+      "path_or_registry_query": "AI_ASSISTANTS.md#selector=assistant_surface_ids",
+      "resolver": "indexed-query",
+      "when": "source entry behavior changes for an assistant surface"
+    },
+    {
+      "id": "assistant-capability-record",
+      "owner_rule_id": "ALATYR-BRIDGE-001",
+      "path_or_registry_query": "assistant_surface_paths",
+      "resolver": "selector-paths",
+      "when": "an assistant compatibility or capability record is selected"
+    },
+    {
+      "id": "ai-infrastructure-routing-owner",
+      "owner_rule_id": "ALATYR-BRIDGE-001",
+      "path_or_registry_query": "framework/ai-infrastructure-routing.md",
+      "resolver": "exact-path",
+      "when": "AI infrastructure item routing changes"
+    },
+    {
+      "id": "ai-infrastructure-item",
+      "path_or_registry_query": "ai_infrastructure_item_paths",
+      "resolver": "selector-paths",
+      "when": "a skill prompt gate tool MCP bridge or wrapper is selected"
+    },
+    {
+      "id": "assistant-admission-contract",
+      "owner_rule_id": "ALATYR-BRIDGE-001",
+      "path_or_registry_query": "assistant_admission_paths",
+      "resolver": "selector-paths",
+      "when": "assistant support or capability admission changes"
+    },
+    {
+      "id": "ai-import-policy",
+      "owner_rule_id": "ALATYR-SAFETY-002",
+      "path_or_registry_query": "framework/prompt-injection.md#selector=external_source_ids",
+      "resolver": "indexed-query",
+      "when": "an external AI infrastructure source is involved"
+    },
+    {
+      "id": "ai-operation-help",
+      "owner_rule_id": "ALATYR-OPERATION-001",
+      "path_or_registry_query": "framework/operation-help.md",
+      "resolver": "exact-path",
+      "when": "installed operation routing changes"
+    }
+  ],
+  "context_budget": {
+    "max_initial_words": 2800,
+    "max_required_files": 2,
+    "max_required_words": 600,
+    "max_resolved_characters": 140000,
+    "max_resolved_files": 16,
+    "max_resolved_words": 16000,
+    "reserved_characters": 20000,
+    "reserved_files": 3,
+    "reserved_words": 2500
+  },
+  "required_context": [
+    "conformance/runs/assistant-surfaces.json",
+    "templates/target/.ai/assistant/assistant-capabilities.json"
+  ],
+  "schema_version": 1,
+  "source_profile": "ai-infrastructure-bridge"
+}

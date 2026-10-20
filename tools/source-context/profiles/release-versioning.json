@@ -1,0 +1,72 @@
+{
+  "additional_check_profiles": [
+    "release"
+  ],
+  "canonical_source": "tools/source_context_router.json",
+  "check_profile": "full",
+  "checks": [
+    "versioning",
+    "release-drift-release",
+    "migration-diff-report"
+  ],
+  "conditional_context": [
+    {
+      "id": "release-lifecycle-section",
+      "owner_rule_id": "ALATYR-LIFECYCLE-001",
+      "path_or_registry_query": "framework/lifecycle.md#selector=lifecycle_phases",
+      "resolver": "indexed-query",
+      "when": "a release lifecycle phase is selected"
+    },
+    {
+      "id": "release-migration-contract",
+      "owner_rule_id": "ALATYR-LIFECYCLE-001",
+      "path_or_registry_query": "framework/migration-diff.md",
+      "resolver": "exact-path",
+      "when": "a migration or compatibility boundary applies"
+    },
+    {
+      "id": "release-changelog-section",
+      "path_or_registry_query": "CHANGELOG.md#selector=changelog_sections",
+      "resolver": "indexed-query",
+      "when": "the Unreleased or latest-version record is in scope"
+    },
+    {
+      "id": "release-migration-report",
+      "path_or_registry_query": "release_report_paths",
+      "resolver": "selector-paths",
+      "when": "a concrete migration report is part of the release"
+    },
+    {
+      "id": "release-rule-owner",
+      "owner_rule_id": "$rule_id",
+      "path_or_registry_query": "framework/context-index.json#selector=rule_ids",
+      "resolver": "indexed-query",
+      "when": "changed release behavior is owned by a portable rule"
+    },
+    {
+      "id": "release-target-template",
+      "path_or_registry_query": "templates/target/**",
+      "resolver": "path-pattern",
+      "when": "the release changes an installed target projection"
+    }
+  ],
+  "context_budget": {
+    "max_initial_words": 3400,
+    "max_required_files": 4,
+    "max_required_words": 1200,
+    "max_resolved_characters": 264000,
+    "max_resolved_files": 15,
+    "max_resolved_words": 31300,
+    "reserved_characters": 16000,
+    "reserved_files": 2,
+    "reserved_words": 2000
+  },
+  "required_context": [
+    "VERSION",
+    "ADAPTER_SCHEMA_VERSION",
+    "TEMPLATE_VERSION",
+    "docs/release-process.md"
+  ],
+  "schema_version": 1,
+  "source_profile": "release-versioning"
+}

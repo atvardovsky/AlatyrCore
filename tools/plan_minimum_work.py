@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from path_spec import PathDialect, matches_any
+from source_context_selection import BOOTSTRAP, bootstrap_outputs, compact_plan, contained_source_path, project_file
 
 from check_all import (
     SelectionResult,
@@ -91,19 +92,24 @@ def _unique_strings(value: Any) -> list[str]:
     )
 
 
-def measure_source_context(paths: list[str], *, root: Path = ROOT) -> dict[str, Any]:
+def measure_source_context(paths: list[str], *, root: Path = ROOT,
+                           projections: dict[str, str] | None = None) -> dict[str, Any]:
     planned_paths = list(dict.fromkeys(paths))
     resolved_paths: list[str] = []
     unresolved_paths: list[str] = []
     words = 0
     characters = 0
     for relpath in planned_paths:
-        path = root / relpath
+        try:
+            path = contained_source_path(root, relpath)
+        except ValueError:
+            unresolved_paths.append(relpath)
+            continue
         if not path.is_file():
             unresolved_paths.append(relpath)
             continue
         try:
-            text = path.read_text(encoding="utf-8")
+            text = projections[relpath] if projections and relpath in projections else path.read_text(encoding="utf-8")
         except (OSError, UnicodeError):
             unresolved_paths.append(relpath)
             continue
@@ -143,6 +149,11 @@ def _canonical_owner_paths(
     rules = registry.get("rules") if isinstance(registry, dict) else None
     if not isinstance(rules, list):
         return [], rule_ids
+    if any(not isinstance(rule, dict) for rule in rules):
+        return [], rule_ids
+    identities = [rule.get("id") for rule in rules]
+    if any(not isinstance(value, str) for value in identities) or len(set(identities)) != len(identities):
+        return [], rule_ids
     owners = {
         rule.get("id"): rule.get("canonical_source")
         for rule in rules
@@ -154,7 +165,11 @@ def _canonical_owner_paths(
     unresolved: list[str] = []
     for rule_id in rule_ids:
         owner = owners.get(rule_id)
-        if not isinstance(owner, str) or not (root / owner).is_file():
+        try:
+            valid_owner = isinstance(owner, str) and contained_source_path(root, owner).is_file()
+        except ValueError:
+            valid_owner = False
+        if not valid_owner:
             unresolved.append(rule_id)
         elif owner not in paths:
             paths.append(owner)
@@ -202,6 +217,7 @@ def resolve_source_conditionals(
 
         selector_values: list[str] = []
         candidate_paths: list[str] = []
+        projection = None
         reason = "selector evidence is unavailable"
         if resolver == "selector-paths":
             if not _SELECTOR_NAME.fullmatch(query):
@@ -228,6 +244,15 @@ def resolve_source_conditionals(
             selector_values = _unique_strings(selectors.get(selector_name))
             if selector_values:
                 candidate_paths = [index_path]
+                try:
+                    projection = project_file(root, index_path, selector_values)
+                except (OSError, UnicodeError, ValueError, KeyError, TypeError) as exc:
+                    omitted.append({"id": conditional_id, "resolver": resolver, "path_or_registry_query": query,
+                                    "when": entry["when"], "selector_values": selector_values, "resolved_paths": [],
+                                    "status": "omitted", "reason": str(exc), "unresolved_selectors": selector_values,
+                                    "owner_rule_id": entry.get("owner_rule_id"),
+                                    "fallback": "load-canonical-owner-before-action" if entry.get("owner_rule_id") else "load-source-before-action"})
+                    continue
             reason = f"selector {selector_name} has no values"
 
         measurement = measure_source_context(candidate_paths, root=root)
@@ -239,6 +264,8 @@ def resolve_source_conditionals(
             "selector_values": selector_values,
             "resolved_paths": measurement["resolved_paths"],
         }
+        if projection is not None:
+            evidence["projection"] = projection
         owner_rule_id = entry.get("owner_rule_id")
         if owner_rule_id is not None:
             evidence["owner_rule_id"] = owner_rule_id
@@ -302,9 +329,16 @@ def build_source_profile_context(
     profile = profiles.get(source_profile)
     if not isinstance(profile, dict):
         raise ValueError(f"unknown source profile: {source_profile}")
+    if selector_values is not None and (not isinstance(selector_values, dict) or any(
+        not isinstance(key, str) or not _SELECTOR_NAME.fullmatch(key) or not isinstance(values, list)
+        or any(not isinstance(value, str) or not value.strip() for value in values)
+        for key, values in selector_values.items()
+    )):
+        raise ValueError("source selectors require named lists of exact nonempty strings")
     required = [
         *router.get("preloaded_context", []),
         *router.get("bootstrap_context", []),
+        f"tools/source-context/profiles/{source_profile}.json",
         *profile.get("required_context", []),
     ]
     required_context = profile.get("required_context", [])
@@ -312,7 +346,8 @@ def build_source_profile_context(
     initial_measurement = measure_source_context(required)
     selectors = {
         "changed_paths": sorted(changed_paths or []),
-        "check_ids": sorted((selection_details or {}).keys()),
+        "check_ids": sorted(check_id for check_id, detail in (selection_details or {}).items()
+                            if detail.get("matched_changed_paths")),
         **(selector_values or {}),
     }
     selected_conditionals, omitted_conditionals = resolve_source_conditionals(
@@ -323,7 +358,19 @@ def build_source_profile_context(
         for item in selected_conditionals
         for path in item.get("resolved_paths", [])
     ]
-    planned_measurement = measure_source_context([*required, *conditional_paths])
+    projection_values: dict[str, list[str]] = {}
+    for item in selected_conditionals:
+        if "projection" in item:
+            projection = item.pop("projection")
+            projection_values.setdefault(projection["path"], []).extend(projection["selectors"])
+    # A required whole-file owner always wins over a conditional projection.
+    whole_owners = {path for item in selected_conditionals for path in item.get("resolved_owner_paths", [])}
+    whole_owners.update(path for item in selected_conditionals if item["resolver"] != "indexed-query"
+                        for path in item["resolved_paths"])
+    views = {path: project_file(ROOT, path, values) for path, values in projection_values.items()
+             if path not in required and path not in whole_owners}
+    projected_content = {path: view["content"] for path, view in views.items()}
+    planned_measurement = measure_source_context([*required, *conditional_paths], projections=projected_content)
     budget = profile.get("context_budget", {})
     reserved_capacity = {
         "files": budget.get("reserved_files"),
@@ -343,7 +390,7 @@ def build_source_profile_context(
         and remaining_capacity[key] >= reserved_capacity[key]
         for key in reserved_capacity
     )
-    return {
+    result = {
         "source_profile": source_profile,
         "preloaded_context": router.get("preloaded_context", []),
         "bootstrap_context": router.get("bootstrap_context", []),
@@ -365,6 +412,7 @@ def build_source_profile_context(
         ],
         "selectors": selectors,
         "selected_conditionals": selected_conditionals,
+        "context_projections": views,
         "omitted_candidates": omitted_conditionals,
         "owner_fallbacks": [
             {
@@ -400,6 +448,31 @@ def build_source_profile_context(
             "reserved_capacity_preserved": reserved_capacity_preserved,
         },
     }
+    reasons = []
+    for path, expected in bootstrap_outputs(ROOT).items():
+        if path in {BOOTSTRAP, f"tools/source-context/profiles/{source_profile}.json"} and (
+            not (ROOT / path).is_file() or (ROOT / path).read_bytes() != expected.encode("utf-8")
+        ):
+            reasons.append(f"stale source routing projection: {path}")
+    if planned_measurement["unresolved_paths"]:
+        reasons.append("required or selected source paths are unavailable")
+    if any(item.get("unresolved_selectors") or item.get("unresolved_owner_rule_ids") or item.get("unresolved_paths") for item in omitted_conditionals):
+        reasons.append("explicit selectors or canonical owners remain unresolved")
+    unrouted_requests = [path for path in selectors.get("requested_paths", [])
+                         if path not in planned_measurement["resolved_paths"]]
+    if unrouted_requests:
+        reasons.append("requested paths require another source route: " + ", ".join(unrouted_requests))
+    result["unrouted_requested_paths"] = unrouted_requests
+    if initial_measurement["resolved_words"] > budget.get("max_initial_words", 0):
+        reasons.append("initial context exceeds its word limit")
+    if not reserved_capacity_preserved:
+        reasons.append("resolved context exceeds its budget or reserved headroom")
+    result["readiness"] = {"status": "needs-expansion" if reasons else "ready", "reasons": reasons,
+                           "authority": "planning only; no action or acceptance authorization"}
+    for item in result["selected_items"]:
+        if item["path"] in views:
+            item["content_ref"] = "context_projections/" + item["path"]
+    return result
 
 
 def _recommended_command(
@@ -447,7 +520,7 @@ def _task_classification(
     contract = router["task_classification"]["small_task_eligibility"]
     changed_paths = selection.changed_paths
     reasons: list[str] = []
-    if source_profile in {"repository-audit", "release-versioning"}:
+    if source_profile in {"repository-audit", "release-versioning", "ai-infrastructure-bridge"}:
         return {
             "task_class": "large-or-resumable",
             "small_task_eligible": False,
@@ -466,13 +539,7 @@ def _task_classification(
             "reasons": [f"boundary paths require expansion: {boundary_paths}"],
         }
     if selection.effective_profile not in {"micro", "fast"}:
-        return {
-            "task_class": "large-or-resumable",
-            "small_task_eligible": False,
-            "reasons": [
-                f"validation profile {selection.effective_profile} is not bounded"
-            ],
-        }
+        reasons.append(f"validation profile {selection.effective_profile} prevents the small-task shortcut, not standard-task routing")
 
     profile_contract = contract["profiles"].get(source_profile)
     if not isinstance(profile_contract, dict):
@@ -997,7 +1064,21 @@ def build_plan(
     worker_session_id: str | None = None,
     task_worker_packets: list[dict[str, Any]] | None = None,
     now: datetime | None = None,
+    context_selectors: dict[str, list[str]] | None = None,
 ) -> dict[str, Any]:
+    if context_selectors:
+        profile = _load_source_router()["profiles"][source_profile or "source-tooling"]
+        allowed_selectors = {"requested_paths"}
+        for route in profile["conditional_context"]:
+            if route["resolver"] == "selector-paths":
+                allowed_selectors.add(route["path_or_registry_query"])
+            elif route["resolver"] == "indexed-query":
+                parsed = parse_source_indexed_query(route["path_or_registry_query"])
+                if parsed is not None:
+                    allowed_selectors.add(parsed[1])
+        allowed_selectors -= {"changed_paths", "check_ids"}
+        if set(context_selectors) - allowed_selectors:
+            raise ValueError("unsupported or routing-owned context selector: " + ", ".join(sorted(set(context_selectors) - allowed_selectors)))
     checks = load_manifest()
     selected_profile, additional_profiles = _requested_validation_profiles(
         requested_profile,
@@ -1099,12 +1180,14 @@ def build_plan(
                 "source-tooling",
                 changed_paths=plan.changed_paths,
                 selection_details=plan.selection_details,
+                selector_values=context_selectors,
             )
             if source_profile is None
             else build_source_profile_context(
                 source_profile,
                 changed_paths=plan.changed_paths,
                 selection_details=plan.selection_details,
+                selector_values=context_selectors,
             )
         ),
         "decomposition": decomposition,
@@ -1177,6 +1260,7 @@ def render_summary(plan: dict[str, Any]) -> str:
         f"Validation profile: {plan['validation_profile']}",
         f"Effective profile: {plan['effective_profile']}",
         f"Changed paths: {len(plan['changed_paths'])}",
+        f"Context readiness: {plan['context_packet']['readiness']['status']}",
         f"Selected checks: {check_plan['selected_check_count']}",
         f"Reusable checks: {reuse['reusable_check_count']}",
     ]
@@ -1184,6 +1268,8 @@ def render_summary(plan: dict[str, Any]) -> str:
         lines.append("Micro escalation: yes")
         for reason in plan["selection"].get("micro_escalation_reasons", []):
             lines.append(f"- {reason}")
+    for reason in plan["context_packet"]["readiness"]["reasons"]:
+        lines.append(f"- Context: {reason}")
     if check_plan["heavy_check_ids"]:
         lines.append("Heavy checks:")
         for check_id in check_plan["heavy_check_ids"]:
@@ -1201,7 +1287,7 @@ def render_summary(plan: dict[str, Any]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument(
         "--profile",
         choices=["auto", "micro", "quick", "fast", "full", "change", "platform", "release"],
@@ -1258,9 +1344,19 @@ def main() -> int:
     )
     parser.add_argument("--from-ref", help="Baseline substituted into change checks.")
     parser.add_argument("--reuse-report", type=Path)
-    parser.add_argument("--summary", action="store_true")
+    presentation = parser.add_mutually_exclusive_group()
+    presentation.add_argument("--summary", action="store_true")
+    presentation.add_argument("--compact", action="store_true", help="Agent-facing view; not acceptance evidence.")
+    parser.add_argument("--context-selector", action="append", default=[], metavar="NAME=VALUE",
+                        help="Exact context selector; repeat for multiple values. Unknown matches require expansion.")
     args = parser.parse_args()
     try:
+        context_selectors: dict[str, list[str]] = {}
+        for assignment in args.context_selector:
+            name, separator, value = assignment.partition("=")
+            if not separator or not _SELECTOR_NAME.fullmatch(name) or not value.strip():
+                raise ValueError("context selector must be NAME=VALUE with an exact nonempty value")
+            context_selectors.setdefault(name, []).append(value)
         capability_record = None
         if args.worker_capability_record is not None:
             capability_record = json.loads(
@@ -1291,6 +1387,7 @@ def main() -> int:
             runtime_capability_record=capability_record,
             worker_session_id=args.worker_session_id,
             task_worker_packets=task_worker_packets,
+            context_selectors=context_selectors,
         )
     except (
         OSError,
@@ -1304,7 +1401,7 @@ def main() -> int:
     if args.summary:
         print(render_summary(plan), end="")
     else:
-        print(json.dumps(plan, indent=2, sort_keys=True) + "\n", end="")
+        print(json.dumps(compact_plan(plan) if args.compact else plan, indent=2, sort_keys=True) + "\n", end="")
     return 0
 
 

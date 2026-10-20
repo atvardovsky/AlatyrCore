@@ -23,8 +23,8 @@ Human readers should start with the [public overview](README.md) or
 ### Changing AlatyrCore Itself
 
 Treat the root `AGENTS.md` as host-preloaded context. Read
-`tools/source_context_router.json`, select the smallest matching source task
-profile, classify task scale before expansion, resolve its bounded semantic
+`tools/source-context/index.json`, select the smallest matching source task
+profile and its linked descriptor, classify task scale before expansion, resolve its bounded semantic
 preload, and follow only that profile's required paths and checks. Use
 `framework/context-index.json` as recursive navigation for selected framework
 owners and

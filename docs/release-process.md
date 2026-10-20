@@ -22,8 +22,22 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 ```
 
 `ADAPTER_SCHEMA_VERSION` and `TEMPLATE_VERSION` are positive integers. Increase
-them only when installed adapter manifests or target templates need migration
-attention.
+them according to the impact decisions below. Record one decision per coherent
+change; human summaries do not exempt a changed contract from source checks.
+
+## Version Impact Decisions
+
+- Source-only tools/tests/explanations: no path-only bump; explicitly assess
+  installed behavior and compatibility impact.
+- `framework/` or `schemas/` content: advance `VERSION`, including wording and
+  provenance. This conservative content gate does not imply runtime changes.
+- Adapter schema contract paths: advance `ADAPTER_SCHEMA_VERSION`. Assess
+  migration for stricter acceptance without shape changes too; old evidence
+  does not become newly accepted.
+- `templates/target/` content: advance `TEMPLATE_VERSION`, including generated
+  files. Update owners before projections.
+- Preserve applicable hash, provenance, compatibility and migration checks.
+  Exemptions require a separate approved contract change.
 
 ## Changelog
 

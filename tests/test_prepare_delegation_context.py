@@ -44,6 +44,35 @@ class WorkerContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "initial context"):
             self.bundle(prompt=b"word " * 200)
 
+    def test_dense_prompt_and_expansion_cannot_hide_behind_word_budget(self):
+        with self.assertRaisesRegex(ValueError, "character"):
+            self.bundle(prompt=b"x" * 400000)
+        prior = self.bundle()
+        (self.root / "detail.txt").write_text("x" * 30000)
+        with self.assertRaisesRegex(ValueError, "character"):
+            self.bundle(previous=prior, prompt=None, bootstrap={}, expansions=["detail.txt"])
+
+    def test_dense_sibling_context_uses_the_same_aggregate_character_limit(self):
+        with self.assertRaisesRegex(ValueError, "character"):
+            self.bundle(other_contexts=[b"x" * 400000])
+
+    def test_task_changes_leave_stable_bootstrap_and_source_prefix_intact(self):
+        _, first = self.bundle(prompt=b"task A")
+        _, second = self.bundle(prompt=b"task B")
+        marker = b"--- prompt: current task ---"
+        self.assertEqual(first.split(marker)[0], second.split(marker)[0])
+        self.assertGreater(first.index(marker), first.index(b"selected source"))
+        self.assertGreater(first.index(b"--- packet:"), first.index(b"selected source"))
+
+    def test_dense_results_are_rejected_by_the_actual_result_preparer(self):
+        packet = make_builtin_packet(self.policy, "framework-rules")
+        event = {"schema_version": 1, "event_kind": "worker-result-received", "backend_kind": "native-worker", "worker_id": "worker", "packet_id": "packet", "base_revision": "a" * 40}
+        for field, limit in (("context", 32000), ("raw", packet["max_result_words"]), ("summary", packet["max_summary_words"])):
+            contents = {"context": b"bounded input", "raw": b"bounded observed result", "summary": b"result"}
+            contents[field] = b"x" * (limit * 12 + 1)
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "character"):
+                prepare_result(packet, event, contents, self.policy)
+
     def test_worker_and_aggregate_below_at_above_boundaries(self):
         initial, _ = self.bundle()
         words = initial["context"]["word_count"]

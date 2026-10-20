@@ -1,0 +1,88 @@
+{
+  "canonical_source": "tools/source_context_router.json",
+  "check_profile": "full",
+  "checks": [
+    "check-manifest",
+    "source-unit-tests",
+    "framework-consistency"
+  ],
+  "conditional_context": [
+    {
+      "id": "audit-check-manifest-entries",
+      "path_or_registry_query": "tools/check_manifest.json#selector=audit_check_ids",
+      "resolver": "indexed-query",
+      "when": "audit workstreams or failed checks identify exact check IDs"
+    },
+    {
+      "id": "audit-maintenance-section",
+      "path_or_registry_query": "docs/framework-maintenance.md#selector=acceptance_topics",
+      "resolver": "indexed-query",
+      "when": "the audit evaluates acceptance behavior"
+    },
+    {
+      "id": "audit-source-architecture-section",
+      "path_or_registry_query": "docs/source-architecture.md#selector=architecture_topics",
+      "resolver": "indexed-query",
+      "when": "the audit evaluates a named source component"
+    },
+    {
+      "id": "audit-workstream-context",
+      "path_or_registry_query": "audit_context_paths",
+      "resolver": "selector-paths",
+      "when": "selected workstreams declare bounded context"
+    },
+    {
+      "id": "audit-failed-check-owner",
+      "owner_rule_id": "$failed_owner_rule_id",
+      "path_or_registry_query": "framework/context-index.json#selector=failed_owner_rule_ids",
+      "resolver": "indexed-query",
+      "when": "failed checks identify canonical owner rule IDs"
+    },
+    {
+      "id": "audit-installer-surface",
+      "path_or_registry_query": "installer/**",
+      "resolver": "path-pattern",
+      "when": "audit evidence reaches installer behavior"
+    },
+    {
+      "id": "audit-target-template-surface",
+      "path_or_registry_query": "templates/target/**",
+      "resolver": "path-pattern",
+      "when": "audit evidence reaches target projections"
+    },
+    {
+      "id": "audit-release-context",
+      "owner_rule_id": "ALATYR-LIFECYCLE-001",
+      "path_or_registry_query": "docs/release-process.md#selector=release_failure_ids",
+      "resolver": "indexed-query",
+      "when": "one or more release checks fail"
+    }
+  ],
+  "context_budget": {
+    "max_initial_words": 4400,
+    "max_required_files": 2,
+    "max_required_words": 1950,
+    "max_resolved_characters": 355000,
+    "max_resolved_files": 19,
+    "max_resolved_words": 30500,
+    "reserved_characters": 30000,
+    "reserved_files": 4,
+    "reserved_words": 3500
+  },
+  "decomposition": {
+    "candidate_workstreams": [
+      "framework-rules",
+      "installation-surfaces",
+      "source-tooling",
+      "public-and-release"
+    ],
+    "required": true,
+    "worker_policy": "tools/source_worker_policy.json"
+  },
+  "required_context": [
+    "docs/source-worker-strategy.md",
+    "tools/source_worker_policy.json"
+  ],
+  "schema_version": 1,
+  "source_profile": "repository-audit"
+}
