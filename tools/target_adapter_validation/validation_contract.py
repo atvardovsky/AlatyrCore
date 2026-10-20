@@ -17,6 +17,8 @@ import jsonschema
 
 from target_validation_support import is_placeholder
 from task_acceptance_binding import task_arguments
+from validation_route_contract import validation_route_failures
+from target_validation_support import is_target_relative_path
 
 
 CONTRACT_PATH = ".ai/assistant/validation-contract.json"
@@ -297,6 +299,7 @@ def validate_validation_contract(sink: FindingSink, manifest: Any) -> None:
         return
 
     schema_version = contract["schema_version"]
+    validate_profile_validation_routes(sink, manifest, contract)
     entrypoints = contract["entrypoints"]
     canonical_coverage = any(
         entrypoints[entrypoint]["coverage"] == "canonical-delegate"
@@ -423,3 +426,33 @@ def validate_validation_contract(sink: FindingSink, manifest: Any) -> None:
 
 
 __all__ = ["validate_validation_contract"]
+
+
+def validate_profile_validation_routes(sink: FindingSink, manifest: Any, contract: dict[str, Any]) -> None:
+    router_path = ".ai/assistant/context-router.json"
+    if not sink.is_target_file(router_path):
+        return  # The router stage owns missing-router diagnostics.
+    router = sink.load_json_object(sink.target_path(router_path), "VALIDATION_ROUTE_ROUTER")
+    if not isinstance(router, dict):
+        return
+    required = False
+    if manifest is not None:
+        scalar = manifest.scalars.get(("schema_version",))
+        required = scalar is not None and scalar.value.isdigit() and int(scalar.value) >= 76
+    entry = router.get("profile_index", {}).get("framework-upgrade") if isinstance(router.get("profile_index"), dict) else None
+    path = entry.get("descriptor") if isinstance(entry, dict) else None
+    if path is not None:
+        if not isinstance(path, str) or "\\" in path or not is_target_relative_path(path) or not sink.is_target_file(path):
+            sink.error("VALIDATION_ROUTE_PROFILE", "framework-upgrade descriptor is missing or unsafe", router_path)
+            return
+        profile = sink.load_json_object(sink.target_path(path), "VALIDATION_ROUTE_PROFILE")
+    else:
+        profiles = router.get("profiles")
+        profile = profiles.get("framework-upgrade") if isinstance(profiles, dict) else None
+        path = router_path
+    if not isinstance(profile, dict) or "validation_entrypoints" not in profile:
+        if required:
+            sink.error("VALIDATION_ROUTE_MISSING", "framework-upgrade requires typed inspection and completion entrypoints", path)
+        return
+    for failure in validation_route_failures(profile["validation_entrypoints"], contract):
+        sink.error("VALIDATION_ROUTE_INVALID", failure, path)

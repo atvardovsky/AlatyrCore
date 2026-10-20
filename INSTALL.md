@@ -364,6 +364,9 @@ In a typical target repository:
    schema version 2. The delegate resolves source tooling from an explicit
    argument, `ALATYR_CORE`, or ignored `.ai/local/framework-source`; it
    fails closed and replaces committed workstation-specific source paths.
+   Record installed `framework.source_commit` from Git evidence; keep tooling
+   and candidate roles distinct. Bind typed upgrade validation routes and
+   preserve unresolved task evidence. See [lifecycle](framework/lifecycle.md).
    Adapt `.ai/project/support-policy.json` from target evidence. Rebuild the
    optional consistency reverse index and support-generation index after their
    owners are final, then generate `.ai/support-state.json` last. Do not include

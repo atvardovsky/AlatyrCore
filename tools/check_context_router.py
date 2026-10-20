@@ -8,6 +8,7 @@ framework requirement for target projects.
 from __future__ import annotations
 
 import json
+from validation_route_contract import validation_route_failures
 import re
 import sys
 from pathlib import Path
@@ -57,6 +58,14 @@ PROFILE_FIELDS = [
     "validation",
     "final_evidence",
 ]
+
+
+def check_profile_validation_route(name: str, profile: dict[str, Any], failures: list[str]) -> None:
+    if name == "framework-upgrade" or "validation_entrypoints" in profile:
+        contract = json.loads((TARGET / ".ai/assistant/validation-contract.json").read_text(encoding="utf-8"))
+        failures.extend(f"profiles.{name}: {failure}" for failure in validation_route_failures(profile.get("validation_entrypoints"), contract))
+
+
 REQUIRED_PRELOADED = ["AGENTS.md"]
 REQUIRED_BOOTSTRAP = [
     ".ai/assistant/bootstrap-index.json",
@@ -147,6 +156,8 @@ def check_contract(
     failures: list[str],
     path_fields: set[str] | None = None,
 ) -> None:
+    if data.get("descriptor_kind") == "target-context-profile":
+        check_profile_validation_route(str(data.get("profile")), data, failures)
     for field in fields:
         values = require_string_list(data, field, label, failures)
         duplicates = sorted({value for value in values if values.count(value) > 1})

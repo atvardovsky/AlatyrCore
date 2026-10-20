@@ -523,7 +523,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 260,
-      "content_digest": "sha256:597011207972bfe66744bfb604c1ab6a07f9682276fc499b4f8a89ca4ffd9b42"
+      "content_digest": "sha256:7b6ab927a913705f4317aa00c674997f175ef06dd0ff9e8e81ed1c5a546ccd00"
     },
     {
       "id": "assistant.section.extensions",
@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1270,
-      "content_digest": "sha256:4bc06d89b277410994981c66338866bb925199f5e56115e893192071cbbf76f3"
+      "content_digest": "sha256:970cd937637a6e5aaed903b02814df46a095654aa6d58d1ff4b2ec310bcb7851"
     },
     {
       "id": "assistant.section.gates",
@@ -568,7 +568,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 825,
-      "content_digest": "sha256:bab043219cf67920084b59eccaa8df30d7efb7d0531d2e16cabc4f52b41ffe9c"
+      "content_digest": "sha256:331cb867e7d4a03d913d898cd2e7acb76ff971a008448f3fbfb8bae13af24f27"
     },
     {
       "id": "assistant.section.policies",
@@ -598,7 +598,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 84,
-      "content_digest": "sha256:39bbcab6d157c4e24e6ff3e527197c348408a010b56232692fb5e6277425d337"
+      "content_digest": "sha256:3a9b0fedeb209273d78493154e326acc370f16573f05c32203ee9d80aa1cd2ca"
     },
     {
       "id": "assistant.section.skills",

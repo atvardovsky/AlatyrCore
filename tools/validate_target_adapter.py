@@ -139,6 +139,7 @@ from target_adapter_validation.engineering_evidence import (
     prior_repository_binding_failures,
 )
 from target_adapter_validation.framework_baseline import source_pack_expectation
+from framework_source_binding import baseline_framework
 from target_adapter_validation.installation_state import validate_installation_state
 from target_adapter_validation.module_profile import ModuleProfileState, parse_module_profile
 from target_adapter_validation.project_knowledge import (
@@ -972,6 +973,7 @@ class Validator:
         current_task_id: str | None = None,
         current_task_class: str | None = None,
         require_task_acceptance: bool = False,
+        framework_source_role: str = "installed",
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
@@ -981,6 +983,7 @@ class Validator:
         self.findings: list[Finding] = list(initial_findings or [])
         self.config = config
         self.framework_source = framework_source.resolve() if framework_source else None
+        self.framework_source_role = framework_source_role
         self.diff_ref = diff_ref
         self.current_task_id = current_task_id
         self.current_task_class = current_task_class
@@ -6786,13 +6789,28 @@ class Validator:
         self,
         manifest: ManifestData | None = None,
     ) -> None:
+        if self.framework_source_role == "candidate" and self.validation_phase == "acceptance":
+            self.error("FRAMEWORK_CANDIDATE_NOT_ACCEPTANCE", "candidate comparison is assessment evidence, not installed-baseline acceptance")
         if not self.framework_source:
             self.info(
                 "FRAMEWORK_COMPARE_SKIPPED",
                 "framework baseline comparison skipped because --framework-source was not provided",
             )
             return
-        source_framework = self.framework_source / "framework"
+        if manifest is None:
+            manifest = parse_manifest(self.context.text_source(self.target_path(".ai/alatyr.yaml")))
+        pin = manifest.scalars.get(("framework", "source_commit"))
+        version = manifest.scalars.get(("framework", "version"))
+        selected_pin = pin.value if pin and not is_placeholder(pin.value) else None
+        try:
+            with baseline_framework(self.framework_source, pin=selected_pin,
+                    version=version.value if version else "unknown", role=self.framework_source_role) as source_framework:
+                self.info("FRAMEWORK_SOURCE_BINDING", f"tooling={self.framework_source}; baseline_role={self.framework_source_role}; installed_pin={selected_pin or 'unrecorded (checkout comparison only)'}")
+                self._check_framework_files(source_framework, manifest)
+        except (OSError, UnicodeError, ValueError) as exc:
+            self.error("FRAMEWORK_SOURCE_BINDING_INVALID", str(exc), ".ai/alatyr.yaml")
+
+    def _check_framework_files(self, source_framework: Path, manifest: ManifestData) -> None:
         target_framework = self.target_path(".ai/framework")
         if not source_framework.is_dir():
             self.error(
@@ -7827,6 +7845,10 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--framework-source-role", choices=["installed", "candidate"], default="installed",
+        help="Compare the recorded installed commit by default; candidate is explicit upgrade-assessment evidence only.",
+    )
+    parser.add_argument(
         "--diff-ref",
         help=(
             "Optional git ref used for approval-scope comparison. Strict mode "
@@ -8017,6 +8039,7 @@ def main() -> int:
     validator = Validator(
         args.target,
         framework_source=args.framework_source,
+        framework_source_role=args.framework_source_role,
         diff_ref=args.diff_ref,
         approval_records=args.approval_record,
         enforce_approval_scope=enforce_approval_scope,

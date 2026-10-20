@@ -4,6 +4,13 @@ See [source optimization](source-optimization-workflow.md) for refresh and timin
 
 Use this guide when changing Alatyr Core itself.
 
+Support authoring regressions should exercise real Git source advancement,
+active-model/projection/index publication and conflict-preserving rollback,
+typed validation routes through the public planner/validator, and frozen worker
+context through observed-result validation. Keep draft validity, synchronization,
+task acceptance and publication separate. See the optional helpers in
+[tools](../tools/README.md#reliable-support-authoring); they are not installers.
+
 ## Change Categories
 
 - Framework rule change: update `framework/`, installer docs, target

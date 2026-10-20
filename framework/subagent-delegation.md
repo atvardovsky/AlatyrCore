@@ -122,6 +122,14 @@ compare measured context, raw-result, and accepted-summary words against the
 applicable limits. Compact evidence may omit redundant ledger representation;
 it must not omit an invariant or its enforcement.
 
+Before dispatch, measure the actual visible packet, including prompt, supplied
+bootstrap, metadata and selected content, not only file estimates. Freeze that
+payload and reserve capacity for conditional expansion and other workers.
+Recheck cumulative measurements before supplying an expansion. An insufficient
+packet requests bounded context or stops; it must not guess. Verify observed
+context against the allocation afterward. Post-result rejection cannot recover
+spent context, and portable preflight never implies a provider-native cutoff.
+
 ## Task Planning Contract
 
 Before dispatch, the primary assistant creates or reuses the target

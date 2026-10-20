@@ -18,7 +18,7 @@ from target_adapter_validation.analysis_strategies import (
 from target_adapter_validation.values import is_resolved_string
 from target_adapter_validation.consistency_map import parse_registry_fact_entries
 from target_validation_support import is_target_relative_path
-from task_evidence_contract import task_projection_mismatches, task_schema
+from task_evidence_contract import task_projection_mismatches, task_schema, task_model_header_failures, task_predecessor_failures
 from architecture_review import review_failures, BoundedReviewDigests
 
 INDEX_PATH = ".ai/assistant/active-tasks.json"
@@ -412,18 +412,8 @@ def validate_active_tasks(validator: Any) -> None:
     for task_id, previous in previous_tasks.items():
         if previous.get("state") == "active" and task_id not in task_by_id:
             validator.error("ACTIVE_TASK_REMOVED", f"active task {task_id} requires a terminal closure before retirement", INDEX_PATH)
-    for start in task_by_id:
-        visited, pending = set(), [start]
-        while pending:
-            node = pending.pop()
-            if node in visited:
-                continue
-            visited.add(node)
-            for predecessor in task_by_id[node]["predecessor_task_ids"]:
-                if predecessor == start or predecessor not in task_by_id:
-                    validator.error("ACTIVE_TASK_PREDECESSOR", f"{start} has cyclic or unavailable predecessor {predecessor}", INDEX_PATH)
-                elif predecessor not in visited:
-                    pending.append(predecessor)
+    for message in task_predecessor_failures(tasks):
+        validator.error("ACTIVE_TASK_PREDECESSOR", message, INDEX_PATH)
     for task in tasks:
         if not isinstance(task, dict) or not is_resolved_string(task.get("task_id")):
             validator.error("ACTIVE_TASK_ENTRY", "task entries require a resolved task_id", INDEX_PATH)
@@ -468,21 +458,12 @@ def validate_active_tasks(validator: Any) -> None:
                     validator.error("ACTIVE_TASK_WITNESS", "closed non-small tasks require durable model and projection witnesses", INDEX_PATH)
                 validated_model = validate_selected_problem_model(validator, path, model_schema, require_completion=require_completion,
                     archived_projection=archived_projection, original_source_path=model_binding["path"], current_task=task_id == selected_task)
-                task_binding = validated_model.get("task_binding") if isinstance(validated_model, dict) else None
-                if isinstance(validated_model, dict) and validated_model.get("operation_id") != task["operation_id"]:
-                    validator.error("ACTIVE_TASK_MODEL_LINEAGE", "problem model operation differs from the registered operation", INDEX_PATH)
-                if not isinstance(task_binding, dict) or task_id not in task_binding.get("task_ids", []):
-                    validator.error("ACTIVE_TASK_MODEL_LINEAGE", "problem model does not bind the registered task", INDEX_PATH)
-                model_facts = validated_model.get("changed_facts") if isinstance(validated_model, dict) else None
-                fact_ids = [fact.get("id") for fact in model_facts if isinstance(fact, dict)] if isinstance(model_facts, list) else None
-                if fact_ids is None or set(task["changed_fact_ids"]) != {fact_id for fact_id in fact_ids if isinstance(fact_id, str)}:
-                    validator.error("ACTIVE_TASK_PROJECTION", "changed-fact header differs from problem model", INDEX_PATH)
+                for code, message in task_model_header_failures(task, validated_model if isinstance(validated_model, dict) else {}):
+                    if code == "ACTIVE_TASK_MODEL_LINEAGE":
+                        validator.error("ACTIVE_TASK_MODEL_LINEAGE", message, INDEX_PATH)
+                    else:
+                        validator.error("ACTIVE_TASK_PROJECTION", message, INDEX_PATH)
                 incident = validated_model.get("incident") if isinstance(validated_model, dict) else None
-                if isinstance(incident, dict) and task.get("incident_family_id") != incident.get("family_id"):
-                    validator.error("ACTIVE_TASK_PROJECTION", "incident family differs from problem model", INDEX_PATH)
-                gate = incident.get("latest_failed_gate") if isinstance(incident, dict) else None
-                if isinstance(gate, dict) and gate.get("id") != task["latest_failed_gate_id"]:
-                    validator.error("ACTIVE_TASK_PROJECTION", "failed-gate header differs from problem model", INDEX_PATH)
                 if isinstance(incident, dict) and incident.get("mode") == "none" and task["predecessor_task_ids"]:
                     validator.error("ACTIVE_TASK_PREDECESSOR", "non-incident model cannot claim incident predecessor tasks", INDEX_PATH)
                 for predecessor in task["predecessor_task_ids"]:

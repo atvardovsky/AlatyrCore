@@ -11,6 +11,12 @@ alatyr_doc:
 ---
 # AI Framework Lifecycle
 
+Keep tooling, installed baseline and upgrade candidate identities separate.
+Routine checks use the recorded installed commit; candidate comparisons are
+assessment-only. Historical schemas/templates prefer that exact pin over version
+heuristics. Invalid or unavailable explicit pins block without silent fallback,
+automatic fetch, branch checkout or target update.
+
 This file defines portable lifecycle rules for maintaining and upgrading the AI
 framework itself.
 

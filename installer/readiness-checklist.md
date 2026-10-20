@@ -509,6 +509,12 @@ Final evidence must say:
   contain no workstation-specific absolute source path
 - current baseline claims match the manifest; historical baseline labels stay
   explicitly historical
+- tooling, recorded installed commit and upgrade candidate are separate;
+  explicit pins resolve without silent version fallback or automatic fetch
+- framework-upgrade typed entrypoints resolve inspection and current-change
+  completion; auxiliary success cannot replace acceptance
+- active model/projection/index synchronization preserves unresolved duties,
+  closed witnesses and concurrent edits without fabricating evidence
 - completed approval history is bounded into monthly shards when needed, its
   digest index is current, and acceptance used complete archive validation
 - change-package projections and shard descriptors are current; untyped or

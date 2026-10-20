@@ -123,10 +123,14 @@ class ReleaseBaselineTests(unittest.TestCase):
 
     def test_current_chain_uses_latest_checkpoint(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-        if version == "0.1.0-alpha.91":
-            self.skipTest("alpha.92 version transition has not been applied yet")
         baseline, _intervening = nearest_release_baseline(version)
-        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.91")
+        # The immediate prior changelog version has a reviewed checkpoint;
+        # future releases must not leave this assertion pinned to alpha.91.
+        previous_version = prior_changelog_versions(version)[0]
+        checkpoint = release_checkpoint(previous_version)
+        self.assertIsNotNone(checkpoint)
+        self.assertEqual(baseline.label, f"release-checkpoint:{previous_version}")
+        self.assertEqual(baseline.ref, checkpoint.ref)
 
     def test_unverified_historical_checkpoints_are_not_accepted(self) -> None:
         self.assertIsNone(release_checkpoint("0.1.0-alpha.34"))

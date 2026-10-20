@@ -4,6 +4,10 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.93 - 2026-10-20
+
+- [Reliable support authoring and bounded dispatch](docs/releases/0.1.0-alpha.93-notes.md): schema `76`/templates `88`.
+
 ## 0.1.0-alpha.92 - 2026-10-19
 
 - [Task acceptance and resource safeguards](docs/releases/0.1.0-alpha.92-notes.md): schema `75`/templates `87`.

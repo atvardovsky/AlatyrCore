@@ -2,6 +2,18 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "prepare-worker-context",
+      "script": "prepare_delegation_context.py",
+      "purpose": "freeze measured bounded context before worker dispatch or expansion",
+      "write_scope": "explicit-evidence-output-only"
+    },
+    {
+      "name": "publish-task",
+      "script": "publish_active_task.py",
+      "purpose": "validate and transactionally publish one active model and its derived bindings",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
       "name": "plan-test-resources",
       "script": "plan_test_resources.py",
       "purpose": "plan test-resource conflicts without executing commands",

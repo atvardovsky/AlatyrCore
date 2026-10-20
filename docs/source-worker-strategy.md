@@ -5,24 +5,22 @@ Scope: AlatyrCore source repository only.
 Canonical portable rule: `ALATYR-DELEGATION-001` in
 `framework/subagent-delegation.md`.
 
-This source-only policy does not govern an installer, host, vendor, or
-dependent repository. Each host adapter owns its worker policy; this document
-is passive dependency evidence outside this contour.
+Outside AlatyrCore this is passive evidence; installer, host, vendor and
+dependent adapters retain their own worker policies.
 
 ## Activation
 
-Select the source profile before evaluating delegation. The provider-neutral
-machine policy is `tools/source_worker_policy.json`; it does not prove current
-client capability.
+Select the source profile first. `tools/source_worker_policy.json` owns
+provider-neutral policy, not runtime capability.
 
 Small and standard tasks stay primary-owned unless a justified route says
-otherwise. `large-or-resumable` work needs at least two bounded, independent,
-read-only packets; otherwise record `workstream-identification-required`.
+otherwise. `large-or-resumable` work needs the policy's minimum number of bounded,
+independent read-only packets; otherwise record `workstream-identification-required`.
 Dispatch only when expected time or review benefit exceeds preparation,
 review, and integration cost. Keeping eligible work local needs a policy
 reason ID and task evidence.
 
-Two packets are an activation threshold, not a preferred fan-out. The primary
+The policy threshold is not a preferred fan-out. The primary
 owns the tree, ledger, branch authorization, decisions, and convergence.
 Read-only source workers normally return proposals. With verified nested
 transport, a depth-1 coordinator may dispatch depth-2 read-only children inside
@@ -74,8 +72,14 @@ preflight evidence, not proof of client probing, dispatch, or result delivery.
 Completion is not accepted from preflight evidence. It is validated through the
 execution-tree ledger and primary convergence record.
 
-`prepare-worker-result` measures explicit runtime artifacts into review-required
-drafts. It never dispatches workers, verifies provider provenance, or accepts obligations.
+Before dispatch, `prepare-worker-context` freezes the actual prompt, visible
+bootstrap, packet and bounded files. Supply every other allocated worker's
+context artifact. Expand only with a prior bundle and declared conditional
+paths, retaining its allocation and sibling reservations. Send the frozen
+payload, request missing context rather than unrestricted browsing, and never
+claim a native cutoff. `prepare-worker-result --context-preflight` checks the
+observed context against that allocation. Drafts remain review-required; neither
+helper dispatches, verifies provider provenance, or accepts obligations.
 
 Every packet must carry schema version 6, its parent, depth, remaining worker
 budget, unique coverage key, workstream ID, role, objective, bounded and
@@ -138,6 +142,5 @@ permissions, approval, action phases, or repository scope. Do not dispatch
 concurrent overlapping writes. Reject results without inspectable file or
 symbol evidence and required validation.
 
-Delegation is an execution choice, not authorization. Worker availability does
-not grant a new action phase, protected approval, tool permission, file scope,
-or authority to accept architectural conclusions.
+Worker availability grants no action phase, protected approval, tool permission,
+file scope or architectural authority.

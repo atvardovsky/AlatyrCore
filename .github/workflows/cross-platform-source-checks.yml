@@ -99,6 +99,8 @@ jobs:
         run: python -m pip check
       - name: Run portable source checks
         run: python tools/check_all.py --profile platform --report "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json"
+      - name: Run portable support authoring regressions
+        run: python -B -m unittest tests.test_framework_source_binding tests.test_publish_active_task tests.test_validation_routes tests.test_prepare_delegation_context tests.test_prepare_delegation_result tests.test_support_write_transaction
       - name: Summarize source-check diagnostics
         if: always()
         run: python tools/summarize_source_check_report.py "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json" --allow-missing --github-step-summary

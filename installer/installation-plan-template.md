@@ -230,6 +230,11 @@ canonical delegate, reviewed target equivalent, structural-only check, or
 manual review. Include an empty approval archive digest index and define when
 monthly archive sharding becomes necessary.
 
+Bind framework-upgrade `validation_entrypoints` to inspection and current-change
+completion. Record tooling source, exact installed commit when available, and
+upgrade candidate separately. Local checker success is supplemental, not final
+acceptance, and model/projection synchronization must preserve pending evidence.
+
 Include `.ai/assistant/discovery-report.json` as the typed retained receipt for
 installation, update, repair, or recheck evidence. Every material finding must
 retain an evidence selector and end as projected into a named artifact,

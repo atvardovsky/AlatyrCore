@@ -49,6 +49,10 @@
   "validation": [
     "{TARGET_ADAPTER_RECHECK_OR_MANUAL_REVIEW}"
   ],
+  "validation_entrypoints": {
+    "inspection": "adapter-health",
+    "completion": "current-change"
+  },
   "final_evidence": [
     "adapter_version_schema_state",
     "changed_framework_baseline",

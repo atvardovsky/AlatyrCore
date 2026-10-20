@@ -1,5 +1,10 @@
 # AI Assistant Guide
 
+Supported surfaces share the target-owned baseline, active-task and validation
+entrypoint contracts. Worker context preparation measures visible input before
+dispatch and expansion; observed artifacts remain separately checked. Native
+limits and execution remain capability-dependent.
+
 This is the dedicated assistant-facing entry point for AlatyrCore. Use it to
 identify the current repository mode and then load the smallest canonical
 context for that mode.

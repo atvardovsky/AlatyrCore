@@ -113,6 +113,12 @@ historical witnesses remain historical evidence, never new task acceptance.
 Preserve ended work before retiring the header. Never delete evidence
 automatically. Registration and closure carry no action authorization.
 
+Author active state from a separate draft. Validate the model, derive its compact
+projection, and synchronize the selected registration as one conflict-checked
+local operation. Preserve unresolved duties and other tasks; reject closed-task
+rewrites. Synchronization is neither evidence creation nor task acceptance, and
+does not require a full support rebuild at every work checkpoint.
+
 Task completion binds the current task ID and independently selected task class
 through finalization, upgrade verification and canonical validation. Require the
 explicit task-acceptance result, including original-case acceptance when

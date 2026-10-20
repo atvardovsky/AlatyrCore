@@ -27,3 +27,44 @@ def task_schema(name: str) -> jsonschema.Draft7Validator:
 
 def task_projection_mismatches(task: dict[str, Any], closure: dict[str, Any]) -> tuple[str, ...]:
     return tuple(field for field in TASK_PROJECTION_FIELDS if task.get(field) != closure.get(field))
+
+
+def task_model_header_failures(task: dict[str, Any], model: dict[str, Any]) -> list[tuple[str, str]]:
+    """Pure selected-header checks shared by publication and canonical validation."""
+    failures = []
+    if model.get("operation_id") != task.get("operation_id"):
+        failures.append(("ACTIVE_TASK_MODEL_LINEAGE", "problem model operation differs from the registered operation"))
+    binding = model.get("task_binding")
+    if not isinstance(binding, dict) or task.get("task_id") not in binding.get("task_ids", []):
+        failures.append(("ACTIVE_TASK_MODEL_LINEAGE", "problem model does not bind the registered task"))
+    facts = model.get("changed_facts")
+    fact_ids = {fact.get("id") for fact in facts if isinstance(fact, dict) and isinstance(fact.get("id"), str)} if isinstance(facts, list) else None
+    if fact_ids is None or set(task.get("changed_fact_ids", [])) != fact_ids:
+        failures.append(("ACTIVE_TASK_PROJECTION", "changed-fact header differs from problem model"))
+    incident = model.get("incident")
+    if isinstance(incident, dict):
+        if task.get("incident_family_id") != incident.get("family_id"):
+            failures.append(("ACTIVE_TASK_PROJECTION", "incident family differs from problem model"))
+        gate = incident.get("latest_failed_gate")
+        if isinstance(gate, dict) and gate.get("id") != task.get("latest_failed_gate_id"):
+            failures.append(("ACTIVE_TASK_PROJECTION", "failed-gate header differs from problem model"))
+    return failures
+
+
+def task_predecessor_failures(tasks: list[dict[str, Any]]) -> list[str]:
+    """Validate header graph shape after canonical active-index schema checks."""
+    by_id = {task["task_id"]: task for task in tasks}
+    failures = []
+    for start in by_id:
+        visited, pending = set(), [start]
+        while pending:
+            node = pending.pop()
+            if node in visited:
+                continue
+            visited.add(node)
+            for predecessor in by_id[node]["predecessor_task_ids"]:
+                if predecessor == start or predecessor not in by_id:
+                    failures.append(f"{start} has cyclic or unavailable predecessor {predecessor}")
+                elif predecessor not in visited:
+                    pending.append(predecessor)
+    return failures

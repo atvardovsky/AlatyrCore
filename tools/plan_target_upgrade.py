@@ -13,6 +13,7 @@ import tempfile
 from pathlib import Path
 
 from validate_target_adapter import git_branch_name, git_head_revision, parse_manifest
+from framework_source_binding import materialize_git_subtree, resolve_installed_commit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,36 +62,12 @@ def source_commit_for_version(source: Path, version: str) -> str | None:
     return None
 
 
-def materialize_git_subtree(
-    source: Path, commit: str, relpath: str, destination: Path
-) -> bool:
-    """Materialize one historical contract subtree without archive extraction."""
-
-    listing = run(
-        ["git", "ls-tree", "-r", "--name-only", commit, "--", relpath], source
-    )
-    if listing.returncode != 0:
-        return False
-    paths = [value for value in listing.stdout.splitlines() if value]
-    if not paths:
-        return False
-    for value in paths:
-        path = Path(value)
-        if path.is_absolute() or ".." in path.parts or not value.startswith(relpath + "/"):
-            return False
-        content = subprocess.run(
-            ["git", "show", f"{commit}:{value}"],
-            cwd=source,
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        if content.returncode != 0:
-            return False
-        output = destination / path.relative_to(relpath)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_bytes(content.stdout)
-    return True
+def previous_source_commit(source: Path, target: Path, version: str) -> str | None:
+    manifest = parse_manifest(target / ".ai/alatyr.yaml")
+    pin = manifest.scalars.get(("framework", "source_commit"))
+    if pin is not None:
+        return resolve_installed_commit(source, pin.value, version)
+    return source_commit_for_version(source, version)
 
 
 def replace_assessment_outputs(
@@ -482,7 +459,12 @@ def execute_assessment(args: argparse.Namespace, validation_phase: str) -> int:
             "--json-output",
             str(impact_report),
         ]
-        previous_commit = source_commit_for_version(source, from_versions[0])
+        try:
+            previous_commit = previous_source_commit(source, target, from_versions[0])
+        except (OSError, UnicodeError, ValueError) as exc:
+            print(f"Cannot resolve installed source baseline: {exc}", file=sys.stderr)
+            staging.cleanup()
+            return 2
         if previous_commit is not None:
             previous_schema_dir = working / "previous-schemas"
             previous_template_dir = working / "previous-templates"
@@ -548,6 +530,8 @@ def execute_assessment(args: argparse.Namespace, validation_phase: str) -> int:
             str(target),
             "--framework-source",
             str(source),
+            "--framework-source-role",
+            "candidate",
             "--migration-diff",
             str(migration_report),
             "--output",

@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1724
+Catalog entries: 1734
 
 ## Families
 
@@ -42,7 +42,7 @@ Catalog entries: 1724
 - `ENTRY`: 10 codes.
 - `EVIDENCE`: 1 codes.
 - `EXTENSION`: 75 codes.
-- `FRAMEWORK`: 18 codes.
+- `FRAMEWORK`: 21 codes.
 - `GATE`: 1 codes.
 - `INSTALLATION`: 8 codes.
 - `LOCAL`: 1 codes.
@@ -69,7 +69,7 @@ Catalog entries: 1724
 - `TDD`: 64 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
-- `VALIDATION`: 15 codes.
+- `VALIDATION`: 22 codes.
 - `VALIDATOR`: 1 codes.
 - `VOCABULARY`: 52 codes.
 - `WORKER`: 2 codes.
@@ -1801,6 +1801,8 @@ Catalog entries: 1724
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_VALIDATION`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `FRAMEWORK_CANDIDATE_NOT_ACCEPTANCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_COMPARE_SKIPPED`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_DIR_MISSING`
@@ -1833,6 +1835,10 @@ Catalog entries: 1724
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_PACK_SELECTION_DRIFT`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `FRAMEWORK_SOURCE_BINDING`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `FRAMEWORK_SOURCE_BINDING_INVALID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_SOURCE_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_SOURCE_PACK_INVALID`
@@ -3322,6 +3328,20 @@ Catalog entries: 1724
 - `VALIDATION_CONTRACT_POINTER`
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATION_CONTRACT_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_ROUTE_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_ROUTE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_ROUTE_PROFILE`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_ROUTE_PROFILE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_ROUTE_PROFILE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_ROUTE_ROUTER_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
+- `VALIDATION_ROUTE_ROUTER_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/validation_contract.py`.
 - `VALIDATOR_SCHEMA_MUTATED`
   Level: error. Source: `tools/validate_target_adapter.py`.

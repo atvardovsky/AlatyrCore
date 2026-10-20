@@ -9,6 +9,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Iterable
 from architecture_context import architecture_context
+from validation_route_contract import CONTRACT_PATH, validation_route_failures
 
 from context_catalog import (
     CatalogItem,
@@ -121,10 +122,11 @@ def _target_path(target: Path, relpath: str, label: str) -> Path:
     return candidate
 
 
-def _load_json(target: Path, relpath: str, label: str) -> dict[str, Any]:
+def _load_json(target: Path, relpath: str, label: str, *, digest_evidence: dict[str, str] | None = None) -> dict[str, Any]:
     path = _target_path(target, relpath, label)
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
+        raw = path.read_bytes()
+        value = json.loads(raw.decode("utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise ContextPlanningError(
             "ADAPTER_ARTIFACT_UNAVAILABLE",
@@ -140,6 +142,8 @@ def _load_json(target: Path, relpath: str, label: str) -> dict[str, Any]:
             upgrade_required=True,
             details={"path": relpath},
         )
+    if digest_evidence is not None:
+        digest_evidence[relpath] = "sha256:" + hashlib.sha256(raw).hexdigest()
     return value
 
 
@@ -1223,6 +1227,21 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "semantic correctness, model delivery, comprehension, or compliance"
         ),
     }
+    if "validation_entrypoints" in descriptor:
+        contract_digests: dict[str, str] = {}
+        contract = _load_json(target, CONTRACT_PATH, "validation contract", digest_evidence=contract_digests)
+        failures = validation_route_failures(descriptor["validation_entrypoints"], contract)
+        if failures:
+            raise ContextPlanningError("CONTEXT_VALIDATION_ROUTE_INVALID", "; ".join(failures), status="blocked")
+        plan["validation_route"] = {
+            "contract": CONTRACT_PATH,
+            "contract_sha256": contract_digests[CONTRACT_PATH],
+            "entrypoints": {role: {"id": entry_id, "command_prefix": contract["entrypoints"][entry_id]["command"]}
+                for role, entry_id in descriptor["validation_entrypoints"].items()},
+            "execution_performed": False,
+            "authorization_granted": False,
+            "limitation": "References only; validate the contract and supply current runtime bindings before final acceptance.",
+        }
     plan["plan_digest"] = _canonical_digest(plan)
     return plan
 

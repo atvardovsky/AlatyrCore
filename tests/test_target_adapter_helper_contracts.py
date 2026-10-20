@@ -123,13 +123,13 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
             ("validate_target_adapter.py", "run", "self.target", "is_dir"),
             (
                 "validate_target_adapter.py",
-                "check_framework_baseline",
+                "_check_framework_files",
                 "source_framework",
                 "is_dir",
             ),
             (
                 "validate_target_adapter.py",
-                "check_framework_baseline",
+                "_check_framework_files",
                 "path",
                 "is_file",
             ),

@@ -11,18 +11,15 @@ alatyr_doc:
 ---
 # Context Profiles
 
-Context profiles limit the required reading set for an Alatyr task.
+Start from host-preloaded instructions, compact bootstrap and the closest
+profile's required sources. Expand only for boundaries or conflicts. The
+installed machine router must retain canonical profile names and this contract.
+Load this explanation only for rationale, conflicts, missing entries or repair,
+never as bootstrap.
 
-They preserve the minimum sufficient context rule: use host-preloaded
-instructions, read the compact routing bootstrap, choose the closest task
-profile, read that profile's required sources, and expand only when boundaries
-or conflicts require it.
-
-When an installed adapter includes a machine-readable context router, it must
-use the same canonical profile names and stay aligned with this Markdown
-contract. The router is the default cheap routing surface. This human-readable
-file is loaded when rationale, conflicts, missing entries, or adapter repair
-require it; it is not mandatory bootstrap context.
+Entrypoint references execute nothing and grant no authority. Auxiliary
+inspection cannot replace completion; the validation contract owns commands
+and final evidence.
 
 Installation, update, repair, and recheck begin from a typed metadata-first
 discovery receipt. It records selected categories, target revision, bounded
@@ -42,12 +39,9 @@ and still remain inside the router's hard expanded file, word, and character
 ceilings. Crossing the hard ceiling is a routing failure: split the task,
 reduce duplicated context, or stop for an explicit context decision.
 
-An installed adapter may provide generated recovery metadata in
-`.ai/assistant/entry-packet.json`. It remains lazy during routine first use and
-is loaded only for bootstrap recovery, adapter audit, or routing conflict.
-Human prose such as context profiles, module profiles, help references, and
-full support state remains lazy unless selected routing is missing, stale,
-disputed, or insufficient for the task.
+Load generated `.ai/assistant/entry-packet.json` only for recovery, audit or routing
+conflict. Human profile/help prose and full support state stay lazy unless routing
+is missing, stale, disputed or insufficient.
 
 ## Recursive Context Navigation
 

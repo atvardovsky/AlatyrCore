@@ -182,8 +182,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 186,
-      "content_digest": "sha256:c43d0c46c795e2f8385c461863f9b810370c0e8fbf8a2e8ddbfc8f296ba3bc59"
+      "estimated_words": 193,
+      "content_digest": "sha256:93a195ad4adaa9c1a5ef998cfe4727d3aedfc86edb47087d82a7e5d6cd1eb098"
     },
     {
       "id": "assistant.content.context-profiles-security-sensitive-json",

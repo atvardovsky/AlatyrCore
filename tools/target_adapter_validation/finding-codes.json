@@ -166,7 +166,7 @@
     },
     {
       "id": "FRAMEWORK",
-      "code_count": 18
+      "code_count": 21
     },
     {
       "id": "GATE",
@@ -274,7 +274,7 @@
     },
     {
       "id": "VALIDATION",
-      "code_count": 15
+      "code_count": 22
     },
     {
       "id": "VALIDATOR",
@@ -8059,6 +8059,15 @@
       ]
     },
     {
+      "code": "FRAMEWORK_CANDIDATE_NOT_ACCEPTANCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "FRAMEWORK_COMPARE_SKIPPED",
       "levels": [
         "info"
@@ -8197,6 +8206,24 @@
       "code": "FRAMEWORK_PACK_SELECTION_DRIFT",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_SOURCE_BINDING",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_SOURCE_BINDING_INVALID",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -14933,6 +14960,69 @@
     },
     {
       "code": "VALIDATION_CONTRACT_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_ROUTE_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_ROUTE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_ROUTE_PROFILE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_ROUTE_PROFILE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_ROUTE_PROFILE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_ROUTE_ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/validation_contract.py"
+      ]
+    },
+    {
+      "code": "VALIDATION_ROUTE_ROUTER_INVALID_SHAPE",
       "levels": [
         "error"
       ],

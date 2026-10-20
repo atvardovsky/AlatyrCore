@@ -332,6 +332,9 @@ Classify every proposed target file:
     and optional flows require selected profiles/modules. Generate indexes
     from the final installed set, not the full template.
     Install the portable delegate and validation contract.
+    Bind framework-upgrade inspection/completion entrypoint IDs to that contract.
+    Record an exact installed source commit when Git evidence is available;
+    keep tooling, installed baseline and upgrade candidate identities separate.
     Apply `session-presence.flow.md`: new accepted installs default to discovery
     and own-entry housekeeping; preserve existing choices/live entries, verify
     helper availability, and refresh routes from the installed policy.

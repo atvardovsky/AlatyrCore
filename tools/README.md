@@ -30,6 +30,72 @@ Hints affect scheduling only and never reduce selected tests or checks.
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
 
+## Reliable Support Authoring
+
+`validate-adapter --framework-source <source>` compares a recorded
+full Git ID in `framework.source_commit` against locally available history, even when the
+tooling checkout has advanced or has uncommitted framework edits. Tooling,
+installed baseline and upgrade candidate are separate identities. Explicit
+invalid/unavailable pins fail closed without fetching or switching branches.
+Legacy unpinned comparison is labeled as checkout comparison only.
+`assess-upgrade` explicitly selects `--framework-source-role candidate` for its
+comparison; candidate evidence cannot establish installed acceptance. Historical
+schema/template comparison prefers the exact installed pin over version history.
+
+`publish-task` previews one active model, derived projection and index binding.
+It reads a separate ignored draft, validates the canonical schema and header,
+and keeps unresolved proof and pending reviews unchanged. New tasks also need
+an explicit `--registration` draft matching the active-task index entry shape.
+Add `--write` only for authorized local metadata changes with matching source
+versions. Closed/shared models, stale source bindings and unsafe paths fail;
+other tasks and peer edits are preserved. It does not commit, push, close a task,
+or grant acceptance. Multi-file writes are cooperative transactions, not a
+filesystem-wide atomic snapshot.
+Active checkpoints may leave standing support projections pending; converge them
+with the existing finalizer before adapter acceptance, not at every checkpoint.
+
+```sh
+python3 tools/alatyr.py publish-task --target /path/to/target-repo --task-id TASK_ID --draft .ai/.runtime/drafts/task.json
+```
+
+The framework-upgrade profile references `adapter-health` for inspection and
+`current-change` for completion through `validation_entrypoints`. Context plans
+return digest-bound command prefixes without executing them; final commands
+still need their current revision, approval, package and task bindings.
+Local checker strings are supplemental, not evidence of canonical completion.
+
+## Worker Context Preparation
+
+Prepare the actual visible prompt and bootstrap in explicit UTF-8 artifacts.
+Use the reviewed source worker packet; no provider configuration is inferred.
+
+```sh
+python3 tools/alatyr.py prepare-worker-context --packet tmp/worker-packet.json --prompt tmp/worker-prompt.txt --bootstrap tmp/visible-bootstrap.txt --output-dir tmp/worker-context --write
+```
+
+Without `--write`, this previews measurements only. The new output directory
+contains `context.txt` and `preflight.json`. Deliver the frozen context, not an
+unbounded repository-discovery request. Set `--max-context-words` to a reviewed
+per-worker allocation inside the canonical ceiling, and pass each other allocated
+worker's actual artifact using repeatable `--other-context`. This measures
+selected siblings; the primary and final execution-tree gate still own complete
+worker inventory and aggregate accounting.
+Sibling artifacts are snapshots, not locks; serialize expansion decisions against
+the latest artifacts before delivery.
+
+For incremental delivery, use `--previous <bundle-dir>` and repeatable
+`--expand <exact-declared-conditional-path>`, with a new output directory. Do not
+resupply the prompt/bootstrap, drop sibling reservations, increase the allocation,
+or silently replace stale source input. Insufficient context returns to the
+primary or stops; it never justifies guessing. Native hidden context and client
+hard limits remain unverified unless separately observed.
+
+Pass `--context-preflight <bundle-dir>/preflight.json` to
+`prepare-worker-result` to require the observed visible-context artifact to retain
+the frozen payload and stay within its worker/aggregate allocation. Existing raw
+and summary limits still apply. Both tools produce evidence for review, never
+proof of provider provenance, dispatch, semantic correctness, or acceptance.
+
 ## Task Acceptance And Shared Resources
 
 For final task closure, add `--task-id TASK_ID`, `--task-class standard-task`,

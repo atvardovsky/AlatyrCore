@@ -32,7 +32,7 @@ def run(target: Path, failures: list[str]) -> None:
     pack_drift = [
         finding
         for finding in pack_validator.findings
-        if finding.code.startswith("FRAMEWORK_")
+        if finding.code.startswith("FRAMEWORK_") and finding.level in {"error", "warning"}
     ]
     if pack_drift:
         failures.append(

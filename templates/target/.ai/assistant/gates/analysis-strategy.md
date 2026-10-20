@@ -15,6 +15,9 @@ Before execution:
   `--task-class`, and `--require-task-acceptance` when canonical tooling is used.
   General adapter health does not close a task. Small tasks stay inline;
   inspect-only host registration does not authorize repository writes
+- derive the active projection from the validated model and update its index
+  binding together; use separate drafts and conflict-checked writes, preserving
+  pending duties, closed witnesses and peer work
 - preserve incident-family and failed-gate lineage when the task corrects
   earlier repair work; from the second corrective iteration use systemic
   repair and model the whole lifecycle

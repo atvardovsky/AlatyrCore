@@ -105,6 +105,11 @@ Choose from the newest request:
 Protected scope still needs its owning approval; missing approval blocks rather
 than downgrades an applying request to assessment success.
 
+Resolve tooling, recorded installed baseline and proposed candidate separately.
+Use the framework-upgrade profile's `validation_entrypoints`: inspection resolves
+`adapter-health`, completion resolves `current-change` with current bindings.
+Local checker commands remain supplemental, not substitute completion evidence.
+
 Applying modes:
 
 1. Assess impact, then record `controlled-update` transition to `staged`.

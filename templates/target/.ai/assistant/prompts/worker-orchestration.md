@@ -1,11 +1,9 @@
 # Worker Orchestration Prompt
 
-Use this only after the parent operation, context profile, changed facts, risk,
-authorization, task decomposition, and primary critical path are known. The
-primary assistant remains responsible for all decisions and convergence. This
-prompt is the normal authoritative route for delegated-execution. You should
-load the full flow only when delegation semantics are ambiguous, conflicting,
-or under repair.
+Use after the parent operation, profile, changed facts, risk, authorization,
+task decomposition and critical path are known. The primary assistant remains responsible
+for decisions and convergence. This prompt is the normal authoritative route;
+load the full flow only for ambiguity, conflict or repair.
 
 1. Load `.ai/assistant/assistant-capabilities.json` and only the selected
    surface record. Continue only when current evidence verifies worker
@@ -15,12 +13,12 @@ or under repair.
 2. After successful preflight, load `.ai/assistant/task-decomposition.json`,
    `.ai/assistant/delegation-policy.json`, and
    `.ai/assistant/workers/role-catalog.json`.
-3. Instantiate `.ai/assistant/templates/worker-execution-plan.md` into a
-   target-approved operation evidence path or inline completion evidence. Mark
-   `READY` only when Implementation level, dependencies, context, acceptance,
-   assigned proof obligations, and write scope allow it. The primary selects
-   the operation strategy and retains global obligation acceptance.
-4. Prefer primary execution when packet/review overhead outweighs likely
+3. Use `.ai/assistant/templates/worker-execution-plan.md` in a
+   target-approved operation evidence path or inline completion evidence.
+   Mark `READY` only when Implementation level,
+   dependencies, context, acceptance, assigned proof obligations and write scope
+   allow it. Strategy and global obligation acceptance remain primary-owned.
+4. Prefer primary execution when packet/review overhead outweighs
    benefit. Never delegate non-delegable work.
 5. Select an enabled role whose action ceiling contains the packet action.
    Bind it through current capability evidence, else use suggestion-only or sequential-primary fallback.
@@ -32,6 +30,9 @@ or under repair.
    raw-result, and accepted-summary word ceilings for either evidence tier;
    missing, unresolved, or exceeded limits fail closed.
 7. Dispatch through the verified native or approved external backend. A
+   frozen payload measures visible prompt, bootstrap, metadata and content;
+   reserve sibling/expansion capacity and recheck before expansion. Missing
+   context returns to the primary, not guesses. Native cutoffs remain unverified. A
    provider-specific worker definition is a thin binding to these
    project-owned contracts, not a new policy owner. The primary assistant owns
    branch authorization. A verified coordinator may use nested transport only
@@ -39,8 +40,8 @@ or under repair.
    otherwise workers return proposals.
 8. Normalize every return through `.ai/assistant/templates/worker-result.json`
    and its human view. Measure raw and accepted-summary artifacts, bind them by
-   SHA-256, and keep raw payloads lazy. For recursive work, validate the branch
-   envelope and create a resumable branch checkpoint.
+   SHA-256, and keep raw payloads lazy. For recursion, validate the branch
+   envelope and create a resumable checkpoint.
    Reject scope violations, stale baselines, unsupported claims, and missing
    validation. Retry only under policy without expanding scope or authorization.
    Require structured findings with canonical-owner, surface, evidence, and
@@ -58,5 +59,5 @@ A worker may return evidence for assigned local proof obligations. It must not
 change the primary strategy, waive an obligation, accept a primary-owned
 obligation, or turn a review pass into operation completion.
 
-Do not claim parallelism, model identity, speed, cost, or quality unless the
-selected capability record and result contain matching evidence.
+Parallelism, model identity, speed, cost and quality claims require matching
+capability record and result evidence.
