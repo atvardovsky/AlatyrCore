@@ -157,7 +157,9 @@ Before accepting a change, check:
 - `python3 tools/check_test_first_development.py` passes when test-first policy
   state, bounded recommendation, enablement, trigger/mode/command/isolation,
   RED/GREEN/refactor evidence, operation routing, skill/gate, installer wiring,
-  or target structural validation changes.
+  or target structural validation changes. It compares every normative
+  execution-contract version reference in the canonical owner with the schema
+  and validates both policy and evidence templates against that contract.
 - `python3 tools/check_extensions.py` passes when extension package format,
   compatibility, catalog/lock, target bindings, lifecycle, ownership,
   inspection tooling, routing, bridges, installer wiring, or target structural

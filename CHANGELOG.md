@@ -4,6 +4,10 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.94 - 2026-10-20
+
+- [Testing docs parity](docs/releases/0.1.0-alpha.94-notes.md).
+
 ## 0.1.0-alpha.93 - 2026-10-20
 
 - [Reliable support authoring and bounded dispatch](docs/releases/0.1.0-alpha.93-notes.md): schema `76`/templates `88`.

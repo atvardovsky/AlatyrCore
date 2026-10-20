@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -54,6 +55,34 @@ def require(path: Path, snippets: list[str], failures: list[str]) -> None:
     for snippet in snippets:
         if " ".join(snippet.split()) not in text:
             failures.append(f"{path.relative_to(ROOT)} missing {snippet}")
+
+
+def execution_documentation_failures(text: str, schema: dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    text = " ".join(text.split())
+    references = {
+        "Command/evidence execution contract": ("contract", "evidence"),
+        "Policy `execution_contract`": ("contract",),
+    }
+    for label, definitions in references.items():
+        matches = list(re.finditer(re.escape(label) + r"\s+version\b\s*(\S*)", text))
+        if not matches:
+            failures.append(f"missing normative {label} version reference")
+        for definition in definitions:
+            try:
+                expected = schema["$defs"][definition]["properties"]["schema_version"]["const"]
+            except (KeyError, TypeError):
+                failures.append(f"schema {definition} needs a schema_version const")
+                continue
+            if type(expected) is not int or expected < 1:
+                failures.append(f"schema {definition} schema_version const must be a positive integer")
+                continue
+            for match in matches:
+                if not re.fullmatch(re.escape(str(expected)) + r"[.,:;]?", match[1]):
+                    failures.append(
+                        f"{label} version {match[1]!r} must match schema {definition} version {expected}"
+                    )
+    return failures
 
 
 def main() -> int:
@@ -160,13 +189,20 @@ def main() -> int:
         intent = load_json(INTENT)
         catalog = load_json(CATALOG)
         router = load_json(ROUTER)
+        evidence = load_json(TARGET / ".ai/assistant/templates/test-execution-evidence.json")
     except (json.JSONDecodeError, ValueError) as exc:
         failures.append(str(exc))
-        policy = intent = catalog = router = {}
+        policy = intent = catalog = router = evidence = {}
 
     if policy.get("schema_version") != 1:
         failures.append("test-first policy schema_version must be 1")
-    failures.extend(TestExecutionContract().policy_failures(policy, placeholders=True))
+    contract = TestExecutionContract()
+    failures.extend(
+        f"{FRAMEWORK.relative_to(ROOT)}: {failure}"
+        for failure in execution_documentation_failures(read(FRAMEWORK), contract.schema)
+    )
+    failures.extend(contract.policy_failures(policy, placeholders=True))
+    failures.extend(contract.shape(evidence, "evidence", placeholders=True))
     for path in TEST_SURFACES:
         failures.extend(f"{path}: {failure}" for failure in surface_binding_failures(read(TARGET / path)))
     if policy.get("policy_kind") != "target-test-first-development-policy":

@@ -76,13 +76,13 @@ execution permission. Manual-review-first may defer execution while tests are
 authored; it does not fabricate RED or automatically approve a strict-mode
 exception. Preserve the accepted timing and report unresolved conflicts.
 
-Policy `execution_contract` version 1 records canonical policy/coverage owners,
+Policy `execution_contract` version 2 records canonical policy/coverage owners,
 timing, RED requirements, review authority and explicitly selected current
 evidence paths. Keep mirrors subordinate: edit canonical sources first, then
 reconcile JSON-equivalent adapter copies. Skills, flows, gates and templates
 bind to that policy rather than maintaining independent execution sequences.
 
-Each command records kind, configuration paths, prerequisites, effects,
+Each command records kind, configuration paths, prerequisites, effects, resources,
 environment, suite scope, proof boundary and supported/unsupported/unknown
 filtering. Distinguish disposable automated resources from the shared manual
 review application and database. Never broaden an unsupported focused command.

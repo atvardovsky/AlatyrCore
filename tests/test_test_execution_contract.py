@@ -3,6 +3,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,6 +17,7 @@ from test_execution_contract import SURFACES, TestExecutionContract, surface_bin
 from target_adapter_validation.modules import dispatch_capability_checks
 from validate_target_adapter import Validator, AdapterValidatorConfig
 from target_validation_support import ManifestData, Scalar
+import check_test_first_development as test_first_check
 
 
 def policy():
@@ -60,6 +63,96 @@ def nested_paths(value, prefix=()):
     if isinstance(value, list):
         return [path for k, v in enumerate(value) for path in [(*prefix, k), *nested_paths(v, (*prefix, k))]]
     return []
+
+
+class ExecutionDocumentationTests(unittest.TestCase):
+    def setUp(self):
+        self.schema = TestExecutionContract().schema
+        self.version = self.schema["$defs"]["contract"]["properties"]["schema_version"]["const"]
+        self.labels = ("Command/evidence execution contract", "Policy `execution_contract`")
+        self.text = "\n".join(f"{label} version {self.version} records the contract." for label in self.labels)
+
+    def failures(self, text, schema=None):
+        return test_first_check.execution_documentation_failures(text, self.schema if schema is None else schema)
+
+    def test_current_canonical_document_and_templates_match_the_schema(self):
+        self.assertEqual(self.failures(test_first_check.FRAMEWORK.read_text()), [])
+        execution = TestExecutionContract()
+        policy_template = json.loads(test_first_check.POLICY.read_text())
+        self.assertEqual(policy_template["schema_version"], 1)
+        self.assertEqual(execution.policy_failures(policy_template, placeholders=True), [])
+        evidence = json.loads((ROOT / "templates/target/.ai/assistant/templates/test-execution-evidence.json").read_text())
+        self.assertEqual(execution.shape(evidence, "evidence", placeholders=True), [])
+
+    def test_each_reference_rejects_stale_future_and_malformed_versions(self):
+        for label in self.labels:
+            for version in (str(self.version - 1), str(self.version + 1), f"{self.version}.0", f"{self.version}-invalid", f"0{self.version}", "unknown", ""):
+                text = self.text.replace(f"{label} version {self.version}", f"{label} version {version}")
+                with self.subTest(label=label, version=version):
+                    self.assertTrue(self.failures(text))
+            missing = "\n".join(line for line in self.text.splitlines() if not line.startswith(label))
+            self.assertTrue(self.failures(missing))
+            self.assertTrue(self.failures(self.text + f"\n{label} version {self.version - 1} contradicts it."))
+
+    def test_schema_is_the_oracle_and_wrapping_does_not_change_the_reference(self):
+        for text in (self.text, self.text.replace(" ", "\n"), self.text.replace("\n", "\r\n"), self.text.replace(f"version {self.version}", f"version {self.version},")):
+            self.assertEqual(self.failures(text), [])
+        changed = copy.deepcopy(self.schema)
+        for definition in ("contract", "evidence"):
+            changed["$defs"][definition]["properties"]["schema_version"]["const"] += 1
+        self.assertTrue(self.failures(self.text, changed))
+        self.assertEqual(self.failures(self.text.replace(f"version {self.version}", f"version {self.version + 1}"), changed), [])
+        changed["$defs"]["evidence"]["properties"]["schema_version"]["const"] += 1
+        self.assertTrue(self.failures(self.text.replace(f"version {self.version}", f"version {self.version + 1}"), changed))
+
+    def test_invalid_schema_version_oracles_return_findings(self):
+        self.assertTrue(self.failures(self.text, {}))
+        for definition in ("contract", "evidence"):
+            for value in (None, {}, [], True, 0, -1, float(self.version), str(self.version)):
+                changed = copy.deepcopy(self.schema)
+                changed["$defs"][definition]["properties"]["schema_version"]["const"] = value
+                with self.subTest(definition=definition, value=value):
+                    self.assertTrue(self.failures(self.text, changed))
+            changed = copy.deepcopy(self.schema)
+            del changed["$defs"][definition]["properties"]["schema_version"]["const"]
+            self.assertTrue(self.failures(self.text, changed))
+
+    def test_public_source_checker_rejects_each_conflicting_reference(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            paths = {value for value in vars(test_first_check).values()
+                     if isinstance(value, Path) and value.is_file() and value.is_relative_to(ROOT)}
+            paths.update(ROOT / name for name in (
+                "tools/check_test_first_development.py", "schemas/test-execution-contract.schema.json",
+                "templates/target/.ai/assistant/templates/test-execution-evidence.json",
+            ))
+            for source in paths:
+                destination = root / source.relative_to(ROOT)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, destination)
+            framework_path = "framework/test-first-development.md"
+            policy_path = "templates/target/.ai/project/testing/test-first-policy.json"
+            evidence_path = "templates/target/.ai/assistant/templates/test-execution-evidence.json"
+            originals = {name: (root / name).read_text() for name in (framework_path, policy_path, evidence_path)}
+            text = originals[framework_path]
+            variants = [("valid", {}, "")]
+            for label in self.labels:
+                variants.append((label, {framework_path: text.replace(f"{label} version {self.version}", f"{label} version {self.version - 1}")}, "must match schema"))
+            for name, key in ((policy_path, ("execution_contract", "schema_version")), (evidence_path, ("schema_version",))):
+                value = json.loads(originals[name])
+                set_path(value, key, self.version - 1)
+                variants.append((name, {name: json.dumps(value)}, "schema_version"))
+            environment = dict(os.environ, PYTHONPATH=str(ROOT / "tools"))
+            for label, replacements, diagnostic in variants:
+                with self.subTest(label=label):
+                    for name, content in {**originals, **replacements}.items():
+                        (root / name).write_text(content)
+                    result = subprocess.run([sys.executable, "-B", str(root / "tools/check_test_first_development.py")],
+                                            cwd=root, env=environment, capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 0 if label == "valid" else 1, result.stdout + result.stderr)
+                    if label != "valid":
+                        self.assertIn(diagnostic, result.stdout)
+                        self.assertNotIn("Traceback", result.stderr)
 
 
 class TestExecutionContractTests(unittest.TestCase):
