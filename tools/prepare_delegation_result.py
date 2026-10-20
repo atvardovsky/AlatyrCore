@@ -10,9 +10,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-from delegation_evidence import _validate_policy_limits, enforce_character_limit
+from delegation_evidence import _validate_policy_limits, enforce_character_limit, load_json_object, worker_result_sha256
 from source_worker_contract import load_source_worker_policy, validate_worker_packet
-from prepare_delegation_context import validate_preflight, measurement, canonical_digest
+from prepare_delegation_context import validate_preflight, measurement, canonical_digest, read_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -78,7 +78,7 @@ def prepare(packet: dict, event: dict, contents: dict[str, bytes], policy: dict,
         "stop_reason_id": "semantic-decision-required"}
     if preflight is not None:
         result["validation"].append("frozen context preflight verified: " + canonical_digest(preflight))
-    result["subtree_sha256"] = sha(json.dumps(result, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode())
+    result["subtree_sha256"] = worker_result_sha256(result)
     return result
 
 
@@ -91,10 +91,10 @@ def main() -> int:
     args = parser.parse_args()
     try:
         policy = load_source_worker_policy(ROOT / "tools/source_worker_policy.json", root=ROOT)
-        packet = json.loads(args.packet.read_text(encoding="utf-8"))
-        event = json.loads(args.event.read_text(encoding="utf-8"))
-        contents = {name: getattr(args, name).read_bytes() for name in ("context", "raw", "summary")}
-        preflight = json.loads(args.context_preflight.read_text(encoding="utf-8")) if args.context_preflight else None
+        packet = load_json_object(args.packet, "worker packet")
+        event = load_json_object(args.event, "runtime event")
+        contents = {name: read_artifact(getattr(args, name)) for name in ("context", "raw", "summary")}
+        preflight = load_json_object(args.context_preflight, "context preflight") if args.context_preflight else None
         result = prepare(packet, event, contents, policy, preflight=preflight)
         if args.write:
             output = args.output_dir.absolute()

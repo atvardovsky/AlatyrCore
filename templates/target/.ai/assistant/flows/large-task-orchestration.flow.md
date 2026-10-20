@@ -38,16 +38,30 @@ on the immediate critical path and in control of final convergence.
 
 ## Steps
 
+Invoke the phase or milestone selected by the outer coordinator. Planning
+does not persist packets. Only the outer coordinator owns finalization.
+
+### Analyze
+
 1. Load the compact bootstrap and select the smallest base task profile and
    project-area overlays.
 2. Apply the activation gate. Record why orchestration is needed.
-3. Create one packet from
+
+### Plan
+
+3. Propose one packet from
    `.ai/assistant/templates/large-task-operation-packet.md` at the
    target-approved path.
-   Activate `.ai/assistant/flows/change-package.flow.md` separately only when
+   Use only [package planning](change-package.flow.md#plan) separately when
    coherent outcome, semantic approval, audit, or provenance needs pass its
    gate; large-task activation alone does not require a package.
-4. Record operation scope, allowed actions, changed facts, canonical owners,
+
+### Apply
+
+4. Verify current modification authorization and applicable protected approval,
+   then create the proposed packet. For an active package, use only
+   [Initialize](change-package.flow.md#initialize). Record operation scope,
+   allowed actions, changed facts, canonical owners,
    relationship impact closure when enabled, approvals, and the initial
    context receipt. Include planned, resolved, and observed ordered semantic
    guidance identities and each bundle digest's algorithm and schema version.
@@ -57,6 +71,8 @@ on the immediate critical path and in control of final convergence.
 6. Load only the active workstream's context and its owner/dependency context.
 7. Update status and create checkpoints after local validation, approval
    boundaries, handoffs, or before a context reset.
+   Use [Material Updates](change-package.flow.md#material-updates) only for an
+   active package and within current authorization and approval scope.
 8. On resume, compare checkpoint claims with current repository evidence and
    invalidate stale assumptions before continuing. Re-resolve the current
    semantic guidance bundle and compare it with the checkpoint's last accepted
@@ -76,7 +92,14 @@ on the immediate critical path and in control of final convergence.
     convergence, skipped checks, and residual risk.
 12. When a change package is active, finalize its semantic scope, companion
     decisions, material corrections, and repository provenance after global
-    convergence.
+    convergence through [Finalize](change-package.flow.md#finalize) only if
+    this flow is the outer coordinator. Otherwise return evidence to that owner.
+
+### Verify
+
+Do not authorize repairs or finalization here; return to authorized Apply and
+refresh affected evidence when a required check fails.
+
 13. Record one Project Contour Sync Decision for the combined code/test
     result. Worker-local documentation conclusions are evidence only; the
     primary reconciles owners, affected surfaces, support state, and residual
@@ -84,6 +107,7 @@ on the immediate critical path and in control of final convergence.
 14. When subagents were used, reconcile packet scope, requested and actual
     model or unverified status, validation, fallback, rejected output, and
     primary review before accepting any workstream result.
+    For an active package, use only [Verify](change-package.flow.md#verify).
 
 The bundle comparison proves the identity of recorded semantic metadata at the
 stated planned, resolved, or observed evidence level. It does not prove that a

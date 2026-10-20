@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from prepare_delegation_result import prepare
 from source_worker_contract import make_builtin_packet, load_source_worker_policy
+from delegation_evidence import validate_worker_result, worker_result_sha256
 
 
 class DelegationDraftTests(unittest.TestCase):
@@ -26,6 +27,53 @@ class DelegationDraftTests(unittest.TestCase):
         self.assertEqual(result["satisfied_proof_obligation_ids"], [])
         self.assertEqual(result["scope_violation"], "unreviewed")
         self.assertEqual(result["raw_payload"]["word_count"], 2)
+
+    def test_unicode_draft_hash_round_trips_through_production_validator(self):
+        for worker_id in ("worker-ascii", "worker-\u00e9", "worker-\u65e5\u672c"):
+            with self.subTest(worker_id=worker_id), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                event = dict(self.event, worker_id=worker_id)
+                (root / "packet.json").write_text(json.dumps(self.packet))
+                (root / "event.json").write_text(json.dumps(event))
+                for name, content in self.contents.items():
+                    (root / (name + ".txt")).write_bytes(content)
+                command = [sys.executable, str(ROOT / "tools/prepare_delegation_result.py")]
+                for name in ("packet", "event", "context", "raw", "summary"):
+                    command.extend(["--" + name, str(root / (name + (".json" if name in {"packet", "event"} else ".txt")))])
+                output = root / "draft"
+                run = subprocess.run([*command, "--output-dir", str(output), "--write"], capture_output=True, text=True)
+                self.assertEqual(run.returncode, 0, run.stderr)
+                path = output / "result.json"
+                result = json.loads(path.read_text())
+                node = {name: result[name] for name in ("result_id", "packet_id", "parent_packet_id", "node_id", "depth", "stop_reason_id", "summary_covers_result_ids", "proof_obligation_ids", "satisfied_proof_obligation_ids")}
+                node.update(result_status="requires-review", max_result_words=self.packet["max_result_words"],
+                    max_summary_words=self.packet["max_summary_words"], accepted_summary_evidence=result["accepted_summary"],
+                    context_evidence={"path": "context.txt", "sha256": result["input_context_packet_sha256"],
+                        "word_count": len(self.contents["context"].split()), "character_count": len(self.contents["context"].decode())},
+                    context_words=len(self.contents["context"].split()), surface_refs=[], canonical_owner_refs=[])
+                validate_worker_result(path, artifact_root=output, node=node, expected_base_revision=event["base_revision"],
+                    allowed_stop_reasons={"semantic-decision-required"})
+                self.assertEqual(worker_result_sha256(dict(reversed(list(result.items())))), result["subtree_sha256"])
+
+    def test_cli_malformed_json_inputs_are_bounded_diagnostics(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "packet.json").write_text(json.dumps(self.packet))
+            for name, value in self.contents.items():
+                (root / (name + ".txt")).write_bytes(value)
+            args = [sys.executable, str(ROOT / "tools/prepare_delegation_result.py")]
+            for name in ("packet", "event", "context", "raw", "summary"):
+                args.extend(["--" + name, str(root / (name + (".json" if name in {"packet", "event"} else ".txt")))])
+            args.extend(["--output-dir", str(root / "output"), "--write"])
+            cases = [b"[" * 2000 + b"]" * 2000, b"\xff", b"{", b"true", b"1" * 5000, b" " * (4 * 1024 * 1024 + 1)]
+            for payload in cases:
+                with self.subTest(size=len(payload)):
+                    (root / "event.json").write_bytes(payload)
+                    rejected = subprocess.run(args, capture_output=True, text=True)
+                    self.assertEqual(rejected.returncode, 2, rejected.stderr)
+                    self.assertNotIn("Traceback", rejected.stderr)
+                    self.assertLess(len(rejected.stderr), 1500)
+                    self.assertFalse((root / "output").exists())
 
     def test_all_budget_boundaries_are_enforced(self):
         limits = {"context": 1000, "raw": self.packet["max_result_words"], "summary": self.packet["max_summary_words"]}

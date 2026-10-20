@@ -109,6 +109,10 @@ Compose reused procedures by Analyze, Plan, Apply and Verify phases, not by
 invoking an entire repair-and-completion flow during analysis. Retain one
 task/operation-bound result per obligation. Reuse requires current canonical
 input bindings; final global review remains after local workstream checks.
+Analysis and planning propose relationships and package scope without
+persisting them. Authorized Apply owns initialization, material updates and
+post-implementation finalization. The outer coordinator selects one finalizer;
+Verify findings return to authorized Apply and cannot grant repair authority.
 
 ## Adapter Responsibilities
 

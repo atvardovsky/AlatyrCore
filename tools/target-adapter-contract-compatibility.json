@@ -87,9 +87,9 @@
           "template": "templates/target/.ai/assistant/templates/worker-result.json"
         },
         "single-read-only-receipt": {
-          "current": 1,
-          "supported": [1],
-          "migration_limited": [],
+          "current": 2,
+          "supported": [1, 2],
+          "migration_limited": [1],
           "schema": "schemas/alatyr-single-read-only-delegation-receipt.schema.json",
           "template": "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json"
         },

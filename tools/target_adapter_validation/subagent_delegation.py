@@ -222,6 +222,18 @@ def validate_subagent_delegation(validator: Any, manifest: Any) -> None:
     )
     _validate_overlay(self)
     _validate_delegation_templates(self)
+    _validate_single_receipt_template(self)
+
+
+def _validate_single_receipt_template(self: Any) -> None:
+    record = self.load_json_object(self.target_path(SINGLE_RECEIPT_RELPATH), "DELEGATION_RESULT_JSON_TEMPLATE")
+    if record is None:
+        return
+    result = record.get("result")
+    if record.get("schema_version") != 2 or record.get("receipt_kind") != "alatyr-single-depth1-read-only-delegation" or not isinstance(result, dict) or not isinstance(result.get("validation"), list) or not result["validation"]:
+        self.error("DELEGATION_EXECUTION_TREE_TEMPLATE",
+            "single-worker receipt template must use schema 2 and separate worker validation evidence",
+            SINGLE_RECEIPT_RELPATH)
 
 
 SUBAGENT_DELEGATION_MODULE = FunctionCapabilityModule(

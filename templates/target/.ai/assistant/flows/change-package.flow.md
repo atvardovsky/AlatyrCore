@@ -26,8 +26,31 @@ evidence. Large-task activation alone is not sufficient.
 
 ## Steps
 
+Invoke only the caller's phase or named Apply milestone. Analyze and Plan are
+read-only proposals. Verify cannot authorize repairs; return to authorized
+Apply and invalidate affected evidence when a correction is required.
+
+### Analyze
+
 1. Select the normal task profile and changed-fact owners first.
 2. Apply the activation gate. If skipped, continue the normal operation flow.
+
+### Plan
+
+Only when the module is enabled and activation applies, propose the package,
+plan binding, semantic/path scope, approvals, companion decisions and evidence
+requirements. Do not create records, indexes, approvals or reports in Plan.
+
+### Apply
+
+Enter only the milestone whose prerequisites hold; do not execute future
+milestones merely because Apply was selected.
+
+#### Initialize
+
+Verify current modification authorization and applicable protected approval
+before persistence. Initialize only an activated package before implementation.
+
 3. Create one machine record and add only its compact identity, status, facts,
    owners, areas, provenance, approvals, active workstream, incident family,
    corrective iteration, latest failed-gate state, and residual risk
@@ -59,6 +82,11 @@ evidence. Large-task activation alone is not sufficient.
    candidate signals do not prove shared causality.
 5. Link explicit machine approval records. Require reapproval for new
    protected fact IDs, areas, behavior categories, external effects, or paths.
+
+#### Material Updates
+
+Recheck current authorization and approval scope before each material update.
+
 6. During implementation, record only material discoveries and corrections.
    Stop when an entry is `reapproval-required`.
 7. Decide each applicable companion surface as `updated`, `not-required`, or
@@ -68,10 +96,18 @@ evidence. Large-task activation alone is not sufficient.
    not rewritten solely to add this evidence.
 8. When architecture reasoning applies, retain a compact problem,
    alternatives, direction, authority, status, and source summary. Do not keep
-    raw chat by default.
+   raw chat by default.
    If a durable engineering-evidence record captures the same invariant,
    root-cause, solution, and regression conclusions, link its ID and do not
    duplicate the content.
+
+#### Finalize
+
+Enter only after implementation and global reconciliation, required companion
+decisions and local checks. Recheck current modification authorization and
+approval scope. The outer operation coordinator is the sole finalization owner;
+nested flows return evidence rather than finalize independently.
+
 9. At convergence, record actual facts, areas, behavior categories, external
    effects, and paths; reconcile them with approval and logical integrity.
 10. Record validation, skipped checks, residual risks, and before/after
@@ -84,6 +120,15 @@ evidence. Large-task activation alone is not sufficient.
 12. Before final evidence, run the transactional support finalizer when
     available. Bind strict current-change validation to the diff base, selected
     approval records, and selected package.
+
+### Verify
+
+Check the finalized package projection, approved versus actual scope,
+companion decisions, provenance and current validation bindings. Do not mutate
+accepted support facts here. Report missing or stale evidence and return to
+authorized Apply when repair or finalization is needed, then refresh checks.
+Skipped activation requires no package artifacts. Commit, publish and live
+actions retain their separate current-scope authorization gates.
 
 ## Validation Boundary
 

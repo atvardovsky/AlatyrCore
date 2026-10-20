@@ -11,12 +11,12 @@
     "result", "primary_convergence"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"enum": [1, 2]},
     "receipt_kind": {"const": "alatyr-single-depth1-read-only-delegation"},
     "operation_id": {"type": "string", "minLength": 1},
     "base_revision": {"type": "string", "minLength": 1},
     "current_user_authorization": {"type": "string", "minLength": 1},
-    "analysis_strategy_id": {"type": "string", "minLength": 1},
+    "analysis_strategy_id": {"enum": ["direct-local", "invariant-first", "hypothesis-driven", "architecture-comparison", "evidence-synthesis", "exploratory-design"]},
     "problem_model_sha256": {"anyOf": [{"$ref": "#/definitions/sha256"}, {"type": "null"}]},
     "policy_sha256": {"$ref": "#/definitions/sha256"},
     "capability_sha256": {"$ref": "#/definitions/sha256"},
@@ -53,12 +53,14 @@
       ],
       "properties": {
         "status": {"enum": ["succeeded", "failed", "blocked", "cancelled", "requires-review", "rejected"]},
+        "validation": {"$ref": "#/definitions/stringList"},
         "raw_artifact": {"$ref": "#/definitions/artifact"},
         "accepted_summary_artifact": {"$ref": "#/definitions/artifact"},
         "findings": {"type": "array", "items": {"$ref": "#/definitions/finding"}},
         "satisfied_proof_obligation_ids": {"$ref": "#/definitions/stringList"},
         "stop_reason_id": {"type": "string", "minLength": 1}
-      }
+      },
+      "allOf": [{"if": {"properties": {"status": {"const": "succeeded"}}, "required": ["status"]}, "then": {"properties": {"validation": {"minItems": 1}}}}]
     },
     "primary_convergence": {
       "type": "object",
@@ -69,9 +71,11 @@
         "status": {"enum": ["accepted", "rejected", "blocked"]},
         "validation": {"$ref": "#/definitions/stringList"},
         "residual_risk": {"type": "string", "minLength": 1}
-      }
+      },
+      "allOf": [{"if": {"properties": {"status": {"const": "accepted"}}, "required": ["status"]}, "then": {"properties": {"validation": {"minItems": 1}}}}]
     }
   },
+  "allOf": [{"if": {"properties": {"schema_version": {"const": 2}}, "required": ["schema_version"]}, "then": {"properties": {"result": {"required": ["validation"]}}}}],
   "definitions": {
     "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "stringList": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},

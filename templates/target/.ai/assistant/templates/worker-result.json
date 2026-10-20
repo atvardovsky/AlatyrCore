@@ -9,7 +9,7 @@
   "base_revision": "{BASE_REVISION}",
   "status": "{SUCCEEDED_FAILED_BLOCKED_CANCELLED_REQUIRES_REVIEW_OR_REJECTED}",
   "measurement_state": "observed",
-  "input_context_packet_sha256": "{LOWERCASE_SHA256_OR_NONE}",
+  "input_context_packet_sha256": "{MEASURED_DELIVERED_CONTEXT_SHA256}",
   "raw_payload": {
     "path": "{TARGET_RELATIVE_RAW_RESULT_PATH}",
     "word_count": "{MEASURED_NON_NEGATIVE_INTEGER}",

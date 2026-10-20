@@ -10,6 +10,8 @@ from fnmatch import fnmatchcase
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from path_spec import logical_path
+
 
 TREE_FIELDS = {
     "schema_version", "tree_kind", "operation_id", "recorded_at", "base_revision",
@@ -68,6 +70,7 @@ PORTABLE_MAX_RESULT_WORDS = 12000
 PORTABLE_MAX_PRIMARY_SUMMARY_WORDS = 4000
 PORTABLE_MAX_RETRIES = 2
 CHARACTERS_PER_WORD_LIMIT = 12
+MAX_JSON_BYTES = 4 * 1024 * 1024
 PRIMARY_ANALYSIS_STRATEGIES = {
     "direct-local",
     "invariant-first",
@@ -113,6 +116,26 @@ def _strings(value: Any, label: str) -> list[str]:
     return value
 
 
+def _enum(value: Any, allowed: set[str], label: str) -> str:
+    text = _string(value, label)
+    if text not in allowed:
+        raise DelegationEvidenceError(f"{label} is invalid or unknown")
+    return text
+
+
+def _validate_analysis_strategy(strategy: Any, model: Any, label: str) -> None:
+    strategy = _enum(strategy, PRIMARY_ANALYSIS_STRATEGIES, f"{label}.analysis_strategy_id")
+    if model is None and strategy != "direct-local":
+        raise DelegationEvidenceError(f"{label} non-local strategy requires a problem-model digest")
+    if model is not None:
+        _sha256(model, f"{label}.problem_model_sha256")
+
+
+def _validation_evidence(value: Any, *, required: bool, label: str) -> None:
+    if not _strings(value, label) and required:
+        raise DelegationEvidenceError(f"{label} requires non-empty validation evidence")
+
+
 def _integer(value: Any, label: str, *, minimum: int = 0, maximum: int) -> int:
     if (
         not isinstance(value, int)
@@ -148,24 +171,48 @@ def _timestamp(value: Any, label: str) -> datetime:
 
 def _canonical_sha256(value: dict[str, Any], excluded_field: str) -> str:
     payload = {key: item for key, item in value.items() if key != excluded_field}
-    encoded = json.dumps(
-        payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
+    return _json_sha256(payload)
+
+
+def worker_result_sha256(value: dict[str, Any]) -> str:
+    """Canonical UTF-8 result digest shared by preparation and validation."""
+    return _canonical_sha256(value, "subtree_sha256")
 
 
 def _json_sha256(value: Any) -> str:
-    encoded = json.dumps(
-        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode("utf-8")
+    try:
+        encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except (ValueError, UnicodeError, RecursionError) as exc:
+        raise DelegationEvidenceError("canonical evidence must be bounded finite UTF-8 JSON") from exc
     return hashlib.sha256(encoded).hexdigest()
 
 
 def _matches_surface(surface: str, selectors: list[str]) -> bool:
     """Match one normalized target-relative surface against envelope selectors."""
-    if surface.startswith("/") or "\\" in surface or ".." in PurePosixPath(surface).parts:
+    try:
+        logical_path(surface)
+    except ValueError:
         return False
     return any(fnmatchcase(surface, selector) for selector in selectors)
+
+
+def _selector_within(selector: str, parents: list[str]) -> bool:
+    """Prove only exact, concrete or literal-subtree narrowing; never sample files."""
+    try:
+        logical_path(selector, pattern=True)
+        for parent in parents:
+            logical_path(parent, pattern=True)
+    except ValueError:
+        return False
+    if selector in parents:
+        return True
+    if not any(marker in selector for marker in "*?["):
+        return _matches_surface(selector, parents)
+    for parent in parents:
+        prefix = parent[:-2] if parent.endswith("/**") else None
+        if prefix is not None and not any(marker in prefix for marker in "*?[") and selector.startswith(prefix):
+            return True
+    return False
 
 
 def _contained_file(root: Path, relpath: Any, label: str) -> Path:
@@ -177,7 +224,7 @@ def _contained_file(root: Path, relpath: Any, label: str) -> Path:
     try:
         resolved_root = root.resolve(strict=True)
         resolved = candidate.resolve(strict=True)
-    except OSError as exc:
+    except (OSError, UnicodeError, RuntimeError) as exc:
         raise DelegationEvidenceError(f"{label} is not readable: {raw}") from exc
     try:
         resolved.relative_to(resolved_root)
@@ -191,7 +238,10 @@ def _contained_file(root: Path, relpath: Any, label: str) -> Path:
 
 
 def _measure_file(path: Path, label: str) -> tuple[str, int, int]:
-    payload = path.read_bytes()
+    try:
+        payload = path.read_bytes()
+    except (OSError, UnicodeError) as exc:
+        raise DelegationEvidenceError(f"{label} is not readable") from exc
     digest = hashlib.sha256(payload).hexdigest()
     try:
         text = payload.decode("utf-8")
@@ -212,9 +262,9 @@ def validate_artifact(
     digest, words, characters = _measure_file(path, label)
     if _sha256(artifact.get("sha256"), f"{label}.sha256") != digest:
         raise DelegationEvidenceError(f"{label} SHA-256 does not match content")
-    if artifact.get("word_count") != words:
+    if type(artifact.get("word_count")) is not int or artifact.get("word_count") != words:
         raise DelegationEvidenceError(f"{label} word_count does not match content")
-    if artifact.get("character_count") != characters:
+    if type(artifact.get("character_count")) is not int or artifact.get("character_count") != characters:
         raise DelegationEvidenceError(
             f"{label} character_count does not match content"
         )
@@ -223,9 +273,13 @@ def validate_artifact(
 
 def load_json_object(path: Path, label: str) -> dict[str, Any]:
     try:
-        return _object(json.loads(path.read_text(encoding="utf-8")), label)
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise DelegationEvidenceError(f"cannot load {label}: {path}: {exc}") from exc
+        with path.open("rb") as stream:
+            payload = stream.read(MAX_JSON_BYTES + 1)
+        if len(payload) > MAX_JSON_BYTES:
+            raise ValueError(f"JSON input exceeds {MAX_JSON_BYTES} bytes")
+        return _object(json.loads(payload.decode("utf-8")), label)
+    except (OSError, UnicodeError, ValueError, RecursionError) as exc:
+        raise DelegationEvidenceError(f"cannot load {label}: {path}: {str(exc)[:240]}") from exc
 
 
 def validate_branch_envelope(
@@ -293,8 +347,7 @@ def validate_branch_envelope(
             "branch envelope tools, surfaces, and validation must be non-empty"
         )
     for selector in allowed_surfaces:
-        selector_path = PurePosixPath(selector)
-        if selector_path.is_absolute() or ".." in selector_path.parts or "\\" in selector:
+        if not _selector_within(selector, [selector]):
             raise DelegationEvidenceError(
                 "branch envelope surface selectors must be target-relative"
             )
@@ -433,8 +486,12 @@ def validate_worker_result(
         raise DelegationEvidenceError("worker result base_revision is stale")
     if result.get("measurement_state") != "observed":
         raise DelegationEvidenceError("accepted worker result must be observed")
-    if result.get("stop_reason_id") not in allowed_stop_reasons:
-        raise DelegationEvidenceError("worker result stop_reason_id is unknown")
+    _enum(result.get("status"), set(RESULT_STATUS_BY_NODE.values()), "worker result.status")
+    _enum(result.get("stop_reason_id"), allowed_stop_reasons, "worker result.stop_reason_id")
+    context = _validate_worker_context(node, artifact_root)
+    context_digest = _sha256(result.get("input_context_packet_sha256"), "worker result.input_context_packet_sha256")
+    if context_digest != context["sha256"]:
+        raise DelegationEvidenceError("worker result input context digest disagrees with measured node context")
     if result.get("status") == "succeeded" and (
         result.get("scope_violation") != "none"
         or result.get("authorization_concern") != "none"
@@ -488,13 +545,9 @@ def validate_worker_result(
             "worker result reports a surface outside its execution node"
         )
     _strings(result.get("tools_used"), "worker result.tools_used")
-    validation = _strings(result.get("validation"), "worker result.validation")
-    if result.get("status") == "succeeded" and not validation:
-        raise DelegationEvidenceError(
-            "successful worker result requires validation evidence"
-        )
+    _validation_evidence(result.get("validation"), required=result.get("status") == "succeeded", label="successful worker result.validation")
     _sha256(result.get("subtree_sha256"), "worker result.subtree_sha256")
-    if result["subtree_sha256"] != _canonical_sha256(result, "subtree_sha256"):
+    if result["subtree_sha256"] != worker_result_sha256(result):
         raise DelegationEvidenceError("worker result subtree_sha256 is invalid")
     evidence_manifest = result.get("evidence_manifest")
     if not isinstance(evidence_manifest, list):
@@ -530,15 +583,14 @@ def validate_worker_result(
         if finding_id in finding_ids:
             raise DelegationEvidenceError("worker finding IDs must be unique")
         finding_ids.add(finding_id)
-        if finding.get("severity") not in {"blocking", "high", "medium", "low", "info"}:
-            raise DelegationEvidenceError(f"{label}.severity is invalid")
+        _enum(finding.get("severity"), {"blocking", "high", "medium", "low", "info"}, f"{label}.severity")
         _string(finding.get("summary"), f"{label}.summary")
         _string(finding.get("recommendation"), f"{label}.recommendation")
         owner_refs = set(_strings(finding.get("canonical_owner_refs"), f"{label}.canonical_owner_refs"))
         if not owner_refs <= set(node["canonical_owner_refs"]):
             raise DelegationEvidenceError("worker finding escapes assigned canonical owners")
         surface_refs = _strings(finding.get("surface_refs"), f"{label}.surface_refs")
-        if any(not _matches_surface(surface, node["surface_refs"]) for surface in surface_refs):
+        if any(not _selector_within(surface, node["surface_refs"]) for surface in surface_refs):
             raise DelegationEvidenceError("worker finding escapes assigned surfaces")
         refs = set(_strings(finding.get("evidence_refs"), f"{label}.evidence_refs"))
         if not refs <= evidence_paths:
@@ -568,23 +620,13 @@ def validate_single_read_only_receipt(
         },
         "single delegation receipt",
     )
-    if receipt.get("schema_version") != 1 or receipt.get("receipt_kind") != (
+    if receipt.get("schema_version") != 2 or receipt.get("receipt_kind") != (
         "alatyr-single-depth1-read-only-delegation"
     ):
         raise DelegationEvidenceError("single delegation receipt identity is invalid")
     for field in ["operation_id", "base_revision", "current_user_authorization"]:
         _string(receipt.get(field), f"single delegation receipt.{field}")
-    strategy = _string(
-        receipt.get("analysis_strategy_id"),
-        "single delegation receipt.analysis_strategy_id",
-    )
-    problem_model = receipt.get("problem_model_sha256")
-    if problem_model is not None:
-        _sha256(problem_model, "single delegation receipt.problem_model_sha256")
-    elif strategy != "direct-local":
-        raise DelegationEvidenceError(
-            "non-local strategy requires problem_model_sha256"
-        )
+    _validate_analysis_strategy(receipt.get("analysis_strategy_id"), receipt.get("problem_model_sha256"), "single delegation receipt")
     if receipt.get("policy_sha256") != _json_sha256(policy):
         raise DelegationEvidenceError("single delegation receipt policy digest is stale")
     if receipt.get("capability_sha256") != _json_sha256(capability):
@@ -593,7 +635,7 @@ def validate_single_read_only_receipt(
         raise DelegationEvidenceError("policy does not permit the lightweight receipt")
     _, stop_reasons, policy_limits = _validate_policy_limits(policy)
     context_mode = receipt.get("worker_context_mode")
-    if context_mode not in {"isolated-explicit", "inherited-measured"}:
+    if not isinstance(context_mode, str) or context_mode not in {"isolated-explicit", "inherited-measured"}:
         raise DelegationEvidenceError("single delegation receipt uses unsafe context inheritance")
     delegation = capability.get("subagent_delegation")
     if not isinstance(delegation, dict) or delegation.get("worker_context_mode") != context_mode:
@@ -617,6 +659,8 @@ def validate_single_read_only_receipt(
         raise DelegationEvidenceError("lightweight receipt forbids writes and retries")
     if packet.get("child_count") != 0 or packet.get("overlap_decision") != "disjoint":
         raise DelegationEvidenceError("lightweight receipt forbids children and overlap")
+    for field, expected in (("depth", 1), ("attempt", 0), ("child_count", 0)):
+        _integer(packet.get(field), f"single delegation receipt.packet.{field}", minimum=expected, maximum=expected)
     context = validate_artifact(
         packet.get("context_artifact"),
         artifact_root=artifact_root,
@@ -637,14 +681,15 @@ def validate_single_read_only_receipt(
         result,
         {
             "status", "raw_artifact", "accepted_summary_artifact", "findings",
-            "satisfied_proof_obligation_ids", "stop_reason_id",
+            "satisfied_proof_obligation_ids", "stop_reason_id", "validation",
         },
         "single delegation receipt.result",
     )
-    if result.get("status") not in {
+    if not isinstance(result.get("status"), str) or result.get("status") not in {
         "succeeded", "failed", "blocked", "cancelled", "requires-review", "rejected"
     }:
         raise DelegationEvidenceError("single delegation result status is invalid")
+    _validation_evidence(result.get("validation"), required=result["status"] == "succeeded", label="single delegation worker validation")
     raw = validate_artifact(
         result.get("raw_artifact"), artifact_root=artifact_root,
         label="single delegation raw result",
@@ -675,8 +720,7 @@ def validate_single_read_only_receipt(
     )
     if not satisfied <= obligations:
         raise DelegationEvidenceError("single delegation satisfies an unassigned obligation")
-    if result.get("stop_reason_id") not in stop_reasons:
-        raise DelegationEvidenceError("single delegation stop reason is unknown")
+    _enum(result.get("stop_reason_id"), stop_reasons, "single delegation stop reason")
     findings = result.get("findings")
     if not isinstance(findings, list):
         raise DelegationEvidenceError("single delegation findings must be a list")
@@ -696,14 +740,13 @@ def validate_single_read_only_receipt(
         if finding_id in finding_ids:
             raise DelegationEvidenceError("single delegation finding IDs must be unique")
         finding_ids.add(finding_id)
-        if finding.get("severity") not in {"blocking", "high", "medium", "low", "info"}:
-            raise DelegationEvidenceError(f"{label}.severity is invalid")
+        _enum(finding.get("severity"), {"blocking", "high", "medium", "low", "info"}, f"{label}.severity")
         _string(finding.get("summary"), f"{label}.summary")
         _string(finding.get("recommendation"), f"{label}.recommendation")
         if not set(_strings(finding.get("canonical_owner_refs"), f"{label}.owners")) <= owners:
             raise DelegationEvidenceError("single delegation finding escapes assigned owners")
         if any(
-            not _matches_surface(surface, surfaces)
+            not _selector_within(surface, surfaces)
             for surface in _strings(finding.get("surface_refs"), f"{label}.surfaces")
         ):
             raise DelegationEvidenceError("single delegation finding escapes assigned surfaces")
@@ -718,14 +761,16 @@ def validate_single_read_only_receipt(
         {"reviewed", "status", "validation", "residual_risk"},
         "single delegation primary convergence",
     )
-    if convergence.get("reviewed") is not True or convergence.get("status") not in {
+    if convergence.get("reviewed") is not True or not isinstance(convergence.get("status"), str) or convergence.get("status") not in {
         "accepted", "rejected", "blocked"
     }:
         raise DelegationEvidenceError("single delegation requires primary convergence")
-    _strings(convergence.get("validation"), "single delegation convergence validation")
+    _validation_evidence(convergence.get("validation"), required=convergence["status"] == "accepted", label="single delegation convergence validation")
     _string(convergence.get("residual_risk"), "single delegation convergence residual risk")
     if result.get("status") == "succeeded" and convergence.get("status") != "accepted":
         raise DelegationEvidenceError("successful single delegation was not accepted by primary")
+    if convergence["status"] == "accepted" and result["status"] != "succeeded":
+        raise DelegationEvidenceError("primary convergence cannot accept an unsuccessful worker")
     return receipt
 
 
@@ -785,7 +830,7 @@ def _validate_policy_limits(
         maximum=PORTABLE_MAX_DEPTH,
     )
     child_behavior = tree_policy.get("worker_child_behavior")
-    if child_behavior not in {"propose-only", "primary-preauthorized-read-only"}:
+    if not isinstance(child_behavior, str) or child_behavior not in {"propose-only", "primary-preauthorized-read-only"}:
         raise DelegationEvidenceError(
             "delegation policy worker_child_behavior is unresolved"
         )
@@ -887,7 +932,7 @@ def _validate_nodes(
         depth = _integer(
             node.get("depth"), f"execution node {node_id}.depth", maximum=hard_depth
         )
-        if node.get("status") not in NODE_STATUSES:
+        if not isinstance(node.get("status"), str) or node.get("status") not in NODE_STATUSES:
             raise DelegationEvidenceError(f"execution node {node_id} status is invalid")
         _integer(
             node.get("context_words"),
@@ -926,7 +971,7 @@ def _validate_nodes(
             "satisfied_proof_obligation_ids", "produced_evidence_ids",
         ]:
             _strings(node.get(field), f"execution node {node_id}.{field}")
-        if node.get("overlap_decision") not in {
+        if not isinstance(node.get("overlap_decision"), str) or node.get("overlap_decision") not in {
             "disjoint", "primary-reconciled-overlap", "rejected-overlap",
             "not-applicable",
         }:
@@ -938,6 +983,7 @@ def _validate_nodes(
                 f"execution node {node_id}.child_proposals must be a list"
             )
         if depth > 0:
+            _string(node.get("parent_node_id"), f"execution node {node_id}.parent_node_id")
             packet_id = _string(
                 node.get("packet_id"), f"execution node {node_id}.packet_id"
             )
@@ -976,12 +1022,12 @@ def _validate_nodes(
                 raise DelegationEvidenceError(
                     f"execution node {node_id} has no result_id"
                 )
-            if node.get("stop_reason_id") not in allowed_stop_reasons:
+            if not isinstance(node.get("stop_reason_id"), str) or node.get("stop_reason_id") not in allowed_stop_reasons:
                 raise DelegationEvidenceError(
                     f"execution node {node_id} stop_reason_id is unknown"
                 )
         elif depth == 0 and terminal:
-            if node.get("stop_reason_id") not in allowed_stop_reasons:
+            if not isinstance(node.get("stop_reason_id"), str) or node.get("stop_reason_id") not in allowed_stop_reasons:
                 raise DelegationEvidenceError(
                     "terminal root execution node needs a known stop reason"
                 )
@@ -1031,18 +1077,7 @@ def _validate_header_and_budget(
         "root_node_id", "analysis_strategy_id",
     ]:
         _string(tree.get(field), f"execution tree.{field}")
-    strategy_id = tree["analysis_strategy_id"]
-    if strategy_id not in PRIMARY_ANALYSIS_STRATEGIES:
-        raise DelegationEvidenceError(
-            "execution tree analysis_strategy_id is invalid"
-        )
-    problem_model_sha256 = tree.get("problem_model_sha256")
-    if strategy_id != "direct-local" and problem_model_sha256 is None:
-        raise DelegationEvidenceError(
-            "non-local execution strategy requires a problem-model digest"
-        )
-    if problem_model_sha256 is not None:
-        _sha256(problem_model_sha256, "execution tree.problem_model_sha256")
+    _validate_analysis_strategy(tree["analysis_strategy_id"], tree.get("problem_model_sha256"), "execution tree")
     policy_digest = _sha256(
         tree.get("policy_revision"), "execution tree.policy_revision"
     )
@@ -1167,10 +1202,11 @@ def _validate_topology(
     for edge in edge_rows:
         edge = _object(edge, "execution edge")
         _exact(edge, {"parent_node_id", "child_node_id", "edge_kind"}, "execution edge")
-        pair = (edge.get("parent_node_id"), edge.get("child_node_id"))
+        pair = (_string(edge.get("parent_node_id"), "execution edge.parent_node_id"),
+                _string(edge.get("child_node_id"), "execution edge.child_node_id"))
         if pair in edge_pairs or pair[1] not in nodes or pair[0] not in nodes:
             raise DelegationEvidenceError("execution edge is duplicate or unresolved")
-        if nodes[pair[1]].get("parent_node_id") != pair[0] or edge.get("edge_kind") not in EDGE_KINDS:
+        if nodes[pair[1]].get("parent_node_id") != pair[0] or not isinstance(edge.get("edge_kind"), str) or edge.get("edge_kind") not in EDGE_KINDS:
             raise DelegationEvidenceError("execution edge disagrees with topology")
         if nodes[pair[1]]["depth"] == 2 and edge.get("edge_kind") != "primary-envelope-dispatch":
             raise DelegationEvidenceError("depth-2 dispatch requires a branch envelope")
@@ -1185,6 +1221,14 @@ def _validate_topology(
     if edge_pairs != expected_edge_pairs:
         raise DelegationEvidenceError("execution edges do not cover the node topology")
     return root, children
+
+
+def _validate_worker_context(node: dict[str, Any], artifact_root: Path) -> dict[str, Any]:
+    context = validate_artifact(node.get("context_evidence"), artifact_root=artifact_root,
+        label=f"node {node['node_id']} context_evidence")
+    if context["word_count"] != node["context_words"]:
+        raise DelegationEvidenceError(f"node {node['node_id']} context_words does not match its artifact")
+    return context
 
 
 def _validate_result_artifacts(
@@ -1202,18 +1246,13 @@ def _validate_result_artifacts(
     for node in nodes.values():
         if node["depth"] == 0:
             continue
-        context_ref = validate_artifact(
-            node.get("context_evidence"),
-            artifact_root=artifact_root,
-            label=f"node {node['node_id']} context_evidence",
-        )
-        if context_ref["word_count"] != node["context_words"]:
-            raise DelegationEvidenceError(
-                f"node {node['node_id']} context_words does not match its artifact"
-            )
-        if context_ref["path"] in result_artifact_paths:
+        # Terminal contexts are measured once by validate_worker_result below.
+        context_ref = (_object(node.get("context_evidence"), "node context evidence")
+                       if node["status"] in TERMINAL_STATUSES else _validate_worker_context(node, artifact_root))
+        context_path = _string(context_ref.get("path"), "node context evidence.path")
+        if context_path in result_artifact_paths:
             raise DelegationEvidenceError("worker context artifacts must be unique")
-        result_artifact_paths.add(context_ref["path"])
+        result_artifact_paths.add(context_path)
     for node in nodes.values():
         if node["depth"] == 0 or node.get("status") not in TERMINAL_STATUSES:
             continue
@@ -1270,7 +1309,7 @@ def validate_execution_tree(
     *,
     artifact_root: Path,
 ) -> dict[str, Any]:
-    """Validate a resolved schema-2 execution tree and referenced artifacts."""
+    """Validate a resolved schema-3 execution tree and referenced artifacts."""
     (
         recorded_at,
         capability_evidence_sha256,
@@ -1315,6 +1354,17 @@ def validate_execution_tree(
                 )
 
     root, children = _validate_topology(tree, nodes, budget)
+    for node in nodes.values():
+        if any(not _selector_within(surface, [surface]) for surface in node["surface_refs"]):
+            raise DelegationEvidenceError("execution node surface selector is invalid")
+        ancestor_id = node["parent_node_id"]
+        while ancestor_id is not None:
+            ancestor = nodes[ancestor_id]
+            if (ancestor["depth"] > 0 or ancestor["surface_refs"]) and any(
+                not _selector_within(surface, ancestor["surface_refs"]) for surface in node["surface_refs"]
+            ):
+                raise DelegationEvidenceError("execution node surface escapes ancestor scope")
+            ancestor_id = ancestor["parent_node_id"]
 
     result_words, primary_summary_words, result_by_id = _validate_result_artifacts(
         tree,
@@ -1395,6 +1445,11 @@ def validate_execution_tree(
             if sum(item["attempt"] for item in branch_children) > envelope["max_retries"]:
                 raise DelegationEvidenceError("branch envelope retry budget exceeded")
             allowed_surfaces = envelope["allowed_surface_refs"]
+            if any(not _selector_within(surface, node["surface_refs"]) for surface in allowed_surfaces):
+                raise DelegationEvidenceError("branch envelope surface escapes coordinator scope")
+            baseline = envelope["context_packet_sha256"]
+            if baseline is not None and baseline != node["context_evidence"]["sha256"]:
+                raise DelegationEvidenceError("branch envelope context digest disagrees with coordinator context")
             observed_validation: set[str] = set()
             for child in branch_children:
                 if child["allowed_actions"] != ["inspect"] or child["write_scope"] != "none":
@@ -1408,7 +1463,7 @@ def validate_execution_tree(
                         "recursive child semantic scope escapes branch envelope"
                     )
                 if any(
-                    not _matches_surface(surface, allowed_surfaces)
+                    not _selector_within(surface, allowed_surfaces)
                     for surface in child["surface_refs"]
                 ):
                     raise DelegationEvidenceError(
@@ -1424,10 +1479,6 @@ def validate_execution_tree(
                 ):
                     raise DelegationEvidenceError(
                         "recursive child reports a tool outside its branch envelope"
-                    )
-                if child_result["input_context_packet_sha256"] != envelope["context_packet_sha256"]:
-                    raise DelegationEvidenceError(
-                        "recursive child input context digest disagrees with branch envelope"
                     )
                 if not set(child["proof_obligation_ids"]) <= set(
                     envelope["proof_obligation_ids"]
@@ -1602,9 +1653,9 @@ def _validate_budget_and_convergence(
 
     convergence = _object(tree.get("primary_convergence"), "primary convergence")
     _exact(convergence, CONVERGENCE_FIELDS, "primary convergence")
-    status = convergence.get("status")
-    if status not in {"pending", "completed", "blocked", "cancelled"}:
-        raise DelegationEvidenceError("primary convergence status is invalid")
+    status = _enum(convergence.get("status"), {"pending", "completed", "blocked", "cancelled"}, "primary convergence.status")
+    for field in ("combined_validation", "logical_integrity_review", "residual_risk"):
+        _string(convergence.get(field), f"primary convergence.{field}")
     required_acceptance = set(
         _strings(
             convergence.get("required_acceptance_ids"),
@@ -1649,7 +1700,7 @@ def _validate_budget_and_convergence(
     )
     final_stop_reason = convergence.get("final_stop_reason_id")
     if status in {"completed", "blocked", "cancelled"}:
-        if final_stop_reason not in allowed_stop_reasons:
+        if not isinstance(final_stop_reason, str) or final_stop_reason not in allowed_stop_reasons:
             raise DelegationEvidenceError(
                 "terminal primary convergence needs a known final stop reason"
             )

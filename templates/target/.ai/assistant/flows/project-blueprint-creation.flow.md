@@ -17,6 +17,8 @@ Replace placeholders with target facts before accepting installation.
 
 ## Steps
 
+### Analyze
+
 1. Load `AGENTS.md`, `.ai/README.md`, the router-selected framework owner or
    semantic shard, target contours, and the named target source-of-truth docs.
 2. Identify blueprint scope and non-goals.
@@ -27,15 +29,28 @@ Replace placeholders with target facts before accepting installation.
    that surface.
 4. Classify facts by owner: framework, project, repository adapter, bridge,
    skill/prompt, or generated artifact.
-5. Draft or repair only facts supported by target evidence. Link concise human
+   Invoke only [Analyze](logical-integrity-review.flow.md#analyze).
+
+### Plan
+
+5. Propose only facts supported by target evidence, without writing project
+   files or changing accepted architecture. Link concise human
    orientation text to canonical owners instead of duplicating their policy.
-6. Mark missing or contradictory facts explicitly and update each material
-   discovery finding with its projected, rejected, deferred, or not-applicable
-   disposition.
-7. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
+6. Mark missing or contradictory facts explicitly and propose each material
+   discovery finding's projected, rejected, deferred, or not-applicable disposition.
+
+### Apply
+
+7. Verify current modification authorization and applicable protected approval,
+   then invoke only [Apply](logical-integrity-review.flow.md#apply).
 8. Update blueprint or equivalent docs, project contour, flow docs, diagrams,
    gates, prompts, skills, or bridge files only when their owned facts change.
+
+### Verify
+
 9. Run target validation that exists. Do not invent commands.
+   Invoke only [Verify](logical-integrity-review.flow.md#verify); required
+   repairs return to authorized Apply and invalidate affected checks.
 10. Report final evidence, unresolved facts, skipped checks, approvals, and
     residual risk.
 

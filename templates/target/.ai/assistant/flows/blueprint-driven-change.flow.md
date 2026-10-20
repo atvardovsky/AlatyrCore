@@ -23,8 +23,7 @@ Replace placeholders with target facts before accepting installation.
 2. Use `.ai/assistant/context-router.json` to load the smallest matching
    profile and project-area overlays plus the target source-of-truth docs.
    Activate the `large-or-resumable` scale overlay when its conditions apply.
-3. Invoke only [Analyze](logical-integrity-review.flow.md#analyze) from
-   `.ai/assistant/flows/logical-integrity-review.flow.md`. Reuse its changed
+3. Invoke only [Analyze](logical-integrity-review.flow.md#analyze). Reuse its changed
    fact IDs, canonical owners, re-derived invariants, review-item clusters and
    registry/consistency-map impact closure. Do not run repair or finalization.
 
@@ -35,9 +34,11 @@ Replace placeholders with target facts before accepting installation.
 5. Prepare an implementation plan that names affected boundaries, tests,
    contract artifacts, diagrams, visual validation, approvals,
    machine-readable scope records, and validation.
-   Apply `.ai/assistant/flows/change-package.flow.md` when coherent material
-   outcome, semantic multi-surface approval, audit, or publishable provenance
-   needs pass its activation gate.
+   Invoke only [package planning](change-package.flow.md#plan) when the module
+   is enabled and coherent outcome, semantic approval, audit, or provenance
+   needs pass its activation gate. For large or resumable work, use
+   [orchestration analysis](large-task-orchestration.flow.md#analyze) and
+   [planning](large-task-orchestration.flow.md#plan) without persisting a packet.
 
 ### Apply
 
@@ -45,6 +46,8 @@ Replace placeholders with target facts before accepting installation.
    before writing. Commit, publish and live-external actions require separate
    current-scope authorization. Update accepted blueprint and flow owners before
    implementation depends on the new facts, within this approved repair set.
+   Initialize an activated package through
+   [Initialize](change-package.flow.md#initialize), not its entire lifecycle.
 7. Evaluate the target test-first recommendation gate. When an enabled required
    trigger applies, or a recommendation is accepted, run
    `.ai/assistant/flows/test-first-change.flow.md` and preserve valid
@@ -55,6 +58,16 @@ Replace placeholders with target facts before accepting installation.
 8. Invoke [Apply](logical-integrity-review.flow.md#apply) for the smallest
    coherent implementation and companion repair set. This owns applicable
    contract-artifact and visual-validation gates; retain their results once.
+   Record material package discoveries only through
+   [Material Updates](change-package.flow.md#material-updates) when active.
+
+After implementation and local checks, obtain global reconciliation through
+[integrity verification](logical-integrity-review.flow.md#verify). Required
+repairs remain in authorized Apply. As outer coordinator, finalize an active
+package once through [Finalize](change-package.flow.md#finalize). Without a
+package, perform authorized support-state synchronization last. Preserve the
+canonical finalizer transaction; nested orchestration returns evidence and
+does not run a competing finalizer. Refresh final-result validation afterward.
 
 ### Verify
 
@@ -66,15 +79,11 @@ Replace placeholders with target facts before accepting installation.
 10. When approval was used, compare the complete Git change set with the
     explicitly selected machine-readable approval scope and fail on uncovered
     or excluded paths.
-11. Regenerate support state last when authorized managed support changed, then
-    refresh validation of the final result. A workstream-local pass is not the
+11. Verify support state and validation bind the final result; stale state
+    returns to authorized Apply. Invoke [package verification](change-package.flow.md#verify)
+    only when active. A workstream-local pass is not the
     final consistency check across the combined changed surfaces.
 12. Report final evidence, skipped checks, approvals, and residual risk.
-
-For large or resumable changes, use
-`.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
-from `.ai/assistant/templates/large-task-operation-packet.md`. Complete one
-global logical integrity review after workstream-local validation.
 
 ## Approval Gate
 

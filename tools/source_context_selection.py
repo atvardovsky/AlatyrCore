@@ -6,19 +6,25 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
 
 from target_validation_support import is_target_relative_path
+from path_spec import logical_path
 
 ROOT = Path(__file__).resolve().parents[1]
 BOOTSTRAP = "tools/source-context/index.json"
+SOURCE_CONTEXT_BUDGET_FIELDS = {
+    "max_initial_words", "max_required_files", "max_required_words",
+    "max_resolved_characters", "max_resolved_files", "max_resolved_words",
+    "reserved_characters", "reserved_files", "reserved_words",
+}
 
 
 def contained_source_path(root: Path, relpath: str) -> Path:
-    if not is_target_relative_path(relpath):
-        raise ValueError("source path must be an exact repository-relative path")
+    logical_path(relpath)
     path = root / relpath
     for part in (path, *path.parents):
         if part == root:
@@ -30,8 +36,31 @@ def contained_source_path(root: Path, relpath: str) -> Path:
     return path
 
 
+def read_source_bytes(root: Path, relpath: str) -> bytes:
+    path = contained_source_path(root, relpath)
+    if not path.is_file():
+        raise ValueError(f"source must be a regular file: {relpath}")
+    return path.read_bytes()
+
+
+def read_source_object(root: Path, relpath: str) -> dict[str, Any]:
+    return source_json(read_source_bytes(root, relpath).decode("utf-8"))
+
+
+def inspect_source_outputs(root: Path, outputs: dict[str, str]) -> list[str]:
+    """Preflight every output before any content-dependent decision or write."""
+    changed = []
+    for name, content in outputs.items():
+        path = contained_source_path(root, name)
+        if path.exists() and not path.is_file():
+            raise ValueError(f"source output must be a regular file: {name}")
+        if not path.exists() or path.read_bytes() != content.encode("utf-8"):
+            changed.append(name)
+    return changed
+
+
 def encoded(value: Any) -> str:
-    return json.dumps(value, ensure_ascii=True, sort_keys=True, indent=2) + "\n"
+    return json.dumps(value, ensure_ascii=True, sort_keys=True, indent=2, allow_nan=False) + "\n"
 
 
 def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -46,10 +75,45 @@ def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 def source_json(text: str) -> dict[str, Any]:
     def invalid_constant(value: str) -> None:
         raise ValueError(f"invalid source JSON constant: {value}")
-    data = json.loads(text, object_pairs_hook=unique_object, parse_constant=invalid_constant)
+    def finite_float(value: str) -> float:
+        number = float(value)
+        if not math.isfinite(number):
+            raise ValueError("source JSON number is not finite")
+        return number
+    try:
+        data = json.loads(text, object_pairs_hook=unique_object, parse_constant=invalid_constant, parse_float=finite_float)
+    except RecursionError as exc:
+        raise ValueError("source JSON nesting exceeds the decoder limit") from exc
     if not isinstance(data, dict):
         raise ValueError("indexed source must contain an object")
     return data
+
+
+def evaluate_source_budget(budget: Any, *, required_files: int, required_words: int,
+                           initial_words: int, resolved: dict[str, int]) -> dict[str, Any]:
+    """Shared arithmetic only; callers retain their distinct measurement scopes."""
+    result = {"failures": [], "remaining_capacity": {}, "reserved_capacity": {}, "reserved_capacity_preserved": False}
+    failures = result["failures"]
+    if not isinstance(budget, dict) or set(budget) != SOURCE_CONTEXT_BUDGET_FIELDS or any(
+        type(budget[field]) is not int or budget[field] < 0 for field in SOURCE_CONTEXT_BUDGET_FIELDS
+    ):
+        failures.append("has invalid context budget; limits must be resolved nonnegative integers")
+        return result
+    for dimension in ("files", "words", "characters"):
+        maximum, reserve = budget[f"max_resolved_{dimension}"], budget[f"reserved_{dimension}"]
+        if maximum <= 0 or reserve <= 0 or reserve >= maximum:
+            failures.append(f"has invalid resolved {dimension} reserve")
+        result["reserved_capacity"][dimension] = reserve
+        result["remaining_capacity"][dimension] = maximum - resolved[f"resolved_{dimension}"]
+        if result["remaining_capacity"][dimension] < reserve:
+            failures.append(f"resolved context exceeds its {dimension} budget or reserved headroom")
+    result["reserved_capacity_preserved"] = not failures
+    for used, limit, name in ((required_files, "max_required_files", "required-file"),
+                              (required_words, "max_required_words", "required-word"),
+                              (initial_words, "max_initial_words", "initial-word")):
+        if used > budget[limit]:
+            failures.append(f"exceeds {name} budget")
+    return result
 
 
 def heading_id(text: str) -> str:
@@ -80,7 +144,7 @@ def markdown_sections(text: str) -> dict[str, list[str]]:
 
 
 def selectable_values(path: Path) -> list[str]:
-    text = path.read_text(encoding="utf-8")
+    text = read_source_bytes(ROOT, path.relative_to(ROOT).as_posix()).decode("utf-8")
     if path.suffix == ".md":
         return [name for name, sections in markdown_sections(text).items() if len(sections) == 1]
     data = source_json(text)
@@ -108,7 +172,7 @@ def project_file(root: Path, relpath: str, values: list[str]) -> dict[str, Any]:
     if not is_target_relative_path(relpath) or not isinstance(values, list) or not values or any(not isinstance(v, str) or not v for v in values):
         raise ValueError("source selection requires a safe path and exact nonempty selectors")
     path = contained_source_path(root, relpath)
-    raw = path.read_bytes()
+    raw = read_source_bytes(root, relpath)
     text = raw.decode("utf-8")
     values = list(dict.fromkeys(values))
     if path.suffix == ".md":
@@ -173,7 +237,7 @@ def project_file(root: Path, relpath: str, values: list[str]) -> dict[str, Any]:
 
 
 def bootstrap_outputs(root: Path = ROOT) -> dict[str, str]:
-    router = source_json((root / "tools/source_context_router.json").read_text(encoding="utf-8"))
+    router = read_source_object(root, "tools/source_context_router.json")
     if type(router.get("schema_version")) is not int or router["schema_version"] != 1 or router.get("router_kind") != "alatyr-source-context-router":
         raise ValueError("source router schema or kind is invalid")
     profiles = router.get("profiles")
@@ -207,6 +271,7 @@ def compact_plan(plan: dict[str, Any]) -> dict[str, Any]:
         target["reasons"] = list(dict.fromkeys([*target["reasons"], *item["reason"]]))
         if "content_ref" in item:
             target["content_ref"] = item["content_ref"]
+    unresolved = context["context_budget"]["resolved"]["unresolved_paths"]
     return {
         "schema_version": 1, "report_kind": "alatyr-source-plan-agent-view",
         "full_receipt_sha256": hashlib.sha256(encoded(plan).encode()).hexdigest(),
@@ -215,6 +280,9 @@ def compact_plan(plan: dict[str, Any]) -> dict[str, Any]:
         "context_readiness": context["readiness"], "selected_sources": list(sources.values()),
         "context_projections": context["context_projections"], "owner_fallbacks": context["owner_fallbacks"],
         "unrouted_requested_paths": context["unrouted_requested_paths"],
+        "unresolved_paths": unresolved[:32],
+        "unresolved_path_count": len(unresolved),
+        "omitted_unresolved_path_count": max(0, len(unresolved) - 32),
         "unresolved_routes": [item for item in context["omitted_candidates"]
                               if item.get("unresolved_selectors") or item.get("unresolved_owner_rule_ids") or item.get("unresolved_paths")],
         "context_budget": {key: value for key, value in context["context_budget"].items() if key not in {"planned", "resolved"}},
@@ -234,7 +302,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         outputs = bootstrap_outputs(ROOT)
-        changed = [name for name, text in outputs.items() if not (ROOT / name).is_file() or (ROOT / name).read_bytes() != text.encode("utf-8")]
+        changed = inspect_source_outputs(ROOT, outputs)
         if args.write:
             for name in changed:
                 path = contained_source_path(ROOT, name)

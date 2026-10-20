@@ -999,8 +999,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 102,
-      "content_digest": "sha256:e4618e36c0257be746ef15edf680c90cca3fdf4673b8df813fca1418bc0bee3e"
+      "estimated_words": 104,
+      "content_digest": "sha256:bd7cce0a97ebfe776b6e9e217d183169f52f9cca054f16f1c176108a207b3bf4"
     },
     {
       "id": "assistant.content.templates-small-task-evidence-md",
@@ -1344,7 +1344,7 @@
         "ALATYR-DELEGATION-001"
       ],
       "estimated_words": 102,
-      "content_digest": "sha256:38bd14083f72591ca185adb61fc43149449e2b9748396ce2836a48e33e72cbd2"
+      "content_digest": "sha256:dc30b21e6ff07dd38fde140b28e051392ed579fda90cde9d565a24239c3f7c9a"
     },
     {
       "id": "assistant.content.templates-worker-result-md",

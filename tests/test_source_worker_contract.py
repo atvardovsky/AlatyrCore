@@ -109,7 +109,7 @@ def canonical_value_sha256(value: object) -> str:
 def measured_artifact(root: Path, relpath: str, text: str) -> dict[str, object]:
     path = root / relpath
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    path.write_bytes(text.encode("utf-8"))
     payload = path.read_bytes()
     return {
         "path": relpath,
@@ -143,7 +143,7 @@ def write_artifact(root: Path, relpath: str, text: str) -> dict[str, object]:
 
     path = root / relpath
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    path.write_bytes(text.encode("utf-8"))
     payload = path.read_bytes()
     return {
         "path": relpath,
@@ -154,6 +154,7 @@ def write_artifact(root: Path, relpath: str, text: str) -> dict[str, object]:
 
 
 def recursive_execution_fixture(root: Path) -> dict[str, object]:
+    contexts = {}
     capability = write_artifact(
         root,
         "evidence/capability.json",
@@ -194,6 +195,10 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
     envelope_path.write_text(json.dumps(envelope, indent=2) + "\n", encoding="utf-8")
 
     def worker_result(node_id: str, depth: int, parent_packet: str | None, child_ids: list[str], child_digests: list[str]) -> tuple[dict[str, object], dict[str, object]]:
+        contexts[node_id] = write_artifact(
+            root, f"evidence/{node_id}-context.md",
+            ("context " * (10 if depth == 1 else 20)).strip() + "\n",
+        )
         raw = write_artifact(root, f"evidence/{node_id}-raw.md", f"raw finding for {node_id}\n")
         summary = write_artifact(root, f"evidence/{node_id}-summary.md", f"summary {node_id}\n")
         result = {
@@ -207,7 +212,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "base_revision": "base-revision",
             "status": "succeeded",
             "measurement_state": "observed",
-            "input_context_packet_sha256": None,
+            "input_context_packet_sha256": contexts[node_id]["sha256"],
             "raw_payload": raw,
             "accepted_summary": summary,
             "summary_covers_result_ids": child_ids,
@@ -290,11 +295,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         is_root = depth == 0
         context_evidence = None
         if not is_root:
-            context_evidence = write_artifact(
-                root,
-                f"evidence/{node_id}-context.md",
-                ("context " * context_words).strip() + "\n",
-            )
+            context_evidence = contexts[node_id]
         return {
             "node_id": node_id,
             "parent_node_id": parent,
@@ -318,7 +319,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "changed_fact_ids": [],
             "proof_obligation_ids": [] if is_root else ["obligation-child"],
             "canonical_owner_refs": ["tools/source_worker_contract.py"],
-            "surface_refs": ["tools/source_worker_contract.py"],
+            "surface_refs": ["tools/source_worker_contract.py"] if depth == 2 else ["tools/**"],
             "relationship_refs": [],
             "allowed_actions": ["inspect"],
             "write_scope": "none",
@@ -437,7 +438,7 @@ class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
             "isolated-explicit"
         )
         receipt = {
-            "schema_version": 1,
+            "schema_version": 2,
             "receipt_kind": "alatyr-single-depth1-read-only-delegation",
             "operation_id": "operation-1",
             "base_revision": "base-1",
@@ -465,6 +466,7 @@ class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
             },
             "result": {
                 "status": "succeeded",
+                "validation": ["worker inspected the assigned evidence"],
                 "raw_artifact": measured_artifact(
                     root, "raw.txt", "bounded evidence result\n"
                 ),

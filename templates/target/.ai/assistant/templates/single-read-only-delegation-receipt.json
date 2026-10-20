@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "receipt_kind": "alatyr-single-depth1-read-only-delegation",
   "operation_id": "{OPERATION_ID}",
   "base_revision": "{BASE_REVISION}",
@@ -30,6 +30,7 @@
   },
   "result": {
     "status": "{SUCCEEDED_FAILED_BLOCKED_CANCELLED_REQUIRES_REVIEW_OR_REJECTED}",
+    "validation": ["{WORKER_VALIDATION_RESULT_OR_NOT_RUN_WITH_REASON}"],
     "raw_artifact": {
       "path": "{TARGET_RELATIVE_RAW_RESULT_PATH}",
       "word_count": 0,

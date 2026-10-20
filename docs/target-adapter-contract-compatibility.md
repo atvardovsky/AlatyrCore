@@ -81,9 +81,9 @@ Supported versions: `7`.
 Migration-limited versions: none.
 
 Artifact: `single-read-only-receipt`
-Current version: `1`.
-Supported versions: `1`.
-Migration-limited versions: none.
+Current version: `2`.
+Supported versions: `1`, `2`.
+Migration-limited versions: `1`.
 
 Artifact: `worker-result`
 Current version: `3`.

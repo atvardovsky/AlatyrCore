@@ -71,6 +71,10 @@ class CharacterBudgetTests(unittest.TestCase):
                 sibling_chars = tree["nodes"][2]["context_evidence"]["character_count"]
                 node["context_evidence"] = measured_artifact(root, "dense-context.txt", "x" * (32000 * 12 - sibling_chars + delta))
                 node["context_words"] = 1
+                result = json.loads((root / node["result_evidence"]["path"]).read_text())
+                result["input_context_packet_sha256"] = node["context_evidence"]["sha256"]
+                result["subtree_sha256"] = fixtures.canonical_digest(result, "subtree_sha256")
+                node["result_evidence"] = measured_artifact(root, node["result_evidence"]["path"], json.dumps(result))
                 tree["aggregate_budget"]["used_context_words"] = 1 + tree["nodes"][2]["context_words"]
                 if delta > 0:
                     with self.assertRaisesRegex(ValueError, "aggregate worker context.*character"):

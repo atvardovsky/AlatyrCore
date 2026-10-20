@@ -14,7 +14,11 @@ from pathlib import Path
 from typing import Any
 
 from path_spec import PathDialect, matches_any
-from source_context_selection import BOOTSTRAP, bootstrap_outputs, compact_plan, contained_source_path, project_file
+from source_context_selection import (
+    BOOTSTRAP, SOURCE_CONTEXT_BUDGET_FIELDS, bootstrap_outputs, compact_plan,
+    contained_source_path, evaluate_source_budget, inspect_source_outputs,
+    project_file, read_source_bytes, read_source_object,
+)
 
 from check_all import (
     SelectionResult,
@@ -56,17 +60,6 @@ SOURCE_CONDITIONAL_REQUIRED_FIELDS = {
     "path_or_registry_query",
     "when",
 }
-SOURCE_CONTEXT_BUDGET_FIELDS = {
-    "max_initial_words",
-    "max_required_files",
-    "max_required_words",
-    "max_resolved_characters",
-    "max_resolved_files",
-    "max_resolved_words",
-    "reserved_characters",
-    "reserved_files",
-    "reserved_words",
-}
 _INDEXED_QUERY = re.compile(
     r"^(?P<path>[^#]+)#selector=(?P<selector>[a-z][a-z0-9_]*)$"
 )
@@ -74,7 +67,7 @@ _SELECTOR_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 
 
 def _load_source_router() -> dict[str, Any]:
-    router = json.loads(SOURCE_ROUTER.read_text(encoding="utf-8"))
+    router = read_source_object(ROOT, SOURCE_ROUTER.relative_to(ROOT).as_posix())
     if not isinstance(router, dict) or not isinstance(router.get("profiles"), dict):
         raise ValueError("source context router must define profiles")
     return router
@@ -141,10 +134,8 @@ def _canonical_owner_paths(
 ) -> tuple[list[str], list[str]]:
     rule_ids = selector_values if owner_rule_id.startswith("$") else [owner_rule_id]
     try:
-        registry = json.loads(
-            (root / "framework" / "rule-registry.json").read_text(encoding="utf-8")
-        )
-    except (OSError, UnicodeError, json.JSONDecodeError):
+        registry = read_source_object(root, "framework/rule-registry.json")
+    except (OSError, UnicodeError, ValueError, RecursionError):
         return [], rule_ids
     rules = registry.get("rules") if isinstance(registry, dict) else None
     if not isinstance(rules, list):
@@ -214,6 +205,8 @@ def resolve_source_conditionals(
             raise ValueError(
                 f"source conditional_context[{index}] has unknown resolver {resolver}"
             )
+        if "owner_rule_id" in entry and (not isinstance(entry["owner_rule_id"], str) or not entry["owner_rule_id"].strip()):
+            raise ValueError(f"source conditional_context[{index}] owner_rule_id must be a non-empty string")
 
         selector_values: list[str] = []
         candidate_paths: list[str] = []
@@ -269,6 +262,7 @@ def resolve_source_conditionals(
         owner_rule_id = entry.get("owner_rule_id")
         if owner_rule_id is not None:
             evidence["owner_rule_id"] = owner_rule_id
+            evidence["owner_registry"] = "framework/rule-registry.json"
         unresolved_owner_rule_ids: list[str] = []
         if (
             candidate_paths
@@ -329,6 +323,11 @@ def build_source_profile_context(
     profile = profiles.get(source_profile)
     if not isinstance(profile, dict):
         raise ValueError(f"unknown source profile: {source_profile}")
+    for label, value in (("preloaded_context", router.get("preloaded_context")),
+                         ("bootstrap_context", router.get("bootstrap_context")),
+                         ("required_context", profile.get("required_context"))):
+        if not isinstance(value, list) or any(not isinstance(path, str) or not path.strip() for path in value):
+            raise ValueError(f"source {label} must be a list of non-empty paths")
     if selector_values is not None and (not isinstance(selector_values, dict) or any(
         not isinstance(key, str) or not _SELECTOR_NAME.fullmatch(key) or not isinstance(values, list)
         or any(not isinstance(value, str) or not value.strip() for value in values)
@@ -342,8 +341,8 @@ def build_source_profile_context(
         *profile.get("required_context", []),
     ]
     required_context = profile.get("required_context", [])
-    required_measurement = measure_source_context(required_context)
-    initial_measurement = measure_source_context(required)
+    required_measurement = measure_source_context(required_context, root=ROOT)
+    initial_measurement = measure_source_context(required, root=ROOT)
     selectors = {
         "changed_paths": sorted(changed_paths or []),
         "check_ids": sorted(check_id for check_id, detail in (selection_details or {}).items()
@@ -351,7 +350,7 @@ def build_source_profile_context(
         **(selector_values or {}),
     }
     selected_conditionals, omitted_conditionals = resolve_source_conditionals(
-        profile.get("conditional_context", []), selectors
+        profile.get("conditional_context", []), selectors, root=ROOT
     )
     conditional_paths = [
         path
@@ -370,26 +369,12 @@ def build_source_profile_context(
     views = {path: project_file(ROOT, path, values) for path, values in projection_values.items()
              if path not in required and path not in whole_owners}
     projected_content = {path: view["content"] for path, view in views.items()}
-    planned_measurement = measure_source_context([*required, *conditional_paths], projections=projected_content)
-    budget = profile.get("context_budget", {})
-    reserved_capacity = {
-        "files": budget.get("reserved_files"),
-        "words": budget.get("reserved_words"),
-        "characters": budget.get("reserved_characters"),
-    }
-    remaining_capacity = {
-        "files": budget.get("max_resolved_files", 0)
-        - planned_measurement["resolved_files"],
-        "words": budget.get("max_resolved_words", 0)
-        - planned_measurement["resolved_words"],
-        "characters": budget.get("max_resolved_characters", 0)
-        - planned_measurement["resolved_characters"],
-    }
-    reserved_capacity_preserved = all(
-        isinstance(reserved_capacity[key], int)
-        and remaining_capacity[key] >= reserved_capacity[key]
-        for key in reserved_capacity
-    )
+    planned_measurement = measure_source_context([*required, *conditional_paths], root=ROOT, projections=projected_content)
+    budget = profile.get("context_budget")
+    evaluation = evaluate_source_budget(budget, required_files=len(required_context),
+        required_words=required_measurement["resolved_words"], initial_words=initial_measurement["resolved_words"],
+        resolved=planned_measurement)
+    budget = budget if isinstance(budget, dict) else {}
     result = {
         "source_profile": source_profile,
         "preloaded_context": router.get("preloaded_context", []),
@@ -443,17 +428,16 @@ def build_source_profile_context(
                 "paths": planned_measurement["resolved_paths"],
                 "unresolved_paths": planned_measurement["unresolved_paths"],
             },
-            "remaining_capacity": remaining_capacity,
-            "reserved_capacity": reserved_capacity,
-            "reserved_capacity_preserved": reserved_capacity_preserved,
+            "remaining_capacity": evaluation["remaining_capacity"],
+            "reserved_capacity": evaluation["reserved_capacity"],
+            "reserved_capacity_preserved": evaluation["reserved_capacity_preserved"],
         },
     }
-    reasons = []
-    for path, expected in bootstrap_outputs(ROOT).items():
-        if path in {BOOTSTRAP, f"tools/source-context/profiles/{source_profile}.json"} and (
-            not (ROOT / path).is_file() or (ROOT / path).read_bytes() != expected.encode("utf-8")
-        ):
-            reasons.append(f"stale source routing projection: {path}")
+    reasons = list(evaluation["failures"])
+    outputs = {path: content for path, content in bootstrap_outputs(ROOT).items()
+               if path in {BOOTSTRAP, f"tools/source-context/profiles/{source_profile}.json"}}
+    for path in inspect_source_outputs(ROOT, outputs):
+        reasons.append(f"stale source routing projection: {path}")
     if planned_measurement["unresolved_paths"]:
         reasons.append("required or selected source paths are unavailable")
     if any(item.get("unresolved_selectors") or item.get("unresolved_owner_rule_ids") or item.get("unresolved_paths") for item in omitted_conditionals):
@@ -463,10 +447,6 @@ def build_source_profile_context(
     if unrouted_requests:
         reasons.append("requested paths require another source route: " + ", ".join(unrouted_requests))
     result["unrouted_requested_paths"] = unrouted_requests
-    if initial_measurement["resolved_words"] > budget.get("max_initial_words", 0):
-        reasons.append("initial context exceeds its word limit")
-    if not reserved_capacity_preserved:
-        reasons.append("resolved context exceeds its budget or reserved headroom")
     result["readiness"] = {"status": "needs-expansion" if reasons else "ready", "reasons": reasons,
                            "authority": "planning only; no action or acceptance authorization"}
     for item in result["selected_items"]:
@@ -628,10 +608,9 @@ def _packet_context_words(packet: dict[str, Any]) -> int:
     for relpath in packet.get("bounded_context", []):
         if not isinstance(relpath, str):
             continue
-        path = ROOT / relpath
         try:
-            words += len(path.read_text(encoding="utf-8").split())
-        except OSError:
+            words += len(read_source_bytes(ROOT, relpath).decode("utf-8").split())
+        except (OSError, ValueError, UnicodeError):
             continue
     return words
 

@@ -40,9 +40,9 @@ check exposes work, then refresh the affected verification evidence.
    build a compact manual closure from the re-derived invariants and record
    unknown relationships.
 6. Treat hashes and graph traversal as routing evidence, not semantic proof.
-   Record newly observed relationships in
-   `.ai/project/consistency/relationship-candidates.json`; do not traverse them
-   as accepted until the target decision owner records that disposition.
+   Propose newly observed relationships in the response or allowed transient
+   plan without writing project files. Do not traverse proposals as accepted
+   until the target decision owner records that disposition.
 7. Map each changed fact to target contracts:
    - business/domain rules
    - use cases or workflows
@@ -63,6 +63,9 @@ check exposes work, then refresh the affected verification evidence.
 10. Repair the smallest coherent set of files that preserves the re-derived
    invariants across all related review items. Include authorized documentation
    sync and triggered engineering-evidence capture in this same repair set.
+   Persist authorized relationship candidates in
+   `.ai/project/consistency/relationship-candidates.json` only within current
+   modification authorization; persistence does not accept the relationship.
 11. Apply `.ai/assistant/gates/contract-artifacts.md` when the changed fact
     crosses a public or generated contract. Apply
     `.ai/assistant/gates/visual-validation.md` when visual, UI, rendered

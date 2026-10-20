@@ -527,12 +527,14 @@ saturation, normalized stop reasons, measured hash-bound results, compact
 accepted summaries, resumable checkpoints, and primary convergence for
 target-verified native workers, external dispatchers, and suggestion-only
 handoff; enforce word limits and their 12-times character ceilings in both
-evidence tiers and during preparation; permit inspect-only depth-2 dispatch
-only inside an immutable primary-issued branch envelope and otherwise require
-child proposals; keep descendant raw evidence lazy but reviewable; keep
-provider-native definitions as thin target bindings; preserve context, action,
-tool, write, privacy, validation, model, runtime-capability, and concurrency
-boundaries; and fall back without unsupported quality, latency, or cost claims.
+evidence tiers and during preparation; bind delivered input separately from
+parent context, prove selector narrowing, and retain separate worker/primary
+validation; permit inspect-only depth-2 dispatch only inside an immutable
+primary-issued branch envelope and otherwise require child proposals; keep
+descendant raw evidence lazy but reviewable; keep provider-native definitions
+as thin target bindings; preserve context, action, tool, write, privacy,
+validation, model, runtime-capability, and concurrency boundaries; and fall
+back without unsupported quality, latency, or cost claims.
 Applies to: delegated execution, parallel workstreams, fast focused coding,
 large tasks.
 Enforcement: required when module enabled or delegated execution is attempted.

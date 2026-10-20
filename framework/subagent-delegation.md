@@ -115,6 +115,12 @@ and result artifacts, constrain findings to assigned owners, surfaces, and
 proof obligations, and require primary convergence. A lightweight receipt is
 an evidence optimization, not a weaker authorization or review path.
 
+Both tiers use the same supported analysis strategies and model-digest rules.
+Schema-2 lightweight receipts record worker `result.validation` separately
+from primary convergence validation: success requires worker evidence and
+acceptance requires primary evidence. Schema-1 receipts remain historical or
+migration-limited, not current acceptance; never fabricate missing evidence.
+
 Evidence-tier optimization must preserve policy-limit parity. Both the compact
 receipt and the full execution-tree ledger must resolve the same target policy
 limits, reject missing or unresolved limits, preserve portable ceilings, and
@@ -339,6 +345,23 @@ references, and a deterministic subtree digest. Tool IDs must remain inside a
 recursive branch envelope's allowed-tool selectors. Raw payloads remain lazy
 references. Routine parent context receives only the accepted summary. A digest
 proves identity and integrity, not correctness or comprehension.
+
+Result input-context identity must equal that worker's measured delivered
+artifact, including at depth two. Envelope/checkpoint context identity is a
+separate optional coordinator baseline; when present it binds to the
+coordinator's measured context. It need not equal any child's final delivery.
+Null baseline never waives the child's measured input identity. Result hashing
+uses one sorted compact UTF-8 JSON contract with unescaped Unicode; packet and
+preflight digest formats remain distinct.
+
+Distinguish selector containment from concrete-path matching. A child may
+retain an identical valid selector, choose a permitted concrete path, or narrow
+below a literal-directory `/**` prefix. Reject other unproven glob narrowing;
+today's file list is not proof of containment. Project surfaces must satisfy
+every applicable ancestor scope. Evidence artifact paths belong to their
+contained artifact namespace, not the project's surface selector namespace.
+Convergence review and residual-risk fields must be typed nonblank evidence,
+not null presence markers.
 
 A recursive branch also emits a hash-bound checkpoint covering its envelope,
 accepted and rejected child results, completed coverage, compact conclusion,

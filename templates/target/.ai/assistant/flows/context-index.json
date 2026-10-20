@@ -150,8 +150,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 687,
-      "content_digest": "sha256:2d553d6bd769895480c01dfa98cbad6795adf4684c7a87dbae1fe7bec4828a40"
+      "estimated_words": 761,
+      "content_digest": "sha256:23a69ac88f1598c1444b56d80c697aa45ff3a75a3a1605b7099ace842b64bf87"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -174,8 +174,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 701,
-      "content_digest": "sha256:e1a3083b2b10829032ff20d0aedcf1277690a8ab1fb6e0b5c8159a002a40eeff"
+      "estimated_words": 920,
+      "content_digest": "sha256:f1a38e056a154fa4f0f3056599abb25be47675ca340842fa43c27574c01b8c34"
     },
     {
       "id": "assistant.content.flows-debug-mode-flow-md",
@@ -362,8 +362,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 809,
-      "content_digest": "sha256:75ef63ddd9ccc6f83aaddea1fde7914ffae990156c76aad7d17be62e872dacdb"
+      "estimated_words": 917,
+      "content_digest": "sha256:88399d6c866b30587fd7fd641216a7e0976801fc09642091d508adabbe0bbe4e"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",
@@ -387,8 +387,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 698,
-      "content_digest": "sha256:ef169c8bdb8497059e00e8be05ce068833f346d569812604c62c839476a20fa3"
+      "estimated_words": 724,
+      "content_digest": "sha256:fbddfce0dc3565c38249d828914c6dc1492c548fbf19bb650f1da44d8099d412"
     },
     {
       "id": "assistant.content.flows-operation-routing-flow-md",
@@ -432,8 +432,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 307,
-      "content_digest": "sha256:587829e5f9fb84ce1b2eab31e261a7c24b5b89c5a269d8370c213cb5a307b04d"
+      "estimated_words": 345,
+      "content_digest": "sha256:a03aae6edda9fd2a718882bc6c4e0140b823100eb21bd7c4499e30750ad8f1ba"
     },
     {
       "id": "assistant.content.flows-project-knowledge-flow-md",

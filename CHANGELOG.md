@@ -4,6 +4,14 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.96 - 2026-10-20
+
+- [Delegation and context contract closure](docs/releases/0.1.0-alpha.96-notes.md):
+  schema `78`/templates `91`. Recursive scope and measured identity, Unicode
+  digest parity, typed convergence, schema-2 lightweight worker validation,
+  bounded JSON diagnostics, safe source projections, shared readiness budgets
+  and phase-specific package milestones. Historical evidence stays immutable.
+
 ## 0.1.0-alpha.95 - 2026-10-20
 
 - [Bounded context and canonical check reuse](docs/releases/0.1.0-alpha.95-notes.md):

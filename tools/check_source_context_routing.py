@@ -20,7 +20,10 @@ from context_catalog import (
     validate_context_catalog,
 )
 from path_spec import PathDialect, matches_any
-from source_context_selection import BOOTSTRAP, bootstrap_outputs, selectable_values
+from source_context_selection import (
+    BOOTSTRAP, bootstrap_outputs, contained_source_path, evaluate_source_budget,
+    inspect_source_outputs, read_source_object, selectable_values,
+)
 from plan_minimum_work import (
     SOURCE_CONDITIONAL_REQUIRED_FIELDS,
     SOURCE_CONDITIONAL_RESOLVERS,
@@ -96,10 +99,7 @@ SOURCE_OWNER_RULE_ID = re.compile(
 
 
 def load_object(path: Path) -> dict[str, Any]:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
-        raise ValueError(f"{path.relative_to(ROOT)} must contain an object")
-    return data
+    return read_source_object(ROOT, path.relative_to(ROOT).as_posix())
 
 
 def concrete_paths(value: Any) -> list[str]:
@@ -117,12 +117,7 @@ def concrete_paths(value: Any) -> list[str]:
 
 
 def word_count(paths: list[str]) -> int:
-    total = 0
-    for relpath in dict.fromkeys(paths):
-        path = ROOT / relpath
-        if path.is_file():
-            total += len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
-    return total
+    return measure_source_context(paths, root=ROOT)["resolved_words"]
 
 
 @lru_cache(maxsize=1)
@@ -327,7 +322,11 @@ def validate_router_paths(router: dict[str, Any], label: str) -> list[str]:
             "directly linked neighbor",
         }:
             continue
-        if not (ROOT / relpath).is_file():
+        try:
+            available = contained_source_path(ROOT, relpath).is_file()
+        except ValueError:
+            available = False
+        if not available:
             failures.append(f"{label} references missing required path {relpath}")
     return failures
 
@@ -489,42 +488,12 @@ def validate_source_profile_budget(
     ):
         failures.append(f"source profile {profile_id} has invalid required context")
         return
-    if not isinstance(budget, dict) or set(budget) != SOURCE_CONTEXT_BUDGET_FIELDS:
-        failures.append(f"source profile {profile_id} has invalid context budget")
-        return
-    if not all(
-        isinstance(budget[field], int)
-        and not isinstance(budget[field], bool)
-        and budget[field] >= 0
-        for field in SOURCE_CONTEXT_BUDGET_FIELDS
-    ):
-        failures.append(f"source profile {profile_id} context budget must use integers")
-        return
-    for dimension in ["files", "words", "characters"]:
-        maximum = budget[f"max_resolved_{dimension}"]
-        reserved = budget[f"reserved_{dimension}"]
-        if maximum <= 0 or reserved <= 0 or reserved >= maximum:
-            failures.append(
-                f"source profile {profile_id} has invalid resolved {dimension} reserve"
-            )
     required_words = word_count(required)
-    initial = measure_source_context([*source_bootstrap, f"tools/source-context/profiles/{profile_id}.json", *required])
-    initial_words = initial["resolved_words"]
-    if len(required) > budget["max_required_files"]:
-        failures.append(f"source profile {profile_id} exceeds required-file budget")
-    if required_words > budget["max_required_words"]:
-        failures.append(f"source profile {profile_id} exceeds required-word budget")
-    if initial_words > budget["max_initial_words"]:
-        failures.append(f"source profile {profile_id} exceeds initial-word budget")
-    for dimension in ["files", "words", "characters"]:
-        if (
-            initial[f"resolved_{dimension}"]
-            > budget[f"max_resolved_{dimension}"] - budget[f"reserved_{dimension}"]
-        ):
-            failures.append(
-                f"source profile {profile_id} initial context consumes its resolved "
-                f"{dimension} reserve"
-            )
+    initial = measure_source_context([*source_bootstrap, f"tools/source-context/profiles/{profile_id}.json", *required], root=ROOT)
+    evaluation = evaluate_source_budget(budget, required_files=len(required), required_words=required_words,
+        initial_words=initial["resolved_words"], resolved=initial)
+    failures.extend(f"source profile {profile_id} {message}" for message in evaluation["failures"])
+    failures.extend(f"source profile {profile_id} unresolved initial path: {path}" for path in initial["unresolved_paths"])
 
 
 def main() -> int:
@@ -544,9 +513,8 @@ def main() -> int:
         *source.get("bootstrap_context", []),
     ]
     try:
-        for name, content in bootstrap_outputs(ROOT).items():
-            if not (ROOT / name).is_file() or (ROOT / name).read_bytes() != content.encode("utf-8"):
-                failures.append(f"source context projection is stale or missing: {name}")
+        for name in inspect_source_outputs(ROOT, bootstrap_outputs(ROOT)):
+            failures.append(f"source context projection is stale or missing: {name}")
     except (OSError, ValueError, KeyError, TypeError) as exc:
         failures.append(f"source bootstrap projection failed: {exc}")
     if source.get("bootstrap_context") != [BOOTSTRAP]:
