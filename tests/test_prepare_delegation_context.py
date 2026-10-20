@@ -19,7 +19,7 @@ class WorkerContextTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
-        self.root = Path(self.directory.name)
+        self.root = Path(self.directory.name).resolve()
         (self.root / "core.txt").write_text("selected source")
         (self.root / "detail.txt").write_text("conditional evidence")
         self.policy = load_source_worker_policy(ROOT / "tools/source_worker_policy.json", root=ROOT)
@@ -143,3 +143,30 @@ class WorkerContextTests(unittest.TestCase):
         record = json.loads((self.root / "bundle/preflight.json").read_text())
         self.assertEqual(record["context"], measurement((self.root / "bundle/context.txt").read_bytes()))
         self.assertNotEqual(subprocess.run([*command, "--write"], capture_output=True).returncode, 0)
+
+    def test_public_clis_reject_symlinked_output_parents(self):
+        alias = self.root / "alias"
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"directory symlinks unavailable: {exc}")
+        packet = make_builtin_packet(self.policy, "framework-rules")
+        event = {"schema_version": 1, "event_kind": "worker-result-received", "backend_kind": "native-worker", "worker_id": "worker", "packet_id": "packet", "base_revision": "a" * 40}
+        for name, value in (("packet", packet), ("event", event)):
+            (self.root / (name + ".json")).write_text(json.dumps(value))
+        for name in ("prompt", "bootstrap", "context", "raw", "summary"):
+            (self.root / (name + ".txt")).write_bytes(b"bounded evidence")
+        for operation, inputs in (
+            ("prepare-worker-context", ("packet", "prompt", "bootstrap")),
+            ("prepare-worker-result", ("packet", "event", "context", "raw", "summary")),
+        ):
+            with self.subTest(operation=operation):
+                output = alias / operation
+                command = [sys.executable, str(ROOT / "tools/alatyr.py"), operation, "--write", "--output-dir", str(output)]
+                for name in inputs:
+                    suffix = ".json" if name in {"packet", "event"} else ".txt"
+                    command.extend(["--" + name, str(self.root / (name + suffix))])
+                result = subprocess.run(command, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                self.assertRegex(result.stderr, r"symlink|symbolic link")
+                self.assertFalse(output.exists())

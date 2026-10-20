@@ -68,7 +68,7 @@ class DelegationDraftTests(unittest.TestCase):
 
     def test_cli_previews_without_writes_and_rejects_oversized_payload(self):
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
+            root = Path(directory).resolve()
             for name, value in (("packet", self.packet), ("event", self.event)):
                 (root / (name + ".json")).write_text(json.dumps(value))
             for name, value in self.contents.items():
