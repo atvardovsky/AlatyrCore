@@ -78,6 +78,24 @@ class CooperationRuntimeTests(unittest.TestCase):
     git = presence_fixtures.PresenceRuntimeTests.git
     set_policy = presence_fixtures.PresenceRuntimeTests.set_policy
     cli = presence_fixtures.PresenceRuntimeTests.cli
+
+    def test_shared_fixture_canonicalizes_aliased_temporary_paths(self):
+        factory = tempfile.TemporaryDirectory
+        with factory() as directory:
+            root = Path(directory).resolve()
+            alias = root / "alias"
+            try:
+                alias.symlink_to(root, target_is_directory=True)
+            except OSError as error:
+                self.skipTest("Directory aliases unavailable: " + str(error))
+            nested = CooperationRuntimeTests("test_prospective_status_and_preflight_preserve_registry_bytes_and_mtime")
+            try:
+                with patch.object(presence_fixtures.tempfile, "TemporaryDirectory", side_effect=lambda: factory(dir=alias)):
+                    nested.setUp()
+                self.assertEqual(nested.target, nested.target.resolve())
+                nested.test_prospective_status_and_preflight_preserve_registry_bytes_and_mtime()
+            finally:
+                nested.doCleanups()
     def test_prospective_status_and_preflight_preserve_registry_bytes_and_mtime(self):
         operate(self.target, "register", write=True, task="Peer task", scope=["path:tools", "resource:git-state"])
         _, hub, _ = git_identity(self.target)
