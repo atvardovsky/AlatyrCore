@@ -13,15 +13,18 @@ dependent adapters retain their own worker policies.
 Select the source profile first. `tools/source_worker_policy.json` owns
 provider-neutral policy, not runtime capability.
 
-Small and standard tasks stay primary-owned unless a justified route says
-otherwise. `large-or-resumable` work needs the policy's minimum number of bounded,
-independent read-only packets; otherwise record `workstream-identification-required`.
-Dispatch only when expected time or review benefit exceeds preparation,
-review, and integration cost. Keeping eligible work local needs a policy
-reason ID and task evidence.
+Small/standard tasks stay primary-owned unless justified. Large work requires
+the policy's independent read-only minimum, otherwise
+`workstream-identification-required`. Dispatch only when benefit exceeds
+coordination cost; keeping eligible work local requires a policy reason and
+task evidence.
 
 The policy threshold is not a preferred fan-out. The primary
 owns the tree, ledger, branch authorization, decisions, and convergence.
+Candidate inventory may exceed simultaneous capacity: explicit selected work
+is planned in waves bounded by policy and verified runtime parallelism. Default
+selection remains the required minimum. Total, parent, context and retry limits
+remain cumulative; a wave boundary is not a new budget or permission grant.
 Read-only source workers normally return proposals. With verified nested
 transport, a depth-1 coordinator may dispatch depth-2 read-only children inside
 an unexpired hash-bound primary envelope. Enforce every worker, child, context,
@@ -40,8 +43,9 @@ For an explicit `repository-audit`, delegation evaluation is deterministic:
    Start from each workstream's compact required context. Load a canonical
    owner from conditional context only when a named finding, rule ID, failed
    check, or evidence conflict requires it.
-   If all reusable candidates would exceed the aggregate context cap, select the
-   largest valid subset and record omitted candidate IDs with budget reasons.
+   If candidates exceed a cumulative cap, admit an ordered bounded subset and
+   record omitted candidate IDs with budget reasons; do not claim exhaustive
+   backlog optimization.
 5. Dispatch eligible packets, or record why each eligible packet stayed local.
 6. Keep authoritative checks, conflict resolution, final synthesis, and final
    validation with the primary assistant.
@@ -63,14 +67,12 @@ are available but an eligible packet remains local, use one applicable policy
 reason ID and task-specific evidence; a generic statement that delegation was
 not useful is not sufficient.
 
-After runtime verification, `tools/alatyr.py plan-work` accepts a provider-
-neutral current-session capability record plus workstream, kept-local, skip-
-reason, and evidence inputs. Capability evidence binds to the caller's opaque
-session ID and verified/expiry timestamps; stale, future-dated, expired,
-overlong, or cross-session evidence is rejected. This creates reviewable
-preflight evidence, not proof of client probing, dispatch, or result delivery.
-Completion is not accepted from preflight evidence. It is validated through the
-execution-tree ledger and primary convergence record.
+After runtime verification, `tools/alatyr.py plan-work` accepts a current-session
+capability record plus workstream, kept-local, skip-reason and evidence inputs.
+Enforce every policy freshness, timestamp and session-binding constraint.
+Preflight proves neither client probing, dispatch nor result delivery, and
+cannot establish completion; use the execution-tree ledger and primary
+convergence instead.
 
 Before dispatch, `prepare-worker-context` freezes the actual prompt, visible
 bootstrap, packet and bounded files. Supply every other allocated worker's
@@ -81,36 +83,36 @@ claim a native cutoff. `prepare-worker-result --context-preflight` checks the
 observed context against that allocation. Drafts remain review-required; neither
 helper dispatches, verifies provider provenance, or accepts obligations.
 
-Every packet must carry schema version 6, its parent, depth, remaining worker
-budget, unique coverage key, workstream ID, role, objective, bounded and
-conditional context, maximum initial, result, and summary words, inherited
-context-packet identity and delta, non-goals,
-`inspect`-only action mode, no-write scope, semantic scope, changed fact IDs,
-assigned proof-obligation IDs,
-canonical owner references, surface references, relationship references,
-overlap decision, independence evidence, and expected evidence. Policy
-validation measures all required file content and rejects a built-in packet
-whose initial payload exceeds its declared limit. Task-specific packets are
-passed with repeatable `--worker-packet` arguments. Their bounded paths must be
-repository-relative, exist inside the repository, and not escape through a
-symlink. Workers may expand only through conditional context. Outside a primary
-branch envelope they return child proposals for review. Inside one, a
-coordinator may dispatch only a narrowed inspect-only depth-2 packet. Expansion
-counts against the execution-tree aggregate context budget. Each worker node
-binds its context-word count to a measured artifact. Every accepted result uses
-measured raw and accepted-summary artifacts, SHA-256 values, tool IDs,
-child-result identity, and a deterministic subtree digest. Recursive branches
-record a resumable checkpoint. Validate accepted execution evidence with
-`python3 tools/alatyr.py validate-delegation-tree ...`; schema-1 and schema-2 ledgers remain
-legacy structural records and are not acceptance evidence.
+Schema-6 packets must satisfy the policy's complete `worker_packet_contract`:
+ancestry and budgets, unique coverage/workstream identity, objective/non-goals,
+bounded/conditional context and provenance, inspect-only/no-write scope,
+facts/owners/surfaces/relationships, proof obligations, independence, overlap
+and expected evidence. Policy validation measures required file content and
+rejects initial payloads above their declared limits. Pass task-specific packets
+with repeatable `--worker-packet`; paths must exist, remain repository-relative
+and contained, and never escape through symlinks.
 
-Keep a schema-3 `alatyr-delegation-execution-tree` ledger. Record current
-authorization and time, base revision, the canonical policy digest, the hashed capability
-artifact, measured budgets, topology, overlap decisions, direct and indirect
-result and proof-obligation coverage, stop or cancellation reasons, validation,
-primary review, and convergence. Routine primary context loads accepted summaries and the latest
-checkpoint, not descendant raw payloads. A missing or inconsistent ledger
-blocks integration.
+Expansion uses only conditional context and counts against aggregate budgets.
+Without a primary branch envelope, workers propose children; inside one, a
+verified coordinator may dispatch only narrowed inspect-only depth-2 packets.
+Nodes bind context words to measured artifacts. Accepted results bind measured
+raw/summary artifacts, SHA-256, tool IDs, child identity and subtree digests;
+recursive branches retain resumable checkpoints. Validate with
+`python3 tools/alatyr.py validate-delegation-tree ...`. Schema-1/2 ledgers remain
+historical structural evidence, never current acceptance.
+
+Keep the policy's complete schema-3 `alatyr-delegation-execution-tree` contract:
+authorization/time, revision, policy/capability digests, topology, budgets,
+scope/coverage, evidence/checkpoints, validation and primary convergence.
+Routine context loads accepted summaries and the latest checkpoint, not raw
+descendant payloads. Missing or inconsistent ledgers block integration.
+
+The result helper's `handoff.json` is a derived node-update candidate, not a
+complete node or accepted summary. `--compact` loads that view only. Review the
+listed missing primary bindings and reconcile runtime packet identity before
+integration. Optional `--metrics` records bounded explicit preparation, worker,
+review and rework observations outside canonical result hashing. Missing is
+unobserved, not zero; timings never waive a gate or establish cost savings.
 
 ## Model Routing
 

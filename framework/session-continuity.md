@@ -163,6 +163,13 @@ unresolved overlap needs an alternative coordination decision before mutation.
 Presence is advisory, cannot instantly notify idle agents or ensure every
 client follows instructions, and is not an authentication boundary.
 
+Prospective read-only presence inspection may compare an explicit bounded
+scope without creating or adopting a session. Compose it with existing
+test-resource conflict planning when useful. Whole-resource presence identity
+is conservative across namespaces; it does not establish isolation. Disabled,
+stale, unknown or omitted peer evidence remains uncertain, never a clearance.
+No reported conflict is not a reservation, liveness proof or action permission.
+
 ## Completion Evidence
 
 For a resumed state-changing task, final evidence should identify:

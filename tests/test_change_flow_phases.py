@@ -10,7 +10,7 @@ from source_context_selection import markdown_sections
 FLOW_ROOT = ROOT / "templates/target/.ai/assistant/flows"
 FAMILY = ("logical-integrity-review", "blueprint-driven-change", "change-package",
           "large-task-orchestration", "project-blueprint-creation")
-MUTATING = {"apply", "initialize", "material-updates", "finalize"}
+MUTATING = {"apply", "initialize", "material-updates", "finalize", "workstreams", "converge"}
 
 
 def phase_link_failures(texts):
@@ -19,7 +19,7 @@ def phase_link_failures(texts):
     failures, edges = [], {}
     link = re.compile(r"\[[^\]]+\]\(([^\s)]+\.flow\.md)(?:#([a-z0-9-]+))?\)")
     for name, anchors in sections.items():
-        for phase in ("analyze", "plan", "apply", "verify", "initialize", "material-updates", "finalize"):
+        for phase in ("analyze", "plan", "apply", "verify", "initialize", "material-updates", "finalize", "workstreams", "converge"):
             if phase not in anchors:
                 if phase in {"analyze", "plan", "apply", "verify"} and not (name == "logical-integrity-review" and phase == "plan"):
                     failures.append(f"missing phase: {name}#{phase}")
@@ -58,6 +58,22 @@ class ChangeFlowPhaseTests(unittest.TestCase):
 
     def test_all_callers_resolve_phase_specific_links_without_mutation_reachability(self):
         self.assertEqual(phase_link_failures(self.family()), [])
+
+    def test_nested_orchestration_handoffs_do_not_duplicate_execution_or_finalize_early(self):
+        texts = self.family()
+        blueprint = markdown_sections(texts["blueprint-driven-change"])
+        self.assertIn("large-task-orchestration.flow.md#initialize", blueprint["apply"][0])
+        self.assertIn("large-task-orchestration.flow.md#workstreams", blueprint["apply"][0])
+        self.assertIn("Do not execute both paths", blueprint["apply"][0])
+        orchestration = markdown_sections(texts["large-task-orchestration"])
+        self.assertIn("existing operation", blueprint["apply"][0])
+        self.assertIn("logical-integrity-review.flow.md#apply", orchestration["workstreams"][0])
+        self.assertLess(texts["large-task-orchestration"].index("Complete the combined Project Contour Sync Decision"),
+                        texts["large-task-orchestration"].index("12. When a change package"))
+        self.assertIn("post-finalization binding validation", orchestration["verify"][0])
+        mutated = dict(texts)
+        mutated["blueprint-driven-change"] = mutated["blueprint-driven-change"].replace("logical-integrity-review.flow.md#analyze", "large-task-orchestration.flow.md#workstreams")
+        self.assertTrue(any("reaches mutation" in failure for failure in phase_link_failures(mutated)))
 
     def test_link_mutations_and_transitive_phase_leakage_are_rejected(self):
         cases = [

@@ -58,6 +58,8 @@ does not persist packets. Only the outer coordinator owns finalization.
 
 ### Apply
 
+#### Initialize
+
 4. Verify current modification authorization and applicable protected approval,
    then create the proposed packet. For an active package, use only
    [Initialize](change-package.flow.md#initialize). Record operation scope,
@@ -65,10 +67,20 @@ does not persist packets. Only the outer coordinator owns finalization.
    relationship impact closure when enabled, approvals, and the initial
    context receipt. Include planned, resolved, and observed ordered semantic
    guidance identities and each bundle digest's algorithm and schema version.
+   Reuse the outer coordinator's operation and package IDs; an already
+   initialized package is referenced, not initialized again.
+
+#### Workstreams
+
 5. Split work into coherent workstreams from the task-decomposition plan with
    explicit implementation levels, dependencies, allowed surfaces, executor
    decisions, outputs, validation, and completion evidence.
 6. Load only the active workstream's context and its owner/dependency context.
+   Execute its authorized implementation once through
+   [integrity Apply](logical-integrity-review.flow.md#apply). For eligible
+   independent workers, plan bounded waves; cumulative budgets do not reset
+   between waves. Recheck capability, remaining budgets, scope and completed
+   packet IDs before each wave. Do not redispatch completed work.
 7. Update status and create checkpoints after local validation, approval
    boundaries, handoffs, or before a context reset.
    Use [Material Updates](change-package.flow.md#material-updates) only for an
@@ -83,6 +95,9 @@ does not persist packets. Only the outer coordinator owns finalization.
    reordered, or changed identities, load only changed canonical owners, and
    refresh risk, approval, dependencies, validation, and invalidated decisions
    before accepting a new checkpoint.
+
+#### Converge
+
 10. After local workstreams finish, reconcile cross-workstream contracts and
    run one global logical integrity review over the combined repair set,
    re-derived invariants, and related review-item clusters. When scoped
@@ -90,6 +105,9 @@ does not persist packets. Only the outer coordinator owns finalization.
    explicitly selected machine-readable approval records.
 11. Confirm approval coverage, run target validation, and report final
     convergence, skipped checks, and residual risk.
+    Complete the combined Project Contour Sync Decision and required companion
+    decisions before entering package finalization. This is pre-finalization
+    convergence, not final-result binding validation.
 12. When a change package is active, finalize its semantic scope, companion
     decisions, material corrections, and repository provenance after global
     convergence through [Finalize](change-package.flow.md#finalize) only if
@@ -100,7 +118,7 @@ does not persist packets. Only the outer coordinator owns finalization.
 Do not authorize repairs or finalization here; return to authorized Apply and
 refresh affected evidence when a required check fails.
 
-13. Record one Project Contour Sync Decision for the combined code/test
+13. Verify the existing Project Contour Sync Decision for the combined code/test
     result. Worker-local documentation conclusions are evidence only; the
     primary reconciles owners, affected surfaces, support state, and residual
     risk.
@@ -108,6 +126,10 @@ refresh affected evidence when a required check fails.
     model or unverified status, validation, fallback, rejected output, and
     primary review before accepting any workstream result.
     For an active package, use only [Verify](change-package.flow.md#verify).
+    Run post-finalization binding validation against the final result. Reuse
+    semantic conclusions only where canonical policy and unchanged input,
+    scope, approval and guidance bindings permit it; invalidated evidence must
+    be refreshed. Do not rerun implementation from a verification phase.
 
 The bundle comparison proves the identity of recorded semantic metadata at the
 stated planned, resolved, or observed evidence level. It does not prove that a

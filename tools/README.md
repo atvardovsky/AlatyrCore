@@ -88,6 +88,19 @@ Local checker strings are supplemental, not evidence of canonical completion.
 
 ## Worker Context Preparation
 
+With `--compact` or `--metrics`, `prepare-worker-result` writes `handoff.json` with measured
+artifact references, canonical result identity and incomplete candidate node
+bookkeeping. Use `--compact` for this view instead of loading the full draft.
+Primary-owned parent, scope, capability, budget and acceptance bindings remain
+unfilled; the handoff is not an execution tree or accepted result. Existing
+full-result output remains the default.
+
+Optional `--metrics <observations.json>` accepts explicit
+`packet_preparation_seconds`, `worker_seconds`, `primary_review_seconds`, and
+integer `rework_count`. Values must be finite and nonnegative, at most
+1,000,000,000. Missing measurements remain absent, not zero. These advisory
+observations do not affect result hashing, scope, budgets or acceptance.
+
 Prepare the actual visible prompt and bootstrap in explicit UTF-8 artifacts.
 Use the reviewed source worker packet; no provider configuration is inferred.
 
@@ -124,6 +137,18 @@ this dense-text bound is not a provider-token or billing estimate. Stable
 instructions, bootstrap and selected sources precede variable packet/task data.
 
 ## Task Acceptance And Shared Resources
+
+`cooperation-preflight --target <repo> --scope path:src --command <test-id>`
+combines prospective session overlap and canonical test-resource planning
+without registering sessions, writing files, or executing commands. Omit
+`--command` when no target test policy is involved; source maintainers add
+`--source-contour`. At most eight combined scope references are accepted; widen
+scope explicitly rather than dropping resources. Derived whole-resource
+`presence_scope_refs` intentionally ignore namespace separation. Report these
+same identities in own presence while shared resources are in use.
+The report is advisory; disabled, stale, unknown or omitted peers cannot
+establish clear concurrency. Separate clones and unreported sessions remain
+outside its observation boundary.
 
 For final task closure, add `--task-id TASK_ID`, `--task-class standard-task`,
 and `--require-task-acceptance` to `finalize-support` or `verify-upgrade` (choose the
@@ -434,6 +459,17 @@ assistant retains authorization, decisions, integration, final validation, and
 all state-changing phases. The plan also names the target-adapter
 `support-delta` and `impact` route for installed projects, but it does not
 replace target logical integrity review.
+
+Candidate work is separate from simultaneous work. Explicit selections can
+span several planned `dispatch_waves`, each bounded by policy and verified
+runtime parallelism. Defaults still select only the required minimum. Total
+delegates, root children and context remain bounded over all candidates; later
+waves do not reset any budget. Recheck capability, completed packet IDs and
+scope before each actual dispatch; the planner never launches workers.
+This is a bounded candidate batch, not an unbounded project backlog. Empty
+selection retains the existing default; use `kept-local` with the required
+reason to opt out. Audit admission remains conservative and ordered; omitted
+candidates retain explicit budget reasons rather than implying irrelevance.
 
 For non-audit `large-or-resumable` work, supply the policy-required number of
 independent inspect-only packet JSON files with `--worker-packet <packet>`.

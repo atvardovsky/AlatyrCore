@@ -30,6 +30,7 @@ def build_parser() -> argparse.ArgumentParser:
     status = actions.add_parser("status", allow_abbrev=False)
     status.add_argument("--session-uid", action=Once)
     status.add_argument("--full", action="store_true")
+    status.add_argument("--scope", action="append", help="Compare a prospective scope without registration or writes.")
     detail = actions.add_parser("detail", allow_abbrev=False)
     detail.add_argument("--session-uid", required=True, action=Once)
     for action in ("register", "update", "leave"):

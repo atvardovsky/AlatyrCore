@@ -48,6 +48,9 @@ Replace placeholders with target facts before accepting installation.
    implementation depends on the new facts, within this approved repair set.
    Initialize an activated package through
    [Initialize](change-package.flow.md#initialize), not its entire lifecycle.
+   For large work, create the operation packet through only orchestration
+   [Initialize](large-task-orchestration.flow.md#initialize), passing these
+   existing operation/package identities and retaining outer finalizer ownership.
 7. Evaluate the target test-first recommendation gate. When an enabled required
    trigger applies, or a recommendation is accepted, run
    `.ai/assistant/flows/test-first-change.flow.md` and preserve valid
@@ -58,6 +61,10 @@ Replace placeholders with target facts before accepting installation.
 8. Invoke [Apply](logical-integrity-review.flow.md#apply) for the smallest
    coherent implementation and companion repair set. This owns applicable
    contract-artifact and visual-validation gates; retain their results once.
+   For an initialized large task, use orchestration
+   [Workstreams](large-task-orchestration.flow.md#workstreams) instead of this
+   direct implementation call; it invokes integrity Apply per workstream.
+   Do not execute both paths for the same work.
    Record material package discoveries only through
    [Material Updates](change-package.flow.md#material-updates) when active.
 
@@ -68,6 +75,9 @@ package once through [Finalize](change-package.flow.md#finalize). Without a
 package, perform authorized support-state synchronization last. Preserve the
 canonical finalizer transaction; nested orchestration returns evidence and
 does not run a competing finalizer. Refresh final-result validation afterward.
+The first review is pre-finalization convergence; the later check is
+post-finalization binding validation. They share still-current semantic
+evidence, not stale acceptance or permission to skip final validation.
 
 ### Verify
 

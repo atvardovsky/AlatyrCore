@@ -138,6 +138,16 @@ def operate(target: Path, action: str, *, write: bool = False,
     policy = load_policy(target, source_contour=source_contour)
     if action not in ("status", "detail", "register", "update", "leave"):
         raise ValueError("unsupported presence action")
+    if action == "status" and scope is not None:
+        if not isinstance(scope, list) or not 1 <= len(scope) <= 8:
+            raise ValueError("prospective scope needs 1 to 8 references")
+        if any(not isinstance(item, str) or not item or len(item) > 120
+               or any(ord(char) < 32 for char in item) for item in scope):
+            raise ValueError("prospective scope references must be bounded text")
+        if len(set(scope)) != len(scope):
+            raise ValueError("prospective scope references must be unique")
+        for item in scope:
+            scope_reference(item)
     if action not in ("status", "detail") and not write:
         raise ValueError("presence mutations require --write and current-scope authorization")
     if not policy["enabled"]:
@@ -161,7 +171,7 @@ def operate(target: Path, action: str, *, write: bool = False,
                 raise ValueError("session belongs to a different worktree")
         elif action == "detail":
             raise ValueError("detail requires a session UID")
-        summary = summarize(value, str(worktree), policy, datetime.now(timezone.utc), session_uid=session_uid, full=full)
+        summary = summarize(value, str(worktree), policy, datetime.now(timezone.utc), session_uid=session_uid, scope=scope, full=full)
         if detail_uid is not None:
             summary["omitted_sessions"] = len(summary["sessions"]) - 1
             summary["sessions"] = [entry for entry in summary["sessions"] if entry["session_uid"] == detail_uid]

@@ -145,6 +145,13 @@ spent context, and portable preflight never implies a provider-native cutoff.
 
 ## Task Planning Contract
 
+Keep candidate inventory, selected work and simultaneous execution separate.
+Plan selected independent work in bounded waves, constrained by both policy
+and verified runtime parallelism. Total delegates, parent children, retries
+and context remain cumulative across waves. A wave plan launches nothing:
+recheck current capability, scope, budgets and completed packet IDs before
+dispatch, without automatically selecting additional candidates.
+
 Before dispatch, the primary assistant creates or reuses the target
 task-decomposition plan. Each worker-eligible task records one implementation
 level, one bounded goal, dependencies, changed facts, expected write scope,
@@ -425,6 +432,14 @@ primary has issued the exact branch envelope. Every child packet narrows its
 parent's context and remains inspect-only with no write scope.
 
 ## Cost And Performance Evidence
+
+Optional compact handoffs may derive measured artifact references and candidate
+node bookkeeping from prepared results. They remain incomplete, review-required
+drafts, not accepted nodes or satisfaction of primary obligations. Keep timing
+observations outside canonical result hashing: missing is unobserved, never
+zero. Validate finite nonnegative values and retain their provenance limits.
+Measure preparation, worker execution, primary review and rework separately;
+do not let timing observations alter quality gates or authorize work.
 
 The target policy may optimize for latency, context volume, or measured cost,
 but should keep those goals separate. Record:

@@ -38,6 +38,12 @@ Resolve uncertain overlap through the user or separate work before mutation.
 
 ## Scope And Summary
 
+Under explicit no-writes, or before registration, use read-only `status --scope`
+to compare the proposed scope without creating an entry. For declared shared
+test resources, an available `cooperation-preflight` helper combines the same
+presence evidence with resource planning. It never runs tests or reserves work;
+resolve overlap and uncertain/omitted peers before contested operations.
+
 Use explicit references, for example `path:src/api/`, `area:billing`, and
 `resource:git-state`. Paths are canonical target-relative paths; area IDs come
 from project routing. Builds name shared output resources when applicable.
@@ -58,6 +64,8 @@ reservation, exclusive build lock, authentication service, or instant notifier.
 ```sh
 python3 .ai/assistant/tools/alatyr_delegate.py session-presence --target . register --write --task "Review API boundary" --scope "path:src/api/" --activity reviewing
 python3 .ai/assistant/tools/alatyr_delegate.py session-presence --target . status --session-uid <returned-uuid>
+python3 .ai/assistant/tools/alatyr_delegate.py session-presence --target . status --scope "path:src/api/"
+python3 .ai/assistant/tools/alatyr_delegate.py cooperation-preflight --target . --scope "path:src/api/"
 python3 .ai/assistant/tools/alatyr_delegate.py session-presence --target . update --write --session-uid <returned-uuid> --expected-version 1 --task "Review API tests" --scope "path:tests/api/" --activity reviewing
 python3 .ai/assistant/tools/alatyr_delegate.py session-presence --target . detail --session-uid <peer-uuid>
 python3 .ai/assistant/tools/alatyr_delegate.py session-presence --target . leave --write --session-uid <returned-uuid> --expected-version 2

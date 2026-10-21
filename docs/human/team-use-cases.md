@@ -108,6 +108,14 @@ Stale entries remain uncertain, not automatically erased. Recursive workers
 are represented by their coordinator, not extra independent sessions.
 See [session presence](../../framework/session-continuity.md#concurrent-session-presence).
 
+An assistant can inspect a proposed scope before registering, including when
+the user permits no writes. Optional cooperation preflight also checks declared
+shared test resources without running tests. Reported conflicts need
+coordination; missing or uncertain reports are not proof that work is safe.
+Independent worker assignments can be planned in bounded waves rather than
+starting every worker at once. See
+[delegation planning](../../framework/subagent-delegation.md#task-planning-contract).
+
 Thin assistant bridges can point different compatible AI tools to the same
 project-owned adapter. This is intended to reduce vendor-specific drift while
 still recording client-specific loading, permissions, presentation, and known

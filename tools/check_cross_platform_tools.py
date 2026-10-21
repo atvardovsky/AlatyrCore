@@ -45,6 +45,7 @@ EXPECTED_COMMANDS = {
     "publish-task",
     "archive-task-evidence",
     "plan-test-resources",
+    "cooperation-preflight",
     "refresh-source",
     "prepare-worker-result",
     "session-presence",

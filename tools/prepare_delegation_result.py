@@ -13,6 +13,7 @@ from pathlib import Path
 from delegation_evidence import _validate_policy_limits, enforce_character_limit, load_json_object, worker_result_sha256
 from source_worker_contract import load_source_worker_policy, validate_worker_packet
 from prepare_delegation_context import validate_preflight, measurement, canonical_digest, read_artifact
+from worker_handoff import compact_handoff, handoff
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -88,6 +89,8 @@ def main() -> int:
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--context-preflight", type=Path, help="Frozen dispatch preflight; enforce its worker allocation against observed context.")
+    parser.add_argument("--metrics", type=Path, help="Optional explicit advisory timing/rework observations; never acceptance evidence.")
+    parser.add_argument("--compact", action="store_true", help="Return the compact handoff instead of the full result draft.")
     args = parser.parse_args()
     try:
         policy = load_source_worker_policy(ROOT / "tools/source_worker_policy.json", root=ROOT)
@@ -96,6 +99,11 @@ def main() -> int:
         contents = {name: read_artifact(getattr(args, name)) for name in ("context", "raw", "summary")}
         preflight = load_json_object(args.context_preflight, "context preflight") if args.context_preflight else None
         result = prepare(packet, event, contents, policy, preflight=preflight)
+        metrics = load_json_object(args.metrics, "cooperation metrics") if args.metrics else None
+        draft = None
+        serialized_result = None
+        if args.compact or metrics is not None:
+            draft, serialized_result = handoff(result, packet, contents, metrics)
         if args.write:
             output = args.output_dir.absolute()
             if output.exists() or output.is_symlink() or any(parent.is_symlink() for parent in output.parents):
@@ -106,12 +114,18 @@ def main() -> int:
                 staged.mkdir()
                 for name, data in contents.items():
                     (staged / (name + ".txt")).write_bytes(data)
-                for name, data in (("packet.json", packet), ("runtime-event.json", event), ("result.json", result)):
+                if serialized_result is None:
+                    serialized_result = (json.dumps(result, indent=2) + "\n").encode("utf-8")
+                (staged / "result.json").write_bytes(serialized_result)
+                records = [("packet.json", packet), ("runtime-event.json", event)]
+                if draft is not None:
+                    records.append(("handoff.json", draft))
+                for name, data in records:
                     (staged / name).write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
                 if preflight is not None:
                     (staged / "preflight.json").write_text(json.dumps(preflight, indent=2) + "\n", encoding="utf-8")
                 staged.rename(output)
-        print(json.dumps({"write": args.write, "status": "requires-review", "result": result,
+        print(json.dumps({"write": args.write, "status": "requires-review", **({"handoff": compact_handoff(draft)} if args.compact else {"result": result}),
                           "limitation": "draft only; not dispatch, provider verification, primary acceptance, or an execution tree"}, indent=2))
         return 0
     except (OSError, ValueError, UnicodeError) as exc:

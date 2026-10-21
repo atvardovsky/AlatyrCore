@@ -26,6 +26,12 @@
       "write_scope": "none"
     },
     {
+      "name": "cooperation-preflight",
+      "script": "cooperation_preflight.py",
+      "purpose": "inspect proposed session scope and declared test-resource conflicts without writes",
+      "write_scope": "none"
+    },
+    {
       "name": "archive-task-evidence",
       "script": "archive_task_evidence.py",
       "purpose": "freeze retention-reviewed closed-task model and projection witnesses",

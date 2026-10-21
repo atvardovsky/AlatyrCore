@@ -14,6 +14,8 @@ sessions/forks register once per work period, not once per prompt.
 ```sh
 python3 tools/alatyr.py session-presence --target . --source-contour register --write --task "Review presence contract" --scope "path:tools/session_presence_contract.py" --activity reviewing
 python3 tools/alatyr.py session-presence --target . --source-contour status --session-uid <returned-uuid>
+python3 tools/alatyr.py session-presence --target . --source-contour status --scope "path:tools/"
+python3 tools/alatyr.py cooperation-preflight --target . --source-contour --scope "resource:git-state"
 python3 tools/alatyr.py session-presence --target . --source-contour leave --write --session-uid <returned-uuid> --expected-version 1
 ```
 
@@ -32,3 +34,11 @@ The store is inside Git's common directory, outside version control; linked
 worktrees share it. There is no timer, daemon, message history, or build lock.
 Source validators only inspect policy; they never register or delete sessions.
 Unavailable helpers require an honest cooperation warning, not manual JSON edits.
+
+Prospective status and cooperation preflight do not register, refresh or delete
+sessions. Preflight returns `coordinate-before-work`, `unknown`, or
+`no-reported-conflict`, never an exclusivity or authorization grant. When a
+target testing policy is available, repeat `--command <registered-id>` to add
+its declared test resources. `plan-test-resources` exposes matching
+`presence_scope_refs` for reporting while those resources are in use. Namespace
+isolation does not split these conservative whole-resource identities.

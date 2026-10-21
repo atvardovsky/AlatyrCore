@@ -4,6 +4,14 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.97 - 2026-10-21
+
+- [Bounded cooperation](docs/releases/0.1.0-alpha.97-notes.md): schema
+  `79`/templates `92`. Separate candidate inventory from dispatch waves,
+  prospective read-only presence and shared-resource preflight, measured
+  review-only handoff drafts, optional timing observations and explicit
+  nested-flow ownership. Existing authorization and acceptance gates remain.
+
 ## 0.1.0-alpha.96 - 2026-10-20
 
 - [Delegation and context contract closure](docs/releases/0.1.0-alpha.96-notes.md):

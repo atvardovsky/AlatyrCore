@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 from typing import Any
 from target_validation_support import is_unresolved_value
@@ -55,6 +56,16 @@ def resource_conflicts(left: Any, right: Any) -> list[str]:
                 continue
             conflicts.add(first["kind"] + ":" + first["id"])
     return sorted(conflicts)
+
+
+def presence_resource_scopes(resources: Any) -> list[str]:
+    """Conservative whole-resource identity; namespace separation is not a lock."""
+    failures = resource_failures(resources)
+    if failures:
+        raise ValueError("; ".join(failures))
+    return sorted({"resource:test-" + resource["kind"] + "-" + hashlib.sha256(
+        (resource["kind"] + "\0" + resource["id"]).encode("utf-8")).hexdigest()
+        for resource in resources})
 
 
 def effect_resource_failures(effects: list[str], resources: list[dict[str, Any]]) -> list[str]:

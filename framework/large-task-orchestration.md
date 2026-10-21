@@ -95,6 +95,18 @@ contracts. Delegates do not own project decisions, approval, or final
 convergence. Keep the primary assistant on the immediate critical path and
 require disjoint writes or read-only packets.
 
+## Evidence Ownership
+
+Accepted facts remain with canonical project owners. The problem model owns
+current assumptions and proof duties; the operation packet owns execution
+checkpoints; approval records own protected-scope evidence; the change package
+owns coherent change provenance and companion dispositions. Indexes, handoffs
+and reports are derived views, not additional fact owners. Reference the same
+bound evidence instead of copying it across these records. Nested workstreams
+return evidence to the outer coordinator, which alone owns finalization.
+Complete contour-sync and companion decisions before finalization; afterward
+validate final bindings without treating earlier evidence as automatically fresh.
+
 ## Resume Protocol
 
 To resume an operation:

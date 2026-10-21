@@ -632,14 +632,6 @@ def _budgeted_workstreams(
                 }
             )
             continue
-        if len(selected) >= tree_policy["max_parallel_delegates"]:
-            omitted.append(
-                {
-                    "workstream_id": packet["workstream_id"],
-                    "reason": "parallel delegate budget reached",
-                }
-            )
-            continue
         if len(selected) >= tree_policy["max_children_per_parent"]:
             omitted.append(
                 {
@@ -673,8 +665,6 @@ def _decomposition(
         tree_policy = policy["tree_policy"]
         if len(workstreams) > tree_policy["max_total_delegates"]:
             raise ValueError("worker packets exceed total delegate budget")
-        if len(workstreams) > tree_policy["max_parallel_delegates"]:
-            raise ValueError("worker packets exceed parallel delegate budget")
         if len(workstreams) > tree_policy["max_children_per_parent"]:
             raise ValueError("worker packets exceed child budget for the root")
         context_words = sum(_packet_context_words(packet) for packet in workstreams)
@@ -908,7 +898,9 @@ def _delegation_assessment(
     if decision_override not in {None, *DELEGATION_DECISIONS}:
         raise ValueError(f"invalid delegation decision: {decision_override}")
 
+    # An empty CLI selection retains the existing default; opting out uses kept-local.
     selected_ids = list(selected_workstream_ids or [])
+    dispatch_waves: list[list[str]] = []
     unknown_ids = sorted(set(selected_ids) - set(candidates))
     if unknown_ids:
         raise ValueError(f"unknown selected worker workstreams: {unknown_ids}")
@@ -994,9 +986,12 @@ def _delegation_assessment(
             selected_ids = list(candidates[:required_count])
         if len(selected_ids) < required_count:
             raise ValueError("delegation requires the configured independent workstreams")
-        max_parallelism = verified_capability["max_parallelism"]
-        if len(selected_ids) > max_parallelism:
-            raise ValueError("selected workstreams exceed verified worker parallelism")
+        max_parallelism = min(
+            verified_capability["max_parallelism"],
+            decomposition["aggregate_budget"]["max_parallel_delegates"],
+        )
+        dispatch_waves = [selected_ids[start:start + max_parallelism]
+                          for start in range(0, len(selected_ids), max_parallelism)]
         decision = "delegation-recommended"
         resolved_reason = reason or "verified workers can execute independent workstreams"
         resolved_skip_reason = None
@@ -1010,6 +1005,8 @@ def _delegation_assessment(
         "candidate": bool(candidates),
         "candidate_workstream_ids": candidates,
         "selected_workstream_ids": selected_ids,
+        "dispatch_waves": dispatch_waves,
+        **({"dispatch_boundary": "Plan only; recheck capability, scope, cumulative budgets and completed IDs before each wave."} if dispatch_waves else {}),
         "runtime_capability_status": runtime_capability,
         "required_workstream_count": required_count,
         "runtime_capability": runtime_capability,
@@ -1255,6 +1252,8 @@ def render_summary(plan: dict[str, Any]) -> str:
             lines.append(f"- {check_id}")
     delegation = plan["delegation_assessment"]
     lines.append(f"Delegation: {delegation['decision']}")
+    if delegation.get("dispatch_waves"):
+        lines.append(f"Planned worker waves: {len(delegation['dispatch_waves'])}")
     commands = [check_plan["command"], *check_plan["additional_commands"]]
     lines.append("Recommended command:" if len(commands) == 1 else "Recommended commands:")
     for command in commands:

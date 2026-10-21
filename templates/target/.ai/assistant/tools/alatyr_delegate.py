@@ -63,6 +63,11 @@ def build_parser() -> argparse.ArgumentParser:
     presence.add_argument("--target", type=Path, required=True, action=Once)
     presence.add_argument("--framework-source", type=Path, action=Once)
     presence.add_argument("arguments", nargs=argparse.REMAINDER)
+    cooperation = subparsers.add_parser("cooperation-preflight", allow_abbrev=False)
+    add_common(cooperation)
+    cooperation.add_argument("--scope", action="append", default=[])
+    cooperation.add_argument("--command", action="append", default=[])
+    cooperation.add_argument("--session-uid")
     for name in ("status", "doctor", "archive-audit"):
         add_common(subparsers.add_parser(name, allow_abbrev=False))
 
@@ -94,6 +99,14 @@ def build_parser() -> argparse.ArgumentParser:
 def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) -> list[str]:
     if args.operation == "session-presence":
         return ["session-presence", "--target", str(target), *args.arguments]
+    if args.operation == "cooperation-preflight":
+        command = ["cooperation-preflight", "--target", str(target)]
+        for name in ("scope", "command"):
+            for value in getattr(args, name):
+                command.extend(["--" + name, value])
+        if args.session_uid:
+            command.extend(["--session-uid", args.session_uid])
+        return command
     common = ["--target", str(target), "--framework-source", str(source)]
     if args.operation in {"status", "doctor"}:
         return [args.operation, *common]

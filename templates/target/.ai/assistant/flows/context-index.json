@@ -150,8 +150,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 761,
-      "content_digest": "sha256:23a69ac88f1598c1444b56d80c697aa45ff3a75a3a1605b7099ace842b64bf87"
+      "estimated_words": 838,
+      "content_digest": "sha256:f4a505a506d4744931b9fb8bf7a574b6bf49831c89715c08ef3f422dd7a018f0"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -362,8 +362,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 917,
-      "content_digest": "sha256:88399d6c866b30587fd7fd641216a7e0976801fc09642091d508adabbe0bbe4e"
+      "estimated_words": 1041,
+      "content_digest": "sha256:b7d23d17eeaed33509a3313de9f600c90c1cea4ff7cc228d858472b3ddeef770"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",
@@ -550,8 +550,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 637,
-      "content_digest": "sha256:bc9eca98415d3d34a154e1f0747a60e528da71dc8f92f5204847de845c7c5d95"
+      "estimated_words": 703,
+      "content_digest": "sha256:723414f36e225162d580ae16d0556f325fe33db93b0f30819870e414430f268e"
     },
     {
       "id": "assistant.content.flows-skill-adaptation-flow-md",
