@@ -27,7 +27,14 @@ POLICY_STATES = frozenset({"enabled", "required"})
 
 
 def _resolved_text(value: Any) -> bool:
-    return isinstance(value, str) and bool(value.strip()) and not is_placeholder(value) and not is_unresolved_value(value)
+    if not isinstance(value, str) or not value.strip():
+        return False
+    stripped = value.strip()
+    return (
+        not is_placeholder(value)
+        and not is_unresolved_value(value)
+        and not (stripped.startswith("<") and stripped.endswith(">"))
+    )
 
 
 def _enum_value(value: Any, allowed: frozenset[str]) -> bool:
@@ -92,7 +99,7 @@ def runtime_observation_failures(
             failures.append(f"events[{index}] must be an object")
             continue
         event_id = event.get("id")
-        if not isinstance(event_id, str) or not event_id.strip():
+        if not _resolved_text(event_id):
             failures.append(f"events[{index}].id must be resolved")
             continue
         if event_id in event_by_id:
@@ -112,7 +119,7 @@ def runtime_observation_failures(
         if not valid_count:
             failures.append(f"event {event_id} observed_count must be non-negative")
         if not isinstance(refs, list) or not refs or not all(
-            isinstance(item, str) and item.strip() for item in refs
+            _resolved_text(item) for item in refs
         ):
             failures.append(f"event {event_id} requires evidence_refs")
         if classification == "unknown" or disposition == "unresolved":
@@ -128,7 +135,7 @@ def runtime_observation_failures(
         if not isinstance(claim, dict):
             failures.append(f"claims[{index}] must be an object")
             continue
-        claim_id = claim.get("id", f"claims[{index}]")
+        claim_id = claim.get("id")
         if not _resolved_text(claim_id):
             failures.append(f"claims[{index}].id must be resolved")
             claim_id = f"claims[{index}]"

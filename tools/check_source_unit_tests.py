@@ -12,7 +12,7 @@ import sys
 import time
 import unittest
 import statistics
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 from parallel_execution import child_capacity, run_commands
 from local_python_import_graph import LocalPythonImportGraph
@@ -57,13 +57,9 @@ def _environment_changed_paths() -> list[str]:
         data = json.loads(raw)
     except json.JSONDecodeError:
         return []
-    if not isinstance(data, list):
+    if not isinstance(data, list) or any(not isinstance(item, str) or not item for item in data):
         return []
-    return [
-        item.replace("\\", "/")
-        for item in data
-        if isinstance(item, str) and item and not Path(item).is_absolute()
-    ]
+    return [item.replace("\\", "/") for item in data]
 
 
 def load_duration_hints(raw: str | None = None) -> dict[str, float]:
@@ -104,9 +100,13 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
     selected: set[Path] = set()
     requires_full = False
     changed_tools: set[Path] = set()
+    directly_covered_tools: set[Path] = set()
 
     for relpath in changed_paths:
-        path = Path(relpath)
+        path = Path(relpath.replace("\\", "/"))
+        if path.is_absolute() or PureWindowsPath(relpath).anchor or ".." in path.parts:
+            return None
+        relpath = path.as_posix()
         if relpath in CRITICAL_UNIT_SELECTION_PATHS:
             requires_full = True
             continue
@@ -132,11 +132,12 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
             if not tool_path.is_file():
                 requires_full = True
                 continue
-            changed_tools.add(tool_path)
+            changed_tools.add(tool_path.resolve())
             direct_name = path.with_suffix("").name
             direct_test = root / "tests" / f"test_{direct_name}.py"
             if direct_test.is_file():
                 selected.add(direct_test)
+                directly_covered_tools.add(tool_path.resolve())
             continue
         if relpath.startswith("tools/") and path.suffix == ".json":
             # Central tool data is executable policy. Unknown contracts fail
@@ -151,13 +152,17 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
         if any(not graph.scan(path).complete for path in graph.modules.values()):
             requires_full = True
         impacted = graph.reverse_dependents(changed_tools)
+        uncovered_tools = changed_tools - directly_covered_tools
         for test_path in _all_test_paths(root):
             scan = graph.scan(test_path)
             if not scan.complete:
                 requires_full = True
             elif scan.dependencies & impacted:
                 selected.add(test_path)
-        if not selected:
+                if uncovered_tools:
+                    uncovered_tools.difference_update(graph.transitive_dependencies(test_path))
+        # Another changed test or covered tool cannot discharge this obligation.
+        if uncovered_tools:
             requires_full = True
 
     if requires_full:

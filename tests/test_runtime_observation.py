@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -19,6 +20,7 @@ from target_adapter_validation.capability import CapabilityValidationContext  # 
 from target_adapter_validation.context import TargetRepositoryView  # noqa: E402
 from target_adapter_validation.modules import dispatch_capability_checks  # noqa: E402
 from validate_target_adapter import Validator  # noqa: E402
+from target_adapter_validation.harness_scenarios.common import validator as make_validator  # noqa: E402
 
 
 def valid_record() -> dict:
@@ -100,6 +102,37 @@ def nested_paths(value: object, prefix: tuple[object, ...] = ()) -> list[tuple[o
 class RuntimeObservationTests(unittest.TestCase):
     def test_valid_record_passes(self) -> None:
         self.assertEqual(runtime_observation_failures(valid_record()), [])
+
+    def test_event_evidence_references_must_be_resolved(self) -> None:
+        invalid_references = [None, [], "evidence.json", [None], [True], [7], [{}],
+                              [""], [" "], ["unknown"], ["<evidence-reference>"],
+                              ["{TARGET_EVIDENCE}"], ["evidence.json", "unknown"]]
+        for references in invalid_references:
+            with self.subTest(references=references):
+                record = valid_record()
+                record["events"][0]["evidence_refs"] = references
+                self.assertTrue(any("requires evidence_refs" in item
+                                    for item in runtime_observation_failures(record)))
+
+    def test_resolved_evidence_references_remain_lazy(self) -> None:
+        record = valid_record()
+        record["events"][0]["evidence_refs"] = [
+            "evidence/runtime-summary.json", "https://evidence.example.invalid/run/1"]
+        self.assertEqual(runtime_observation_failures(record), [])
+
+    def test_required_identifiers_do_not_accept_missing_or_unresolved_values(self) -> None:
+        for collection in ("events", "claims"):
+            for value in [None, "", " ", "unknown", "<identifier>", "{IDENTIFIER}", True, 7, {}, []]:
+                with self.subTest(collection=collection, value=value):
+                    record = valid_record()
+                    record[collection][0]["id"] = value
+                    self.assertTrue(any(f"{collection}[0].id must be resolved" in item
+                                        for item in runtime_observation_failures(record)))
+            with self.subTest(collection=collection, missing=True):
+                record = valid_record()
+                del record[collection][0]["id"]
+                self.assertTrue(any(f"{collection}[0].id must be resolved" in item
+                                    for item in runtime_observation_failures(record)))
 
     def test_incomplete_or_contradicted_claim_fails(self) -> None:
         record = valid_record()
@@ -205,6 +238,60 @@ class FindingSink:
 
 
 class RuntimeObservationDispatchTests(unittest.TestCase):
+    def test_real_git_dispatch_rejects_unresolved_evidence_and_missing_claim_ids(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            self.build_target(root, required=True, record=None)
+            (root / ".ai/assistant/module-profile.md").write_text(
+                "Module: `runtime-observation`\nState: `enabled`\n", encoding="utf-8")
+            (root / "tmp").mkdir()
+            (root / "tmp/runtime-summary.json").write_text('{"ready": 1, "errors": 0}\n', encoding="utf-8")
+
+            def git(*arguments: str) -> str:
+                return subprocess.run(["git", "-C", str(root), *arguments], check=True,
+                                      capture_output=True, text=True).stdout.strip()
+
+            git("init", "-q")
+            git("add", ".")
+            git("-c", "user.name=Alatyr Test", "-c", "user.email=test@example.invalid",
+                "commit", "-qm", "Runtime observation baseline")
+            revision = git("rev-parse", "HEAD")
+            baseline = valid_record()
+            baseline["repository_revision"] = revision
+            baseline["post_result_validation"]["result_revision"] = revision
+            cases = [("valid", copy.deepcopy(baseline), None)]
+            for references in [["<evidence-reference>"], ["{TARGET_EVIDENCE}"], ["unknown"], [None]]:
+                record = copy.deepcopy(baseline)
+                record["events"][0]["evidence_refs"] = references
+                cases.append(("unresolved evidence", record, "requires evidence_refs"))
+            record = copy.deepcopy(baseline)
+            del record["claims"][0]["id"]
+            cases.append(("missing claim ID", record, "claims[0].id must be resolved"))
+            record = copy.deepcopy(baseline)
+            record["events"][1]["observed_count"] = 1
+            cases.append(("forbidden event control", record, "forbidden event"))
+            cases.append(("valid after mutations", copy.deepcopy(baseline), None))
+            for name, record, expected in cases:
+                with self.subTest(name=name, expected=expected):
+                    relpath = ".ai/project/runtime-observations/records/current.json"
+                    rendered = json.dumps(record)
+                    (root / relpath).write_text(rendered, encoding="utf-8")
+                    index = {"schema_version": 1, "index_kind": "target-runtime-observation-index",
+                             "required_for_current_change": True, "current_operation_id": "op-1",
+                             "current_records": [{"operation_id": "op-1", "record_path": relpath,
+                                                  "sha256": hashlib.sha256(rendered.encode()).hexdigest()}]}
+                    (root / ".ai/project/runtime-observations/index.json").write_text(json.dumps(index), encoding="utf-8")
+                    checked = make_validator(root, validation_phase="acceptance")
+                    checked.allow_placeholders = False
+                    dispatch_capability_checks(checked, ["runtime-observation"], None)
+                    errors = [item for item in checked.findings if item.level == "error"]
+                    self.assertIn("RUNTIME_OBSERVATION_EVIDENCE_LIMIT", [item.code for item in checked.findings])
+                    if expected is None:
+                        self.assertEqual(errors, [])
+                    else:
+                        self.assertTrue(any(item.code == "RUNTIME_OBSERVATION_RECORD_INVALID"
+                                            and expected in item.message for item in errors), errors)
+
     def build_context(
         self, root: Path, sink: FindingSink, git: object | None = None
     ) -> CapabilityValidationContext:

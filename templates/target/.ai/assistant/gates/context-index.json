@@ -50,8 +50,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1381,
-      "content_digest": "sha256:0f29521245c373df1ab3dba356fde16ab5bcf10e0bce602ff674d4cbbcfb5c7e"
+      "estimated_words": 1386,
+      "content_digest": "sha256:b164738997288414e4391a34b953ee16c6be3c83214ab7cb664bfa102c4be6ce"
     },
     {
       "id": "assistant.content.gates-code-and-tests-md",

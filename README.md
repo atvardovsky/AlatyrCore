@@ -33,6 +33,18 @@ before adopting it.
 - **Check your assistant:** see [supported surfaces and limitations](docs/assistant-compatibility.md).
 - **Work on AlatyrCore itself:** start with [Contributing](#contributing).
 
+To begin without authorizing changes, open your target project in a compatible
+assistant and ask:
+
+```text
+Inspect this repository and propose the smallest useful AlatyrCore installation
+from https://github.com/atvardovsky/AlatyrCore. Explain what would change, what
+facts are missing, and which approvals are needed. Do not edit, commit, or push.
+```
+
+This starts an inspection and plan, not a completed installation. Continue with
+the [installation guide](INSTALL.md) before approving changes.
+
 ## Why Project Memory Belongs In The Repository
 
 A project can outlast its developers, its AI tools, and the conversations that
@@ -187,6 +199,12 @@ The result is a project-specific adapter: the files that connect Alatyr's
 portable rules to your project's sources, owners, checks, and supported
 assistants. Missing facts remain explicit gaps.
 
+The main support files live under `.ai/`: portable framework guidance,
+project-owned references, and assistant workflows. Short instruction entry
+points connect supported assistants to those files without replacing existing
+project instructions. See the [repository layout](docs/repository-layout.md)
+for the source and target structures.
+
 Optional scaffolding can create placeholder structure. It cannot inspect
 project truth, resolve those gaps, grant approval, or complete installation.
 
@@ -249,7 +267,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.99`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.100`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.
@@ -328,6 +346,10 @@ not every target project's runtime.
 
 Security reports follow [SECURITY.md](SECURITY.md). Do not put credentials,
 private project facts, or exploit details in public issues.
+
+For usage questions, start with the [FAQ](docs/human/faq.md). Report reproducible
+non-sensitive problems in [GitHub issues](https://github.com/atvardovsky/AlatyrCore/issues),
+including the Alatyr version, assistant, expected behavior, and sanitized evidence.
 
 ## License
 

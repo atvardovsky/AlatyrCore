@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
+from itertools import permutations
 from unittest.mock import patch
 from pathlib import Path
 
@@ -11,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from check_source_unit_tests import (  # noqa: E402
+    _environment_changed_paths,
     focused_test_paths,
     load_duration_hints,
     test_shards,
@@ -59,6 +62,37 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
                 focused_test_paths(["tools/new_tool.py"], root=root)
             )
 
+    def test_unrelated_changes_cannot_suppress_an_unmapped_tool_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / "tools").mkdir()
+            (root / "tests").mkdir()
+            (root / "tools/uncovered.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (root / "tools/covered.py").write_text("VALUE = 2\n", encoding="utf-8")
+            (root / "tests/test_other.py").write_text("import unittest\n", encoding="utf-8")
+            (root / "tests/test_covered.py").write_text("from covered import VALUE\n", encoding="utf-8")
+            for added in [(), ("tests/test_other.py",), ("tools/covered.py",),
+                          ("tools/covered.py", "tests/test_other.py")]:
+                for changes in permutations(("tools/uncovered.py", *added)):
+                    with self.subTest(changes=changes):
+                        self.assertIsNone(focused_test_paths(list(changes), root=root))
+
+    def test_multiple_covered_tools_retain_focused_transitive_selection(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / "tools").mkdir()
+            (root / "tests").mkdir()
+            (root / "tools/core.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (root / "tools/wrapper.py").write_text("from core import VALUE\n", encoding="utf-8")
+            selected = root / "tests/test_wrapper.py"
+            selected.write_text("from wrapper import VALUE\n", encoding="utf-8")
+            unrelated = root / "tests/test_other.py"
+            unrelated.write_text("import unittest\n", encoding="utf-8")
+            for changes in permutations(("tools/core.py", "tools/wrapper.py", "tests/test_other.py")):
+                with self.subTest(changes=changes):
+                    self.assertEqual(focused_test_paths(list(changes), root=root),
+                                     [unrelated, selected])
+
     def test_central_json_contract_selects_its_mapped_tests(self) -> None:
         selected = focused_test_paths(
             ["tools/source_context_router.json"], root=ROOT
@@ -71,6 +105,32 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
                 ROOT / "tests/test_task_classification_contract.py",
             ],
         )
+
+    def test_equivalent_changed_path_spellings_preserve_selection(self) -> None:
+        for canonical in ("tools/source_context_router.json", "tools/unknown-policy.json",
+                          "tools/check_source_unit_tests.py", "tests/test_check_all.py"):
+            for spelling in (canonical, "./" + canonical, ".//" + canonical,
+                             canonical.replace("/", "\\")):
+                for extra in ([], ["tests/test_source_unit_tests.py"]):
+                    with self.subTest(spelling=spelling, extra=extra):
+                        with patch.dict("os.environ", {"ALATYR_CHANGED_PATHS_JSON": json.dumps([spelling, *extra])}):
+                            changes = _environment_changed_paths()
+                        self.assertEqual(focused_test_paths(changes),
+                                         focused_test_paths([canonical, *extra]))
+
+    def test_escaping_changed_paths_fail_closed(self) -> None:
+        for path in ("../tools/policy.json", "tools/../policy.json", "/tmp/policy.json",
+                     "C:/tools/policy.json", "C:tools/policy.json", r"\\server\share\policy.json"):
+            with self.subTest(path=path):
+                self.assertIsNone(focused_test_paths([path, "tests/test_check_all.py"]))
+
+    def test_invalid_environment_paths_cannot_leave_a_docs_only_selection(self) -> None:
+        for value in (None, 1, {}, [], ""):
+            with self.subTest(value=value):
+                with patch.dict("os.environ", {"ALATYR_CHANGED_PATHS_JSON": json.dumps(["README.md", value])}):
+                    self.assertEqual(_environment_changed_paths(), [])
+        with patch.dict("os.environ", {"ALATYR_CHANGED_PATHS_JSON": json.dumps(["README.md", "/tmp/policy.json"])}):
+            self.assertIsNone(focused_test_paths(_environment_changed_paths()))
 
     def test_unknown_tool_json_falls_back_to_full_suite(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -2190,10 +2190,10 @@
       "bytes": 5866,
       "characters": 5866,
       "conditional_context": {
-        "bytes": 103051,
-        "characters": 103051,
+        "bytes": 103114,
+        "characters": 103114,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 25763,
+        "estimated_tokens_4_chars": 25779,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
@@ -2231,17 +2231,17 @@
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 3773,
+        "target_words": 3778,
         "unresolved_references": [],
-        "words": 12776
+        "words": 12781
       },
       "declared_files": 4,
       "estimated_tokens_4_chars": 1467,
       "full_candidate_union": {
-        "bytes": 108917,
-        "characters": 108917,
+        "bytes": 108980,
+        "characters": 108980,
         "declared_files": 18,
-        "estimated_tokens_4_chars": 27230,
+        "estimated_tokens_4_chars": 27245,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
@@ -2285,11 +2285,11 @@
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 4359,
+        "target_words": 4364,
         "unresolved_references": [
           "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
         ],
-        "words": 13362
+        "words": 13367
       },
       "missing_paths": [],
       "portable_paths": [],
@@ -2315,10 +2315,10 @@
       "bytes": 5446,
       "characters": 5446,
       "conditional_context": {
-        "bytes": 98112,
-        "characters": 98112,
+        "bytes": 98175,
+        "characters": 98175,
         "declared_files": 12,
-        "estimated_tokens_4_chars": 24528,
+        "estimated_tokens_4_chars": 24544,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
@@ -2352,17 +2352,17 @@
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 3627,
+        "target_words": 3632,
         "unresolved_references": [],
-        "words": 12121
+        "words": 12126
       },
       "declared_files": 4,
       "estimated_tokens_4_chars": 1362,
       "full_candidate_union": {
-        "bytes": 103558,
-        "characters": 103558,
+        "bytes": 103621,
+        "characters": 103621,
         "declared_files": 16,
-        "estimated_tokens_4_chars": 25890,
+        "estimated_tokens_4_chars": 25906,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
@@ -2402,11 +2402,11 @@
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 4177,
+        "target_words": 4182,
         "unresolved_references": [
           "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
         ],
-        "words": 12671
+        "words": 12676
       },
       "missing_paths": [],
       "portable_paths": [],
@@ -2537,10 +2537,10 @@
       "bytes": 6839,
       "characters": 6839,
       "conditional_context": {
-        "bytes": 78731,
-        "characters": 78731,
+        "bytes": 78794,
+        "characters": 78794,
         "declared_files": 10,
-        "estimated_tokens_4_chars": 19683,
+        "estimated_tokens_4_chars": 19699,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/change-risk-model.md",
@@ -2570,17 +2570,17 @@
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 2789,
+        "target_words": 2794,
         "unresolved_references": [],
-        "words": 9605
+        "words": 9610
       },
       "declared_files": 5,
       "estimated_tokens_4_chars": 1710,
       "full_candidate_union": {
-        "bytes": 85570,
-        "characters": 85570,
+        "bytes": 85633,
+        "characters": 85633,
         "declared_files": 15,
-        "estimated_tokens_4_chars": 21393,
+        "estimated_tokens_4_chars": 21409,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/change-risk-model.md",
@@ -2618,11 +2618,11 @@
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 3527,
+        "target_words": 3532,
         "unresolved_references": [
           "{TARGET_DATA_SOURCE_OF_TRUTH}"
         ],
-        "words": 10343
+        "words": 10348
       },
       "missing_paths": [],
       "portable_paths": [],

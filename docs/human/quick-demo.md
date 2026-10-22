@@ -30,7 +30,22 @@ These paths exist in this repository:
 The placeholders show which project facts an installing assistant must resolve.
 They are not accepted facts about AlatyrCore or another target repository.
 
-## 2. See The Available Source Tool Entry Point
+## 2. Optionally Inspect The Source Tools
+
+The remaining walkthrough can be read without running tools. To try this
+optional section, use Python 3.10 or newer and install the source checkout's
+dependencies:
+
+```sh
+python3 -m pip install -r requirements-dev.txt -c constraints-ci.txt
+```
+
+On Windows, use a supported `python` or `py -3` interpreter instead of `python3`
+in these examples. Verify its version first. See the
+[source-tool setup](../../tools/README.md#source-validation-runner) and
+[runtime compatibility contract](../../tools/runtime-compatibility.json).
+These are AlatyrCore tooling prerequisites, not a requirement for every target
+project's application runtime.
 
 From the AlatyrCore source checkout, this existing command lists maintainer
 tools:

@@ -125,6 +125,57 @@ class ValidationContractInvocationTests(unittest.TestCase):
     def test_shipped_contract_passes(self) -> None:
         self.assertEqual(self.validate(), set())
 
+    def test_canonical_path_values_reject_absolute_paths_in_both_option_forms(self) -> None:
+        for operation, entrypoint in (("status", "adapter-health"), ("archive-audit", "archive-audit"),
+                                      ("validate-current", "current-change")):
+            options = ["--target", "--framework-source"]
+            if operation == "validate-current":
+                options += ["--approval-record", "--change-package", "--problem-model"]
+            for option in options:
+                for value in ("/home/alice/evidence.json", "C:/Users/alice/evidence.json",
+                              r"\\server\share\evidence.json", "~/AlatyrCore", "~alice/AlatyrCore"):
+                    for equals_form in (False, True):
+                        with self.subTest(entrypoint=entrypoint, option=option, value=value, equals=equals_form):
+                            tokens = ["python3", DELEGATE_PATH, operation]
+                            if option != "--target":
+                                tokens += ["--target", "."]
+                            tokens += [f"{option}={value}"] if equals_form else [option, value]
+                            command = shlex.join(tokens)
+                            self.assertTrue(self.parser_accepts(command))
+                            contract = copy.deepcopy(self.contract)
+                            contract["entrypoints"][entrypoint]["command"] = command
+                            self.assertIn("VALIDATION_CONTRACT_ABSOLUTE_PATH", self.validate(contract))
+
+    def test_relative_path_values_keep_equivalent_option_forms_valid(self) -> None:
+        for equals_form in (False, True):
+            with self.subTest(equals=equals_form):
+                tokens = ["python3", DELEGATE_PATH, "validate-current", "--target", "."]
+                for option, value in (("--framework-source", "tools/AlatyrCore"),
+                                      ("--approval-record", "approvals/key=value.json"),
+                                      ("--approval-record", "approvals/second.json"),
+                                      ("--change-package", "packages/one.json"),
+                                      ("--change-package", "packages/two.json"),
+                                      ("--problem-model", "models/task.json")):
+                    tokens += [f"{option}={value}"] if equals_form else [option, value]
+                command = shlex.join(tokens)
+                self.assertTrue(self.parser_accepts(command))
+                self.assertEqual(self.validate(self.current_change_contract(command)), set())
+
+    def test_local_checker_path_lint_retains_both_option_forms(self) -> None:
+        for value in ("evidence/approval.json", "/home/alice/approval.json", "C:/Users/alice/approval.json"):
+            for equals_form in (False, True):
+                with self.subTest(value=value, equals=equals_form):
+                    tokens = ["python3", "scripts/check_adapter.py"]
+                    tokens += [f"--record={value}"] if equals_form else ["--record", value]
+                    contract = copy.deepcopy(self.contract)
+                    entry = contract["entrypoints"]["current-change"]
+                    entry.update(command=shlex.join(tokens), coverage="structural-only",
+                                 canonical_delegate=None, final_evidence_eligible=False)
+                    errors = self.validate(contract)
+                    self.assertNotIn("VALIDATION_CONTRACT_SCHEMA", errors)
+                    self.assertEqual("VALIDATION_CONTRACT_ABSOLUTE_PATH" in errors,
+                                     value != "evidence/approval.json")
+
     def test_portable_python_launchers_preserve_direct_invocation(self) -> None:
         commands = [
             "python .ai/assistant/tools/alatyr_delegate.py validate-current --target .",

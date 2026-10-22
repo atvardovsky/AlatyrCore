@@ -10,7 +10,7 @@ import re
 import runpy
 import shlex
 from functools import lru_cache
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Protocol
 
 import jsonschema
@@ -48,6 +48,9 @@ REQUIRED_PREFIX_BINDINGS = {
         ("--change-package", ".ai/assistant/change-packages/ALATYR_CONTRACT.json"),
     ),
 }
+DELEGATE_PATH_FIELDS = (
+    "target", "framework_source", "approval_record", "change_package", "problem_model",
+)
 EXPECTED_DELEGATES = {
     "adapter-health": {
         "delegate_operation": "status",
@@ -99,6 +102,24 @@ def _option_count(arguments: list[str], option: str) -> int:
         token == option or token.startswith(f"{option}=")
         for token in arguments
     )
+
+
+def _machine_local_path(value: Any) -> bool:
+    text = str(value)
+    return (
+        PurePosixPath(text).is_absolute()
+        or bool(PureWindowsPath(text).anchor)
+        or text.startswith("~")
+    )
+
+
+def _delegate_uses_machine_paths(parsed: Any) -> bool:
+    for field in DELEGATE_PATH_FIELDS:
+        supplied = getattr(parsed, field, None)
+        values = supplied if isinstance(supplied, list) else [supplied]
+        if any(value is not None and _machine_local_path(value) for value in values):
+            return True
+    return False
 
 
 @lru_cache(maxsize=1)
@@ -213,13 +234,17 @@ def _direct_delegate_invocation_failures(
             )
         ]
 
+    failures: list[tuple[str, str]] = []
+    if _delegate_uses_machine_paths(parsed):
+        failures.append((
+            "VALIDATION_CONTRACT_ABSOLUTE_PATH",
+            f"{entrypoint} command contains machine-local absolute paths",
+        ))
     if _option_count(delegate_arguments, "--target") != 1 or str(parsed.target) != ".":
-        return [
-            (
-                "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
-                f"{entrypoint} canonical command must contain exactly one --target . binding",
-            )
-        ]
+        failures.append((
+            "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+            f"{entrypoint} canonical command must contain exactly one --target . binding",
+        ))
     single_value_options = {"--target", "--framework-source", "--diff-ref", "--task-id", "--task-class"}
     duplicates = sorted(
         option
@@ -227,13 +252,11 @@ def _direct_delegate_invocation_failures(
         if _option_count(delegate_arguments, option) > 1
     )
     if duplicates:
-        return [
-            (
-                "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
-                f"{entrypoint} canonical command repeats single-value options: {', '.join(duplicates)}",
-            )
-        ]
-    return []
+        failures.append((
+            "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+            f"{entrypoint} canonical command repeats single-value options: {', '.join(duplicates)}",
+        ))
+    return failures
 
 
 def _delegate_implementation_failure(
@@ -332,10 +355,12 @@ def validate_validation_contract(sink: FindingSink, manifest: Any) -> None:
             command_tokens = shlex.split(command)
         except ValueError:
             command_tokens = []
-        absolute_tokens = [
-            token
-            for token in command_tokens
-            if token.startswith("/") or re.match(r"^[A-Za-z]:[\\/]", token)
+        # Canonical commands use parsed values below; unknown local checkers
+        # retain lexical portability checks without pretending to parse their CLI.
+        absolute_tokens = [] if schema_version >= 2 and coverage == "canonical-delegate" else [
+            token for token in command_tokens
+            if _machine_local_path(token.partition("=")[2]
+                                   if token.startswith("--") and "=" in token else token)
         ]
         if absolute_tokens:
             sink.error(

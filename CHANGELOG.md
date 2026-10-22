@@ -4,6 +4,17 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.100 - 2026-10-22
+
+- [Audit repair checkpoint](docs/releases/0.1.0-alpha.100-notes.md): adapter
+  schema `82`/templates `95`. Reject unresolved runtime evidence and missing
+  claim identifiers, and check canonical delegate path values in both spaced
+  and equals option forms.
+- Focused source tests retain full fallback for each uncovered changed tool,
+  even when other changed tests or covered tools select narrower tests.
+- Clarify lazy bootstrap verification without deferring task-selected owners;
+  improve the human inspection-first entry point and tool prerequisites.
+
 ## 0.1.0-alpha.99 - 2026-10-22
 
 - [Field-audit closure](docs/releases/0.1.0-alpha.99-notes.md): adapter schema
