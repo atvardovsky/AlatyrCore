@@ -34,6 +34,16 @@ class ContextCatalogError(ValueError):
     """Raised when a context catalog or semantic codebook is invalid."""
 
 
+class ContextProjectionDrift(ContextCatalogError):
+    def __init__(self, message: str, *, index_path: Path, content_path: Path, chain: tuple[Path, ...]):
+        super().__init__(message)
+        self.index_path, self.content_path, self.chain = index_path, content_path, chain
+
+
+class ContextCatalogVersionError(ContextCatalogError):
+    """The installed catalog contract is not supported by this tooling."""
+
+
 @dataclass(frozen=True)
 class CatalogItem:
     item_id: str
@@ -45,8 +55,9 @@ class CatalogItem:
     semantic_refs: tuple[str, ...]
     owner_refs: tuple[str, ...]
     estimated_words: int
-    estimated_characters: int
+    estimated_characters: int | None
     content_digest: str
+    index_chain: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -164,6 +175,20 @@ def validate_context_catalog(
 ) -> CatalogResolution:
     """Validate and flatten one recursive context-index tree."""
 
+    return _resolve_context_catalog(root_index, catalog_root=catalog_root, verify_content=verify_content, defer_leaves=False)
+
+
+def discover_context_catalog(root_index: Path, *, catalog_root: Path | None = None) -> CatalogResolution:
+    """Validate all index metadata, deferring leaf reads until selection.
+
+    Returned leaves are not verified content and cannot form a packet until
+    hydrated. Child-index digests remain mandatory, including sibling branches.
+    """
+    return _resolve_context_catalog(root_index, catalog_root=catalog_root, verify_content=False, defer_leaves=True)
+
+
+def _resolve_context_catalog(root_index: Path, *, catalog_root: Path | None, verify_content: bool, defer_leaves: bool) -> CatalogResolution:
+
     root_index = root_index.resolve()
     catalog_root = (catalog_root or root_index.parent).resolve()
     seen_indexes: set[Path] = set()
@@ -175,15 +200,16 @@ def validate_context_catalog(
     root_max_depth: int | None = None
     root_contour: str | None = None
 
-    def visit(index_path: Path, depth: int) -> None:
+    def visit(index_path: Path, depth: int, chain: tuple[Path, ...] = ()) -> None:
         nonlocal root_max_depth, root_contour
+        chain = (*chain, index_path)
         if index_path in active_indexes:
             raise ContextCatalogError(f"context index cycle reaches {index_path}")
         if index_path in seen_indexes:
             raise ContextCatalogError(f"context index has multiple parents: {index_path}")
         data = load_object(index_path)
         if data.get("schema_version") != CONTEXT_INDEX_SCHEMA_VERSION:
-            raise ContextCatalogError(f"{index_path} has unsupported schema_version")
+            raise ContextCatalogVersionError(f"{index_path} has unsupported schema_version")
         if data.get("index_kind") != CONTEXT_INDEX_KIND:
             raise ContextCatalogError(f"{index_path} has invalid index_kind")
         index_id = data.get("index_id")
@@ -293,20 +319,19 @@ def validate_context_catalog(
                 raise ContextCatalogError(f"{label}.content_digest must be sha256:<hex>")
             if not target.is_file():
                 raise ContextCatalogError(f"{label}.path does not exist: {relpath}")
-            content_stats = catalog_content_stats(target)
+            content_stats = None if defer_leaves and kind == "content" else catalog_content_stats(target)
             if verify_content:
                 if content_stats.words != estimated_words:
-                    raise ContextCatalogError(f"{label}.estimated_words is stale")
+                    raise ContextProjectionDrift(f"{label}.estimated_words is stale", index_path=index_path, content_path=target, chain=chain)
                 if content_stats.digest != digest:
-                    raise ContextCatalogError(f"{label}.content_digest is stale")
+                    raise ContextProjectionDrift(f"{label}.content_digest is stale", index_path=index_path, content_path=target, chain=chain)
             if kind == "index":
-                visit(target, depth + 1)
+                visit(target, depth + 1, chain)
                 if not verify_content:
-                    content_stats = catalog_content_stats(target)
                     if content_stats.words != estimated_words:
-                        raise ContextCatalogError(f"{label}.estimated_words is stale")
+                        raise ContextProjectionDrift(f"{label}.estimated_words is stale", index_path=index_path, content_path=target, chain=chain)
                     if content_stats.digest != digest:
-                        raise ContextCatalogError(f"{label}.content_digest is stale")
+                        raise ContextProjectionDrift(f"{label}.content_digest is stale", index_path=index_path, content_path=target, chain=chain)
                 continue
             if relpath in seen_content_paths:
                 raise ContextCatalogError(f"content path is indexed more than once: {relpath}")
@@ -322,8 +347,9 @@ def validate_context_catalog(
                     semantic_refs=semantic_refs,
                     owner_refs=owner_refs,
                     estimated_words=estimated_words,
-                    estimated_characters=content_stats.characters,
+                    estimated_characters=content_stats.characters if content_stats is not None else None,
                     content_digest=digest,
+                    index_chain=tuple(path.relative_to(catalog_root).as_posix() for path in chain),
                 )
             )
         active_indexes.remove(index_path)
@@ -610,6 +636,8 @@ def build_context_packet(
         capability_record = None
 
     items = sorted(selected_items, key=lambda item: item.item_id)
+    if any(type(item.estimated_characters) is not int or item.estimated_characters < 0 for item in items):
+        raise ContextCatalogError("context packet requires measured selected content, not metadata-only catalog leaves")
     required_refs = sorted({term for item in items for term in item.semantic_refs})
     missing = sorted(set(required_refs) - set(semantic_terms))
     if missing:

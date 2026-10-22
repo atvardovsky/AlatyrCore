@@ -144,7 +144,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 59,
-      "content_digest": "sha256:47fe641b492c3a089a1684ca5fe523a12cf723141682ee2eeb9e0429fbef18fc"
+      "content_digest": "sha256:17ce2adf6759826a76b95ff4c41265b706c5182e592e6158a892d6b57acb674c"
     },
     {
       "id": "assistant.content.analysis-strategies-invariant-first-json",

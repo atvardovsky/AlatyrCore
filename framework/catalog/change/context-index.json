@@ -70,8 +70,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 893,
-      "content_digest": "sha256:9770fb0b5ac01543d06c4b18f483542e647662db79f63ff4817ed509dd48e650"
+      "estimated_words": 997,
+      "content_digest": "sha256:158dc9185b25d38891b57a4d8684fe1ee9d51af3ed2463ea1edf0a713cc96db0"
     },
     {
       "id": "framework.change.testing-guidance-md",

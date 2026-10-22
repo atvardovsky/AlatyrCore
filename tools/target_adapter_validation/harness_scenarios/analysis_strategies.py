@@ -46,7 +46,7 @@ def _git(target: Path, *args: str) -> None:
 
 def _model() -> dict[str, object]:
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": "fixture-problem",
         "operation_id": "fixture-operation",

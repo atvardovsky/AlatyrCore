@@ -4,6 +4,18 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.99 - 2026-10-22
+
+- [Field-audit closure](docs/releases/0.1.0-alpha.99-notes.md): adapter schema
+  `81`/templates `94`. Require complete canonical owner bindings, allow bounded
+  policy-selected evidence templates, classify restorations in model schema 6,
+  and route optional reviewed stale-document warnings without granting authority.
+- Context planning defers unselected payload reads while retaining strict index
+  integrity and full acceptance. Local projection repairs and owner-preserving
+  blocked decomposition replace misleading upgrade advice and unbounded loading.
+- Installation/update proposes thin canonical delegation while preserving target
+  checkers, manual-review timing, explicit opt-outs and historical witnesses.
+
 ## 0.1.0-alpha.98 - 2026-10-22
 
 - [Incident evidence quality](docs/releases/0.1.0-alpha.98-notes.md): adapter

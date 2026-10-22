@@ -115,7 +115,7 @@
     },
     {
       "id": "CONSISTENCY",
-      "code_count": 50
+      "code_count": 49
     },
     {
       "id": "CONTEXT",
@@ -3306,6 +3306,15 @@
       ]
     },
     {
+      "code": "CONSISTENCY_REGISTRY_OWNER_BINDING",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_RELATIONSHIP_CANDIDATES",
       "levels": [
         "error"
@@ -3342,33 +3351,6 @@
       ]
     },
     {
-      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATE_DUPLICATE",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/target_adapter_validation/consistency_map.py"
-      ]
-    },
-    {
-      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATE_NODE",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/target_adapter_validation/consistency_map.py"
-      ]
-    },
-    {
-      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATE_TYPE",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/target_adapter_validation/consistency_map.py"
-      ]
-    },
-    {
       "code": "CONSISTENCY_REVERSE_INDEX_INVALID_JSON",
       "levels": [
         "error"
@@ -3390,6 +3372,16 @@
       "code": "CONSISTENCY_REVERSE_INDEX_STALE",
       "levels": [
         "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REVIEWED_WARNING",
+      "levels": [
+        "error",
+        "warning"
       ],
       "sources": [
         "tools/target_adapter_validation/consistency_map.py"

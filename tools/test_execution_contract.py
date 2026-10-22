@@ -7,7 +7,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import SchemaError
-from path_spec import PathSpec
+from path_spec import PathSpec, logical_path
 from yaml import YAMLError
 from target_adapter_validation.context import TargetRepositoryView
 from target_validation_support import is_placeholder, is_target_relative_path, is_unresolved_value
@@ -101,6 +101,17 @@ class TestExecutionContract:
         if contract["canonical_coverage_matrix"] is None and not contract["coverage_not_applicable_reason"]:
             failures.append("non-applicable coverage matrix requires a concrete reason")
         paths = [contract["canonical_policy"], *contract["evidence_records"]]
+        additional = contract.get("additional_evidence_templates", [])
+        paths.extend(additional)
+        if set(additional) & set(SURFACES):
+            failures.append("additional evidence templates must not duplicate built-in test surfaces")
+        if any(not path.endswith(".md") for path in additional):
+            failures.append("additional evidence templates must be exact Markdown file paths")
+        for path in additional:
+            try:
+                logical_path(path)
+            except ValueError as exc:
+                failures.append(f"additional evidence template: {exc}")
         if contract["canonical_coverage_matrix"] is not None:
             paths.append(contract["canonical_coverage_matrix"])
         for command in policy["commands"]:

@@ -234,7 +234,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 352,
-      "content_digest": "sha256:451661c1bcb5c5964bd1fdd17a149cae71c67277538cbec650b6ec2209bbe3c2"
+      "content_digest": "sha256:ba171962be7cf8085bc11c1bc996c21093d4230bdd121b961cefc2504d521e95"
     },
     {
       "id": "assistant.content.help-md",
@@ -413,7 +413,7 @@
         "ALATYR-DECOMPOSITION-001"
       ],
       "estimated_words": 716,
-      "content_digest": "sha256:8418ec077ff0197ff36d40a8e31078609238451d824c55c705d628aa64b2c96f"
+      "content_digest": "sha256:d66fb8cfa75e636d12b6f09a34cf2cdf523e347a78d55108d9f42d320ea2d4e5"
     },
     {
       "id": "assistant.content.validation-contract-json",
@@ -448,7 +448,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 282,
-      "content_digest": "sha256:a4bcbd4d8c5ad922cd4120552fbac04452f0f643e590017801de2a2344e71b9f"
+      "content_digest": "sha256:f15cde46a5928d5c1f1784b6dcf145d5368a8c3da2772c8509d9cf70796dc39d"
     },
     {
       "id": "assistant.section.approvals",
@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1270,
-      "content_digest": "sha256:37d0049a6d4e619bc57f58fe3e60e5621b79e02b7e845a9c42e562899f1df7a8"
+      "content_digest": "sha256:d03c0836acc2031cd4e89cdd727a42e62da55484111c920871434426e8fdade7"
     },
     {
       "id": "assistant.section.gates",
@@ -568,7 +568,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 825,
-      "content_digest": "sha256:7d727513521f9546b3f36e14860f67140e7c03aa13c3a18785eba9e43e582f8b"
+      "content_digest": "sha256:ab69af3becea8c8b9445eb42d5a8186bd506497c4a445b321aa8c8b27b199f62"
     },
     {
       "id": "assistant.section.policies",
@@ -643,7 +643,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2214,
-      "content_digest": "sha256:fa5fc0c261daca168b6ee05810ad2a4d6e6dc71d1d78bdd6d39cad42a86768d5"
+      "content_digest": "sha256:c80c0663d8ea4163569125dbbb83d2c67edea4fbc6677d026dd7dbe461167ab0"
     },
     {
       "id": "assistant.section.tools",

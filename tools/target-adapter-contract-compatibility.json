@@ -26,8 +26,8 @@
           "template": "templates/target/.ai/assistant/task-decomposition.json"
         },
         "problem-model": {
-          "current": 5,
-          "supported": [5],
+          "current": 6,
+          "supported": [6],
           "migration_limited": [],
           "schema": "schemas/alatyr-problem-model.schema.json",
           "template": "templates/target/.ai/assistant/templates/problem-model.json"

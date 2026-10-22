@@ -41,7 +41,7 @@ Before completion:
 - required obligations are passed with evidence or waived under explicit
   target-authorized policy
 - required reviews passed with evidence
-- schema-5 business authority and original-case acceptance are resolved;
+- schema-6 business authority, restoration classification and original-case acceptance are resolved;
   owner supersession remains distinct from fixing the original expectation
 - failed, blocked, open, or unevidenced duties block completion
 - systemic repair covers producer, orchestrator, persistence, and consumer

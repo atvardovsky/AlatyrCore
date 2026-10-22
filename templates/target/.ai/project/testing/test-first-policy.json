@@ -15,7 +15,8 @@
     "timing": "{BEFORE_IMPLEMENTATION_AFTER_MANUAL_REVIEW_OR_EXPLICIT_REQUEST_ONLY}",
     "red_requirement": "{REQUIRED_BEFORE_IMPLEMENTATION_WHEN_AUTHORIZED_OR_NOT_REQUIRED}",
     "review_authority": "{TARGET_TEST_EXECUTION_AUTHORITY}",
-    "evidence_records": []
+    "evidence_records": [],
+    "additional_evidence_templates": []
   },
   "repair_review": {
     "schema_version": 1,

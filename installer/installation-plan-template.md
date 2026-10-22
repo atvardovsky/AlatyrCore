@@ -8,6 +8,11 @@ Installation id: `ALATYR-YYYYMMDD-short-name`
 
 Discovery category map: `installer/discovery-contract.json`
 
+Applicable contract reconciliation: `{OWNER_BINDINGS_EXTRA_TEST_TEMPLATES_REPAIR_CLASSIFICATIONS_AND_REVIEWED_WARNINGS}`
+
+Checker consolidation proposal and preserved target commands/opt-outs:
+`{CANONICAL_DELEGATE_PROJECT_SPECIFIC_CHECKS_AND_REQUIRED_APPROVAL_OR_NOT_APPLICABLE}`
+
 ## Target Repository
 
 - Path:

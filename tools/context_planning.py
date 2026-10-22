@@ -14,12 +14,15 @@ from validation_route_contract import CONTRACT_PATH, validation_route_failures
 from context_catalog import (
     CatalogItem,
     ContextCatalogError,
+    ContextCatalogVersionError,
     build_context_packet,
     catalog_content_stats,
     file_digest,
     load_codebook,
-    validate_context_catalog,
+    discover_context_catalog,
 )
+from context_recovery import decomposition_proposal
+from reviewed_warnings import selected_candidate_warnings
 from impact_graph import (
     ImpactGraph,
     ImpactGraphError,
@@ -305,17 +308,18 @@ def _load_catalogs(target: Path, router: dict[str, Any]) -> _Catalogs:
         )
     items: list[CatalogItem] = []
     evidence: list[dict[str, Any]] = []
+    root_index = target
     try:
         for contour in REQUIRED_CONTOURS:
             relpath = _normalize_relative(str(indexes[contour]), f"{contour} context index")
             root_index = _target_path(target, relpath, f"{contour} context index")
             catalog_root = root_index.parent
-            resolution = validate_context_catalog(
-                root_index, catalog_root=catalog_root, verify_content=False
+            resolution = discover_context_catalog(
+                root_index, catalog_root=catalog_root
             )
             prefix = root_index.parent.relative_to(target).as_posix()
             items.extend(
-                replace(item, path=f"{prefix}/{item.path}")
+                replace(item, path=f"{prefix}/{item.path}", index_chain=tuple(f"{prefix}/{path}" for path in item.index_chain))
                 for item in resolution.items
             )
             evidence.append(
@@ -331,8 +335,11 @@ def _load_catalogs(target: Path, router: dict[str, Any]) -> _Catalogs:
         raise ContextPlanningError(
             "CONTEXT_CATALOG_STALE",
             f"recursive target context catalog is unavailable or stale: {exc}",
-            upgrade_required=True,
-            actions=("regenerate and validate installed recursive context catalogs",),
+            upgrade_required=isinstance(exc, ContextCatalogVersionError),
+            details={"repair_kind": "local-context-projection", "failed_index": str(getattr(exc, "index_path", root_index).relative_to(target)),
+                     "index_chain": [path.relative_to(target).as_posix() for path in getattr(exc, "chain", (root_index,))],
+                     "affected_path": getattr(exc, "content_path", root_index).relative_to(target).as_posix()},
+            actions=(f"repair the reported entry and regenerate its ancestor index chain from {root_index.relative_to(target).as_posix()}; this is not a framework upgrade",),
         ) from exc
     by_id: dict[str, CatalogItem] = {}
     by_path: dict[str, CatalogItem] = {}
@@ -572,10 +579,11 @@ def _impact_selection(
     if unknown_facts:
         raise ContextPlanningError(
             "UNKNOWN_FACT_ID",
-            "requested fact IDs are absent from the target consistency graph",
+            "requested graph node IDs are absent; --fact-id takes consistency-map node IDs, not task-local finding IDs",
             status="blocked",
-            upgrade_required=True,
+            upgrade_required=False,
             details={"fact_ids": unknown_facts},
+            actions=("look up the exact node ID in the target consistency map; route task-local findings through their changed paths",),
         )
     policy = graph.root.get("impact_policy")
     policy = policy if isinstance(policy, dict) else {}
@@ -612,11 +620,14 @@ def _impact_selection(
         node = graph.nodes[node_id]
         owner = node.get("canonical_owner")
         if isinstance(owner, str) and owner:
+            owner, _, owner_selector = owner.partition("#")
             owner = _normalize_relative(owner, f"canonical owner for {node_id}")
             if PLACEHOLDER_RE.search(owner):
                 _require_concrete(owner, f"canonical owner for {node_id}")
             owner_path = _target_path(target, owner, f"canonical owner for {node_id}")
             owner_record: dict[str, Any] = {"node_id": node_id, "path": owner}
+            if owner_selector:
+                owner_record["selector"] = owner_selector
             if owner in catalogs.by_path:
                 _select_path(owner, f"canonical-owner:{node_id}", catalogs, selected, reasons)
                 owner_record.update(
@@ -644,6 +655,7 @@ def _impact_selection(
         for binding in node.get("bindings", []):
             if not isinstance(binding, dict):
                 continue
+            _select_binding_owner(target, node_id, binding, catalogs, selected, reasons)
             impacted_surfaces.append(
                 {
                     "node_id": node_id,
@@ -692,8 +704,30 @@ def _impact_selection(
         "canonical_owners": canonical_owners,
         "impacted_surfaces": impacted_surfaces,
         "unresolved_relationships": [],
+        "reviewed_warnings": selected_candidate_warnings(target, graph.root.get("relationship_candidates"), node_ids, graph=graph),
         "limits": {"max_depth": max_depth, "max_nodes": max_nodes},
     }
+
+
+def _select_binding_owner(target: Path, node_id: str, binding: dict, catalogs: _Catalogs, selected: dict, reasons: dict) -> None:
+    if binding.get("authority") != "canonical":
+        return
+    if binding.get("selector_kind") == "glob":
+        if not binding.get("context_ids"):
+            raise ContextPlanningError("CANONICAL_OWNER_CONTEXT_UNRESOLVED", f"canonical scope {binding.get('path')!r} on {node_id!r} needs explicit bounded context IDs; never load the directory by default", status="blocked")
+        return
+    path = binding.get("path")
+    if not isinstance(path, str):
+        return
+    reason = f"canonical-binding:{node_id}"
+    existing = next((item for item in selected.values() if item.path == path), None)
+    if existing is not None:
+        reasons.setdefault(existing.item_id, set()).add(reason)
+    elif path in catalogs.by_path:
+        _select_path(path, reason, catalogs, selected, reasons)
+    else:
+        item = _synthetic_file_item(target, path, "impact.binding." + hashlib.sha256(path.encode()).hexdigest()[:16], reason)
+        _select_synthetic(item, reason, selected, reasons)
 
 
 def _add_owner_closure(
@@ -731,12 +765,12 @@ def _add_owner_closure(
 
 
 def _verify_selected_content(
-    target: Path, selected: Iterable[CatalogItem]
+    target: Path, selected: dict[str, CatalogItem]
 ) -> None:
     """Verify only the content leaves selected by the bounded routing plan."""
 
     try:
-        for item in selected:
+        for item in tuple(selected.values()):
             stats = catalog_content_stats(target / item.path)
             if stats.words != item.estimated_words:
                 raise ContextCatalogError(
@@ -746,11 +780,13 @@ def _verify_selected_content(
                 raise ContextCatalogError(
                     f"{item.path}.content_digest is stale"
                 )
+            selected[item.item_id] = replace(item, estimated_characters=stats.characters)
     except (ContextCatalogError, OSError, UnicodeError) as exc:
         raise ContextPlanningError(
             "CONTEXT_CATALOG_STALE",
             f"selected context content is unavailable or stale: {exc}",
-            upgrade_required=True,
+            upgrade_required=False,
+            details={"repair_kind": "local-context-projection", "path": item.path, "index_chain": list(item.index_chain)},
             actions=("regenerate the selected context catalog branch",),
         ) from exc
 
@@ -1067,7 +1103,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         request, target, router, catalogs, selected, reasons
     )
     _add_owner_closure(catalogs, selected, reasons)
-    _verify_selected_content(target, selected.values())
+    _verify_selected_content(target, selected)
     terms, semantic_index_path = _semantic_terms(
         target, router, selected.values(), request.profile, operation_id
     )
@@ -1131,7 +1167,8 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "CONTEXT_FILE_BUDGET_EXCEEDED",
             "required context exceeds the configured file budget",
             status="blocked",
-            details={"required_files": len(selected), "max_files": configured_files},
+            details={"required_files": len(selected), "max_files": configured_files,
+                     "decomposition": decomposition_proposal(selected.values(), max_files=configured_files, max_words=max_words, max_characters=max_characters)},
             actions=("record a context expansion or split the task without omitting owners",),
         )
     normalized_reasons = {
@@ -1173,6 +1210,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
                     "selected_content_characters": sum(
                         item.estimated_characters for item in selected.values()
                     ),
+                    "decomposition": decomposition_proposal(selected.values(), max_files=configured_files, max_words=max_words, max_characters=max_characters),
                 },
                 actions=("record a context expansion or split the task without omitting owners",),
             ) from exc

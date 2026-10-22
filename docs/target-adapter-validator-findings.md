@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1738
+Catalog entries: 1737
 
 ## Families
 
@@ -29,7 +29,7 @@ Catalog entries: 1738
 - `CAPABILITY`: 10 codes.
 - `CHANGED`: 2 codes.
 - `CODEDOC`: 37 codes.
-- `CONSISTENCY`: 50 codes.
+- `CONSISTENCY`: 49 codes.
 - `CONTEXT`: 26 codes.
 - `DEBUG`: 140 codes.
 - `DELEGATION`: 101 codes.
@@ -745,6 +745,8 @@ Catalog entries: 1738
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_NODE_UNRESOLVED`
   Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_REGISTRY_OWNER_BINDING`
+  Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_RELATIONSHIP_CANDIDATES`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_JSON`
@@ -753,18 +755,14 @@ Catalog entries: 1738
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_RELATIONSHIP_CANDIDATES_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
-- `CONSISTENCY_RELATIONSHIP_CANDIDATE_DUPLICATE`
-  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
-- `CONSISTENCY_RELATIONSHIP_CANDIDATE_NODE`
-  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
-- `CONSISTENCY_RELATIONSHIP_CANDIDATE_TYPE`
-  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REVERSE_INDEX_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REVERSE_INDEX_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REVERSE_INDEX_STALE`
   Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_REVIEWED_WARNING`
+  Level: error, warning. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONTEXT_CATALOG_BOOTSTRAP_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_CATALOG_BOOTSTRAP_INVALID_SHAPE`

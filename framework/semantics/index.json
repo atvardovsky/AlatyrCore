@@ -115,7 +115,7 @@
       ],
       "canonical_owner_digests": {
         "alatyr:current-scope-authorization@1": "sha256:9a194f436839c0b606d38198d0bc7135fc25d6cf586d5fec5b60c93ce2dd6dd0",
-        "alatyr:canonical-owner@1": "sha256:af17bf350b75490789532e2d937d8b8c1df96a2166e2d95054d6019a144d1f1a",
+        "alatyr:canonical-owner@1": "sha256:a8c506ba16553ef9f2861d9aeb17e23a6519ce46065b8d8be5de5442f86c4340",
         "alatyr:risk-by-fact@1": "sha256:f72a84e252abedc5d1797a7034556a2713cb1a8fb3ec8b609fbb6e0e573cd1db",
         "alatyr:protected-change@1": "sha256:ca600f27292602e40831cfe0fdbff8306930c5215f70c2ecddaac91a1bd31544",
         "alatyr:logical-integrity@1": "sha256:daec11f63bd54528cdde2b885b551fa982e67d6a36542be00c655de70799634f",

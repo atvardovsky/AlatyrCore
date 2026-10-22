@@ -69,13 +69,16 @@ class ActiveTaskFixture(unittest.TestCase):
 
 
     def write_index(self, tasks=None):
+        self.task["repair_review_required"] = any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in self.model.get("proof_obligations", []))
         path = self.target / INDEX_PATH
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps({"schema_version": 1, "index_kind": "target-active-task-index", "tasks": [self.task] if tasks is None else tasks}), encoding="utf-8")
 
 
-    def check(self, *, selected=True, scope="full"):
+    def check(self, *, selected=True, scope="full", comparison=True):
         checked = changed_index_validator(self.target)
+        if not comparison:
+            checked.diff_ref = None
         checked.current_task_id = "fixture-task" if selected else None
         checked.validation_scope = scope
         phase = next(phase for phase in checked.validation_phases(None, "core", set()) if phase.phase_id == "active-tasks")

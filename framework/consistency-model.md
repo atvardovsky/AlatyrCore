@@ -123,6 +123,19 @@ instead of forcing empty updates.
 
 ## Drift And Staleness
 
+Optional relationship-candidate schema 2 can carry a `reviewed_warning` of kind
+`stale-document`. Bind the document, source finding and canonical comparison
+files through the existing `source_review` SHA-256 contract. Route warnings
+only after selecting an endpoint; do not traverse a candidate or infer document
+freshness from a `documents` edge. Changed/missing inputs require re-review.
+Warnings remain diagnostics, never accepted facts, ownership, or approval.
+Select `finding_ref` as `path/to/review.json#finding-id`: the bounded JSON
+record contains schema version 1, kind `target-reviewed-document-warning`,
+`finding_id`, `source_node`, `target_node`, `document`, `comparison_sources`,
+and a concrete `reason`.
+Its identities must match the warning; comparison sources resolve to endpoint
+canonical file owners. Hashes alone do not bind a retargeted finding.
+
 The map is stale when an owner, path, project area, edge target, validation, or
 approval trigger no longer matches repository evidence. Report stale entries
 as adapter drift. Repair the map from target evidence; do not change product

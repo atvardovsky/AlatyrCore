@@ -153,8 +153,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3298,
-      "content_digest": "sha256:3a50289201dbee9a1df18b3bd5f7721ac377242254a1f4d3c584df533ee62ca2"
+      "estimated_words": 3377,
+      "content_digest": "sha256:8e21f2e67fd0e91752964a654663aee17c00e6875c6a497b8b3ef797c7b9a2bb"
     },
     {
       "id": "framework.core.contour-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:c7edd2f676e794c5b83614f1344229520cec33ad55140416219b31e9453a2080"
+      "content_digest": "sha256:0407385bedb8471daa78ad099a1137d4a33817d52905bea13daacd73f4141c69"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",
@@ -555,8 +555,8 @@
       "owner_refs": [
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 1251,
-      "content_digest": "sha256:af17bf350b75490789532e2d937d8b8c1df96a2166e2d95054d6019a144d1f1a"
+      "estimated_words": 1351,
+      "content_digest": "sha256:a8c506ba16553ef9f2861d9aeb17e23a6519ce46065b8d8be5de5442f86c4340"
     }
   ]
 }

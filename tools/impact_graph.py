@@ -240,7 +240,7 @@ def build_reverse_index(graph: ImpactGraph) -> dict[str, Any]:
                 "surface_kind": binding.get("surface_kind"),
                 "context_ids": binding.get("context_ids", []),
             }
-            if kind == "file" and not any(marker in path for marker in "*?["):
+            if kind != "glob":
                 exact.setdefault(path, []).append(node_id)
             else:
                 patterns.append({"pattern": path, **entry})

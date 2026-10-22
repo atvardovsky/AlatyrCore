@@ -354,15 +354,16 @@ def validate_selected_problem_model(
     model = validator.load_json_object(model_path, "ANALYSIS_PROBLEM_MODEL")
     if not isinstance(model, dict):
         return None
-    if archived and model.get("schema_version") == 4:
+    if archived and model.get("schema_version") in (4, 5):
         try:
-            schema = _schema(PROBLEM_MODEL_SCHEMA.with_name("alatyr-problem-model-v4.schema.json"), validator.schema_context)
-            projection_schema = _schema(PROBLEM_MODEL_SCHEMA.with_name("alatyr-problem-model-active-projection-v3.schema.json"), validator.schema_context)
+            schema = _schema(PROBLEM_MODEL_SCHEMA.with_name(f"alatyr-problem-model-v{model['schema_version']}.schema.json"), validator.schema_context)
+            if model["schema_version"] == 4:
+                projection_schema = _schema(PROBLEM_MODEL_SCHEMA.with_name("alatyr-problem-model-active-projection-v3.schema.json"), validator.schema_context)
         except (OSError, ValueError) as exc:
             validator.error("ACTIVE_TASK_WITNESS_SCHEMA", str(exc), relpath)
             return None
         if current_task and require_completion and getattr(validator, "require_task_acceptance", False):
-            validator.error("TASK_ACCEPTANCE_LEGACY_MODEL", "historical schema-4 evidence cannot establish new task acceptance; re-evaluate the current task with schema 5", relpath)
+            validator.error("TASK_ACCEPTANCE_LEGACY_MODEL", "historical schema-4/5 evidence cannot establish new task acceptance; re-evaluate the current task with schema 6", relpath)
     model_failures = validate_problem_model(model, schema)
     for failure in model_failures:
         validator.error("ANALYSIS_PROBLEM_MODEL_INVALID", failure, relpath)
@@ -409,7 +410,7 @@ def validate_selected_problem_model(
             "selected problem model has an incomplete required review",
             relpath,
         )
-    if require_completion and model.get("schema_version") == 5 and not model_failures:
+    if require_completion and model.get("schema_version") in (5, 6) and not model_failures:
         for failure in behavior_failures(model, completion=True):
             validator.error("TASK_BEHAVIOR_ACCEPTANCE", failure, relpath)
     return model

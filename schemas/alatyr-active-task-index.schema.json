@@ -21,6 +21,7 @@
           "canonical_owners": {"$ref": "#/definitions/paths"},
           "changed_fact_ids": {"$ref": "#/definitions/strings"},
           "incident_family_id": {"$ref": "#/definitions/text"},
+          "repair_review_required": {"type": "boolean"},
           "predecessor_task_ids": {"$ref": "#/definitions/strings"},
           "latest_failed_gate_id": {"$ref": "#/definitions/text"}
         },

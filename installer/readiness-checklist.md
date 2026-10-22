@@ -8,6 +8,12 @@ changes.
 Use `installer/discovery-contract.json` as the source-owned category map for
 the discovery prompts in this checklist.
 
+For enabled capabilities, verify declaration-equivalent canonical owner
+bindings, policy-bound additional evidence templates, current-model restoration
+classification and any selected digest-bound warnings. Stale context projections
+need local regeneration, not an automatic framework upgrade. Preserve custom
+checker behavior and review timing when proposing canonical delegation.
+
 ## 1. Target Repository Profile
 
 - Target repository path:

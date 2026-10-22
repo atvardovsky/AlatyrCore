@@ -136,7 +136,7 @@
         "task_decomposition_schema": {"const": 2},
         "analysis_strategy_index": {"const": ".ai/assistant/analysis-strategies/index.json"},
         "problem_model_template": {"const": ".ai/assistant/templates/problem-model.json"},
-        "problem_model_schema": {"const": 5},
+        "problem_model_schema": {"const": 6},
         "problem_model_projection_template": {"const": ".ai/assistant/templates/problem-model-active-projection.json"},
         "problem_model_projection_schema": {"const": 4},
         "delegation_policy_schema": {"const": 7},

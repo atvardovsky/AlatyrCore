@@ -5,6 +5,13 @@ when the programmer asks whether the installed adapter is still coherent.
 
 Replace placeholders with target facts before accepting installation.
 
+For enabled capabilities, reconcile every explicit registry owner with canonical
+bindings on its fact node, extra testing templates with the canonical timing
+policy, current restoration classifications, and reviewed warning inputs.
+Repair stale generated context locally; a blocked planner's decomposition is
+advisory, not a usable packet. Propose checker consolidation through canonical
+delegation without deleting custom checks or changing review gates unapproved.
+
 ## Target Sources
 
 - Framework baseline/source: `{ALATYR_CORE_SOURCE_OR_BASELINE}`

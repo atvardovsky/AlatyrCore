@@ -8,6 +8,13 @@ without relying on an installer script.
 The flow is portable and assistant-neutral. The target project adapter must be
 rewritten from target repository facts.
 
+For applicable capability checks, reconcile every registry owner with its fact
+node's canonical bindings, select extra evidence templates through the target
+testing policy, and classify restoring deltas using the current problem model.
+Follow the canonical owners linked by the selected module; do not add a second
+policy copy. Propose thin canonical delegation plus project-specific checks,
+preserving existing checkers and manual-review timing until approved otherwise.
+
 Use `installer/discovery-contract.json` as the source-owned category map for
 target repository discovery before selecting support profiles, optional
 modules, or adapter surfaces.

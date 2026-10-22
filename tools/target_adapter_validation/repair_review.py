@@ -10,6 +10,8 @@ from repair_review import evidence_failures
 from test_execution_contract import TestExecutionContract
 from target_adapter_validation.testing_execution import validate_testing_execution
 from target_validation_support import is_target_relative_path
+from repair_classification import classify_repairs
+from repair_history import captured_repair_required
 
 POLICY = ".ai/project/testing/test-first-policy.json"
 OBLIGATION = "repair-evidence-review"
@@ -30,7 +32,14 @@ def _bound_json(validator: Any, path: str, digest: str | None = None) -> dict[st
 def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dict[str, Any], *, completion: bool) -> None:
     incident = model.get("incident", {})
     obligations = [item for item in model.get("proof_obligations", []) if item.get("id") == OBLIGATION]
-    uncertain = model.get("primary_strategy_id") == "hypothesis-driven" or incident.get("mode") == "systemic-repair" or incident.get("trigger") in {"escaped-defect", "failed-required-gate", "recurring-correction"}
+    classification = classify_repairs(model, completion=completion)
+    for failure in classification.failures:
+        validator.error("TDD_EXECUTION_CONTRACT", failure, POLICY)
+    uncertain = classification.incident_required
+    captured = captured_repair_required(validator, task, completion=completion)
+    if captured and (len(obligations) != 1 or obligations[0].get("required") is not True):
+        validator.error("TDD_EXECUTION_CONTRACT", "captured same-task repair review cannot be removed or downgraded", POLICY)
+    uncertain = uncertain or captured
     if not uncertain and not obligations:
         return
     if obligations and incident.get("mode") == "none":
@@ -44,8 +53,8 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
         return
     prior_required = False
     if validator.diff_ref:
-        change = validator.git.change_set(validator.diff_ref)
-        raw, available = validator.git.bounded_file_result_at_ref(change.base_revision, POLICY, 512 * 1024) if change else (None, False)
+        base_revision = validator.git.comparison_base(validator.diff_ref)
+        raw, available = validator.git.bounded_file_result_at_ref(base_revision, POLICY, 512 * 1024) if base_revision else (None, False)
         if not available:
             validator.error("TDD_EXECUTION_CONTRACT", "repair-policy baseline is unavailable; requirement downgrade cannot be accepted", POLICY)
         try:

@@ -29,7 +29,7 @@ DESCRIPTOR_FIELDS = {
     "required_nonempty_fields",
     "completion_rule",
 }
-PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v5"
+PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v6"
 PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v4"
 STRATEGY_INDEX_RELPATH = ".ai/assistant/analysis-strategies/index.json"
 PROBLEM_MODEL_TEMPLATE_RELPATH = ".ai/assistant/templates/problem-model.json"
@@ -365,7 +365,7 @@ def validate_problem_model(
     failures.extend(_forbidden_reasoning_failures(model))
     if failures:
         return failures
-    if model.get("schema_version") == 5:
+    if model.get("schema_version") in (5, 6):
         failures.extend(behavior_failures(model))
     projection_ref = model.get("active_projection")
     model_id = model.get("model_id")

@@ -157,6 +157,16 @@ class ConsistencyMapValidationTests(unittest.TestCase):
             {finding.code for finding in check.findings},
         )
 
+    def test_malformed_candidate_configuration_cannot_disable_validation(self) -> None:
+        target = self.make_target()
+        path = target / ".ai/project/consistency-map.json"
+        root = json.loads(path.read_text())
+        for value in (None, True, 7, [], {}):
+            root["relationship_candidates"] = value
+            write_json(path, root)
+            check = validator(target); check.check_consistency_map()
+            self.assertIn("CONSISTENCY_RELATIONSHIP_CANDIDATES", {item.code for item in check.findings})
+
     def test_binding_escape_is_reported_instead_of_crashing(self) -> None:
         findings: list[tuple[str, str]] = []
 

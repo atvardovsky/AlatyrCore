@@ -33,7 +33,7 @@ PROJECTION_SCHEMA_PATH = (
 
 def sample_model(strategy_id: str) -> dict[str, object]:
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": f"fixture-{strategy_id}",
         "operation_id": "fixture-operation",

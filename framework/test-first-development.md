@@ -82,12 +82,24 @@ evidence paths. Keep mirrors subordinate: edit canonical sources first, then
 reconcile JSON-equivalent adapter copies. Skills, flows, gates and templates
 bind to that policy rather than maintaining independent execution sequences.
 
+Targets may select up to 16 exact Markdown paths in
+`execution_contract.additional_evidence_templates` (omitted means empty).
+These supplement, never replace, the four built-in test surfaces and use the
+same `alatyr_test_execution` frontmatter binding. Validate existence,
+containment, uniqueness and a 128 KiB per-file limit; do not discover templates
+by scanning prose. Add paths at the canonical policy owner before reconciling
+its adapter projection. This selection changes neither timing nor RED policy.
+
 Each command records kind, configuration paths, prerequisites, effects, resources,
 environment, suite scope, proof boundary and supported/unsupported/unknown
 filtering. Distinguish disposable automated resources from the shared manual
 review application and database. Never broaden an unsupported focused command.
 Reconcile test additions and exclusions against actual runner configuration;
 metadata alone cannot establish command semantics or suite completeness.
+Case-ID inventory is metadata, runner discovery is not execution, and database
+configuration is not database behavior proof. Label each using its command
+kind, measured execution state/counts and proof boundary; do not infer proof
+from a checker's success message. Opaque historical logs remain opaque.
 
 ## Enablement Contract
 

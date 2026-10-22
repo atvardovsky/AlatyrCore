@@ -64,9 +64,9 @@ def prepare(target: Path, task_id: str, retention_review: str) -> EvidencePlan:
     model_binding = witness["model"] if isinstance(witness, dict) else task["problem_model"]
     raw_model, model = _object(target, model_binding["path"], task["problem_model"]["sha256"], max_bytes=MAX_PROBLEM_MODEL_FILE_BYTES)
     version = model.get("schema_version")
-    if version not in (4, 5) or type(version) is not int:
-        raise ValueError("only explicit model schemas 4 and 5 can be retained")
-    schema = load_json_object(ROOT / "schemas" / ("alatyr-problem-model-v4.schema.json" if version == 4 else "alatyr-problem-model.schema.json"))
+    if type(version) is not int or version not in (4, 5, 6):
+        raise ValueError("only explicit model schemas 4, 5 and 6 can be retained")
+    schema = load_json_object(ROOT / "schemas" / (f"alatyr-problem-model-v{version}.schema.json" if version in (4, 5) else "alatyr-problem-model.schema.json"))
     failures = validate_problem_model(model, schema)
     if failures:
         raise ValueError("invalid model: " + "; ".join(failures))
@@ -75,7 +75,7 @@ def prepare(target: Path, task_id: str, retention_review: str) -> EvidencePlan:
     if closure["delivery"]["evidence_finalization"] == "final":
         if not required_obligations_resolved(model) or not required_reviews_passed(model):
             raise ValueError("final closure cannot archive unresolved required evidence")
-        if version == 5 and behavior_failures(model, completion=True):
+        if version in (5, 6) and behavior_failures(model, completion=True):
             raise ValueError("final closure cannot archive unresolved behavior or original-case acceptance")
     projection_binding = witness["projection"] if isinstance(witness, dict) else None
     projection_path = projection_binding["path"] if projection_binding else model["active_projection"]["path"]

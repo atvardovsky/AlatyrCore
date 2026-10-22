@@ -877,7 +877,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 164,
-      "content_digest": "sha256:5bad387fdbed22e41da5aecec2789eb86a1f6d049558802c6b9f977afae87afc"
+      "content_digest": "sha256:c5e188d4c4f4f5cf3e3ce2aef6274c133678f1968bdd8a73005e9bd9b4aa4a18"
     },
     {
       "id": "assistant.content.templates-project-knowledge-promotion-json",

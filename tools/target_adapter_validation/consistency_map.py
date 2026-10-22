@@ -27,6 +27,9 @@ from impact_graph import (
 )
 from path_spec import PathDialect, PathSpec
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
+from registry_ownership import OwnerDeclaration, owner_declarations, ownership_failures
+from reviewed_warnings import selected_candidate_warnings
+from relationship_candidates import candidate_semantic_failures
 
 
 CONSISTENCY_LEVELS = ["fact", "contract", "area", "system", "adapter"]
@@ -70,6 +73,7 @@ class RegistryFactEntry:
     map_node_id: str | None
     canonical_owner_values: tuple[str, ...]
     line: int
+    owner_declarations: tuple[OwnerDeclaration, ...] = ()
 
 
 def markdown_scalar(block: str, field: str) -> str | None:
@@ -126,6 +130,7 @@ def parse_registry_fact_entries(text: str) -> list[RegistryFactEntry]:
                 ),
                 canonical_owner_values=owner_values,
                 line=text.count("\n", 0, match.start()) + 1,
+                owner_declarations=owner_declarations(block, text.count("\n", 0, match.end()) + 1),
             )
         )
     return entries
@@ -326,6 +331,8 @@ def _validate_relationship_candidates(
 ) -> None:
     candidates_relpath = data.get("relationship_candidates")
     if not isinstance(candidates_relpath, str):
+        if "relationship_candidates" in data:
+            context.error("CONSISTENCY_RELATIONSHIP_CANDIDATES", "relationship_candidates must name a contained JSON file", ".ai/project/consistency-map.json")
         return
     candidates = context.load_json_object(
         context.target_path(candidates_relpath),
@@ -355,40 +362,20 @@ def _validate_relationship_candidates(
             f"relationship candidates {location}: {error.message}",
             candidates_relpath,
         )
-    candidate_ids: set[str] = set()
-    for candidate in candidates.get("records", []):
-        if not isinstance(candidate, dict):
-            continue
-        candidate_id = candidate.get("id")
-        if isinstance(candidate_id, str):
-            if candidate_id in candidate_ids:
-                context.error(
-                    "CONSISTENCY_RELATIONSHIP_CANDIDATE_DUPLICATE",
-                    f"relationship candidate id is repeated: {candidate_id}",
-                    candidates_relpath,
-                )
-            candidate_ids.add(candidate_id)
-        relationship_type = candidate.get("relationship_type")
-        if relationship_type not in CONSISTENCY_RELATIONSHIPS:
-            context.error(
-                "CONSISTENCY_RELATIONSHIP_CANDIDATE_TYPE",
-                f"relationship candidate {candidate_id!r} has unsupported type "
-                f"{relationship_type!r}",
-                candidates_relpath,
-            )
-        for endpoint in ["source_node", "target_node"]:
-            node_id = candidate.get(endpoint)
-            if (
-                isinstance(node_id, str)
-                and not is_placeholder(node_id)
-                and node_id not in graph.nodes
-            ):
-                context.error(
-                    "CONSISTENCY_RELATIONSHIP_CANDIDATE_NODE",
-                    f"relationship candidate {candidate_id!r} references missing "
-                    f"{endpoint} {node_id!r}",
-                    candidates_relpath,
-                )
+    records = candidates.get("records", [])
+    if not candidate_errors and isinstance(records, list) and any(isinstance(item, dict) and "reviewed_warning" in item for item in records):
+        review = selected_candidate_warnings(context.target, candidates_relpath, graph.nodes, graph=graph)
+        for diagnostic in review["diagnostics"]:
+            context.error("CONSISTENCY_REVIEWED_WARNING", diagnostic, candidates_relpath)
+        for warning in review["warnings"]:
+            if warning["state"] == "revalidation-required":
+                context.warn("CONSISTENCY_REVIEWED_WARNING", "; ".join(warning["failures"]), warning["document"])
+    if isinstance(records, list):
+        checked_records = [record for record in records if isinstance(record, dict)]
+        if context.allow_placeholders:
+            checked_records = [record for record in checked_records if not any(is_placeholder(record.get(field)) for field in ("source_node", "target_node"))]
+        for code, message in candidate_semantic_failures(checked_records, graph.nodes):
+            context.error(code, message, candidates_relpath)
 
 
 def _load_v3_graph(
@@ -583,6 +570,8 @@ def _validate_registry_sync(
     context: CapabilityValidationContext,
     nodes_by_id: dict[str, dict[str, Any]],
     relpath: str,
+    *,
+    enforce_owners: bool = True,
 ) -> None:
     registry_relpath = ".ai/project/source-of-truth-registry.md"
     registry_path = context.target_path(registry_relpath)
@@ -654,6 +643,9 @@ def _validate_registry_sync(
                 f"{entry.heading_fact_type!r}",
                 relpath,
             )
+        for line, failure in ownership_failures(entry.owner_declarations, node):
+            report = context.warn if not enforce_owners or context.allow_placeholders and any(is_placeholder(value.raw) for value in entry.owner_declarations) else context.error
+            report("CONSISTENCY_REGISTRY_OWNER_BINDING", failure, f"{registry_relpath}:{line or entry.line}")
     for fact_type, count in sorted(heading_counts.items()):
         if count > 1:
             context.error(
@@ -696,7 +688,7 @@ class ConsistencyMapModule:
         )
         if nodes_by_id is None:
             return
-        _validate_registry_sync(context, nodes_by_id, relpath)
+        _validate_registry_sync(context, nodes_by_id, relpath, enforce_owners=schema_version == 3)
 
 
 CONSISTENCY_MAP_MODULE = ConsistencyMapModule()

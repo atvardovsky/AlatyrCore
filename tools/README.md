@@ -86,6 +86,14 @@ return digest-bound command prefixes without executing them; final commands
 still need their current revision, approval, package and task bindings.
 Local checker strings are supplemental, not evidence of canonical completion.
 
+`context-plan` discovers index metadata before measuring selected leaves;
+it still verifies all child-index digests. Local projection drift reports its
+repair branch instead of requiring an upgrade. Budget failures return no packet
+and may include advisory owner-preserving decomposition. `--fact-id` selects
+consistency-map node IDs, not finding IDs from a task report.
+Both context and support-impact plans can deliver selected, digest-bound
+[reviewed warnings](../framework/consistency-model.md#drift-and-staleness).
+
 ## Worker Context Preparation
 
 With `--compact` or `--metrics`, `prepare-worker-result` writes `handoff.json` with measured

@@ -794,6 +794,14 @@ class GitEvidenceView:
     def resolve_ref(self, ref: str) -> str | None:
         return self.resolve_object(ref, "commit")
 
+    def comparison_base(self, ref: str) -> str | None:
+        """Resolve the canonical comparison base without reading diff payloads."""
+        selected = self.resolve_ref(ref)
+        if selected is None or self.initial_head is None:
+            return None
+        return self._cached(("comparison-base", selected, self.initial_head),
+                            lambda: _git_merge_base(self.target, selected, self.initial_head))
+
     def bounded_file_result_at_ref(self, ref: str, path: str, max_bytes: int, *, object_kind: str = "commit") -> tuple[bytes | None, bool]:
         revision = self.resolve_object(ref, object_kind)
         if revision is None or not is_target_relative_path(path):

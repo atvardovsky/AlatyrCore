@@ -16,8 +16,8 @@ Supported versions: `1`.
 Migration-limited versions: none.
 
 Artifact: `problem-model`
-Current version: `5`.
-Supported versions: `5`.
+Current version: `6`.
+Supported versions: `6`.
 Migration-limited versions: none.
 
 Artifact: `problem-model-active-projection`

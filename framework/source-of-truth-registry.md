@@ -85,6 +85,17 @@ node's `fact_type` must match the registry Fact Type exactly, and no two
 registry entries may claim the same node. The map may contain additional
 contract, area, system, or adapter nodes that do not own registry facts.
 
+Each explicit `Canonical owner:` declaration also needs a canonical binding on
+that same node. Multiple declarations are cumulative; a scalar owner, derived
+binding, different node, or `known-gap`/`isolated-verified` label is not coverage.
+Use individually backticked paths or Markdown links, separated by commas or
+semicolons. Decision-owner names are not file declarations. Ambiguous prose
+requires clarification, not guessed splitting. Exact files require whole-file
+bindings; `file.md#section` requires that Markdown section. A directory `d/`
+means `d/**`; explicit globs require the identical declared pattern, not a
+broader pattern or one matching current file. Literal bracketed filenames
+remain exact paths unless the binding explicitly declares a glob.
+
 A missing or stale relationship remains an adapter gap; it does not justify
 scanning every project surface or inventing an accepted edge. Deterministic
 detectors and assistants may record an evidence-bound relationship candidate,

@@ -11,6 +11,12 @@ context through observed-result validation. Keep draft validity, synchronization
 task acceptance and publication separate. See the optional helpers in
 [tools](../tools/README.md#reliable-support-authoring); they are not installers.
 
+Field-audit regression coverage also exercises multiple owner declarations,
+selected custom testing templates, strict-index/lazy-leaf parity, budget-blocked
+decomposition, restoration classification and non-authoritative reviewed
+warnings. Test malformed input and public routing, not only pure helpers. Old
+schema witnesses remain readable; they do not establish current-task acceptance.
+
 ## Change Categories
 
 - Framework rule change: update `framework/`, installer docs, target

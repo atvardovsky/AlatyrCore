@@ -127,6 +127,11 @@ Before upgrading framework files in a target project:
    update. Preserve target-owned `project:*` terms and do not silently redefine
    installed `alatyr:*` term versions.
 5. Identify framework-core changes versus target-adapter changes.
+   Propose consolidation of duplicated portable checks into a thin canonical
+   delegate plus genuinely project-specific checks. Preserve local commands,
+   opt-outs, timing/approval policy and historical evidence; never delete or
+   rewrite a custom checker without current-scope approval. Confirm declared
+   proof labels against registered command kind and execution evidence.
 6. Preserve target project facts.
 7. Compare supported assistant bridge needs and limitations. Merge source
    surface additions by ID without overwriting target capability evidence.
@@ -162,6 +167,10 @@ Before upgrading framework files in a target project:
    Freeze retention-reviewed closed-task witnesses; upgrade active models and
    projections together without fabricating authority or original-case results.
    Bind registered update-task completion separately from installation health.
+   Reconcile all registry owner declarations with canonical bindings on their
+   fact nodes, selected additional testing templates, reviewed-warning inputs,
+   and current restoration classifications. Preserve frozen old-model witnesses
+   as historical evidence, not proof of newly enforced contracts.
    For required durable engineering evidence, compare its policy, compact
    index, contract version, authoring-template record schema, lazy route,
    capture gate, repository binding state/lineage, Git object and ancestry

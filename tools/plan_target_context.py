@@ -24,7 +24,7 @@ def main() -> int:
     parser.add_argument("--profile", required=True)
     parser.add_argument("--operation", required=True)
     parser.add_argument("--changed-path", action="append", default=[])
-    parser.add_argument("--fact-id", action="append", default=[])
+    parser.add_argument("--fact-id", action="append", default=[], help="Exact consistency-map graph node ID, not a task-local finding ID; repeat as needed")
     parser.add_argument("--assistant-surface")
     parser.add_argument("--architecture-mode", choices=("inventory", "explain", "discuss", "compare", "review", "document"))
     parser.add_argument("--max-words", type=int)

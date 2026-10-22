@@ -17,7 +17,8 @@
         "timing": {"enum": ["before-implementation", "after-manual-review", "explicit-request-only"]},
         "red_requirement": {"enum": ["required-before-implementation", "when-authorized", "not-required"]},
         "review_authority": {"$ref": "#/$defs/text"},
-        "evidence_records": {"$ref": "#/$defs/texts"}
+        "evidence_records": {"$ref": "#/$defs/texts"},
+        "additional_evidence_templates": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}}
       }
     },
     "command_execution": {

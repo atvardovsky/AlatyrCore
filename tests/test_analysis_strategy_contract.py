@@ -64,7 +64,7 @@ class InstalledAnalysisTemplateTests(unittest.TestCase):
 
         self.assertIn("problem_model", failures)
         self.assertIn("active_projection", failures)
-        self.assertTrue(any("5 was expected" in error for error in failures["problem_model"]))
+        self.assertTrue(any("6 was expected" in error for error in failures["problem_model"]))
         self.assertTrue(
             any("4 was expected" in error for error in failures["active_projection"])
         )

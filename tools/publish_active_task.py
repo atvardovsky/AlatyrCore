@@ -96,6 +96,8 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
         if not model_relpath.startswith(PROBLEM_MODEL_RUNTIME_PREFIX) or not model_relpath.endswith(".json") or "\\" in model_relpath or not is_target_relative_path(model_relpath):
             raise ValueError("registered model must retain a safe runtime location")
     # The writer owns the derived binding; validate all caller-owned header fields first.
+    retained_review = any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in model.get("proof_obligations", []))
+    task["repair_review_required"] = retained_review or old is not None and old.get("repair_review_required") is True
     task["problem_model"] = {"path": model_relpath, "sha256": "0" * 64}
     if not task_schema("active-task-index").is_valid({"schema_version": 1, "index_kind": "target-active-task-index", "tasks": [task]}):
         raise ValueError("registration draft violates the active-task header schema")

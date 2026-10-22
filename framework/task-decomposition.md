@@ -187,6 +187,23 @@ explicit lifecycle model with terminal outcomes, boundaries, transitions, and
 conservation rules. Keep this evidence in the active projection so a resumed
 assistant cannot silently return to isolated-file reasoning.
 
+Current problem-model schema 6 requires each restoring behavior delta to carry
+`repair`: kind (`settled-correction`, `incident-repair`, or
+`reviewed-non-defect`), concrete reason, original `source_refs`, accepted
+`invariant_ids`, and required `proof_obligation_ids`. The delta's `after`
+states the expected restored behavior. Reuse source finding IDs. Unrelated
+settled corrections may share a non-incident batch; do not invent a common
+incident family or competing hypotheses for a settled cause. Completion needs
+passed, evidenced restoration obligations, not waived/open proof.
+Uncertain/systemic repairs retain incident identity, original case and review;
+classification never removes captured obligations. Frozen model schemas 4/5
+remain historical witnesses, not proof of schema-6 current-task acceptance.
+Task publication retains a sticky `repair_review_required` header. Validators
+compare available same-task baseline headers and durable witnesses; a missing
+legacy incident disposition requires reconciliation, not assumed absence.
+Selected-task completion requires an explicit comparison base for this check;
+health inspection without a selected completion claim does not.
+
 When a task changes a validator, checker, schema, gate, generated projection,
 or another machine-enforced contract, add `machine-enforced-contract` risk and
 activate semantic enforcement closure. Each normative requirement binds its

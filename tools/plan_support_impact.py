@@ -19,6 +19,7 @@ from impact_graph import (
 )
 from support_state import SupportStateError, build_support_state, load_state, state_differences
 from target_validation_support import git_changed_files
+from reviewed_warnings import selected_candidate_warnings
 
 
 RELATIONSHIP_DISCOVERY_MARKERS = {
@@ -187,6 +188,7 @@ def main() -> int:
         "path_matches": path_matches,
         "explicit_fact_ids": sorted(set(args.fact_id)),
         "selected_node_ids": selected,
+        "reviewed_warnings": selected_candidate_warnings(target, graph.root.get("relationship_candidates"), selected, graph=graph),
         "selected_edges": selected_edges,
         "skipped_edges": skipped_edges,
         "impacted_surfaces": impacted_surfaces,
@@ -197,6 +199,7 @@ def main() -> int:
         "limits": {"max_depth": max_depth, "max_nodes": max_nodes},
         "reasoning_boundary": "deterministic routing identifies candidates; the agent or reviewer re-derives semantics and invariants",
     }
+    report["impact_plan_digest"] = _digest_payload({key: value for key, value in report.items() if key != "impact_plan_digest"})
     rendered = json.dumps(report, indent=2, ensure_ascii=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

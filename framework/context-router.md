@@ -263,6 +263,15 @@ portable plus reserved must not exceed total, and source templates should
 retain meaningful target headroom. A target may tune them from measured
 evidence.
 
+Routine deterministic planning validates the full index structure and every
+child-index digest, but hydrates only selected content leaves. Metadata-only
+leaves are not verified content and cannot form a packet before measurement.
+Full acceptance still verifies all catalog content. Stale generated metadata
+requires local projection repair, not automatically a framework upgrade.
+An over-budget plan remains blocked with no packet; its bounded decomposition
+proposal preserves selected owner references and requires rerouting every
+phase. It grants neither budget expansion nor execution readiness.
+
 Keep a soft bootstrap threshold below its hard maximum so growth is visible
 before failure. When required owner, safety, approval, or validation context
 exceeds either budget dimension, load it and record the reason, boundary, added files,

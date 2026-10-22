@@ -263,6 +263,32 @@ class RegisteredRepairReviewTests(task_fixtures.ActiveTaskFixture):
         self.policy.pop("repair_review"); self.save()
         self.assertIn("TDD_EXECUTION_CONTRACT", self.errors(self.check()))
 
+    def test_active_only_baseline_header_catches_manual_review_downgrade(self):
+        self.configure()
+        task_fixtures.git(self.target, "add", ".")
+        task_fixtures.git(self.target, "commit", "-qm", "capture active incident review requirement")
+        self.model["proof_obligations"] = [item for item in self.model["proof_obligations"] if item["id"] != "repair-evidence-review"]
+        self.model["primary_strategy_id"] = "invariant-first"
+        self.write_model(); self.write_index()
+        self.assertIn("TDD_EXECUTION_CONTRACT", self.errors(self.check()))
+
+    def test_missing_comparison_cannot_accept_removed_review_metadata(self):
+        self.configure()
+        self.model["proof_obligations"] = [item for item in self.model["proof_obligations"] if item["id"] != "repair-evidence-review"]
+        self.model["primary_strategy_id"] = "invariant-first"
+        self.write_model(); self.write_index(); self.close()
+        self.assertIn("TDD_REPAIR_HISTORY", self.errors(self.check(comparison=False)))
+
+    def test_present_malformed_historical_index_is_not_absent_history(self):
+        self.configure()
+        path = self.target / ".ai/assistant/active-tasks.json"
+        for bad in ({}, {"schema_version": 1, "index_kind": "target-active-task-index"}, {"tasks": {}}, {"tasks": "invalid"}):
+            path.write_text(json.dumps(bad))
+            task_fixtures.git(self.target, "add", ".")
+            task_fixtures.git(self.target, "commit", "-qm", "capture malformed historical index")
+            self.write_index()
+            self.assertIn("TDD_REPAIR_HISTORY", self.errors(self.check()))
+
     def test_registered_retry_review_reports_missing_failed_output_without_crashing(self):
         self.configure()
         self.policy["execution_contract"]["evidence_records"].append("failed.json")

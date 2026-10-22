@@ -44,8 +44,20 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
     matrix = execution["canonical_coverage_matrix"]
     if matrix is not None and not context.is_target_file(matrix):
         context.error("TDD_COVERAGE_OWNER_MISSING", "canonical coverage matrix does not exist", matrix)
-    for path in SURFACES:
-        for failure in surface_binding_failures(context.read_text(context.target_path(path))):
+    for path in (*SURFACES, *execution.get("additional_evidence_templates", [])):
+        if not context.is_target_file(path):
+            context.error("TDD_SURFACE_POLICY_BINDING", "declared test surface is missing or outside the target", path)
+            continue
+        content = context.filesystem.read_bytes_result(context.target_path(path), max_bytes=128 * 1024)
+        if content.value is None:
+            context.error("TDD_SURFACE_POLICY_BINDING", "test surface exceeds 128 KiB or is unreadable", path)
+            continue
+        try:
+            text = content.value.decode("utf-8")
+        except UnicodeError:
+            context.error("TDD_SURFACE_POLICY_BINDING", "test surface must be UTF-8 Markdown", path)
+            continue
+        for failure in surface_binding_failures(text):
             context.error("TDD_SURFACE_POLICY_BINDING", failure, path)
     commands = {command["id"]: command for command in policy["commands"]}
     for command in commands.values():

@@ -20,7 +20,8 @@ def behavior_model():
         "fact_id": "change-1", "before": "One approved assignment is accepted", "after": "Restore the same accepted assignment",
         "effect": "restore", "authority_status": "approved", "authority_kind": "canonical-source",
         "authority_ref": "design/assignment.md#single-assignment", "decision_owner": "domain-owner",
-        "scope": "One assignment; no new partial-day restriction", "evidence_refs": ["decision:accepted-assignment"]
+        "scope": "One assignment; no new partial-day restriction", "evidence_refs": ["decision:accepted-assignment"],
+        "repair": {"kind": "settled-correction", "source_refs": ["issue:assignment"], "invariant_ids": ["invariant-1"], "proof_obligation_ids": ["proof-1"], "reason": "Restore the accepted assignment invariant from the reported case"}
     }]}
     return model
 

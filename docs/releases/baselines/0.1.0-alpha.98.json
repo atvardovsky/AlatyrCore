@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "baseline_kind": "source-release-checkpoint",
+  "framework_version": "0.1.0-alpha.98",
+  "adapter_schema_version": "80",
+  "template_version": "93",
+  "source_commit": "65a761551e434db7f10398d0b6170b18c5e830ba",
+  "contract_sha256": "3bcf71db6b73b6753097bdf2318ae14894bb770af199c5efde3844d43ea62a82",
+  "migration_report": "docs/releases/0.1.0-alpha.98-migration.md",
+  "migration_report_sha256": "fadae0bc619538d6f70879a9214d0c4b7fcb17f715051a42b77c53a2b24f374e",
+  "previous_baseline": "release-checkpoint:0.1.0-alpha.97",
+  "publication_status": "untagged-release-checkpoint"
+}

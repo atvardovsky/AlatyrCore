@@ -14,7 +14,7 @@
     "unresolved_decisions", "evidence_refs"
   ],
   "properties": {
-    "schema_version": {"const": 5},
+    "schema_version": {"const": 6},
     "model_kind": {"const": "alatyr-bounded-problem-model"},
     "model_id": {"$ref": "#/definitions/identifier"},
     "operation_id": {"$ref": "#/definitions/identifier"},
@@ -177,7 +177,8 @@
         "authority_ref": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
         "decision_owner": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
         "scope": {"$ref": "#/definitions/statement"},
-        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "repair": {"type": "object"}
       }
     },
     "originalCase": {

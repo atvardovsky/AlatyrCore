@@ -539,13 +539,13 @@ class ContextPlanningTests(unittest.TestCase):
         self.assertEqual(operation["status"], "invalid-request")
         self.assertEqual(operation["errors"][0]["code"], "UNKNOWN_OPERATION")
 
-    def test_stale_catalog_returns_upgrade_evidence(self) -> None:
+    def test_stale_catalog_returns_local_repair_not_upgrade(self) -> None:
         write_text(self.fixture.project / "billing.md", "changed without reindex\n")
 
         result = plan_target_context(self.request())
 
         self.assertEqual(result["status"], "unavailable")
-        self.assertTrue(result["upgrade_required"])
+        self.assertFalse(result["upgrade_required"])
         self.assertEqual(result["errors"][0]["code"], "CONTEXT_CATALOG_STALE")
 
     def test_unindexed_conditional_context_requires_adapter_repair(self) -> None:

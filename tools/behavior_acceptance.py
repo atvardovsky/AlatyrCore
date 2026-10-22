@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from target_validation_support import is_unresolved_value, is_placeholder
+from repair_classification import classify_repairs
 
 
 BUSINESS_RISKS = frozenset({"business-rule", "business-policy", "business-logic"})
@@ -57,6 +58,7 @@ def behavior_failures(model: dict[str, Any], *, completion: bool = False) -> lis
     if business and facts - seen:
         failures.append("business review omits changed facts: " + ", ".join(sorted(facts - seen)))
     failures.extend(original_case_failures(model, completion=completion))
+    failures.extend(classify_repairs(model, completion=completion).failures)
     return failures
 
 
