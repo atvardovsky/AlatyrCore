@@ -31,6 +31,26 @@ python3 tools/alatyr.py refresh-source --check
 Use `python` on Windows. A static context estimate, clean no-op refresh, or
 faster source test suite is not proof of agent billing or reasoning gains.
 
+## Reporting Checklist
+
+Apply the existing [effectiveness claim boundaries](../framework/effectiveness-metrics.md#claim-boundaries)
+to release notes and completion summaries, not only benchmark records:
+
+- Name the baseline/candidate revisions, workload, measurement boundary and
+  whether the fixture is synthetic. Compare identical requests and fixtures;
+  percentages from different fixtures are not interchangeable.
+- Report planner reads/bytes separately from selected-context bytes/words,
+  observed provider tokens, task latency and billed cost. Mark unmeasured
+  quantities unavailable, not unchanged or saved.
+- Compare the existing context-cost baselines and disclose increased scenarios
+  alongside improvements, including their reason. Report bootstrap and budget
+  changes separately: unchanged ceilings do not prove unchanged prompt size.
+- Keep quality checks and their scope visible. Passing checks do not turn a
+  synthetic I/O result into general speed, token-cost or reasoning evidence.
+
+This is a maintainer reporting checklist, not an automatic semantic-claim
+validator or a guarantee that an assistant follows the guidance.
+
 ## Agent Outcome Measurements
 
 Use the existing [paired benchmark suite](../conformance/benchmarks/benchmark-task-suite.json)
