@@ -14,6 +14,7 @@ from pathlib import Path
 
 from validate_target_adapter import git_branch_name, git_head_revision, parse_manifest
 from framework_source_binding import materialize_git_subtree, resolve_installed_commit
+from target_adapter_validation.context import TargetRepositoryView, TargetFileState
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -126,6 +127,21 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def comparison_context(source: Path, target: Path) -> dict[str, str]:
+    """A comparison is meaningful only with the same clean producer/configuration."""
+    status = run(["git", "status", "--porcelain", "--untracked-files=all"], source)
+    tree = run(["git", "rev-parse", "HEAD^{tree}"], source)
+    if status.returncode or status.stdout.strip() or tree.returncode:
+        return {}
+    view = TargetRepositoryView(target)
+    path = target / ".ai/assistant/validator-config.json"
+    read = view.read_bytes_result(path, max_bytes=512 * 1024)
+    if read.value is None and read.status.state != TargetFileState.MISSING:
+        return {}
+    digest = hashlib.sha256(read.value if read.value is not None else b"default-validator-config").hexdigest()
+    return {"configuration_sha256": digest, "producer_sha256": hashlib.sha256(tree.stdout.strip().encode()).hexdigest()}
+
+
 def installed_owner_path(path: str) -> str:
     if path.startswith("framework/"):
         return ".ai/framework/" + path[len("framework/") :]
@@ -205,10 +221,12 @@ def enrich_upgrade_impact(
     )
 
 
-def add_validation_impact(path: Path, validation_report: Path) -> None:
+def add_validation_impact(path: Path, validation_report: Path, baseline_report: Path | None = None) -> None:
     """Route installed-surface findings after the validator has inspected them."""
     payload = json.loads(path.read_text(encoding="utf-8"))
     validation = json.loads(validation_report.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict) or not isinstance(validation, dict):
+        raise ValueError("upgrade impact and validation reports must be JSON objects")
     findings = validation.get("findings", [])
     relevant = [
         finding
@@ -237,6 +255,22 @@ def add_validation_impact(path: Path, validation_report: Path) -> None:
         ),
         "affected_paths": affected_paths,
     }
+    from incident_planning import reconcile_findings
+    baseline = None
+    baseline_digest = None
+    if baseline_report is not None:
+        view = TargetRepositoryView(baseline_report.parent.resolve())
+        read = view.read_bytes_result(baseline_report.resolve(), max_bytes=16 * 1024 * 1024)
+        if read.value is None:
+            raise ValueError("baseline validation report is unavailable, unstable, outside its directory or exceeds 16 MiB")
+        try:
+            baseline = json.loads(read.value)
+        except (ValueError, UnicodeError, RecursionError) as exc:
+            raise ValueError("baseline validation report is invalid JSON") from exc
+        baseline_digest = hashlib.sha256(read.value).hexdigest()
+    payload["finding_reconciliation"] = reconcile_findings(validation, baseline)
+    if baseline_report is not None:
+        payload["finding_reconciliation"]["baseline_sha256"] = baseline_digest
     path.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
@@ -319,6 +353,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--framework-source", default=ROOT, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--diff-ref")
+    parser.add_argument("--baseline-validation-report", type=Path, help="Optional prior complete validator report; classification never waives a blocker.")
     parser.add_argument("--approval-record", action="append", default=[], type=Path)
     parser.add_argument(
         "--validation-phase",
@@ -523,6 +558,7 @@ def execute_assessment(args: argparse.Namespace, validation_phase: str) -> int:
     validation_counts: dict[str, object] = {}
     validation_code = 1
     if migration.returncode == 0:
+        before_context = comparison_context(source, target)
         validator_command = [
             sys.executable,
             str(source / "tools" / "validate_target_adapter.py"),
@@ -551,10 +587,13 @@ def execute_assessment(args: argparse.Namespace, validation_phase: str) -> int:
             except (OSError, json.JSONDecodeError):
                 validation_status = "invalid validator report"
             else:
+                after_context = comparison_context(source, target)
+                payload["comparison_context"] = before_context if before_context == after_context else {}
+                validation_report.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
                 validation_counts = payload.get("counts", {})
                 validation_status = str(payload.get("status", "unknown"))
                 try:
-                    add_validation_impact(impact_report, validation_report)
+                    add_validation_impact(impact_report, validation_report, getattr(args, "baseline_validation_report", None))
                 except (OSError, ValueError, json.JSONDecodeError) as exc:
                     validation_status = f"validator impact routing failed: {exc}"
                     validation_code = 1

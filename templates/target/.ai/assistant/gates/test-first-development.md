@@ -45,6 +45,10 @@ test-first/configuration request.
 - Broader risk-selected validation and logical integrity were completed or
   reported unresolved.
 - Structural validation is not claimed as proof of test semantic quality.
+- Incident repair review, when enabled, binds the current task, original case,
+  required obligation and canonical observed runs. Fixture applicability and
+  causal interpretation remain reviewed conclusions, not schema guarantees.
+  Required full end-to-end commands, not component counts, own incident closure.
 - Canonical policy and coverage owners precede derived Alatyr files. Command
   configuration, environment, effects, filtering and exclusions match evidence.
 - Runtime resources match the command contract; concurrent database/fixture,

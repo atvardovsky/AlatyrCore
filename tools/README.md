@@ -138,6 +138,19 @@ instructions, bootstrap and selected sources precede variable packet/task data.
 
 ## Task Acceptance And Shared Resources
 
+Optional incident `repair_review` schema 1 belongs to the canonical testing
+policy, not a second project policy. Enabled incident tasks retain required
+`repair-evidence-review` obligations and select task/path records from
+`repair-review.json`. Current-task validation reuses canonical execution
+records, policy/input hashes, original-case and model-hypothesis bindings.
+Unknown fixture boundaries and missing full end-to-end commands block incident
+completion. Classifications and references are not automatic causal proof.
+
+`python3 tools/alatyr.py doctor --target /path/to/project --incident-frontier --json`
+adds a bounded header-derived navigation view. It retains every active ancestor
+and declared failed gate, never retires tasks or narrows canonical validation.
+Default status/doctor does not read this additional view.
+
 `cooperation-preflight --target <repo> --scope path:src --command <test-id>`
 combines prospective session overlap and canonical test-resource planning
 without registering sessions, writing files, or executing commands. Omit
@@ -1952,6 +1965,15 @@ installation state. Assessment and verification are deliberately separate:
 neither command applies or repairs an update. Verification requires
 `--diff-ref` for the pre-update Git base and at least one `--approval-record`
 for the current update scope; repeat the approval option when needed.
+
+Assessment optionally accepts `--baseline-validation-report <report.json>`.
+Its impact report includes an exact multiset finding reconciliation: inherited,
+introduced and no-longer-observed occurrences only when complete report counts,
+target, phase/scope, warning configuration and clean source/configuration bindings
+agree. Missing or incompatible evidence remains `unknown`; no finding is waived.
+Changed paths, messages or severity remain separate occurrences. Absence from a
+later report does not prove a causal repair. Assessment does not rerun validation
+to produce this advisory classification.
 
 `check_migration_diff_report.py` executes the reporter against the current
 source baseline and validates the generated report shape. It is not a

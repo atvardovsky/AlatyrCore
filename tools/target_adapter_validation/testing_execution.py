@@ -54,6 +54,17 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
                 context.error("TDD_COMMAND_CONFIGURATION_MISSING", "declared test command configuration is missing", path)
     inventory = None
     evidence_paths = set(execution["evidence_records"])
+    review = policy.get("repair_review")
+    if isinstance(review, dict) and review.get("state") == "enabled":
+        evidence_paths.update(item["path"] for item in review["records"])
+        repair_template = ".ai/assistant/templates/repair-review.json"
+        if not context.is_target_file(repair_template):
+            context.error("TDD_EXECUTION_TEMPLATE_MISSING", "enabled repair review requires its current authoring template", repair_template)
+        else:
+            value = context.load_json_object(context.target_path(repair_template), "TDD_EXECUTION_TEMPLATE_MISSING")
+            if value is not None:
+                for failure in contract.shape(value, "repair_evidence", placeholders=True):
+                    context.error("TDD_EXECUTION_TEMPLATE_MISSING", failure, repair_template)
     for path in execution["evidence_records"]:
         if not context.is_target_file(path):
             context.error("TDD_EXECUTION_EVIDENCE_MISSING", "selected current test evidence is missing or outside the target", path)

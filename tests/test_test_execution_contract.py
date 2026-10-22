@@ -124,7 +124,9 @@ class ExecutionDocumentationTests(unittest.TestCase):
                      if isinstance(value, Path) and value.is_file() and value.is_relative_to(ROOT)}
             paths.update(ROOT / name for name in (
                 "tools/check_test_first_development.py", "schemas/test-execution-contract.schema.json",
+                "schemas/repair-review.schema.json",
                 "templates/target/.ai/assistant/templates/test-execution-evidence.json",
+                "templates/target/.ai/assistant/templates/repair-review.json",
             ))
             for source in paths:
                 destination = root / source.relative_to(ROOT)

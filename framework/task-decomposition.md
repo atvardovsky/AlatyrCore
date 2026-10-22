@@ -113,6 +113,13 @@ historical witnesses remain historical evidence, never new task acceptance.
 Preserve ended work before retiring the header. Never delete evidence
 automatically. Registration and closure carry no action authorization.
 
+For long incidents, derive a compact frontier from validated task headers before
+loading full models. Keep every active ancestor and declared failed gate visible;
+a graph leaf is not the only actionable duty. Missing lineage, cycles or duplicate
+IDs make the view unknown. The view never retires tasks, resolves gates, infers
+common causality from a family ID, or narrows canonical validation. Load a retained
+model only for the current decision, named dependency or conflicting evidence.
+
 Author active state from a separate draft. Validate the model, derive its compact
 projection, and synchronize the selected registration as one conflict-checked
 local operation. Preserve unresolved duties and other tasks; reject closed-task

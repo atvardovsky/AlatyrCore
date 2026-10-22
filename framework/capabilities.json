@@ -127,7 +127,8 @@
         ".ai/assistant/gates/test-first-development.md",
         ".ai/assistant/templates/test-first-evidence.md",
         ".ai/assistant/skills/test-first-development/SKILL.md",
-        ".ai/assistant/templates/test-execution-evidence.json"
+        ".ai/assistant/templates/test-execution-evidence.json",
+        ".ai/assistant/templates/repair-review.json"
       ],
       "check_ids": ["test-first-development"]
     },

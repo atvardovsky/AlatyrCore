@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/repair_evidence",
+  "$defs": {
+    "binding": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/digest"}}},
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "texts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "repair_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "state",
+        "acceptance_command_ids",
+        "records"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "state": {
+          "enum": [
+            "enabled",
+            "deferred",
+            "disabled"
+          ]
+        },
+        "acceptance_command_ids": {
+          "$ref": "#/$defs/texts"
+        },
+        "records": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "task_id",
+              "path"
+            ],
+            "properties": {
+              "task_id": {
+                "$ref": "#/$defs/text"
+              },
+              "path": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        }
+      }
+    },
+    "repair_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "record_kind",
+        "task_id",
+        "operation_id",
+        "incident_family_id",
+        "policy_sha256",
+        "original_case_ref",
+        "claim",
+        "diagnosis",
+        "hypotheses",
+        "fixture_boundaries",
+        "attempts"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "record_kind": {
+          "const": "target-repair-review"
+        },
+        "task_id": {
+          "$ref": "#/$defs/text"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/text"
+        },
+        "incident_family_id": {
+          "$ref": "#/$defs/text"
+        },
+        "policy_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "original_case_ref": {
+          "$ref": "#/$defs/text"
+        },
+        "claim": {
+          "enum": [
+            "unverified",
+            "component-only",
+            "incident-fixed"
+          ]
+        },
+        "diagnosis": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "hypothesis_id",
+                "run_ref"
+              ],
+              "properties": {
+                "hypothesis_id": {
+                  "$ref": "#/$defs/text"
+                },
+                "run_ref": {
+                  "$ref": "#/$defs/text"
+                }
+              }
+            }
+          ]
+        },
+        "hypotheses": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "falsifier"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/text"
+              },
+              "falsifier": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        },
+        "fixture_boundaries": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "state",
+              "reason",
+              "evidence_refs"
+            ],
+            "properties": {
+              "id": {
+                "enum": [
+                  "entrypoint",
+                  "producers-consumers",
+                  "persistence",
+                  "process-topology",
+                  "resources",
+                  "positive-preconditions"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "verified",
+                  "not-applicable",
+                  "unknown"
+                ]
+              },
+              "reason": {
+                "$ref": "#/$defs/text"
+              },
+              "evidence_refs": {
+                "$ref": "#/$defs/texts"
+              }
+            }
+          }
+        },
+        "attempts": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "hypothesis_id",
+              "run_ref",
+              "run_sha256",
+              "historical_policy",
+              "failure_ref",
+              "purpose",
+              "failure_class",
+              "expected_effect",
+              "observed_effect",
+              "reassessment_ref"
+            ],
+            "properties": {
+              "hypothesis_id": {
+                "$ref": "#/$defs/text"
+              },
+              "run_ref": {
+                "$ref": "#/$defs/text"
+              },
+              "run_sha256": {"$ref": "#/$defs/digest"},
+              "historical_policy": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/binding"}]},
+              "failure_ref": {"type": ["string", "null"], "minLength": 1},
+              "purpose": {
+                "enum": [
+                  "diagnostic",
+                  "acceptance"
+                ]
+              },
+              "failure_class": {
+                "enum": [
+                  "none",
+                  "production",
+                  "fixture",
+                  "test-author",
+                  "environment",
+                  "unverified"
+                ]
+              },
+              "expected_effect": {
+                "$ref": "#/$defs/text"
+              },
+              "observed_effect": {
+                "$ref": "#/$defs/text"
+              },
+              "reassessment_ref": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

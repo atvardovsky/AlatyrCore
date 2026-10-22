@@ -322,6 +322,8 @@ Classify every proposed target file:
     For assessed/enabled test-first development, adapt
     `.ai/project/testing/README.md` and `test-first-policy.json` through
     `test-first-configuration.flow.md` per `ALATYR-TDD-001`, not test presence.
+    Assess optional incident `repair_review` from recurring defect evidence;
+    keep it deferred without accepted whole-flow commands and ownership.
     Add `.ai/project/team-policy.json` and its human explanation only when the
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,

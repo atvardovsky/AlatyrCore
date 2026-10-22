@@ -211,6 +211,60 @@ Command output may be summarized and linked according to target retention and
 sensitivity policy. Structural records do not prove that assertions are
 semantically correct.
 
+## Incident Repair Review
+
+For uncertain or repeated defects, qualify the original reproducer before a
+repair: competing causes, a falsifying observation, expected incident-level
+effect, and the smallest faithful check. Review actual entry/producer/consumer
+paths, persistence ACK and independent reload, process topology, resource
+accounting, and positive-case preconditions. Unknown is not verified;
+non-applicability needs a concrete reviewed reason and evidence. Benchmark
+rankings from an instrumented test environment are diagnostic until checked
+against the intended runtime. Never change deadlines or thresholds to qualify
+a proposed optimization.
+
+The target may enable optional `repair_review` schema 1 in its canonical test
+policy. It names full end-to-end acceptance command IDs and bounded current
+task/path records using `repair-review.json`. Existing policies remain valid;
+installation/update proposes enablement rather than inventing target decisions.
+Enabled uncertain/systemic incident tasks retain a required `repair-evidence-review` proof
+obligation. Removal or deferral cannot turn that captured requirement into
+successful acceptance. Record checks reuse canonical execution evidence,
+current policy/input hashes and original-case identity, not copied statuses.
+
+Each attempt binds its run bytes, observed timezone-bound `run_window`,
+expected/observed effect and distinguishes production,
+fixture, test-author, environment and unverified failure. After failed acceptance,
+another related acceptance attempt requires a later diagnostic tied to that
+failed run and a changed tested input or command selection, not a timestamp or
+renamed output. Every selected current acceptance run, including failures, is
+retained in observed order. Historical failures bind their captured policy and
+raw output; old passes cannot qualify current source. Reclassifying never waives
+a failure. Unfiltered end-to-end failures retain acceptance significance even
+when run for diagnostic inventory or retained under an older policy. Validate syntax and the
+focused counterexample, then the coherent slice and original flow before the
+frozen full matrix. A known-red full run needs a named diagnostic purpose;
+avoid rerunning it as a substitute for diagnosis. Relevant edits invalidate
+affected evidence; retain failures, uncertainty and the incident lineage.
+
+Repair-bound execution records use `run_window.started_at` and
+`run_window.finished_at` from observed timezone-aware command receipts.
+Unexecuted work keeps an empty attempt list, never invented times or results.
+Historical attempts set `historical_policy` to a captured `{path, sha256}`
+binding; current attempts use `null`. `failure_ref` identifies the failure a
+diagnostic addresses; `reassessment_ref` identifies that completed diagnostic
+before a related retry. Never rewrite original failed records to manufacture
+current evidence. Registry completeness and causal relevance remain reviewed;
+the checker does not scan undeclared session history.
+
+All configured acceptance commands must have full observed end-to-end passes
+before `incident-fixed`. This checks declared relationships and existing run
+contracts, not causal truth, reviewer authenticity, runtime timing stability or
+agent obedience. Primary review still decides fidelity, non-applicability and
+whether observations actually discriminate the proposed mechanism. Policy
+checkers must state which fields and behavior they validate; test every declared
+mandatory member through the actual checker, not merely a separate prose test.
+
 ## Context Economy
 
 Keep the full test-first policy, skill, flow, and evidence template outside

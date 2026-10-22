@@ -37,6 +37,14 @@ stronger behavioral evidence. The optional machine evidence template is
 `.ai/assistant/templates/test-execution-evidence.json`; select current records
 explicitly in the policy, never scan historical results during routine work.
 
+For uncertain or repeated defects, assess optional `repair_review` with the
+target owner. Use `.ai/assistant/templates/repair-review.json` only after that
+decision. Keep the required `repair-evidence-review` obligation in incident
+models; canonical model hypotheses own their statements. Review fixture fidelity,
+falsifiers and expected original-case effects. The selected task validator
+checks linked canonical runs, not whether the causal interpretation is true.
+Do not replace the original full matrix with focused or favorable reruns.
+
 Use `Alatyr enable test-first` to assess and propose or apply this policy. This
 is an assistant request shortcut, not a shell command. Approval is required
 when target policy, dependencies, CI, merge requirements, permissions, or

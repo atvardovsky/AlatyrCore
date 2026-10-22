@@ -94,7 +94,9 @@ def main() -> int:
         INSTALL, INSTALL_FLOW, READINESS, PLAN, LIFECYCLE, RECHECK,
         POST_INSTALL, POST_UPDATE,
         ROOT / "schemas/test-execution-contract.schema.json",
+        ROOT / "schemas/repair-review.schema.json",
         TARGET / ".ai/assistant/templates/test-execution-evidence.json",
+        TARGET / ".ai/assistant/templates/repair-review.json",
     ]
     for path in required_files:
         if not path.is_file():
@@ -197,6 +199,8 @@ def main() -> int:
     if policy.get("schema_version") != 1:
         failures.append("test-first policy schema_version must be 1")
     contract = TestExecutionContract()
+    repair_template = load_json(TARGET / ".ai/assistant/templates/repair-review.json")
+    failures.extend(contract.shape(repair_template, "repair_evidence", placeholders=True))
     failures.extend(
         f"{FRAMEWORK.relative_to(ROOT)}: {failure}"
         for failure in execution_documentation_failures(read(FRAMEWORK), contract.schema)

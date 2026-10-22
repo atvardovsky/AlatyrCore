@@ -17,6 +17,12 @@
     "review_authority": "{TARGET_TEST_EXECUTION_AUTHORITY}",
     "evidence_records": []
   },
+  "repair_review": {
+    "schema_version": 1,
+    "state": "{ENABLED_DEFERRED_OR_DISABLED_BY_TARGET_OWNER}",
+    "acceptance_command_ids": [],
+    "records": []
+  },
   "suggestion": {
     "mode": "{OFF_OR_ADVISORY}",
     "minimum_result": "{RECOMMENDED_OR_REQUIRED}",

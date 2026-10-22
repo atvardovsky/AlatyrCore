@@ -28,6 +28,13 @@ fact, defect, invariant, contract, or refactor.
    effects, environment, suite selection/exclusions, filter support and proof
    boundary. Inventory membership and module enablement never authorize a run.
 6. Record observable acceptance examples, negative paths, and boundaries.
+   For uncertain/recurring defects, apply the incident review in the canonical
+   test policy: qualify the original reproducer, competing causes, falsifier,
+   actual fixture boundaries and expected whole-incident effect before repair.
+   When `repair_review` is enabled, retain the required `repair-evidence-review`
+   obligation and author the task-bound `repair-review.json` evidence. Do not
+   remove that requirement to obtain acceptance. Missing or unknown boundaries
+   remain explicit; component GREEN is not incident acceptance.
 7. Resolve current-scope execution authorization and target timing before any
    baseline, RED, GREEN, coverage or broader run. If review is pending, author
    tests and exact commands and defer execution. Continue implementation only
@@ -47,6 +54,11 @@ fact, defect, invariant, contract, or refactor.
 11. Run broader target validation selected by changed-fact risk and boundary
     crossings. Do not invent commands or call live services without policy and
     approval.
+    After a failed incident acceptance, stop dependent patch stacking and obtain
+    discriminating evidence before another related attempt. Preserve the failed
+    run and classify its cause without waiving it. Check the smallest faithful
+    real flow first; full known-red runs are diagnostic only. Final acceptance
+    still requires the complete unchanged target matrix on frozen inputs.
 12. Apply `.ai/assistant/gates/contract-artifacts.md` when the selected
     contract is represented by API, schema, event, generated-reference,
     fixture, persistence, public-interface, or external-boundary artifacts.

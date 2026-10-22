@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -74,6 +75,7 @@ def health_payload(
     allow_local_paths: list[str] | None = None,
     config_path: Path | None = None,
     required_capabilities: list[str] | None = None,
+    include_incident_frontier: bool = False,
 ) -> dict[str, Any]:
     phase = "migration-staging" if allow_placeholders else validation_phase
     config, config_findings = load_validator_config(target, config_path)
@@ -109,6 +111,16 @@ def health_payload(
         required_capabilities=required_capabilities,
     )
     payload["capability_advisory"] = advisory
+    if include_incident_frontier:
+        from incident_planning import incident_frontier
+        path = validator.target_path(".ai/assistant/active-tasks.json")
+        read = validator.context.read_bytes_result(path, max_bytes=512 * 1024)
+        try:
+            index = json.loads(read.value) if read.value is not None else None
+        except (ValueError, UnicodeError, RecursionError):
+            index = None
+        payload["incident_frontier"] = incident_frontier(index)
+        payload["incident_frontier"]["index_sha256"] = hashlib.sha256(read.value).hexdigest() if read.value is not None else None
     if advisory["blocking"]:
         payload.setdefault("adapter_health", {})["state"] = "blocked"
         placeholder = payload.setdefault("placeholder_validation", {})
@@ -199,6 +211,15 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     limitation = evidence.get("limitation")
     if isinstance(limitation, str) and limitation:
         lines.append(f"Limitation: {limitation}")
+    frontier = payload.get("incident_frontier")
+    if isinstance(frontier, dict):
+        lines.append("Incident frontier: " + str(frontier.get("state", "unknown")))
+        lines.append("Active tasks retained: " + str(len(frontier.get("retained_active", []))))
+        lines.append("Frontier task IDs: " + ", ".join(frontier.get("frontier", [])[:4]))
+        lines.append("Retained active ancestor IDs: " + ", ".join(frontier.get("active_ancestor_ids", [])[:4]))
+        lines.append("Declared failed gates: " + ", ".join(frontier.get("declared_failed_gates", [])[:4]))
+        lines.extend("Frontier issue: " + str(error)[:480] for error in frontier.get("errors", [])[:2])
+        lines.append("Frontier is navigation only; all ancestor duties and canonical checks remain.")
     if mode == "status" and findings:
         lines.append("Finding details: run doctor for prioritized findings")
         return "\n".join(lines) + "\n"
@@ -241,6 +262,7 @@ def main() -> int:
         help="Capability required by the current task; repeat as needed.",
     )
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--incident-frontier", action="store_true", help="Include an advisory bounded task-header view; does not narrow validation.")
     parser.add_argument(
         "--mode",
         choices=["status", "doctor"],
@@ -258,6 +280,7 @@ def main() -> int:
         allow_local_paths=args.allow_local_path,
         config_path=args.config,
         required_capabilities=args.required_capability,
+        include_incident_frontier=args.incident_frontier,
     )
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))

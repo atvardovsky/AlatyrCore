@@ -32,6 +32,20 @@ class PublishActiveTaskTests(ActiveTaskFixture):
     def plan(self):
         return prepare(self.target, "fixture-task", self.draft.relative_to(self.target).as_posix())
 
+    def test_captured_repair_review_cannot_be_removed_from_a_new_draft(self):
+        marker = dict(self.model["proof_obligations"][0], id="repair-evidence-review")
+        self.model["proof_obligations"].append(marker)
+        self.write_model(); self.write_index()
+        for mutation in ("remove", "downgrade"):
+            proposed = copy.deepcopy(self.model)
+            if mutation == "remove":
+                proposed["proof_obligations"].pop()
+            else:
+                proposed["proof_obligations"][-1]["required"] = False
+            self.write_draft(proposed)
+            with self.subTest(mutation=mutation), self.assertRaisesRegex(ValueError, "cannot be removed or downgraded"):
+                self.plan()
+
     def test_pending_model_publishes_exact_projection_without_granting_acceptance(self):
         self.model["proof_obligations"][0].update(status="open", evidence_refs=[])
         self.model["review_results"][0].update(status="pending", evidence_refs=[])

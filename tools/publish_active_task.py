@@ -143,6 +143,11 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
         previous = json.loads(inputs[target / model_relpath])
         if not isinstance(previous, dict) or previous.get("model_id") != model["model_id"]:
             raise ValueError("changing a registered model identity requires an explicit successor task")
+        if not isinstance(previous.get("proof_obligations"), list) or any(not isinstance(item, dict) for item in previous["proof_obligations"]):
+            raise ValueError("registered proof obligations are malformed; reconcile before publication")
+        required_review = lambda value: any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in value.get("proof_obligations", []))
+        if required_review(previous) and not required_review(model):
+            raise ValueError("a captured repair-evidence-review obligation cannot be removed or downgraded")
     return TaskPublication(outputs, inputs)
 
 

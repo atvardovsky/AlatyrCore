@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1734
+Catalog entries: 1738
 
 ## Families
 
@@ -66,7 +66,7 @@ Catalog entries: 1734
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
 - `TASK`: 57 codes.
-- `TDD`: 64 codes.
+- `TDD`: 68 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
 - `VALIDATION`: 22 codes.
@@ -2976,22 +2976,30 @@ Catalog entries: 1734
 - `TDD_EXCEPTION_UNRESOLVED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXECUTION_CONTRACT`
-  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`, `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_CONTRACT_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`.
+- `TDD_EXECUTION_CONTRACT_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`.
 - `TDD_EXECUTION_CONTRACT_MISSING`
   Level: dynamic. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_EVIDENCE`
-  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`, `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_EVIDENCE_INVALID_JSON`
-  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`, `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_EVIDENCE_INVALID_SHAPE`
-  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`, `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_EVIDENCE_MISSING`
   Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_EVIDENCE_STALE`
-  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`, `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_SCHEMA`
-  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+  Level: error. Source: `tools/target_adapter_validation/repair_review.py`, `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_TEMPLATE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_TEMPLATE_MISSING_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_EXECUTION_TEMPLATE_MISSING_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_UNROUTED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.

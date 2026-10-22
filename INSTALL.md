@@ -318,6 +318,9 @@ In a typical target repository:
    test-first development is assessed or enabled. Follow its canonical owner
    for `execution_contract`, policy/coverage ownership, timing, command effects,
    suite selection and evidence. Enablement grants no execution permission.
+   For recurring or uncertain defects, assess optional `repair_review` with
+   the target owner. Preserve explicit opt-outs and historical evidence; do not
+   enable it without real full-flow commands and reviewed fixture boundaries.
    Add `.ai/project/team-policy.json` and its human-oriented
    `.ai/project/team-operating-model.md` only when team collaboration is
    enabled. Derive actors, aliases, authority, priorities, review, transitions,

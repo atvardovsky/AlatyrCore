@@ -36,6 +36,7 @@
     "tools/target_adapter_validation/project_knowledge.py",
     "tools/target_adapter_validation/project_support_documentation.py",
     "tools/target_adapter_validation/project_vocabulary.py",
+    "tools/target_adapter_validation/repair_review.py",
     "tools/target_adapter_validation/router_costs.py",
     "tools/target_adapter_validation/runtime_observation.py",
     "tools/target_adapter_validation/session_continuity.py",
@@ -262,7 +263,7 @@
     },
     {
       "id": "TDD",
-      "code_count": 64
+      "code_count": 68
     },
     {
       "id": "TEAM",
@@ -13380,7 +13381,26 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/repair_review.py",
         "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_CONTRACT_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/repair_review.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_CONTRACT_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/repair_review.py"
       ]
     },
     {
@@ -13398,6 +13418,7 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/repair_review.py",
         "tools/target_adapter_validation/testing_execution.py"
       ]
     },
@@ -13407,6 +13428,7 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/repair_review.py",
         "tools/target_adapter_validation/testing_execution.py"
       ]
     },
@@ -13416,6 +13438,7 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/repair_review.py",
         "tools/target_adapter_validation/testing_execution.py"
       ]
     },
@@ -13434,6 +13457,7 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/repair_review.py",
         "tools/target_adapter_validation/testing_execution.py"
       ]
     },
@@ -13443,11 +13467,30 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/repair_review.py",
         "tools/target_adapter_validation/testing_execution.py"
       ]
     },
     {
       "code": "TDD_EXECUTION_TEMPLATE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_TEMPLATE_MISSING_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_TEMPLATE_MISSING_INVALID_SHAPE",
       "levels": [
         "error"
       ],

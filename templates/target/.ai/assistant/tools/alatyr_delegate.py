@@ -69,7 +69,10 @@ def build_parser() -> argparse.ArgumentParser:
     cooperation.add_argument("--command", action="append", default=[])
     cooperation.add_argument("--session-uid")
     for name in ("status", "doctor", "archive-audit"):
-        add_common(subparsers.add_parser(name, allow_abbrev=False))
+        operation = subparsers.add_parser(name, allow_abbrev=False)
+        add_common(operation)
+        if name == "doctor":
+            operation.add_argument("--incident-frontier", action="store_true")
 
     current = subparsers.add_parser("validate-current", allow_abbrev=False)
     add_common(current)
@@ -109,7 +112,8 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
         return command
     common = ["--target", str(target), "--framework-source", str(source)]
     if args.operation in {"status", "doctor"}:
-        return [args.operation, *common]
+        extra = ["--incident-frontier"] if args.operation == "doctor" and args.incident_frontier else []
+        return [args.operation, *common, *extra]
     if args.operation == "archive-audit":
         return [
             "validate-adapter",

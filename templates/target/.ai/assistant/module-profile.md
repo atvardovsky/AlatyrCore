@@ -328,6 +328,7 @@ Required files:
 - `.ai/assistant/gates/test-first-development.md`
 - `.ai/assistant/templates/test-first-evidence.md`
 - `.ai/assistant/templates/test-execution-evidence.json`
+- `.ai/assistant/templates/repair-review.json`
 - `.ai/assistant/skills/test-first-development/SKILL.md`
 
 Reason: `{REASON}`

@@ -467,8 +467,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 370,
-      "content_digest": "sha256:1def191473f2a75b894bb88540a95bd9d3c0a29fcec6db6c09887bb56eb31420"
+      "estimated_words": 409,
+      "content_digest": "sha256:fb49de7660f161b4a9564bd8665884fdfef6b4e637db69228bbeb4c80492f577"
     },
     {
       "id": "assistant.content.gates-visual-validation-md",

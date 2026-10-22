@@ -429,6 +429,8 @@ def validate_active_tasks(validator: Any) -> None:
             validator.error("ACTIVE_TASK_CLASS", f"selected task class {scale} differs from caller binding {expected_class}", INDEX_PATH)
         if isinstance(previous, dict) and previous.get("task_class") != "small-task" and scale == "small-task":
             validator.error("ACTIVE_TASK_CLASS", "a previously non-trivial task cannot drop its model through a class downgrade", INDEX_PATH)
+        if isinstance(previous, dict) and previous.get("incident_family_id") not in (None, "none") and previous["incident_family_id"] != task.get("incident_family_id"):
+            validator.error("ACTIVE_TASK_MODEL_LINEAGE", "an existing incident task cannot erase or replace its family identity", INDEX_PATH)
         closure_binding = task.get("completion_evidence")
         if isinstance(closure_binding, dict):
             closure_path = closure_binding["path"]
@@ -458,6 +460,9 @@ def validate_active_tasks(validator: Any) -> None:
                     validator.error("ACTIVE_TASK_WITNESS", "closed non-small tasks require durable model and projection witnesses", INDEX_PATH)
                 validated_model = validate_selected_problem_model(validator, path, model_schema, require_completion=require_completion,
                     archived_projection=archived_projection, original_source_path=model_binding["path"], current_task=task_id == selected_task)
+                if task_id == selected_task and isinstance(validated_model, dict):
+                    from target_adapter_validation.repair_review import validate_task_repair_review
+                    validate_task_repair_review(validator, task, validated_model, completion=require_completion)
                 for code, message in task_model_header_failures(task, validated_model if isinstance(validated_model, dict) else {}):
                     if code == "ACTIVE_TASK_MODEL_LINEAGE":
                         validator.error("ACTIVE_TASK_MODEL_LINEAGE", message, INDEX_PATH)
@@ -478,6 +483,14 @@ def validate_active_tasks(validator: Any) -> None:
                             validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor requires model evidence, not only a matching family header", INDEX_PATH)
                             continue
                         predecessor_models.add(prior_model["model_id"])
+                        if task_id == selected_task:
+                            if not isinstance(prior_model.get("proof_obligations"), list) or any(not isinstance(item, dict) for item in prior_model["proof_obligations"]):
+                                validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor proof obligations are malformed", INDEX_PATH)
+                                continue
+                            inherited_review = any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in prior_model.get("proof_obligations", []))
+                            retained_review = any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in validated_model.get("proof_obligations", []))
+                            if inherited_review and not retained_review:
+                                validator.error("ACTIVE_TASK_PREDECESSOR", "incident successors must retain the required repair-evidence-review obligation", INDEX_PATH)
                         prior_incident = prior_model.get("incident")
                         current_iteration = incident.get("corrective_iteration")
                         prior_iteration = prior_incident.get("corrective_iteration") if isinstance(prior_incident, dict) else None

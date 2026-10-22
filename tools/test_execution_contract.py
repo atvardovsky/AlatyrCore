@@ -46,13 +46,27 @@ class TestExecutionContract:
         if result.error:
             raise ValueError(result.error)
         self.schema = result.value
+        self._repair_schema = None
         try:
             Draft202012Validator.check_schema(self.schema)
         except SchemaError as exc:
             raise ValueError(f"invalid testing schema: {exc.message}") from exc
 
+    def repair_schema(self) -> dict[str, Any]:
+        if self._repair_schema is None:
+            read = self.view.read_json_result(SCHEMA.with_name("repair-review.schema.json"))
+            if read.error:
+                raise ValueError(read.error)
+            Draft202012Validator.check_schema(read.value)
+            self._repair_schema = read.value
+        return self._repair_schema
+
     def shape(self, value: Any, definition: str, *, placeholders: bool = False) -> list[str]:
-        schema = {"$ref": f"#/$defs/{definition}", "$defs": self.schema["$defs"]}
+        try:
+            owner = self.repair_schema() if definition in {"repair_policy", "repair_evidence"} else self.schema
+        except (OSError, ValueError, SchemaError) as exc:
+            return [f"repair schema is unavailable or invalid: {exc}"]
+        schema = {"$ref": f"#/$defs/{definition}", "$defs": owner["$defs"]}
         failures = []
         for error in Draft202012Validator(schema).iter_errors(value):
             if placeholders and isinstance(error.instance, str) and is_placeholder(error.instance):
@@ -60,9 +74,11 @@ class TestExecutionContract:
             failures.append("/".join(map(str, error.absolute_path)) + ": " + error.message)
         # JSON Schema treats 1.0 as an integer; version and count contracts do not.
         if isinstance(value, dict):
-            version = value.get("schema_version") if definition == "evidence" else value.get("execution_contract", {}).get("schema_version") if isinstance(value.get("execution_contract"), dict) else None
-            if type(version) is not int or version != 2:
-                failures.append("execution/evidence schema_version must be integer 2")
+            repair = definition in {"repair_evidence", "repair_policy"}
+            version = value.get("schema_version") if definition == "evidence" or repair else value.get("execution_contract", {}).get("schema_version") if isinstance(value.get("execution_contract"), dict) else None
+            expected = 1 if repair else 2
+            if type(version) is not int or version != expected:
+                failures.append(f"execution/evidence schema_version must be integer {expected}")
             if definition == "evidence" and isinstance(value.get("counts"), dict):
                 if any(type(n) is not int for n in value["counts"].values()):
                     failures.append("counts must contain integers, not booleans or floats")
@@ -72,6 +88,12 @@ class TestExecutionContract:
         failures = self.shape(policy, "policy", placeholders=placeholders)
         if failures or (placeholders and has_placeholders(policy)):
             return failures
+        if "repair_review" in policy:
+            from repair_review import policy_failures
+            try:
+                failures.extend(policy_failures(policy["repair_review"], policy, self.repair_schema()))
+            except (OSError, ValueError, SchemaError) as exc:
+                return [f"repair schema is unavailable or invalid: {exc}"]
         contract = policy["execution_contract"]
         ids = [command["id"] for command in policy["commands"]]
         if len(ids) != len(set(ids)):

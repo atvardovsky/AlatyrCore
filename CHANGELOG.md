@@ -4,6 +4,14 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.98 - 2026-10-22
+
+- [Incident evidence quality](docs/releases/0.1.0-alpha.98-notes.md): adapter
+  schema `80`/templates `93`. Opt-in task-bound repair review reuses canonical
+  execution evidence, fixture and original-case/model bindings; retained duties
+  prevent downgrade into weaker acceptance. Advisory incident frontiers and
+  exact finding reconciliation preserve all existing acceptance gates.
+
 ## 0.1.0-alpha.97 - 2026-10-21
 
 - [Bounded cooperation](docs/releases/0.1.0-alpha.97-notes.md): schema

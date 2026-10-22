@@ -933,6 +933,27 @@
       "content_digest": "sha256:7467db6dc253e9360357d1b2eb3da4bdf25ae5d70f2cc3f689c7aee6c322e231"
     },
     {
+      "id": "assistant.content.templates-repair-review-json",
+      "kind": "content",
+      "path": "templates/repair-review.json",
+      "summary": "Repair Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "repair",
+          "review"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 107,
+      "content_digest": "sha256:2e2cd51486954c1d74aff4895a632146dc94c990f1a000a060c63020e58f1f90"
+    },
+    {
       "id": "assistant.content.templates-runtime-observation-record-json",
       "kind": "content",
       "path": "templates/runtime-observation-record.json",
