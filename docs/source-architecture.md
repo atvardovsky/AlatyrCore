@@ -119,6 +119,14 @@ approximate them with substring checks. Differential tests must cover valid
 entry points and missing, malformed, near-match, below-, exact-, and over-limit
 inputs. Representation may shrink; enforcement may not.
 
+Derive behavioral fixtures from the canonical owner independently of generated
+metadata. Include capability-disabled and minimal accepted targets, not only
+full profiles that agree with each other. Mutate selected metadata through the
+public API and CLI before testing downstream operations; invalid JSON-compatible
+types must yield structured diagnostics, not tracebacks or silent defaults.
+Preserved dirty history, current approvals and current outcome evidence are
+different roles and require separate negative controls.
+
 Apply least sufficient context to the source repository itself. Add indexes,
 manifests, and narrow trigger paths so agents and checks load only what the
 task actually needs.

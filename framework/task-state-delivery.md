@@ -18,6 +18,11 @@ With canonical tooling, `doctor --current-task <registered-id>` selects one boun
 without scanning historical reports. Invalidated inputs clear derived claims.
 Installed templates, policy adoption and exercised evidence remain distinct;
 availability and declared checkpoint passes grant neither permission nor proof.
+Selected closure views must use canonical closure/owner checks before exposing
+delivery claims. For incident work, lead with the bound original outcome,
+required obligations, failed gate and rejected mechanisms. Component progress
+must not replace an unresolved original case; these views remain declarations,
+not fresh runtime verification or a substitute for the next causal experiment.
 Reuse canonical selected execution/repair validation, including expected-negative
 outcomes. A consistent diagnostic record does not establish incident acceptance.
 Without that tooling, inspect the bound model/closure manually and report

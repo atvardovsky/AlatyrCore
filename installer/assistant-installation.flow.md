@@ -651,6 +651,10 @@ accepted or ready. Before reporting installation or update completion:
    migrate active model/projection schemas per `ALATYR-DECOMPOSITION-001`.
    Validate the declared adapter-health, current-change, and archive-audit
    entry points; only complete archive validation is acceptance evidence.
+   Exercise current-change without fabricated packages when the module is
+   disabled; enabled packages retain enforcement. Preserve legacy records and
+   classify historical witnesses only through an explicitly reviewed,
+   digest-bound target decision, never as current approval or task completion.
    Confirm that target `AGENTS.md`, code/semantic profiles, final evidence, and
    operation-completion evidence use the same Project Contour Sync Decision.
 6. Confirm that every material discovery finding has an evidence-preserving

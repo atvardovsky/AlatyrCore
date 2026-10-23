@@ -38,6 +38,7 @@ PLAN_SCHEMA_VERSION = 1
 PLAN_KIND = "target-context-plan"
 PLACEHOLDER_RE = re.compile(r"\{[A-Z][A-Z0-9_]*\}")
 REQUIRED_CONTOURS = ("framework", "project", "assistant")
+ROUTER_PATH = ".ai/assistant/context-router.json"
 
 
 @dataclass(frozen=True)
@@ -90,6 +91,43 @@ def _canonical_digest(value: Any) -> str:
     return "sha256:" + hashlib.sha256(content).hexdigest()
 
 
+def _field_error(artifact: str, field: str, expected: str, value: Any) -> ContextPlanningError:
+    return ContextPlanningError(
+        "INVALID_CONTEXT_PLAN_REQUEST" if artifact == "request" else "ADAPTER_FIELD_INVALID",
+        f"{artifact}:{field} must be {expected}; got {type(value).__name__}",
+        status="invalid-request" if artifact == "request" else "blocked",
+        details={"artifact": artifact, "field": field, "expected": expected,
+                 "actual_type": type(value).__name__},
+        actions=("repair the reported field before planning context",),
+    )
+
+
+def _object(value: Any, artifact: str, field: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise _field_error(artifact, field, "an object", value)
+    return value
+
+
+def _text(value: Any, artifact: str, field: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise _field_error(artifact, field, "a non-empty string", value)
+    return value
+
+
+def _string_list(value: Any, artifact: str, field: str, *, non_empty: bool = False) -> list[str]:
+    if not isinstance(value, list) or (non_empty and not value):
+        raise _field_error(artifact, field, "a non-empty string list" if non_empty else "a string list", value)
+    for index, entry in enumerate(value):
+        _text(entry, artifact, f"{field}[{index}]")
+    return value
+
+
+def _positive_integer(value: Any, artifact: str, field: str) -> int:
+    if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+        raise _field_error(artifact, field, "a positive integer", value)
+    return value
+
+
 def _normalize_relative(value: str, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ContextPlanningError(
@@ -103,6 +141,7 @@ def _normalize_relative(value: str, label: str) -> str:
         posix.is_absolute()
         or windows.is_absolute()
         or windows.drive
+        or "\x00" in normalized
         or not posix.parts
         or any(part in {"", ".", ".."} for part in posix.parts)
     ):
@@ -112,6 +151,17 @@ def _normalize_relative(value: str, label: str) -> str:
             status="invalid-request",
         )
     return posix.as_posix()
+
+
+def _artifact_path(value: Any, artifact: str, field: str) -> str:
+    value = _text(value, artifact, field)
+    try:
+        return _normalize_relative(value, f"{artifact}:{field}")
+    except ContextPlanningError as exc:
+        raise ContextPlanningError(
+            exc.code, str(exc), status="blocked",
+            details={"artifact": artifact, "field": field},
+        ) from exc
 
 
 def _target_path(target: Path, relpath: str, label: str) -> Path:
@@ -140,12 +190,7 @@ def _load_json(target: Path, relpath: str, label: str, *, digest_evidence: dict[
             actions=("install or update the target adapter artifact",),
         ) from exc
     if not isinstance(value, dict):
-        raise ContextPlanningError(
-            "ADAPTER_ARTIFACT_INVALID",
-            f"{relpath} must contain a JSON object",
-            upgrade_required=True,
-            details={"path": relpath},
-        )
+        raise _field_error(relpath, "$", "an object", value)
     if digest_evidence is not None:
         digest_evidence[relpath] = "sha256:" + hashlib.sha256(raw).hexdigest()
     return value
@@ -177,9 +222,9 @@ def _require_concrete(value: Any, label: str) -> None:
 
 
 def _load_router(target: Path) -> dict[str, Any]:
-    router = _load_json(
-        target, ".ai/assistant/context-router.json", "context router"
-    )
+    router = _load_json(target, ROUTER_PATH, "context router")
+    _positive_integer(router.get("schema_version"), ROUTER_PATH, "schema_version")
+    _text(router.get("router_kind"), ROUTER_PATH, "router_kind")
     if router.get("schema_version") not in {10, 11, 12, 13} or router.get("router_kind") != "target-context-router":
         raise ContextPlanningError(
             "CONTEXT_ROUTER_UNSUPPORTED",
@@ -193,24 +238,24 @@ def _load_router(target: Path) -> dict[str, Any]:
 def _resolve_profile(
     target: Path, router: dict[str, Any], profile: str
 ) -> tuple[dict[str, Any], str]:
-    profile_index = router.get("profile_index")
-    if not isinstance(profile_index, dict) or profile not in profile_index:
+    profile_index = _object(router.get("profile_index"), ROUTER_PATH, "profile_index")
+    if not profile_index:
+        raise _field_error(ROUTER_PATH, "profile_index", "a non-empty object", profile_index)
+    if profile not in profile_index:
         raise ContextPlanningError(
             "UNKNOWN_CONTEXT_PROFILE",
             f"unknown target context profile: {profile}",
             status="invalid-request",
             details={"available_profiles": sorted(profile_index or {})},
         )
-    entry = profile_index[profile]
-    if not isinstance(entry, dict) or not isinstance(entry.get("descriptor"), str):
-        raise ContextPlanningError(
-            "CONTEXT_PROFILE_INDEX_INVALID",
-            f"target profile index entry is invalid: {profile}",
-            upgrade_required=True,
-        )
+    field = f"profile_index.{profile}"
+    entry = _object(profile_index[profile], ROUTER_PATH, field)
+    descriptor_path = _artifact_path(entry.get("descriptor"), ROUTER_PATH, f"{field}.descriptor")
     _require_concrete(entry, f"profile index entry {profile}")
-    descriptor_path = _normalize_relative(entry["descriptor"], "profile descriptor")
     descriptor = _load_json(target, descriptor_path, "profile descriptor")
+    _positive_integer(descriptor.get("schema_version"), descriptor_path, "schema_version")
+    _text(descriptor.get("descriptor_kind"), descriptor_path, "descriptor_kind")
+    _text(descriptor.get("profile"), descriptor_path, "profile")
     if (
         descriptor.get("schema_version") != 1
         or descriptor.get("descriptor_kind") != "target-context-profile"
@@ -223,23 +268,26 @@ def _resolve_profile(
             details={"path": descriptor_path},
         )
     _require_concrete(descriptor, descriptor_path)
+    _string_list(descriptor.get("operation_candidates"), descriptor_path, "operation_candidates")
+    _string_list(descriptor.get("required_context"), descriptor_path, "required_context", non_empty=True)
+    for index, path in enumerate(descriptor["required_context"]):
+        _artifact_path(path, descriptor_path, f"required_context[{index}]")
     return descriptor, descriptor_path
 
 
 def _resolve_operation(
     target: Path, router: dict[str, Any], requested: str
 ) -> tuple[dict[str, Any], str, str, str]:
-    routing = router.get("operation_routing")
-    if not isinstance(routing, dict):
-        raise ContextPlanningError(
-            "OPERATION_ROUTING_UNAVAILABLE",
-            "target context router has no operation routing contract",
-            upgrade_required=True,
-        )
-    index_path = _normalize_relative(str(routing.get("index", "")), "operation index")
-    catalog_path = _normalize_relative(str(routing.get("catalog", "")), "operation catalog")
+    routing = _object(router.get("operation_routing"), ROUTER_PATH, "operation_routing")
+    index_path = _artifact_path(routing.get("index"), ROUTER_PATH, "operation_routing.index")
+    catalog_path = _artifact_path(routing.get("catalog"), ROUTER_PATH, "operation_routing.catalog")
     index = _load_json(target, index_path, "operation index")
     catalog = _load_json(target, catalog_path, "operation catalog")
+    _positive_integer(index.get("schema_version"), index_path, "schema_version")
+    _positive_integer(catalog.get("schema_version"), catalog_path, "schema_version")
+    _text(index.get("index_kind"), index_path, "index_kind")
+    _text(catalog.get("catalog_kind"), catalog_path, "catalog_kind")
+    _artifact_path(index.get("catalog"), index_path, "catalog")
     if index.get("schema_version") != 1 or index.get("index_kind") != "target-operation-index":
         raise ContextPlanningError(
             "OPERATION_INDEX_INVALID", "target operation index is invalid",
@@ -258,25 +306,37 @@ def _resolve_operation(
             "OPERATION_INDEX_STALE",
             "operation index does not point to the active operation catalog",
             upgrade_required=True,
+            status="blocked", details={"artifact": index_path, "field": "catalog"},
         )
-    aliases = index.get("aliases")
-    indexed_operations = index.get("operations")
-    if not isinstance(aliases, dict) or not isinstance(indexed_operations, dict):
-        raise ContextPlanningError(
-            "OPERATION_INDEX_INVALID", "target operation index entries are invalid",
-            upgrade_required=True,
-        )
-    operation_id = aliases.get(requested, requested)
+    aliases = _object(index.get("aliases"), index_path, "aliases")
+    indexed_operations = _object(index.get("operations"), index_path, "operations")
+    operation_id = _text(aliases[requested], index_path, f"aliases.{requested}") if requested in aliases else requested
     operations = catalog.get("operations")
     if not isinstance(operations, list):
-        operations = []
-    by_id = {
-        operation.get("id"): operation
-        for operation in operations
-        if isinstance(operation, dict) and isinstance(operation.get("id"), str)
-    }
+        raise _field_error(catalog_path, "operations", "a list", operations)
+    # Inspect identities in the already-loaded catalog, not unrelated operation bodies.
+    by_id: dict[str, dict[str, Any]] = {}
+    operation_fields: dict[str, str] = {}
+    for position, record in enumerate(operations):
+        field = f"operations[{position}]"
+        record = _object(record, catalog_path, field)
+        record_id = _text(record.get("id"), catalog_path, f"{field}.id")
+        if record_id in by_id:
+            raise ContextPlanningError(
+                "OPERATION_CATALOG_INVALID", f"duplicate operation ID: {record_id}",
+                status="blocked", details={"artifact": catalog_path, "field": f"{field}.id"},
+            )
+        by_id[record_id] = record
+        operation_fields[record_id] = field
     operation = by_id.get(operation_id)
     if operation is None:
+        if requested in aliases or operation_id in indexed_operations:
+            field = f"aliases.{requested}" if requested in aliases else f"operations.{operation_id}"
+            raise ContextPlanningError(
+                "OPERATION_INDEX_STALE", f"indexed operation is absent from the catalog: {operation_id}",
+                status="blocked", details={"artifact": index_path, "field": field},
+                actions=("repair the selected operation route and regenerate its index",),
+            )
         raise ContextPlanningError(
             "UNKNOWN_OPERATION",
             f"unknown target operation or alias: {requested}",
@@ -284,35 +344,44 @@ def _resolve_operation(
             details={"available_operations": sorted(by_id)},
         )
     _require_concrete(operation, f"operation {operation_id}")
+    field = operation_fields[operation_id]
+    _text(operation.get("required_module"), catalog_path, f"{field}.required_module")
+    _artifact_path(operation.get("flow"), catalog_path, f"{field}.flow")
+    actions = _string_list(operation.get("allowed_actions"), catalog_path, f"{field}.allowed_actions")
+    _string_list(operation.get("context_profiles"), catalog_path, f"{field}.context_profiles")
+    indexed = _string_list(indexed_operations.get(operation_id), index_path, f"operations.{operation_id}")
     expected_index = [
         operation.get("required_module"),
         operation.get("flow"),
-        *operation.get("allowed_actions", []),
+        *actions,
     ]
-    if indexed_operations.get(operation_id) != expected_index:
+    if indexed != expected_index:
         raise ContextPlanningError(
             "OPERATION_INDEX_STALE",
             f"compact operation route is stale: {operation_id}",
             upgrade_required=True,
+            status="blocked", details={"artifact": index_path, "field": f"operations.{operation_id}"},
         )
     return operation, operation_id, index_path, catalog_path
 
 
 def _load_catalogs(target: Path, router: dict[str, Any]) -> _Catalogs:
-    recursive = router.get("recursive_context")
-    indexes = recursive.get("contour_indexes") if isinstance(recursive, dict) else None
-    if not isinstance(indexes, dict) or set(indexes) != set(REQUIRED_CONTOURS):
+    recursive = _object(router.get("recursive_context"), ROUTER_PATH, "recursive_context")
+    indexes = _object(recursive.get("contour_indexes"), ROUTER_PATH, "recursive_context.contour_indexes")
+    if set(indexes) != set(REQUIRED_CONTOURS):
         raise ContextPlanningError(
             "RECURSIVE_CONTEXT_UNAVAILABLE",
             "target router must define framework, project, and assistant context indexes",
             upgrade_required=True,
         )
+    for contour in REQUIRED_CONTOURS:
+        _artifact_path(indexes[contour], ROUTER_PATH, f"recursive_context.contour_indexes.{contour}")
     items: list[CatalogItem] = []
     evidence: list[dict[str, Any]] = []
     root_index = target
     try:
         for contour in REQUIRED_CONTOURS:
-            relpath = _normalize_relative(str(indexes[contour]), f"{contour} context index")
+            relpath = _normalize_relative(indexes[contour], f"{contour} context index")
             root_index = _target_path(target, relpath, f"{contour} context index")
             catalog_root = root_index.parent
             resolution = discover_context_catalog(
@@ -797,33 +866,20 @@ def _conditional_dependency_evidence(
     descriptor: dict[str, Any],
     catalogs: _Catalogs,
     selected: Iterable[CatalogItem],
+    descriptor_path: str,
 ) -> list[dict[str, str]]:
     """Record lazy profile dependencies without treating triggers as satisfied."""
 
     conditional = descriptor.get("conditional_context", [])
     if not isinstance(conditional, list):
-        raise ContextPlanningError(
-            "CONTEXT_PROFILE_INVALID",
-            "profile conditional_context must be a list",
-            upgrade_required=True,
-        )
+        raise _field_error(descriptor_path, "conditional_context", "a list", conditional)
     selected_paths = {item.path for item in selected}
     evidence: list[dict[str, str]] = []
     for index, dependency in enumerate(conditional):
-        if not isinstance(dependency, dict):
-            raise ContextPlanningError(
-                "CONTEXT_PROFILE_INVALID",
-                f"profile conditional_context[{index}] must be an object",
-                upgrade_required=True,
-            )
-        path = dependency.get("path")
-        when = dependency.get("when")
-        if not isinstance(path, str) or not isinstance(when, str) or not when.strip():
-            raise ContextPlanningError(
-                "CONTEXT_PROFILE_INVALID",
-                f"profile conditional_context[{index}] requires path and when",
-                upgrade_required=True,
-            )
+        field = f"conditional_context[{index}]"
+        dependency = _object(dependency, descriptor_path, field)
+        path = _artifact_path(dependency.get("path"), descriptor_path, f"{field}.path")
+        when = _text(dependency.get("when"), descriptor_path, f"{field}.when")
         normalized = _normalize_relative(path, "conditional context path")
         if normalized not in catalogs.by_path:
             raise ContextPlanningError(
@@ -846,9 +902,8 @@ def _conditional_dependency_evidence(
 def _resolve_surface(
     target: Path, router: dict[str, Any], requested: str | None
 ) -> tuple[str, dict[str, Any]]:
-    delivery = router.get("cache_aware_delivery")
-    index_path = delivery.get("provider_capability_index") if isinstance(delivery, dict) else None
-    if not isinstance(index_path, str):
+    delivery = _object(router["cache_aware_delivery"], ROUTER_PATH, "cache_aware_delivery") if "cache_aware_delivery" in router else None
+    if delivery is None or "provider_capability_index" not in delivery:
         if requested is None:
             return "generic", {
                 "state": "unavailable",
@@ -860,31 +915,21 @@ def _resolve_surface(
             "router does not identify the assistant capability index",
             upgrade_required=True,
         )
-    index_path = _normalize_relative(index_path, "assistant capability index")
+    assert delivery is not None
+    index_path = _artifact_path(delivery.get("provider_capability_index"), ROUTER_PATH, "cache_aware_delivery.provider_capability_index")
     index = _load_json(target, index_path, "assistant capability index")
-    surfaces = index.get("surfaces")
-    if not isinstance(surfaces, dict):
-        raise ContextPlanningError(
-            "ASSISTANT_CAPABILITY_INDEX_INVALID",
-            "assistant capability index has no surfaces",
-            upgrade_required=True,
-        )
-    surface = requested or index.get("default_surface")
-    if not isinstance(surface, str) or surface not in surfaces:
+    surfaces = _object(index.get("surfaces"), index_path, "surfaces")
+    surface = requested if requested is not None else _text(index.get("default_surface"), index_path, "default_surface")
+    if surface not in surfaces:
         raise ContextPlanningError(
             "UNKNOWN_ASSISTANT_SURFACE",
             f"unknown assistant surface: {surface}",
             status="invalid-request",
             details={"available_surfaces": sorted(surfaces)},
         )
-    record_path = surfaces[surface]
-    if not isinstance(record_path, str):
-        raise ContextPlanningError(
-            "ASSISTANT_CAPABILITY_INDEX_INVALID",
-            f"assistant surface path is invalid: {surface}",
-            upgrade_required=True,
-        )
+    record_path = _artifact_path(surfaces[surface], index_path, f"surfaces.{surface}")
     record = _load_json(target, record_path, "assistant capability record")
+    _text(record.get("assistant_surface"), record_path, "assistant_surface")
     if record.get("assistant_surface") != surface:
         raise ContextPlanningError(
             "ASSISTANT_CAPABILITY_RECORD_INVALID",
@@ -944,14 +989,9 @@ def _semantic_terms(
     profile: str,
     operation: str,
 ) -> tuple[dict[str, dict[str, Any]], str]:
-    config = router.get("semantic_codebook")
-    if not isinstance(config, dict) or not isinstance(config.get("index"), str):
-        raise ContextPlanningError(
-            "SEMANTIC_CODEBOOK_UNAVAILABLE",
-            "target router does not identify an installed semantic codebook",
-            upgrade_required=True,
-        )
-    index_path = _normalize_relative(config["index"], "semantic codebook index")
+    config = _object(router.get("semantic_codebook"), ROUTER_PATH, "semantic_codebook")
+    index_path = _artifact_path(config.get("index"), ROUTER_PATH, "semantic_codebook.index")
+    configured_preload = _string_list(config.get("preload_terms"), ROUTER_PATH, "semantic_codebook.preload_terms")
     codebook_index = _load_json(target, index_path, "semantic codebook index")
     required = {term for item in selected for term in item.semantic_refs}
     try:
@@ -968,7 +1008,6 @@ def _semantic_terms(
             upgrade_required=True,
             actions=("regenerate and validate the installed semantic codebook",),
         ) from exc
-    configured_preload = config.get("preload_terms")
     shards = codebook_index.get("shards")
     declared_preload: list[str] = []
     if isinstance(shards, list):
@@ -986,6 +1025,7 @@ def _semantic_terms(
             "SEMANTIC_PRELOAD_STALE",
             "router semantic preload does not resolve through the installed codebook",
             upgrade_required=True,
+            status="blocked", details={"artifact": ROUTER_PATH, "field": "semantic_codebook.preload_terms"},
         )
     owner_root = _target_path(target, index_path, "semantic codebook index").parent.parent
     for term_id, term in terms.items():
@@ -1125,15 +1165,10 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     terms, semantic_index_path = _semantic_terms(
         target, router, selected.values(), request.profile, operation_id
     )
-    budget = router.get("context_budgets", {}).get("profile_default", {})
-    configured_words = budget.get("max_total_words")
-    configured_files = budget.get("max_files")
-    if not isinstance(configured_words, int) or not isinstance(configured_files, int):
-        raise ContextPlanningError(
-            "CONTEXT_BUDGET_INVALID",
-            "target router profile budget is invalid",
-            upgrade_required=True,
-        )
+    budgets = _object(router.get("context_budgets"), ROUTER_PATH, "context_budgets")
+    budget = _object(budgets.get("profile_default"), ROUTER_PATH, "context_budgets.profile_default")
+    configured_words = _positive_integer(budget.get("max_total_words"), ROUTER_PATH, "context_budgets.profile_default.max_total_words")
+    configured_files = _positive_integer(budget.get("max_files"), ROUTER_PATH, "context_budgets.profile_default.max_files")
     if request.max_words is not None and request.max_words < 1:
         raise ContextPlanningError(
             "INVALID_CONTEXT_BUDGET", "--max-words must be positive",
@@ -1148,16 +1183,8 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         )
     max_words = request.max_words or configured_words
     configured_characters = budget.get("max_total_characters")
-    if router.get("schema_version") in {12, 13} and (
-        not isinstance(configured_characters, int)
-        or isinstance(configured_characters, bool)
-        or configured_characters < 1
-    ):
-        raise ContextPlanningError(
-            "CONTEXT_BUDGET_INVALID",
-            "current target router character budget is invalid",
-            upgrade_required=True,
-        )
+    if router["schema_version"] in {12, 13} or "max_total_characters" in budget:
+        _positive_integer(configured_characters, ROUTER_PATH, "context_budgets.profile_default.max_total_characters")
     if request.max_characters is not None and request.max_characters < 1:
         raise ContextPlanningError(
             "INVALID_CONTEXT_BUDGET", "--max-characters must be positive",
@@ -1193,7 +1220,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         item_id: sorted(values) for item_id, values in sorted(reasons.items())
     }
     conditional_dependencies = _conditional_dependency_evidence(
-        descriptor, catalogs, selected.values()
+        descriptor, catalogs, selected.values(), descriptor_path
     )
     try:
         content_packet = build_context_packet(
@@ -1315,8 +1342,8 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
         "request": {
             "profile": request.profile,
             "requested_operation": request.operation,
-            "changed_paths": list(request.changed_paths),
-            "fact_ids": list(request.fact_ids),
+            "changed_paths": list(request.changed_paths) if isinstance(request.changed_paths, (tuple, list)) else request.changed_paths,
+            "fact_ids": list(request.fact_ids) if isinstance(request.fact_ids, (tuple, list)) else request.fact_ids,
             "assistant_surface": request.assistant_surface,
             "architecture_mode": request.architecture_mode,
             "max_words": request.max_words,
@@ -1336,10 +1363,34 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
     return result
 
 
+def _validate_request(request: ContextPlanRequest) -> None:
+    if not isinstance(request.target, Path):
+        raise _field_error("request", "target", "a pathlib Path", request.target)
+    for field in ("profile", "operation"):
+        _text(getattr(request, field), "request", field)
+    for field in ("assistant_surface", "architecture_mode"):
+        value = getattr(request, field)
+        if value is not None:
+            _text(value, "request", field)
+    for field in ("changed_paths", "fact_ids"):
+        values = getattr(request, field)
+        if not isinstance(values, (tuple, list)):
+            raise _field_error("request", field, "a list or tuple of strings", values)
+        for index, value in enumerate(values):
+            _text(value, "request", f"{field}[{index}]")
+    for field in ("max_words", "max_characters"):
+        value = getattr(request, field)
+        if value is not None:
+            _positive_integer(value, "request", field)
+    if not isinstance(request.document_warnings, bool):
+        raise _field_error("request", "document_warnings", "a Boolean", request.document_warnings)
+
+
 def plan_target_context(request: ContextPlanRequest) -> dict[str, Any]:
     """Return a usable context plan or structured fail-closed evidence."""
 
     try:
+        _validate_request(request)
         normalized = replace(
             request,
             changed_paths=tuple(

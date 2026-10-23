@@ -45,11 +45,11 @@ REQUIRED_PREFIX_BINDINGS = {
     "validate-current": (
         ("--diff-ref", "ALATYR_CONTRACT_DIFF_REF"),
         ("--approval-record", ".ai/assistant/approvals/ALATYR_CONTRACT.json"),
-        ("--change-package", ".ai/assistant/change-packages/ALATYR_CONTRACT.json"),
     ),
 }
 DELEGATE_PATH_FIELDS = (
     "target", "framework_source", "approval_record", "change_package", "problem_model",
+    "historical_evidence_index",
 )
 EXPECTED_DELEGATES = {
     "adapter-health": {
@@ -70,7 +70,8 @@ EXPECTED_DELEGATES = {
         "approval_archive_mode": "full",
         "requires_diff_ref": True,
         "requires_approval_records": True,
-        "requires_change_packages": True,
+        # Canonical enabled-module policy decides whether package enforcement applies.
+        "requires_change_packages": "when-enabled",
     },
     "archive-audit": {
         "delegate_operation": "archive-audit",
@@ -245,7 +246,13 @@ def _direct_delegate_invocation_failures(
             "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
             f"{entrypoint} canonical command must contain exactly one --target . binding",
         ))
-    single_value_options = {"--target", "--framework-source", "--diff-ref", "--task-id", "--task-class"}
+    historical_index = getattr(parsed, "historical_evidence_index", None)
+    if historical_index is not None and not is_target_relative_path(str(historical_index)):
+        failures.append((
+            "VALIDATION_CONTRACT_DELEGATE_ARGUMENTS",
+            f"{entrypoint} historical evidence index must be target-relative",
+        ))
+    single_value_options = {"--target", "--framework-source", "--diff-ref", "--task-id", "--task-class", "--historical-evidence-index"}
     duplicates = sorted(
         option
         for option in single_value_options

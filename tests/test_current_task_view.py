@@ -134,6 +134,50 @@ class CurrentTaskTests(ActiveTaskFixture):
         self.assertFalse(value["acceptance_granted"])
         self.assertEqual(value["disposition_source"], self.task["completion_evidence"])
 
+    def test_invalid_closure_preservation_cannot_expose_a_healthy_delivery_view(self):
+        self.close()
+        self.closure["delivery"]["evidence_finalization"] = "provisional"
+        self.closure["engineering_evidence"].update(materiality="material", preserved_owners=["design.md"],
+            preservation=[{"fact_id": "change-1", "fact_type": "implementation", "owner": "design.md"}])
+        self.write_closure()
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown", value)
+        self.assertTrue(value["diagnostics"])
+        self.assertNotIn("delivery", value)
+        self.assertNotIn("model", value)
+
+    def test_original_failure_stays_visible_despite_green_component_obligations(self):
+        from current_task_view import incident_outcome_view
+        value = copy.deepcopy(self.model)
+        value["original_case"] = {"source_ref": "original-run.json", "expected_outcome": "Original end-to-end flow completes", "status": "still-failing"}
+        value["hypotheses"] = [{"id": "component-only-speedup", "status": "rejected"}]
+        outcome = incident_outcome_view(value)
+        self.assertEqual(outcome["state"], "original-case-unresolved")
+        self.assertEqual(outcome["original_case"]["source_ref"], "original-run.json")
+        self.assertEqual(outcome["rejected_hypothesis_ids"], ["component-only-speedup"])
+        self.assertFalse(outcome["evidence_verified"])
+        self.assertEqual(outcome["authority"], "none")
+
+    def test_bound_original_outcome_is_available_through_public_health_cli(self):
+        self.model["original_case"] = {"source_ref": "original-run.json", "actor": "end user",
+            "input": "Original workflow request", "expected_outcome": "Original end-to-end flow completes",
+            "status": "still-failing", "evidence_refs": [], "supersession": None}
+        self.write_model(); self.write_index()
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "bound-recorded-disposition", value)
+        self.assertEqual(value["incident_outcome"]["state"], "original-case-unresolved")
+        command = [sys.executable, "-B", str(ROOT / "tools/report_adapter_health.py"),
+                   "--target", str(self.target), "--current-task", "fixture-task", "--json"]
+        result = subprocess.run(command, capture_output=True, text=True)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["current_task"]["incident_outcome"]["state"], "original-case-unresolved")
+        self.assertFalse(payload["current_task"]["acceptance_granted"])
+        from report_adapter_health import render_text
+        for mode in ("status", "doctor"):
+            text = render_text(payload, mode=mode)
+            self.assertIn("Original incident outcome: original-case-unresolved", text)
+            self.assertIn("Original end-to-end flow completes", text)
+
     def test_snapshot_failure_removes_every_derived_evidence_claim(self):
         self.close()
         checked = changed_index_validator(self.target)
@@ -142,7 +186,7 @@ class CurrentTaskTests(ActiveTaskFixture):
             value = current_task_view(checked, "fixture-task")
         self.assertEqual(value["state"], "unknown")
         self.assertEqual(value["repair_evidence"]["state"], "not-verified")
-        for key in ("delivery", "model", "disposition_source", "execution_readiness", "incident_controls", "task_state"):
+        for key in ("delivery", "model", "disposition_source", "execution_readiness", "incident_controls", "task_state", "incident_outcome"):
             self.assertNotIn(key, value)
 
     def test_default_health_does_not_load_selected_task_view(self):

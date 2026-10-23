@@ -14,6 +14,7 @@ from target_tool_compat import assert_write_compatible
 from task_acceptance_binding import add_task_arguments, task_arguments
 from support_write_transaction import SupportTransaction, read_output, support_writer_lock
 from target_support_outputs import step_outputs
+from target_adapter_validation.current_change import change_packages_enabled
 
 
 TOOLS = Path(__file__).resolve().parent
@@ -52,9 +53,17 @@ def build_steps(
     task_class: str | None = None,
     problem_models: Iterable[Path] = (),
     require_task_acceptance: bool = False,
+    historical_evidence_index: Path | None = None,
 ) -> list[Step]:
     approval_records = tuple(approval_records)
     packages = tuple(change_packages)
+    package_required = False
+    if require_current_change:
+        if not (diff_ref and approval_records):
+            raise ValueError("--require-current-change requires --diff-ref and --approval-record")
+        package_required = change_packages_enabled(target)
+        if package_required and not packages:
+            raise ValueError("--require-current-change requires --change-package when change-packages is enabled")
     mode = ("--write",) if write else ()
     staging = ("--migration-staging",) if migration_staging else ()
     steps = [
@@ -113,9 +122,11 @@ def build_steps(
         validator_arguments.extend(["--diff-ref", diff_ref])
     for record in approval_records:
         validator_arguments.extend(["--approval-record", str(record)])
+    if historical_evidence_index is not None:
+        validator_arguments.extend(["--historical-evidence-index", str(historical_evidence_index)])
     for package in packages:
         validator_arguments.extend(["--change-package", str(package)])
-    if packages:
+    if packages or package_required:
         validator_arguments.append("--enforce-change-package")
     if require_current_change:
         validator_arguments.append("--enforce-approval-scope")
@@ -201,6 +212,7 @@ def main() -> int:
     parser.add_argument("--diff-ref")
     parser.add_argument("--approval-record", action="append", type=Path, default=[])
     parser.add_argument("--change-package", action="append", type=Path, default=[])
+    parser.add_argument("--historical-evidence-index", type=Path)
     parser.add_argument("--require-current-change", action="store_true")
     add_task_arguments(parser)
     args = parser.parse_args()
@@ -209,10 +221,10 @@ def main() -> int:
     except ValueError as exc:
         parser.error(str(exc))
     if args.require_current_change and not (
-        args.diff_ref and args.approval_record and args.change_package
+        args.diff_ref and args.approval_record
     ):
         parser.error(
-            "--require-current-change requires --diff-ref, --approval-record, and --change-package"
+            "--require-current-change requires --diff-ref and --approval-record"
         )
 
     target = args.target.resolve()
@@ -226,19 +238,23 @@ def main() -> int:
         except (OSError, ValueError) as exc:
             print(f"FAIL: {exc}", file=sys.stderr)
             return 2
-    steps = build_steps(
-        target=target,
-        write=args.write,
-        migration_staging=args.migration_staging,
-        diff_ref=args.diff_ref,
-        approval_records=args.approval_record,
-        change_packages=args.change_package,
-        require_current_change=args.require_current_change,
-        task_id=args.task_id,
-        task_class=args.task_class,
-        problem_models=args.problem_model,
-        require_task_acceptance=args.require_task_acceptance,
-    )
+    try:
+        steps = build_steps(
+            target=target,
+            write=args.write,
+            migration_staging=args.migration_staging,
+            diff_ref=args.diff_ref,
+            approval_records=args.approval_record,
+            change_packages=args.change_package,
+            require_current_change=args.require_current_change,
+            task_id=args.task_id,
+            task_class=args.task_class,
+            problem_models=args.problem_model,
+            require_task_acceptance=args.require_task_acceptance,
+            historical_evidence_index=args.historical_evidence_index,
+        )
+    except (OSError, ValueError) as exc:
+        parser.error(str(exc))
     try:
         if args.write:
             result, failed_step, conflicts = execute_write_steps(target, steps)

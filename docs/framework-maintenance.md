@@ -17,6 +17,16 @@ decomposition, restoration classification and non-authoritative reviewed
 warnings. Test malformed input and public routing, not only pure helpers. Old
 schema witnesses remain readable; they do not establish current-task acceptance.
 
+For current-change contract revisions, test the smallest accepted installation
+with optional modules absent, then enable each affected module and prove its
+obligations cannot be omitted. Parser acceptance and matching metadata are
+necessary but insufficient: compare real dispatch and acceptance against the
+canonical owner's conditional requirements. Include malformed selected JSON
+through the public planner, preserved dirty archive records versus selected
+current approvals, and invalid closure/owner bindings. Keep baseline performance
+and selected-path equivalence checks separate from real-team effectiveness;
+never update a benchmark's outcome merely because current unit checks pass.
+
 ## Change Categories
 
 - Framework rule change: update `framework/`, installer docs, target

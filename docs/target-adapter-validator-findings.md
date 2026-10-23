@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1737
+Catalog entries: 1741
 
 ## Families
 
@@ -44,6 +44,7 @@ Catalog entries: 1737
 - `EXTENSION`: 75 codes.
 - `FRAMEWORK`: 21 codes.
 - `GATE`: 1 codes.
+- `HISTORICAL`: 4 codes.
 - `INSTALLATION`: 8 codes.
 - `LOCAL`: 1 codes.
 - `MANIFEST`: 12 codes.
@@ -1843,6 +1844,14 @@ Catalog entries: 1737
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `GATE_CONTEXT_ROUTER_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `HISTORICAL_EVIDENCE_INVALID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `HISTORICAL_EVIDENCE_NON_AUTHORITATIVE`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `HISTORICAL_PLAN_ACTIVE_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `HISTORICAL_PLAN_RETAINED`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `INSTALLATION_STATE_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
 - `INSTALLATION_STATE_INVALID_SHAPE`

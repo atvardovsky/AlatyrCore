@@ -75,6 +75,8 @@ def build_parser() -> argparse.ArgumentParser:
             operation.add_argument("--incident-frontier", action="store_true")
         if name in {"status", "doctor"}:
             operation.add_argument("--current-task")
+        if name == "archive-audit":
+            operation.add_argument("--historical-evidence-index", type=Path, action=Once)
 
     current = subparsers.add_parser("validate-current", allow_abbrev=False)
     add_common(current)
@@ -84,7 +86,8 @@ def build_parser() -> argparse.ArgumentParser:
     current.add_argument("--problem-model", action="append", default=[])
     current.add_argument("--require-task-acceptance", action="store_true")
     current.add_argument("--approval-record", action="append", required=True)
-    current.add_argument("--change-package", action="append", required=True)
+    current.add_argument("--change-package", action="append", default=[])
+    current.add_argument("--historical-evidence-index", type=Path, action=Once)
 
     finalize = subparsers.add_parser("finalize-support", allow_abbrev=False)
     add_common(finalize)
@@ -93,6 +96,7 @@ def build_parser() -> argparse.ArgumentParser:
     finalize.add_argument("--diff-ref")
     finalize.add_argument("--approval-record", action="append", default=[])
     finalize.add_argument("--change-package", action="append", default=[])
+    finalize.add_argument("--historical-evidence-index", type=Path, action=Once)
     finalize.add_argument("--require-current-change", action="store_true")
     finalize.add_argument("--task-id")
     finalize.add_argument("--task-class", choices=["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"])
@@ -119,7 +123,7 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
             extra.extend(["--current-task", args.current_task])
         return [args.operation, *common, *extra]
     if args.operation == "archive-audit":
-        return [
+        command = [
             "validate-adapter",
             *common,
             "--validation-phase",
@@ -129,6 +133,9 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
             "--approval-archive-mode",
             "full",
         ]
+        if getattr(args, "historical_evidence_index", None) is not None:
+            command.extend(["--historical-evidence-index", str(args.historical_evidence_index)])
+        return command
     if args.operation == "validate-current":
         command = [
             "validate-adapter",
@@ -154,7 +161,12 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
             command.append("--require-task-acceptance")
         for package in args.change_package:
             command.extend(["--change-package", package])
-        command.extend(["--enforce-approval-scope", "--enforce-change-package"])
+        if args.change_package:
+            command.append("--enforce-change-package")
+        if getattr(args, "historical_evidence_index", None) is not None:
+            command.extend(["--historical-evidence-index", str(args.historical_evidence_index)])
+        # Canonical acceptance resolves enabled modules and enforces their packages.
+        command.append("--enforce-approval-scope")
         return command
 
     command = ["finalize-support", "--target", str(target)]
@@ -168,6 +180,8 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
         command.extend(["--approval-record", record])
     for package in args.change_package:
         command.extend(["--change-package", package])
+    if getattr(args, "historical_evidence_index", None) is not None:
+        command.extend(["--historical-evidence-index", str(args.historical_evidence_index)])
     if args.require_current_change:
         command.append("--require-current-change")
     for name in ("task_id", "task_class"):

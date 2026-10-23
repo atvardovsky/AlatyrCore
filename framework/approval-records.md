@@ -109,6 +109,13 @@ separate from current-operation enforcement: an unselected historical record
 must never authorize, constrain, or be compared with the current operation
 diff.
 
+An explicitly reviewed, digest-bound historical classification may retain an
+incomplete approval or rejected/superseded plan as a non-authoritative witness.
+Its gaps stay visible, not reconstructed as success. Classification never
+supplies current scope, exempts a selected current approval, or makes a retained
+plan active. Stale bindings, conflicting active use, and unreviewed records
+remain blocking. Preserve original bytes; adoption requires target approval.
+
 The source target-adapter validator enters strict scope mode automatically
 when a caller supplies both a diff base and one or more explicit approval
 records. A caller that supplies only a diff base receives advisory protected-

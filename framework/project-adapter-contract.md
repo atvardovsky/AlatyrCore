@@ -115,6 +115,9 @@ Every project using this framework must define these structural bindings:
   explicit argument, `ALATYR_CORE`, or ignored local configuration and fails
   closed when no valid source checkout is available. Committed validation
   commands must not contain workstation-specific absolute source paths.
+  Custom wrappers must reject unsupported arguments before work and preserve
+  the same source-selector precedence; an extra legacy selector must not
+  silently make local and canonical checks use different tooling.
 - **Acceptance evidence:** an explicit staged or accepted result showing that
   installed files, selected capability state, target facts, local checks, and
   unresolved placeholders were evaluated at the target revision.

@@ -4,6 +4,27 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.104 - 2026-10-24
+
+- Make canonical current-change package enforcement follow enabled target
+  capabilities, including the delegate, validation metadata and finalizer.
+  Package-disabled targets need no fictional evidence; enabled targets remain
+  strict. Preserve current approval, task, full-scope and archive requirements.
+- Reject malformed selected planning metadata with artifact/field diagnostics
+  through both the API and public CLI, without eager catalog hydration.
+- Complete explicit, bounded, digest-bound historical witness classification.
+  Preserve old bytes and visible gaps; never confer current approval, activate
+  retained plans or accept stale/unreviewed classifications.
+- Reuse canonical closure checks in selected-task delivery, retain original
+  incident outcomes/rejected mechanisms, and clarify wrapper argument/source
+  parity, transitive effects and actual focused-case execution evidence.
+- Add owner-derived disabled-capability and malformed-input regressions rather
+  than relying only on mutually agreeing metadata. Extract classification from
+  the central validator; keep effectiveness and cost claims evidence-limited.
+- Framework version advances to alpha.104, adapter schema to `85`, and target
+  templates to `99`. Existing historical records require reviewed disposition,
+  not silent reconstruction or automatic promotion to current evidence.
+
 ## 0.1.0-alpha.103 - 2026-10-24
 
 - Clarify target-owned project identity under `ALATYR-ADAPTER-001`: project

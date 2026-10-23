@@ -974,6 +974,7 @@ class Validator:
         current_task_class: str | None = None,
         require_task_acceptance: bool = False,
         framework_source_role: str = "installed",
+        historical_evidence_index: Path | None = None,
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
@@ -984,6 +985,8 @@ class Validator:
         self.config = config
         self.framework_source = framework_source.resolve() if framework_source else None
         self.framework_source_role = framework_source_role
+        # Explicit selection never grants a historical witness current authority.
+        self.historical_evidence_index = historical_evidence_index
         self.diff_ref = diff_ref
         self.current_task_id = current_task_id
         self.current_task_class = current_task_class
@@ -4551,9 +4554,13 @@ class Validator:
                         )
                     ]
         self.approval_archive_summary["records_checked"] = len(archive_records)
+        if not archive_records:
+            # Explicit malformed input still fails if the archive is empty,
+            # disabled, or every discovered record is currently selected.
+            self.reviewed_historical_evidence()
         if archive_records:
             archive_finding_start = len(self.findings)
-            self.check_approval_record_shape(archive_records)
+            self.check_approval_record_shape(archive_records, historical=True)
             self.check_approval_hash_evidence(
                 archive_records, compare_current_patch=False
             )
@@ -4853,14 +4860,40 @@ class Validator:
             machine_readable=False,
         )
 
-    def check_approval_record_shape(self, approval_records: list[Path]) -> None:
+    def reviewed_historical_evidence(self) -> dict[str, dict[str, Any]]:
+        """Load explicit non-authoritative witnesses once per validation snapshot."""
+        selected = self.historical_evidence_index
+        if selected is None:
+            return {}
+        if not hasattr(self, "_reviewed_historical_evidence"):
+            from target_adapter_validation.historical_evidence import load_historical_evidence
+            try:
+                self._reviewed_historical_evidence = load_historical_evidence(self, selected)
+            except (OSError, UnicodeError, ValueError, TypeError, RecursionError, TargetPathEscapeError) as exc:
+                self.error("HISTORICAL_EVIDENCE_INVALID", str(exc), str(selected))
+                self._reviewed_historical_evidence = {}
+        return self._reviewed_historical_evidence
+
+    def check_approval_record_shape(
+        self, approval_records: list[Path], *, historical: bool = False,
+    ) -> None:
+        witnesses = self.reviewed_historical_evidence() if historical else {}
         for record in approval_records:
             relpath = self.rel(record)
-            finding = self.error if self.enforce_approval_scope else self.warn
+            retained = (witnesses.get(relpath, {}).get("kind") == "approval-record"
+                        and record not in self.approval_records)
+            finding = self.error if self.enforce_approval_scope and not retained else self.warn
+            if retained:
+                self.warn(
+                    "HISTORICAL_EVIDENCE_NON_AUTHORITATIVE",
+                    "reviewed immutable historical evidence; gaps remain visible and "
+                    "cannot authorize changes or qualify current acceptance",
+                    relpath,
+                )
             if record.suffix.lower() == ".json":
                 result = self._approval_record_json(record)
                 if result.error is not None:
-                    finding(
+                    (self.error if retained else finding)(
                         "APPROVAL_RECORD_INVALID_JSON",
                         result.error,
                         relpath,
@@ -4868,7 +4901,7 @@ class Validator:
                     continue
                 data = result.value
                 if not isinstance(data, dict):
-                    finding(
+                    (self.error if retained else finding)(
                         "APPROVAL_RECORD_INVALID_SHAPE",
                         "machine-readable approval record must be a JSON object",
                         relpath,
@@ -6188,6 +6221,16 @@ class Validator:
             if path.startswith(".ai/assistant/change-packages/")
             and (path.endswith("-plan.md") or path.endswith("/plan.md"))
         }
+        historical_plans = {
+            name: entry for name, entry in self.reviewed_historical_evidence().items()
+            if entry["kind"] == "retained-plan" and name in changed_plans
+        }
+        for name, entry in sorted(historical_plans.items()):
+            self.warn(
+                "HISTORICAL_PLAN_RETAINED",
+                f"retained {entry['status']} witness, not an active package or completion: {entry['reason']}",
+                name,
+            )
         selected_packages = list(self.change_packages)
         selected_relpaths = {self.rel(path) for path in selected_packages}
         for entry in indexed_entries:
@@ -6207,7 +6250,7 @@ class Validator:
             )
             return
         if not selected_packages:
-            for plan in sorted(changed_plans):
+            for plan in sorted(changed_plans - historical_plans.keys()):
                 self.error(
                     "PACKAGE_ACTIVE_PLAN_UNINDEXED",
                     "changed package plan is not bound to an active indexed change package",
@@ -6730,12 +6773,24 @@ class Validator:
             )
 
         if changed_paths is not None:
-            for plan in sorted(changed_plans - referenced_active_plans):
-                self.error(
-                    "PACKAGE_ACTIVE_PLAN_UNINDEXED",
-                    "changed package plan is not bound to an active indexed change package",
-                    plan,
-                )
+            self.check_changed_plan_registration(changed_plans, referenced_active_plans, historical_plans)
+
+    def check_changed_plan_registration(
+        self, changed_plans: set[str], active_plans: set[str],
+        historical_plans: dict[str, dict[str, Any]],
+    ) -> None:
+        for plan in sorted(historical_plans.keys() & active_plans):
+            self.error(
+                "HISTORICAL_PLAN_ACTIVE_CONFLICT",
+                "a retained historical plan cannot also be the plan of an active package",
+                plan,
+            )
+        for plan in sorted(changed_plans - active_plans - historical_plans.keys()):
+            self.error(
+                "PACKAGE_ACTIVE_PLAN_UNINDEXED",
+                "changed package plan is not bound to an active indexed change package",
+                plan,
+            )
 
     def check_change_package_directory_hygiene(self) -> None:
         root = self.target_path(".ai/assistant/change-packages")
@@ -7886,6 +7941,10 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--historical-evidence-index", type=Path,
+        help="Explicit reviewed digest-bound historical classifications; never current approval or completion authority.",
+    )
+    parser.add_argument(
         "--continuity-packet",
         type=Path,
         action="append",
@@ -8040,6 +8099,7 @@ def main() -> int:
         args.target,
         framework_source=args.framework_source,
         framework_source_role=args.framework_source_role,
+        historical_evidence_index=args.historical_evidence_index,
         diff_ref=args.diff_ref,
         approval_records=args.approval_record,
         enforce_approval_scope=enforce_approval_scope,

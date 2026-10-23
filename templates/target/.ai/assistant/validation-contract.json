@@ -32,7 +32,7 @@
         "approval_archive_mode": "full",
         "requires_diff_ref": true,
         "requires_approval_records": true,
-        "requires_change_packages": true
+        "requires_change_packages": "when-enabled"
       }
     },
     "archive-audit": {

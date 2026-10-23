@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 319,
-      "content_digest": "sha256:4674a0800c2b5460d26792deed427e3ddab551240eef8fb064ff877ef340f93e"
+      "estimated_words": 372,
+      "content_digest": "sha256:1c7ef32a93e820eb896296fe1cf967e27ee8a54dc0cfd07c885c911f8fdc0b86"
     },
     {
       "id": "framework.support.test-first-development-md",
@@ -190,8 +190,8 @@
       "owner_refs": [
         "ALATYR-TDD-001"
       ],
-      "estimated_words": 2177,
-      "content_digest": "sha256:ecb376c5a18d5b7f0073829ca6dc89054d09575129d557db5b1d739b254f6062"
+      "estimated_words": 2217,
+      "content_digest": "sha256:1d8d76502c628dc0bfa2486d567eef1955c68c0a07b5abec695508e16a138689"
     }
   ]
 }

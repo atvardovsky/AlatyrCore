@@ -96,6 +96,10 @@ filtering. Distinguish disposable automated resources from the shared manual
 review application and database. Never broaden an unsupported focused command.
 Reconcile test additions and exclusions against actual runner configuration;
 metadata alone cannot establish command semantics or suite completeness.
+Include subprocess and runner-discovery effects, especially temporary writes,
+in the command's resource contract. For focused evidence, reconcile expected
+case identities with actual selected/executed/skipped counts; a zero exit code
+or a matching-looking filter is not proof that the intended cases ran.
 Case-ID inventory is metadata, runner discovery is not execution, and database
 configuration is not database behavior proof. Label each using its command
 kind, measured execution state/counts and proof boundary; do not infer proof

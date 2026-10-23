@@ -48,7 +48,10 @@
         "approval_archive_mode": {"enum": ["none", "changed", "full", "not-applicable"]},
         "requires_diff_ref": {"type": "boolean"},
         "requires_approval_records": {"type": "boolean"},
-        "requires_change_packages": {"type": "boolean"}
+        "requires_change_packages": {
+          "oneOf": [{"type": "boolean"}, {"const": "when-enabled"}],
+          "description": "true requires package selection, false does not, and when-enabled delegates the requirement to canonical enabled-module policy."
+        }
       }
     },
     "entrypointV2": {

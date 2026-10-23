@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import contextlib
+import io
 import json
 import subprocess
 import sys
@@ -13,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from finalize_target_support import Step, build_steps, execute_write_steps, generated_paths, restore, snapshot  # noqa: E402
+from finalize_target_support import Step, build_steps, execute_write_steps, generated_paths, main, restore, snapshot  # noqa: E402
 from render_change_package_index import expected_outputs  # noqa: E402
 
 
@@ -145,6 +147,78 @@ class ChangePackageProjectionTests(unittest.TestCase):
 
 
 class FinalizeTargetSupportTests(unittest.TestCase):
+    def test_reviewed_history_selection_reaches_canonical_validator(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            steps = build_steps(target=Path(directory), write=False,
+                migration_staging=False, diff_ref=None, approval_records=[],
+                change_packages=[], historical_evidence_index=Path("history/index.json"))
+        command = steps[-1].arguments
+        self.assertEqual(Path(command[command.index("--historical-evidence-index") + 1]), Path("history/index.json"))
+
+    def set_module(self, target: Path, *, enabled: bool) -> None:
+        manifest = target / ".ai/alatyr.yaml"
+        manifest.parent.mkdir(parents=True, exist_ok=True)
+        modules = "[change-packages]" if enabled else "[]"
+        manifest.write_text(
+            f"modules:\n  selected: {modules}\n  enabled: {modules}\n", encoding="utf-8"
+        )
+
+    def test_disabled_current_change_does_not_require_package(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.set_module(target, enabled=False)
+            steps = build_steps(
+                target=target, write=False, migration_staging=False,
+                diff_ref="HEAD", approval_records=[Path("approval.json")],
+                change_packages=[], require_current_change=True,
+            )
+            self.assertIn("--enforce-approval-scope", steps[-1].arguments)
+            self.assertNotIn("--enforce-change-package", steps[-1].arguments)
+            with patch("sys.argv", ["finalize_target_support.py", "--target", str(target),
+                       "--require-current-change", "--diff-ref", "HEAD", "--approval-record", "approval.json"]), \
+                    patch("finalize_target_support.execute_steps", return_value=(0, None)) as execute, \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(main(), 0)
+            self.assertNotIn("--enforce-change-package", execute.call_args.args[0][-1].arguments)
+
+    def test_enabled_current_change_requires_package_before_execution(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.set_module(target, enabled=True)
+            with self.assertRaisesRegex(ValueError, "--change-package"):
+                build_steps(
+                    target=target, write=False, migration_staging=False,
+                    diff_ref="HEAD", approval_records=[Path("approval.json")],
+                    change_packages=[], require_current_change=True,
+                )
+            with patch("sys.argv", ["finalize_target_support.py", "--target", str(target),
+                       "--require-current-change", "--diff-ref", "HEAD", "--approval-record", "approval.json"]), \
+                    patch("finalize_target_support.execute_steps") as execute, \
+                    contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as failure:
+                    main()
+            self.assertEqual(failure.exception.code, 2)
+            execute.assert_not_called()
+
+    def test_current_change_keeps_diff_and_approval_required(self) -> None:
+        for diff_ref, approvals in ((None, [Path("approval.json")]), ("HEAD", [])):
+            with self.subTest(diff_ref=diff_ref, approvals=approvals):
+                with self.assertRaisesRegex(ValueError, "--diff-ref and --approval-record"):
+                    build_steps(
+                        target=Path("/target"), write=False, migration_staging=False,
+                        diff_ref=diff_ref, approval_records=approvals, change_packages=[],
+                        require_current_change=True,
+                    )
+
+    def test_non_current_change_preserves_explicit_package_enforcement(self) -> None:
+        for packages in ([], [Path("package.json")]):
+            steps = build_steps(
+                target=Path("/target"), write=False, migration_staging=False,
+                diff_ref=None, approval_records=[], change_packages=packages,
+            )
+            self.assertEqual("--enforce-change-package" in steps[-1].arguments, bool(packages))
+            self.assertNotIn("--enforce-approval-scope", steps[-1].arguments)
+
     def test_unexpected_builder_failure_restores_only_owned_outputs(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
@@ -226,15 +300,18 @@ class FinalizeTargetSupportTests(unittest.TestCase):
         self.assertEqual(check.returncode, 0, check.stderr)
 
     def test_current_change_inputs_reach_final_canonical_validation(self) -> None:
-        steps = build_steps(
-            target=Path("/target"),
-            write=True,
-            migration_staging=False,
-            diff_ref="HEAD~1",
-            approval_records=[Path("approval.json")],
-            change_packages=[Path("package.json")],
-            require_current_change=True,
-        )
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            self.set_module(target, enabled=True)
+            steps = build_steps(
+                target=target,
+                write=True,
+                migration_staging=False,
+                diff_ref="HEAD~1",
+                approval_records=[Path("approval.json")],
+                change_packages=[Path("package.json")],
+                require_current_change=True,
+            )
 
         self.assertEqual(steps[-1].step_id, "canonical-validation")
         arguments = steps[-1].arguments

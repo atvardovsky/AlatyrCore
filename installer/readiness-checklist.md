@@ -341,6 +341,9 @@ Collect target-specific facts before writing project docs:
 - test execution contract, canonical policy/coverage owners, target timing,
   current authority, command configuration/effects/filter support, actual suite
   selection and evidence boundaries agree; missing legacy facts are unresolved
+- custom wrappers reject unknown arguments and agree with canonical source
+  resolution; subprocess/discovery scratch writes are declared, and focused
+  evidence names the actually executed cases
 - optional incident repair review has an explicit target decision, full-flow
   command owners and task-bound evidence; captured obligations, failed attempts,
   historical evidence and explicit opt-outs survive installation/update

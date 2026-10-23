@@ -45,7 +45,6 @@ REQUIRED_BINDINGS = {
     "validate-current": (
         ("--diff-ref", "HEAD"),
         ("--approval-record", "approval.json"),
-        ("--change-package", "package.json"),
     )
 }
 
@@ -125,10 +124,63 @@ class ValidationContractInvocationTests(unittest.TestCase):
     def test_shipped_contract_passes(self) -> None:
         self.assertEqual(self.validate(), set())
 
+    def test_package_metadata_requires_explicit_conditional_policy(self) -> None:
+        for unconditional in (False, True):
+            with self.subTest(unconditional=unconditional):
+                contract = copy.deepcopy(self.contract)
+                contract["entrypoints"]["current-change"]["canonical_delegate"]["requires_change_packages"] = unconditional
+                errors = self.validate(contract)
+                self.assertNotIn("VALIDATION_CONTRACT_SCHEMA", errors)
+                self.assertIn("VALIDATION_CONTRACT_DELEGATE_DRIFT", errors)
+
+    def test_package_metadata_schema_rejects_unknown_or_malformed_policy(self) -> None:
+        for invalid in ("enabled", "when_enabled", "when-enabled ", None, [], {}, 1):
+            with self.subTest(invalid=invalid):
+                contract = copy.deepcopy(self.contract)
+                contract["entrypoints"]["current-change"]["canonical_delegate"]["requires_change_packages"] = invalid
+                self.assertIn("VALIDATION_CONTRACT_SCHEMA", self.validate(contract))
+
+    def test_contract_prefix_completion_does_not_invent_optional_package(self) -> None:
+        from target_adapter_validation.validation_contract import _shipped_delegate_parser_failure
+        parsed, failure = _shipped_delegate_parser_failure(
+            ["validate-current", "--target", "."], expected_operation="validate-current"
+        )
+        self.assertIsNone(failure)
+        self.assertEqual(parsed.change_package, [])
+        self.assertTrue(parsed.diff_ref)
+        self.assertTrue(parsed.approval_record)
+
+    def test_historical_index_is_optional_target_relative_and_single_bound(self) -> None:
+        for operation in ("validate-current", "archive-audit"):
+            entrypoint = "current-change" if operation == "validate-current" else operation
+            prefix = f"python3 {DELEGATE_PATH} {operation} --target ."
+            for suffix in ("--historical-evidence-index evidence/history.json", "--historical-evidence-index=evidence/history.json"):
+                contract = copy.deepcopy(self.contract)
+                contract["entrypoints"][entrypoint]["command"] = f"{prefix} {suffix}"
+                self.assertEqual(self.validate(contract), set())
+            for suffix in (
+                "--historical-evidence-index",
+                "--historical-evidence-index -h",
+                "--historical-evidence-i evidence/history.json",
+                "--historical-evidence-index one.json --historical-evidence-index=two.json",
+                "--historical-evidence-index=../history.json",
+                "--historical-evidence-index=evidence/../../history.json",
+            ):
+                with self.subTest(operation=operation, suffix=suffix):
+                    contract = copy.deepcopy(self.contract)
+                    contract["entrypoints"][entrypoint]["command"] = f"{prefix} {suffix}"
+                    self.assertIn("VALIDATION_CONTRACT_DELEGATE_ARGUMENTS", self.validate(contract))
+            for value in ("/tmp/history.json", "C:/history.json", "~/history.json"):
+                contract = copy.deepcopy(self.contract)
+                contract["entrypoints"][entrypoint]["command"] = f"{prefix} --historical-evidence-index={value}"
+                self.assertIn("VALIDATION_CONTRACT_ABSOLUTE_PATH", self.validate(contract))
+
     def test_canonical_path_values_reject_absolute_paths_in_both_option_forms(self) -> None:
         for operation, entrypoint in (("status", "adapter-health"), ("archive-audit", "archive-audit"),
                                       ("validate-current", "current-change")):
             options = ["--target", "--framework-source"]
+            if operation in {"validate-current", "archive-audit"}:
+                options += ["--historical-evidence-index"]
             if operation == "validate-current":
                 options += ["--approval-record", "--change-package", "--problem-model"]
             for option in options:
@@ -263,7 +315,7 @@ class ValidationContractInvocationTests(unittest.TestCase):
             (
                 "archive-audit",
                 "python3 .ai/assistant/tools/alatyr_delegate.py archive-audit --target .",
-                ["--framework-source"],
+                ["--framework-source", "--historical-evidence-index"],
             ),
             (
                 "current-change",
@@ -273,6 +325,7 @@ class ValidationContractInvocationTests(unittest.TestCase):
                     "--diff-ref",
                     "--approval-record",
                     "--change-package",
+                    "--historical-evidence-index",
                 ],
             ),
         ]
@@ -334,6 +387,8 @@ class ValidationContractInvocationTests(unittest.TestCase):
                 ".",
                 "--framework-source",
                 "source",
+                "--historical-evidence-index",
+                "evidence/history.json",
             ],
             "validate-current": [
                 "validate-current",
@@ -347,6 +402,8 @@ class ValidationContractInvocationTests(unittest.TestCase):
                 "approval.json",
                 "--change-package",
                 "package.json",
+                "--historical-evidence-index",
+                "evidence/history.json",
             ],
             "finalize-support": [
                 "finalize-support",

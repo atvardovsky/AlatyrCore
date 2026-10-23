@@ -1506,6 +1506,28 @@ It does not apply those records to the current diff. Only records selected with
 `--approval-record` can participate in current-operation scope and patch-hash
 validation.
 
+For preserved legacy debt, explicitly pass `--historical-evidence-index
+.ai/assistant/historical-evidence-index.json` to `validate-adapter` or
+`verify-upgrade` / `finalize-support` (including the corresponding delegate
+routes and `archive-audit`). There
+is no automatic adoption. The bounded index uses `schema_version: 1`,
+`record_kind: alatyr-historical-evidence-index`, `authority: none`, resolved
+`reviewed_by`, offset-aware non-future `reviewed_at`, a digest-bound `decision`,
+and 1 to 256 `entries`. Each entry has `path`, raw `sha256`, `kind`, `status`,
+`reason`, digest-bound `owner`, and 1 to 16 digest-bound `evidence` references.
+References contain exactly `path` and `sha256`; paths are exact target-relative
+regular files without symlink traversal. The index is limited to 512 KiB and
+individual witnesses to 4 MiB. Duplicate fields/identities and unknown fields
+are rejected, not ignored.
+
+Kinds/statuses are `approval-record` with `historical-incomplete` or
+`historical-record`, and `retained-plan` with `rejected-experiment`,
+`superseded-proposal` or `retained-unresolved-lineage`. Review and adoption
+require target authority. Classified gaps remain warnings; malformed/stale
+bindings, selected current approvals, unlisted records and active-plan conflicts
+remain strict. Hashes prove retained bytes, not human review, causal correctness
+or authorization. This mechanism never changes historical files or closes tasks.
+
 Placeholder scanning always includes neutral `AGENTS.md` and
 `AI_ASSISTANTS.md` entry points. Other assistant bridges are omitted only when
 the generated capability index maps every owning surface to that bridge, every

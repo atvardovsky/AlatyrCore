@@ -229,6 +229,25 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         lines.append("Declared failed gates: " + ", ".join(frontier.get("declared_failed_gates", [])[:4]))
         lines.extend("Frontier issue: " + str(error)[:480] for error in frontier.get("errors", [])[:2])
         lines.append("Frontier is navigation only; all ancestor duties and canonical checks remain.")
+    current = payload.get("current_task")
+    if current is not None:
+        lines.extend(["", "Selected task: " + str(current["task_id"]),
+                      "Disposition: " + current["state"] + " (not acceptance)"])
+        if "delivery" in current:
+            lines.append("Recorded delivery: " + json.dumps(current["delivery"], sort_keys=True))
+        outcome = current.get("incident_outcome")
+        if isinstance(outcome, dict):
+            original = outcome.get("original_case")
+            lines.append("Original incident outcome: " + outcome["state"])
+            if isinstance(original, dict):
+                lines.append("Original expected outcome: " + original["expected_outcome"])
+                lines.append("Original case source: " + original["source_ref"])
+            lines.append("Component passes do not establish original-outcome acceptance.")
+        readiness = current.get("execution_readiness", {})
+        lines.append("Declared ready obligations: " + ", ".join(readiness.get("ready", [])))
+        controls = current.get("incident_controls", {})
+        lines.append("Repair review: " + controls.get("adoption", "unknown") + "; evidence: " + current["repair_evidence"]["state"])
+        lines.extend("- " + item for item in current["diagnostics"][:8])
     if mode == "status" and findings:
         lines.append("Finding details: run doctor for prioritized findings")
         return "\n".join(lines) + "\n"
@@ -244,17 +263,6 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     if len(blocking) + len(attention) < len(findings):
         hidden = len(findings) - len(blocking) - len(attention)
         lines.append(f"Additional non-blocking findings: {hidden}")
-    current = payload.get("current_task")
-    if current is not None:
-        lines.extend(["", "Selected task: " + str(current["task_id"]),
-                      "Disposition: " + current["state"] + " (not acceptance)"])
-        if "delivery" in current:
-            lines.append("Recorded delivery: " + json.dumps(current["delivery"], sort_keys=True))
-        readiness = current.get("execution_readiness", {})
-        lines.append("Declared ready obligations: " + ", ".join(readiness.get("ready", [])))
-        controls = current.get("incident_controls", {})
-        lines.append("Repair review: " + controls.get("adoption", "unknown") + "; evidence: " + current["repair_evidence"]["state"])
-        lines.extend("- " + item for item in current["diagnostics"][:8])
     return "\n".join(lines) + "\n"
 
 

@@ -111,10 +111,12 @@ class TargetDelegateTests(unittest.TestCase):
                     metadata["requires_approval_records"],
                     "--approval-record" in canonical,
                 )
-                self.assertEqual(
-                    metadata["requires_change_packages"],
-                    "--change-package" in canonical,
-                )
+                if entrypoint == "current-change":
+                    self.assertEqual(metadata["requires_change_packages"], "when-enabled")
+                    # This invocation explicitly selects a package, which stays strict.
+                    self.assertIn("--enforce-change-package", canonical)
+                else:
+                    self.assertEqual(metadata["requires_change_packages"], "--change-package" in canonical)
 
     def test_source_resolution_fails_closed_without_configuration(self) -> None:
         with tempfile.TemporaryDirectory() as directory, patch.dict(

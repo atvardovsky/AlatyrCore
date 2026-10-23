@@ -12,6 +12,25 @@ INDEX = ".ai/assistant/active-tasks.json"
 POLICY = ".ai/project/testing/test-first-policy.json"
 
 
+def incident_outcome_view(model: dict[str, Any]) -> dict[str, Any] | None:
+    """Project already validated model facts, never infer an outcome from test totals."""
+    original = model.get("original_case")
+    incident = model["incident"]
+    if original is None and incident["mode"] == "none":
+        return None
+    status = original["status"] if isinstance(original, dict) else "unverified"
+    return {
+        "state": "original-case-unresolved" if status in {"unverified", "still-failing"} else "recorded-disposition-not-runtime-proof",
+        "original_case": {key: original[key] for key in ("source_ref", "expected_outcome", "status")} if isinstance(original, dict) else None,
+        "required_obligations": [{"id": row["id"], "status": row["status"]} for row in model["proof_obligations"] if row["required"]],
+        "latest_failed_gate": incident["latest_failed_gate"],
+        "rejected_hypothesis_ids": [row["id"] for row in model["hypotheses"] if row["status"] == "rejected"],
+        "rejected_alternative_ids": [row["id"] for row in model["alternatives"] if row["status"] == "rejected"],
+        "authority": "none", "evidence_verified": False,
+        "limitation": "Bound model declarations, not fresh run verification. Component passes and navigation do not discharge the original outcome.",
+    }
+
+
 def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     result = {"state": "unknown", "task_id": task_id, "authority": "none",
               "acceptance_granted": False, "historical_narratives_loaded": False,
@@ -51,9 +70,23 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     if failures:
         result["diagnostics"].extend(failures[:8])
         return result
+    if closure is not None:
+        from target_adapter_validation.active_tasks import validate_task_closure
+        path = task["completion_evidence"]["path"]
+        existing = [item for item in validator.findings if item.level == "error" and item.path == path]
+        if not existing:
+            start = len(validator.findings)
+            validate_task_closure(validator, closure, task)
+            existing = [item for item in validator.findings[start:] if item.level == "error"]
+        if existing:
+            result["diagnostics"].extend(item.message for item in existing[:8])
+            return result
     result.update(state="bound-recorded-disposition", task_state=task["state"], model=binding,
                   latest_failed_gate_id=task["latest_failed_gate_id"],
                   disposition_source=task["completion_evidence"] if closure else binding)
+    outcome = incident_outcome_view(model)
+    if outcome is not None:
+        result["incident_outcome"] = outcome
     if "execution_dependencies" in model:
         result["execution_readiness"] = execution_readiness(model)
     if closure:

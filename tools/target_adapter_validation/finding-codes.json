@@ -19,6 +19,7 @@
     "tools/target_adapter_validation/context.py",
     "tools/target_adapter_validation/context_catalogs.py",
     "tools/target_adapter_validation/contract_compatibility.py",
+    "tools/target_adapter_validation/current_change.py",
     "tools/target_adapter_validation/debug_mode.py",
     "tools/target_adapter_validation/dependency_knowledge.py",
     "tools/target_adapter_validation/development_evidence.py",
@@ -29,6 +30,7 @@
     "tools/target_adapter_validation/extensions.py",
     "tools/target_adapter_validation/files.py",
     "tools/target_adapter_validation/framework_baseline.py",
+    "tools/target_adapter_validation/historical_evidence.py",
     "tools/target_adapter_validation/installation_state.py",
     "tools/target_adapter_validation/manifest_paths.py",
     "tools/target_adapter_validation/module_profile.py",
@@ -172,6 +174,10 @@
     {
       "id": "GATE",
       "code_count": 1
+    },
+    {
+      "id": "HISTORICAL",
+      "code_count": 4
     },
     {
       "id": "INSTALLATION",
@@ -8244,6 +8250,42 @@
       "code": "GATE_CONTEXT_ROUTER_MISSING",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "HISTORICAL_EVIDENCE_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "HISTORICAL_EVIDENCE_NON_AUTHORITATIVE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "HISTORICAL_PLAN_ACTIVE_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "HISTORICAL_PLAN_RETAINED",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

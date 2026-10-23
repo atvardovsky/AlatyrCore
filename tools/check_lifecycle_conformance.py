@@ -594,6 +594,17 @@ def apply_synthetic_framework_update(repo: Path, source: Path, pack: str) -> Non
     refresh_context_and_bootstrap(repo)
 
 
+def check_shipped_current_change(repo: Path, base: str, approval: Path, failures: list[str]) -> None:
+    """The public route must accept a real package-disabled accepted target."""
+    command = [sys.executable, "-B", str(ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py"),
+               "validate-current", "--target", str(repo), "--framework-source", str(ROOT),
+               "--diff-ref", base, "--approval-record", str(approval)]
+    completed = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+    if completed.returncode != 0:
+        failures.append("package-disabled public current-change route failed: " +
+                        (completed.stdout + completed.stderr)[-1800:])
+
+
 def exercise_profile(
     root: Path,
     support_profile: str,
@@ -764,6 +775,8 @@ def exercise_profile(
         and ".ai/framework" not in path.as_posix()
     ):
         failures.append(f"accepted {support_profile} adapter retains target placeholders")
+
+    check_shipped_current_change(repo, base, approval_path, failures)
 
     run_git(repo, "add", ".")
     run_git(repo, "commit", "-q", "-m", f"install accepted {support_profile} adapter")

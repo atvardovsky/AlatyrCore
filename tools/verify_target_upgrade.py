@@ -109,6 +109,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--approval-record", action="append", required=True, type=Path
     )
     parser.add_argument("--change-package", action="append", default=[], type=Path)
+    parser.add_argument("--historical-evidence-index", type=Path)
     parser.add_argument("--strict-warnings", action="store_true")
     add_task_arguments(parser)
     parser.add_argument(
@@ -176,6 +177,8 @@ def main() -> int:
         command.extend(["--change-package", str(package)])
     if args.change_package:
         command.append("--enforce-change-package")
+    if args.historical_evidence_index is not None:
+        command.extend(["--historical-evidence-index", str(args.historical_evidence_index)])
     if args.strict_warnings:
         command.append("--strict-warnings")
     command.extend(task_arguments(task_id=args.task_id, task_class=args.task_class,

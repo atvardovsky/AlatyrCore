@@ -460,7 +460,7 @@ In a typical target repository:
    converge approval/package indexes, entry/bootstrap/context projections, and
    support state with `finalize-support`, then use its canonical validation
    result. Bind material current-change finalization to the diff base, selected
-   approval records, and selected change package.
+   approval records, and a selected change package when that module is enabled.
    Registered task completion also binds task ID, independent class and
    `--require-task-acceptance`; adapter health alone does not close the task.
 12. Apply the durable engineering-evidence decision. Capture reusable material
@@ -723,6 +723,15 @@ eligible report bound to the observed branch and revision. `--diff-ref` must
 identify the pre-update Git base, and each `--approval-record` must identify an
 approval record for the current update scope. Repeat `--approval-record` when
 the accepted scope uses more than one record.
+
+Change-package enforcement follows the target's enabled capability; disabled
+targets need no fabricated package. Preserve legacy evidence unchanged. When
+explicitly reviewed and approved, the source verifier accepts
+`--historical-evidence-index .ai/assistant/historical-evidence-index.json` for
+digest-bound non-authoritative classifications, as described in the
+[validator reference](tools/README.md#target-adapter-validator). This never
+waives selected current approvals, current scope, original outcomes or closure
+checks. An unresolved update remains staged, not accepted.
 
 ## Optional Target Adapter Validation
 
