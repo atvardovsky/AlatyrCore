@@ -26,7 +26,7 @@ class MalformedContextPlanningTests(unittest.TestCase):
     def setUp(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
-        self.target = Path(directory.name) / "target"
+        self.target = Path(directory.name).resolve() / "target"
         self.target.mkdir()
         self.fixture = TargetFixture(self.target)
         self.fixture.build()

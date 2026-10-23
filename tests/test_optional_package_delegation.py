@@ -34,7 +34,7 @@ class OptionalPackageDelegationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        self.target = Path(self.temporary.name)
+        self.target = Path(self.temporary.name).resolve()
         self.manifest = self.target / ".ai/alatyr.yaml"
         self.manifest.parent.mkdir()
         framework = self.target / ".ai/framework"

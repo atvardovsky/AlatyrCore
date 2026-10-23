@@ -89,11 +89,28 @@ def _entry(sink: Any, entry: Any, index: str) -> tuple[str, dict[str, Any]]:
     return name, entry
 
 
-def load_historical_evidence(sink: Any, selected: Path) -> dict[str, dict[str, Any]]:
-    """Validate every binding once in the caller's immutable repository view."""
+def _selected_path(sink: Any, selected: Path) -> Path:
     path = Path(selected)
     if path.is_absolute():
-        path = path.relative_to(sink.target)
+        try:
+            return path.relative_to(sink.target)
+        except ValueError:
+            # Normalize only the project-root alias, not descendant references.
+            # Outermost-first preserves nested symlinks for _safe_file to reject.
+            for ancestor in reversed(path.parents):
+                try:
+                    resolved = ancestor.resolve()
+                except (OSError, RuntimeError) as exc:
+                    raise ValueError("historical index root cannot be resolved") from exc
+                if resolved == sink.target:
+                    return path.relative_to(ancestor)
+            raise ValueError("historical index is outside the target repository") from None
+    return path
+
+
+def load_historical_evidence(sink: Any, selected: Path) -> dict[str, dict[str, Any]]:
+    """Validate every binding once in the caller's immutable repository view."""
+    path = _selected_path(sink, selected)
     name, raw = _safe_file(sink, path.as_posix(), limit=MAX_INDEX_BYTES)
     data = json.loads(raw, object_pairs_hook=_unique_fields, parse_constant=_reject_constant)
     fields = {"schema_version", "record_kind", "authority", "reviewed_by", "reviewed_at", "decision", "entries"}

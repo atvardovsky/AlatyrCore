@@ -25,7 +25,7 @@ class HistoricalEvidenceClassificationTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.write(RECORD, {"schema_version": 2, "scope": {"allowed_files_or_surfaces": ["/tmp/past/**"]}})
         self.write(PLAN, "Rejected experiment. Original failure remains unresolved.\n")
         self.write("docs/owner.md", "Original incident remains blocked.\n")
@@ -282,15 +282,65 @@ class HistoricalEvidenceClassificationTests(unittest.TestCase):
             self.assertEqual(current.reviewed_historical_evidence(), current.reviewed_historical_evidence())
             self.assertEqual(load.call_count, 1)
 
-    def test_public_cli_classifies_real_git_dirty_history_but_never_current_authority(self):
+    def root_alias(self, directory):
+        alias = Path(directory) / "root-alias"
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"fixture symlinks unavailable: {type(exc).__name__}")
+        return alias
+
+    def test_absolute_index_accepts_only_the_same_physical_project_root_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = self.root_alias(directory)
+            current = self.current()
+            current.historical_evidence_index = alias / INDEX
+            self.assertEqual(set(current.reviewed_historical_evidence()), {RECORD, PLAN})
+            self.assertFalse(self.errors(current))
+
+    def test_root_alias_cannot_hide_a_nested_symlink_to_the_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = self.root_alias(directory)
+            (self.root / "nested").symlink_to(self.root, target_is_directory=True)
+            for selected in (self.root / "nested" / INDEX, alias / "nested" / INDEX):
+                current = self.current()
+                current.historical_evidence_index = selected
+                self.assertEqual(current.reviewed_historical_evidence(), {})
+                self.assertIn("HISTORICAL_EVIDENCE_INVALID", {f.code for f in self.errors(current)})
+
+    def test_external_file_symlink_is_not_an_allowed_project_root_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.root_alias(directory)  # Establish symlink capability before the file case.
+            link = Path(directory) / "index.json"
+            link.symlink_to(self.root / INDEX)
+            current = self.current()
+            current.historical_evidence_index = link
+            self.assertEqual(current.reviewed_historical_evidence(), {})
+            self.assertIn("HISTORICAL_EVIDENCE_INVALID", {f.code for f in self.errors(current)})
+
+    def test_absolute_cyclic_root_alias_returns_a_finding_not_an_exception(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.root_alias(directory)
+            first, second = Path(directory) / "first", Path(directory) / "second"
+            first.symlink_to(second, target_is_directory=True)
+            second.symlink_to(first, target_is_directory=True)
+            current = self.current()
+            current.historical_evidence_index = first / INDEX
+            self.assertEqual(current.reviewed_historical_evidence(), {})
+            self.assertIn("HISTORICAL_EVIDENCE_INVALID", {f.code for f in self.errors(current)})
+
+    def prepare_dirty_history(self):
         for args in (("init", "-q"), ("config", "user.name", "Fixture"),
                      ("config", "user.email", "fixture@example.invalid"),
                      ("add", "."), ("commit", "-qm", "retain historical witnesses")):
             subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
-        before = (self.root / RECORD).read_bytes()
         # Real Git reports a newly retained plan; classification must route it.
         subprocess.run(["git", "rm", "--cached", PLAN], cwd=self.root, check=True, capture_output=True)
         subprocess.run(["git", "commit", "-qm", "leave inherited plan outside tracked baseline"], cwd=self.root, check=True, capture_output=True)
+
+    def test_public_cli_classifies_real_git_dirty_history_but_never_current_authority(self):
+        self.prepare_dirty_history()
+        before = (self.root / RECORD).read_bytes()
         command = [sys.executable, "-B", str(ROOT / "tools/validate_target_adapter.py"),
                    "--target", str(self.root), "--diff-ref", "HEAD", "--enforce-approval-scope",
                    "--historical-evidence-index", INDEX, "--json"]
@@ -305,6 +355,23 @@ class HistoricalEvidenceClassificationTests(unittest.TestCase):
         payload = json.loads(result.stdout)
         self.assertTrue(any(f["level"] == "error" and f.get("path") == RECORD for f in payload["findings"]))
         self.assertEqual((self.root / RECORD).read_bytes(), before)
+
+    def test_public_cli_accepts_absolute_index_through_project_root_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = self.root_alias(directory)
+            self.prepare_dirty_history()
+            for target in (self.root, alias):
+                with self.subTest(target=target):
+                    command = [sys.executable, "-B", str(ROOT / "tools/validate_target_adapter.py"),
+                               "--target", str(target), "--diff-ref", "HEAD", "--enforce-approval-scope",
+                               "--historical-evidence-index", str(alias / INDEX), "--json"]
+                    result = subprocess.run(command, capture_output=True, text=True)
+                    payload = json.loads(result.stdout)
+                    self.assertNotIn("Traceback", result.stderr)
+                    codes = {finding["code"] for finding in payload["findings"]}
+                    self.assertIn("HISTORICAL_PLAN_RETAINED", codes)
+                    self.assertNotIn("HISTORICAL_EVIDENCE_INVALID", codes)
+                    self.assertNotIn("PACKAGE_ACTIVE_PLAN_UNINDEXED", codes)
 
 
 if __name__ == "__main__":
