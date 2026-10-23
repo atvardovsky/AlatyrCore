@@ -272,7 +272,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.102`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.103`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.
@@ -351,6 +351,8 @@ not every target project's runtime.
 
 Security reports follow [SECURITY.md](SECURITY.md). Do not put credentials,
 private project facts, or exploit details in public issues.
+Use [pseudonymized case summaries](docs/external-case-pseudonyms.md) for external
+project reviews; keep real identities and raw captures outside this repository.
 
 For usage questions, start with the [FAQ](docs/human/faq.md). Report reproducible
 non-sensitive problems in [GitHub issues](https://github.com/atvardovsky/AlatyrCore/issues),

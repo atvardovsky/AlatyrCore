@@ -288,6 +288,9 @@ In a typical target repository:
    registry, ownership map, and file inventory; use `complete` when all
    `framework/*.md` and JSON files are installed.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
+   Apply the [target-owned identity boundary](framework/project-adapter-contract.md#target-owned-project-identity)
+   during installation and updates; do not carry names or facts from unrelated
+   projects into target support or assistant responses.
    For `core` or broader, create the Project Development Model guidance policy,
    empty compact index, promotion directory, and route-shard directory. Resolve target owner, decision
    authority, accepted guidance kinds, canonical owner registry, freshness,

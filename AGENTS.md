@@ -114,6 +114,9 @@ policy wording.
   discussion, analysis, plan, or ambiguous continuation is read-only. Never
   reuse commit or push authorization from a completed or redirected task.
 - Do not add project-specific business facts to framework core.
+- This source contour describes AlatyrCore. External audits follow
+  `docs/external-case-pseudonyms.md`: stable case IDs in source artifacts and
+  worker packets; real identities and raw evidence stay outside this repository.
 - Do not add local validation commands as framework requirements.
 - Do not add installer scripts as the installation mechanism.
 - Do not copy another project's commands, test folders, fixtures, security

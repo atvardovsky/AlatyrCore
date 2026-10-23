@@ -52,6 +52,20 @@ Hints affect scheduling only and never reduce selected tests or checks.
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
 
+## External Case Identity Audit
+
+For external project reviews, follow the source
+[pseudonym policy](../docs/external-case-pseudonyms.md). Keep the private map and
+raw evidence outside AlatyrCore. Before retaining reports or publishing work,
+run `python3 tools/audit_external_case_identity.py --private-map /private/path/project-pseudonyms.json`.
+Use `--history-only --repo /private/path/source-history.git` for an external
+mirror, or `--worktree-only` for a current-file check. Use `python` on Windows.
+Exit `0` means no registered literal identity was found within the declared
+scope, `1` means findings, and `2` means incomplete inspection. The helper does
+not rewrite, commit, push, fetch, anonymize arbitrary PII, or grant approval.
+The documented exclusions and unknown/unregistered identities remain a manual
+privacy-review obligation. Synthetic tests do not certify a private mapping.
+
 ## Reliable Support Authoring
 
 `validate-adapter --framework-source <source>` compares a recorded

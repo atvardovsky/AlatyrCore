@@ -12,8 +12,8 @@ follow its flow before overlap and on scope changes/completion.
 
 ## Authority
 
-Project facts: `.ai/project`; portable rules: `.ai/framework`; routing:
-`.ai/assistant`. Derived aids are not authority.
+Project facts: `.ai/project` (target-only names); rules: `.ai/framework`;
+routes: `.ai/assistant`. Derived aids lack authority.
 
 Before mutation: `ALATYR-AUTHORIZATION-001` via
 `.ai/assistant/policies/action-authorization.json` for the newest request.

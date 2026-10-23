@@ -194,6 +194,30 @@ Project facts and repository-local assistant behavior are not projections of
 framework owners. They remain target-owned under surfaces such as `.ai/project`
 and `.ai/assistant`.
 
+## Target-Owned Project Identity
+
+Resolve the current project's name and repository identity from target-owned
+sources; conflicting or missing identity is unresolved, not permission to
+reuse another project's name. Project-specific documentation, assistant
+instructions, generated support, worker packets, and chat responses must
+describe that target only. Do not carry unrelated project names, repository
+URLs, workstation paths, or business facts from previous sessions, audits,
+imports, or worker results into its support layer. Use neutral labels for
+illustrations, not names of other real projects.
+
+External audit cases may use stable opaque pseudonyms. Keep their real-name
+mapping and raw evidence outside the source repository, not merely Git-ignored.
+Pseudonymized summaries are derivatives, not unchanged evidence or accepted
+target facts. This does not replace the current target's own identity. Inspect
+history before any separately authorized rewrite; a clean scan needs no rewrite.
+
+Relevant dependency and integration names, AlatyrCore provenance, and required
+license or attribution text retain their own identities; they are not the
+target's identity or authority. Keep external knowledge explicitly attributed
+and bounded to its target-relevant purpose. Do not silently rewrite immutable
+historical evidence; report contamination and use the target's authorized
+redaction and evidence-rebinding process when correction is needed.
+
 ## Typical Target Adapter
 
 In a target repository, the adapter usually includes:

@@ -83,6 +83,13 @@ When using Alatyr Core to inspect or improve this source repository, treat
 generated target-adapter output as scratch unless the task is explicitly to
 change tracked templates or docs.
 
+Reviews of external projects instead follow
+[external case pseudonyms](external-case-pseudonyms.md): opaque IDs in source
+artifacts, private identities and raw evidence outside this repository. Git
+ignore is not an identity or context-isolation boundary. Run the private-map
+identity check before retaining audit output or publishing; CI without that map
+does not establish original-name absence.
+
 - Put self-installation plans, readiness notes, trial `.ai` trees, copied
   bridge files, and assistant-local adapter folders in ignored paths such as
   `tmp/` or the root-local assistant paths listed in `.gitignore`.

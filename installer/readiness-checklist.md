@@ -166,6 +166,10 @@ Classify every proposed file:
 
 Framework core may be structurally copied or adapted from `framework/`.
 Project adapter files must be rewritten from target facts.
+For installation and updates, review project names, links, paths, and example
+content against the [target-owned identity boundary](../framework/project-adapter-contract.md#target-owned-project-identity).
+Preserve relevant dependency identities and required attribution, not unrelated
+project context.
 
 Commands, scripts, generated-file tools, checker paths, hooks, test tools,
 fixture helpers, folder names, CI jobs, security policies, live-service

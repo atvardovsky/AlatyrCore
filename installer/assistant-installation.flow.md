@@ -118,6 +118,11 @@ resolve decision authority, and retain every material finding as projected,
 rejected, deferred, or not applicable in
 `.ai/assistant/discovery-report.json`.
 
+Resolve the target's own identity and apply the
+[identity boundary](../framework/project-adapter-contract.md#target-owned-project-identity)
+to adapted support, worker context, and assistant messages during installation
+and update. Another repository's name or facts are not target evidence.
+
 Candidate inventory categories include:
 
 - existing AI instructions and bridge files

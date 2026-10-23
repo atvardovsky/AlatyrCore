@@ -4,6 +4,19 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.103 - 2026-10-24
+
+- Clarify target-owned project identity under `ALATYR-ADAPTER-001`: project
+  support, worker context, and assistant responses must not inherit unrelated
+  projects' names or facts. Preserve relevant dependencies, framework
+  provenance, required attribution, and evidence integrity.
+- Route installation/update review and the shared agent entry point through
+  this boundary. Framework content version advances; adapter schema remains
+  `84`, target templates advance to `98`. No target runtime or acceptance-validator change.
+- External source audits use stable opaque case IDs and an external private
+  registry/archive. Add an opt-in read-only known-identity scan for local
+  reports and Git history; never infer authorization to rewrite or publish.
+
 ## 0.1.0-alpha.102 - 2026-10-23
 
 - Bound current-task health links registered models/closures and canonical repair
