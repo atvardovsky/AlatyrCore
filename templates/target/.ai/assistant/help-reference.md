@@ -1,5 +1,11 @@
 # Alatyr Help Reference
 
+For a named task, ask for its current registered disposition rather than a
+summary of old reports. When canonical tooling is available, the installed
+delegate accepts `doctor --current-task <registered-task-id>`. This read-only
+view separates delivery, provisional evidence, declared readiness and control
+adoption; it grants neither execution permission nor acceptance.
+
 Use this file in `{PROJECT_NAME}` for the full installed Alatyr operation
 reference. The short default help lives in `.ai/assistant/help.md`.
 

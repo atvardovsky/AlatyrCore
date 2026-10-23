@@ -30,7 +30,7 @@
         "ALATYR-PACKAGE-001"
       ],
       "estimated_words": 176,
-      "content_digest": "sha256:e4e1f934839801bde208e0c7168b027d69805a0da725290a8a4fe7ff5446569c"
+      "content_digest": "sha256:846f89f31701a1783072c68020dae8ec1a336da893ae21c6461aaa11ff95c35d"
     },
     {
       "id": "framework.section.collaboration",
@@ -53,7 +53,7 @@
         "ALATYR-TEAM-001"
       ],
       "estimated_words": 212,
-      "content_digest": "sha256:52e8512ec91d3c4356130322725e87d8ca21cb7d29e2e677bc08ddbb521b4482"
+      "content_digest": "sha256:e65d2dd963844804d8ae646f0f51d0b58ae31e0fc9b32183973a048aff380e6e"
     },
     {
       "id": "framework.section.core",
@@ -91,7 +91,7 @@
         "ALATYR-SOURCE-001"
       ],
       "estimated_words": 949,
-      "content_digest": "sha256:d99fa0c51f23bfa115df19e20b51ce623ce165d2633a2a5b3889b23297d40582"
+      "content_digest": "sha256:5b9550bd0073f9749b62a9358f79c8ad005b64780cdf0c2682795d73530dae15"
     },
     {
       "id": "framework.section.infrastructure",
@@ -137,7 +137,7 @@
         "ALATYR-VOCABULARY-001"
       ],
       "estimated_words": 293,
-      "content_digest": "sha256:d88ff25333b512d46248b7dc26408107dda3e90203ea396643c38a30f7e5bb97"
+      "content_digest": "sha256:554605b1042b68cc8e59b3adee43b87f37d7a4d7dc51b614fed2ae64cad2c6bc"
     },
     {
       "id": "framework.section.lifecycle",
@@ -154,7 +154,7 @@
         "ALATYR-LIFECYCLE-001"
       ],
       "estimated_words": 217,
-      "content_digest": "sha256:02cebe04a7f186059d9b207527811c3c0b946800d8f1e9703e9210289e4f9dee"
+      "content_digest": "sha256:146c089148288d5ad392d35dc8f04319ad1dfb2b792e98b9e269c6cd1c713bb1"
     },
     {
       "id": "framework.section.support",
@@ -176,8 +176,8 @@
         "ALATYR-SUPPORT-001",
         "ALATYR-TDD-001"
       ],
-      "estimated_words": 316,
-      "content_digest": "sha256:c674fd202b01fb179ea80a3960b82db1f4664343f081ee569292b3d517475d62"
+      "estimated_words": 346,
+      "content_digest": "sha256:e206978e02606f7a3a1135e1dc50a77cf25fa7279b0876cc7489d49914dc6fee"
     }
   ]
 }

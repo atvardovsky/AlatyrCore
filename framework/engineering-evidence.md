@@ -28,11 +28,10 @@ canonical preservation. Keep legacy absence explicit; never fabricate a
 historical capture record or change historical source evidence to satisfy a
 new contract.
 
-Durable engineering evidence preserves the compact conclusions that a future
-developer or assistant needs to understand a material change. It is
-project-owned historical evidence, not a transcript of the assistant session
-and not a replacement for canonical business, architecture, data, code, test,
-or policy owners.
+Preserve compact, project-owned conclusions for developers and assistants,
+not transcripts or replacements for business, architecture, data, code, test or
+policy owners. Load [task-state delivery](task-state-delivery.md) for
+current-versus-historical disposition conflicts.
 
 ## Capture Decision
 

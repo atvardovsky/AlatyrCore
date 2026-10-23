@@ -328,8 +328,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1718,
-      "content_digest": "sha256:5d5b527d1ec67223b84e053acb1c54bd5e980219c7e20aee41917918366d335d"
+      "estimated_words": 1729,
+      "content_digest": "sha256:1086cd55f45c4328d47ed4b5fc6296c77a3f384fbd87a89ff3245de8b8da250f"
     },
     {
       "id": "framework.core.rule-ownership-md",

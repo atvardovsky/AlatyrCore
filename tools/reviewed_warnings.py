@@ -15,7 +15,7 @@ from relationship_candidates import candidate_semantic_failures
 SCHEMA = Path(__file__).resolve().parents[1] / "schemas/alatyr-relationship-candidates.schema.json"
 
 
-def selected_candidate_warnings(target: Path, candidate_path: str | None, selected_nodes: Iterable[str], *, graph: Any = None) -> dict[str, Any]:
+def selected_candidate_warnings(target: Path, candidate_path: str | None, selected_nodes: Iterable[str], *, graph: Any = None, selected_paths: Iterable[str] = ()) -> dict[str, Any]:
     result = {"source": None, "warnings": [], "diagnostics": [], "authority": "none"}
     if candidate_path is None:
         return result
@@ -32,7 +32,7 @@ def selected_candidate_warnings(target: Path, candidate_path: str | None, select
         return result
     data = view.read_json_result(Path(candidate_path)).value
     schema = TargetRepositoryView(SCHEMA.parent).read_json_result(SCHEMA).value
-    if not isinstance(schema, dict) or not isinstance(data, dict) or type(data.get("schema_version")) is not int or list(Draft7Validator(schema).iter_errors(data)):
+    if not isinstance(schema, dict) or not isinstance(data, dict) or type(data.get("schema_version")) is not int or next(Draft7Validator(schema).iter_errors(data), None) is not None:
         result["diagnostics"].append("relationship candidates invalid; reviewed warnings require revalidation")
         return result
     if graph is None:
@@ -43,10 +43,17 @@ def selected_candidate_warnings(target: Path, candidate_path: str | None, select
         result["diagnostics"].extend(message for _, message in semantic)
         return result
     selected = set(selected_nodes)
+    try:
+        documents = {logical_path(path, pattern=True) for path in selected_paths}
+    except (ValueError, TypeError):
+        result["diagnostics"].append("selected warning documents must be exact contained logical paths")
+        return result
     digests = BoundedReviewDigests(view)
     for candidate in sorted(data["records"], key=lambda item: item["id"]):
         warning = candidate.get("reviewed_warning")
-        if warning is None or candidate["state"] in ("rejected", "removed") or not selected.intersection((candidate["source_node"], candidate["target_node"])):
+        if warning is None or candidate["state"] in ("rejected", "removed"):
+            continue
+        if not selected.intersection((candidate["source_node"], candidate["target_node"])) and logical_path(warning["document"], pattern=True) not in documents:
             continue
         review = warning["source_review"]
         failures = review_failures(review, digests)

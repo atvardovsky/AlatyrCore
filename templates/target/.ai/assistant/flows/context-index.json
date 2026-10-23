@@ -31,8 +31,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 713,
-      "content_digest": "sha256:8c0e7c680453f092f721ab04578445d52c5ad823dd24f4533ca328887ffc1a38"
+      "estimated_words": 780,
+      "content_digest": "sha256:9ef91a896fa521cbe3692f016c78ed233ac96e00428718ba022edcc9cc0f5394"
     },
     {
       "id": "assistant.content.flows-adapter-recheck-flow-md",
@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2631,
-      "content_digest": "sha256:72e4255ca3a7c938e4a9f7ce427e5cc8b3a57ca6c27b163e62149ccdfcab2635"
+      "estimated_words": 2669,
+      "content_digest": "sha256:313ee98bc0ed17d6183cffb93d75a9f865030b77be820b98ff906fb56ee32a78"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",

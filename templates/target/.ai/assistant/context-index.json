@@ -133,8 +133,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3534,
-      "content_digest": "sha256:b65b8314913dc282df3c72b5195c5c0337b0270d5f07aae4664f5482e33734a7"
+      "estimated_words": 3550,
+      "content_digest": "sha256:cd565f53c89095f6c9726c4f7760f492bf616538eb510a28792f799f0380df41"
     },
     {
       "id": "assistant.content.context-router-json",
@@ -272,8 +272,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3864,
-      "content_digest": "sha256:121dd32dfa12b3b1f24000d4dcf8dbb0d6b3db925f2fc4dab07647e08648f4ff"
+      "estimated_words": 3912,
+      "content_digest": "sha256:6c7625a671c39fd6e59f5f2f31b879242e2ce43341683002d10cad7610aa1299"
     },
     {
       "id": "assistant.content.installation-state-json",
@@ -523,7 +523,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 260,
-      "content_digest": "sha256:7fc21e826e51e744e53dc8a945172bd2cf9be3b1f596f86a663d040988e4c043"
+      "content_digest": "sha256:fa95e0f91ca6ce70bfdac673434d216094afb8ebf40db0153fba3dc1f3103cfc"
     },
     {
       "id": "assistant.section.extensions",
@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1270,
-      "content_digest": "sha256:cdb8daa4ac7ce7bfe7b6840e7ba5669d865ef7bb1e8aeddf73273d72c1c13349"
+      "content_digest": "sha256:ed342e81a2797d4b205d66c280c74528252d4151ec202cdbc621190cb8d80a3b"
     },
     {
       "id": "assistant.section.gates",
@@ -643,7 +643,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2246,
-      "content_digest": "sha256:6809a043a453ebfa44b852ba28d8a8e0ed50482f0696366683a7c74609bda8e5"
+      "content_digest": "sha256:25804b32c0cb243fb8e81629915e369e46bcd5d295361ea04c68984024edd596"
     },
     {
       "id": "assistant.section.tools",
@@ -658,7 +658,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 81,
-      "content_digest": "sha256:347a134292da99e9199a5db2af82251a23b33c3b4486e8142096af137af19ef4"
+      "content_digest": "sha256:f31a36dc96ab6313e851467422b48a02f32f96380910a5889e9a627edde0c1f0"
     },
     {
       "id": "assistant.section.workers",

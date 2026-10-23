@@ -1,5 +1,10 @@
 # Post-Update Assistant Chat Message
 
+When returning to a named task, offer its bound current disposition rather than
+an older report summary. Keep installation, optional control adoption, exercised
+evidence, product delivery and provisional finalization distinct. The update
+does not itself enable repair review or authorize the task's next action.
+
 Use this template for the assistant's chat response after Alatyr Core is
 updated in `{PROJECT_NAME}`.
 

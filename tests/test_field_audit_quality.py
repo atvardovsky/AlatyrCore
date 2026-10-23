@@ -263,6 +263,26 @@ class ReviewedWarningTests(unittest.TestCase):
             self.assertEqual(self.warnings()["warnings"][0]["state"], "revalidation-required")
             (self.target / path).write_bytes(original)
 
+    def test_document_only_selection_is_exact_and_keeps_binding_checks(self):
+        for path in ("docs/backlog.md.bak", "other/backlog.md", "docs/backlog.md/child"):
+            self.assertEqual(selected_candidate_warnings(self.target, self.path, (), graph=self.graph, selected_paths=[path])["warnings"], [])
+        value = selected_candidate_warnings(self.target, self.path, (), graph=self.graph, selected_paths=["docs/backlog.md"])
+        self.assertEqual(value["warnings"][0]["state"], "reviewed-warning")
+        self.assertEqual(value["warnings"][0]["authority"], "none")
+        for path in ("docs/backlog.md", "docs/review.json", "docs/architecture.md"):
+            original = (self.target / path).read_bytes()
+            (self.target / path).write_bytes(b"changed")
+            result = selected_candidate_warnings(self.target, self.path, (), graph=self.graph, selected_paths=["docs/backlog.md"])
+            self.assertEqual(result["warnings"][0]["state"], "revalidation-required")
+            (self.target / path).write_bytes(original)
+        for bad in ("../docs/backlog.md", "/docs/backlog.md", "./docs/backlog.md", None, {}):
+            self.assertTrue(selected_candidate_warnings(self.target, self.path, (), graph=self.graph, selected_paths=[bad])["diagnostics"])
+
+    def test_unselected_warning_does_not_read_review_inputs(self):
+        from architecture_review import BoundedReviewDigests
+        with patch.object(BoundedReviewDigests, "__call__", side_effect=AssertionError("unrelated review was read")):
+            self.assertEqual(selected_candidate_warnings(self.target, self.path, (), graph=self.graph, selected_paths=["other.md"])["warnings"], [])
+
     def test_missing_malformed_and_unbound_review_never_becomes_authority(self):
         for bad in ({}, [], None, True, 7, "unknown"):
             self.candidate["reviewed_warning"]["source_review"] = bad; self.save()
@@ -309,6 +329,28 @@ class ReviewedWarningTests(unittest.TestCase):
         plan = json.loads(result.stdout)
         self.assertEqual(plan["impact"]["selected_node_ids"], [ids[0]])
         self.assertEqual(plan["impact"]["reviewed_warnings"]["warnings"][0]["state"], "reviewed-warning")
+
+    def test_profile_only_document_warning_cli_without_changed_fact(self):
+        self.test_planner_cli_delivers_warning_without_expanding_graph()
+        fixture = planning_fixture.TargetFixture(self.target)
+        profile_path = fixture.assistant / "context/profiles/code-local.json"
+        profile = json.loads(profile_path.read_text())
+        profile["required_context"].append("docs/backlog.md")
+        planning_fixture.write_json(profile_path, profile)
+        fixture.refresh_catalogs()
+        argv = [sys.executable, "-B", str(ROOT / "tools/plan_target_context.py"), "--target", str(self.target), "--profile", "code-local", "--operation", "product-change"]
+        ordinary = subprocess.run(argv, text=True, capture_output=True)
+        self.assertEqual(ordinary.returncode, 0, ordinary.stdout + ordinary.stderr)
+        self.assertNotIn("document_warnings", json.loads(ordinary.stdout))
+        result = subprocess.run([*argv, "--document-warnings"], text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        plan = json.loads(result.stdout)
+        self.assertEqual(plan["request"]["changed_paths"], [])
+        self.assertFalse(plan["impact"]["used"])
+        self.assertEqual(plan["document_warnings"]["warnings"][0]["state"], "reviewed-warning")
+        digest = plan.pop("plan_digest")
+        from context_planning import _canonical_digest
+        self.assertEqual(digest, _canonical_digest(plan))
 
 
 if __name__ == "__main__":

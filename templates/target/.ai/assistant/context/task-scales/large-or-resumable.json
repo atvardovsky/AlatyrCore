@@ -22,6 +22,10 @@
     "cross-workstream contract conflict",
     "approval scope no longer covers applied changes"
   ],
+  "conditional_context": [
+    {"path": ".ai/framework/task-state-delivery.md",
+     "when": "adopted execution dependencies or named-task current-disposition reconciliation"}
+  ],
   "budget_behavior": "keep ordered semantic guidance identities within route packet limits; load only active workstream context and its fact owners and dependencies, then only new or changed owners when bundle revalidation differs",
   "semantic_guidance_revalidation": {
     "receipt_contract": "alatyr-context-receipt semantic_guidance schema 1",

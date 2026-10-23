@@ -4,6 +4,18 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.102 - 2026-10-23
+
+- Bound current-task health links registered models/closures and canonical repair
+  checks instead of treating older narrative reports as current disposition.
+  Adoption, installed templates and exercised evidence remain separate.
+- Optional schema-6 execution dependencies derive bounded declared readiness;
+  reject cycles, missing/duplicate IDs and settled work with unmet prerequisites.
+  Readiness never grants authority, execution permission or acceptance.
+- Selected-document stale warnings retain canonical owner/hash checks without
+  traversing candidate relationships. Preserve historical reports with explicit
+  current-disposition links. Adapter schema `84`, target templates `97`.
+
 ## 0.1.0-alpha.101 - 2026-10-23
 
 - [Incident repair qualification](docs/releases/0.1.0-alpha.101-notes.md): adapter

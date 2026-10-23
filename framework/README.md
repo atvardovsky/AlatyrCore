@@ -202,6 +202,8 @@ Those belong to a project contour or repository adapter.
   enablement, recommendation, execution, exception, and evidence contract.
 - `.ai/framework/repair-qualification.md`: conditional schema-2 scenario,
   diagnostic contrast and performance detail under the test-first owner.
+- `.ai/framework/task-state-delivery.md`: conditional current-disposition,
+  selected-document warning and optional declared dependency-readiness guidance.
 - `.ai/framework/extensions.md`: declarative external extension package,
   inspection, normalization, lock, update, removal, and recommendation contract.
 - `.ai/framework/dependency-knowledge.md`: passive package knowledge export,

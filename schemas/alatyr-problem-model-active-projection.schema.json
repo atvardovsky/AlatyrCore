@@ -48,6 +48,16 @@
         "evidence_refs", "omitted_history_counts"
       ],
       "properties": {
+        "execution_dependencies": {
+          "type": "array", "minItems": 1, "maxItems": 64,
+          "items": {"type": "object", "additionalProperties": false,
+            "required": ["obligation_id", "requires"],
+            "properties": {
+              "obligation_id": {"$ref": "#/definitions/identifier"},
+              "requires": {"type": "array", "maxItems": 64, "uniqueItems": true,
+                "items": {"$ref": "#/definitions/identifier"}}
+            }}
+        },
         "objective": {"type": "string", "minLength": 1, "maxLength": 4096},
         "non_goals": {"$ref": "#/definitions/stringArray"},
         "repository_binding": {"$ref": "#/definitions/repositoryBinding"},

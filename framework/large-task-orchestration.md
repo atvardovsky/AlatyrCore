@@ -1,8 +1,7 @@
 # Large-Task Orchestration
 
-This file defines how an installed Alatyr adapter can keep large,
-cross-boundary, or resumable work coherent without loading the whole project
-into one assistant context.
+Keep large work coherent without full-project loading. Adopted dependency
+readiness: [task-state delivery](task-state-delivery.md).
 
 It composes `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`,

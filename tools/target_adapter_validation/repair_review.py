@@ -84,6 +84,12 @@ def _measurement_baseline(validator: Any, binding: dict[str, Any], contract: Tes
 
 
 def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dict[str, Any], *, completion: bool) -> None:
+    observations = getattr(validator, "repair_review_observations", None)
+    if observations is None:
+        observations = validator.repair_review_observations = {}
+    observation = {"state": "not-verified", "record": None, "acceptance_granted": False}
+    observations[task["task_id"]] = observation
+    finding_start = len(validator.findings)
     incident = model.get("incident", {})
     obligations = [item for item in model.get("proof_obligations", []) if item.get("id") == OBLIGATION]
     classification = classify_repairs(model, completion=completion)
@@ -243,3 +249,7 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
         validator.error("TDD_EXECUTION_EVIDENCE", failure, path)
     if contract.view.finalize():
         validator.error("TDD_EXECUTION_SCHEMA", "repair schema changed during validation; rerun", POLICY)
+    observation["record"] = {"path": path, "sha256": raw.digest}
+    if not any(item.level in {"error", "warning"} for item in validator.findings[finding_start:]):
+        observation.update(state="record-consistent", claim=record["claim"],
+                           repair_stage=record.get("repair_stage", "schema-1"))

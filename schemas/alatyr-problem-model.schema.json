@@ -37,6 +37,18 @@
     "contract_enforcement": {"$ref": "#/definitions/contractEnforcement"},
     "behavior_review": {"$ref": "#/definitions/behaviorReview"},
     "original_case": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/originalCase"}]},
+    "execution_dependencies": {
+      "type": "array", "minItems": 1, "maxItems": 64,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["obligation_id", "requires"],
+        "properties": {
+          "obligation_id": {"$ref": "#/definitions/identifier"},
+          "requires": {"type": "array", "maxItems": 64, "uniqueItems": true,
+                       "items": {"$ref": "#/definitions/identifier"}}
+        }
+      }
+    },
     "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
     "risk_classes": {"$ref": "#/definitions/stringArray"},
     "protected_change": {"type": "boolean"},

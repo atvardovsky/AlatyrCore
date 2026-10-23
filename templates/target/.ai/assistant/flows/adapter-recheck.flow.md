@@ -1,5 +1,10 @@
 # Adapter Recheck Flow
 
+Reconcile current-disposition links when an update changes task reporting.
+Preserve digest-bound historical bytes; put supersession links in current records.
+Expose installed, adopted and exercised repair controls separately; upgrading
+does not adopt optional dependency mappings or enable repair review.
+
 Use this flow after installing or updating Alatyr Core in `{PROJECT_NAME}`, or
 when the programmer asks whether the installed adapter is still coherent.
 

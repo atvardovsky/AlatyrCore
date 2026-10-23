@@ -294,6 +294,32 @@ class RegisteredQualificationTests(incident_fixtures.task_fixtures.ActiveTaskFix
             with self.subTest(variant=variant):
                 self.assertEqual("TDD_EXECUTION_EVIDENCE" in self.errors(findings), variant != "expiry-in-transit", [item.message for item in findings.findings])
 
+    def test_current_task_view_reuses_registered_repair_result_not_copied_claim(self):
+        from current_task_view import current_task_view
+        self.configure()
+        checked = self.check()
+        self.assertEqual(self.errors(checked), set())
+        value = current_task_view(checked, "fixture-task")
+        self.assertEqual(value["repair_evidence"]["state"], "record-consistent", value)
+        self.assertFalse(value["acceptance_granted"])
+        self.assertEqual(value["incident_controls"]["adoption"], "enabled")
+        self.write_artifact({"observed": {"variant": "wrong"}})
+        value = current_task_view(self.check(), "fixture-task")
+        self.assertEqual(value["repair_evidence"]["state"], "not-verified")
+        self.assertEqual(value["incident_controls"]["exercised"], "not-verified")
+
+    def test_public_health_selects_canonical_repair_review_without_requiring_closure(self):
+        from report_adapter_health import health_payload
+        self.configure()
+        value = health_payload(target=self.target, current_task_id="fixture-task")
+        self.assertEqual(value["current_task"]["repair_evidence"]["state"], "record-consistent", value["current_task"])
+        self.assertFalse(value["current_task"]["acceptance_granted"])
+        self.assertNotIn("ACTIVE_TASK_NOT_CLOSED", {item["code"] for item in value["findings"]})
+        self.write_artifact({"observed": {"variant": "wrong"}})
+        value = health_payload(target=self.target, current_task_id="fixture-task")
+        self.assertEqual(value["current_task"]["repair_evidence"]["state"], "not-verified")
+        self.assertIn("TDD_EXECUTION_EVIDENCE", {item["code"] for item in value["findings"]})
+
     def test_public_path_rejects_malformed_duplicate_and_stale_artifacts(self):
         self.configure()
         for raw in ("{", "[]", '{"observed":1,"observed":2}', '{"observed": NaN}', "[" * 1200 + "]" * 1200, " " * (128 * 1024 + 1)):

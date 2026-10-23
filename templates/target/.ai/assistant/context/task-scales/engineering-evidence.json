@@ -15,6 +15,10 @@
   ],
   "conditional_context": [
     {
+      "path": ".ai/framework/task-state-delivery.md",
+      "when": "reconciling named-task disposition with superseded reports or declared dependency readiness"
+    },
+    {
       "path": ".ai/assistant/flows/engineering-evidence-capture.flow.md",
       "when": "capture update or repair is authorized"
     },

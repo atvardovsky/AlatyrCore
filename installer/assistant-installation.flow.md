@@ -336,6 +336,8 @@ Classify every proposed target file:
     scenario assertions and real run artifacts; preserve schema 1 or deferral
     without an accepted adoption decision. Performance comparison is separately
     target-selected, never a universal gate or runtime permission.
+    Teach named-task health to use registered model/closure bindings, not older
+    narrative as current disposition. Preserve explicit supersession links.
     Add `.ai/project/team-policy.json` and its human explanation only when the
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,

@@ -129,6 +129,12 @@ files through the existing `source_review` SHA-256 contract. Route warnings
 only after selecting an endpoint; do not traverse a candidate or infer document
 freshness from a `documents` edge. Changed/missing inputs require re-review.
 Warnings remain diagnostics, never accepted facts, ownership, or approval.
+During an already selected consistency lookup, an exact selected document path
+also selects its warning; basename/prefix matches and recursive warning-input
+discovery do not. No graph lookup is added to unrelated default tasks.
+For profile-only document discussion without changed facts, explicitly select
+the planner's `--document-warnings` lookup. It reviews already selected document
+paths without inventing changed paths, expanding relationships or granting authority.
 Select `finding_ref` as `path/to/review.json#finding-id`: the bounded JSON
 record contains schema version 1, kind `target-reviewed-document-warning`,
 `finding_id`, `source_node`, `target_node`, `document`, `comparison_sources`,

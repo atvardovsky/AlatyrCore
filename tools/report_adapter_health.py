@@ -76,6 +76,7 @@ def health_payload(
     config_path: Path | None = None,
     required_capabilities: list[str] | None = None,
     include_incident_frontier: bool = False,
+    current_task_id: str | None = None,
 ) -> dict[str, Any]:
     phase = "migration-staging" if allow_placeholders else validation_phase
     config, config_findings = load_validator_config(target, config_path)
@@ -96,6 +97,12 @@ def health_payload(
         approval_archive_mode="changed",
     )
     findings = validator.run()
+    task_view = None
+    if current_task_id is not None:
+        from current_task_view import current_task_view
+        task_view = current_task_view(validator, current_task_id)
+        if task_view["state"] == "unknown":
+            validator.error("ACTIVE_TASK_BINDING", "selected task disposition is unavailable; inspect current_task diagnostics", ".ai/assistant/active-tasks.json")
     payload = findings_payload(
         findings,
         target=target.resolve(),
@@ -111,6 +118,8 @@ def health_payload(
         required_capabilities=required_capabilities,
     )
     payload["capability_advisory"] = advisory
+    if task_view is not None:
+        payload["current_task"] = task_view
     if include_incident_frontier:
         from incident_planning import incident_frontier
         path = validator.target_path(".ai/assistant/active-tasks.json")
@@ -235,6 +244,17 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     if len(blocking) + len(attention) < len(findings):
         hidden = len(findings) - len(blocking) - len(attention)
         lines.append(f"Additional non-blocking findings: {hidden}")
+    current = payload.get("current_task")
+    if current is not None:
+        lines.extend(["", "Selected task: " + str(current["task_id"]),
+                      "Disposition: " + current["state"] + " (not acceptance)"])
+        if "delivery" in current:
+            lines.append("Recorded delivery: " + json.dumps(current["delivery"], sort_keys=True))
+        readiness = current.get("execution_readiness", {})
+        lines.append("Declared ready obligations: " + ", ".join(readiness.get("ready", [])))
+        controls = current.get("incident_controls", {})
+        lines.append("Repair review: " + controls.get("adoption", "unknown") + "; evidence: " + current["repair_evidence"]["state"])
+        lines.extend("- " + item for item in current["diagnostics"][:8])
     return "\n".join(lines) + "\n"
 
 
@@ -263,6 +283,7 @@ def main() -> int:
     )
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--incident-frontier", action="store_true", help="Include an advisory bounded task-header view; does not narrow validation.")
+    parser.add_argument("--current-task", help="Exact registered task ID for bound disposition and control adoption; never acceptance.")
     parser.add_argument(
         "--mode",
         choices=["status", "doctor"],
@@ -281,6 +302,7 @@ def main() -> int:
         config_path=args.config,
         required_capabilities=args.required_capability,
         include_incident_frontier=args.incident_frontier,
+        current_task_id=args.current_task,
     )
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))

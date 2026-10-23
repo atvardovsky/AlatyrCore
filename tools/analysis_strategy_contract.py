@@ -440,6 +440,9 @@ def validate_problem_model(
         failures.append(f"duplicate problem statement IDs: {duplicate_statements}")
 
     obligation_ids: list[str] = []
+    if "execution_dependencies" in model:
+        from task_readiness import execution_readiness
+        failures.extend(execution_readiness(model)["failures"])
     for obligation in model.get("proof_obligations", []):
         if not isinstance(obligation, dict):
             continue
@@ -751,6 +754,8 @@ def build_active_problem_model_projection(
             "previous_transitions": max(0, len(transitions) - 1),
         },
     }
+    if "execution_dependencies" in model:
+        payload["execution_dependencies"] = model["execution_dependencies"]
     legacy = model.get("schema_version") == 4
     if legacy:
         payload.pop("behavior_acceptance")

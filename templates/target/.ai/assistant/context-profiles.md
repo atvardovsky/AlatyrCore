@@ -313,6 +313,9 @@ budget-exceeding, or resumable work. Required context:
 - `.ai/assistant/flows/large-task-orchestration.flow.md`
 - `.ai/assistant/templates/large-task-operation-packet.md`
 
+Load `.ai/framework/task-state-delivery.md` only for adopted execution dependencies
+or reconciliation of named-task current disposition with historical reports.
+
 Load only the active workstream context, changed-fact owners, and
 dependencies. Record checkpoints and one global convergence review. Do not
 create a packet for a small task.

@@ -73,6 +73,8 @@ def build_parser() -> argparse.ArgumentParser:
         add_common(operation)
         if name == "doctor":
             operation.add_argument("--incident-frontier", action="store_true")
+        if name in {"status", "doctor"}:
+            operation.add_argument("--current-task")
 
     current = subparsers.add_parser("validate-current", allow_abbrev=False)
     add_common(current)
@@ -113,6 +115,8 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
     common = ["--target", str(target), "--framework-source", str(source)]
     if args.operation in {"status", "doctor"}:
         extra = ["--incident-frontier"] if args.operation == "doctor" and args.incident_frontier else []
+        if args.current_task:
+            extra.extend(["--current-task", args.current_task])
         return [args.operation, *common, *extra]
     if args.operation == "archive-audit":
         return [

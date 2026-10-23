@@ -173,6 +173,20 @@ owners instead of creating another mutable status record. These header links
 are not freshness-validated conclusions; inspect selected evidence before
 acting. Component progress, incident closure and runtime readiness stay distinct.
 
+For one registered task, use
+`python3 tools/alatyr.py doctor --target /path/to/project --current-task TASK-ID --json`.
+The optional view resolves its digest-bound model/closure, not old narrative logs,
+and reuses canonical repair checks, selecting the named active task if needed.
+It separates recorded delivery, provisional finalization, installed/adopted
+controls and exercised evidence. An optional schema-6 `execution_dependencies`
+mapping yields declared ready/blocked/waiting obligations, never authority or
+accepted proof. Default health loads no extra task view. An unknown task is an
+explicit selection error; no selector is converted into a filesystem path.
+The installed delegate supports `doctor --current-task TASK-ID` too.
+For profile-only backlog/reference discussion, `context-plan --document-warnings`
+adds an explicit bounded lookup for the final selected documents without claiming
+changed facts. Ordinary planning does not perform this additional graph lookup.
+
 `cooperation-preflight --target <repo> --scope path:src --command <test-id>`
 combines prospective session overlap and canonical test-resource planning
 without registering sessions, writing files, or executing commands. Omit

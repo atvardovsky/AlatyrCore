@@ -155,6 +155,23 @@
       "content_digest": "sha256:8ff71c3275becae25f4c2301f93d87ab8ea362003f3708707c7837b0c266b5ac"
     },
     {
+      "id": "framework.support.task-state-delivery-md",
+      "kind": "content",
+      "path": "task-state-delivery.md",
+      "summary": "Selected Task State Delivery",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "state",
+          "delivery"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 319,
+      "content_digest": "sha256:4674a0800c2b5460d26792deed427e3ddab551240eef8fb064ff877ef340f93e"
+    },
+    {
       "id": "framework.support.test-first-development-md",
       "kind": "content",
       "path": "test-first-development.md",

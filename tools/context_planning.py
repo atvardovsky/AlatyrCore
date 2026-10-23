@@ -51,6 +51,7 @@ class ContextPlanRequest:
     max_words: int | None = None
     max_characters: int | None = None
     architecture_mode: str | None = None
+    document_warnings: bool = False
 
 
 class ContextPlanningError(ValueError):
@@ -704,7 +705,8 @@ def _impact_selection(
         "canonical_owners": canonical_owners,
         "impacted_surfaces": impacted_surfaces,
         "unresolved_relationships": [],
-        "reviewed_warnings": selected_candidate_warnings(target, graph.root.get("relationship_candidates"), node_ids, graph=graph),
+        "reviewed_warnings": selected_candidate_warnings(target, graph.root.get("relationship_candidates"), node_ids, graph=graph,
+                                                       selected_paths=(item.path for item in selected.values())),
         "limits": {"max_depth": max_depth, "max_nodes": max_nodes},
     }
 
@@ -1013,6 +1015,22 @@ def _semantic_terms(
     return terms, index_path
 
 
+def _document_warning_lookup(request: ContextPlanRequest, target: Path, selected: dict) -> dict | None:
+    if type(request.document_warnings) is not bool:
+        raise ContextPlanningError("INVALID_DOCUMENT_WARNING_REQUEST", "document_warnings must be a Boolean", status="invalid-request")
+    if not request.document_warnings:
+        return None
+    try:
+        graph = load_impact_graph(target)
+        failures = validate_graph(graph)
+    except ImpactGraphError as exc:
+        raise ContextPlanningError("CONSISTENCY_GRAPH_UNAVAILABLE", str(exc), upgrade_required=True) from exc
+    if failures:
+        raise ContextPlanningError("CONSISTENCY_GRAPH_INVALID", "document warning lookup requires valid consistency evidence", details={"failures": failures})
+    return selected_candidate_warnings(target, graph.root.get("relationship_candidates"), (), graph=graph,
+                                       selected_paths=(item.path for item in selected.values()))
+
+
 def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     target = request.target.resolve()
     if not target.is_dir():
@@ -1218,6 +1236,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "CONTEXT_PACKET_INVALID", str(exc), upgrade_required=True
         ) from exc
     packet = _packet_projection(content_packet)
+    document_warnings = _document_warning_lookup(request, target, selected)
     plan = {
         "schema_version": PLAN_SCHEMA_VERSION,
         "plan_kind": PLAN_KIND,
@@ -1280,6 +1299,8 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "authorization_granted": False,
             "limitation": "References only; validate the contract and supply current runtime bindings before final acceptance.",
         }
+    if document_warnings is not None:
+        plan["document_warnings"] = document_warnings
     plan["plan_digest"] = _canonical_digest(plan)
     return plan
 

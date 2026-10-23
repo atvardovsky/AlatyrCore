@@ -123,8 +123,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 166,
-      "content_digest": "sha256:b11b954d021f59881c9fdd9e28f52ee5dc51887243615c5109cadf125a84de82"
+      "estimated_words": 181,
+      "content_digest": "sha256:13b494f7a632cdc26c1aeb130cb97877dacbba876f9e0c9c248ded6c010ce35d"
     },
     {
       "id": "assistant.content.context-task-scales-large-or-resumable-json",
@@ -145,8 +145,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 204,
-      "content_digest": "sha256:8cb69380a90b11274ce891542c49b18b87f023a9e8c369ade59806667c362207"
+      "estimated_words": 217,
+      "content_digest": "sha256:ecc065bdfea38ea4daaa36aab856d09f27ab1d64f3cf353d6e1bce53d7e8bba0"
     },
     {
       "id": "assistant.content.context-task-scales-protected-or-sensitive-json",

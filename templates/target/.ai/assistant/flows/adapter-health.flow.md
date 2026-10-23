@@ -81,6 +81,13 @@ Replace placeholders with target facts before accepting installation.
    eligibility from target policy.
 12. Return no more than three prioritized repair operations. Do not apply them
    in this flow.
+13. When resuming a named task or reconciling contradictory reports, select its
+    exact registered ID through `doctor --current-task <task-id>`. Read its bound
+    model/closure before historical narrative. Report provisional finalization
+    separately from publication, and link superseded reports from current records
+    without editing digest-bound historical bytes. Readiness remains declared, not
+    permission or proof. Report repair control adoption, installed templates and
+    exercised canonical evidence separately; never enable a control here.
 
 ## Final Evidence
 
