@@ -321,6 +321,9 @@ In a typical target repository:
    For recurring or uncertain defects, assess optional `repair_review` with
    the target owner. Preserve explicit opt-outs and historical evidence; do not
    enable it without real full-flow commands and reviewed fixture boundaries.
+   Schema-2 qualification is a separate target-owned adoption decision; report
+   source availability, installation, enablement and exercised evidence
+   separately. Never synthesize historical observations during an update.
    Add `.ai/project/team-policy.json` and its human-oriented
    `.ai/project/team-operating-model.md` only when team collaboration is
    enabled. Derive actors, aliases, authority, priorities, review, transitions,

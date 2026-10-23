@@ -105,6 +105,12 @@ transition update. Continue corrections under the same incident family. From
 the second corrective iteration, or after an escaped defect or failed required
 gate, require systemic repair evidence and a bounded lifecycle model rather
 than another isolated file-level fix.
+When target-owned repair review is enabled, follow its adopted schema rather
+than introducing another checkpoint policy. Schema 2 binds actual scenario and
+control observations to run artifacts; qualification, functional acceptance and
+optional performance comparisons remain separate. A faithful failing diagnostic
+may qualify repair, never closure or new execution authority. Installation and
+update do not silently enable these controls.
 When deterministic validator, checker, schema, gate, or generated-projection
 behavior changes, classify `machine-enforced-contract` risk. Bind each
 normative requirement to enforcement code, positive evidence, a retained

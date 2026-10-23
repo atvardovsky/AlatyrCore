@@ -331,6 +331,11 @@ Classify every proposed target file:
     `test-first-configuration.flow.md` per `ALATYR-TDD-001`, not test presence.
     Assess optional incident `repair_review` from recurring defect evidence;
     keep it deferred without accepted whole-flow commands and ownership.
+    Distinguish source availability, installed surfaces, target enablement and
+    exercised evidence. Propose schema-2 qualification only from target-owned
+    scenario assertions and real run artifacts; preserve schema 1 or deferral
+    without an accepted adoption decision. Performance comparison is separately
+    target-selected, never a universal gate or runtime permission.
     Add `.ai/project/team-policy.json` and its human explanation only when the
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,

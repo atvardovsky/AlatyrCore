@@ -207,6 +207,10 @@ Required compact context:
 - `.ai/framework/testing-guidance.md`
 - `.ai/framework/test-first-development.md`
 
+Load `.ai/framework/repair-qualification.md` and its schema-2 authoring template
+only for explicit adoption or selected qualified incident evidence. Schema-1
+and ordinary test-first work keep those details conditional.
+
 Load `.ai/project/testing/test-first-policy.json` and only the selected
 configuration or change flow after the gate passes. A disabled, deferred, or
 missing module may produce one concise assessment recommendation but cannot

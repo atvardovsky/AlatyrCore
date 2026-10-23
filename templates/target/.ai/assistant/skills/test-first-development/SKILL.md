@@ -32,6 +32,9 @@ Use this skill only after the target has adapted it and enabled the
    those owners, never in the reverse direction.
 5. Report actual evidence state and proof boundary. A manual-review deferral is
    not RED, a passed test, or an automatically accepted test-after exception.
+   Separate diagnostic/repair qualification, original-flow acceptance and any
+   policy-selected performance comparison. Use the canonical flow, not a second
+   sequence or a self-maintained "current" status document.
 
 ## Prohibited
 

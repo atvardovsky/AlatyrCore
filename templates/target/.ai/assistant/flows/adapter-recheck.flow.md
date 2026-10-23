@@ -252,6 +252,12 @@ pre-acceptance, and message templates are not completion evidence.
     flow, gate and evidence surfaces; inspect actual command configuration,
     effects, filtering, suite exclusions and skip conditions without executing
     tests for discovery. Preserve review-first restrictions and historical runs.
+    Assess available, installed, enabled and exercised incident-review controls
+    separately. Preserve schema-1 records and absent/deferred qualification.
+    Propose schema-2 adoption only with target-owned assertions, actual scenario
+    artifacts and accepted ownership; an update is not enablement. Reconcile
+    its template, gate and skill after adoption. Never manufacture historical
+    observations or treat old passing measurements as current acceptance.
     When extensions are enabled, preserve catalog and lock IDs, immutable
     source revisions/digests, target bindings, permissions, approvals, local
     deviations, installed-file ownership, and historical lifecycle evidence;

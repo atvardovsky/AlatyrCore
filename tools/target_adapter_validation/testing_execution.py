@@ -69,7 +69,9 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
     review = policy.get("repair_review")
     if isinstance(review, dict) and review.get("state") == "enabled":
         evidence_paths.update(item["path"] for item in review["records"])
-        repair_template = ".ai/assistant/templates/repair-review.json"
+        repair_template = ".ai/assistant/templates/repair-qualification.json" if review["schema_version"] == 2 else ".ai/assistant/templates/repair-review.json"
+        if review["schema_version"] == 2 and not context.is_target_file(".ai/framework/repair-qualification.md"):
+            context.error("TDD_EXECUTION_CONTRACT", "adopted schema-2 repair qualification requires its conditional framework guidance", ".ai/framework/repair-qualification.md")
         if not context.is_target_file(repair_template):
             context.error("TDD_EXECUTION_TEMPLATE_MISSING", "enabled repair review requires its current authoring template", repair_template)
         else:

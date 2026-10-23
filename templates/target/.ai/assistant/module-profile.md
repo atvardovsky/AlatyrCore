@@ -329,6 +329,8 @@ Required files:
 - `.ai/assistant/templates/test-first-evidence.md`
 - `.ai/assistant/templates/test-execution-evidence.json`
 - `.ai/assistant/templates/repair-review.json`
+- `.ai/assistant/templates/repair-qualification.json` when schema 2 is adopted
+- `.ai/framework/repair-qualification.md` when schema 2 is adopted
 - `.ai/assistant/skills/test-first-development/SKILL.md`
 
 Reason: `{REASON}`

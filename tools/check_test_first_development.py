@@ -95,8 +95,10 @@ def main() -> int:
         POST_INSTALL, POST_UPDATE,
         ROOT / "schemas/test-execution-contract.schema.json",
         ROOT / "schemas/repair-review.schema.json",
+        ROOT / "framework/repair-qualification.md",
         TARGET / ".ai/assistant/templates/test-execution-evidence.json",
         TARGET / ".ai/assistant/templates/repair-review.json",
+        TARGET / ".ai/assistant/templates/repair-qualification.json",
     ]
     for path in required_files:
         if not path.is_file():
@@ -201,6 +203,10 @@ def main() -> int:
     contract = TestExecutionContract()
     repair_template = load_json(TARGET / ".ai/assistant/templates/repair-review.json")
     failures.extend(contract.shape(repair_template, "repair_evidence", placeholders=True))
+    qualification_template = load_json(TARGET / ".ai/assistant/templates/repair-qualification.json")
+    failures.extend(contract.shape(qualification_template, "repair_evidence", placeholders=True))
+    if qualification_template.get("schema_version") != 2:
+        failures.append("repair qualification authoring template must use schema 2")
     failures.extend(
         f"{FRAMEWORK.relative_to(ROOT)}: {failure}"
         for failure in execution_documentation_failures(read(FRAMEWORK), contract.schema)

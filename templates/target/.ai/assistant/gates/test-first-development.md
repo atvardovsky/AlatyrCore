@@ -49,6 +49,11 @@ test-first/configuration request.
   required obligation and canonical observed runs. Fixture applicability and
   causal interpretation remain reviewed conclusions, not schema guarantees.
   Required full end-to-end commands, not component counts, own incident closure.
+- Adopted schema-2 observations match actual digest-bound JSON run artifacts;
+  the diagnostic discriminates a control and the intended scenario. Report
+  diagnostic, qualified repair, functional acceptance and optional comparable
+  performance separately. Qualification does not waive a failure or authorize
+  execution. Unknown boundaries cannot qualify a related production repair.
 - Canonical policy and coverage owners precede derived Alatyr files. Command
   configuration, environment, effects, filtering and exclusions match evidence.
 - Runtime resources match the command contract; concurrent database/fixture,

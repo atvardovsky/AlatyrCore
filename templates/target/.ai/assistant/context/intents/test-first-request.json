@@ -18,6 +18,14 @@
   ],
   "conditional_context": [
     {
+      "path": ".ai/framework/repair-qualification.md",
+      "when": "explicit schema-2 repair qualification adoption or selected incident evidence"
+    },
+    {
+      "path": ".ai/assistant/templates/repair-qualification.json",
+      "when": "authoring a selected schema-2 repair record"
+    },
+    {
       "path": ".ai/project/testing/test-first-policy.json",
       "when": "assessing configuring or applying target test-first policy"
     },

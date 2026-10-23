@@ -146,18 +146,32 @@ instructions, bootstrap and selected sources precede variable packet/task data.
 
 ## Task Acceptance And Shared Resources
 
-Optional incident `repair_review` schema 1 belongs to the canonical testing
+Optional incident `repair_review` belongs to the canonical testing
 policy, not a second project policy. Enabled incident tasks retain required
 `repair-evidence-review` obligations and select task/path records from
 `repair-review.json`. Current-task validation reuses canonical execution
 records, policy/input hashes, original-case and model-hypothesis bindings.
 Unknown fixture boundaries and missing full end-to-end commands block incident
 completion. Classifications and references are not automatic causal proof.
+Schema 1 remains supported. Explicit schema-2 adoption uses
+`repair-qualification.json`, policy-owned non-root JSON pointers, expected
+scalars and run-bound observations. Digest-bound JSON result artifacts are
+bounded to 128 KiB; missing/duplicate/non-finite values cannot qualify. Separate
+diagnostic, qualified repair and acceptance; a faithful failing diagnostic can
+qualify work but cannot satisfy final acceptance. Optional median performance
+comparisons require target-selected units, conditions, samples and budgets;
+captured baselines are measurement-only. No automatic enablement, extra routine
+bootstrap or historical log scan is introduced. Canonical field meanings remain
+in [Incident Repair Review](../framework/test-first-development.md#incident-repair-review).
 
 `python3 tools/alatyr.py doctor --target /path/to/project --incident-frontier --json`
 adds a bounded header-derived navigation view. It retains every active ancestor
 and declared failed gate, never retires tasks or narrows canonical validation.
 Default status/doctor does not read this additional view.
+Its `task_references` link the bound canonical model, completion evidence and
+owners instead of creating another mutable status record. These header links
+are not freshness-validated conclusions; inspect selected evidence before
+acting. Component progress, incident closure and runtime readiness stay distinct.
 
 `cooperation-preflight --target <repo> --scope path:src --command <test-id>`
 combines prospective session overlap and canonical test-resource planning

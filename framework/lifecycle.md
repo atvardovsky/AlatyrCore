@@ -199,6 +199,9 @@ Before upgrading framework files in a target project:
    When `test-first-development` is enabled, reconcile its policy/execution
    contract and routed surfaces against its rule owner; preserve authority,
    timing and history. Missing legacy contracts remain readiness gaps.
+   Propose optional repair qualification rather than silently adopting it;
+   distinguish available/installed/enabled/exercised controls. Retain schema-1
+   history and require fresh selected observations for schema-2 qualification.
    When `extensions` is enabled, compare extension API, catalog/lock schemas,
    package compatibility, installed ownership and hashes, target bindings,
    permissions, lifecycle flow, gates, operation/bridge routing, historical

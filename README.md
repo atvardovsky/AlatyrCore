@@ -215,6 +215,11 @@ modules cover areas such as architecture knowledge, vocabulary, code-reference
 documentation, test-first development, diagrams, team coordination, and
 adapted AI infrastructure.
 
+For recurring defects, an optional repair review helps distinguish a test that
+ran from one that exercised the intended scenario. A faithful failing test can
+guide a repair; component success or a faster benchmark does not establish that
+the original incident is fixed. See [repair evidence](framework/test-first-development.md#incident-repair-review).
+
 Task-specific routing is designed to avoid loading the complete support
 library for routine work. When workers are useful and the selected assistant
 has verified support, independent read-only investigations can be delegated
@@ -267,7 +272,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.100`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.101`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

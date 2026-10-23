@@ -19,6 +19,41 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
+    "pointer": {"type": "string", "maxLength": 512, "pattern": "^/(?:[^~]|~[01])*$"},
+    "scalar": {"type": ["string", "number", "boolean"]},
+    "qualification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["assertions", "performance"],
+      "properties": {
+        "assertions": {"type": "array", "minItems": 1, "maxItems": 32, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "boundary", "command_ids", "artifact_pointer", "expected", "stage", "control_pointer"],
+          "properties": {
+            "id": {"$ref": "#/$defs/text"},
+            "boundary": {"enum": ["entrypoint", "producers-consumers", "persistence", "process-topology", "resources", "positive-preconditions"]},
+            "command_ids": {"allOf": [{"$ref": "#/$defs/texts"}], "minItems": 1},
+            "artifact_pointer": {"$ref": "#/$defs/pointer"},
+            "expected": {"$ref": "#/$defs/scalar"},
+            "stage": {"enum": ["diagnosis", "acceptance"]},
+            "control_pointer": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/pointer"}]}
+          }
+        }},
+        "performance": {"type": "array", "maxItems": 8, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "artifact_pointer", "unit", "direction", "max_regression_percent", "min_samples", "max_spread_percent", "comparability_pointers"],
+          "properties": {
+            "id": {"$ref": "#/$defs/text"},
+            "artifact_pointer": {"$ref": "#/$defs/pointer"},
+            "unit": {"$ref": "#/$defs/text"},
+            "direction": {"enum": ["lower-is-better", "higher-is-better"]},
+            "max_regression_percent": {"type": "number", "minimum": 0, "maximum": 100},
+            "min_samples": {"type": "integer", "minimum": 2, "maximum": 256},
+            "max_spread_percent": {"type": "number", "minimum": 0, "maximum": 100},
+            "comparability_pointers": {"type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": true, "items": {"$ref": "#/$defs/pointer"}}
+          }
+        }}
+      }
+    },
     "repair_policy": {
       "type": "object",
       "additionalProperties": false,
@@ -31,7 +66,7 @@
       "properties": {
         "schema_version": {
           "type": "integer",
-          "const": 1
+          "enum": [1, 2]
         },
         "state": {
           "enum": [
@@ -43,6 +78,7 @@
         "acceptance_command_ids": {
           "$ref": "#/$defs/texts"
         },
+        "qualification": {"$ref": "#/$defs/qualification"},
         "records": {
           "type": "array",
           "maxItems": 32,
@@ -63,7 +99,8 @@
             }
           }
         }
-      }
+      },
+      "allOf": [{"if": {"properties": {"schema_version": {"const": 2}}}, "then": {"required": ["qualification"]}, "else": {"not": {"required": ["qualification"]}}}]
     },
     "repair_evidence": {
       "type": "object",
@@ -85,7 +122,7 @@
       "properties": {
         "schema_version": {
           "type": "integer",
-          "const": 1
+          "enum": [1, 2]
         },
         "record_kind": {
           "const": "target-repair-review"
@@ -195,6 +232,20 @@
             }
           }
         },
+        "repair_stage": {"enum": ["diagnostic", "qualified-repair", "acceptance"]},
+        "observations": {"type": "array", "maxItems": 128, "items": {
+          "type": "object", "additionalProperties": false, "required": ["assertion_id", "run_ref"],
+          "properties": {"assertion_id": {"$ref": "#/$defs/text"}, "run_ref": {"$ref": "#/$defs/text"}}
+        }},
+        "performance_comparisons": {"type": "array", "maxItems": 8, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["metric_id", "baseline", "candidate_run_ref"],
+          "properties": {
+            "metric_id": {"$ref": "#/$defs/text"},
+            "baseline": {"type": "object", "additionalProperties": false, "required": ["run", "policy"], "properties": {"run": {"$ref": "#/$defs/binding"}, "policy": {"$ref": "#/$defs/binding"}}},
+            "candidate_run_ref": {"$ref": "#/$defs/text"}
+          }
+        }},
         "attempts": {
           "type": "array",
           "maxItems": 32,
@@ -255,7 +306,8 @@
             }
           }
         }
-      }
+      },
+      "allOf": [{"if": {"properties": {"schema_version": {"const": 2}}}, "then": {"required": ["repair_stage", "observations", "performance_comparisons"]}, "else": {"not": {"anyOf": [{"required": ["repair_stage"]}, {"required": ["observations"]}, {"required": ["performance_comparisons"]}]}}}]
     }
   }
 }

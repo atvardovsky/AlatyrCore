@@ -47,7 +47,15 @@ def incident_frontier(index: Any) -> dict[str, Any]:
         "state": "derived", "frontier": frontier, "retained_active": active,
         "active_ancestor_ids": [task_id for task_id in active if task_id in predecessor_ids],
         "declared_failed_gates": sorted({task["latest_failed_gate_id"] for task in tasks if task["latest_failed_gate_id"] != "none"}),
-        "limitation": "Graph leaves are navigation, not sole actionable duties. All active ancestors and failed-gate declarations remain; headers do not prove gate resolution or common causality. Canonical validation is unchanged.",
+        "task_references": [
+            {"task_id": task_id, "problem_model": by_id[task_id]["problem_model"],
+             "completion_evidence": by_id[task_id]["completion_evidence"],
+             "canonical_owners": by_id[task_id]["canonical_owners"],
+             "latest_failed_gate_id": by_id[task_id]["latest_failed_gate_id"],
+             "next_check": "inspect-bound-model-and-selected-run-evidence" if by_id[task_id]["problem_model"] is not None else "resolve-canonical-task-model"}
+            for task_id in active
+        ],
+        "limitation": "Graph leaves are navigation, not sole actionable duties. All active ancestors and failed-gate declarations remain; references are header declarations, not freshness-validated evidence. Headers do not prove gate resolution or common causality. Canonical validation is unchanged.",
     }
 
 

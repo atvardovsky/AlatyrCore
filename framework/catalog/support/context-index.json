@@ -61,6 +61,22 @@
       "content_digest": "sha256:1b40dfe7964b099a2d37a4e395bf429c92b963f22bb3e2035180e877ecab5758"
     },
     {
+      "id": "framework.support.repair-qualification-md",
+      "kind": "content",
+      "path": "repair-qualification.md",
+      "summary": "Incident Repair Qualification",
+      "selectors": {
+        "path_terms": [
+          "repair",
+          "qualification"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 383,
+      "content_digest": "sha256:a495ed5e971a0a072166866ceb7b4739e79ec09d419dad85bb9416c3c59b02bd"
+    },
+    {
       "id": "framework.support.runtime-observation-md",
       "kind": "content",
       "path": "runtime-observation.md",
@@ -157,8 +173,8 @@
       "owner_refs": [
         "ALATYR-TDD-001"
       ],
-      "estimated_words": 2122,
-      "content_digest": "sha256:4b45ee266546994f3f838de37fccfd3fe97e10e74cb537ae92c6292070af550f"
+      "estimated_words": 2177,
+      "content_digest": "sha256:ecb376c5a18d5b7f0073829ca6dc89054d09575129d557db5b1d739b254f6062"
     }
   ]
 }

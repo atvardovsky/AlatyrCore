@@ -32,9 +32,15 @@ fact, defect, invariant, contract, or refactor.
    test policy: qualify the original reproducer, competing causes, falsifier,
    actual fixture boundaries and expected whole-incident effect before repair.
    When `repair_review` is enabled, retain the required `repair-evidence-review`
-   obligation and author the task-bound `repair-review.json` evidence. Do not
+   obligation and author task-bound evidence using the adopted schema's
+   `repair-review.json` or `repair-qualification.json` template. Do not
    remove that requirement to obtain acceptance. Missing or unknown boundaries
    remain explicit; component GREEN is not incident acceptance.
+   For schema 2, load `.ai/framework/repair-qualification.md` and bind
+   policy-selected actual scenario/control observations from
+   JSON run artifacts. Requested flags, a renamed output or a copied verified
+   label cannot qualify a repair. A faithful known-failing diagnostic may
+   qualify repair; do not require full acceptance GREEN before fixing it.
 7. Resolve current-scope execution authorization and target timing before any
    baseline, RED, GREEN, coverage or broader run. If review is pending, author
    tests and exact commands and defer execution. Continue implementation only
@@ -57,8 +63,12 @@ fact, defect, invariant, contract, or refactor.
     After a failed incident acceptance, stop dependent patch stacking and obtain
     discriminating evidence before another related attempt. Preserve the failed
     run and classify its cause without waiving it. Check the smallest faithful
-    real flow first; full known-red runs are diagnostic only. Final acceptance
+    real flow first; known-red full runs need a named diagnostic purpose but
+    retain acceptance significance. Final acceptance
     still requires the complete unchanged target matrix on frozen inputs.
+    Keep policy-selected comparable performance measurements separate from
+    functional acceptance. A component speedup does not clear the original
+    incident. Continue independent authorized work around a named blocker.
 12. Apply `.ai/assistant/gates/contract-artifacts.md` when the selected
     contract is represented by API, schema, event, generated-reference,
     fixture, persistence, public-interface, or external-boundary artifacts.
@@ -69,6 +79,8 @@ fact, defect, invariant, contract, or refactor.
     contracts, prompts, skills, gates, and project vocabulary.
     Change the canonical policy/coverage matrix before their Alatyr mirrors.
     Reconcile newly added tests with actual runner configuration and exclusions.
+    Use canonical command/configuration evidence, not invented CLI options or
+    suite names. Discovery never executes imported project code implicitly.
 15. Complete `.ai/assistant/templates/test-first-evidence.md` and report
     approvals, skipped checks, exceptions, and residual risk.
     Keep authored, discovered, executed, passed, skipped and blocked separate.

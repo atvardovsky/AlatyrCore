@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "record_kind": "target-repair-review",
+  "task_id": "{TARGET_TASK_ID}",
+  "operation_id": "{TARGET_OPERATION_ID}",
+  "incident_family_id": "{TARGET_INCIDENT_FAMILY_ID}",
+  "policy_sha256": "{TARGET_CANONICAL_TEST_POLICY_SHA256}",
+  "original_case_ref": "{TARGET_SOURCE_DERIVED_ORIGINAL_CASE}",
+  "claim": "unverified",
+  "diagnosis": null,
+  "repair_stage": "diagnostic",
+  "hypotheses": [
+    {"id": "{TARGET_CANONICAL_MODEL_HYPOTHESIS_ID_1}", "falsifier": "{TARGET_DISCRIMINATING_OBSERVATION_1}"},
+    {"id": "{TARGET_CANONICAL_MODEL_HYPOTHESIS_ID_2}", "falsifier": "{TARGET_DISCRIMINATING_OBSERVATION_2}"}
+  ],
+  "fixture_boundaries": [
+    {"id": "entrypoint", "state": "unknown", "reason": "{TARGET_BOUNDARY_REVIEW}", "evidence_refs": []},
+    {"id": "producers-consumers", "state": "unknown", "reason": "{TARGET_BOUNDARY_REVIEW}", "evidence_refs": []},
+    {"id": "persistence", "state": "unknown", "reason": "{TARGET_BOUNDARY_REVIEW}", "evidence_refs": []},
+    {"id": "process-topology", "state": "unknown", "reason": "{TARGET_BOUNDARY_REVIEW}", "evidence_refs": []},
+    {"id": "resources", "state": "unknown", "reason": "{TARGET_BOUNDARY_REVIEW}", "evidence_refs": []},
+    {"id": "positive-preconditions", "state": "unknown", "reason": "{TARGET_BOUNDARY_REVIEW}", "evidence_refs": []}
+  ],
+  "attempts": [],
+  "observations": [],
+  "performance_comparisons": []
+}

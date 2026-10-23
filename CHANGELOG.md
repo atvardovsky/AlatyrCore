@@ -4,6 +4,18 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.101 - 2026-10-23
+
+- [Incident repair qualification](docs/releases/0.1.0-alpha.101-notes.md): adapter
+  schema `83`/templates `96`. Explicitly adopted repair-review schema 2 binds
+  actual scenario/control observations to run artifacts, separates diagnostic,
+  qualified-repair and acceptance stages, and preserves schema-1 compatibility.
+- Optional comparable median measurements retain target-owned budgets and
+  measurement-only historical baselines, never current functional acceptance.
+- Installer/update guidance preserves opt-outs, historical evidence, timing and
+  authorization. Advisory incident views link canonical records instead of
+  creating another mutable status source. No target runtime changes.
+
 ## 0.1.0-alpha.100 - 2026-10-22
 
 - [Audit repair checkpoint](docs/releases/0.1.0-alpha.100-notes.md): adapter

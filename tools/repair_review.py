@@ -42,6 +42,9 @@ def policy_failures(review: Any, policy: dict[str, Any], schema: dict[str, Any])
             failures.append(f"repair record {key} values must be unique and resolved")
     if any(not is_target_relative_path(entry["path"]) for entry in review["records"]):
         failures.append("repair evidence paths must remain target-relative and contained")
+    if review["schema_version"] == 2:
+        from repair_qualification import policy_qualification_failures
+        failures.extend(policy_qualification_failures(review["qualification"], commands, set(review["acceptance_command_ids"])))
     return failures
 
 
@@ -67,10 +70,12 @@ def controlled_contrast(before: dict[str, Any], after: dict[str, Any], metadata_
     return any(not path.casefold().startswith(".ai/") and path.casefold() not in metadata_paths and before["input_sha256"].get(path) != after["input_sha256"].get(path) for path in paths)
 
 
-def evidence_failures(record: Any, review: dict[str, Any], runs: dict[str, Any], schema: dict[str, Any], *, completion: bool, current_refs: set[str] | None = None) -> list[str]:
+def evidence_failures(record: Any, review: dict[str, Any], runs: dict[str, Any], schema: dict[str, Any], *, completion: bool, current_refs: set[str] | None = None, artifacts: dict[str, Any] | None = None) -> list[str]:
     failures = shape_failures(record, "repair_evidence", schema)
     if failures:
         return failures
+    if record["schema_version"] != review["schema_version"]:
+        return ["repair evidence version must match the adopted repair policy; legacy evidence is historical only"]
     ids = [item["id"] for item in record["hypotheses"]]
     if len(set(ids)) != len(ids):
         failures.append("repair hypotheses must have unique IDs")
@@ -78,11 +83,12 @@ def evidence_failures(record: Any, review: dict[str, Any], runs: dict[str, Any],
         if any(not resolved(item[key]) for key in ("id", "falsifier")):
             failures.append("hypotheses require resolved canonical IDs and falsifiers")
     boundaries = record["fixture_boundaries"]
+    measurement_refs = {item["baseline"]["run"]["path"] for item in record.get("performance_comparisons", [])}
     if {item["id"] for item in boundaries} != BOUNDARIES or len(boundaries) != len(BOUNDARIES):
         failures.append("repair review requires each fixture boundary exactly once")
     for item in boundaries:
         refs = item["evidence_refs"]
-        if not resolved(item["reason"]) or any(ref not in runs for ref in refs):
+        if not resolved(item["reason"]) or any(ref not in runs or ref in measurement_refs for ref in refs):
             failures.append(f"fixture boundary {item['id']} has unresolved reason or run reference")
         if item["state"] != "unknown" and not refs:
             failures.append(f"fixture boundary {item['id']} requires review evidence, including non-applicability")
@@ -171,4 +177,8 @@ def evidence_failures(record: Any, review: dict[str, Any], runs: dict[str, Any],
             run = latest.get(command_id)
             if run is None or run["state"] != "passed" or run["claim"] != "full" or run["proof_boundary"] != "end-to-end":
                 failures.append(f"incident completion requires full observed acceptance for {command_id}")
+    if record["schema_version"] == 2:
+        from repair_qualification import qualification_failures, comparison_failures
+        failures.extend(qualification_failures(record, review, runs, artifacts or {}, completion=completion, current_refs=current_refs))
+        failures.extend(comparison_failures(record, review, runs, artifacts or {}, current_refs=current_refs))
     return failures

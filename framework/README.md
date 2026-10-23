@@ -200,6 +200,8 @@ Those belong to a project contour or repository adapter.
   contract.
 - `.ai/framework/test-first-development.md`: optional target-adapted test-first
   enablement, recommendation, execution, exception, and evidence contract.
+- `.ai/framework/repair-qualification.md`: conditional schema-2 scenario,
+  diagnostic contrast and performance detail under the test-first owner.
 - `.ai/framework/extensions.md`: declarative external extension package,
   inspection, normalization, lock, update, removal, and recommendation contract.
 - `.ai/framework/dependency-knowledge.md`: passive package knowledge export,

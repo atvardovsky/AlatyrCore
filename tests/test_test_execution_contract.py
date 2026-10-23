@@ -125,8 +125,10 @@ class ExecutionDocumentationTests(unittest.TestCase):
             paths.update(ROOT / name for name in (
                 "tools/check_test_first_development.py", "schemas/test-execution-contract.schema.json",
                 "schemas/repair-review.schema.json",
+                "framework/repair-qualification.md",
                 "templates/target/.ai/assistant/templates/test-execution-evidence.json",
                 "templates/target/.ai/assistant/templates/repair-review.json",
+                "templates/target/.ai/assistant/templates/repair-qualification.json",
             ))
             for source in paths:
                 destination = root / source.relative_to(ROOT)

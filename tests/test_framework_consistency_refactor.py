@@ -43,9 +43,10 @@ class FrameworkConsistencyRefactorTests(unittest.TestCase):
             result = checker.main()
 
         self.assertEqual(result, 0)
+        expected_count = sum(path.is_file() for path in (ROOT / "framework").glob("*.md"))
         self.assertEqual(
             stdout.getvalue(),
-            "OK: checked 52 framework docs and target templates\n",
+            f"OK: checked {expected_count} framework docs and target templates\n",
         )
         self.assertEqual(stderr.getvalue(), "")
 

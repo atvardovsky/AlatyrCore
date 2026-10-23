@@ -76,9 +76,9 @@ class TestExecutionContract:
         if isinstance(value, dict):
             repair = definition in {"repair_evidence", "repair_policy"}
             version = value.get("schema_version") if definition == "evidence" or repair else value.get("execution_contract", {}).get("schema_version") if isinstance(value.get("execution_contract"), dict) else None
-            expected = 1 if repair else 2
-            if type(version) is not int or version != expected:
-                failures.append(f"execution/evidence schema_version must be integer {expected}")
+            versions = (1, 2) if repair else (2,)
+            if type(version) is not int or version not in versions:
+                failures.append(f"execution/evidence schema_version must be an integer in {versions}")
             if definition == "evidence" and isinstance(value.get("counts"), dict):
                 if any(type(n) is not int for n in value["counts"].values()):
                     failures.append("counts must contain integers, not booleans or floats")

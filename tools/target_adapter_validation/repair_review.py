@@ -29,6 +29,60 @@ def _bound_json(validator: Any, path: str, digest: str | None = None) -> dict[st
     return validator.load_json_object(validator.target_path(path), "TDD_EXECUTION_EVIDENCE")
 
 
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    value = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError("duplicate JSON member")
+        value[key] = item
+    return value
+
+
+def _reject_constant(value: str) -> None:
+    raise ValueError(f"non-finite JSON constant: {value}")
+
+
+def _observation_artifact(validator: Any, run: dict[str, Any]) -> dict[str, Any] | None:
+    artifact = run.get("result_artifact")
+    if not isinstance(artifact, dict):
+        return None
+    path = artifact["path"]
+    if not is_target_relative_path(path) or not validator.is_target_file(path):
+        validator.error("TDD_EXECUTION_EVIDENCE", "scenario result artifact is unavailable or outside the target", path)
+        return None
+    result = validator.context.read_bytes_result(validator.target_path(path), max_bytes=MAX_RECORD_BYTES)
+    if result.value is None or hashlib.sha256(result.value).hexdigest() != artifact["sha256"]:
+        validator.error("TDD_EXECUTION_EVIDENCE_STALE", "scenario result artifact is unavailable, oversized, or differs from its run digest", path)
+        return None
+    try:
+        value = json.loads(result.value, object_pairs_hook=_unique_object, parse_constant=_reject_constant)
+        if not isinstance(value, dict):
+            raise ValueError("expected a JSON object")
+    except (ValueError, UnicodeError, RecursionError) as exc:
+        validator.error("TDD_EXECUTION_EVIDENCE", f"scenario result artifact must be bounded unambiguous JSON: {exc}", path)
+        return None
+    return value
+
+
+def _measurement_baseline(validator: Any, binding: dict[str, Any], contract: TestExecutionContract) -> dict[str, Any] | None:
+    run_binding, policy_binding = binding["run"], binding["policy"]
+    run = _bound_json(validator, run_binding["path"], run_binding["sha256"])
+    policy = _bound_json(validator, policy_binding["path"], policy_binding["sha256"])
+    if run is None or policy is None:
+        return None
+    failures = contract.policy_failures(policy) + contract.shape(run, "evidence")
+    if not failures:
+        command = next((item for item in policy["commands"] if item["id"] == run["command_id"]), None)
+        failures = ["measurement command is absent from its captured policy"] if command is None else contract.evidence_failures(run, command, policy["execution_contract"])
+        if run["policy_sha256"] != policy_binding["sha256"]:
+            failures.append("measurement baseline does not bind its captured policy")
+        if validator.git.is_ancestor(run["repository_revision"], validator.git.head_revision()) is not True:
+            failures.append("measurement baseline revision is unavailable or outside the current repository lineage")
+    for failure in failures:
+        validator.error("TDD_EXECUTION_EVIDENCE", failure, run_binding["path"])
+    return None if failures else run
+
+
 def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dict[str, Any], *, completion: bool) -> None:
     incident = model.get("incident", {})
     obligations = [item for item in model.get("proof_obligations", []) if item.get("id") == OBLIGATION]
@@ -52,6 +106,7 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
         validator.error("TDD_EXECUTION_CONTRACT", "repair_review must be a policy object", POLICY)
         return
     prior_required = False
+    previous = {}
     if validator.diff_ref:
         base_revision = validator.git.comparison_base(validator.diff_ref)
         raw, available = validator.git.bounded_file_result_at_ref(base_revision, POLICY, 512 * 1024) if base_revision else (None, False)
@@ -76,6 +131,19 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
         validator.error("TDD_EXECUTION_CONTRACT", failure, POLICY)
     if failures:
         return
+    prior_review = previous.get("repair_review") if isinstance(previous, dict) else None
+    if captured and isinstance(prior_review, dict) and prior_review.get("state") == "enabled" and prior_review.get("schema_version") == 2:
+        prior_failures = contract.policy_failures(previous)
+        if prior_failures:
+            validator.error("TDD_EXECUTION_CONTRACT", "captured qualification policy is invalid; its requirements cannot be safely reconciled", POLICY)
+        elif review["schema_version"] != 2:
+            validator.error("TDD_EXECUTION_CONTRACT", "captured same-task schema-2 qualification cannot be downgraded to schema 1", POLICY)
+        else:
+            for group in ("assertions", "performance"):
+                current = {item["id"]: item for item in review["qualification"][group]}
+                for item in prior_review["qualification"][group]:
+                    if json.dumps(current.get(item["id"]), sort_keys=True, allow_nan=False) != json.dumps(item, sort_keys=True, allow_nan=False):
+                        validator.error("TDD_EXECUTION_CONTRACT", f"captured same-task qualification {group} cannot be removed or rewritten into successful acceptance", POLICY)
     if len(obligations) != 1 or obligations[0].get("required") is not True:
         validator.error("TDD_EXECUTION_CONTRACT", f"enabled incident review requires a retained required {OBLIGATION} proof obligation", POLICY)
     selected = [item for item in review["records"] if item["task_id"] == task["task_id"]]
@@ -110,7 +178,7 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
     if any(item["id"] not in hypotheses for item in record["hypotheses"]):
         validator.error("TDD_EXECUTION_EVIDENCE", "repair hypothesis IDs must resolve in the canonical problem model", path)
     diagnosis = record["diagnosis"]
-    if completion or record["claim"] == "incident-fixed":
+    if completion or record["claim"] == "incident-fixed" or record.get("repair_stage") in {"qualified-repair", "acceptance"}:
         selected_hypothesis = hypotheses.get(diagnosis["hypothesis_id"]) if diagnosis is not None else None
         if selected_hypothesis is None or selected_hypothesis.get("status") != "supported" or diagnosis["run_ref"] not in selected_hypothesis.get("evidence_refs", []):
             validator.error("TDD_EXECUTION_EVIDENCE", "accepted diagnosis must match a supported model hypothesis and its discriminating evidence", path)
@@ -149,7 +217,29 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
             validator.error("TDD_EXECUTION_EVIDENCE", failure, ref)
         if not failures:
             runs[ref] = value
-    for failure in evidence_failures(record, review, runs, contract.repair_schema(), completion=completion, current_refs=current_refs):
+    artifacts = {}
+    if record["schema_version"] == 2:
+        # Baselines are measurement-only: never current qualification or acceptance.
+        for comparison in record["performance_comparisons"]:
+            baseline_ref = comparison["baseline"]["run"]["path"]
+            if baseline_ref in current_refs:
+                validator.error("TDD_EXECUTION_EVIDENCE", "performance baselines require captured measurement-only records, not a current acceptance alias", baseline_ref)
+                continue
+            baseline = _measurement_baseline(validator, comparison["baseline"], contract)
+            if baseline is not None:
+                if baseline_ref in runs and runs[baseline_ref] != baseline:
+                    validator.error("TDD_EXECUTION_EVIDENCE", "conflicting baseline run identity", baseline_ref)
+                else:
+                    runs[baseline_ref] = baseline
+        selected_artifacts = {item["run_ref"] for item in record["observations"]}
+        for comparison in record["performance_comparisons"]:
+            selected_artifacts.update((comparison["baseline"]["run"]["path"], comparison["candidate_run_ref"]))
+        for ref in selected_artifacts:
+            if ref in runs:
+                value = _observation_artifact(validator, runs[ref])
+                if value is not None:
+                    artifacts[ref] = value
+    for failure in evidence_failures(record, review, runs, contract.repair_schema(), completion=completion, current_refs=current_refs, artifacts=artifacts):
         validator.error("TDD_EXECUTION_EVIDENCE", failure, path)
     if contract.view.finalize():
         validator.error("TDD_EXECUTION_SCHEMA", "repair schema changed during validation; rerun", POLICY)

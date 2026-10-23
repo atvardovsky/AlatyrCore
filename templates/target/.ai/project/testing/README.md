@@ -45,6 +45,15 @@ falsifiers and expected original-case effects. The selected task validator
 checks linked canonical runs, not whether the causal interpretation is true.
 Do not replace the original full matrix with focused or favorable reruns.
 
+Schema 1 remains supported. Explicit schema-2 adoption uses
+`.ai/assistant/templates/repair-qualification.json` with policy-owned assertions
+and digest-bound JSON result artifacts, not copied observed values. See the
+portable owner's Incident Repair Review section for fields, limits and stage
+semantics. Qualification may be based on a faithful failing diagnostic; it is
+not functional acceptance or execution permission. Optional comparable median
+measurements never turn historical passes into current acceptance. A framework
+update alone enables none of these controls.
+
 Use `Alatyr enable test-first` to assess and propose or apply this policy. This
 is an assistant request shortcut, not a shell command. Approval is required
 when target policy, dependencies, CI, merge requirements, permissions, or

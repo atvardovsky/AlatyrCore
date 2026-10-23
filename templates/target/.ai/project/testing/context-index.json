@@ -28,8 +28,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 415,
-      "content_digest": "sha256:ea2a649b528964eefec81b58fd1e71a90770891f24d16f82fcdb92f173a1ade0"
+      "estimated_words": 487,
+      "content_digest": "sha256:a9984fb6357008c3bbba7e273e75d9082d74ec86df9ec641de970ef06489aa34"
     },
     {
       "id": "project.content.testing-test-first-policy-json",
