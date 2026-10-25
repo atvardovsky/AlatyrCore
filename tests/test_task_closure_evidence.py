@@ -26,6 +26,23 @@ from tests import active_task_fixture as fixture
 
 
 class TaskClosureTests(fixture.ActiveTaskFixture):
+    def test_fixture_controls_newlines_without_weakening_raw_result_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            configuration = Path(directory) / "global.gitconfig"
+            configuration.write_text("[core]\n autocrlf = true\n", encoding="utf-8")
+            helper = fixture.ActiveTaskFixture()
+            with patch.dict(os.environ, {"GIT_CONFIG_GLOBAL": str(configuration)}):
+                try:
+                    helper.setUp()
+                    self.assertEqual(git(helper.target, "config", "--get", "core.autocrlf"), "false")
+                    self.assertEqual((helper.target / "design.md").read_bytes(), b"accepted design\n")
+                    helper.close()
+                    self.assertEqual(helper.errors(helper.check()), set())
+                    (helper.target / "src/example.txt").write_bytes(b"implementation\r\n")
+                    self.assertIn("TASK_CLOSURE_RESULT_DRIFT", helper.errors(helper.check()))
+                finally:
+                    helper.doCleanups()
+
     def test_malformed_enums_produce_findings_not_exceptions(self):
         self.close()
         original = copy.deepcopy(self.closure)

@@ -21,6 +21,8 @@
 - Reconcile installer/update and agent flows, add malformed/boundary/public-CLI
   regressions, and preserve historical claim limits. No target runtime rollout,
   cross-assistant reliability or measured real-team cost savings are claimed.
+- Make newly portable task-closure fixtures independent of host Git newline
+  conversion and native path separators, without normalizing production hashes.
 
 ## 0.1.0-alpha.104 - 2026-10-24
 

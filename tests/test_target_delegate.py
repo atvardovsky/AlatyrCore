@@ -161,7 +161,7 @@ class TargetDelegateTests(unittest.TestCase):
             args, Path("/target"), Path("/source")
         )
 
-        self.assertEqual(command[:3], ["finalize-support", "--target", "/target"])
+        self.assertEqual(command[:3], ["finalize-support", "--target", str(Path("/target"))])
         self.assertIn("--write", command)
         self.assertIn("--migration-staging", command)
         self.assertNotIn("--framework-source", command)
