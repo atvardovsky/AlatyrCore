@@ -140,6 +140,34 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(text.encode("utf-8"))
 
+    def test_fixture_resolution_preserves_source_bytes_under_windows_newlines(self):
+        sources = {"README.md": b"# Synthetic project\n", "src/example.txt": b"unchanged\r\n"}
+        for name, content in sources.items():
+            path = self.target / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content)
+        replacements = {
+            ".ai/assistant/placeholder-lf.md": b"{PROJECT_NAME}\n",
+            ".ai/assistant/placeholder-crlf.md": b"{PROJECT_NAME}\r\n",
+        }
+        for name, content in replacements.items():
+            (self.target / name).write_bytes(content)
+        original_write_text = Path.write_text
+
+        def windows_write_text(path, text, *args, **kwargs):
+            kwargs.setdefault("newline", "\r\n")
+            return original_write_text(path, text, *args, **kwargs)
+
+        with patch.object(Path, "write_text", windows_write_text):
+            resolve_adapter(self.target, "full")
+        for name, content in sources.items():
+            with self.subTest(path=name):
+                self.assertEqual((self.target / name).read_bytes(), content)
+        for name, content in replacements.items():
+            with self.subTest(path=name):
+                self.assertEqual((self.target / name).read_bytes(), content.replace(b"{PROJECT_NAME}", b"fixture-value"))
+        self.assertEqual(run_git(self.target, "diff", "--name-only", "HEAD", "--", "README.md"), "")
+
     def test_generated_task_catalog_is_not_a_task(self):
         self.assertFalse([f for f in self.findings("team_collaboration") if f.level == "error"])
         self.generate()

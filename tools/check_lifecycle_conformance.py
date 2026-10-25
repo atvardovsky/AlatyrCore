@@ -169,11 +169,12 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
         if framework_root in path.parents:
             continue
         try:
-            text = path.read_text(encoding="utf-8")
+            text = path.read_bytes().decode("utf-8")
         except UnicodeDecodeError:
             continue
         resolved = PLACEHOLDER.sub(lambda match: replacement(match.group(0)[1:-1]), text)
-        path.write_text(resolved, encoding="utf-8")
+        if resolved != text:
+            path.write_bytes(resolved.encode("utf-8"))
 
     upgrade_impact_path = (
         repo / ".ai" / "assistant" / "migrations" / "upgrade-impact.json"

@@ -23,6 +23,9 @@
 - Reject unresolved link identities and guard type-dependent task lookups and
   vocabulary projection comparisons; malformed JSON fields produce findings
   rather than interrupting validation.
+- Preserve unchanged source bytes and existing line endings in the lifecycle
+  fixture resolver. Emulate Windows newline writes locally so unrelated files
+  cannot accidentally enter an adapter-only approval scope.
 
 ## 0.1.0-alpha.105 - 2026-10-25
 
