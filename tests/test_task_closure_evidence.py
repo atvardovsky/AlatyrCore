@@ -168,9 +168,11 @@ class TaskClosureTests(fixture.ActiveTaskFixture):
 
     def test_current_result_checks_commit_tree_and_snapshot_coverage(self):
         self.close()
-        (self.target / "src/example.txt").write_text("uncommitted change")
+        implementation = self.target / "src/example.txt"
+        original = implementation.read_bytes()
+        implementation.write_bytes(b"uncommitted change")
         self.assertIn("TASK_CLOSURE_RESULT_DRIFT", self.errors(self.check()))
-        (self.target / "src/example.txt").write_text("implementation\n")
+        implementation.write_bytes(original)
         self.closure["repository_binding"].update(kind="tree", result_revision=git(self.target, "rev-parse", "HEAD^{tree}"))
         self.write_closure()
         self.assertEqual(self.errors(self.check()), set())
@@ -401,6 +403,22 @@ class TaskClosureTests(fixture.ActiveTaskFixture):
         self.assertEqual(first, self.snapshot(paths))
         self.assertEqual(first, second)
 
+
+
+class WindowsNewlineSimulationTests(unittest.TestCase):
+    def test_result_restoration_is_independent_of_native_text_translation(self):
+        def windows_text(path, data, encoding=None, errors=None, **kwargs):
+            encoded = data.replace("\r\n", "\n").replace("\n", "\r\n").encode(encoding or "utf-8", errors or "strict")
+            path.write_bytes(encoded)
+            return len(data)
+
+        case = TaskClosureTests("test_current_result_checks_commit_tree_and_snapshot_coverage")
+        result = unittest.TestResult()
+        with patch.object(Path, "write_text", autospec=True, side_effect=windows_text):
+            case.run(result)
+        self.assertEqual(result.testsRun, 1)
+        self.assertEqual(result.skipped, [])
+        self.assertTrue(result.wasSuccessful(), result.errors + result.failures)
 
 
 if __name__ == "__main__":
