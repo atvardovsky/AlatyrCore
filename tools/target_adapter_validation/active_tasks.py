@@ -224,7 +224,9 @@ def _validate_publication(validator: Any, closure: dict[str, Any], source: str) 
         if receipt is None or not _schema_valid(validator, receipt, "publication-receipt", source):
             continue
         remote = receipt["remote_ref"]
-        observed = validator.git.resolve_object(remote, "commit")
+        observed = validator.git.literal_remote_ref(remote)
+        if not validator.git.is_literal_remote_ref(remote):
+            validator.error("TASK_CLOSURE_PUBLICATION", "publication observation needs a literal remote-tracking ref, not revision syntax", source)
         revision = validator.git.resolve_object(receipt["observed_revision"], "commit")
         result_binding = closure["repository_binding"]
         if receipt["task_id"] != closure["task_id"] or receipt["operation_id"] != closure["operation_id"] or revision != receipt["observed_revision"]:

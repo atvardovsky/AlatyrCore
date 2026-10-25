@@ -172,6 +172,11 @@ class CurrentTaskTests(ActiveTaskFixture):
         payload = json.loads(result.stdout)
         self.assertEqual(payload["current_task"]["incident_outcome"]["state"], "original-case-unresolved")
         self.assertFalse(payload["current_task"]["acceptance_granted"])
+        preflight = payload["current_task"]["repair_preflight"]
+        self.assertEqual(preflight["original_input"], "Original workflow request")
+        self.assertEqual(preflight["expected_outcome"], "Original end-to-end flow completes")
+        self.assertFalse(preflight["authorization_granted"])
+        self.assertFalse(preflight["unrelated_work_blocked"])
         from report_adapter_health import render_text
         for mode in ("status", "doctor"):
             text = render_text(payload, mode=mode)
@@ -186,14 +191,15 @@ class CurrentTaskTests(ActiveTaskFixture):
             value = current_task_view(checked, "fixture-task")
         self.assertEqual(value["state"], "unknown")
         self.assertEqual(value["repair_evidence"]["state"], "not-verified")
-        for key in ("delivery", "model", "disposition_source", "execution_readiness", "incident_controls", "task_state", "incident_outcome"):
+        for key in ("delivery", "model", "disposition_source", "execution_readiness", "incident_controls", "task_state", "incident_outcome", "repair_preflight"):
             self.assertNotIn(key, value)
 
     def test_default_health_does_not_load_selected_task_view(self):
         from report_adapter_health import health_payload
-        with patch("current_task_view.current_task_view", side_effect=AssertionError("default health expanded selected task")):
+        with patch("current_task_view.current_task_view", side_effect=AssertionError("default health expanded selected task")), patch("report_adapter_health.work_overview", side_effect=AssertionError("default health expanded coordination")):
             value = health_payload(target=self.target)
         self.assertNotIn("current_task", value)
+        self.assertNotIn("work_overview", value)
 
     def test_control_adoption_is_not_inferred_from_template_presence(self):
         from tests.test_test_execution_contract import RegisteredTestingExecutionTests
@@ -204,6 +210,21 @@ class CurrentTaskTests(ActiveTaskFixture):
         value = current_task_view(changed_index_validator(self.target), "fixture-task")
         self.assertEqual(value["incident_controls"]["adoption"], "not-adopted")
         self.assertTrue(value["incident_controls"]["installed_templates"]["2"])
+
+    def test_repair_preflight_preserves_explicit_deferred_or_disabled_decisions(self):
+        from tests.test_test_execution_contract import RegisteredTestingExecutionTests
+        helper = RegisteredTestingExecutionTests()
+        policy, _ = helper.fixture(self.target)
+        self.model["original_case"] = {"source_ref": "original-run.json", "actor": "end user",
+            "input": "Original request", "expected_outcome": "Original flow completes",
+            "status": "still-failing", "evidence_refs": [], "supersession": None}
+        self.write_model(); self.write_index()
+        for state in ("deferred", "disabled"):
+            policy["repair_review"] = {"schema_version": 1, "state": state, "acceptance_command_ids": [], "records": []}
+            helper.write(self.target, ".ai/project/testing/test-first-policy.json", policy)
+            value = current_task_view(changed_index_validator(self.target), "fixture-task")
+            self.assertEqual(value["repair_preflight"]["control_adoption"], state)
+            self.assertEqual(value["repair_preflight"]["next_action"], "respect-recorded-repair-control-decision")
         self.assertEqual(value["incident_controls"]["exercised"], "not-verified")
         self.assertFalse(value["incident_controls"]["automatic_enablement"])
         for bad in (None, True, 1, "enabled", [], {}):

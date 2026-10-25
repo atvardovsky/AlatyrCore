@@ -347,6 +347,9 @@ Collect target-specific facts before writing project docs:
 - optional incident repair review has an explicit target decision, full-flow
   command owners and task-bound evidence; captured obligations, failed attempts,
   historical evidence and explicit opt-outs survive installation/update
+- adopted execution-contract-3 selection/timing controls have conditional
+  guidance, exact identity conservation and actual artifact-bound observations;
+  legacy version-2 records remain historical, not newly qualified evidence
 - extension owner, source-access and prompt-injection policy, extension package
   manifest, immutable source and digest, compatibility, catalog/lock, bindings,
   permissions, approval, installed-file ownership, update/removal policy, lazy

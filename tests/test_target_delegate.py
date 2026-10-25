@@ -29,6 +29,13 @@ finally:
 
 
 class TargetDelegateTests(unittest.TestCase):
+    def test_optional_workflow_flags_are_forwarded(self) -> None:
+        for operation, flag, extra in (("doctor", "--work-overview", []),
+                                       ("status", "--work-overview", []),
+                                       ("cooperation-preflight", "--require-clear", ["--scope", "path:src"])):
+            parsed = delegate.build_parser().parse_args([operation, "--target", ".", flag, *extra])
+            canonical = delegate.canonical_arguments(parsed, ROOT, ROOT)
+            self.assertIn(flag, canonical)
     def test_presence_requires_explicit_unique_target_and_exact_source(self) -> None:
         import contextlib
         import io

@@ -35,6 +35,9 @@ Use this skill only after the target has adapted it and enabled the
    Separate diagnostic/repair qualification, original-flow acceptance and any
    policy-selected performance comparison. Use the canonical flow, not a second
    sequence or a self-maintained "current" status document.
+   Adopted schema-3 execution controls use the conditional exact-selection
+   guidance; requested identities, observed execution and original-case effect
+   are different proof boundaries. Reuse the flow and canonical resolver.
 
 ## Prohibited
 

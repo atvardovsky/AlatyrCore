@@ -25,6 +25,11 @@ must not replace an unresolved original case; these views remain declarations,
 not fresh runtime verification or a substitute for the next causal experiment.
 Reuse canonical selected execution/repair validation, including expected-negative
 outcomes. A consistent diagnostic record does not establish incident acceptance.
+For repeated or escaped incidents, the selected view also exposes the original
+input, terminal outcome, failed gate and repair-control adoption decision before
+another related patch. Request approval to adopt absent optional controls;
+never silently enable them or block independent unrelated work. Review fixture
+initial state and a falsifying observation, not only green component totals.
 Without that tooling, inspect the bound model/closure manually and report
 machine verification as unperformed; no portable runtime command is required.
 
@@ -47,3 +52,11 @@ stale-document warnings. For profile-only document discussion, explicitly reques
 Canonical graph, owner, structured-finding and digest checks remain required.
 Review inputs never recursively select other warnings or promote relationships.
 Unrelated default tasks do not perform this additional lookup.
+
+## Independent Work Views
+
+An explicit work overview links the analysis-task index, reported team claims
+and session-cooperation entry point without merging owners or statuses. Empty
+team claims do not imply no active analysis tasks. Missing, invalid or stale
+views remain unknown; a recorded date is not a liveness guarantee. Load these
+bounded headers only for a coordination question, not ordinary bootstrap.

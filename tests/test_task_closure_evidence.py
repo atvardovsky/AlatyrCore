@@ -311,6 +311,18 @@ class TaskClosureTests(fixture.ActiveTaskFixture):
         self.write_closure()
         self.assertIn("TASK_CLOSURE_PUBLICATION", self.errors(self.check(selected=False)))
 
+    def test_publication_revision_expression_is_not_a_literal_tracking_ref(self):
+        self.close()
+        self.closure["delivery"]["publication"] = "published"
+        git(self.target, "update-ref", "refs/remotes/origin/main", self.result)
+        receipt = {"schema_version": 1, "record_kind": "alatyr-publication-receipt", "task_id": "fixture-task", "operation_id": self.task["operation_id"], "remote_ref": "refs/remotes/origin/main~1", "observed_revision": self.result, "observed_at": "2026-01-01T00:00:00Z"}
+        path = self.target / "publication.json"
+        path.write_text(json.dumps(receipt), encoding="utf-8")
+        self.closure["publication_evidence"] = [self.bind(path)]
+        self.write_closure()
+        for selected in (True, False):
+            self.assertIn("TASK_CLOSURE_PUBLICATION", self.errors(self.check(selected=selected)))
+
 
     @unittest.skipIf(os.name == "nt", "literal backslash filename is a POSIX alias regression")
     def test_closure_path_cannot_alias_a_different_implementation_file(self):

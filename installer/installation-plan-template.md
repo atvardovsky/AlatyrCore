@@ -82,6 +82,9 @@ List what must not be changed.
 - Test-first-development need, owner, decision authority, and module state:
 - Canonical testing owners, execution timing/authority, command effects,
   configuration/filter support, suite exclusions, and proof boundaries:
+- Execution-contract-3 selection/timing adoption decision, exact identity
+  normalization, conditional guidance and actual artifact-bound observations;
+  preservation of legacy version-2 evidence:
 - Existing test strategy, defects/regressions, levels, folders, commands,
   fixtures, isolation, feedback time, CI, and merge-gate evidence:
 - Recommendation behavior, activation triggers, selected modes, exceptions,

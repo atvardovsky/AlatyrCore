@@ -60,6 +60,10 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
         for failure in surface_binding_failures(text):
             context.error("TDD_SURFACE_POLICY_BINDING", failure, path)
     commands = {command["id"]: command for command in policy["commands"]}
+    guidance = ".ai/framework/test-execution-selection.md"
+    if any(command["execution"].get(name) == "required" for command in commands.values()
+           for name in ("selection_contract", "timing_qualification")) and not context.is_target_file(guidance):
+        context.error("TDD_EXECUTION_CONTRACT", "adopted selection/timing controls require their conditional framework guidance", guidance)
     for command in commands.values():
         for path in command["execution"]["configuration_paths"]:
             if not context.is_target_file(path):
@@ -130,5 +134,9 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
                 matches = context.content_digest(target_path) == digest
             if not matches:
                 context.error("TDD_EXECUTION_EVIDENCE_STALE", f"missing, escaped or changed evidence input: {input_path}", path)
+        if any(command["execution"].get(name) == "required" for name in ("selection_contract", "timing_qualification")) and record["counts"]["executed"] > 0:
+            from testing_controls import selected_control_failures
+            for failure in selected_control_failures(context.filesystem, record, command["execution"]):
+                context.error("TDD_EXECUTION_EVIDENCE", failure, path)
     if contract.view.finalize():
         context.error("TDD_EXECUTION_SCHEMA", "testing schema changed during validation; rerun", source)

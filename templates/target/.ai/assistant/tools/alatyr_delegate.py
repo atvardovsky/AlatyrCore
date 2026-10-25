@@ -68,6 +68,7 @@ def build_parser() -> argparse.ArgumentParser:
     cooperation.add_argument("--scope", action="append", default=[])
     cooperation.add_argument("--command", action="append", default=[])
     cooperation.add_argument("--session-uid")
+    cooperation.add_argument("--require-clear", action="store_true")
     for name in ("status", "doctor", "archive-audit"):
         operation = subparsers.add_parser(name, allow_abbrev=False)
         add_common(operation)
@@ -75,6 +76,7 @@ def build_parser() -> argparse.ArgumentParser:
             operation.add_argument("--incident-frontier", action="store_true")
         if name in {"status", "doctor"}:
             operation.add_argument("--current-task")
+            operation.add_argument("--work-overview", action="store_true")
         if name == "archive-audit":
             operation.add_argument("--historical-evidence-index", type=Path, action=Once)
 
@@ -115,12 +117,16 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
                 command.extend(["--" + name, value])
         if args.session_uid:
             command.extend(["--session-uid", args.session_uid])
+        if getattr(args, "require_clear", False):
+            command.append("--require-clear")
         return command
     common = ["--target", str(target), "--framework-source", str(source)]
     if args.operation in {"status", "doctor"}:
         extra = ["--incident-frontier"] if args.operation == "doctor" and args.incident_frontier else []
         if args.current_task:
             extra.extend(["--current-task", args.current_task])
+        if getattr(args, "work_overview", False):
+            extra.append("--work-overview")
         return [args.operation, *common, *extra]
     if args.operation == "archive-audit":
         command = [

@@ -199,6 +199,10 @@ Before upgrading framework files in a target project:
    When `test-first-development` is enabled, reconcile its policy/execution
    contract and routed surfaces against its rule owner; preserve authority,
    timing and history. Missing legacy contracts remain readiness gaps.
+   Preserve schema-2 execution records under their frozen contract. Schema-3
+   required selection/timing controls need explicit target adoption and current
+   policy/evidence; template installation alone does not enable them. Report
+   producer/installed baseline differences separately from installed corruption.
    Propose optional repair qualification rather than silently adopting it;
    distinguish available/installed/enabled/exercised controls. Retain schema-1
    history and require fresh selected observations for schema-2 qualification.

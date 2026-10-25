@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from capability_catalog import load_modules
+from adapter_health_views import finding_groups, tooling_comparison, work_overview
 
 from validate_target_adapter import (
     AdapterValidatorConfig,
@@ -33,6 +34,8 @@ def build_capability_advisory(
         "available_in_source": [],
         "unknown_to_source": [],
         "blocking": False,
+        "comparison_basis": "module-ids-only",
+        "limitation": "Catalog membership does not establish current contracts, target adoption or exercised evidence.",
     }
     if framework_source is None:
         if requested:
@@ -77,6 +80,7 @@ def health_payload(
     required_capabilities: list[str] | None = None,
     include_incident_frontier: bool = False,
     current_task_id: str | None = None,
+    include_work_overview: bool = False,
 ) -> dict[str, Any]:
     phase = "migration-staging" if allow_placeholders else validation_phase
     config, config_findings = load_validator_config(target, config_path)
@@ -118,6 +122,9 @@ def health_payload(
         required_capabilities=required_capabilities,
     )
     payload["capability_advisory"] = advisory
+    payload["tooling_comparison"] = tooling_comparison(validator.context, Path(__file__).resolve().parents[1])
+    if include_work_overview:
+        payload["work_overview"] = work_overview(validator.context)
     if task_view is not None:
         payload["current_task"] = task_view
     if include_incident_frontier:
@@ -208,6 +215,13 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         ),
         "Automatic repair performed: false",
     ]
+    comparison = payload.get("tooling_comparison")
+    if isinstance(comparison, dict):
+        lines.append("Tooling baseline: " + comparison["state"])
+        lines.append("Producer versions: " + json.dumps(comparison["producer_versions"], sort_keys=True))
+        lines.append("Installed versions: " + json.dumps(comparison["installed_versions"], sort_keys=True))
+        if comparison["state"] == "different-tooling-baseline":
+            lines.append("Next: assess-upgrade; migration comparison does not prove corruption of the installed baseline. Existing findings still apply.")
     missing = advisory.get("missing_from_installation") or []
     unknown = advisory.get("unknown_to_source") or []
     available = advisory.get("available_in_source") or []
@@ -248,6 +262,15 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         controls = current.get("incident_controls", {})
         lines.append("Repair review: " + controls.get("adoption", "unknown") + "; evidence: " + current["repair_evidence"]["state"])
         lines.extend("- " + item for item in current["diagnostics"][:8])
+        preflight = current.get("repair_preflight")
+        if isinstance(preflight, dict):
+            lines.append("Related repair preflight: " + preflight["state"])
+            lines.append("Next incident action: " + preflight["next_action"])
+    overview = payload.get("work_overview")
+    if isinstance(overview, dict):
+        lines.append("Active analysis tasks: " + str(overview["analysis_tasks"]["active_count"]))
+        lines.append("Reported team claims: " + str(overview["team_claims"]["reported_entries"]) + " (freshness not verified)")
+        lines.append(overview["limitation"])
     if mode == "status" and findings:
         lines.append("Finding details: run doctor for prioritized findings")
         return "\n".join(lines) + "\n"
@@ -255,11 +278,17 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     if blocking:
         lines.append("")
         lines.append("Blocking findings:")
-        lines.extend(finding_line(item) for item in blocking[:5])
+        groups = finding_groups(blocking)
+        lines.extend(finding_line(item) + (f" ({item['count']} findings; full details in JSON)" if item["count"] > 1 else "") for item in groups[:5])
+        if len(groups) > 5:
+            lines.append(f"Additional blocking groups: {len(groups) - 5}")
     if attention:
         lines.append("")
         lines.append("Attention findings:")
-        lines.extend(finding_line(item) for item in attention[:5])
+        groups = finding_groups(attention)
+        lines.extend(finding_line(item) + (f" ({item['count']} findings; full details in JSON)" if item["count"] > 1 else "") for item in groups[:5])
+        if len(groups) > 5:
+            lines.append(f"Additional attention groups: {len(groups) - 5}")
     if len(blocking) + len(attention) < len(findings):
         hidden = len(findings) - len(blocking) - len(attention)
         lines.append(f"Additional non-blocking findings: {hidden}")
@@ -292,6 +321,7 @@ def main() -> int:
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--incident-frontier", action="store_true", help="Include an advisory bounded task-header view; does not narrow validation.")
     parser.add_argument("--current-task", help="Exact registered task ID for bound disposition and control adoption; never acceptance.")
+    parser.add_argument("--work-overview", action="store_true", help="Show bounded independent task/team owner views, not liveness or acceptance.")
     parser.add_argument(
         "--mode",
         choices=["status", "doctor"],
@@ -311,6 +341,7 @@ def main() -> int:
         required_capabilities=args.required_capability,
         include_incident_frontier=args.incident_frontier,
         current_task_id=args.current_task,
+        include_work_overview=args.work_overview,
     )
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))

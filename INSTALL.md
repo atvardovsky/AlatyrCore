@@ -327,6 +327,12 @@ In a typical target repository:
    Schema-2 qualification is a separate target-owned adoption decision; report
    source availability, installation, enablement and exercised evidence
    separately. Never synthesize historical observations during an update.
+   Execution-contract-3 selection and timing controls require a separate
+   target-owned adoption decision. Install conditional
+   `framework/test-execution-selection.md` guidance when adopted; bind exact
+   requested/discovered/executed identities and observed qualification windows
+   to real result artifacts. Preserve readable version-2 records as legacy
+   evidence, not proof of newly activated controls.
    Add `.ai/project/team-policy.json` and its human-oriented
    `.ai/project/team-operating-model.md` only when team collaboration is
    enabled. Derive actors, aliases, authority, priorities, review, transitions,

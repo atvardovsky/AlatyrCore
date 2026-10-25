@@ -117,6 +117,22 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     if result["repair_evidence"]["state"] == "record-consistent":
         controls["exercised"] = "selected-record-consistent-not-effectiveness-proof"
     result["incident_controls"] = controls
+    incident = model["incident"]
+    original = model.get("original_case")
+    if incident["mode"] != "none" or isinstance(original, dict) and original.get("status") in {"unverified", "still-failing"}:
+        result["repair_preflight"] = {
+            "state": "review-before-related-repair",
+            "original_input": original.get("input") if isinstance(original, dict) else None,
+            "expected_outcome": original.get("expected_outcome") if isinstance(original, dict) else None,
+            "latest_failed_gate": incident["latest_failed_gate"],
+            "control_adoption": controls["adoption"],
+            "next_action": {"enabled": "review-bound-diagnostic-and-original-case",
+                            "disabled": "respect-recorded-repair-control-decision",
+                            "deferred": "respect-recorded-repair-control-decision",
+                            "not-adopted": "request-explicit-repair-control-adoption-decision"}.get(controls["adoption"], "resolve-canonical-repair-control-policy"),
+            "authorization_granted": False, "unrelated_work_blocked": False,
+            "limitation": "Review the faithful initial state and discriminating observation before another related patch. Optional controls require target approval; this view neither qualifies repair nor grants execution permission.",
+        }
     if view.finalize():
         return {"state": "unknown", "task_id": task_id, "authority": "none",
                 "acceptance_granted": False, "historical_narratives_loaded": False,

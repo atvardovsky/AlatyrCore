@@ -168,8 +168,25 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 372,
-      "content_digest": "sha256:1c7ef32a93e820eb896296fe1cf967e27ee8a54dc0cfd07c885c911f8fdc0b86"
+      "estimated_words": 487,
+      "content_digest": "sha256:76d6841716dcfb8e34cf8e787f0470264437376d049a05e7c8ab47307bdd330e"
+    },
+    {
+      "id": "framework.support.test-execution-selection-md",
+      "kind": "content",
+      "path": "test-execution-selection.md",
+      "summary": "Exact Execution Controls",
+      "selectors": {
+        "path_terms": [
+          "test",
+          "execution",
+          "selection"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 458,
+      "content_digest": "sha256:8e203c2f32b2164dfc3a85c4eea9406bf86cd7a08c0fda54d4846bb48ef37828"
     },
     {
       "id": "framework.support.test-first-development-md",
@@ -190,8 +207,8 @@
       "owner_refs": [
         "ALATYR-TDD-001"
       ],
-      "estimated_words": 2217,
-      "content_digest": "sha256:1d8d76502c628dc0bfa2486d567eef1955c68c0a07b5abec695508e16a138689"
+      "estimated_words": 2237,
+      "content_digest": "sha256:ecb5c6e2031dafef191941bb7ffc2d3a42ef9b231b7ba271488c2b5c5218bed7"
     }
   ]
 }

@@ -8,7 +8,7 @@
   "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
   "evidence_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
   "execution_contract": {
-    "schema_version": 2,
+    "schema_version": 3,
     "canonical_policy": "{TARGET_CANONICAL_TEST_POLICY_PATH}",
     "canonical_coverage_matrix": "{TARGET_CANONICAL_COVERAGE_MATRIX_PATH_OR_NULL}",
     "coverage_not_applicable_reason": null,

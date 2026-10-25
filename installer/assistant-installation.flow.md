@@ -341,6 +341,10 @@ Classify every proposed target file:
     scenario assertions and real run artifacts; preserve schema 1 or deferral
     without an accepted adoption decision. Performance comparison is separately
     target-selected, never a universal gate or runtime permission.
+    Adopt execution-contract-3 selection/timing controls only by an explicit
+    target decision, with conditional `test-execution-selection.md` guidance
+    and actual digest-bound observations. Preserve legacy version-2 records;
+    never silently promote them to newly qualified evidence.
     Teach named-task health to use registered model/closure bindings, not older
     narrative as current disposition. Preserve explicit supersession links.
     Add `.ai/project/team-policy.json` and its human explanation only when the

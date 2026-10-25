@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/policy",
+  "$defs": {
+    "text": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "texts": {"type": "array", "items": {"$ref": "#/$defs/text"}, "uniqueItems": true},
+    "boundary": {"enum": ["static-metadata", "unit", "mocked-interface", "real-persistence", "browser-mocked", "end-to-end", "manual"]},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contract": {
+      "type": "object",
+      "required": ["schema_version", "canonical_policy", "canonical_coverage_matrix", "coverage_not_applicable_reason", "timing", "red_requirement", "review_authority", "evidence_records"],
+      "properties": {
+        "schema_version": {"type": "integer", "const": 2},
+        "canonical_policy": {"$ref": "#/$defs/text"},
+        "canonical_coverage_matrix": {"type": ["string", "null"], "minLength": 1},
+        "coverage_not_applicable_reason": {"type": ["string", "null"], "minLength": 1},
+        "timing": {"enum": ["before-implementation", "after-manual-review", "explicit-request-only"]},
+        "red_requirement": {"enum": ["required-before-implementation", "when-authorized", "not-required"]},
+        "review_authority": {"$ref": "#/$defs/text"},
+        "evidence_records": {"$ref": "#/$defs/texts"},
+        "additional_evidence_templates": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}}
+      }
+    },
+    "command_execution": {
+      "type": "object",
+      "required": ["kind", "configuration_paths", "suite_patterns", "prerequisites", "effects", "resources", "environment", "suite_scope", "proof_boundary", "filtering"],
+      "properties": {
+        "kind": {"enum": ["static-analysis", "metadata-check", "automated-test", "manual-review"]},
+        "configuration_paths": {"$ref": "#/$defs/texts"},
+        "suite_patterns": {"$ref": "#/$defs/texts"},
+        "prerequisites": {"$ref": "#/$defs/texts"},
+        "effects": {"type": "array", "uniqueItems": true, "items": {"enum": ["temporary-files", "disposable-db-writes", "shared-db-writes", "network", "service-start", "package-install"]}},
+        "resources": {"type": "array", "maxItems": 64, "items": {"type": "object"}},
+        "environment": {"enum": ["none", "disposable", "shared-review", "external", "manual"]},
+        "suite_scope": {"enum": ["full", "selected", "filtered", "not-applicable"]},
+        "proof_boundary": {"$ref": "#/$defs/boundary"},
+        "filtering": {
+          "type": "object", "required": ["state", "syntax_or_reason"],
+          "properties": {"state": {"enum": ["supported", "unsupported", "unknown"]}, "syntax_or_reason": {"$ref": "#/$defs/text"}}
+        }
+      }
+    },
+    "policy": {
+      "type": "object", "required": ["execution_contract", "commands"],
+      "properties": {
+        "execution_contract": {"$ref": "#/$defs/contract"},
+        "repair_review": {"type": "object"},
+        "commands": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "required": ["id", "execution"],
+          "properties": {"id": {"$ref": "#/$defs/text"}, "execution": {"$ref": "#/$defs/command_execution"}}
+        }}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["schema_version", "record_kind", "command_id", "repository_revision", "policy_sha256", "input_sha256", "state", "claim", "proof_boundary", "environment", "resources", "resource_coordination", "authorization", "authorization_source", "timing_disposition", "availability", "prerequisites_satisfied", "filter", "counts", "files", "result_artifact"],
+      "properties": {
+        "schema_version": {"type": "integer", "const": 2},
+        "record_kind": {"const": "target-test-execution-evidence"},
+        "command_id": {"$ref": "#/$defs/text"},
+        "repository_revision": {"type": "string", "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"},
+        "policy_sha256": {"$ref": "#/$defs/digest"},
+        "input_sha256": {"type": "object", "additionalProperties": {"oneOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]}},
+        "state": {"enum": ["authored", "discovered", "passed", "failed", "skipped", "blocked"]},
+        "claim": {"enum": ["none", "static", "focused", "suite", "full"]},
+        "proof_boundary": {"$ref": "#/$defs/boundary"},
+        "environment": {"enum": ["none", "disposable", "shared-review", "external", "manual"]},
+        "resources": {"type": "array", "maxItems": 64, "items": {"type": "object"}},
+        "resource_coordination": {"type": "object", "additionalProperties": false, "required": ["decision", "evidence_ref"], "properties": {"decision": {"enum": ["read-only", "serialized", "isolated", "unverified"]}, "evidence_ref": {"type": ["string", "null"], "minLength": 1}}},
+        "authorization": {"enum": ["authorized", "awaiting-review", "not-authorized"]},
+        "authorization_source": {"$ref": "#/$defs/text"},
+        "timing_disposition": {"enum": ["pre-implementation-authorized", "manual-review-complete", "explicit-request-authorized", "not-run"]},
+        "availability": {"enum": ["available", "unavailable", "unknown"]},
+        "prerequisites_satisfied": {"type": "boolean"},
+        "filter": {"type": ["string", "null"], "minLength": 1},
+        "counts": {"type": "object", "required": ["discovered", "executed", "passed", "failed", "skipped"], "properties": {"not_run": {"type": "integer", "minimum": 0}}, "additionalProperties": {"type": "integer", "minimum": 0}},
+        "files": {"type": "object", "required": ["universe", "selected", "executed", "excluded"], "properties": {
+          "universe": {"$ref": "#/$defs/texts"}, "selected": {"$ref": "#/$defs/texts"}, "executed": {"$ref": "#/$defs/texts"},
+          "excluded": {"type": "array", "items": {"type": "object", "required": ["path", "reason"], "properties": {"path": {"$ref": "#/$defs/text"}, "reason": {"$ref": "#/$defs/text"}}}}
+        }},
+        "result_artifact": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/digest"}}}]}
+      }
+    }
+  }
+}

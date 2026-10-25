@@ -10,7 +10,7 @@
       "type": "object",
       "required": ["schema_version", "canonical_policy", "canonical_coverage_matrix", "coverage_not_applicable_reason", "timing", "red_requirement", "review_authority", "evidence_records"],
       "properties": {
-        "schema_version": {"type": "integer", "const": 2},
+        "schema_version": {"type": "integer", "const": 3},
         "canonical_policy": {"$ref": "#/$defs/text"},
         "canonical_coverage_matrix": {"type": ["string", "null"], "minLength": 1},
         "coverage_not_applicable_reason": {"type": ["string", "null"], "minLength": 1},
@@ -37,7 +37,9 @@
         "filtering": {
           "type": "object", "required": ["state", "syntax_or_reason"],
           "properties": {"state": {"enum": ["supported", "unsupported", "unknown"]}, "syntax_or_reason": {"$ref": "#/$defs/text"}}
-        }
+        },
+        "selection_contract": {"enum": ["required", "not-required"]},
+        "timing_qualification": {"enum": ["required", "not-required"]}
       }
     },
     "policy": {
@@ -55,7 +57,7 @@
       "type": "object",
       "required": ["schema_version", "record_kind", "command_id", "repository_revision", "policy_sha256", "input_sha256", "state", "claim", "proof_boundary", "environment", "resources", "resource_coordination", "authorization", "authorization_source", "timing_disposition", "availability", "prerequisites_satisfied", "filter", "counts", "files", "result_artifact"],
       "properties": {
-        "schema_version": {"type": "integer", "const": 2},
+        "schema_version": {"type": "integer", "const": 3},
         "record_kind": {"const": "target-test-execution-evidence"},
         "command_id": {"$ref": "#/$defs/text"},
         "repository_revision": {"type": "string", "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"},
@@ -78,7 +80,14 @@
           "universe": {"$ref": "#/$defs/texts"}, "selected": {"$ref": "#/$defs/texts"}, "executed": {"$ref": "#/$defs/texts"},
           "excluded": {"type": "array", "items": {"type": "object", "required": ["path", "reason"], "properties": {"path": {"$ref": "#/$defs/text"}, "reason": {"$ref": "#/$defs/text"}}}}
         }},
-        "result_artifact": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/digest"}}}]}
+        "result_artifact": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/digest"}}}]},
+        "selection_evidence": {"oneOf": [{"type": "null"}, {"type": "object", "additionalProperties": false, "required": ["request", "observations_pointer"], "properties": {
+          "request": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/digest"}}},
+          "observations_pointer": {"type": "string", "minLength": 2, "pattern": "^/"}
+        }}]},
+        "qualification_window": {"oneOf": [{"type": "null"}, {"type": "object", "additionalProperties": false, "required": ["observations_pointer"], "properties": {
+          "observations_pointer": {"type": "string", "minLength": 2, "pattern": "^/"}
+        }}]}
       }
     }
   }

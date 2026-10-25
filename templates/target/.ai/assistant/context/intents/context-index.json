@@ -149,8 +149,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 251,
-      "content_digest": "sha256:a6167f375cd1aabe5b235e4921bd0e8c602f1fc670acee1e1346dc6ae282cd1f"
+      "estimated_words": 261,
+      "content_digest": "sha256:22731b0eff33fb09fab6a0d6acf3905a163800b65e08dcab68ab3112c273cfba"
     },
     {
       "id": "assistant.content.context-intents-vocabulary-request-json",

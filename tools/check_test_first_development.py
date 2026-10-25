@@ -201,6 +201,11 @@ def main() -> int:
     if policy.get("schema_version") != 1:
         failures.append("test-first policy schema_version must be 1")
     contract = TestExecutionContract()
+    expected_execution_version = contract.schema["$defs"]["contract"]["properties"]["schema_version"]["const"]
+    if policy.get("execution_contract", {}).get("schema_version") != expected_execution_version:
+        failures.append("current policy template execution_contract.schema_version differs from the canonical schema_version")
+    if evidence.get("schema_version") != expected_execution_version:
+        failures.append("current evidence template schema_version differs from the canonical schema_version")
     repair_template = load_json(TARGET / ".ai/assistant/templates/repair-review.json")
     failures.extend(contract.shape(repair_template, "repair_evidence", placeholders=True))
     qualification_template = load_json(TARGET / ".ai/assistant/templates/repair-qualification.json")

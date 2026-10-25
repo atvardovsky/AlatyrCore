@@ -12,8 +12,7 @@ from test_execution_contract import TestExecutionContract, policy_projection_fai
 from target_adapter_validation.context import TargetRepositoryView
 
 
-def resource_plan(target: Path, command_ids: list[str]) -> dict:
-    view = TargetRepositoryView(target.resolve())
+def resolved_test_policy(view: TargetRepositoryView) -> dict:
     result = view.read_json_result(view.target / ".ai/project/testing/test-first-policy.json")
     if result.error:
         raise ValueError(result.error)
@@ -26,8 +25,14 @@ def resource_plan(target: Path, command_ids: list[str]) -> dict:
     failures = policy_projection_failures(result.value, canonical.value)
     if failures:
         raise ValueError("; ".join(failures))
-    plan = command_resource_plan(result.value, command_ids)
-    resources = [resource for command in result.value["commands"] if command["id"] in command_ids
+    return result.value
+
+
+def resource_plan(target: Path, command_ids: list[str]) -> dict:
+    view = TargetRepositoryView(target.resolve())
+    policy = resolved_test_policy(view)
+    plan = command_resource_plan(policy, command_ids)
+    resources = [resource for command in policy["commands"] if command["id"] in command_ids
                  for resource in command["execution"]["resources"]]
     plan["presence_scope_refs"] = sorted({scope for resource in resources
                                          for scope in presence_resource_scopes([resource])})

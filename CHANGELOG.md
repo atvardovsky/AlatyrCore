@@ -4,6 +4,24 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.105 - 2026-10-25
+
+- [Workflow boundary safeguards](docs/releases/0.1.0-alpha.105-notes.md): adapter
+  schema `86`, templates `100`. Preserve frozen execution schema 2; schema 3
+  explicitly adopts exact test-selection and observed timing-window controls.
+  Reconcile actual digest-bound observations through the registered validator.
+- Add non-executing selection and immutable publication-candidate preflights;
+  strict cooperation admission refuses reported conflict/uncertainty without
+  becoming a reservation or granting permission. Literal tracking refs reject
+  revision expressions in publication observations.
+- Expose repeated-incident review/adoption decisions in named-task views;
+  distinguish tooling/installed baselines, group repeated findings without
+  removing blockers, and link optional independent work views without merging
+  owners. No new routine bootstrap or automatic target adoption.
+- Reconcile installer/update and agent flows, add malformed/boundary/public-CLI
+  regressions, and preserve historical claim limits. No target runtime rollout,
+  cross-assistant reliability or measured real-team cost savings are claimed.
+
 ## 0.1.0-alpha.104 - 2026-10-24
 
 - Make canonical current-change package enforcement follow enabled target

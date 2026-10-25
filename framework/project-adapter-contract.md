@@ -118,6 +118,10 @@ Every project using this framework must define these structural bindings:
   Custom wrappers must reject unsupported arguments before work and preserve
   the same source-selector precedence; an extra legacy selector must not
   silently make local and canonical checks use different tooling.
+  Health diagnostics must distinguish the producing tool's declared versions
+  from the installed baseline. Different versions require compatibility or
+  migration review, not a claim that the older baseline was corrupt. Module-ID
+  membership alone establishes neither contract currency nor adoption or use.
 - **Acceptance evidence:** an explicit staged or accepted result showing that
   installed files, selected capability state, target facts, local checks, and
   unresolved placeholders were evaluated at the target revision.

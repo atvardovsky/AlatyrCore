@@ -2,6 +2,18 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "plan-test-selection",
+      "script": "plan_test_selection.py",
+      "purpose": "reconcile exact test requests against captured discovery without running tests",
+      "write_scope": "none"
+    },
+    {
+      "name": "publication-preflight",
+      "script": "publication_preflight.py",
+      "purpose": "compare explicit required Git paths in immutable source and publication candidate commits",
+      "write_scope": "none"
+    },
+    {
       "name": "render-source-context",
       "script": "source_context_selection.py",
       "purpose": "check or explicitly regenerate compact source routing views",

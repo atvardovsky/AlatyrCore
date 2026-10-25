@@ -111,6 +111,9 @@ control observations to run artifacts; qualification, functional acceptance and
 optional performance comparisons remain separate. A faithful failing diagnostic
 may qualify repair, never closure or new execution authority. Installation and
 update do not silently enable these controls.
+Execution contract 3 separately supports exact test-selection and observed
+timing qualification. Follow the target's adoption decision and conditional
+guidance; legacy version-2 records do not establish these new controls.
 When deterministic validator, checker, schema, gate, or generated-projection
 behavior changes, classify `machine-enforced-contract` risk. Bind each
 normative requirement to enforcement code, positive evidence, a retained

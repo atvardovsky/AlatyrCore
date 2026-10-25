@@ -18,6 +18,10 @@
   ],
   "conditional_context": [
     {
+      "path": ".ai/framework/test-execution-selection.md",
+      "when": "schema-3 selection/timing adoption or conflict"
+    },
+    {
       "path": ".ai/framework/repair-qualification.md",
       "when": "explicit schema-2 repair qualification adoption or selected incident evidence"
     },

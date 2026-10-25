@@ -88,6 +88,11 @@ Replace placeholders with target facts before accepting installation.
     without editing digest-bound historical bytes. Readiness remains declared, not
     permission or proof. Report repair control adoption, installed templates and
     exercised canonical evidence separately; never enable a control here.
+14. Distinguish producing-tool versions, installed baseline and migration
+    comparison from actual installed-content drift. Group repeated findings by
+    code/owner for attention while retaining every raw blocker. For a
+    coordination question, request the bounded work overview: empty team claims
+    do not mean no active analysis tasks or sessions. Never merge their owners.
 
 ## Final Evidence
 

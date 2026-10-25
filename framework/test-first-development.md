@@ -27,7 +27,7 @@ tool onto every repository.
 Concrete test commands, frameworks, folders, fixtures, isolation rules,
 feedback-time limits, trigger severity, exceptions, and merge policy belong to
 the target project contour.
-Command/evidence execution contract version 2 also binds concrete credential-free
+Command/evidence execution contract version 3 also binds concrete credential-free
 runtime resources and access modes. Resolve concurrent use through
 `testing-guidance.md`; an effect or disposable-environment label alone does not
 establish resource isolation. Actual write runs retain serialization or verified
@@ -76,7 +76,7 @@ execution permission. Manual-review-first may defer execution while tests are
 authored; it does not fabricate RED or automatically approve a strict-mode
 exception. Preserve the accepted timing and report unresolved conflicts.
 
-Policy `execution_contract` version 2 records canonical policy/coverage owners,
+Policy `execution_contract` version 3 records canonical policy/coverage owners,
 timing, RED requirements, review authority and explicitly selected current
 evidence paths. Keep mirrors subordinate: edit canonical sources first, then
 reconcile JSON-equivalent adapter copies. Skills, flows, gates and templates
@@ -106,6 +106,9 @@ kind, measured execution state/counts and proof boundary; do not infer proof
 from a checker's success message. Opaque historical logs remain opaque.
 
 ## Enablement Contract
+
+Schema 2 remains readable. Load [schema-3 execution controls](test-execution-selection.md)
+only for explicit adoption or a named conflict; installation is not adoption.
 
 The module is enabled only when the target records:
 

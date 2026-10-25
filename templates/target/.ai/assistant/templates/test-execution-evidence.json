@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "record_kind": "target-test-execution-evidence",
   "command_id": "{TARGET_COMMAND_ID}",
   "repository_revision": "{CURRENT_FULL_GIT_REVISION}",

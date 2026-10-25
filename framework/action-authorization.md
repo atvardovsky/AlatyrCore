@@ -149,6 +149,15 @@ pull request, release, package, or other destination when it is not already
 unambiguous. A successful commit, passing validation, an approved plan, a team
 claim, or a previous push request is not publication authorization.
 
+When assembling a different destination candidate, validate the actual
+immutable candidate before publication, not only its source branch. Compare
+the reviewed deployable scope and unchanged dependencies, preserve explicit
+destination differences, and bind tests to the candidate being published.
+A selected-tree comparison does not replace authorization, complete scope
+review, post-publication receipts or a commit-bound closure. Moving the
+candidate invalidates reuse; never publish first and reconcile missing inputs
+after an automatic deployment has begun.
+
 Do not use a broad phrase such as `full-with-approval` as a substitute for
 current publish intent. It is an allowed-action ceiling, not a grant.
 

@@ -263,6 +263,10 @@ pre-acceptance, and message templates are not completion evidence.
     artifacts and accepted ownership; an update is not enablement. Reconcile
     its template, gate and skill after adoption. Never manufacture historical
     observations or treat old passing measurements as current acceptance.
+    Preserve legacy execution-contract-2 records. Selection/timing controls in
+    execution contract 3 require explicit target adoption, conditional
+    `test-execution-selection.md` guidance and actual hash-bound observations;
+    installing their templates alone does not enable them.
     When extensions are enabled, preserve catalog and lock IDs, immutable
     source revisions/digests, target bindings, permissions, approvals, local
     deviations, installed-file ownership, and historical lifecycle evidence;

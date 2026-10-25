@@ -27,6 +27,10 @@ fact, defect, invariant, contract, or refactor.
    Read its execution contract: canonical owners, configuration, prerequisites,
    effects, environment, suite selection/exclusions, filter support and proof
    boundary. Inventory membership and module enablement never authorize a run.
+   If the selected command requires schema-3 selection/timing controls, load
+   `.ai/framework/test-execution-selection.md`. Reconcile the complete exact
+   request against captured discovery before execution; a missing filename or
+   unmatched case must not silently become a smaller successful request.
 6. Record observable acceptance examples, negative paths, and boundaries.
    For uncertain/recurring defects, apply the incident review in the canonical
    test policy: qualify the original reproducer, competing causes, falsifier,
@@ -36,6 +40,10 @@ fact, defect, invariant, contract, or refactor.
    `repair-review.json` or `repair-qualification.json` template. Do not
    remove that requirement to obtain acceptance. Missing or unknown boundaries
    remain explicit; component GREEN is not incident acceptance.
+   For repeated/escaped incidents, inspect the registered current-task view
+   before historical narrative. Keep the original initial state and terminal
+   effect visible; if optional qualification is absent, request one explicit
+   adoption decision rather than assuming template presence enabled it.
    For schema 2, load `.ai/framework/repair-qualification.md` and bind
    policy-selected actual scenario/control observations from
    JSON run artifacts. Requested flags, a renamed output or a copied verified
@@ -47,6 +55,9 @@ fact, defect, invariant, contract, or refactor.
    when the accepted mode permits it; otherwise report `authored`/`blocked`
    and wait. Shared manual-review resources require their own explicit target
    permission; disposable-runner access does not authorize their use.
+   Serialize selected qualification using target-owned resource admission.
+   Strict cooperation preflight may refuse conflict/uncertainty, but never
+   establishes a reservation, permission or absence of unreported work.
 8. When authorized and required by the selected policy, run baseline/RED.
    Accept RED only when failure is
    caused by the expected missing or incorrect behavior, not syntax, setup,

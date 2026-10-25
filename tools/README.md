@@ -197,6 +197,16 @@ mapping yields declared ready/blocked/waiting obligations, never authority or
 accepted proof. Default health loads no extra task view. An unknown task is an
 explicit selection error; no selector is converted into a filesystem path.
 The installed delegate supports `doctor --current-task TASK-ID` too.
+Recurring incidents include a bounded pre-repair view of the original input,
+expected outcome, latest failed gate and adopted repair controls. Missing
+controls prompt an explicit adoption decision, not automatic enablement.
+Health distinguishes producer versions from the installed baseline; a newer
+tool comparison does not prove corruption of the older installation. Compact
+output groups repeated diagnostics without dropping raw JSON findings.
+`doctor --work-overview` explicitly adds separate analysis-task and team-index
+headers; session presence remains a separate observation. Empty or stale team
+claims are not evidence that no work is active. Default health loads neither
+these indexes nor task history.
 For profile-only backlog/reference discussion, `context-plan --document-warnings`
 adds an explicit bounded lookup for the final selected documents without claiming
 changed facts. Ordinary planning does not perform this additional graph lookup.
@@ -212,6 +222,10 @@ same identities in own presence while shared resources are in use.
 The report is advisory; disabled, stale, unknown or omitted peers cannot
 establish clear concurrency. Separate clones and unreported sessions remain
 outside its observation boundary.
+Add `--require-clear` for exit 0 only on `no-reported-conflict`, exit 1 on a
+reported conflict or uncertainty, and exit 2 on invalid/unavailable inputs.
+The default remains advisory. Neither mode reserves resources or grants
+execution authority.
 
 For final task closure, add `--task-id TASK_ID`, `--task-class standard-task`,
 and `--require-task-acceptance` to `finalize-support` or `verify-upgrade` (choose the
@@ -228,9 +242,29 @@ the closure/index bindings, and neither deletes runtime files nor sanitizes
 secrets automatically. Missing history is a blocker, not permission to invent it.
 
 `plan-test-resources --target <repo> --command <id> --command <other-id>`
-reports conflicts in the target's execution-contract-2 resources without running
+reports conflicts in the target's execution-contract resources without running
 commands. Identity/access, namespace isolation and observed write coordination
 must come from the target; no universal database names or ports are supplied.
+
+Execution contract 3 adds separately adopted exact selection and observed
+timing controls; legacy version-2 evidence remains readable, not retroactively
+qualified. See [Test Execution Selection](../framework/test-execution-selection.md)
+for the bounded request, observation and artifact-pointer formats.
+`plan-test-selection --target <repo> --command <id> --request request.json
+--observations discovery.json` compares captured discovery with exact requested
+files/cases without running discovery or tests. The registered validator uses
+the same resolver against the actual hash-bound result artifact. Missing
+requested identities cannot become successful focused evidence. Timing
+qualification uses observed comparable windows and canonical resource
+conflicts, not process exit or a receipt's completeness assertion.
+
+`publication-preflight --target <repo> --source-ref <full-commit-id>
+--candidate-ref <full-commit-id> --path src --path config` compares explicit
+required Git files/subtrees before publication. Include unchanged dependencies;
+missing paths fail even when absent on both sides. Type, mode and subtree entry
+identity are checked locally without fetching or publishing. Consume that exact
+candidate commit or repeat the check. Selected-tree equality does not replace
+exact-commit closure, approval, remote-observation or post-publication checks.
 
 Finalization composes canonical renderers in-process under a local writer lock,
 then invokes canonical validation. Rollback restores only known owned postimages

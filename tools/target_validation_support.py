@@ -794,6 +794,17 @@ class GitEvidenceView:
     def resolve_ref(self, ref: str) -> str | None:
         return self.resolve_object(ref, "commit")
 
+    def is_literal_remote_ref(self, ref: str) -> bool:
+        """Validate syntax independently of historical ref availability."""
+        if not isinstance(ref, str) or not ref.startswith("refs/remotes/"):
+            return False
+        valid = self._cached(("literal-ref-format", ref), lambda: _git_bytes(self.target, "check-ref-format", ref))
+        return valid is not None
+
+    def literal_remote_ref(self, ref: str) -> str | None:
+        """Observe an exact tracking ref, never a revision expression."""
+        return self.resolve_object(ref, "commit") if self.is_literal_remote_ref(ref) else None
+
     def comparison_base(self, ref: str) -> str | None:
         """Resolve the canonical comparison base without reading diff payloads."""
         selected = self.resolve_ref(ref)

@@ -133,8 +133,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3550,
-      "content_digest": "sha256:cd565f53c89095f6c9726c4f7760f492bf616538eb510a28792f799f0380df41"
+      "estimated_words": 3571,
+      "content_digest": "sha256:03c5dabed408095429e8aca6819fe4271ac88dd7bd7e530f2c36e27348506659"
     },
     {
       "id": "assistant.content.context-router-json",
@@ -523,7 +523,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 260,
-      "content_digest": "sha256:fa95e0f91ca6ce70bfdac673434d216094afb8ebf40db0153fba3dc1f3103cfc"
+      "content_digest": "sha256:f40b382940c51090e117957c87b20ecbe0abe75d74d171425b30bc21b51676a0"
     },
     {
       "id": "assistant.section.extensions",
@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1270,
-      "content_digest": "sha256:ed342e81a2797d4b205d66c280c74528252d4151ec202cdbc621190cb8d80a3b"
+      "content_digest": "sha256:8305ae932bf0123ee70b441643a1814da7e1bcc43171efe78458a35f91f40dd0"
     },
     {
       "id": "assistant.section.gates",
@@ -613,7 +613,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 184,
-      "content_digest": "sha256:dc82829668f0cb5e0c8c186dafebbd9fc2020f0136b79c2b73bb4258b728e25c"
+      "content_digest": "sha256:88ffc25105beae2ed72b2c249abce170af7013e3401140377250cdeafb0d3821"
     },
     {
       "id": "assistant.section.team",
@@ -643,7 +643,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2246,
-      "content_digest": "sha256:25804b32c0cb243fb8e81629915e369e46bcd5d295361ea04c68984024edd596"
+      "content_digest": "sha256:d0155dfa3d5fb7311065a69fb5839a00e51785d94245436cbd941724016d6e24"
     },
     {
       "id": "assistant.section.tools",
@@ -658,7 +658,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 81,
-      "content_digest": "sha256:b433f158411bd2cddd19fa83fdc2a95995a4af1596dbb59f33221e61bdc35f20"
+      "content_digest": "sha256:a444307db68f4a3c7d79ff6571c670ad3a4041aeca0fc7328ffc95b25fd213bb"
     },
     {
       "id": "assistant.section.workers",

@@ -159,6 +159,8 @@ Operation help:
   historical evidence; recheck recommendation and RED/GREEN routing before use.
   Reconcile execution timing, canonical owners, command selection/effects and
   current evidence; report missing legacy contracts without running tests.
+  Separately report adoption of execution-contract-3 selection/timing controls;
+  installing an update does not qualify legacy runs or enable new requirements.
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/extensions/catalog.json"]} -->
 - When extensions are enabled, preserve catalog/lock entries, immutable source

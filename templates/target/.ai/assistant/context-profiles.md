@@ -210,6 +210,9 @@ Required compact context:
 Load `.ai/framework/repair-qualification.md` and its schema-2 authoring template
 only for explicit adoption or selected qualified incident evidence. Schema-1
 and ordinary test-first work keep those details conditional.
+Load `.ai/framework/test-execution-selection.md` only for adopted execution-
+contract-3 selection/timing controls or a named conflict; ordinary and legacy
+execution keep this detail conditional.
 
 Load `.ai/project/testing/test-first-policy.json` and only the selected
 configuration or change flow after the gate passes. A disabled, deferred, or

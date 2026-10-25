@@ -117,7 +117,7 @@
       "requires": ["installed-operations"],
       "operation_ids": ["test-first-change"],
       "rule_ids": ["ALATYR-TDD-001"],
-      "framework_files": ["test-first-development.md"],
+      "framework_files": ["test-first-development.md", "test-execution-selection.md"],
       "target_files": [
         ".ai/project/testing/README.md",
         ".ai/project/testing/test-first-policy.json",
