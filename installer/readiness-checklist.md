@@ -333,7 +333,8 @@ Collect target-specific facts before writing project docs:
 - project-vocabulary owner, term decision authority, scoped meanings, aliases,
   acronyms, term states, normalization policy, canonical sources, data-
   dictionary links, terminology validation, lazy route, and adapted skill when
-  the optional module is enabled
+  the optional module is enabled; data-link owner files resolve under the
+  canonical vocabulary reference contract
 - test-first owner, decision authority, accepted policy state, bounded
   recommendation behavior, triggers, modes, test levels, commands, isolation,
   exceptions, RED/GREEN/refactor evidence, lazy route, gate, and adapted skill

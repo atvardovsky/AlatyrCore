@@ -129,9 +129,8 @@ and optional.
 
 ## Proposal And Acceptance
 
-The assistant may prepare a proposed term from bounded target evidence such as
-canonical docs, approved decisions, schemas, APIs, code, tests, recurring
-review findings, and project discussions that the target permits as evidence.
+Propose terms from bounded, target-permitted evidence: canonical documentation,
+approved decisions, schemas, APIs, code, tests, recurring reviews and discussions.
 
 A proposal should include:
 
@@ -143,23 +142,24 @@ A proposal should include:
 - sampled evidence and rejected interpretations
 - expected companion updates, validation, approval needs, and residual risk
 
-Do not mark a proposal accepted merely because it appears often in code or
-discussion. Acceptance must follow target ownership and approval policy.
+Frequency never establishes acceptance. Follow target ownership and approval policy.
 
 ## Data Dictionary Links
 
-Vocabulary records may link to data entities, fields, events, API concepts,
-units, or enumerations through stable references. Each link should name:
+Link terms to entities, fields, events, APIs, units or enums:
 
-- term ID
-- referenced fact type and canonical owner
-- entity, field, event, API, or schema identifier
-- relationship such as `represents`, `measured-by`, `stored-as`, `emitted-as`,
-  `not-equivalent-to`, or another target-defined relation
-- direction, evidence, validation, and last verified revision
+- term ID, fact type, canonical owner and target identifier
+- relationship: `represents`, `measured-by`, `stored-as`, `emitted-as`,
+  `not-equivalent-to`, or a target-defined relation
+- direction, evidence, validation and last verified revision
 
-The link is routing evidence. It does not make the vocabulary registry the
-owner of schema, type, validation, retention, or runtime behavior.
+`canonical_owner`: exact existing target-relative file; optional non-empty
+`#fragment`. Reject directories, globs, traversal and escaped symlinks.
+URI/provider/symbolic schemes are unsupported: use a local owner document
+retaining external evidence. Never fetch or execute references.
+
+Links confer no ownership. Schema, type, validation, retention and runtime retain
+their owners. File presence proves neither fragment, meaning nor authority.
 
 ## Synchronization And Integrity
 
@@ -184,19 +184,16 @@ A target may adapt a project-vocabulary skill for lookup, proposal, review, and
 terminology checks. The skill must use the compact catalog first, load bounded
 records, preserve states, and route accepted changes to canonical owners.
 
-The skill is an execution aid. It must not own definitions, acceptance,
-normalization policy, source precedence, or target facts. A placeholder skill
-must not be presented as an enabled target capability.
+Skills aid execution, never own definitions, acceptance, normalization, source
+precedence or target facts. Placeholder skills are not enabled capabilities.
 
 ## Context Economy
 
-Keep vocabulary detail outside routine bootstrap. Route explicit vocabulary
-requests through a compact intent descriptor and catalog. For ordinary tasks,
-load vocabulary only when the request or changed fact uses an ambiguous,
-deprecated, contradicted, unknown, or materially changed project term.
-
-Do not load the full glossary for onboarding, architecture, code, or
-documentation tasks. Load selected term records and linked canonical owners.
+Exclude vocabulary detail from routine bootstrap. Route vocabulary requests
+through compact intent/catalog; ordinary tasks load it only for ambiguous,
+deprecated, contradicted, unknown or materially changed terms.
+For onboarding, architecture, code and documentation, load selected term
+records and canonical owners, never the full glossary.
 
 ## Evidence
 

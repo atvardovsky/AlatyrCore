@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2698,
-      "content_digest": "sha256:c5f9919c0efa275b7d2ad091d5e304cbf17b9ca0c438e3f9eb3318a0c18714cb"
+      "estimated_words": 2708,
+      "content_digest": "sha256:fe9ad9cc81fb5f9bf4b92f1d07bdadd8088e42952210b4ffeface6cc5e9c17ef"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -484,8 +484,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 519,
-      "content_digest": "sha256:602ff6dff445c79a84114efb64acd3986a4edc375ea1dbba644a858746c7e705"
+      "estimated_words": 534,
+      "content_digest": "sha256:e55aee83751182c116dd4453ac24aff8318fb2f87f74df3f86676b2b81189604"
     },
     {
       "id": "assistant.content.flows-runtime-observation-flow-md",
@@ -739,8 +739,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 763,
-      "content_digest": "sha256:3ae64a3203cde3df007ef0290c2c6113a0558942c62d8d24ea548eba95447444"
+      "estimated_words": 748,
+      "content_digest": "sha256:bf607868a8a054eac67d5870cad9c809cf73c13adb1aeb4248bb97313f0231bc"
     },
     {
       "id": "assistant.content.flows-test-first-change-flow-md",

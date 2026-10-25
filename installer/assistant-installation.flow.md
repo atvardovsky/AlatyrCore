@@ -325,6 +325,8 @@ Classify every proposed target file:
     `data-dictionary-links.json` only when project vocabulary is enabled.
     Derive scoped terms, aliases, acronyms, owners, states, canonical sources,
     and links from target evidence; never infer acceptance from frequency.
+    Resolve data-link owner files using the canonical vocabulary contract
+    before accepting the enabled module; generation must not conceal broken links.
     When workspace roles require distinct perspectives, add
     `.ai/project/workspace-modes/catalog.json`, optional shared root support,
     and one directory per actual mode. Inspect workspace, package, framework,

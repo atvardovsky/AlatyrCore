@@ -11,14 +11,19 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from context_catalog import catalog_content_bytes_for_name, file_digest, word_count
+from context_catalog import (
+    CONTEXT_INDEX_NAME,
+    catalog_content_bytes_for_name,
+    file_digest,
+    word_count,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 FRAMEWORK = ROOT / "framework"
 TARGET = ROOT / "templates" / "target"
 MAX_DEPTH = 8
-INDEX_NAME = "context-index.json"
+INDEX_NAME = CONTEXT_INDEX_NAME
 DEFAULT_LOAD_WHEN = [
     "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
 ]

@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from context_catalog import CONTEXT_INDEX_NAME
 from target_adapter_validation.capability import (
     CapabilityValidationContext,
     FunctionCapabilityModule,
@@ -20,6 +21,22 @@ def _any_target_path_exists(
     context: CapabilityValidationContext, paths: tuple[Path, ...]
 ) -> bool:
     return any(context.target_exists(path) for path in paths)
+
+
+def _repository_task_records(
+    context: CapabilityValidationContext, directory: Path
+) -> tuple[list[dict[str, Any]], list[str]]:
+    records: list[dict[str, Any]] = []
+    sources: list[str] = []
+    for path in sorted(directory.glob("*.json")):
+        # Navigation belongs to catalog validation, never to task discovery.
+        if path == directory / CONTEXT_INDEX_NAME:
+            continue
+        record = context.load_json_object(path, "TEAM_TASK")
+        if record is not None:
+            records.append(record)
+            sources.append(context.rel(path))
+    return records, sources
 
 
 def validate_team_collaboration(
@@ -407,11 +424,7 @@ def validate_team_collaboration(
             tasks = legacy_tasks
             task_sources = [registry_relpath] * len(tasks)
     elif context.is_target_dir(tasks_path):
-        for task_path in sorted(tasks_path.glob("*.json")):
-            task_record = context.load_json_object(task_path, "TEAM_TASK")
-            if task_record is not None:
-                tasks.append(task_record)
-                task_sources.append(context.rel(task_path))
+        tasks, task_sources = _repository_task_records(context, tasks_path)
 
     task_statuses = {
         "proposed",
@@ -659,7 +672,7 @@ def validate_team_collaboration(
                 )
 
         priority_decider = task.get("priority_decided_by")
-        priority_policy = priority_by_id.get(priority)
+        priority_policy = priority_by_id.get(priority) if isinstance(priority, str) else None
         if isinstance(priority_policy, dict) and concrete(priority_decider):
             assigners = priority_policy.get("assigner_actor_ids")
             if isinstance(assigners, list) and any(concrete(item) for item in assigners):
@@ -825,22 +838,24 @@ def validate_team_collaboration(
                             task_source,
                         )
 
-        if status in {"claimed", "active"} and claim_state != "active":
+        if isinstance(status, str) and status in {"claimed", "active"} and claim_state != "active":
             context.warn(
                 "TEAM_ACTIVE_TASK_WITHOUT_CLAIM",
                 f"{label} is {status} without an active claim",
                 registry_relpath,
             )
-        if status in {"complete", "cancelled"} and claim_state == "active":
+        if isinstance(status, str) and status in {"complete", "cancelled"} and claim_state == "active":
             context.warn(
                 "TEAM_TERMINAL_TASK_ACTIVE_CLAIM",
                 f"{label} is {status} but still has an active claim",
                 registry_relpath,
             )
-        if status in {"claimed", "active", "review", "merge-ready"} and overlap_state in {
-            "conflicting",
-            "unresolved",
-        }:
+        if (
+            isinstance(status, str)
+            and status in {"claimed", "active", "review", "merge-ready"}
+            and isinstance(overlap_state, str)
+            and overlap_state in {"conflicting", "unresolved"}
+        ):
             report = context.error if status == "merge-ready" else context.warn
             report(
                 "TEAM_ACTIVE_OVERLAP_BLOCKED",
@@ -850,7 +865,7 @@ def validate_team_collaboration(
 
         task_revision = task.get("evidence_revision")
         if status == "merge-ready":
-            if review_state not in {"approved", "not-required"}:
+            if not isinstance(review_state, str) or review_state not in {"approved", "not-required"}:
                 context.error(
                     "TEAM_MERGE_READY_REVIEW",
                     f"{label} is merge-ready without approved or explicitly "
@@ -872,7 +887,7 @@ def validate_team_collaboration(
                     f"{label} is merge-ready without passed validation",
                     registry_relpath,
                 )
-            if overlap_state not in {"none", "compatible"}:
+            if not isinstance(overlap_state, str) or overlap_state not in {"none", "compatible"}:
                 context.error(
                     "TEAM_MERGE_READY_OVERLAP",
                     f"{label} is merge-ready without resolved overlap",
@@ -1001,10 +1016,11 @@ def validate_team_collaboration(
         for task in tasks
         if isinstance(task, dict)
         and concrete(task.get("id"))
+        and isinstance(task.get("status"), str)
         and task.get("status") in active_statuses
     }
     backend_mode = backend.get("backend_mode")
-    if registry_schema == 2 and backend_mode in {"repository", "both"}:
+    if registry_schema == 2 and isinstance(backend_mode, str) and backend_mode in {"repository", "both"}:
         missing_from_index = sorted(local_active_ids - index_ids)
         extra_in_index = sorted(index_ids - local_active_ids)
         if missing_from_index:

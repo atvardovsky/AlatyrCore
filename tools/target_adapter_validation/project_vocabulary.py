@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
+from path_spec import logical_path
 from target_validation_support import ManifestData, dotted
-from target_adapter_validation.values import is_resolved_string
+from target_adapter_validation.values import is_resolved_string, is_string_list
 
 from target_adapter_validation.capability import (
     CapabilityValidationContext,
@@ -23,6 +25,41 @@ def vocabulary_scopes_overlap(
     return bool(left_domains & right_domains) and bool(
         left_usage_scopes & right_usage_scopes
     )
+
+
+def validate_vocabulary_link_owner(
+    context: CapabilityValidationContext, value: Any, source: str, label: str
+) -> None:
+    if not is_resolved_string(value):
+        return  # The record's required-field check reports unresolved values.
+    if re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", value):
+        context.error(
+            "VOCABULARY_LINK_OWNER_REFERENCE_KIND",
+            f"{label}.canonical_owner {value!r} is a URI or symbolic reference; "
+            "this contract requires a target-relative owner file. Use a local "
+            "owner document and retain external references in its evidence",
+            source,
+        )
+        return
+    path, separator, fragment = value.partition("#")
+    try:
+        logical_path(path, pattern=True)
+        if any(marker in path for marker in "*?") or separator and not fragment:
+            raise ValueError("owner requires an exact file and a non-empty optional fragment")
+        exists = context.is_target_file(path)
+    except (OSError, RuntimeError, ValueError) as exc:
+        context.error(
+            "VOCABULARY_LINK_OWNER_PATH",
+            f"{label}.canonical_owner {value!r} cannot resolve safely: {exc}",
+            source,
+        )
+        return
+    if not exists:
+        context.error(
+            "VOCABULARY_LINK_OWNER_MISSING",
+            f"{label}.canonical_owner {value!r} must resolve to an existing target file",
+            source,
+        )
 
 
 def validate_vocabulary_routing_and_text(
@@ -365,8 +402,8 @@ def validate_project_vocabulary(
                         catalog_values = entry.get(catalog_field)
                         term_values = term.get(term_field)
                         if (
-                            not isinstance(catalog_values, list)
-                            or not isinstance(term_values, list)
+                            not is_string_list(catalog_values, non_empty=False)
+                            or not is_string_list(term_values, non_empty=False)
                             or sorted(catalog_values) != sorted(term_values)
                         ):
                             context.error(
@@ -414,9 +451,13 @@ def validate_project_vocabulary(
         term_id = link.get("term_id")
         if concrete(term_id) and term_id not in term_ids:
             context.error("VOCABULARY_LINK_TERM_REFERENCE", f"{label} references unknown term {term_id}", links_relpath)
-        for field in ["fact_type", "canonical_owner", "target_identifier", "relationship", "direction", "last_verified_revision"]:
+        for field in ["id", "term_id", "fact_type", "canonical_owner", "target_identifier", "relationship", "direction", "last_verified_revision"]:
             if not concrete(link.get(field)):
                 context.error("VOCABULARY_LINK_UNRESOLVED", f"{label}.{field} must be resolved", links_relpath)
+        validate_vocabulary_link_owner(
+            context, link.get("canonical_owner"), links_relpath,
+            f"{label} ({link_id})" if concrete(link_id) else label,
+        )
     for term_id, ref in pending_data_refs:
         if ref not in link_ids:
             context.error("VOCABULARY_DATA_REFERENCE", f"term {term_id} references unknown data link {ref}", terms_relpath)

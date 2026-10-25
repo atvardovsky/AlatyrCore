@@ -39,8 +39,10 @@ Infer the mode from a clear request. The user does not need to name it.
    smallest clarification needed. Do not silently choose one.
 6. Load selected records from `.ai/project/vocabulary/terms.json` and only their
    named canonical sources.
-7. Load `.ai/project/vocabulary/data-dictionary-links.json` only when selected
-   terms reference entities, fields, events, APIs, units, enums, or schemas.
+7. For selected entities, fields, events, APIs, units, enums or schemas, load
+   `.ai/project/vocabulary/data-dictionary-links.json`. Resolve owners under
+   the canonical Data Dictionary Links contract; report missing files or
+   unsupported kinds, never complete traceability.
 8. Preserve term state in every answer. Only `accepted` may be described as the
    authoritative scoped project meaning.
 9. For `propose`, record candidate meaning, non-meanings, aliases, domains,

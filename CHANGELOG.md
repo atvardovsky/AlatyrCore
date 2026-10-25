@@ -4,6 +4,26 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.106 - 2026-10-25
+
+- Fix team-task discovery after recursive context generation: share the canonical
+  navigation filename, leave it to catalog validation, and retain rejection of
+  malformed ordinary task records.
+- Reject missing, unsafe, or unsupported vocabulary data-link owner references
+  using the contained target filesystem. Validate files without loading owner
+  contents or fetching external sources; existence is not semantic authority.
+- Add generated-support/module interaction regressions through the installed
+  delegate finalizer and scoped full acceptance, including restoration,
+  malformed references, containment and portable execution. This repairs
+  enforcement of owner traceability and clarifies supported references without
+  changing record shapes. Framework advances to alpha.106, adapter schema to
+  `87` for stricter acceptance, templates to `101` for matching agent guidance.
+  Revalidate enabled targets and repair dangling or unsupported owner references
+  before claiming acceptance. No target rollout or tag publication is implied.
+- Reject unresolved link identities and guard type-dependent task lookups and
+  vocabulary projection comparisons; malformed JSON fields produce findings
+  rather than interrupting validation.
+
 ## 0.1.0-alpha.105 - 2026-10-25
 
 - [Workflow boundary safeguards](docs/releases/0.1.0-alpha.105-notes.md): adapter

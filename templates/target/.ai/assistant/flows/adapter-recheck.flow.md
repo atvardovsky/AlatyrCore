@@ -371,7 +371,8 @@ Report:
   adapted skill, validation, and evidence revision
 - project-vocabulary ownership, term decision authority, scoped state and
   ambiguity, alias/acronym lookup, canonical sources, data links,
-  normalization boundaries, adapted skill, validation, and evidence revision
+  normalization boundaries, adapted skill, validation, and evidence revision;
+  resolve data-link owner files under the canonical vocabulary reference contract
 - test-first policy owner, authority, state, trigger severity, modes, levels,
   commands, isolation, exceptions, recommendation behavior, adapted skill,
   RED/GREEN evidence contract, validation, and evidence revision

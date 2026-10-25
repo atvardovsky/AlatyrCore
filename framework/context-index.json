@@ -53,7 +53,7 @@
         "ALATYR-TEAM-001"
       ],
       "estimated_words": 212,
-      "content_digest": "sha256:e65d2dd963844804d8ae646f0f51d0b58ae31e0fc9b32183973a048aff380e6e"
+      "content_digest": "sha256:a8e0efd2c0743bed38640bc6492d982beb7b25cb8a384390efa78160320ae4d1"
     },
     {
       "id": "framework.section.core",
@@ -137,7 +137,7 @@
         "ALATYR-VOCABULARY-001"
       ],
       "estimated_words": 293,
-      "content_digest": "sha256:554605b1042b68cc8e59b3adee43b87f37d7a4d7dc51b614fed2ae64cad2c6bc"
+      "content_digest": "sha256:3882d3a7444db848e18504091dd6a5035ad71e86d4cacca034da22e3ff45f326"
     },
     {
       "id": "framework.section.lifecycle",

@@ -27,6 +27,31 @@ current approvals, and invalid closure/owner bindings. Keep baseline performance
 and selected-path equivalence checks separate from real-team effectiveness;
 never update a benchmark's outcome merely because current unit checks pass.
 
+Record-discovery repairs must exercise generated outputs and enabled modules
+together. A JSON suffix does not establish a domain record's role. Use the
+catalog-owned `CONTEXT_INDEX_NAME` for navigation exclusions, never an arbitrary
+record's self-declared kind; malformed navigation still belongs to catalog
+validation. Keep invalid ordinary records in the negative test matrix.
+
+Owner-reference validation must test the referent, not just a resolved string.
+The [vocabulary link contract](../framework/project-vocabulary.md#data-dictionary-links)
+resolves exact target-relative file owners through
+the shared contained filesystem view, optionally with a non-empty fragment.
+It checks file existence, not fragment validity or semantic authority. URI and
+provider/symbolic schemes are explicitly unsupported as direct file owners;
+use a target-owned local document with the external evidence instead. Do not
+fetch sources or introduce a second reference policy implicitly.
+
+`tests/test_adapter_record_integration.py` binds these checks together: real
+default-layout task records, generated navigation, enabled vocabulary, scoped
+approval, the installed delegate finalizer, and acceptance/full/full validation.
+It proves a valid baseline passes, a missing owner alone blocks eligibility,
+restoration passes, and corrupted navigation still fails its owning validator.
+Related malformed task fields, vocabulary comparison lists and link identities
+must produce findings rather than exceptions or silent omission.
+Run this public-path regression on portable hosts as well as Linux. Isolated
+module agreement is not a substitute for this cross-module proof.
+
 ## Change Categories
 
 - Framework rule change: update `framework/`, installer docs, target

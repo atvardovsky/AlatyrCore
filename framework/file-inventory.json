@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 86,
+  "adapter_schema_version": 87,
   "files": [
     {
       "path": "framework/README.md",
@@ -79,7 +79,7 @@
     {
       "path": "framework/catalog/collaboration/context-index.json",
       "rule_ids": [],
-      "sha256": "e65d2dd963844804d8ae646f0f51d0b58ae31e0fc9b32183973a048aff380e6e"
+      "sha256": "a8e0efd2c0743bed38640bc6492d982beb7b25cb8a384390efa78160320ae4d1"
     },
     {
       "path": "framework/catalog/core/context-index.json",
@@ -94,7 +94,7 @@
     {
       "path": "framework/catalog/knowledge/context-index.json",
       "rule_ids": [],
-      "sha256": "554605b1042b68cc8e59b3adee43b87f37d7a4d7dc51b614fed2ae64cad2c6bc"
+      "sha256": "3882d3a7444db848e18504091dd6a5035ad71e86d4cacca034da22e3ff45f326"
     },
     {
       "path": "framework/catalog/lifecycle/context-index.json",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "e03446cbed6f543a43301fb0c68783c18a54f85520f2014525f177f17b02fc24"
+      "sha256": "cf2c151542488ca316d164bf060d5a4b2fa1ae6e7a74975b8af6137377523ba6"
     },
     {
       "path": "framework/context-profiles.md",
@@ -278,7 +278,7 @@
       "rule_ids": [
         "ALATYR-VOCABULARY-001"
       ],
-      "sha256": "548d3ce86ed7df6a4874e69ffcbf74c14fbaedf744ecc2b3582253e7470cf11d"
+      "sha256": "2a767fe0f935d867278cbb9188fc8121bf9b68811c3ae000c4e8af10f75d28af"
     },
     {
       "path": "framework/prompt-injection.md",
@@ -419,7 +419,7 @@
       "rule_ids": [
         "ALATYR-TEAM-001"
       ],
-      "sha256": "00b87cfe999d03df063975370b725008125624d5df6b14a1db7d69e170e71f49"
+      "sha256": "3c0370214ab9056f5bae51f8ef561c68cc5778f8b98195efc12c82b1bd1db223"
     },
     {
       "path": "framework/test-execution-selection.md",
@@ -446,8 +446,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.105",
+  "framework_version": "0.1.0-alpha.106",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 100
+  "template_version": 101
 }

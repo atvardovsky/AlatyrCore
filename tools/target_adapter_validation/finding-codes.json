@@ -289,7 +289,7 @@
     },
     {
       "id": "VOCABULARY",
-      "code_count": 52
+      "code_count": 55
     },
     {
       "id": "WORKER",
@@ -15325,6 +15325,33 @@
     },
     {
       "code": "VOCABULARY_LINK_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_OWNER_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_OWNER_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_OWNER_REFERENCE_KIND",
       "levels": [
         "error"
       ],

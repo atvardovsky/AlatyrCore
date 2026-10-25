@@ -113,11 +113,13 @@ claim, or decision participation does not grant protected-change approval.
 
 ## Shared Work Registry
 
-The target adapter should provide one machine-readable registry or a
-deterministic projection of the selected coordination backend. For repository
-storage, prefer one record per task plus a generated compact active-work index;
-do not make every actor edit one monolithic task array. The registry records
-locations, projection metadata, backend state, and its own revision.
+Use one machine-readable registry or deterministic backend projection. For
+repository storage, prefer one record per task plus a compact active-work index,
+not a monolithic task array. Registry metadata records locations, projections,
+backend state and revision.
+
+Reserve `context-index.json` for catalog-owned navigation, never tasks. Other
+task JSON must validate regardless of declared kind; keep task directories.
 
 Each task should record:
 

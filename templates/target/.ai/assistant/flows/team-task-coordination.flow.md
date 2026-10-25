@@ -40,12 +40,11 @@ For `Alatyr team status`:
 4. Show no more than three highest-priority actions requiring attention.
 5. Mark unavailable external tracker evidence as partial or unverified.
 
-Do not update timestamps merely to make status evidence look fresh.
-Cross-check the bounded analysis-task index and session-cooperation entry point
-when available. Keep those owners separate from the team backend. An empty
-team index means no reported team claims, not proof of no active work; unknown
-freshness or unavailable views remain explicit. Use a work overview rather than
-loading all task histories.
+Never refresh timestamps to imply freshness. Reserve `context-index.json` for
+catalog-owned navigation; other task JSON still validates.
+Cross-check bounded analysis-task/session-cooperation views without merging
+owners. Empty team indexes mean no reported claims, not no active work. Report
+unknown freshness or unavailable views; prefer a compact work overview to histories.
 
 ## Start
 

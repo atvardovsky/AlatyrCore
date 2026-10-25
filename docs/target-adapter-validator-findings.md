@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1741
+Catalog entries: 1744
 
 ## Families
 
@@ -72,7 +72,7 @@ Catalog entries: 1741
 - `UNRESOLVED`: 1 codes.
 - `VALIDATION`: 22 codes.
 - `VALIDATOR`: 1 codes.
-- `VOCABULARY`: 52 codes.
+- `VOCABULARY`: 55 codes.
 - `WORKER`: 2 codes.
 - `WORKSPACE`: 46 codes.
 
@@ -3407,6 +3407,12 @@ Catalog entries: 1741
 - `VOCABULARY_LINK_ID_DUPLICATE`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_KIND`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_LINK_OWNER_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_LINK_OWNER_PATH`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_LINK_OWNER_REFERENCE_KIND`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
