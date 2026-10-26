@@ -321,6 +321,9 @@ Required files:
 
 - `.ai/framework/test-first-development.md`
 - `.ai/project/testing/README.md`
+- `.ai/project/testing/execution.md`
+- `.ai/project/testing/incident-repair.md`
+- `.ai/project/testing/history/README.md`
 - `.ai/project/testing/test-first-policy.json`
 - `.ai/assistant/context/intents/test-first-request.json`
 - `.ai/assistant/flows/test-first-configuration.flow.md`

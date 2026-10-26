@@ -153,8 +153,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3377,
-      "content_digest": "sha256:8e21f2e67fd0e91752964a654663aee17c00e6875c6a497b8b3ef797c7b9a2bb"
+      "estimated_words": 3433,
+      "content_digest": "sha256:6458f69a9b7ea7a3f6ed8f31eb739492439bed82d6e99f2dec32b83be50f1c53"
     },
     {
       "id": "framework.core.contour-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:686fcd8aa15b47e821e927778047b68f7622a9ff76685b8fb434207f11d0ec3b"
+      "content_digest": "sha256:3e39d4699ced6964051a4534b9ddde7b4999c1960330625e769795bb029d8a69"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

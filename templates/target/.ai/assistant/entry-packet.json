@@ -19,9 +19,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.106",
-    "adapter_schema_version": "87",
-    "template_version": "101"
+    "framework_version": "0.1.0-alpha.107",
+    "adapter_schema_version": "88",
+    "template_version": "102"
   },
   "derived_from": {
     "manifest": {

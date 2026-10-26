@@ -2,11 +2,37 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.107 - 2026-10-26
+
+- Detect current-baseline claims in wrapped prose and bounded Markdown sections,
+  retaining history/example exclusions and independent field diagnostics.
+- Share bounded owner/association lookup across impact and context planning.
+  Explicit routing semantics 1 adds dependant propagation and typed change-kind
+  applicability; legacy maps remain conservative. Review new relationships for
+  already mapped code too; no candidate promotion or authority is inferred.
+- Validate complete graph inputs while delivering selected area shards and
+  canonical owners. Derived contract views retain validation/approval references
+  and unresolved review, not accepted facts. Reuse parsed indexes only within
+  an invocation. Bound routing-byte reuse to a 4 MiB snapshot with final content
+  verification, safe malformed-request diagnostics and no persistent permission,
+  evidence or routing cache.
+- Expose concurrent incident heads, unresolved predecessor references, current
+  obligation cursors and verified-record convergence without auto-closing work.
+  Keep optional-control adoption separate from availability and effectiveness.
+- Split testing guidance into indexed execution, incident and cold-history
+  leaves. Refresh the default enabled consistency reverse index transactionally
+  before catalogs/bootstrap/support state; custom renderers remain target-owned.
+- Framework advances to alpha.107, adapter schema to `88` for routing/diagnostic
+  contract changes, and templates to `102`. Reconcile baseline claims, regenerate
+  reverse indexes and projections, preserve optional choices and confirm edge
+  meanings before adopting typed routing. No target rollout or publication is
+  implied; performance claims require matched measurements.
 - Expose captured input-mutation metadata and digest comparisons in validator
   diagnostics, preserving fail-closed acceptance and existing read costs.
   Add repeated full-validation and controlled-mutation regressions. This is a
-  source-tool diagnostic change; framework, adapter schema and template
-  versions are unchanged. The reported external mutation cause remains
+  source-tool diagnostic change. The reported external mutation cause remains
   unresolved without its detailed filesystem evidence.
 
 ## 0.1.0-alpha.106 - 2026-10-25

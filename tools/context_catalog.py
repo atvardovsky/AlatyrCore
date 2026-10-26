@@ -8,6 +8,10 @@ import re
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
+if __package__:
+    from .context_input_snapshot import read_context_bytes
+else:
+    from context_input_snapshot import read_context_bytes
 
 
 CONTEXT_INDEX_SCHEMA_VERSION = 1
@@ -76,7 +80,7 @@ class CatalogContentStats:
 
 def load_object(path: Path) -> dict[str, Any]:
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        data = json.loads(read_context_bytes(path).decode("utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise ContextCatalogError(f"cannot load {path}: {exc}") from exc
     if not isinstance(data, dict):
@@ -106,7 +110,7 @@ def catalog_content_bytes_for_name(name: str, raw: bytes) -> bytes:
 def catalog_content_bytes(path: Path) -> bytes:
     """Return file content bytes after context-catalog normalization."""
 
-    return catalog_content_bytes_for_name(path.name, path.read_bytes())
+    return catalog_content_bytes_for_name(path.name, read_context_bytes(path, routing_input=False))
 
 
 def catalog_content_stats(path: Path) -> CatalogContentStats:

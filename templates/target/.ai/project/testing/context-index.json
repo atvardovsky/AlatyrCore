@@ -13,6 +13,47 @@
   },
   "entries": [
     {
+      "id": "project.content.testing-execution-md",
+      "kind": "content",
+      "path": "testing/execution.md",
+      "summary": "Project Test Execution",
+      "selectors": {
+        "path_terms": [
+          "testing",
+          "execution"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 112,
+      "content_digest": "sha256:ce36d0d09b61972e7655ffa54283bff0eb35cd5f3b8a31cef249900279dee55d"
+    },
+    {
+      "id": "project.content.testing-incident-repair-md",
+      "kind": "content",
+      "path": "testing/incident-repair.md",
+      "summary": "Project Incident Repair",
+      "selectors": {
+        "path_terms": [
+          "testing",
+          "incident",
+          "repair"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 166,
+      "content_digest": "sha256:303daf430d4007fd67117b96a8faf9c87b720774753db126667e46ee45125475"
+    },
+    {
       "id": "project.content.testing-readme-md",
       "kind": "content",
       "path": "testing/README.md",
@@ -28,8 +69,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 487,
-      "content_digest": "sha256:a9984fb6357008c3bbba7e273e75d9082d74ec86df9ec641de970ef06489aa34"
+      "estimated_words": 342,
+      "content_digest": "sha256:666fd67433adcf21a2e9b37f353e8dcd181a6b53eb527c5b2199120ee1f7f2cf"
     },
     {
       "id": "project.content.testing-test-first-policy-json",
@@ -52,6 +93,21 @@
       ],
       "estimated_words": 210,
       "content_digest": "sha256:9082f3c4151705f16f456156e0d5ef5f650e0a3346aebcbcdb06999189b03783"
+    },
+    {
+      "id": "project.section.testing-history",
+      "kind": "index",
+      "path": "testing/history/context-index.json",
+      "summary": "History section",
+      "selectors": {
+        "path_terms": [
+          "history"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 81,
+      "content_digest": "sha256:5e5ef1a7dca3beb1413b2985ca8c01f498f0f1bbb51a50fc93abbf41593b092d"
     }
   ]
 }

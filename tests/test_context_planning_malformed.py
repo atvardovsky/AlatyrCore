@@ -315,13 +315,15 @@ class MalformedContextPlanningTests(unittest.TestCase):
         read_paths = {call.args[0].relative_to(self.target).as_posix() for call in read.call_args_list}
         self.assertNotIn(".ai/project/optional.md", read_paths)
         self.assertNotIn("missing.json", read_paths)
-        self.assertEqual(read.call_count, 23)
+        self.assertEqual(read.call_count, 27)
 
-    def test_valid_baseline_keeps_selected_paths_and_23_reads(self) -> None:
+    def test_valid_baseline_keeps_selected_paths_and_bounded_snapshot_reads(self) -> None:
         with patch.object(Path, "read_bytes", autospec=True, side_effect=Path.read_bytes) as read:
             result = plan_target_context(self.request())
         self.assertEqual(result["status"], "ready", result)
-        self.assertEqual(read.call_count, 23)
+        # The old 23-byte-read count excluded five JSON text reads. Snapshot
+        # binding uses byte reads throughout: 27 total, below the old 28 total.
+        self.assertEqual(read.call_count, 27)
         self.assertEqual(
             {item["path"] for item in result["context_packet"]["selected_items"]},
             {

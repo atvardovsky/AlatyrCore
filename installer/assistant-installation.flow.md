@@ -343,6 +343,12 @@ Classify every proposed target file:
     scenario assertions and real run artifacts; preserve schema 1 or deferral
     without an accepted adoption decision. Performance comparison is separately
     target-selected, never a universal gate or runtime permission.
+    Keep current testing instructions in the compact testing index and selected
+    execution/incident leaves; move long experiments into cold linked history.
+    Preserve open obligations and concurrent incident heads in the existing
+    task index. A smaller context view is not closure or acceptance.
+    Confirm target relationship direction before adopting typed routing;
+    preserve conservative legacy behavior and explicit optional-control choices.
     Adopt execution-contract-3 selection/timing controls only by an explicit
     target decision, with conditional `test-execution-selection.md` guidance
     and actual digest-bound observations. Preserve legacy version-2 records;

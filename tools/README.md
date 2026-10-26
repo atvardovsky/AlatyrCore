@@ -471,7 +471,8 @@ The stable command set is:
 - `render-package-index`: checks or explicitly refreshes compact package
   projections, including shard digest and count descriptors
 - `finalize-support`: checks or transactionally refreshes generated approval,
-  package, entry, context, bootstrap, and support-state surfaces, then runs
+  package, enabled default consistency reverse-index, entry, context, bootstrap,
+  and support-state surfaces, then runs
   canonical full validation; write failure restores generated files
 - `suggest-knowledge`: read-only, review-only candidates from verified
   package history, including owner, incident-family, failed-gate, and
@@ -1246,6 +1247,20 @@ profile descriptors, recursive indexes, semantic codebook, operation catalog,
 and consistency graph; it does not introduce another routing policy. The JSON
 output contains paths, IDs, digests, reasons, impact evidence, and budget
 accounting, but no selected file contents.
+
+Whole-graph validation is separate from selected-shard delivery. The plan's
+derived `task_contract` links owners, affected surfaces, declared validation and
+approval references, unknowns and a review worklist; it is not another source
+of truth or an accepted execution plan. Changed mapped code still requests
+new-relationship review. `--change-kind testing` (repeatable) supplies explicit
+fact classification for opted-in typed edge applicability. Without it,
+conditions remain conservative; legacy maps retain their routing semantics.
+The planner prepares path lookups once and shares a graph snapshot with an
+explicit document-warning lookup. An invocation-local input snapshot reuses up
+to 4 MiB of raw routing bytes and verifies them against disk before returning.
+Selected content retains catalog verification; unrelated leaves remain lazy.
+Eviction affects reuse, never verification. No cross-request,
+permission, approval or runtime-acceptance decision cache is used.
 
 The executable planner requires a target installation whose selected support
 profile and modules provide operation routing and recursive catalogs. Changed-

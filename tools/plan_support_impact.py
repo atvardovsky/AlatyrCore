@@ -12,32 +12,16 @@ from typing import Any
 
 from impact_graph import (
     ImpactGraphError,
-    build_reverse_index,
+    ImpactLookup,
+    CHANGE_KINDS,
     load_impact_graph,
-    map_changed_paths,
-    traverse_impact,
+    is_support_information_path,
+    relationship_review_paths,
+    assert_graph_current,
 )
 from support_state import SupportStateError, build_support_state, load_state, state_differences
 from target_validation_support import git_changed_files
 from reviewed_warnings import selected_candidate_warnings
-
-
-RELATIONSHIP_DISCOVERY_MARKERS = {
-    ".py",
-    ".php",
-    ".js",
-    ".jsx",
-    ".ts",
-    ".tsx",
-    ".java",
-    ".kt",
-    ".go",
-    ".rs",
-    ".cs",
-    ".sql",
-    ".graphql",
-    ".proto",
-}
 
 
 def _digest_payload(value: dict[str, Any]) -> str:
@@ -73,6 +57,7 @@ def main() -> int:
     parser.add_argument("--target", required=True, type=Path)
     parser.add_argument("--diff-ref")
     parser.add_argument("--fact-id", action="append", default=[])
+    parser.add_argument("--change-kind", action="append", default=[], choices=sorted(CHANGE_KINDS))
     parser.add_argument("--max-depth", type=int)
     parser.add_argument("--max-nodes", type=int)
     parser.add_argument("--output", type=Path)
@@ -81,7 +66,7 @@ def main() -> int:
     target = args.target.resolve()
     try:
         graph = load_impact_graph(target)
-        reverse = build_reverse_index(graph)
+        lookup = ImpactLookup(graph)
         changed_paths = _changed_paths(target, args.diff_ref)
     except (ImpactGraphError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
@@ -97,7 +82,8 @@ def main() -> int:
         set(changed_paths)
         | {item["path"] for item in support_changes if isinstance(item.get("path"), str)}
     )
-    path_matches, unmapped = map_changed_paths(reverse, all_changed_paths)
+    path_matches = {path: sorted(lookup.matching(path)) for path in all_changed_paths}
+    unmapped = [path for path, ids in path_matches.items() if not ids and not is_support_information_path(path)]
     start_ids = set(args.fact_id)
     for node_ids in path_matches.values():
         start_ids.update(node_ids)
@@ -110,15 +96,13 @@ def main() -> int:
         return 1
 
     policy = graph.root.get("impact_policy", {})
-    max_depth = args.max_depth or policy.get("max_depth", 4)
-    max_nodes = args.max_nodes or policy.get("max_nodes", 100)
+    max_depth = args.max_depth if args.max_depth is not None else policy.get("max_depth", 4)
+    max_nodes = args.max_nodes if args.max_nodes is not None else policy.get("max_nodes", 100)
     try:
-        selected, selected_edges, skipped_edges = traverse_impact(
-            graph,
-            start_ids,
-            max_depth=max_depth,
-            max_nodes=max_nodes,
-        )
+        resolution = lookup.resolve(all_changed_paths, args.fact_id,
+            max_depth=max_depth, max_nodes=max_nodes, change_kinds=args.change_kind)
+        selected = resolution["selected_node_ids"]
+        selected_edges, skipped_edges = resolution["selected_edges"], resolution["skipped_edges"]
     except ImpactGraphError as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -146,11 +130,7 @@ def main() -> int:
                 for value in binding.get("context_ids", [])
                 if isinstance(value, str) and value and "{" not in value
             )
-    discovery_triggers = [
-        path
-        for path in unmapped
-        if Path(path).suffix.casefold() in RELATIONSHIP_DISCOVERY_MARKERS
-    ]
+    discovery_triggers = relationship_review_paths(all_changed_paths)
     changed_path_summary = {
         "changed_path_count": len(all_changed_paths),
         "support_difference_count": len(support_changes),
@@ -184,9 +164,12 @@ def main() -> int:
         "changed_paths": all_changed_paths,
         "support_changes": support_changes,
         "support_change_coverage": support_coverage,
-        "coverage_complete": support_coverage["state"] == "available" and not unmapped and not skipped_edges,
+        "coverage_complete": support_coverage["state"] == "available" and not unmapped and not any(edge["reason"] != "condition-not-applicable" for edge in skipped_edges),
         "path_matches": path_matches,
         "explicit_fact_ids": sorted(set(args.fact_id)),
+        "change_kinds": sorted(set(args.change_kind)),
+        "owner_lookup_node_ids": resolution["owner_lookup_node_ids"],
+        "review_required": resolution["review_required"],
         "selected_node_ids": selected,
         "reviewed_warnings": selected_candidate_warnings(target, graph.root.get("relationship_candidates"), selected, graph=graph),
         "selected_edges": selected_edges,
@@ -199,6 +182,11 @@ def main() -> int:
         "limits": {"max_depth": max_depth, "max_nodes": max_nodes},
         "reasoning_boundary": "deterministic routing identifies candidates; the agent or reviewer re-derives semantics and invariants",
     }
+    try:
+        assert_graph_current(graph, target)
+    except ImpactGraphError as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
     report["impact_plan_digest"] = _digest_payload({key: value for key, value in report.items() if key != "impact_plan_digest"})
     rendered = json.dumps(report, indent=2, ensure_ascii=True) + "\n"
     if args.output:

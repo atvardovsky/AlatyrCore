@@ -16,6 +16,9 @@ TARGET = ROOT / "templates" / "target"
 FRAMEWORK = ROOT / "framework" / "test-first-development.md"
 TESTING = ROOT / "framework" / "testing-guidance.md"
 POLICY_INDEX = TARGET / ".ai/project/testing/README.md"
+EXECUTION_GUIDE = TARGET / ".ai/project/testing/execution.md"
+INCIDENT_GUIDE = TARGET / ".ai/project/testing/incident-repair.md"
+HISTORY_INDEX = TARGET / ".ai/project/testing/history/README.md"
 POLICY = TARGET / ".ai/project/testing/test-first-policy.json"
 INTENT = TARGET / ".ai/assistant/context/intents/test-first-request.json"
 CONFIG_FLOW = TARGET / ".ai/assistant/flows/test-first-configuration.flow.md"
@@ -99,6 +102,7 @@ def main() -> int:
         TARGET / ".ai/assistant/templates/test-execution-evidence.json",
         TARGET / ".ai/assistant/templates/repair-review.json",
         TARGET / ".ai/assistant/templates/repair-qualification.json",
+        EXECUTION_GUIDE, INCIDENT_GUIDE, HISTORY_INDEX,
     ]
     for path in required_files:
         if not path.is_file():

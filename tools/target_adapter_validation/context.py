@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+if "." in (__package__ or ""):
+    from ..context_input_snapshot import observe_context_bytes
+else:
+    from context_input_snapshot import observe_context_bytes
+
 import hashlib
 import json
 import stat
@@ -296,6 +301,7 @@ class TargetRepositoryView:
                     error="target path resolved to a different file during validation",
                 )
                 return ValidationRead(status=status, value=None, error=status.error)
+            observe_context_bytes(self.target, resolved, cached.data)
             return ValidationRead(
                 status=cached.status,
                 value=cached.data,
@@ -343,6 +349,7 @@ class TargetRepositoryView:
         snapshot = _ContentSnapshot(status=after, data=data, digest=digest)
         self._bytes_cache[key] = snapshot
         self._remember(after, digest)
+        observe_context_bytes(self.target, resolved, data)
         return ValidationRead(status=after, value=data, digest=digest)
 
     def read_text(self, path: Path) -> str:

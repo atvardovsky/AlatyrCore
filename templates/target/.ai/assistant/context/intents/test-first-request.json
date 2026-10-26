@@ -18,6 +18,18 @@
   ],
   "conditional_context": [
     {
+      "path": ".ai/project/testing/execution.md",
+      "when": "selecting authoring or executing a target test command"
+    },
+    {
+      "path": ".ai/project/testing/incident-repair.md",
+      "when": "uncertain or repeated defect, repair qualification or adoption review"
+    },
+    {
+      "path": ".ai/project/testing/history/README.md",
+      "when": "a named historical experiment or evidence conflict requires lookup"
+    },
+    {
       "path": ".ai/framework/test-execution-selection.md",
       "when": "schema-3 selection/timing adoption or conflict"
     },

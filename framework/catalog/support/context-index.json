@@ -73,8 +73,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 383,
-      "content_digest": "sha256:a495ed5e971a0a072166866ceb7b4739e79ec09d419dad85bb9416c3c59b02bd"
+      "estimated_words": 453,
+      "content_digest": "sha256:67b493c5b1b4c9b8f541723dd84316be717d72c37bdc85934eecdc7c617cc61c"
     },
     {
       "id": "framework.support.runtime-observation-md",
@@ -135,8 +135,8 @@
       "owner_refs": [
         "ALATYR-SUPPORT-001"
       ],
-      "estimated_words": 1747,
-      "content_digest": "sha256:e0ddb0db9de52f8944f954e0d7e28a4428e2fe61c0f4a5674d0e193d0c15dce8"
+      "estimated_words": 1779,
+      "content_digest": "sha256:c6b4302380e16a3a34a75976e46b756709a6bfdcbc9b4e70cd23e0bb4ee7bed7"
     },
     {
       "id": "framework.support.task-classes-json",

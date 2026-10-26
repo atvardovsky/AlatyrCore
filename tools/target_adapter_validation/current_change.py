@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 
-def change_packages_enabled(target: Path) -> bool:
-    """Resolve package capability through the validator, including legacy profiles."""
+def enabled_capabilities(target: Path) -> set[str]:
+    """Resolve installed capabilities through their canonical profile policy."""
     from target_validation_support import parse_manifest
     from validate_target_adapter import AdapterValidatorConfig, Validator
 
@@ -25,11 +25,16 @@ def change_packages_enabled(target: Path) -> bool:
     )
     path = checked.target_path(".ai/alatyr.yaml")
     if not checked.is_target_file(path):
-        raise ValueError("cannot resolve change-package capability: target manifest is unavailable")
+        raise ValueError("cannot resolve target capabilities: target manifest is unavailable")
     manifest = parse_manifest(checked.context.text_source(path))
     if manifest.parse_failures:
-        raise ValueError("cannot resolve change-package capability: " + "; ".join(manifest.parse_failures))
+        raise ValueError("cannot resolve target capabilities: " + "; ".join(manifest.parse_failures))
     enabled = checked.enabled_modules(manifest)
     if checked.unsafe_target_paths:
-        raise ValueError("cannot resolve change-package capability: target paths escape the repository")
-    return "change-packages" in enabled
+        raise ValueError("cannot resolve target capabilities: target paths escape the repository")
+    return enabled
+
+
+def change_packages_enabled(target: Path) -> bool:
+    """Resolve package capability through the validator, including legacy profiles."""
+    return "change-packages" in enabled_capabilities(target)

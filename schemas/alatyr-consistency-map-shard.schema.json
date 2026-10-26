@@ -25,7 +25,13 @@
           "coverage_state": {"enum": ["mapped", "isolated-verified", "known-gap"]},
           "coverage_evidence": {"type": "array", "items": {"type": "string"}},
           "bindings": {"type": "array"},
-          "relationships": {"type": "array"}
+          "relationships": {"type": "array", "items": {"type": "object", "properties": {
+            "applicability": {"type": "object", "additionalProperties": false,
+              "required": ["change_kinds"], "properties": {
+                "change_kinds": {"type": "array", "minItems": 1, "uniqueItems": true,
+                  "items": {"enum": ["business-rule", "api-contract", "persistence", "architecture", "documentation", "testing", "configuration", "ai-infrastructure"]}}
+              }}
+          }}}
         }
       }
     }

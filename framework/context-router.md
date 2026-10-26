@@ -138,6 +138,15 @@ profile and find project areas. Full blueprints, source-of-truth registries,
 operation catalogs, module profiles, policy files, and human profile explanations belong in
 selected profile or overlay context.
 
+### Selected Contract Delivery
+
+Keep whole-graph/reverse-index validation and freshness independent of selected
+shard/owner delivery. Honor explicit profiles; derived contract views never
+replace owners, task obligations or approval. Preserve enclosing constraints
+and exceptions in indexed leaves. Reuse only invocation-scoped lookups, never
+permissions or acceptance. Persistent caching requires proved invalidation and
+measured benefit; it is not enabled here.
+
 Keep the compact bootstrap outside assistant catalog content ownership. The
 lazy integrity sidecar is cataloged so discovery can verify that it exists,
 but the compact bootstrap itself does not depend on recursive catalog output.

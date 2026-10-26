@@ -81,13 +81,36 @@ Build a bounded impact closure:
 2. Resolve each canonical owner in the human source-of-truth registry.
 3. Read the corresponding machine-map nodes and direct relationships.
 4. Follow edges whose trigger matches the changed fact.
-5. Traverse to another fact node only when a contract, `constrains`, or
-   `depends-on` relationship can propagate the semantic change.
+5. Distinguish companion surfaces from semantic propagation through
+   `constrains` and `depends-on`; review crossed fact/contract boundaries.
 6. Load the target surface and its validation only after selecting its edge.
 7. Record visited nodes, selected edges, skipped edges with reasons, missing
    relationships, and project areas crossed.
 8. Use the closure as the candidate repair set, then apply logical integrity
    review before finalizing it.
+
+### Deterministic Routing
+
+Resolve bindings and canonical owner paths. Accepted `implements`, `verifies`,
+`documents`, `visualizes`, `generates`, or `routes` associations can locate facts
+for a changed surface; this is not arbitrary reverse traversal or ownership.
+
+Explicit `impact_policy.routing_semantics: 1` retains outbound storage and adds
+`depends-on` propagation from prerequisite to dependants. Companion/navigation
+edges are not execution prerequisites. Confirm edge meanings before adoption;
+updates preserve conservative legacy propagation otherwise.
+
+Edge `applicability: {"change_kinds": ["testing"]}` uses any-match against
+explicit changed-fact classifications. Supported kinds:
+`business-rule`, `api-contract`, `persistence`, `architecture`, `documentation`,
+`testing`, `configuration`, and `ai-infrastructure`. Missing classification or
+free-text conditions expand conservatively and require review; malformed typed
+conditions block routing. Record classifications/skips; classification remains
+an agent/reviewer judgment.
+
+Review new relationships for changed code/contracts even inside broad bindings.
+Triggers neither discover a complete graph nor promote candidates. Keep impact,
+proof readiness, check dependencies, navigation and approval boundaries separate.
 
 Expand beyond direct edges when evidence conflicts, an owner is missing, a
 cross-area contract changes, validation disproves the assumed boundary, or an

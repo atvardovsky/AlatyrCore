@@ -67,6 +67,10 @@ Replace placeholders with target facts before accepting installation.
    Do not execute both paths for the same work.
    Record material package discoveries only through
    [Material Updates](change-package.flow.md#material-updates) when active.
+   Review new relationships even for already mapped files. Use selected graph
+   evidence and canonical owners, not a graph-derived permission or an accepted
+   invariant inferred from a compact view. For recurring incidents, reconcile
+   the original outcome and retention rationale before another local repair.
 
 After implementation and local checks, obtain global reconciliation through
 [integrity verification](logical-integrity-review.flow.md#verify). Required

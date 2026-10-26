@@ -221,7 +221,9 @@ guide a repair; component success or a faster benchmark does not establish that
 the original incident is fixed. See [repair evidence](framework/test-first-development.md#incident-repair-review).
 
 Task-specific routing is designed to avoid loading the complete support
-library for routine work. When workers are useful and the selected assistant
+library for routine work. Contract routing separates complete graph checks from
+the selected area evidence an agent needs; compact views do not replace the
+project's canonical sources or approval boundaries. When workers are useful and the selected assistant
 has verified support, independent read-only investigations can be delegated
 with bounded context. The coordinating assistant still owns decisions, edits,
 integration, and final validation. Delegation can increase total token use.
@@ -272,7 +274,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.106`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.107`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

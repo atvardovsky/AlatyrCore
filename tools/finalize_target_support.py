@@ -14,7 +14,7 @@ from target_tool_compat import assert_write_compatible
 from task_acceptance_binding import add_task_arguments, task_arguments
 from support_write_transaction import SupportTransaction, read_output, support_writer_lock
 from target_support_outputs import step_outputs
-from target_adapter_validation.current_change import change_packages_enabled
+from target_adapter_validation.current_change import change_packages_enabled, enabled_capabilities
 
 
 TOOLS = Path(__file__).resolve().parent
@@ -26,6 +26,7 @@ FIXED_GENERATED_PATHS = {
     Path(".ai/assistant/bootstrap-index.json"),
     Path(".ai/assistant/bootstrap-integrity.json"),
     Path(".ai/support-state.json"),
+    Path(".ai/assistant/consistency-reverse-index.json"),
 }
 
 
@@ -69,6 +70,11 @@ def build_steps(
     steps = [
         _tool_step("approval-archive", "render_approval_archive_index.py", target, *mode, *staging),
     ]
+    if (target / ".ai/project/consistency-map.json").is_file() and "consistency-map" in enabled_capabilities(target):
+        from impact_graph import load_impact_graph
+        graph = load_impact_graph(target)
+        if graph.root.get("reverse_index") == ".ai/assistant/consistency-reverse-index.json":
+            steps.append(_tool_step("consistency-reverse-index", "render_consistency_reverse_index.py", target, *mode))
     if (
         target / ".ai/assistant/change-packages/index.json"
     ).is_file() or packages:

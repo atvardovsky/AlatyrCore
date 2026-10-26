@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 87,
+  "adapter_schema_version": 88,
   "files": [
     {
       "path": "framework/README.md",
@@ -69,12 +69,12 @@
     {
       "path": "framework/capabilities.json",
       "rule_ids": [],
-      "sha256": "cc7c9cb43c978903c7d6275678cf97d2a41d7512469e8326e4e5c7456f4de4a1"
+      "sha256": "a6bfea7af8bc56defa652937345ccc11d3773938f01e8369683f9bd395b2b97d"
     },
     {
       "path": "framework/catalog/change/context-index.json",
       "rule_ids": [],
-      "sha256": "846f89f31701a1783072c68020dae8ec1a336da893ae21c6461aaa11ff95c35d"
+      "sha256": "c40745f16b2bea5ec8c005db59c06f74ac3b56a4165a081eb9689d4961e7a8c6"
     },
     {
       "path": "framework/catalog/collaboration/context-index.json",
@@ -84,12 +84,12 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "b9551b3a414ed80fa7ca0db9c69807efdd0d5946f04d957f28e6723ce51b9181"
+      "sha256": "7390f3cafbe35a095fea19218233f9b0de43e9d8327b015b79e10174d7de9d13"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
       "rule_ids": [],
-      "sha256": "53b57e4d975cc239340dd255a19f822b11b5b6ab7d6201df7bafd847687d5ba8"
+      "sha256": "328b5956cf21a1767366c9496f7f517fa7345251da7a01bc63b7ba3fc0eb0969"
     },
     {
       "path": "framework/catalog/knowledge/context-index.json",
@@ -104,7 +104,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "516b431e8cb3ead007bad075fb421b0e91e2d0b08ffd1fb0dcd9ddf234ee6f16"
+      "sha256": "a06a918215a8ba318998492bf3f26b2f25bf36534e731dabd6d5f225c6bcc066"
     },
     {
       "path": "framework/change-packages.md",
@@ -130,7 +130,7 @@
     {
       "path": "framework/consistency-model.md",
       "rule_ids": [],
-      "sha256": "3a46d5afc0ce76e77bb7b8c1ab200303d1e08f7e715911abd1eec55b1a6bbf0e"
+      "sha256": "2f50c78fb4492daa906ce4ca320cffa7d847a73b9270fc35f8f5c26f28181de3"
     },
     {
       "path": "framework/context-discovery.md",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "cf2c151542488ca316d164bf060d5a4b2fa1ae6e7a74975b8af6137377523ba6"
+      "sha256": "196725b29a3a08308d3959ef362d900052aac624af956c9879c1e8636bd41c64"
     },
     {
       "path": "framework/context-profiles.md",
@@ -152,7 +152,7 @@
     {
       "path": "framework/context-router.md",
       "rule_ids": [],
-      "sha256": "8e21f2e67fd0e91752964a654663aee17c00e6875c6a497b8b3ef797c7b9a2bb"
+      "sha256": "6458f69a9b7ea7a3f6ed8f31eb739492439bed82d6e99f2dec32b83be50f1c53"
     },
     {
       "path": "framework/contour.md",
@@ -290,7 +290,7 @@
     {
       "path": "framework/repair-qualification.md",
       "rule_ids": [],
-      "sha256": "a495ed5e971a0a072166866ceb7b4739e79ec09d419dad85bb9416c3c59b02bd"
+      "sha256": "67b493c5b1b4c9b8f541723dd84316be717d72c37bdc85934eecdc7c617cc61c"
     },
     {
       "path": "framework/rule-ownership.md",
@@ -347,7 +347,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "686fcd8aa15b47e821e927778047b68f7622a9ff76685b8fb434207f11d0ec3b"
+      "sha256": "3e39d4699ced6964051a4534b9ddde7b4999c1960330625e769795bb029d8a69"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -395,7 +395,7 @@
       "rule_ids": [
         "ALATYR-SUPPORT-001"
       ],
-      "sha256": "e0ddb0db9de52f8944f954e0d7e28a4428e2fe61c0f4a5674d0e193d0c15dce8"
+      "sha256": "c6b4302380e16a3a34a75976e46b756709a6bfdcbc9b4e70cd23e0bb4ee7bed7"
     },
     {
       "path": "framework/task-classes.json",
@@ -446,8 +446,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.106",
+  "framework_version": "0.1.0-alpha.107",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 101
+  "template_version": 102
 }

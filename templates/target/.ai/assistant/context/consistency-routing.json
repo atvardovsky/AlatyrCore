@@ -31,6 +31,9 @@
     "approval trigger is reached"
   ],
   "final_evidence": [
+    "whole-graph validation and selected-shard delivery remain distinct",
+    "explicit changed-fact classification and typed applicability skips",
+    "new-relationship review for mapped and unmapped code",
     "selected and skipped edges with reasons",
     "levels and project areas reached",
     "missing or stale relationships",

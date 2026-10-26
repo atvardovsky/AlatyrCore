@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from context_planning import ContextPlanRequest, plan_target_context
+from impact_graph import CHANGE_KINDS
 
 
 def _inside_target(path: Path, target: Path) -> bool:
@@ -25,6 +26,7 @@ def main() -> int:
     parser.add_argument("--operation", required=True)
     parser.add_argument("--changed-path", action="append", default=[])
     parser.add_argument("--fact-id", action="append", default=[], help="Exact consistency-map graph node ID, not a task-local finding ID; repeat as needed")
+    parser.add_argument("--change-kind", action="append", default=[], choices=sorted(CHANGE_KINDS), help="Explicit fact classification for typed applicability; omission keeps conditions conservative.")
     parser.add_argument("--assistant-surface")
     parser.add_argument("--architecture-mode", choices=("inventory", "explain", "discuss", "compare", "review", "document"))
     parser.add_argument("--max-words", type=int)
@@ -44,6 +46,7 @@ def main() -> int:
         max_characters=args.max_characters,
         architecture_mode=args.architecture_mode,
         document_warnings=args.document_warnings,
+        change_kinds=tuple(args.change_kind),
     )
     result = plan_target_context(request)
     if args.output and _inside_target(args.output, args.target):

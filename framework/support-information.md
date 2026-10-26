@@ -220,6 +220,11 @@ operation that performs these projections in dependency order, validates the
 complete result, and restores generated surfaces if a later step fails. A
 successful individual renderer is not final acceptance evidence.
 
+Reconcile semantic sources first. Enabled default reverse indexes join the
+transaction; custom renderers converge separately. Bound current claims by
+sections/labels; exclude history/examples and report unknowns. Historical
+generation revisions are not current facts.
+
 For framework updates, use migration evidence plus the support delta before
 opening the full support layer. Load changed owners and selected relationship
 shards first, then expand only for conflicts, missing state, failed checks, or

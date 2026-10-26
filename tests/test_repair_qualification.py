@@ -303,10 +303,17 @@ class RegisteredQualificationTests(incident_fixtures.task_fixtures.ActiveTaskFix
         self.assertEqual(value["repair_evidence"]["state"], "record-consistent", value)
         self.assertFalse(value["acceptance_granted"])
         self.assertEqual(value["incident_controls"]["adoption"], "enabled")
+        convergence = value["repair_evidence"]["convergence"]
+        self.assertFalse(convergence["component_pass_establishes_recovery"])
+        self.assertFalse(convergence["effectiveness_proved"])
+        self.assertIsNotNone(convergence["latest_diagnostic"])
+        self.assertFalse(value["obligation_cursor"]["predecessor_obligations_discharged"])
+        self.assertFalse(value["incident_frontier"]["automatic_closure"])
         self.write_artifact({"observed": {"variant": "wrong"}})
         value = current_task_view(self.check(), "fixture-task")
         self.assertEqual(value["repair_evidence"]["state"], "not-verified")
         self.assertEqual(value["incident_controls"]["exercised"], "not-verified")
+        self.assertNotIn("convergence", value["repair_evidence"])
 
     def test_public_health_selects_canonical_repair_review_without_requiring_closure(self):
         from report_adapter_health import health_payload

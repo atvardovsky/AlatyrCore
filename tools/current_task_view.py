@@ -4,12 +4,29 @@ from __future__ import annotations
 
 from typing import Any
 
-from task_evidence_contract import task_model_header_failures
+from task_evidence_contract import task_model_header_failures, task_predecessor_failures
 from task_readiness import execution_readiness
 from target_adapter_validation.active_tasks import _bound_object, _schema_valid, _task_model_evidence
 
 INDEX = ".ai/assistant/active-tasks.json"
 POLICY = ".ai/project/testing/test-first-policy.json"
+
+
+def incident_frontier(tasks: list[dict[str, Any]], selected: dict[str, Any]) -> dict[str, Any]:
+    """Header-only navigation; never close tasks or load predecessor narratives."""
+    family = ([selected] if selected["incident_family_id"] == "none" else
+              [task for task in tasks if task["incident_family_id"] == selected["incident_family_id"]])
+    family = sorted(family, key=lambda task: task["task_id"])
+    active = {task["task_id"] for task in family if task["state"] == "active"}
+    predecessors = {prior for task in family if task["state"] == "active" for prior in task["predecessor_task_ids"]}
+    heads = sorted(active - predecessors)
+    return {"incident_family_id": selected["incident_family_id"], "head_task_ids": heads,
+            "selected_is_head": selected["task_id"] in heads, "multiple_heads": len(heads) > 1,
+            "unclosed_predecessors": [{"task_id": task["task_id"], "model": task["problem_model"],
+                "latest_failed_gate_id": task["latest_failed_gate_id"], "obligations": "not-loaded-not-discharged"}
+                for task in family if task["task_id"] in active & predecessors],
+            "authority": "none", "automatic_closure": False,
+            "limitation": "Index-bound navigation, not validated predecessor outcomes. Concurrent heads require explicit task selection; timestamps and iteration numbers do not select an authority."}
 
 
 def incident_outcome_view(model: dict[str, Any]) -> dict[str, Any] | None:
@@ -45,6 +62,14 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     matches = [task for task in index["tasks"] if task["task_id"] == task_id]
     if len(ids) != len(set(ids)) or len(matches) != 1:
         result["diagnostics"].append("select one unique registered task ID")
+        return result
+    lineage_failures = task_predecessor_failures(index["tasks"])
+    headers = {task["task_id"]: task for task in index["tasks"]}
+    lineage_failures.extend("predecessor headers cross incident families" for task in index["tasks"]
+        for prior in task["predecessor_task_ids"] if prior in headers
+        and headers[prior]["incident_family_id"] != task["incident_family_id"])
+    if lineage_failures:
+        result["diagnostics"].extend(lineage_failures[:8])
         return result
     task = matches[0]
     closure = None
@@ -87,6 +112,14 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     outcome = incident_outcome_view(model)
     if outcome is not None:
         result["incident_outcome"] = outcome
+        result["incident_frontier"] = incident_frontier(index["tasks"], task)
+        result["obligation_cursor"] = {
+            "model": binding,
+            "unsettled_required": [{"id": row["id"], "status": row["status"]} for row in model["proof_obligations"]
+                                   if row["required"] and row["status"] not in {"passed", "waived"}],
+            "predecessor_obligations_discharged": False,
+            "authority": "none", "evidence_verified": False,
+        }
     if "execution_dependencies" in model:
         result["execution_readiness"] = execution_readiness(model)
     if closure:
@@ -131,6 +164,8 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
                             "deferred": "respect-recorded-repair-control-decision",
                             "not-adopted": "request-explicit-repair-control-adoption-decision"}.get(controls["adoption"], "resolve-canonical-repair-control-policy"),
             "authorization_granted": False, "unrelated_work_blocked": False,
+            "retention_review": "Before retaining an experimental production change, record its incident-level effect and retention or reversion reason in the existing repair review; a component pass alone is not recovery.",
+            "escalation": "If related repairs do not resolve the original outcome, reassess the mechanism and owner boundaries before another local patch; preserve the failed case and frozen matrix.",
             "limitation": "Review the faithful initial state and discriminating observation before another related patch. Optional controls require target approval; this view neither qualifies repair nor grants execution permission.",
         }
     if view.finalize():

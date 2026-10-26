@@ -20,9 +20,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.106",
-    "adapter_schema_version": "87",
-    "template_version": "101"
+    "framework_version": "0.1.0-alpha.107",
+    "adapter_schema_version": "88",
+    "template_version": "102"
   },
   "derived_from": {
     "manifest": {
@@ -43,7 +43,7 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "686fcd8aa15b47e821e927778047b68f7622a9ff76685b8fb434207f11d0ec3b"
+      "sha256": "3e39d4699ced6964051a4534b9ddde7b4999c1960330625e769795bb029d8a69"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
@@ -51,15 +51,15 @@
     },
     "assistant_context_root": {
       "path": ".ai/assistant/context-index.json",
-      "sha256": "e73aed6f3b86b512727ec65b89f11f391c6a9464f7b57355cc84a9c5d3c329e0"
+      "sha256": "5378ba72328ae2b1c8d5429393d2eb56423a261b40ae9b1e6de76f8d737d14ac"
     },
     "framework_context_root": {
       "path": ".ai/framework/context-index.json",
-      "sha256": "cf2c151542488ca316d164bf060d5a4b2fa1ae6e7a74975b8af6137377523ba6"
+      "sha256": "196725b29a3a08308d3959ef362d900052aac624af956c9879c1e8636bd41c64"
     },
     "project_context_root": {
       "path": ".ai/project/context-index.json",
-      "sha256": "08d2ebc34d2ccc39b398cf42a659e31ec1123bde5a84d60fb67bba1552ba3eb1"
+      "sha256": "70ba503a89ccef0e4d8ab6640fbb974519507114d1476a18d0e67ea1b009f02d"
     }
   },
   "rule_selector": {

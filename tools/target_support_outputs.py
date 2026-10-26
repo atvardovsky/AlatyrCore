@@ -6,6 +6,13 @@ from pathlib import Path
 
 
 def step_outputs(step_id: str, target: Path) -> dict[Path, bytes | None]:
+    if step_id == "consistency-reverse-index":
+        from impact_graph import build_reverse_index, load_impact_graph, render_json
+        graph = load_impact_graph(target)
+        path = ".ai/assistant/consistency-reverse-index.json"
+        if graph.root.get("reverse_index") != path:
+            raise ValueError("custom consistency reverse index requires its target-owned renderer")
+        return {target / path: render_json(build_reverse_index(graph)).encode("utf-8")}
     if step_id == "approval-archive":
         from approval_archive import INDEX_PATH, build_archive_index
         from render_approval_archive_index import render

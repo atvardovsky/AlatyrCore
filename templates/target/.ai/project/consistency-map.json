@@ -36,6 +36,7 @@
     "removed"
   ],
   "impact_policy": {
+    "routing_semantics": 1,
     "default_mode": "owner-and-applicable-accepted-relationships",
     "max_depth": 4,
     "max_nodes": 100,

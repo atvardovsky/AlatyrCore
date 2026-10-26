@@ -312,6 +312,10 @@ pre-acceptance, and message templates are not completion evidence.
     transactional finalizer to refresh approval/package indexes, entry,
     bootstrap/context projections, and support state before the final strict
     run. Any downstream failure must restore generated surfaces.
+    Reconcile graph/reverse-index evidence before catalogs and support state.
+    Preserve legacy map propagation unless target owners explicitly confirm
+    typed direction/applicability. Keep testing guidance indexed and history
+    cold; expose incident heads and unresolved predecessors without closing them.
     Verify that target `AGENTS.md`, every code/test-changing context profile,
     the gate index, final-evidence gate, and operation-completion template
     require the same Project Contour Sync Decision. Preserve project-owned

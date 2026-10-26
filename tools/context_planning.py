@@ -10,6 +10,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Iterable
 from architecture_context import architecture_context
 from validation_route_contract import CONTRACT_PATH, validation_route_failures
+from context_input_snapshot import ContextInputChanged, ContextInputSnapshot, read_context_bytes
 
 from context_catalog import (
     CatalogItem,
@@ -26,11 +27,12 @@ from reviewed_warnings import selected_candidate_warnings
 from impact_graph import (
     ImpactGraph,
     ImpactGraphError,
-    build_reverse_index,
+    ImpactLookup,
+    CHANGE_KINDS,
     load_impact_graph,
-    matching_node_ids,
-    traverse_impact,
+    relationship_review_paths,
     validate_graph,
+    assert_graph_current,
 )
 
 
@@ -53,6 +55,7 @@ class ContextPlanRequest:
     max_characters: int | None = None
     architecture_mode: str | None = None
     document_warnings: bool = False
+    change_kinds: tuple[str, ...] = ()
 
 
 class ContextPlanningError(ValueError):
@@ -179,7 +182,7 @@ def _target_path(target: Path, relpath: str, label: str) -> Path:
 def _load_json(target: Path, relpath: str, label: str, *, digest_evidence: dict[str, str] | None = None) -> dict[str, Any]:
     path = _target_path(target, relpath, label)
     try:
-        raw = path.read_bytes()
+        raw = read_context_bytes(path)
         value = json.loads(raw.decode("utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise ContextPlanningError(
@@ -460,7 +463,7 @@ def _synthetic_file_item(
             details={"path": relpath},
         )
     try:
-        raw = path.read_bytes()
+        raw = read_context_bytes(path)
         text = raw.decode("utf-8")
     except (OSError, UnicodeError) as exc:
         raise ContextPlanningError(
@@ -528,22 +531,23 @@ def _select_profile_required_path(
     )
 
 
-def _load_reverse_index(target: Path, graph: ImpactGraph) -> tuple[dict[str, Any], str]:
+def _load_reverse_index(target: Path, graph: ImpactGraph) -> tuple[ImpactLookup, str]:
     relpath = graph.root.get("reverse_index")
     if not isinstance(relpath, str) or not relpath:
         relpath = ".ai/assistant/consistency-reverse-index.json"
     relpath = _normalize_relative(relpath, "consistency reverse index")
     reverse = _load_json(target, relpath, "consistency reverse index")
-    expected = build_reverse_index(graph)
-    if reverse != expected:
+    try:
+        lookup = ImpactLookup(graph, reverse)
+    except ImpactGraphError as exc:
         raise ContextPlanningError(
             "CONSISTENCY_REVERSE_INDEX_STALE",
             "installed consistency reverse index differs from the active graph",
             upgrade_required=True,
             details={"path": relpath, "graph_digest": graph.graph_digest},
             actions=("regenerate the consistency reverse index",),
-        )
-    return reverse, relpath
+        ) from exc
+    return lookup, relpath
 
 
 def _impact_selection(
@@ -553,6 +557,7 @@ def _impact_selection(
     catalogs: _Catalogs,
     selected: dict[str, CatalogItem],
     reasons: dict[str, set[str]],
+    graph_snapshot: dict[str, ImpactGraph],
 ) -> dict[str, Any]:
     if not request.changed_paths and not request.fact_ids:
         return {
@@ -609,13 +614,10 @@ def _impact_selection(
             upgrade_required=True,
             details={"failures": graph_failures},
         )
-    reverse, reverse_path = _load_reverse_index(target, graph)
-    for graph_path in graph.source_paths:
-        _select_path(graph_path, "active-consistency-graph", catalogs, selected, reasons)
-    _select_path(reverse_path, "active-consistency-reverse-index", catalogs, selected, reasons)
-
+    graph_snapshot["active"] = graph
+    lookup, reverse_path = _load_reverse_index(target, graph)
     changed_path_matches = {
-        path: sorted(matching_node_ids(reverse, path)) for path in request.changed_paths
+        path: sorted(lookup.matching(path)) for path in request.changed_paths
     }
     direct_catalog_paths = {
         path for path in request.changed_paths if path in catalogs.by_path
@@ -666,9 +668,10 @@ def _impact_selection(
             upgrade_required=True,
         )
     try:
-        node_ids, selected_edges, skipped_edges = traverse_impact(
-            graph, start_ids, max_depth=max_depth, max_nodes=max_nodes
-        )
+        resolution = lookup.resolve(request.changed_paths, request.fact_ids,
+            max_depth=max_depth, max_nodes=max_nodes, change_kinds=request.change_kinds)
+        node_ids = resolution["selected_node_ids"]
+        selected_edges, skipped_edges = resolution["selected_edges"], resolution["skipped_edges"]
     except ImpactGraphError as exc:
         raise ContextPlanningError(
             "IMPACT_TRAVERSAL_BLOCKED", str(exc), status="blocked"
@@ -683,6 +686,10 @@ def _impact_selection(
             status="blocked",
             details={"skipped_edges": depth_limited, "max_depth": max_depth},
         )
+
+    graph_paths = {graph.source_paths[0]} | {graph.node_sources.get(node_id, graph.source_paths[0]) for node_id in node_ids}
+    for graph_path in sorted(graph_paths):
+        _select_path(graph_path, "selected-consistency-evidence", catalogs, selected, reasons)
 
     canonical_owners: list[dict[str, Any]] = []
     impacted_surfaces: list[dict[str, Any]] = []
@@ -773,7 +780,13 @@ def _impact_selection(
         "skipped_edges": skipped_edges,
         "canonical_owners": canonical_owners,
         "impacted_surfaces": impacted_surfaces,
-        "unresolved_relationships": [],
+        "unresolved_relationships": resolution["review_required"],
+        "owner_lookup_node_ids": resolution["owner_lookup_node_ids"],
+        "relationship_candidate_triggers": relationship_review_paths(request.changed_paths),
+        "graph_evidence": {"validated_paths": list(graph.source_paths),
+                           "delivered_paths": sorted(graph_paths),
+                           "reverse_index": reverse_path,
+                           "validation_scope": "whole-graph", "authorization_granted": False},
         "reviewed_warnings": selected_candidate_warnings(target, graph.root.get("relationship_candidates"), node_ids, graph=graph,
                                                        selected_paths=(item.path for item in selected.values())),
         "limits": {"max_depth": max_depth, "max_nodes": max_nodes},
@@ -837,9 +850,10 @@ def _add_owner_closure(
 
 def _verify_selected_content(
     target: Path, selected: dict[str, CatalogItem]
-) -> None:
+) -> dict[str, str]:
     """Verify only the content leaves selected by the bounded routing plan."""
 
+    verified = {}
     try:
         for item in tuple(selected.values()):
             stats = catalog_content_stats(target / item.path)
@@ -852,6 +866,7 @@ def _verify_selected_content(
                     f"{item.path}.content_digest is stale"
                 )
             selected[item.item_id] = replace(item, estimated_characters=stats.characters)
+            verified[item.path] = stats.digest
     except (ContextCatalogError, OSError, UnicodeError) as exc:
         raise ContextPlanningError(
             "CONTEXT_CATALOG_STALE",
@@ -860,6 +875,7 @@ def _verify_selected_content(
             details={"repair_kind": "local-context-projection", "path": item.path, "index_chain": list(item.index_chain)},
             actions=("regenerate the selected context catalog branch",),
         ) from exc
+    return verified
 
 
 def _conditional_dependency_evidence(
@@ -1055,13 +1071,16 @@ def _semantic_terms(
     return terms, index_path
 
 
-def _document_warning_lookup(request: ContextPlanRequest, target: Path, selected: dict) -> dict | None:
+def _document_warning_lookup(request: ContextPlanRequest, target: Path, selected: dict, graph_snapshot: dict[str, ImpactGraph]) -> dict | None:
     if type(request.document_warnings) is not bool:
         raise ContextPlanningError("INVALID_DOCUMENT_WARNING_REQUEST", "document_warnings must be a Boolean", status="invalid-request")
     if not request.document_warnings:
         return None
     try:
-        graph = load_impact_graph(target)
+        graph = graph_snapshot.get("active")
+        if graph is None:
+            graph = load_impact_graph(target)
+            graph_snapshot["active"] = graph
         failures = validate_graph(graph)
     except ImpactGraphError as exc:
         raise ContextPlanningError("CONSISTENCY_GRAPH_UNAVAILABLE", str(exc), upgrade_required=True) from exc
@@ -1157,8 +1176,9 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         _select_path(intent_path, "architecture-mode-descriptor", catalogs, selected, reasons)
         for path in architecture_paths:
             _select_profile_required_path(target, path, catalogs, selected, reasons)
+    graph_snapshot: dict[str, ImpactGraph] = {}
     impact = _impact_selection(
-        request, target, router, catalogs, selected, reasons
+        request, target, router, catalogs, selected, reasons, graph_snapshot
     )
     _add_owner_closure(catalogs, selected, reasons)
     _verify_selected_content(target, selected)
@@ -1263,7 +1283,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "CONTEXT_PACKET_INVALID", str(exc), upgrade_required=True
         ) from exc
     packet = _packet_projection(content_packet)
-    document_warnings = _document_warning_lookup(request, target, selected)
+    document_warnings = _document_warning_lookup(request, target, selected, graph_snapshot)
     plan = {
         "schema_version": PLAN_SCHEMA_VERSION,
         "plan_kind": PLAN_KIND,
@@ -1276,6 +1296,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "operation": operation_id,
             "changed_paths": list(request.changed_paths),
             "fact_ids": list(request.fact_ids),
+            "change_kinds": list(request.change_kinds),
             "assistant_surface": surface,
             "architecture_mode": request.architecture_mode,
             "max_words": max_words,
@@ -1311,6 +1332,26 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "semantic correctness, model delivery, comprehension, or compliance"
         ),
     }
+    if impact["used"]:
+        plan["task_contract"] = {
+            "record_kind": "derived-task-contract-view", "authority": "none",
+            "graph_digest": impact["graph_digest"],
+            "fact_ids": impact["selected_node_ids"],
+            "canonical_owners": impact["canonical_owners"],
+            "affected_surfaces": impact["impacted_surfaces"],
+            "invariant_owners": impact["canonical_owners"],
+            "validation_refs": [{"edge_id": edge["id"], "reference": edge["validation"]} for edge in impact["selected_edges"] if "validation" in edge],
+            "approval_triggers": [{"edge_id": edge["id"], "trigger": edge["approval_trigger"]} for edge in impact["selected_edges"] if "approval_trigger" in edge],
+            "approval_review": "Selected canonical policies remain applicable even when no edge declares a trigger.",
+            "relationship_review_paths": impact["relationship_candidate_triggers"],
+            "unknowns": impact["unresolved_relationships"],
+            "skipped_relationships": impact["skipped_edges"],
+            "worklist": ["review selected owners for invariants, checks and approval triggers",
+                         "reconcile affected surfaces and review new relationships",
+                         "bind resulting proof obligations to the current task model and its execution readiness"],
+            "acceptance_granted": False,
+            "limitation": "Routing references only, not a new owner, accepted obligation set, execution order or permission. Read the selected owners; missing applicability remains review-required.",
+        }
     if "validation_entrypoints" in descriptor:
         contract_digests: dict[str, str] = {}
         contract = _load_json(target, CONTRACT_PATH, "validation contract", digest_evidence=contract_digests)
@@ -1328,8 +1369,21 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         }
     if document_warnings is not None:
         plan["document_warnings"] = document_warnings
+    try:
+        for graph in graph_snapshot.values():
+            assert_graph_current(graph, target)
+    except ImpactGraphError as exc:
+        raise ContextPlanningError("CONSISTENCY_INPUT_CHANGED", str(exc), status="blocked") from exc
     plan["plan_digest"] = _canonical_digest(plan)
     return plan
+
+
+def _request_echo(value: Any, depth: int = 0) -> Any:
+    if value is None or type(value) in (str, int, bool):
+        return value
+    if isinstance(value, (list, tuple)) and depth < 3 and len(value) <= 128:
+        return [_request_echo(item, depth + 1) for item in value]
+    return {"invalid_type": type(value).__name__}
 
 
 def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dict[str, Any]:
@@ -1359,6 +1413,7 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
         "required_actions": list(error.actions),
         "context_packet": None,
     }
+    result["request"] = {key: _request_echo(value) for key, value in result["request"].items()}
     result["plan_digest"] = _canonical_digest(result)
     return result
 
@@ -1372,12 +1427,14 @@ def _validate_request(request: ContextPlanRequest) -> None:
         value = getattr(request, field)
         if value is not None:
             _text(value, "request", field)
-    for field in ("changed_paths", "fact_ids"):
+    for field in ("changed_paths", "fact_ids", "change_kinds"):
         values = getattr(request, field)
         if not isinstance(values, (tuple, list)):
             raise _field_error("request", field, "a list or tuple of strings", values)
         for index, value in enumerate(values):
             _text(value, "request", f"{field}[{index}]")
+    if any(value not in CHANGE_KINDS for value in request.change_kinds):
+        raise _field_error("request", "change_kinds", "supported change kind names", request.change_kinds)
     for field in ("max_words", "max_characters"):
         value = getattr(request, field)
         if value is not None:
@@ -1408,6 +1465,11 @@ def plan_target_context(request: ContextPlanRequest) -> dict[str, Any]:
                 "INVALID_FACT_ID", "fact IDs must be concrete non-empty values",
                 status="invalid-request",
             )
-        return _ready_plan(normalized)
+        with ContextInputSnapshot(normalized.target):
+            return _ready_plan(normalized)
+    except ContextInputChanged as exc:
+        return _error_plan(request, ContextPlanningError("CONTEXT_INPUT_CHANGED", str(exc), status="blocked",
+            details={"artifact": exc.path.relative_to(request.target.resolve()).as_posix() if request.target.resolve() in exc.path.parents else "outside-target"},
+            actions=("retry planning on stable input bytes",)))
     except ContextPlanningError as exc:
         return _error_plan(request, exc)

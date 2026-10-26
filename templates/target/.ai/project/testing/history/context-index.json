@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.testing-history",
+  "contour": "project",
+  "title": "Project History Context",
+  "summary": "Recursive navigation for the project contour at testing/history.",
+  "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
+  "entries": [
+    {
+      "id": "project.content.testing-history-readme-md",
+      "kind": "content",
+      "path": "testing/history/README.md",
+      "summary": "Historical Test Experiments",
+      "selectors": {
+        "path_terms": [
+          "testing",
+          "history"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 82,
+      "content_digest": "sha256:9b694379d5187882cd7d822769a3f31bdca732f168a1827a2b3e7ee58adb40ee"
+    }
+  ]
+}

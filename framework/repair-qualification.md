@@ -31,6 +31,17 @@ Independent authorized work may continue around a named blocked dependency.
 Qualification never clears failed acceptance or replaces diagnostic retry
 evidence, valid RED, original-flow acceptance, or the frozen full matrix.
 
+Record reviewed experimental retention/reversion reasons and incident-level effects in
+existing repair evidence. Component passes permit diagnosis, not recovery
+claims. Repeated local failures require mechanism/invariant/boundary reassessment
+before another patch; failed discriminating experiments are not negligence.
+Keep original acceptance visible.
+
+Existing task indexes expose model/obligation cursors and predecessor references.
+Concurrent heads stay explicit; dates/iterations grant no authority. Compact
+navigation neither closes predecessors nor discharges obligations. Template
+presence proves neither adoption nor effectiveness.
+
 Optional schema-2 performance policies select metric pointer/unit, median
 direction, minimum samples, maximum relative spread/regression and comparable
 condition pointers. Artifacts contain `{unit, samples}` at the metric pointer;

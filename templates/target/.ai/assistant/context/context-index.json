@@ -31,8 +31,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 131,
-      "content_digest": "sha256:0edcc9ac589faa31b29cb5d61306db0f6ba0e7d9c0ce3050347a0eec28767563"
+      "estimated_words": 152,
+      "content_digest": "sha256:482b2f5e22d7ac5e26a21333f00129953c9bd381db4f97af7af2afbceac69705"
     },
     {
       "id": "assistant.content.context-cost-scenarios-json",
@@ -112,7 +112,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 327,
-      "content_digest": "sha256:286a769ef87bdaf7cec7e458bc67f18171c917f4c771ffd9bbb2910a40e47f47"
+      "content_digest": "sha256:fcbb66f6b400009bb269505d69bfae04b9400a1b583e30c0f2feaf185303a910"
     },
     {
       "id": "assistant.section.context-profiles",

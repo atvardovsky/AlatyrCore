@@ -16,6 +16,8 @@ fact, defect, invariant, contract, or refactor.
 
 1. Confirm `test-first-development` is enabled and load
    `.ai/project/testing/test-first-policy.json`.
+   Use `.ai/project/testing/execution.md` when the target has split guidance;
+   older adapters retain their current inline owner until a reviewed migration.
 2. Name the changed fact, invariant, defect, or contract and canonical owner.
 3. Evaluate the target activation triggers and report `required`,
    `recommended`, `not-indicated`, or `blocked`.
@@ -35,6 +37,10 @@ fact, defect, invariant, contract, or refactor.
    For uncertain/recurring defects, apply the incident review in the canonical
    test policy: qualify the original reproducer, competing causes, falsifier,
    actual fixture boundaries and expected whole-incident effect before repair.
+   Load selected `.ai/project/testing/incident-repair.md` guidance when installed,
+   not unrelated historical experiments. Preserve concurrent incident heads and
+   unresolved predecessor obligations. Record experimental retention/reversion
+   rationale in the existing expected/observed-effect review.
    When `repair_review` is enabled, retain the required `repair-evidence-review`
    obligation and author task-bound evidence using the adopted schema's
    `repair-review.json` or `repair-qualification.json` template. Do not

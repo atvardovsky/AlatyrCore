@@ -253,3 +253,13 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
     if not any(item.level in {"error", "warning"} for item in validator.findings[finding_start:]):
         observation.update(state="record-consistent", claim=record["claim"],
                            repair_stage=record.get("repair_stage", "schema-1"))
+        diagnostics = [attempt for attempt in record["attempts"] if attempt["purpose"] == "diagnostic"]
+        acceptance = [attempt for attempt in record["attempts"] if attempt["purpose"] == "acceptance"]
+        observation["convergence"] = {
+            "original_case_ref": record["original_case_ref"], "diagnosis": record["diagnosis"],
+            "latest_diagnostic": diagnostics[-1] if diagnostics else None,
+            "latest_acceptance": acceptance[-1] if acceptance else None,
+            "component_pass_establishes_recovery": False,
+            "next_action": "review-original-flow-evidence" if record["claim"] == "incident-fixed" else "review-discriminating-diagnostic-and-original-outcome",
+            "authority": "none", "effectiveness_proved": False,
+        }

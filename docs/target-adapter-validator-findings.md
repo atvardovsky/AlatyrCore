@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1744
+Catalog entries: 1745
 
 ## Families
 
@@ -23,7 +23,7 @@ Catalog entries: 1744
 - `ASSISTANT`: 39 codes.
 - `AUTHORIZATION`: 18 codes.
 - `BACKUP`: 1 codes.
-- `BASELINE`: 2 codes.
+- `BASELINE`: 3 codes.
 - `BLUEPRINT`: 7 codes.
 - `BOOTSTRAP`: 9 codes.
 - `CAPABILITY`: 10 codes.
@@ -535,6 +535,8 @@ Catalog entries: 1744
 - `BASELINE_CLAIMS_CHECKED`
   Level: info. Source: `tools/target_adapter_validation/baseline_claims.py`.
 - `BASELINE_CLAIM_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/baseline_claims.py`.
+- `BASELINE_CLAIM_INVALID`
   Level: error. Source: `tools/target_adapter_validation/baseline_claims.py`.
 - `BLUEPRINT_CHANGE_OPERATION_CATALOG`
   Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
