@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import contextlib
+import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -21,7 +24,7 @@ from check_lifecycle_conformance import (  # noqa: E402
 from render_installed_context_catalogs import expected_outputs  # noqa: E402
 from scaffold_target_structure import plan as scaffold_plan  # noqa: E402
 from target_adapter_validation.harness_scenarios.common import validator, write_json  # noqa: E402
-from validate_target_adapter import parse_manifest  # noqa: E402
+from validate_target_adapter import Validator, main as validator_main, parse_manifest  # noqa: E402
 import yaml  # noqa: E402
 
 
@@ -300,7 +303,7 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
         return subprocess.run([sys.executable, "-B", *arguments], cwd=ROOT,
                               capture_output=True, text=True, check=False)
 
-    def test_scoped_finalization_and_full_acceptance_reject_missing_owner(self):
+    def accepted_bindings(self):
         base = run_git(self.target, "rev-parse", "HEAD")
         approval = ".ai/assistant/approvals/fixture-install.json"
         write_json(self.target / approval, approval_record(base, "full"))
@@ -313,6 +316,68 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
         delegate = str(self.target / ".ai/assistant/tools/alatyr_delegate.py")
         result = self.command(delegate, "finalize-support", *bindings, "--write", "--require-current-change")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return bindings, delegate
+
+    def test_repeated_full_cli_validation_preserves_target_inputs(self):
+        bindings, _ = self.accepted_bindings()
+        report = self.target.parent / "repeat-validation.json"
+
+        def snapshot():
+            paths = [self.target / ".ai", *(self.target / ".ai").rglob("*")]
+            result = {}
+            for path in paths:
+                info = path.stat()
+                result[path.relative_to(self.target).as_posix()] = (
+                    info.st_mode, info.st_size, info.st_mtime_ns, info.st_ino,
+                    path.read_bytes() if path.is_file() else None,
+                )
+            return result
+
+        before = snapshot()
+        for attempt in range(3):
+            with self.subTest(attempt=attempt):
+                result = self.command(str(ROOT / "tools/validate_target_adapter.py"), *bindings,
+                                      "--validation-phase", "acceptance", "--validation-scope", "full",
+                                      "--approval-archive-mode", "full", "--output", str(report))
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                payload = json.loads(report.read_bytes())
+                self.assertTrue(payload["placeholder_validation"]["acceptance_eligible"])
+                self.assertFalse(any(f["code"].endswith("_MUTATED") for f in payload["findings"]))
+                self.assertEqual(snapshot(), before)
+
+    def test_metadata_only_mutation_blocks_cli_acceptance_with_captured_details(self):
+        bindings, _ = self.accepted_bindings()
+        observed = self.target / ".ai/project"
+        report = self.target.parent / "mutated-validation.json"
+        original = Validator.check_migration_diff_evidence
+
+        def mutate(check):
+            original(check)
+            check.context.status(observed)
+            info = observed.stat()
+            os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns + 2_000_000_000))
+
+        arguments = ["validate_target_adapter.py", *bindings, "--validation-phase", "acceptance",
+                     "--validation-scope", "full", "--approval-archive-mode", "full",
+                     "--output", str(report)]
+        with patch.object(sys, "argv", arguments), \
+                patch.object(Validator, "check_migration_diff_evidence", mutate), \
+                contextlib.redirect_stdout(io.StringIO()):
+            exit_code = validator_main()
+        self.assertEqual(exit_code, 1)
+        payload = json.loads(report.read_bytes())
+        self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
+        errors = [f for f in payload["findings"] if f["level"] == "error"]
+        self.assertEqual([f["code"] for f in errors], ["TARGET_INPUT_MUTATED"])
+        self.assertEqual(errors[0]["path"], ".ai/project")
+        details = errors[0]["details"]
+        self.assertEqual(details["before_state"], "directory")
+        self.assertEqual(details["content"]["comparison"], "not-measured")
+        self.assertIn("mtime_ns", details["metadata_changes"])
+        self.assertNotIn(str(self.target), json.dumps(errors[0]))
+
+    def test_scoped_finalization_and_full_acceptance_reject_missing_owner(self):
+        bindings, delegate = self.accepted_bindings()
         self.assertTrue((self.target / TASKS / "context-index.json").is_file())
         links = read_json(self.target, LINKS)
         links["links"][0]["canonical_owner"] = "docs/does-not-exist.md"

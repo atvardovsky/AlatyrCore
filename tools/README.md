@@ -1584,6 +1584,18 @@ use the narrow capability context. Debug Mode retains one explicit broad-host
 compatibility route because its Git history and repository-binding checks need
 operations outside that context. There is no reflective fallback dispatch.
 
+`TARGET_INPUT_MUTATED` and `VALIDATOR_SCHEMA_MUTATED` remain blocking errors.
+Text findings name the changed metadata fields and content-comparison status;
+JSON findings add `details` with before/after states, metadata deltas, and
+captured SHA-256 values. Directory content is `not-measured`, not assumed
+unchanged. These diagnostics reuse the existing observations without extra
+filesystem reads, file contents, or a filesystem-writer attribution claim.
+The optional report file is written only after input finalization. For recurring
+findings, retain the failed report and correlate the named paths and deltas
+with concurrent processes or filesystem activity before rerunning in isolation.
+Do not treat a successful retry as proof of first-attempt stability or suppress
+metadata-only changes automatically.
+
 It does not install Alatyr Core, inspect project business truth, approve
 protected changes, run target validation, or replace assistant logical
 integrity review.

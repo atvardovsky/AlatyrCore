@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Expose captured input-mutation metadata and digest comparisons in validator
+  diagnostics, preserving fail-closed acceptance and existing read costs.
+  Add repeated full-validation and controlled-mutation regressions. This is a
+  source-tool diagnostic change; framework, adapter schema and template
+  versions are unchanged. The reported external mutation cause remains
+  unresolved without its detailed filesystem evidence.
 
 ## 0.1.0-alpha.106 - 2026-10-25
 

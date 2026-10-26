@@ -778,6 +778,7 @@ class Finding:
     code: str
     message: str
     path: str | None = None
+    details: dict[str, Any] | None = None
 
     def render(self) -> str:
         prefix = f"{self.level.upper()} {self.code}"
@@ -793,6 +794,8 @@ class Finding:
         }
         if self.path:
             payload["path"] = self.path
+        if self.details is not None:
+            payload["details"] = self.details
         payload["blocking"] = is_blocking_finding(self)
         if self.level in {"error", "warning"}:
             payload["owner_surface"] = self.path or "target adapter"
@@ -1065,8 +1068,11 @@ class Validator:
         self._scan_text_files_cache: tuple[Path, ...] | None = None
         self.enabled_module_ids: set[str] = set()
 
-    def error(self, code: str, message: str, path: str | None = None) -> None:
-        self.add_finding("error", code, message, path)
+    def error(
+        self, code: str, message: str, path: str | None = None,
+        *, details: dict[str, Any] | None = None,
+    ) -> None:
+        self.add_finding("error", code, message, path, details=details)
 
     def warn(self, code: str, message: str, path: str | None = None) -> None:
         self.add_finding("warning", code, message, path)
@@ -1075,17 +1081,18 @@ class Validator:
         self.add_finding("info", code, message, path)
 
     def add_finding(
-        self, level: str, code: str, message: str, path: str | None = None
+        self, level: str, code: str, message: str, path: str | None = None,
+        *, details: dict[str, Any] | None = None,
     ) -> None:
         if self.deviation_accepts(level, code, path):
             reason = self.deviation_reason(code, path)
             suffix = f" Accepted deviation: {reason}" if reason else " Accepted deviation."
-            self.findings.append(Finding("info", code, message + suffix, path))
+            self.findings.append(Finding("info", code, message + suffix, path, details))
             return
         configured_level = self.config.severity_for(level, code)
         if configured_level == "ignore":
             return
-        self.findings.append(Finding(configured_level or level, code, message, path))
+        self.findings.append(Finding(configured_level or level, code, message, path, details))
 
     def deviation_accepts(self, level: str, code: str, path: str | None) -> bool:
         if level == "error":
@@ -1193,17 +1200,23 @@ class Validator:
 
         def finalize_inputs() -> None:
             for mutation in self.schema_context.finalize():
+                details = mutation.diagnostics(self.schema_context.target)
                 self.error(
                     "VALIDATOR_SCHEMA_MUTATED",
-                    "validator schema changed during validation; discard these findings and rerun",
+                    "validator schema changed during validation; discard these findings and rerun; "
+                    + mutation.summary(details),
                     "schemas/" + mutation.path.name,
+                    details=details,
                 )
             self.target_mutations = self.context.finalize()
             for mutation in self.target_mutations:
+                details = mutation.diagnostics(self.context.target)
                 self.error(
                     "TARGET_INPUT_MUTATED",
-                    "target input changed during validation; discard these findings and rerun",
+                    "target input changed during validation; discard these findings and rerun; "
+                    + mutation.summary(details),
                     self.rel(mutation.path),
+                    details=details,
                 )
             git_state = self.git.stability()
             if git_state is GitEvidenceState.MUTATED:

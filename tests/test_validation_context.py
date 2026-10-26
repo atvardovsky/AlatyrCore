@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import subprocess
 import tempfile
@@ -373,6 +374,10 @@ class ValidationContextTests(unittest.TestCase):
                     for finding in validator.findings
                 )
             )
+            finding = next(f for f in validator.findings if f.code == "TARGET_INPUT_MUTATED")
+            self.assertEqual(finding.to_json()["details"]["content"]["comparison"], "changed")
+            self.assertIn("changed metadata:", finding.render())
+            self.assertNotIn(str(target), json.dumps(finding.to_json()))
 
     def test_combined_local_path_scan_preserves_unix_and_windows_findings(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

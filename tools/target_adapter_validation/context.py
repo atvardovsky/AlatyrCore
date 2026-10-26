@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import stat
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, fields, replace
 from enum import Enum
 from pathlib import Path
 from typing import Any, Generic, Iterator, TypeVar
@@ -89,6 +89,51 @@ class TargetMutation:
     before: TargetFileStatus
     after: TargetFileStatus
     content_changed: bool
+    before_digest: str | None = None
+    after_digest: str | None = None
+
+    def diagnostics(self, root: Path) -> dict[str, Any]:
+        """Explain captured changes without more I/O or exposing input contents."""
+
+        def value(item: Any) -> Any:
+            if isinstance(item, Path):
+                try:
+                    return item.relative_to(root).as_posix()
+                except ValueError:
+                    return "<outside-root>"
+            if isinstance(item, Enum):
+                return item.value
+            return item
+
+        changes = {}
+        for field in fields(TargetFileStatus):
+            if field.name in {"path", "error"}:
+                continue
+            before = getattr(self.before, field.name)
+            after = getattr(self.after, field.name)
+            if before != after:
+                changes[field.name] = {"before": value(before), "after": value(after)}
+        if self.before_digest is None:
+            content_state = "not-measured"
+        elif self.after_digest is None:
+            content_state = "unavailable"
+        else:
+            content_state = "changed" if self.content_changed else "unchanged"
+        return {
+            "before_state": self.before.state.value,
+            "after_state": self.after.state.value,
+            "metadata_changes": changes,
+            "content": {
+                "comparison": content_state,
+                "before_sha256": self.before_digest,
+                "after_sha256": self.after_digest,
+            },
+        }
+
+    @staticmethod
+    def summary(diagnostics: dict[str, Any]) -> str:
+        changed = ", ".join(diagnostics["metadata_changes"]) or "none"
+        return f"changed metadata: {changed}; content: {diagnostics['content']['comparison']}"
 
 
 @dataclass(frozen=True)
@@ -434,6 +479,8 @@ class TargetRepositoryView:
                         before=observed.status,
                         after=after,
                         content_changed=content_changed,
+                        before_digest=observed.digest,
+                        after_digest=after_digest,
                     )
                 )
         return tuple(mutations)
