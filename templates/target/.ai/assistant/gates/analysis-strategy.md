@@ -2,14 +2,13 @@
 
 Owner: `ALATYR-DECOMPOSITION-001`.
 
-Use this gate for non-trivial work. Eligible small tasks use `direct-local`
-without loading this file or the strategy catalog.
+Non-trivial work only. Eligible small tasks stay `direct-local` without loading
+this gate or strategy catalog.
 
 Before execution:
 
-- select exactly one primary strategy from the target catalog
-- load only the index and selected descriptor
-- record evidence for the selection and a bounded problem model
+- select one primary strategy, record selection evidence and a bounded model;
+  load only its descriptor and catalog index
 - register non-trivial authorized work in `.ai/assistant/active-tasks.json`;
   current-task acceptance supplies `--task-id`, independently selected
   `--task-class`, and `--require-task-acceptance` when canonical tooling is used.
@@ -33,8 +32,11 @@ Before execution:
   obligation, and adversarial review
 - keep Debug Mode separate and disabled unless explicitly activated
 - assign each proof obligation to the primary or one bounded worker task
-- keep global strategy selection, obligation waiver, acceptance, and final
-  convergence with the primary assistant
+- re-anchor at material boundaries through
+  `.ai/framework/task-decomposition.md#evidence-guided-analysis`; detailed focus
+  is optional, never a missing-pack blocker
+- the primary retains strategy selection, obligation waiver, acceptance and
+  final convergence
 
 Before completion:
 
@@ -56,10 +58,9 @@ Before completion:
 - no private reasoning, hidden chain-of-thought, or raw scratchpad was stored
 - reusable outcomes are classified, but promotion remains an explicit
   project-owned action
-- use the hash-bound `task-closure.json` template for registered ended work;
-  retain reviewed model/projection witnesses under `.ai/assistant/task-evidence/`
-  before closing non-small work; full checks must not require ignored runtime
-  files for closed tasks
+- close registered work with hash-bound `task-closure.json`; retain reviewed
+  model/projection witnesses in `.ai/assistant/task-evidence/` before closing
+  non-small work. Full checks must not require ignored runtime files
   separate implementation, evidence finalization, and publication. Resolve
   capture to the engineering index or justified preservation/blocker, and
   check relevant architecture source reviews rather than only support hashes

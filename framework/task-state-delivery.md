@@ -44,6 +44,38 @@ Passed/waived dependency statuses remain declarations, not newly verified eviden
 Omit the mapping when not adopted. Never infer it from prose or task predecessors.
 The active projection preserves adopted mappings within existing byte/word limits.
 
+## Execution Focus
+
+For a selected active task, derive orientation from its validated model and
+existing readiness/advice, not another mutable status file. Bind the task ID,
+model digest, objective, scope references, unresolved duties and proposed probe
+to the same snapshot. A proposal names its obligation, uncertainty, method and
+completion condition; it is not an executable command or authorization.
+
+Keep ready suggestions separate from blocked, waiting and dependency-unconfigured
+probes. Unknown mappings do not require adoption and never establish readiness.
+Stale selected artifacts clear actionable readiness and advice together, while
+retaining unresolved duties. A bounded focus overflow returns references and no
+action, not truncated constraints presented as sufficient context. Closed task
+views remain historical and propose no active work.
+
+Re-anchor at changed requirements, material contradictory evidence, scope
+expansion, failed gates, repeated unresolved repairs, worker convergence and
+continuity boundaries. Review the newest intent, selected owner/projection and
+affected obligations before the next state change. Existing pending revisions,
+invariant conflicts, failed gates, inconclusive probes and original-case status
+are signals, not a new incident detector or global freeze on independent work.
+An unchanged failed attempt needs a new discriminating question, input or
+explicit retry rationale; a command-count timer is not evidence of drift.
+
+Use verified host hooks or a controlled executor for pre-action checks when
+available; otherwise perform the same checkpoint procedurally and report that
+execution was not intercepted. No universal hook, conversational-intent parser,
+context eviction or permission grant is implied. Do not reload the full corpus,
+repeat a growing summary, or add focus to routine bootstrap. Evaluate actual
+agent behavior using the [drift comparison protocol](effectiveness-metrics.md#execution-drift-evaluation),
+separately from deterministic record and projection tests.
+
 ## Selected Document Warnings
 
 During consistency routing, exact selected documents also select their reviewed

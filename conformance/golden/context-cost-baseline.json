@@ -1142,10 +1142,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 489379,
-      "characters": 489379,
+      "bytes": 490769,
+      "characters": 490769,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 122345,
+      "estimated_tokens_4_chars": 122693,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -1182,7 +1182,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 59926,
+      "portable_words": 60103,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -1229,7 +1229,7 @@
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 60699
+      "words": 60876
     },
     "initial": {
       "bytes": 19783,
@@ -2965,10 +2965,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 833859,
-        "characters": 833859,
+        "bytes": 837812,
+        "characters": 837812,
         "declared_files": 68,
-        "estimated_tokens_4_chars": 208465,
+        "estimated_tokens_4_chars": 209453,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -3040,7 +3040,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 102894,
+        "portable_words": 103396,
         "resolved_files": 68,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -3115,7 +3115,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 102894
+        "words": 103396
       },
       "selected_route": {
         "bytes": 35194,
@@ -3140,7 +3140,7 @@
         "unresolved_references": [],
         "words": 3242
       },
-      "word_reduction_percent": 96.8
+      "word_reduction_percent": 96.9
     },
     "semantic_codebook": {
       "compact_definition_and_reference_words": 1055,

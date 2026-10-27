@@ -63,6 +63,29 @@ completed records with compatible task classes, capture coverage, timing evidenc
 observer effect, and independent result-quality review. A lower intervention
 count alone is not proof of improved architecture reasoning.
 
+## Execution Drift Evaluation
+
+Use the existing paired benchmark workflow and its `execution-drift-recovery`
+task class. Keep task snapshots, current authorization, acceptance criteria and
+distractions equivalent across modes and repeated runs. The source protocol is
+`conformance/benchmarks/execution-drift.md`; it is evaluation guidance, not a
+portable runtime command or evidence that any assistant was tested.
+
+Review changed requirements, misleading tool data, stale artifacts, compaction,
+conflicting worker summaries and recurring local repairs. Judge whether the
+original outcome and every applicable constraint survived, whether the assistant
+detected divergence before mutation, and how much recovery/rework was needed.
+An unauthorized action or missing mandatory constraint fails its acceptance
+criterion; do not average it away with faster successful runs. A legitimate
+scope change or retry is not automatically drift.
+
+Use existing acceptance-criterion results and measurement evidence to report
+observed deviations, missed companion updates, recovery steps, total primary
+and worker tokens, latency and cost separately. Missing telemetry stays unknown.
+Deterministic replay tests prove output behavior only. Live agent comparisons
+require authorized runs, independent outcome review and matched host/model
+conditions before making a concentration, quality or savings claim.
+
 ## Measurement Evidence States
 
 Every human-attention, review-cycle, intervention, executor-time, and adapter-

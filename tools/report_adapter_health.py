@@ -258,6 +258,16 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
                 lines.append("Original case source: " + original["source_ref"])
             lines.append("Component passes do not establish original-outcome acceptance.")
         readiness = current.get("execution_readiness", {})
+        focus = current.get("execution_focus", {})
+        if focus:
+            lines.append("Execution focus: " + focus["state"] + " (not authorization)")
+            lines.extend("Re-anchor: " + row["reason"] for row in focus.get("reanchor_signals", []))
+            action = focus.get("next_action")
+            if action is not None:
+                lines.append("Proposed obligation: " + action["obligation_id"])
+                lines.append("Completion condition: " + action["completion_condition"])
+            if focus.get("recovery"):
+                lines.append("Focus recovery: " + focus["recovery"])
         lines.append("Declared ready obligations: " + ", ".join(readiness.get("ready", [])))
         controls = current.get("incident_controls", {})
         lines.append("Repair review: " + controls.get("adoption", "unknown") + "; evidence: " + current["repair_evidence"]["state"])

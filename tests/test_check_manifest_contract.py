@@ -35,6 +35,20 @@ def manifest_entry(**overrides: object) -> dict[str, object]:
 
 
 class CheckManifestContractTests(unittest.TestCase):
+    def test_unit_suite_reserves_its_existing_capacity_without_raising_limits(self):
+        unit = next(row for row in check_all.load_manifest() if row["id"] == "source-unit-tests")
+        self.assertEqual(unit["scheduler_slots"], unit["child_capacity_max"])
+        self.assertEqual(unit["child_capacity_max"], 4)
+        self.assertEqual(unit["timeout_seconds"], 300)
+        for jobs in (1, 2, 4, 8):
+            observed = {}
+            def runner(item, _baseline):
+                observed[item["id"]] = item["_child_capacity"]
+                return 0, "", "", [item["id"]]
+            with self.subTest(jobs=jobs):
+                check_all.execute_checks([unit], None, jobs, runner=runner)
+                self.assertEqual(observed["source-unit-tests"], min(jobs, 4))
+
     def test_evidence_query_implementations_and_schemas_invalidate_unit_reuse(self):
         from source_check_reuse import check_input_fingerprint
         from source_state import SourceEntry

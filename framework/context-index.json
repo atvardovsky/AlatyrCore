@@ -53,7 +53,7 @@
         "ALATYR-TEAM-001"
       ],
       "estimated_words": 212,
-      "content_digest": "sha256:e7c80885b8fae0fc53830a4cf1a4f7763577d76d8173d133bbae6adfec53dea1"
+      "content_digest": "sha256:48a438c4cf686f1b131bed18528c237c3a0bb97ef37af4943ab4536616471300"
     },
     {
       "id": "framework.section.core",
@@ -91,7 +91,7 @@
         "ALATYR-SOURCE-001"
       ],
       "estimated_words": 949,
-      "content_digest": "sha256:b1be64d1c5d2632481ec0d970c6e276b0c1f6bacaa0dfd2c70a045f16e80ae98"
+      "content_digest": "sha256:d55d7d0e9f72162b10660cedaa499b4905e95a1065da0ecd3e2e4295a0b726d4"
     },
     {
       "id": "framework.section.infrastructure",
@@ -177,7 +177,7 @@
         "ALATYR-TDD-001"
       ],
       "estimated_words": 375,
-      "content_digest": "sha256:a06a918215a8ba318998492bf3f26b2f25bf36534e731dabd6d5f225c6bcc066"
+      "content_digest": "sha256:35a0d4cffe457be487c8ca3145cf90da1194554a07d67084695352520c915696"
     }
   ]
 }

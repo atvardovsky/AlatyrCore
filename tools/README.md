@@ -203,6 +203,18 @@ advice neither verifies observations nor authorizes a probe. Current publication
 and target validation verify selected artifact hashes and retain pending duties.
 Canonical meanings: [evidence-guided analysis](../framework/task-decomposition.md#evidence-guided-analysis).
 
+Selected-task output also derives a bounded `execution_focus`: task/model
+binding, objective, scope, unresolved duties, re-anchor signals and a proposed
+probe with its completion condition. `candidates` contains declared-ready probes;
+`retained_candidates` preserves blocked, waiting or dependency-unconfigured work.
+Stale artifacts clear ready claims as well as advice. Unknown dependency mapping
+is not an adoption requirement. A focus exceeding 8,192 canonical bytes or 800
+structured words becomes `reference-required` with no action; use its model and
+active-projection references instead of treating a partial view as sufficient.
+Closed tasks propose no active action. Default health/bootstrap reads are unchanged.
+The view performs no new source reads, host interception, intent verification or
+execution; recheck current authorization and selected bindings before mutation.
+
 `context-plan --knowledge-request .ai/.runtime/knowledge-query.json` explicitly
 searches named registered knowledge shards. A request has `schema_version: 1`,
 `stage: initial` or `refined`, `shard_ids`, `selectors` and `limit`. For example:

@@ -235,29 +235,42 @@ def active_evidence(model: dict) -> dict:
             "rejected_hypotheses": [row for row in model["hypotheses"] if row["status"] == "rejected"]}
 
 
-def next_action_advice(model: dict, model_sha256: str) -> dict:
+def next_action_advice(model: dict, model_sha256: str, *, readiness: dict | None = None) -> dict:
     from task_readiness import execution_readiness
-    readiness = execution_readiness(model)
+    if readiness is None:
+        readiness = execution_readiness(model)
     ready = set(readiness.get("ready", []))
+    blocked = set(readiness.get("blocked", []))
+    waiting = {row["obligation_id"]: row["requires"] for row in readiness.get("waiting", [])}
     obligations = {row["id"]: row for row in model["proof_obligations"]}
-    candidates = []
+    candidates, retained = [], []
     for probe in model["analysis_evidence"]["probes"]:
         identity = probe["obligation_id"]
         obligation = obligations[identity]
         if obligation["status"] in {"passed", "waived"}:
             continue
-        candidates.append({"obligation_id": identity, "required": obligation["required"],
-                           "dependency_ready": identity in ready, "unknown_ids": probe["unknown_ids"],
-                           "action_kind": probe["action_kind"], "discriminated_hypothesis_count": len(probe["predictions"]),
-                           "estimated_tool_calls": probe["estimated_tool_calls"],
-                           "reason": "discriminate a named uncertainty; recorded estimates are not measured savings"})
+        eligibility = ("dependency-unconfigured" if readiness["state"] == "not-configured" else
+                       "dependency-invalid" if readiness["state"] != "declared-readiness" else
+                       "ready" if identity in ready else "blocked" if identity in blocked else "waiting")
+        row = {"obligation_id": identity, "required": obligation["required"],
+               "status": obligation["status"], "eligibility": eligibility,
+               "dependency_ready": None if eligibility == "dependency-unconfigured" else identity in ready,
+               "unsettled_prerequisites": waiting.get(identity, []), "unknown_ids": probe["unknown_ids"],
+               "action_kind": probe["action_kind"], "discriminated_hypothesis_count": len(probe["predictions"]),
+               "retry_review_required": probe["result"] is not None,
+               "estimated_tool_calls": probe["estimated_tool_calls"],
+               "reason": "discriminate a named uncertainty; recorded estimates are not measured savings"}
+        (candidates if eligibility == "ready" else retained).append(row)
     risk_order = {"read-only": 0, "local-check": 1, "protected-action": 2, "unknown": 3}
-    candidates.sort(key=lambda row: (not row["required"], not row["dependency_ready"], risk_order[row["action_kind"]],
-                                     row["estimated_tool_calls"] is None, row["estimated_tool_calls"] or 0,
-                                     -row["discriminated_hypothesis_count"], row["obligation_id"]))
+    def order(row: dict) -> tuple:
+        return (not row["required"], risk_order[row["action_kind"]],
+                row["estimated_tool_calls"] is None, row["estimated_tool_calls"] or 0,
+                -row["discriminated_hypothesis_count"], row["obligation_id"])
+    candidates.sort(key=order)
+    retained.sort(key=order)
     return {"model_sha256": model_sha256, "task_binding": model["task_binding"], "authority": "none",
             "authorization_granted": False, "evidence_verified": False,
-            "dependency_state": readiness["state"], "candidates": candidates,
+            "dependency_state": readiness["state"], "candidates": candidates, "retained_candidates": retained,
             "unresolved_required": [row["id"] for row in model["proof_obligations"] if row["required"] and row["status"] not in {"passed", "waived"}],
             "unresolved_reviews": sorted(set(model["required_review_ids"]) - {row["id"] for row in model["review_results"] if row["status"] == "passed"}),
             "pending_revision_ids": [row["id"] for row in model["analysis_evidence"]["updates"] if row["state"] == "pending"],

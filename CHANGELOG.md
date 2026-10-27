@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.110 - 2026-10-27
+
+- Invalidate selected-task ready claims together with stale analysis advice.
+  Separate declared-ready probes from blocked, waiting and unconfigured duties;
+  keep required unresolved work visible without hiding independent suggestions.
+- Add a bounded digest-bound execution-focus view through explicit current-task
+  selection, reusing the existing model/readiness and source reads. Surface
+  material evidence, original-outcome and recurrence signals; retain procedural
+  and verified-host enforcement boundaries without a new scheduler or registry.
+- Route event-driven re-anchoring through existing conditional gates/continuity
+  and extend paired benchmark coverage. Deterministic replays are not live-agent
+  concentration, general performance or billing evidence. Default bootstrap and
+  health selection are unchanged; focus overflow returns references, not partial
+  actionable constraints.
+- Advance framework to alpha.110, adapter diagnostic contract to `91` and
+  templates to `105`. Active model/projection schemas stay `7`/`5`. Reconcile
+  selected-task output consumers and installed guidance without enabling optional
+  mappings, inventing host hooks or changing target authorization.
+- Reserve the source unit suite's existing four-worker maximum before dispatch;
+  retain smaller-host clamping, complete test coverage and the 300-second limit.
+  This source-only scheduling adjustment adds no target runtime requirement.
+
 - Harden source-only CI fixtures: resolve macOS temporary-root aliases without
   weakening symlink rejection, disable automatic/detached Git maintenance in
   disposable repositories and hosted runners, and verify effective Git settings.

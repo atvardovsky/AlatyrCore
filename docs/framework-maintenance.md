@@ -35,6 +35,16 @@ Disable automatic and detached Git maintenance before disposable fixture commits
 Cleanup errors remain test failures, never ignored; hosted CI applies the same
 settings to its disposable runner only, not to target projects or user Git config.
 
+Execution-focus regressions must couple freshness, readiness and presentation:
+stale evidence clears actionable lists, blocked/waiting/unknown duties remain
+distinct, pending revisions retain independent work, and invalid snapshots clear
+every derived view. Exercise public JSON/text delivery, malformed selected models,
+closed witnesses and below/at/above focus limits. Compare default routes and source
+read counts; structural replays are not live-agent concentration measurements.
+The full unit suite reserves its existing four-worker ceiling to avoid locking
+in a smaller grant while other checks fill the schedule. Capacity still clamps
+to the host/check budget; coverage and the 300-second deadline are unchanged.
+
 For current-change contract revisions, test the smallest accepted installation
 with optional modules absent, then enable each affected module and prove its
 obligations cannot be omitted. Parser acceptance and matching metadata are

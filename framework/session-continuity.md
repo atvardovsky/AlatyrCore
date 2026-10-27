@@ -103,8 +103,9 @@ Before state-changing work resumes:
    changed.
 6. Re-evaluate current-scope authorization from the newest user instruction.
 7. Reclassify risk when scope, changed facts, or external effects differ.
-8. Continue from the recorded next safe action only when every applicable
-   boundary still passes.
+8. Rebuild the next action from revalidated task bindings, not stale advice.
+   Continue only after applicable boundaries pass; preserve the original outcome
+   and unsettled duties.
 
 No full framework or project reread is required merely because compaction
 occurred. Expand context only for a concrete mismatch, stale digest, named

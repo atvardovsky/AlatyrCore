@@ -48,6 +48,7 @@ Compact semantic reference: `alatyr:session-continuity@1`.
    user instruction. Never restore publish or live-external authority from the
    packet.
 8. Reclassify risk and approval needs if facts, scope, or effects changed.
+   Derive the next action again; discard stale recommendations.
 9. Run the smallest focused validation that proves the resumed next action.
 10. Continue only after `.ai/assistant/gates/session-continuity.md` passes.
 

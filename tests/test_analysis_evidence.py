@@ -211,7 +211,9 @@ class AnalysisEvidenceIntegrationTests(ActiveTaskFixture):
         self.assertIsNone(advice["candidates"][0]["estimated_tool_calls"])
         self.assertTrue(advice["candidates"][0]["dependency_ready"])
         model.pop("execution_dependencies")
-        self.assertFalse(next_action_advice(model, "b" * 64)["candidates"][0]["dependency_ready"])
+        unconfigured = next_action_advice(model, "b" * 64)
+        self.assertEqual(unconfigured["candidates"], [])
+        self.assertIsNone(unconfigured["retained_candidates"][0]["dependency_ready"])
 
     def test_selected_task_view_blocks_advice_when_input_changes(self):
         from current_task_view import current_task_view

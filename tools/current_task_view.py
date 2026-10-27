@@ -120,8 +120,10 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
             "predecessor_obligations_discharged": False,
             "authority": "none", "evidence_verified": False,
         }
+    readiness = execution_readiness(model)
     if "execution_dependencies" in model:
-        result["execution_readiness"] = execution_readiness(model)
+        result["execution_readiness"] = readiness
+    advice = None
     if closure is None and "analysis_evidence" in model:
         from analysis_evidence import next_action_advice, verify_artifacts
         def read_artifact(path: str, limit: int) -> bytes:
@@ -131,11 +133,18 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
             return raw.value
         failures = verify_artifacts(model, read_artifact)
         if failures:
+            readiness = {**readiness, "state": "blocked-by-stale-evidence", "ready": [],
+                         "failures": [*readiness["failures"], *failures]}
+            if "execution_readiness" in result:
+                result["execution_readiness"] = readiness
             result["next_action_advice"] = {"state": "blocked-by-stale-evidence", "model_sha256": binding["sha256"],
                 "diagnostics": failures, "authority": "none", "authorization_granted": False}
         else:
-            result["next_action_advice"] = next_action_advice(model, binding["sha256"])
+            result["next_action_advice"] = next_action_advice(model, binding["sha256"], readiness=readiness)
             result["next_action_advice"]["artifact_binding_state"] = "current-content-not-execution-proof"
+        advice = result["next_action_advice"]
+    from execution_focus import build_execution_focus
+    result["execution_focus"] = build_execution_focus(model, task, binding, readiness, advice)
     if closure:
         result["delivery"] = closure["delivery"]
         result["disposition_kind"] = "recorded-closure-not-current-runtime"

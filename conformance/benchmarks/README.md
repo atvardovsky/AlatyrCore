@@ -11,6 +11,11 @@ team-active coordination. It is a coverage contract, not evidence that those
 runs have occurred. Use at least three repetitions per task class when model
 variability matters.
 
+The [execution-drift protocol](execution-drift.md) adds changed-intent,
+distraction, stale-evidence, continuity, worker-conflict and recurring-repair
+scenarios using the same reports and acceptance review. Source unit replays
+are not live-agent results.
+
 Reviewed paired results enforce a quality floor: minimal and full modes must
 not increase failed acceptance criteria, hallucinated commands, validation
 errors, missed companion updates, rework, or unresolved consistency gaps

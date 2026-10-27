@@ -244,6 +244,13 @@ and unknown costs, prefers lower-impact discriminating checks and suggests
 systemic reassessment for recurrence. It is not authorization, evidence
 acceptance, a second scheduler or a proven optimum.
 
+At material evidence/scope changes or worker/continuity boundaries, re-anchor
+to current intent, authorization, owners and unresolved duties. Name the next
+obligation, question and proof condition. Separate ready/blocked/unknown work;
+invalidate stale readiness and advice together. Optional
+[execution focus](task-state-delivery.md#execution-focus) elaborates this
+checkpoint when installed; otherwise use the bound active projection manually.
+
 ## Implementation Levels
 
 Implementation levels describe how deep a subtask may go. They are action

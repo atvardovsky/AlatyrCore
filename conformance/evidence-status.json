@@ -54,8 +54,8 @@
       "windsurf"
     ]
   },
-  "current_contract_digest": "db71f0f6f6db7722b4faaac5294ca783f75f8797390c720d790716927be1f220",
-  "current_framework_version": "0.1.0-alpha.109",
+  "current_contract_digest": "c27d83cfdf9af9d5b418c36f7ff55c0c97b3ba702b03a47db72bc42f7f269d14",
+  "current_framework_version": "0.1.0-alpha.110",
   "effectiveness": {
     "broad_cost_or_quality_claim_supported": false,
     "captured_benchmarks": [
@@ -81,6 +81,7 @@
       "data-contract-change": 0,
       "delegated-context-review": 0,
       "docs-local-small": 0,
+      "execution-drift-recovery": 0,
       "framework-upgrade-delta": 0,
       "incident-systemic-repair": 0,
       "large-resumable-change": 0,
@@ -100,6 +101,7 @@
       "framework-upgrade-delta",
       "team-large-coordination",
       "incident-systemic-repair",
+      "execution-drift-recovery",
       "delegated-context-review"
     ],
     "suite_status": "coverage-contract-not-executed"

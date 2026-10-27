@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "suite_kind": "alatyr-effectiveness-task-class-suite",
-  "suite_version": 2,
+  "suite_version": 3,
   "status": "coverage-contract-not-executed",
   "required_adapter_modes": ["none", "minimal", "full"],
   "recommended_minimum_repetitions": 3,
@@ -105,6 +105,13 @@
       "task_scale": "large-or-resumable",
       "risk_focus": "original complaint, lifecycle outcomes, recurrence and companion repair closure",
       "purpose": "Compare systemic repair against isolated local fixes without losing original-case acceptance."
+    },
+    {
+      "id": "execution-drift-recovery",
+      "task_profile": "code-local",
+      "task_scale": "large-or-resumable",
+      "risk_focus": "current intent, evidence freshness, action relevance and recovery",
+      "purpose": "Compare requirement changes, misleading tool data, stale inputs, compaction, conflicting workers and recurring repairs under the execution-drift protocol; structural replay is not live-agent evidence."
     },
     {
       "id": "delegated-context-review",
