@@ -1,12 +1,13 @@
 import json
 import hashlib
 import io
+import os
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
-from contextlib import redirect_stdout
+from contextlib import contextmanager, redirect_stdout
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,6 +15,37 @@ sys.path.insert(0, str(ROOT / "tools"))
 from source_context_selection import bootstrap_outputs, project_file
 import source_context_selection as selection
 from plan_minimum_work import build_source_profile_context, measure_source_context, resolve_source_conditionals
+
+
+@contextmanager
+def isolated_source_git():
+    """Use current source bytes with private refs, objects and index, never checkout."""
+    with tempfile.TemporaryDirectory(prefix="alatyr-source-cli-") as directory:
+        metadata = Path(directory) / "metadata"
+        env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+        env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull,
+                   GIT_AUTHOR_NAME="Fixture", GIT_AUTHOR_EMAIL="fixture@example.invalid",
+                   GIT_COMMITTER_NAME="Fixture", GIT_COMMITTER_EMAIL="fixture@example.invalid",
+                   PYTHONDONTWRITEBYTECODE="1")
+        subprocess.run(["git", "init", "-q", str(metadata)], env=env, check=True, capture_output=True)
+        env.update(GIT_DIR=str(metadata / ".git"), GIT_WORK_TREE=str(ROOT),
+                   GIT_INDEX_FILE=str(metadata / ".git/index"))
+
+        def git(*args, input=None):
+            return subprocess.run(
+                ["git", "-c", "core.autocrlf=false", "-c", "commit.gpgSign=false", *args],
+                cwd=ROOT, env=env, input=input, check=True, capture_output=True,
+            ).stdout.decode("utf-8").strip()
+
+        # The remote is deliberately stale. Only the private baseline is authoritative.
+        empty_tree = git("mktree", input=b"")
+        stale = git("commit-tree", empty_tree, "-m", "stale fixture baseline")
+        git("add", "--all", "--", ".")
+        tree = git("write-tree")
+        baseline = git("commit-tree", tree, "-p", stale, "-m", "current source bytes")
+        git("update-ref", "HEAD", baseline)
+        git("update-ref", "refs/remotes/origin/main", stale)
+        yield env, git, baseline, stale, empty_tree
 
 
 class SourceContextSelectionTests(unittest.TestCase):
@@ -156,9 +188,13 @@ class SourceContextSelectionTests(unittest.TestCase):
         path = "docs/source-architecture.md"
         command = [
             sys.executable, str(ROOT / "tools/alatyr.py"), "plan-work",
-            "--source-profile", "source-tooling", "--compact",
+            "--source-profile", "source-tooling", "--changed-from", "HEAD", "--compact",
             "--context-selector",
         ]
+        with isolated_source_git() as (env, _, _, _, _):
+            self.check_strategy_cli(command, env, path)
+
+    def check_strategy_cli(self, command, env, path):
         for section, status in (
             ("development-context-contract", "ready"),
             ("development-context-contract-missing", "needs-expansion"),
@@ -166,7 +202,7 @@ class SourceContextSelectionTests(unittest.TestCase):
             with self.subTest(section=section):
                 result = subprocess.run(
                     [*command, "architecture_topics=" + section],
-                    cwd=ROOT, capture_output=True, text=True,
+                    cwd=ROOT, env=env, capture_output=True, text=True,
                 )
                 self.assertEqual(result.returncode, 0, result.stderr)
                 view = json.loads(result.stdout)
@@ -180,6 +216,29 @@ class SourceContextSelectionTests(unittest.TestCase):
                     self.assertNotIn(path, view.get("context_projections", {}))
                     self.assertTrue(view["context_readiness"]["reasons"])
                 self.assertNotIn("Traceback", result.stderr)
+
+    def test_public_cli_preserves_dirty_context_and_real_budget_blockers(self):
+        command = [sys.executable, str(ROOT / "tools/alatyr.py"), "plan-work",
+                   "--source-profile", "source-tooling", "--changed-from", "HEAD", "--compact"]
+        with isolated_source_git() as (env, git, baseline, stale, empty_tree):
+            blob = git("hash-object", "-w", "--stdin", input=b"different fixture documentation\n")
+            git("update-index", "--cacheinfo", "100644", blob, "tools/README.md")
+            dirty = git("commit-tree", git("write-tree"), "-p", baseline, "-m", "different source baseline")
+            git("update-ref", "HEAD", dirty)
+            result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            view = json.loads(result.stdout)
+            self.assertIn("tools/README.md", [item["path"] for item in view["selected_sources"]])
+            self.assertNotIn("tools/README.md", view["context_projections"])
+
+            # Leave real files untouched while exposing a genuinely broad dirty diff.
+            git("update-ref", "HEAD", stale)
+            git("read-tree", empty_tree)
+            result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            view = json.loads(result.stdout)
+            self.assertEqual(view["context_readiness"]["status"], "needs-expansion")
+            self.assertTrue(any("budget" in reason for reason in view["context_readiness"]["reasons"]))
 
     def test_generated_descriptors_are_exact_and_do_not_widen_limits(self):
         router = json.loads((ROOT / "tools/source_context_router.json").read_text())
@@ -224,14 +283,15 @@ class SourceContextSelectionTests(unittest.TestCase):
             self.assertFalse((root / "tools/source-context").exists())
 
     def test_public_cli_materializes_exact_selector_and_rejects_invalid_shape(self):
-        command = [sys.executable, str(ROOT / "tools/alatyr.py"), "plan-work", "--source-profile", "framework-rule", "--context-selector", "rule_ids=ALATYR-CONTEXT-001", "--compact"]
-        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        view = json.loads(result.stdout)
-        self.assertIn("framework/rule-registry.json", view["context_projections"])
-        self.assertIn("not acceptance evidence", view["full_receipt"])
-        self.assertNotIn("input_fingerprints", view)
-        result = subprocess.run([*command, "--context-selector", "invalid"], cwd=ROOT, capture_output=True, text=True)
+        command = [sys.executable, str(ROOT / "tools/alatyr.py"), "plan-work", "--source-profile", "framework-rule", "--changed-from", "HEAD", "--context-selector", "rule_ids=ALATYR-CONTEXT-001", "--compact"]
+        with isolated_source_git() as (env, _, _, _, _):
+            result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            view = json.loads(result.stdout)
+            self.assertIn("framework/rule-registry.json", view["context_projections"])
+            self.assertIn("not acceptance evidence", view["full_receipt"])
+            self.assertNotIn("input_fingerprints", view)
+            result = subprocess.run([*command, "--context-selector", "invalid"], cwd=ROOT, env=env, capture_output=True, text=True)
         self.assertEqual(result.returncode, 2)
         self.assertNotIn("Traceback", result.stderr)
 

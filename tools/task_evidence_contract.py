@@ -36,8 +36,8 @@ def task_model_header_failures(task: dict[str, Any], model: dict[str, Any]) -> l
     required_review = isinstance(obligations, list) and any(isinstance(item, dict) and item.get("id") == "repair-evidence-review" and item.get("required") is True for item in obligations)
     if "repair_review_required" in task and task["repair_review_required"] != required_review:
         failures.append(("ACTIVE_TASK_PROJECTION", "captured repair review cannot be removed or downgraded; sticky header differs from required model obligation"))
-    if model.get("schema_version") == 6 and required_review and task.get("repair_review_required") is not True:
-        failures.append(("ACTIVE_TASK_PROJECTION", "schema-6 incident review requires a retained repair_review_required header"))
+    if model.get("schema_version") in (6, 7) and required_review and task.get("repair_review_required") is not True:
+        failures.append(("ACTIVE_TASK_PROJECTION", "schema-6/7 incident review requires a retained repair_review_required header"))
     if model.get("operation_id") != task.get("operation_id"):
         failures.append(("ACTIVE_TASK_MODEL_LINEAGE", "problem model operation differs from the registered operation"))
     binding = model.get("task_binding")

@@ -32,6 +32,7 @@ def main() -> int:
     parser.add_argument("--max-words", type=int)
     parser.add_argument("--max-characters", type=int)
     parser.add_argument("--document-warnings", action="store_true", help="Explicitly review stale-document warnings for selected context; no changed-fact claim.")
+    parser.add_argument("--knowledge-request", help="Target-relative bounded initial/refined query naming registered knowledge shards; no default knowledge scan.")
     parser.add_argument("--working-set-request", help="Optional target-relative coverage/phase request; required context cannot be pruned.")
     parser.add_argument("--previous-plan", help="Explicit previous full plan, absolute or target-relative; navigation delta only.")
     parser.add_argument("--delivery-observation", help="Explicit packet-bound context receipt; no provider or acceptance claim is inferred.")
@@ -54,6 +55,7 @@ def main() -> int:
         working_set_request=args.working_set_request,
         previous_plan=args.previous_plan,
         delivery_observation=args.delivery_observation,
+        knowledge_request=args.knowledge_request,
     )
     result = plan_target_context(request)
     if args.output and _inside_target(args.output, args.target):

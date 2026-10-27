@@ -23,35 +23,20 @@ alatyr_doc:
 ---
 # Task Decomposition
 
-This file defines how an installed Alatyr adapter should turn a user request
-into bounded subtasks before analysis, modification, validation, delegation, or
-final evidence.
-
-Task decomposition is required for non-trivial work and may collapse to one
-local task for small work. It is not the same as subagent delegation. The
-primary assistant can decompose and execute work itself when no worker support
-is available, useful, safe, or cost-effective.
-
-The target adapter owns project-specific task areas, source owners,
-validation, worker availability, implementation-level thresholds, and local
-evidence storage. Portable framework core owns the shape and safety boundaries
-of the decomposition contract.
+Decompose non-trivial requests before analysis, modification, validation,
+delegation or final evidence. Use one local task for small work. Decomposition
+does not require workers: the primary executes when delegation is unavailable,
+unsafe or uneconomical. The target owns areas, source owners, validation, worker
+capabilities, level thresholds and evidence storage; this portable contract owns
+decomposition shape and safety boundaries.
 
 ## Objective
 
-Use decomposition to choose the smallest quality-preserving execution path:
-
-- split by semantic responsibility before splitting by files
-- select one bounded analysis strategy before solving non-trivial work
-- assign an implementation level to each subtask
-- attach only the context needed by that subtask
-- identify dependencies, owners, validation, and allowed actions
-- choose primary execution or an eligible worker role per subtask
-- keep final convergence with the primary assistant
-
-Decomposition should reduce repeated context loading and improve consistency.
-It must not hide risk, skip source-of-truth review, weaken approval, or turn a
-discussion into implementation.
+Choose the smallest quality-preserving path: semantic responsibilities before
+files; one primary strategy; bounded per-task context; explicit levels,
+dependencies, owners, validation and allowed actions; primary or eligible worker
+execution; primary-owned convergence. Reduce repeated loading without hiding
+risk, skipping canonical owners, weakening approval or escalating discussion.
 
 ## Decomposition Sequence
 
@@ -85,40 +70,33 @@ create heavy operation packets when the one-task plan is enough.
 
 ### Active Task Selection
 
-Register non-trivial authorized work in the bounded target active-task index.
-Each entry identifies the task, scale, current phase, hash-bound runtime model,
-and a closure receipt when work ends. Validation selects active models even
-without a change package and applies canonical model, projection, strategy,
-obligation, and review checks. Open duties may remain during execution, never
-during completed-task acceptance.
+Register non-trivial authorized work in the bounded active-task index: task,
+scale, phase, hash-bound runtime model and ended-work closure. Validation applies
+model, projection, strategy, obligation and review checks even without a change
+package. Open duties are permitted during execution, not completed-task acceptance.
 
-Current-task validation receives the task ID and independently classified scale;
-the record cannot downgrade itself to bypass model checks. An empty index does not prove
-that no task exists. Inspect-only work may keep host-native/in-memory
-registration instead of writing without authorization, but must report when
-machine validation of that registration is unavailable. Eligible small tasks
-remain inline and need no model or durable task receipt by default.
+Validation receives task ID and independently classified scale; records cannot
+downgrade themselves. An empty index does not prove no work exists. Inspect-only
+registration may remain host-native/in-memory without write authorization;
+report unavailable machine verification. Eligible small tasks stay inline,
+without a model or durable receipt by default.
 
-Keep at most 128 current/recent task headers. Routine changed-scope validation
-loads active, explicitly selected, or changed receipts only. Full checks may
-review all registered entries, not arbitrary ignored history. Retain a model
-while its task is active. A closed non-small task retains a sanitized,
-hash-bound model and active-projection witness under the target's durable
-task-evidence store, explicitly bound from its closure. Preserve the original
-runtime model digest and task/operation/fact lineage. Historical full validation
-uses those frozen witnesses without reopening ignored runtime files; active
-tasks still require their live model and projection. Retention requires target
-privacy review and excludes secrets, raw chats and private reasoning. Schema-4
-historical witnesses remain historical evidence, never new task acceptance.
-Preserve ended work before retiring the header. Never delete evidence
-automatically. Registration and closure carry no action authorization.
+Keep at most 128 current/recent headers. Changed-scope checks load active,
+selected or changed receipts; full checks may inspect all registered entries,
+not arbitrary ignored history. Active tasks retain live models/projections.
+Closed non-small tasks retain sanitized hash-bound model/projection witnesses
+in durable task-evidence storage, bound from closure with original model digest
+and task/operation/fact lineage. Historical validation uses frozen witnesses,
+not ignored runtime files; historical schemas never establish new acceptance.
+Retention requires privacy review, excluding secrets, raw chats and private
+reasoning. Preserve ended work before retiring headers; never auto-delete
+evidence. Registration and closure grant no authorization.
 
-For long incidents, derive a compact frontier from validated task headers before
-loading full models. Keep every active ancestor and declared failed gate visible;
-a graph leaf is not the only actionable duty. Missing lineage, cycles or duplicate
-IDs make the view unknown. The view never retires tasks, resolves gates, infers
-common causality from a family ID, or narrows canonical validation. Load a retained
-model only for the current decision, named dependency or conflicting evidence.
+For long incidents, derive a header-only frontier retaining every active ancestor
+and failed gate, not just leaves. Missing lineage, cycles or duplicate IDs make
+it unknown. Navigation cannot retire tasks, resolve gates, infer shared causality
+or narrow validation. Load retained models for named decisions, dependencies or
+conflicts only.
 
 Author active state from a separate draft. Validate the model, derive its compact
 projection, and synchronize the selected registration as one conflict-checked
@@ -187,7 +165,7 @@ explicit lifecycle model with terminal outcomes, boundaries, transitions, and
 conservation rules. Keep this evidence in the active projection so a resumed
 assistant cannot silently return to isolated-file reasoning.
 
-Current problem-model schema 6 requires each restoring behavior delta to carry
+Current problem-model schema 7 requires each restoring behavior delta to carry
 `repair`: kind (`settled-correction`, `incident-repair`, or
 `reviewed-non-defect`), concrete reason, original `source_refs`, accepted
 `invariant_ids`, and required `proof_obligation_ids`. The delta's `after`
@@ -196,8 +174,8 @@ settled corrections may share a non-incident batch; do not invent a common
 incident family or competing hypotheses for a settled cause. Completion needs
 passed, evidenced restoration obligations, not waived/open proof.
 Uncertain/systemic repairs retain incident identity, original case and review;
-classification never removes captured obligations. Frozen model schemas 4/5
-remain historical witnesses, not proof of schema-6 current-task acceptance.
+classification never removes captured obligations. Frozen model schemas 4/5/6
+remain historical witnesses, not proof of schema-7 current-task acceptance.
 Task publication retains a sticky `repair_review_required` header. Validators
 compare available same-task baseline headers and durable witnesses; a missing
 legacy incident disposition requires reconciliation, not assumed absence.
@@ -237,6 +215,34 @@ Strategy transitions are historical evidence. Their assumption and obligation
 references must resolve, but a referenced assumption may remain invalidated and
 a reopened obligation may later pass. Current completion is decided from the
 obligation's current state and evidence, not frozen by an earlier transition.
+
+### Evidence-Guided Analysis
+
+Schema 7 conditionally adds `analysis_evidence`; `hypothesis-driven` work
+requires it, small settled work does not. Probes bind existing obligations and
+uncertainties to methods, action kinds, supporting/refuting predictions, input
+hashes and result artifacts. Unrun/inconclusive/stale evidence cannot establish
+a cause. Execution still requires authorization; hashes prove identity, not
+authenticity or causality.
+
+Freeze diagnostic inputs in approved evidence paths before implementation when
+they must remain historical. Live-input checks must be rerun after changes;
+historical snapshots never establish current implementation validity.
+
+Evidence `updates` revise conclusions without a strategy switch. Preserve
+captured questions, revision effects and challenge duties. Resolution needs
+bound new evidence. Projection 5 retains pending revisions, relevant rejected
+explanations and unresolved duties; publication verifies artifacts transactionally.
+Historical witnesses do not establish current-task acceptance.
+
+Passed rich reviews require `review_challenges` binding original/normative
+sources, counterexamples, obligations and artifacts. Derive challenges from
+requirements, not passing fixtures. Reviewer labels prove no independence.
+
+Digest-bound task advice reuses dependency readiness, retains required work
+and unknown costs, prefers lower-impact discriminating checks and suggests
+systemic reassessment for recurrence. It is not authorization, evidence
+acceptance, a second scheduler or a proven optimum.
 
 ## Implementation Levels
 

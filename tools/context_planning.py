@@ -59,6 +59,7 @@ class ContextPlanRequest:
     working_set_request: str | None = None
     previous_plan: str | None = None
     delivery_observation: str | None = None
+    knowledge_request: str | None = None
 
 
 class ContextPlanningError(ValueError):
@@ -1145,6 +1146,60 @@ def _working_request(request: ContextPlanRequest, target: Path) -> tuple:
     return document, api
 
 
+def _knowledge_selection(request, target, catalogs, selected, reasons):
+    knowledge = None
+    knowledge_digests: dict[str, str] = {}
+    if request.knowledge_request is not None:
+        from knowledge_context import select_context_knowledge
+        def load_knowledge(path: str) -> dict:
+            return _load_json(target, _normalize_relative(path, "knowledge input"), "knowledge input", digest_evidence=knowledge_digests)
+        def read_knowledge(path: str) -> bytes:
+            path = _normalize_relative(path, "knowledge owner")
+            raw = read_context_bytes(target / path, max_bytes=1024 * 1024)
+            knowledge_digests[path] = "sha256:" + hashlib.sha256(raw).hexdigest()
+            return raw
+        try:
+            knowledge = select_context_knowledge(request.profile, load_knowledge(request.knowledge_request), load_knowledge, read_knowledge)
+        except (ValueError, OSError, UnicodeError) as exc:
+            raise ContextPlanningError("CONTEXT_KNOWLEDGE_INVALID", str(exc), status="blocked",
+                actions=("repair, narrow or decompose the selected knowledge query; do not omit applicable constraints",)) from exc
+        for path in knowledge["owner_paths"]:
+            if path in catalogs.by_path or path.startswith(".ai/"):
+                _select_path(path, "selected-knowledge-canonical-owner", catalogs, selected, reasons)
+            else:
+                item = _synthetic_file_item(target, path, "target.knowledge." + hashlib.sha256(path.encode()).hexdigest(), "selected-knowledge-canonical-owner")
+                _select_synthetic(item, "selected-knowledge-canonical-owner", selected, reasons)
+    return knowledge, knowledge_digests
+
+
+def _knowledge_usage(knowledge):
+    if knowledge is None:
+        return 0, 0
+    rendered_knowledge = json.dumps(knowledge, indent=2, ensure_ascii=True, sort_keys=True)
+    return len(rendered_knowledge.split()), len(rendered_knowledge)
+
+
+def _knowledge_optional_limits(knowledge, max_words, max_characters):
+    words, characters = _knowledge_usage(knowledge)
+    return max(0, max_words - words), None if max_characters is None else max(0, max_characters - characters)
+
+
+def _add_knowledge_view(request, plan, knowledge, knowledge_digests, content_packet, max_words, max_characters):
+    # Reserve the same delivered metadata cost before optional ranking and here.
+    knowledge_words, knowledge_characters = _knowledge_usage(knowledge)
+    if content_packet["budget"]["total_words"] + knowledge_words > max_words:
+        raise ContextPlanningError("CONTEXT_WORD_BUDGET_EXCEEDED", "selected knowledge plus required context exceeds word budget", status="blocked")
+    if max_characters is not None and content_packet["budget"]["total_characters"] + knowledge_characters > max_characters:
+        raise ContextPlanningError("CONTEXT_CHARACTER_BUDGET_EXCEEDED", "selected knowledge plus required context exceeds character budget", status="blocked")
+    plan["request"]["knowledge_request"] = request.knowledge_request
+    plan["knowledge"] = knowledge
+    plan["delivery_budget"] = {"knowledge_words": knowledge_words, "knowledge_characters": knowledge_characters,
+        "total_words": content_packet["budget"]["total_words"] + knowledge_words,
+        "total_characters": content_packet["budget"]["total_characters"] + knowledge_characters,
+        "max_words": max_words, "max_characters": max_characters}
+    plan["routing_sources"]["knowledge_inputs"] = knowledge_digests
+
+
 def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     target = request.target.resolve()
     if not target.is_dir():
@@ -1154,9 +1209,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         )
     router = _load_router(target)
     descriptor, descriptor_path = _resolve_profile(target, router, request.profile)
-    operation, operation_id, operation_index_path, operation_catalog_path = _resolve_operation(
-        target, router, request.operation
-    )
+    operation, operation_id, operation_index_path, operation_catalog_path = _resolve_operation(target, router, request.operation)
     operation_profiles = operation.get("context_profiles")
     if not isinstance(operation_profiles, list):
         raise ContextPlanningError(
@@ -1184,9 +1237,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     working_document, working_api = _working_request(request, target)
     owner_index = _owner_index(catalogs) if working_api is not None else None
     working_view = None
-    surface, surface_evidence = _resolve_surface(
-        target, router, request.assistant_surface
-    )
+    surface, surface_evidence = _resolve_surface(target, router, request.assistant_surface)
     selected: dict[str, CatalogItem] = {}
     reasons: dict[str, set[str]] = {}
     _select_path(descriptor_path, "selected-profile-descriptor", catalogs, selected, reasons)
@@ -1238,6 +1289,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     impact = _impact_selection(
         request, target, router, catalogs, selected, reasons, graph_snapshot
     )
+    knowledge, knowledge_digests = _knowledge_selection(request, target, catalogs, selected, reasons)
     if working_api is not None:
         working_view = _working_call(working_api.required_selection, working_document, catalogs.by_id, selected, reasons)
     _add_owner_closure(catalogs, selected, reasons, max_items=working_api.MAX_SCOPE_ITEMS if working_api is not None else None, owner_index=owner_index)
@@ -1297,8 +1349,9 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             actions=("record a context expansion or split the task without omitting owners",),
         )
     if working_api is not None:
+        optional_words, optional_characters = _knowledge_optional_limits(knowledge, max_words, max_characters)
         terms = _working_call(working_api.select_optional, working_document, working_view, catalogs.by_id, selected, reasons, terms,
-            max_files=configured_files, max_words=max_words, max_characters=max_characters,
+            max_files=configured_files, max_words=optional_words, max_characters=optional_characters,
             close=lambda entries, why: _add_owner_closure(catalogs, entries, why, max_items=working_api.MAX_SCOPE_ITEMS, owner_index=owner_index),
             hydrate=lambda entries: _verify_selected_content(target, entries),
             resolve_terms=lambda entries: _semantic_terms(target, router, entries, request.profile, operation_id)[0])
@@ -1435,6 +1488,8 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         }
     if document_warnings is not None:
         plan["document_warnings"] = document_warnings
+    if knowledge is not None:
+        _add_knowledge_view(request, plan, knowledge, knowledge_digests, content_packet, max_words, max_characters)
     if working_api is not None:
         _add_working_view(request, plan, working_view, target, working_api, selected)
     try:
@@ -1482,7 +1537,7 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
         "context_packet": None,
     }
     result["request"] = {key: _request_echo(value) for key, value in result["request"].items()}
-    for key in ("working_set_request", "previous_plan", "delivery_observation"):
+    for key in ("working_set_request", "previous_plan", "delivery_observation", "knowledge_request"):
         value = getattr(request, key)
         if value is not None:
             result["request"][key] = _request_echo(value)
@@ -1495,7 +1550,7 @@ def _validate_request(request: ContextPlanRequest) -> None:
         raise _field_error("request", "target", "a pathlib Path", request.target)
     for field in ("profile", "operation"):
         _text(getattr(request, field), "request", field)
-    for field in ("assistant_surface", "architecture_mode", "working_set_request", "previous_plan", "delivery_observation"):
+    for field in ("assistant_surface", "architecture_mode", "working_set_request", "previous_plan", "delivery_observation", "knowledge_request"):
         value = getattr(request, field)
         if value is not None:
             _text(value, "request", field)
@@ -1534,6 +1589,7 @@ def plan_target_context(request: ContextPlanRequest) -> dict[str, Any]:
             ),
             fact_ids=tuple(sorted(set(request.fact_ids))),
             working_set_request=_normalize_relative(request.working_set_request, "working-set request") if request.working_set_request is not None else None,
+            knowledge_request=_normalize_relative(request.knowledge_request, "knowledge request") if request.knowledge_request is not None else None,
         )
         if any(not fact_id or PLACEHOLDER_RE.search(fact_id) for fact_id in normalized.fact_ids):
             raise ContextPlanningError(

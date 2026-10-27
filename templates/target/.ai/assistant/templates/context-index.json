@@ -856,7 +856,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 173,
-      "content_digest": "sha256:3880b271cd79a9a46a86908ca7472ff89e56ccafdbdfb62623cabf532a26e9b1"
+      "content_digest": "sha256:ef824543270d5dd805bce34cc95b6ae03074d45d09f6ea751de62a0f7daae087"
     },
     {
       "id": "assistant.content.templates-problem-model-json",
@@ -877,7 +877,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 164,
-      "content_digest": "sha256:c5e188d4c4f4f5cf3e3ce2aef6274c133678f1968bdd8a73005e9bd9b4aa4a18"
+      "content_digest": "sha256:e785159ab8efaa2b7599d5d72fba6ecd79259d354f4b53cc9582d13461f9d352"
     },
     {
       "id": "assistant.content.templates-project-knowledge-promotion-json",

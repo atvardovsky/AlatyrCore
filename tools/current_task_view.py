@@ -88,7 +88,7 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     from analysis_strategy_contract import validate_problem_model
     from target_adapter_validation.analysis_strategies import load_problem_model_schema, _schema, PROBLEM_MODEL_SCHEMA
     schema = load_problem_model_schema(validator.schema_context)
-    if closure is not None and model.get("schema_version") in (4, 5):
+    if closure is not None and model.get("schema_version") in (4, 5, 6):
         schema = _schema(PROBLEM_MODEL_SCHEMA.with_name(f"alatyr-problem-model-v{model['schema_version']}.schema.json"), validator.schema_context)
     failures = validate_problem_model(model, schema)
     failures.extend(message for _, message in task_model_header_failures(task, model))
@@ -122,6 +122,20 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
         }
     if "execution_dependencies" in model:
         result["execution_readiness"] = execution_readiness(model)
+    if closure is None and "analysis_evidence" in model:
+        from analysis_evidence import next_action_advice, verify_artifacts
+        def read_artifact(path: str, limit: int) -> bytes:
+            raw = view.read_bytes_result(validator.target_path(path), max_bytes=limit)
+            if raw.value is None:
+                raise ValueError(raw.error or "missing analysis artifact")
+            return raw.value
+        failures = verify_artifacts(model, read_artifact)
+        if failures:
+            result["next_action_advice"] = {"state": "blocked-by-stale-evidence", "model_sha256": binding["sha256"],
+                "diagnostics": failures, "authority": "none", "authorization_granted": False}
+        else:
+            result["next_action_advice"] = next_action_advice(model, binding["sha256"])
+            result["next_action_advice"]["artifact_binding_state"] = "current-content-not-execution-proof"
     if closure:
         result["delivery"] = closure["delivery"]
         result["disposition_kind"] = "recorded-closure-not-current-runtime"

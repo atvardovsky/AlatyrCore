@@ -20,7 +20,10 @@ def classify_repairs(model: dict[str, Any], *, completion: bool = False) -> Repa
     systemic = incident.get("mode") == "systemic-repair" or incident.get("trigger") in ("escaped-defect", "failed-required-gate", "recurring-correction")
     uncertain = model.get("primary_strategy_id") == "hypothesis-driven" or systemic
     failures = []
-    if model.get("schema_version") != 6:
+    version = model.get("schema_version")
+    if type(version) is not int or version < 4:
+        return RepairClassification(uncertain, ("repair model requires a supported integer schema version",))
+    if version < 6:
         return RepairClassification(uncertain, ())
     review = model.get("behavior_review")
     deltas = review.get("deltas", []) if isinstance(review, dict) else []

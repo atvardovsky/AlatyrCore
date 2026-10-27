@@ -69,7 +69,7 @@
     },
     {
       "id": "ANALYSIS",
-      "code_count": 46
+      "code_count": 48
     },
     {
       "id": "APPROVAL",
@@ -686,6 +686,24 @@
       ],
       "sources": [
         "tools/target_adapter_validation/ai_infrastructure.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_EVIDENCE_ARTIFACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "ANALYSIS_EVIDENCE_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
       ]
     },
     {

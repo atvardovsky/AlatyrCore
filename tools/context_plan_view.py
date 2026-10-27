@@ -53,4 +53,10 @@ def compact_plan_view(plan: dict[str, Any], *, source_report: dict | None = None
         if "delta" in working:
             delta = working["delta"]
             result["working_set"]["delta"] = {"previous_plan_digest": delta["previous_plan_digest"], **{key.replace("_ids", "_count"): len(delta[key]) for key in ("added_ids", "changed_ids", "retained_ids", "retired_ids", "semantic_added_ids", "semantic_changed_ids", "semantic_retired_ids")}, "host_eviction_performed": False}
+    if "knowledge" in plan:
+        knowledge = plan["knowledge"]
+        result["knowledge"] = {"stage": knowledge["stage"], "searched_shard_ids": knowledge["searched_shard_ids"],
+            "constraint_count": len(knowledge["selection"]["constraints"]), "warning_count": len(knowledge["selection"]["warnings"]),
+            "global_coverage": False, "actual_use": "not-observed"}
+        result["delivery_budget"] = plan["delivery_budget"]
     return result

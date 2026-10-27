@@ -364,11 +364,14 @@ In a typical target repository:
    mapped/known-gap/unknown coverage in every accepted core profile. Keep route
    shards lazy.
    Initialize the bounded `.ai/assistant/active-tasks.json` and task-closure
-   template. Preserve work; migrate active models/projections to 5/4 and retain
+   template. Preserve work; migrate active models/projections to 7/5 and retain
    reviewed closed-task witnesses per
    [task evidence](framework/task-decomposition.md#active-task-selection).
    Missing history, authority and complaint outcomes stay unresolved, never
-   fabricated; schema-4 history remains historical evidence.
+   fabricated; schema-4/5/6 history remains historical evidence. Hypothesis-driven
+   work needs evidence-linked probes; do not fabricate observations during
+   migration. Reconcile conditional challenges, revisions and knowledge-query
+   guidance with verified tooling, without adding routine bootstrap reads.
    Derive codebook schemas from the installed index; reconcile manifest/router
    before bootstrap regeneration. Never reuse stale declarations.
    Preserve stable-prefix-first context order for every surface. Use provider

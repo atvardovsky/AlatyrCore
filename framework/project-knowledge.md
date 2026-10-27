@@ -20,30 +20,17 @@ alatyr_doc:
 ---
 # Project Development Guidance And Knowledge Delivery
 
-Candidate discovery concerns target-owned knowledge, not the installed
-portable framework. Exclude `.ai/framework/` owners, including normalized path
-variants; mixed packages retain only target-owned fact/owner signals. Discovery
-may use bounded current/recent task closure headers as well as package indexes,
-and must expose unavailable, stale, or incomplete coverage. A verified compact
-projection is a suggestion for review, not proof of semantic correctness or
-authorization to promote knowledge.
+This derived Project Development Model layer routes reviewed discoveries and
+authorized owner directives to later work. Canonical architecture, business,
+validation, security, API and data sources retain authority; routing and
+promotion records never become competing owners.
 
-This rule provides the derived guidance layer of the Project Development Model.
-It closes the loop from either a material engineering discovery or an explicit
-decision-owner directive to later related work. It lets an assistant propose
-reusable knowledge, lets an authorized project decision owner record guidance
-directly, requires project-owned acceptance, and routes a small derived packet
-to later developers or assistants.
-
-Project knowledge is not automatically project authority. Only an accepted
-fact recorded by its canonical project owner represents project intent. A
-historical evidence record, repeated implementation pattern, assistant
-conclusion, or newer timestamp does not become project will by itself.
-
-The guidance layer is an envelope and routing projection, not a new source of
-truth. Architecture, business policy, validation, security, API, data, and
-other project facts remain owned by the canonical sources registered for their
-fact types.
+Discovery concerns target-owned knowledge, excluding normalized `.ai/framework/`
+owners. Mixed packages retain target-owned signals only. Bounded task/package
+headers may suggest candidates, not semantic correctness or promotion authority.
+Report stale, unavailable and incomplete coverage. Historical evidence,
+implementation frequency, assistant conclusions and timestamps do not establish
+project intent.
 
 ## Guidance Kinds And Required Identity
 
@@ -78,10 +65,8 @@ Keep these surfaces separate:
 - the project-knowledge routing index and shards are compact derived
   projections used to find that owner during later work
 
-The routing projection must never become a second canonical repository. It may
-carry a short bounded summary for selection, but the assistant must cite and
-reverify the canonical owner before relying on the fact for a material
-decision.
+Routing carries bounded summaries, never canonical authority. Cite and reverify
+the owner before material decisions.
 
 ## Promotion Lifecycle
 
@@ -120,20 +105,15 @@ accepted automatically. The source helper `tools/suggest_project_knowledge.py`
 provides this bounded suggestion route when AlatyrCore source tools are
 available.
 
-For a single-area package, the helper combines project area and canonical
-owner instead of emitting an independent broad candidate for each signal. For
-multi-area packages it may suggest owner recurrence without inventing
-area/owner Cartesian pairs. Incident-family, failed-gate, and corrective-owner
-signals remain separately typed. It verifies candidate-supporting compact
-entries against all contributing package records before applying the
-configured occurrence threshold. Fact IDs come only from facts owned by the
-candidate owner. The helper retains only
-bounded evidence samples and derives a deterministic candidate snapshot ID
-from the selectors and evidence summary. An unchanged snapshot already
-referenced by a promotion record is suppressed; new package evidence produces
-a new snapshot for review. The report binds the package and knowledge indexes
-by SHA-256 so an external cache may detect unchanged inputs, but the helper
-does not trust cached candidate content or auto-promote it.
+The helper combines area/owner signals for single-area packages. For multi-area
+packages it may suggest owner recurrence but never invented Cartesian pairs.
+Incident families, failed gates and corrective owners remain separate signals.
+Verify contributing compact entries against source records before applying
+occurrence thresholds; select only facts owned by the candidate owner. Retain
+bounded evidence samples and deterministic selector/evidence snapshot IDs.
+Suppress unchanged snapshots already referenced by promotions; new evidence
+creates review candidates. Index hashes support external invalidation, not
+trusted cached candidates or automatic promotion.
 
 Each proposal or directive should identify:
 
@@ -326,6 +306,20 @@ same accepted authority, protected boundaries, required validation, and
 unresolved decisions. It does not require identical implementation strategies
 and does not treat human developers as assistant clients; human walkthroughs
 are separate usability evidence.
+
+## Explicit Planner Queries
+
+Verified tooling may accept `context-plan --knowledge-request`: target-relative
+schema-1 query, initial/refined stage, 1..8 registered shard IDs, bounded selectors
+and a policy-limited item count. Reuse existing stage selectors; facts, paths and
+symbols require refinement. Ordinary planning does not scan knowledge.
+
+Report unsearched shards and incomplete global coverage. Contradictions and
+applicable constraint/warning overflow block, not truncate. Count selected owners
+and delivered results against existing budgets. Verify owner hashes and review
+expiry; expose other freshness triggers as unverified for target review.
+Selection neither promotes authority nor demonstrates reuse/comprehension.
+Full validation still owns complete registry consistency.
 
 ## Final Evidence
 

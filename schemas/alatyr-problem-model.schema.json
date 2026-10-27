@@ -14,7 +14,7 @@
     "unresolved_decisions", "evidence_refs"
   ],
   "properties": {
-    "schema_version": {"const": 6},
+    "schema_version": {"const": 7},
     "model_kind": {"const": "alatyr-bounded-problem-model"},
     "model_id": {"$ref": "#/definitions/identifier"},
     "operation_id": {"$ref": "#/definitions/identifier"},
@@ -23,7 +23,7 @@
       "additionalProperties": false,
       "required": ["schema_version", "path"],
       "properties": {
-        "schema_version": {"const": 4},
+        "schema_version": {"const": 5},
         "path": {
           "type": "string",
           "minLength": 1,
@@ -37,6 +37,7 @@
     "contract_enforcement": {"$ref": "#/definitions/contractEnforcement"},
     "behavior_review": {"$ref": "#/definitions/behaviorReview"},
     "original_case": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/originalCase"}]},
+    "analysis_evidence": {"$ref": "#/definitions/analysisEvidence"},
     "execution_dependencies": {
       "type": "array", "minItems": 1, "maxItems": 64,
       "items": {
@@ -167,6 +168,333 @@
     "evidence_refs": {"$ref": "#/definitions/stringArray"}
   },
   "definitions": {
+    "evidenceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "analysisArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "sha256": {
+          "$ref": "#/definitions/evidenceHash"
+        }
+      }
+    },
+    "analysisEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "probes",
+        "updates",
+        "review_challenges"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "probes": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "obligation_id",
+              "unknown_ids",
+                "method",
+                "action_kind",
+                "input_paths",
+              "predictions",
+              "estimated_tool_calls",
+              "result"
+            ],
+            "properties": {
+              "obligation_id": {
+                "$ref": "#/definitions/identifier"
+              },
+              "unknown_ids": {
+                "type": "array",
+                "maxItems": 64,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/definitions/identifier"
+                },
+                "minItems": 1
+              },
+                "method": {
+                  "$ref": "#/definitions/statement"
+                },
+                "action_kind": {"enum": ["read-only", "local-check", "protected-action", "unknown"]},
+              "input_paths": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 16,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "uniqueItems": true
+              },
+              "predictions": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 16,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "hypothesis_id",
+                    "supports",
+                    "refutes"
+                  ],
+                  "properties": {
+                    "hypothesis_id": {
+                      "$ref": "#/definitions/identifier"
+                    },
+                    "supports": {
+                      "$ref": "#/definitions/statement"
+                    },
+                    "refutes": {
+                      "$ref": "#/definitions/statement"
+                    }
+                  }
+                }
+              },
+              "estimated_tool_calls": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 10000
+              },
+              "result": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "probe_sha256",
+                      "input_sha256",
+                      "artifacts",
+                      "outcomes",
+                      "summary"
+                    ],
+                    "properties": {
+                      "probe_sha256": {
+                        "$ref": "#/definitions/evidenceHash"
+                      },
+                      "input_sha256": {
+                        "type": "object",
+                        "minProperties": 1,
+                        "maxProperties": 16,
+                        "additionalProperties": {
+                          "$ref": "#/definitions/evidenceHash"
+                        }
+                      },
+                      "artifacts": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "items": {
+                          "$ref": "#/definitions/analysisArtifact"
+                        }
+                      },
+                      "outcomes": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 16,
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "hypothesis_id",
+                            "verdict"
+                          ],
+                          "properties": {
+                            "hypothesis_id": {
+                              "$ref": "#/definitions/identifier"
+                            },
+                            "verdict": {
+                              "enum": [
+                                "supports",
+                                "refutes",
+                                "inconclusive"
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "summary": {
+                        "$ref": "#/definitions/statement"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "updates": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "reason",
+              "evidence_refs",
+              "hypothesis_ids",
+              "invalidated_assumption_ids",
+              "reopened_obligation_ids",
+              "state",
+              "resolution_evidence_refs",
+              "artifacts"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/identifier"
+              },
+              "reason": {
+                "$ref": "#/definitions/statement"
+              },
+              "evidence_refs": {
+                "$ref": "#/definitions/nonEmptyStringArray"
+              },
+              "hypothesis_ids": {
+                "type": "array",
+                "maxItems": 64,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/definitions/identifier"
+                }
+              },
+              "invalidated_assumption_ids": {
+                "type": "array",
+                "maxItems": 64,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/definitions/identifier"
+                }
+              },
+              "reopened_obligation_ids": {
+                "type": "array",
+                "maxItems": 64,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/definitions/identifier"
+                }
+              },
+              "state": {
+                "enum": [
+                  "pending",
+                  "resolved"
+                ]
+              },
+              "resolution_evidence_refs": {
+                "$ref": "#/definitions/stringArray"
+              },
+              "artifacts": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "$ref": "#/definitions/analysisArtifact"
+                }
+              }
+            }
+          }
+        },
+        "review_challenges": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "original_source_ref",
+              "normative_source_ref",
+              "counterexample_ids",
+              "proof_obligation_ids",
+              "artifacts",
+              "status",
+              "reviewer_kind"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/identifier"
+              },
+              "original_source_ref": {
+                "$ref": "#/definitions/reference"
+              },
+              "normative_source_ref": {
+                "$ref": "#/definitions/reference"
+              },
+              "counterexample_ids": {
+                "type": "array",
+                "maxItems": 64,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/definitions/identifier"
+                },
+                "minItems": 1
+              },
+              "proof_obligation_ids": {
+                "type": "array",
+                "maxItems": 64,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/definitions/identifier"
+                },
+                "minItems": 1
+              },
+              "artifacts": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 8,
+                "items": {
+                  "$ref": "#/definitions/analysisArtifact"
+                }
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "passed",
+                  "failed",
+                  "blocked"
+                ]
+              },
+              "reviewer_kind": {
+                "enum": [
+                  "primary-separate-pass",
+                  "native-worker",
+                  "human"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "behaviorReview": {
       "type": "object", "additionalProperties": false,
       "required": ["required", "reason", "deltas"],

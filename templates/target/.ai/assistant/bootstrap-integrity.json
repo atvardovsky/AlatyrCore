@@ -14,20 +14,20 @@
     "source_dirty_paths_truncated": false,
     "source_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:380e7bcc3cd7650b08700e041c19451eedc0cafecd1b5b1d652379663f584888",
+    "target_manifest_digest": "sha256:6ec2bc48b35820f4f5d691f81fd3cadbeb3a670d4ad8af30b240cc2915b8261f",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.108",
-    "adapter_schema_version": "89",
-    "template_version": "103"
+    "framework_version": "0.1.0-alpha.109",
+    "adapter_schema_version": "90",
+    "template_version": "104"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "380e7bcc3cd7650b08700e041c19451eedc0cafecd1b5b1d652379663f584888"
+      "sha256": "6ec2bc48b35820f4f5d691f81fd3cadbeb3a670d4ad8af30b240cc2915b8261f"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -43,7 +43,7 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "ecfc1d6e7ad41427c0d989159a3a87c2afb66fc06b8b71ac5bf012441855e390"
+      "sha256": "de6149d9a7ca58348f7426f173da179ebfabc3ed78676fac142b9af2476bb7f1"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
@@ -51,11 +51,11 @@
     },
     "assistant_context_root": {
       "path": ".ai/assistant/context-index.json",
-      "sha256": "d7ae65b03aa704fa1765eca9697200805826bd3d099906950a24fb0d4edf3cff"
+      "sha256": "f0af08029c8244441c7e0fad8bfbd0718acd5422aa4dac3684c402180e1675ed"
     },
     "framework_context_root": {
       "path": ".ai/framework/context-index.json",
-      "sha256": "7153bb3a622e31b7d75cf751cf0ec73bf7dc46160a383c6b92f6e5ecb8f936e6"
+      "sha256": "9dd6f23be4908b9c69bc8223b66cfd2062b64f8f08f83479a3c25a37934ae0cd"
     },
     "project_context_root": {
       "path": ".ai/project/context-index.json",

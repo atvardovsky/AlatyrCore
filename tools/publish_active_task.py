@@ -88,6 +88,17 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
     failures = validate_problem_model(model, load_json_object(ROOT / "schemas/alatyr-problem-model.schema.json"))
     if failures:
         raise ValueError("invalid proposed model: " + "; ".join(failures))
+    if "analysis_evidence" in model:
+        from analysis_evidence import verify_artifacts
+        def read_artifact(path: str, limit: int) -> bytes:
+            raw = read_output(target, target / path, max_bytes=limit)
+            if raw is None:
+                raise ValueError("missing evidence artifact")
+            inputs[target / path] = raw
+            return raw
+        failures = verify_artifacts(model, read_artifact)
+        if failures:
+            raise ValueError("invalid analysis evidence: " + "; ".join(failures))
     if model["task_binding"]["task_ids"] != [task_id]:
         raise ValueError("single-task publication cannot update shared model bindings")
     model_relpath = f"{PROBLEM_MODEL_RUNTIME_PREFIX}{model['model_id']}.json"
@@ -147,9 +158,17 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
             raise ValueError("changing a registered model identity requires an explicit successor task")
         if not isinstance(previous.get("proof_obligations"), list) or any(not isinstance(item, dict) for item in previous["proof_obligations"]):
             raise ValueError("registered proof obligations are malformed; reconcile before publication")
+        if "analysis_evidence" in previous:
+            previous_failures = validate_problem_model(previous, load_json_object(ROOT / "schemas/alatyr-problem-model.schema.json"))
+            if previous_failures:
+                raise ValueError("registered analysis evidence is invalid; reconcile before publication: " + "; ".join(previous_failures))
         required_review = lambda value: any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in value.get("proof_obligations", []))
         if required_review(previous) and not required_review(model):
             raise ValueError("a captured repair-evidence-review obligation cannot be removed or downgraded")
+        from analysis_evidence import revision_failures
+        failures = revision_failures(previous, model)
+        if failures:
+            raise ValueError("invalid evidence revision: " + "; ".join(failures))
     return TaskPublication(outputs, inputs)
 
 

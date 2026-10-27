@@ -571,6 +571,10 @@ Final evidence must say:
   requirement to enforcement, positive evidence, retained counterexamples,
   required proof obligations, and adversarial review; routine execution and
   recovery do not load full model history
+- active models/projections use schemas 7/5; hypothesis-driven probes bind
+  predictions and measured artifacts, evidence revisions retain captured duties,
+  and selected-task advice grants no authority; explicit knowledge queries retain
+  contradiction, coverage and context-budget limits without a default scan
 - non-trivial current work is registered in the bounded active-task index, with
   a hash-bound model and ended-work closure; small/inspect-only paths preserve
   their cost and authorization limits. Current-task validation selects its ID;

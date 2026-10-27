@@ -10,14 +10,14 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1745
+Catalog entries: 1747
 
 ## Families
 
 - `ACTIVE`: 23 codes.
 - `AGENT`: 2 codes.
 - `AI`: 18 codes.
-- `ANALYSIS`: 46 codes.
+- `ANALYSIS`: 48 codes.
 - `APPROVAL`: 40 codes.
 - `ARCHITECTURE`: 40 codes.
 - `ASSISTANT`: 39 codes.
@@ -164,6 +164,10 @@ Catalog entries: 1745
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
+- `ANALYSIS_EVIDENCE_ARTIFACT`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `ANALYSIS_EVIDENCE_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_MANIFEST_SCHEMA_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_FILE_SIZE`

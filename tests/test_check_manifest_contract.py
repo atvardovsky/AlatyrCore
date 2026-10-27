@@ -35,6 +35,22 @@ def manifest_entry(**overrides: object) -> dict[str, object]:
 
 
 class CheckManifestContractTests(unittest.TestCase):
+    def test_evidence_query_implementations_and_schemas_invalidate_unit_reuse(self):
+        from source_check_reuse import check_input_fingerprint
+        from source_state import SourceEntry
+        check = next(item for item in check_all.load_manifest() if item["id"] == "source-unit-tests")
+        paths = ["tools/analysis_evidence.py", "tools/analysis_strategy_contract.py", "tools/knowledge_context.py",
+                 "tools/project_knowledge.py", "tools/repair_classification.py",
+                 "tools/target_adapter_validation/analysis_strategies.py", "tools/publish_active_task.py",
+                 "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-project-knowledge-index.schema.json"]
+        snapshot = {path: SourceEntry(kind="file", mode=0o644, digest="a" * 64) for path in paths}
+        original = check_input_fingerprint(check, snapshot)
+        self.assertTrue(set(paths) <= {row["path"] for row in original["entries"]})
+        for path in paths:
+            changed = dict(snapshot, **{path: SourceEntry(kind="file", mode=0o644, digest="b" * 64)})
+            with self.subTest(path=path):
+                self.assertNotEqual(check_input_fingerprint(check, changed)["sha256"], original["sha256"])
+
     def load(self, entry: dict[str, object]) -> list[dict[str, object]]:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "manifest.json"

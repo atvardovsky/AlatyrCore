@@ -3,7 +3,7 @@
   "strategy_kind": "primary",
   "id": "hypothesis-driven",
   "use_when": ["a defect cause or observed behavior is uncertain"],
-  "sequence": ["record observations", "form competing hypotheses", "choose discriminating evidence", "reject unsupported causes", "validate the surviving explanation and fix"],
-  "required_nonempty_fields": ["facts", "hypotheses", "proof_obligations"],
+  "sequence": ["record source-bound observations and named uncertainties", "form relevant hypotheses with supporting and refuting predictions", "bind the smallest authorized discriminating probe to an existing obligation", "record measured input and result artifacts in analysis_evidence", "revise conclusions and reopen duties without inventing a strategy switch", "validate the surviving explanation and fix"],
+  "required_nonempty_fields": ["facts", "hypotheses", "proof_obligations", "analysis_evidence"],
   "completion_rule": "the selected explanation has discriminating evidence and required fix obligations pass"
 }

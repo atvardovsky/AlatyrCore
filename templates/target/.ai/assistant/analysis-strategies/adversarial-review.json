@@ -5,5 +5,5 @@
   "use_when": ["security protected destructive public-contract approval or high-impact boundaries apply"],
   "sequence": ["start from canonical requirements and the original complaint before implementation summaries or tests", "challenge assumptions and derived behavioral authority", "seek boundary counterexamples", "test authorization and failure modes", "verify original-case acceptance and proof evidence", "record residual risk"],
   "required_nonempty_fields": ["proof_obligations"],
-  "completion_rule": "required challenges are resolved or block completion"
+  "completion_rule": "required challenges are resolved or block completion; when analysis_evidence is used, bind source-derived counterexamples, obligations and measured artifacts in review_challenges; reviewer labels alone do not prove independence"
 }

@@ -201,8 +201,17 @@ class RestorationClassificationTests(unittest.TestCase):
         model["behavior_review"]["deltas"][0].pop("repair")
         self.assertTrue(validate_problem_model(model, self.schema))
         model["schema_version"] = 5
+        model["active_projection"]["schema_version"] = 4
         old = json.loads((ROOT / "schemas/alatyr-problem-model-v5.schema.json").read_text())
         self.assertEqual(validate_problem_model(model, old), [])
+
+    def test_restoration_rules_survive_model_schema_advancement(self):
+        for version in (6, 7, 8):
+            model = behavior_model()
+            model["schema_version"] = version
+            model["behavior_review"]["deltas"][0].pop("repair")
+            with self.subTest(version=version):
+                self.assertTrue(classify_repairs(model).failures)
 
     def test_missing_bad_and_unresolved_classifications(self):
         for field in ("kind", "source_refs", "invariant_ids", "proof_obligation_ids", "reason"):

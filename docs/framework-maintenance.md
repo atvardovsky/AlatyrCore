@@ -21,6 +21,15 @@ decomposition, restoration classification and non-authoritative reviewed
 warnings. Test malformed input and public routing, not only pure helpers. Old
 schema witnesses remain readable; they do not establish current-task acceptance.
 
+Evidence-loop changes must test both model publication and registered target
+validation: unrun/inconclusive observations, stale source/results, pending
+revisions, retained challenge duties and malformed fields. Knowledge queries
+must preserve default no-scan behavior, selected-shard boundaries, relevant
+constraint overflow, contradictions and below/at/above delivery budgets.
+Public CLI routing tests use current source bytes with private Git refs/index;
+ambient `origin/main` and unrelated developer edits must not define fixtures.
+Keep dirty-input and real budget failures as negative controls.
+
 For current-change contract revisions, test the smallest accepted installation
 with optional modules absent, then enable each affected module and prove its
 obligations cannot be omitted. Parser acceptance and matching metadata are

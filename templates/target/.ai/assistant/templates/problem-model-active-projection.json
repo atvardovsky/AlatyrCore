@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "projection_kind": "alatyr-active-problem-model",
   "model_id": "{PROBLEM_MODEL_ID}",
   "operation_id": "{OPERATION_ID}",

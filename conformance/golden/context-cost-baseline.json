@@ -2965,10 +2965,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 833901,
-        "characters": 833901,
+        "bytes": 833859,
+        "characters": 833859,
         "declared_files": 68,
-        "estimated_tokens_4_chars": 208476,
+        "estimated_tokens_4_chars": 208465,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -3040,7 +3040,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 103016,
+        "portable_words": 102894,
         "resolved_files": 68,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -3115,7 +3115,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 103016
+        "words": 102894
       },
       "selected_route": {
         "bytes": 35194,
@@ -3140,7 +3140,7 @@
         "unresolved_references": [],
         "words": 3242
       },
-      "word_reduction_percent": 96.9
+      "word_reduction_percent": 96.8
     },
     "semantic_codebook": {
       "compact_definition_and_reference_words": 1055,

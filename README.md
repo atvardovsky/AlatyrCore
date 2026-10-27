@@ -89,6 +89,14 @@ For business changes, the assistant must distinguish approved requirements from
 its own inferences. A repair retains the original reported case, so passing
 tests or a healthy adapter cannot by themselves mean the user's problem is fixed.
 
+For uncertain causes, [evidence-guided analysis](framework/task-decomposition.md#evidence-guided-analysis)
+connects hypotheses to predictions, small discriminating checks and their result
+artifacts. Conclusions can be revised without losing unresolved duties. Optional
+[knowledge queries](framework/project-knowledge.md#explicit-planner-queries)
+bring selected project guidance into the task, not the entire archive. These
+mechanisms support disciplined investigation; they do not prove better reasoning
+or grant permission to act.
+
 When code or tests change, the assistant must review the effect on project
 knowledge: update affected sources, explain why no update is needed, or report
 blocked or unverified work. A useful discovery can be proposed for review by a
@@ -276,7 +284,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.108`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.109`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

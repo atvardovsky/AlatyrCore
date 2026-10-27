@@ -192,11 +192,30 @@ For one registered task, use
 The optional view resolves its digest-bound model/closure, not old narrative logs,
 and reuses canonical repair checks, selecting the named active task if needed.
 It separates recorded delivery, provisional finalization, installed/adopted
-controls and exercised evidence. An optional schema-6 `execution_dependencies`
+controls and exercised evidence. An optional schema-7 `execution_dependencies`
 mapping yields declared ready/blocked/waiting obligations, never authority or
 accepted proof. Default health loads no extra task view. An unknown task is an
 explicit selection error; no selector is converted into a filesystem path.
 The installed delegate supports `doctor --current-task TASK-ID` too.
+When `analysis_evidence` is present, this view also returns digest-bound
+next-action advice from the same dependency graph. Unknown costs remain unknown;
+advice neither verifies observations nor authorizes a probe. Current publication
+and target validation verify selected artifact hashes and retain pending duties.
+Canonical meanings: [evidence-guided analysis](../framework/task-decomposition.md#evidence-guided-analysis).
+
+`context-plan --knowledge-request .ai/.runtime/knowledge-query.json` explicitly
+searches named registered knowledge shards. A request has `schema_version: 1`,
+`stage: initial` or `refined`, `shard_ids`, `selectors` and `limit`. For example:
+
+```json
+{"schema_version": 1, "stage": "initial", "shard_ids": ["example-area"], "selectors": {"project_areas": ["example-area"]}, "limit": 3}
+```
+
+These are illustrative selector IDs, not repository facts. Use target-registered
+IDs. Unsearched shards, unresolved freshness triggers and actual use stay
+explicit. Applicable constraint overflow and contradictions block; selected
+owners and delivered results consume the ordinary context budget. No request
+means no additional scan. See [query rules](../framework/project-knowledge.md#explicit-planner-queries).
 Recurring incidents include a bounded pre-repair view of the original input,
 expected outcome, latest failed gate and adopted repair controls. Missing
 controls prompt an explicit adoption decision, not automatic enablement.

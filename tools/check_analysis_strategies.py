@@ -32,13 +32,13 @@ PROJECTION_SCHEMA_PATH = (
 
 
 def sample_model(strategy_id: str) -> dict[str, object]:
-    return {
-        "schema_version": 6,
+    model = {
+        "schema_version": 7,
         "model_kind": "alatyr-bounded-problem-model",
         "model_id": f"fixture-{strategy_id}",
         "operation_id": "fixture-operation",
         "active_projection": {
-            "schema_version": 4,
+            "schema_version": 5,
             "path": f".ai/.runtime/problem-model-projections/fixture-{strategy_id}.json",
         },
         "incident": {
@@ -111,6 +111,17 @@ def sample_model(strategy_id: str) -> dict[str, object]:
         "unresolved_decisions": [],
         "evidence_refs": ["fixture:evidence"],
     }
+    if strategy_id == "hypothesis-driven":
+        model["hypotheses"][0].update(status="pending", evidence_refs=[])
+        model["proof_obligations"][0].update(status="open", evidence_refs=[])
+        model["analysis_evidence"] = {"schema_version": 1, "probes": [{
+            "obligation_id": "proof-1", "unknown_ids": ["unknown-1"],
+            "method": "Run a bounded discriminating fixture probe",
+            "action_kind": "local-check",
+            "input_paths": ["fixture.txt"], "predictions": [{"hypothesis_id": "hypothesis-1",
+                "supports": "The positive control passes", "refutes": "The negative case reproduces"}],
+            "estimated_tool_calls": None, "result": None}], "updates": [], "review_challenges": []}
+    return model
 
 
 def check_lifecycle_contract(

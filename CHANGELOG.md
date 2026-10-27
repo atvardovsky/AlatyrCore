@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.109 - 2026-10-27
+
+- Add conditional source-bound probes, evidence revisions and adversarial
+  challenges inside the existing bounded problem model. Verify artifacts through
+  publication and registered target validation; retain captured duties and reject
+  unrun/inconclusive causes, stale bindings and unsupported resolution claims.
+- Derive digest-bound next-action advice from existing obligation readiness,
+  preserving required work, unknown costs and current authorization boundaries.
+  Advice is neither a scheduler nor proof of causal correctness or independence.
+- Integrate explicit initial/refined selected-shard knowledge queries with context
+  planning. Keep default no-scan behavior, authority/freshness distinctions,
+  contradictions, omissions and complete delivered-context budget checks.
+- Isolate source-context CLI regressions from ambient remote refs and developer
+  edits using private Git metadata over current source bytes. Retain real dirty
+  input and budget-blocked negative controls; production routing is unchanged.
+- Advance framework to alpha.109, adapter schema to `90`, templates to `104`,
+  active problem models to schema `7` and projections to `5`. Preserve frozen
+  schema-4/5/6 witnesses; migrate active work without manufacturing evidence.
+  Small/direct-local routes and existing size ceilings remain unchanged. No
+  target rollout, tag publication, general cognitive or billing gain is implied.
+
 - Document a source-only development context contract through existing lazy
   section routing. Add regression coverage for conditional delivery, required
   context precedence, missing-section recovery, and unchanged routine routes.

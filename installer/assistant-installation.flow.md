@@ -763,6 +763,10 @@ Report:
   positive/negative evidence, obligation, and adversarial review;
   verify that small tasks skip the catalog and non-trivial tasks load only one
   selected descriptor
+- current model/projection schemas 7/5 reconciled; active hypothesis-driven
+  work has real probe evidence or remains pending, captured revisions/challenges
+  are retained, and explicit bounded knowledge queries remain conditional;
+  frozen schema-4/5/6 witnesses are not rewritten or promoted to new acceptance
 - change-package root index, bounded digest-bound index shards, lazy overlay,
   flow, schema, redacted report, incident/predecessor/problem-model bindings,
   active-package auto-validation, retention policy, and validator support

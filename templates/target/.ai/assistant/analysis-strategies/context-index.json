@@ -31,8 +31,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 65,
-      "content_digest": "sha256:07e4bffefaa93be197bd5e77fc4541b17b91a00801feab58c63cbbaec2f83ad5"
+      "estimated_words": 85,
+      "content_digest": "sha256:adcdb60150151ce66fba77c8996879242ee6ebacd06739ac5931c280d4cd9d02"
     },
     {
       "id": "assistant.content.analysis-strategies-architecture-comparison-json",
@@ -123,8 +123,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 51,
-      "content_digest": "sha256:eaa971b59c9d6511e14598e7c70c0a160d6e988fce3da35229ecc6f69d74f830"
+      "estimated_words": 83,
+      "content_digest": "sha256:c0b9de77fe74abc08e3eaaa6be88a1b49f32a47c9f293654ed671ee6c53484ef"
     },
     {
       "id": "assistant.content.analysis-strategies-index-json",
@@ -144,7 +144,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 59,
-      "content_digest": "sha256:17ce2adf6759826a76b95ff4c41265b706c5182e592e6158a892d6b57acb674c"
+      "content_digest": "sha256:b1896b9ba50d5fff1a586c556909044f5e922c5d62a776866077c7989fc8d182"
     },
     {
       "id": "assistant.content.analysis-strategies-invariant-first-json",

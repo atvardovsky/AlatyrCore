@@ -29,8 +29,8 @@ DESCRIPTOR_FIELDS = {
     "required_nonempty_fields",
     "completion_rule",
 }
-PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v6"
-PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v4"
+PROBLEM_MODEL_SCHEMA_ID = "alatyr-problem-model-v7"
+PROBLEM_MODEL_PROJECTION_SCHEMA_ID = "alatyr-problem-model-active-projection-v5"
 STRATEGY_INDEX_RELPATH = ".ai/assistant/analysis-strategies/index.json"
 PROBLEM_MODEL_TEMPLATE_RELPATH = ".ai/assistant/templates/problem-model.json"
 PROBLEM_MODEL_PROJECTION_TEMPLATE_RELPATH = (
@@ -365,8 +365,11 @@ def validate_problem_model(
     failures.extend(_forbidden_reasoning_failures(model))
     if failures:
         return failures
-    if model.get("schema_version") in (5, 6):
+    if model.get("schema_version") in (5, 6, 7):
         failures.extend(behavior_failures(model))
+    if model.get("schema_version") == 7:
+        from analysis_evidence import evidence_failures
+        failures.extend(evidence_failures(model))
     projection_ref = model.get("active_projection")
     model_id = model.get("model_id")
     if isinstance(projection_ref, dict) and isinstance(model_id, str):
@@ -756,11 +759,14 @@ def build_active_problem_model_projection(
     }
     if "execution_dependencies" in model:
         payload["execution_dependencies"] = model["execution_dependencies"]
+    if "analysis_evidence" in model:
+        from analysis_evidence import active_evidence
+        payload["analysis_evidence"] = active_evidence(model)
     legacy = model.get("schema_version") == 4
     if legacy:
         payload.pop("behavior_acceptance")
     return {
-        "schema_version": 3 if legacy else 4,
+        "schema_version": 3 if legacy else 5 if model.get("schema_version") == 7 else 4,
         "projection_kind": "alatyr-active-problem-model",
         "model_id": model.get("model_id"),
         "operation_id": model.get("operation_id"),

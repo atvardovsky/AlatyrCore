@@ -1,0 +1,502 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-problem-model.schema.json",
+  "title": "Alatyr bounded problem model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "model_kind", "model_id", "operation_id", "active_projection",
+    "incident", "lifecycle_model", "contract_enforcement", "behavior_review", "original_case",
+    "primary_strategy_id", "risk_classes", "protected_change", "required_review_ids", "review_results", "objective", "non_goals",
+    "repository_binding", "task_binding", "predecessor", "strategy_transitions",
+    "facts", "assumptions", "unknowns", "changed_facts", "invariants",
+    "hypotheses", "alternatives", "proof_obligations", "counterexamples",
+    "unresolved_decisions", "evidence_refs"
+  ],
+  "properties": {
+    "schema_version": {"const": 6},
+    "model_kind": {"const": "alatyr-bounded-problem-model"},
+    "model_id": {"$ref": "#/definitions/identifier"},
+    "operation_id": {"$ref": "#/definitions/identifier"},
+    "active_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "path"],
+      "properties": {
+        "schema_version": {"const": 4},
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^\\.ai/\\.runtime/problem-model-projections/[A-Za-z0-9._-]+\\.json$"
+        }
+      }
+    },
+    "incident": {"$ref": "#/definitions/incident"},
+    "lifecycle_model": {"$ref": "#/definitions/lifecycleModel"},
+    "contract_enforcement": {"$ref": "#/definitions/contractEnforcement"},
+    "behavior_review": {"$ref": "#/definitions/behaviorReview"},
+    "original_case": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/originalCase"}]},
+    "execution_dependencies": {
+      "type": "array", "minItems": 1, "maxItems": 64,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["obligation_id", "requires"],
+        "properties": {
+          "obligation_id": {"$ref": "#/definitions/identifier"},
+          "requires": {"type": "array", "maxItems": 64, "uniqueItems": true,
+                       "items": {"$ref": "#/definitions/identifier"}}
+        }
+      }
+    },
+    "primary_strategy_id": {"$ref": "#/definitions/primaryStrategy"},
+    "risk_classes": {"$ref": "#/definitions/stringArray"},
+    "protected_change": {"type": "boolean"},
+    "required_review_ids": {
+      "type": "array",
+      "maxItems": 1,
+      "items": {"const": "adversarial-review"},
+      "uniqueItems": true
+    },
+    "review_results": {
+      "type": "array",
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "evidence_refs"],
+        "properties": {
+          "id": {"const": "adversarial-review"},
+          "status": {"enum": ["pending", "passed", "failed", "blocked"]},
+          "evidence_refs": {"$ref": "#/definitions/stringArray"}
+        }
+      }
+    },
+    "objective": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "repository_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "branch", "base_revision"],
+      "properties": {
+        "state": {"enum": ["available", "unavailable"]},
+        "branch": {"$ref": "#/definitions/reference"},
+        "base_revision": {"$ref": "#/definitions/reference"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "unavailable"}}},
+          "then": {
+            "properties": {
+              "branch": {"const": "unavailable"},
+              "base_revision": {"const": "unavailable"}
+            }
+          },
+          "else": {
+            "properties": {
+              "branch": {"not": {"const": "unavailable"}},
+              "base_revision": {"not": {"const": "unavailable"}}
+            }
+          }
+        }
+      ]
+    },
+    "task_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_ids", "workstream_ids"],
+      "properties": {
+        "task_ids": {"$ref": "#/definitions/stringArray"},
+        "workstream_ids": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "model_id", "sha256"],
+      "properties": {
+        "state": {"enum": ["none", "available"]},
+        "model_id": {"$ref": "#/definitions/identifier"},
+        "sha256": {"type": "string", "pattern": "^(none|[a-f0-9]{64})$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "none"}}},
+          "then": {
+            "properties": {
+              "model_id": {"const": "none"},
+              "sha256": {"const": "none"}
+            }
+          },
+          "else": {
+            "properties": {
+              "model_id": {"not": {"const": "none"}},
+              "sha256": {"pattern": "^[a-f0-9]{64}$"}
+            }
+          }
+        }
+      ]
+    },
+    "strategy_transitions": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "reason", "evidence_refs", "invalidated_assumption_ids", "reopened_obligation_ids"],
+        "properties": {
+          "from": {"$ref": "#/definitions/primaryStrategy"},
+          "to": {"$ref": "#/definitions/primaryStrategy"},
+          "reason": {"$ref": "#/definitions/statement"},
+          "evidence_refs": {"$ref": "#/definitions/nonEmptyStringArray"},
+          "invalidated_assumption_ids": {"$ref": "#/definitions/stringArray"},
+          "reopened_obligation_ids": {"$ref": "#/definitions/stringArray"}
+        }
+      }
+    },
+    "non_goals": {"$ref": "#/definitions/stringArray"},
+    "facts": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/evidenceStatement"}},
+    "assumptions": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/assumption"}},
+    "unknowns": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/identifiedStatement"}},
+    "changed_facts": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/ownedStatement"}},
+    "invariants": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/invariant"}},
+    "hypotheses": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/hypothesis"}},
+    "alternatives": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/alternative"}},
+    "proof_obligations": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/proofObligation"}},
+    "counterexamples": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/evidenceStatement"}},
+    "unresolved_decisions": {"$ref": "#/definitions/stringArray"},
+    "evidence_refs": {"$ref": "#/definitions/stringArray"}
+  },
+  "definitions": {
+    "behaviorReview": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required", "reason", "deltas"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "deltas": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/behaviorDelta"}}
+      }
+    },
+    "behaviorDelta": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fact_id", "before", "after", "effect", "authority_status", "authority_kind", "authority_ref", "decision_owner", "scope", "evidence_refs"],
+      "properties": {
+        "fact_id": {"$ref": "#/definitions/identifier"},
+        "before": {"$ref": "#/definitions/statement"},
+        "after": {"$ref": "#/definitions/statement"},
+        "effect": {"enum": ["add", "restrict", "restore", "remove", "clarify"]},
+        "authority_status": {"enum": ["approved", "proposed", "conflicting", "unknown"]},
+        "authority_kind": {"enum": ["canonical-source", "owner-decision", "inference"]},
+        "authority_ref": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "decision_owner": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "scope": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "repair": {"type": "object"}
+      }
+    },
+    "originalCase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_ref", "actor", "input", "expected_outcome", "status", "evidence_refs", "supersession"],
+      "properties": {
+        "source_ref": {"$ref": "#/definitions/reference"},
+        "actor": {"$ref": "#/definitions/statement"},
+        "input": {"$ref": "#/definitions/statement"},
+        "expected_outcome": {"$ref": "#/definitions/statement"},
+        "status": {"enum": ["unverified", "still-failing", "verified-fixed", "superseded-by-owner-decision"]},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "supersession": {"oneOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false,
+          "required": ["source_ref", "decision_owner", "reason"],
+          "properties": {"source_ref": {"$ref": "#/definitions/reference"}, "decision_owner": {"$ref": "#/definitions/reference"}, "reason": {"$ref": "#/definitions/statement"}}
+        }]}
+      }
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "primaryStrategy": {
+      "enum": ["direct-local", "invariant-first", "hypothesis-driven", "architecture-comparison", "evidence-synthesis", "exploratory-design"]
+    },
+    "stringArray": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"$ref": "#/definitions/reference"},
+      "uniqueItems": true
+    },
+    "nonEmptyStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {"$ref": "#/definitions/reference"},
+      "uniqueItems": true
+    },
+    "incident": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode", "family_id", "trigger", "corrective_iteration",
+        "predecessor_model_ids", "predecessor_package_ids", "latest_failed_gate"
+      ],
+      "properties": {
+        "mode": {"enum": ["none", "new", "continuation", "systemic-repair"]},
+        "family_id": {"$ref": "#/definitions/identifier"},
+        "trigger": {
+          "enum": [
+            "none", "reported-defect", "escaped-defect", "failed-required-gate",
+            "recurring-correction", "manual"
+          ]
+        },
+        "corrective_iteration": {"type": "integer", "minimum": 0},
+        "predecessor_model_ids": {"$ref": "#/definitions/stringArray"},
+        "predecessor_package_ids": {"$ref": "#/definitions/stringArray"},
+        "latest_failed_gate": {"$ref": "#/definitions/failedGate"}
+      }
+    },
+    "failedGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "id", "evidence_refs"],
+      "properties": {
+        "state": {"enum": ["none", "open", "resolved"]},
+        "id": {"$ref": "#/definitions/identifier"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "lifecycleModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required", "reason", "required_outcomes", "states", "transitions",
+        "boundaries", "conservation_rules"
+      ],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "required_outcomes": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "enum": ["success", "rejection", "deferral", "expiry", "recovery", "failure"]
+          },
+          "uniqueItems": true
+        },
+        "states": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/lifecycleState"}
+        },
+        "transitions": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {"$ref": "#/definitions/lifecycleTransition"}
+        },
+        "boundaries": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {"$ref": "#/definitions/lifecycleBoundary"}
+        },
+        "conservation_rules": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {"$ref": "#/definitions/evidenceStatement"}
+        }
+      }
+    },
+    "lifecycleState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner_ref", "terminal", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "terminal": {"type": "boolean"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "lifecycleTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to", "owner_ref", "outcome", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "from": {"$ref": "#/definitions/identifier"},
+        "to": {"$ref": "#/definitions/identifier"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "outcome": {
+          "enum": ["success", "rejection", "deferral", "expiry", "recovery", "failure"]
+        },
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "lifecycleBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "owner_ref", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "kind": {"enum": ["producer", "orchestrator", "persistence", "consumer", "observability"]},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "contractEnforcement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "reason", "requirements"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"$ref": "#/definitions/statement"},
+        "requirements": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/definitions/contractEnforcementRequirement"}
+        }
+      }
+    },
+    "contractEnforcementRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "normative_source_ref", "statement", "enforcement_refs",
+        "positive_evidence_refs", "counterexample_ids", "proof_obligation_ids"
+      ],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "normative_source_ref": {"$ref": "#/definitions/reference"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "enforcement_refs": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "positive_evidence_refs": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "counterexample_ids": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "proof_obligation_ids": {"$ref": "#/definitions/nonEmptyStringArray"}
+      }
+    },
+    "identifiedStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"}
+      }
+    },
+    "evidenceStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "ownedStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "owner_ref", "evidence_refs"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"enum": ["active", "invalidated"]}
+      }
+    },
+    "invariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "owner_ref", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "owner_ref": {"$ref": "#/definitions/reference"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"enum": ["required", "preserved", "violated", "unresolved"]}
+      }
+    },
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"enum": ["pending", "supported", "rejected"]}
+      }
+    },
+    "alternative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_refs", "status"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "status": {"enum": ["candidate", "selected", "rejected"]}
+      }
+    },
+    "proofObligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidence_owner", "acceptance_owner", "required", "status", "evidence_refs", "waiver"],
+      "properties": {
+        "id": {"$ref": "#/definitions/identifier"},
+        "statement": {"$ref": "#/definitions/statement"},
+        "evidence_owner": {"enum": ["primary", "worker"]},
+        "acceptance_owner": {"const": "primary"},
+        "required": {"type": "boolean"},
+        "status": {"enum": ["open", "passed", "failed", "blocked", "waived"]},
+        "evidence_refs": {"$ref": "#/definitions/stringArray"},
+        "waiver": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["decision_owner", "authority_ref", "evidence_refs"],
+              "properties": {
+                "decision_owner": {"const": "primary-assistant"},
+                "authority_ref": {"$ref": "#/definitions/reference"},
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 64,
+                  "items": {"$ref": "#/definitions/reference"},
+                  "uniqueItems": true
+                }
+              }
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "waived"}}},
+          "then": {"properties": {"waiver": {"type": "object"}}},
+          "else": {"properties": {"waiver": {"type": "null"}}}
+        }
+      ]
+    }
+  }
+}
