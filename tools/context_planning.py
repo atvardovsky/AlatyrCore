@@ -10,7 +10,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Iterable
 from architecture_context import architecture_context
 from validation_route_contract import CONTRACT_PATH, validation_route_failures
-from context_input_snapshot import ContextInputChanged, ContextInputSnapshot, read_context_bytes
+from context_input_snapshot import ContextInputChanged, ContextInputLimit, ContextInputSnapshot, read_context_bytes
 
 from context_catalog import (
     CatalogItem,
@@ -56,6 +56,9 @@ class ContextPlanRequest:
     architecture_mode: str | None = None
     document_warnings: bool = False
     change_kinds: tuple[str, ...] = ()
+    working_set_request: str | None = None
+    previous_plan: str | None = None
+    delivery_observation: str | None = None
 
 
 class ContextPlanningError(ValueError):
@@ -179,12 +182,16 @@ def _target_path(target: Path, relpath: str, label: str) -> Path:
     return candidate
 
 
-def _load_json(target: Path, relpath: str, label: str, *, digest_evidence: dict[str, str] | None = None) -> dict[str, Any]:
+def _load_json(target: Path, relpath: str, label: str, *, digest_evidence: dict[str, str] | None = None, max_bytes: int | None = None) -> dict[str, Any]:
     path = _target_path(target, relpath, label)
     try:
-        raw = read_context_bytes(path)
+        raw = read_context_bytes(path, max_bytes=max_bytes)
         value = json.loads(raw.decode("utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+    except ContextInputLimit as exc:
+        raise ContextPlanningError("CONTEXT_PLAN_INPUT_TOO_LARGE", str(exc), status="blocked", details={"path": relpath, "maximum_bytes": max_bytes}) from exc
+    except ContextInputChanged:
+        raise
+    except (OSError, UnicodeError, ValueError, RecursionError) as exc:
         raise ContextPlanningError(
             "ADAPTER_ARTIFACT_UNAVAILABLE",
             f"cannot load {relpath}: {exc}",
@@ -818,11 +825,11 @@ def _add_owner_closure(
     catalogs: _Catalogs,
     selected: dict[str, CatalogItem],
     reasons: dict[str, set[str]],
+    *, max_items: int | None = None, owner_index: dict | None = None,
 ) -> None:
-    by_rule: dict[str, list[CatalogItem]] = {}
-    for item in catalogs.items:
-        for rule_id in item.selectors.get("rule_ids", ()):
-            by_rule.setdefault(rule_id, []).append(item)
+    if max_items is not None and len(selected) > max_items:
+        raise ContextPlanningError("CONTEXT_WORKING_SET_WORK_LIMIT", "required context exceeds the bounded working-set limit; decompose without dropping owners", status="blocked", details={"maximum": max_items, "closure_complete": False})
+    by_rule = owner_index if owner_index is not None else _owner_index(catalogs)
     pending = list(selected.values())
     visited: set[str] = set()
     while pending:
@@ -842,10 +849,20 @@ def _add_owner_closure(
             owner = candidates[0]
             if owner.item_id not in selected:
                 selected[owner.item_id] = owner
+                if max_items is not None and len(selected) > max_items:
+                    raise ContextPlanningError("CONTEXT_WORKING_SET_WORK_LIMIT", "owner closure exceeds the bounded working-set limit; decompose without dropping owners", status="blocked", details={"maximum": max_items, "closure_complete": False})
                 pending.append(owner)
             reasons.setdefault(owner.item_id, set()).add(
                 f"owner-reference:{owner_ref}"
             )
+
+
+def _owner_index(catalogs: _Catalogs) -> dict[str, list[CatalogItem]]:
+    by_rule: dict[str, list[CatalogItem]] = {}
+    for item in catalogs.items:
+        for rule_id in item.selectors.get("rule_ids", ()):
+            by_rule.setdefault(rule_id, []).append(item)
+    return by_rule
 
 
 def _verify_selected_content(
@@ -1090,6 +1107,44 @@ def _document_warning_lookup(request: ContextPlanRequest, target: Path, selected
                                        selected_paths=(item.path for item in selected.values()))
 
 
+def _working_call(function: Any, *args: Any, **kwargs: Any) -> Any:
+    from context_working_set import WorkingSetError
+
+    try:
+        return function(*args, **kwargs)
+    except WorkingSetError as exc:
+        raise ContextPlanningError(exc.code, str(exc), status="blocked", details=exc.details) from exc
+
+
+def _add_working_view(request: ContextPlanRequest, plan: dict, view: dict, target: Path, api: Any, selected: dict) -> None:
+    view["target_identity"] = api.target_identity(target)
+    view["budget"] = dict(plan["context_packet"]["budget"])
+    view["mandatory_retained"] = set(view["mandatory_item_ids"]) <= selected.keys()
+    plan["working_set"] = view
+    plan["request"]["working_set_request"] = request.working_set_request
+    plan["routing_sources"]["working_set_request"] = {"path": request.working_set_request, "digest": file_digest(target / request.working_set_request)}
+    if request.previous_plan:
+        previous = _working_call(api.read_evidence, request.previous_plan, target)
+        view["delta"] = _working_call(api.plan_delta, previous, plan, target)
+    if request.delivery_observation:
+        observation = _working_call(api.read_evidence, request.delivery_observation, target)
+        view["accounting"] = _working_call(api.delivery_accounting, observation, plan["context_packet"])
+    else:
+        view["accounting"] = {"measurement": "planned-only", "input_tokens": "unknown", "cached_input_tokens": "unknown", "total_task_and_worker_tokens": "unknown", "billing_savings": "unknown"}
+
+
+def _working_request(request: ContextPlanRequest, target: Path) -> tuple:
+    if not request.working_set_request:
+        return None, None
+    import context_working_set as api
+
+    try:
+        document = _load_json(target, request.working_set_request, "working-set request", max_bytes=4 * 1024 * 1024)
+    except ContextPlanningError as exc:
+        raise ContextPlanningError(exc.code, str(exc), status="blocked", details=exc.details, actions=("repair or supply the selected working-set request",)) from exc
+    return document, api
+
+
 def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     target = request.target.resolve()
     if not target.is_dir():
@@ -1126,6 +1181,9 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             upgrade_required=True,
         )
     catalogs = _load_catalogs(target, router)
+    working_document, working_api = _working_request(request, target)
+    owner_index = _owner_index(catalogs) if working_api is not None else None
+    working_view = None
     surface, surface_evidence = _resolve_surface(
         target, router, request.assistant_surface
     )
@@ -1180,7 +1238,9 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     impact = _impact_selection(
         request, target, router, catalogs, selected, reasons, graph_snapshot
     )
-    _add_owner_closure(catalogs, selected, reasons)
+    if working_api is not None:
+        working_view = _working_call(working_api.required_selection, working_document, catalogs.by_id, selected, reasons)
+    _add_owner_closure(catalogs, selected, reasons, max_items=working_api.MAX_SCOPE_ITEMS if working_api is not None else None, owner_index=owner_index)
     _verify_selected_content(target, selected)
     terms, semantic_index_path = _semantic_terms(
         target, router, selected.values(), request.profile, operation_id
@@ -1236,6 +1296,12 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
                      "decomposition": decomposition_proposal(selected.values(), max_files=configured_files, max_words=max_words, max_characters=max_characters)},
             actions=("record a context expansion or split the task without omitting owners",),
         )
+    if working_api is not None:
+        terms = _working_call(working_api.select_optional, working_document, working_view, catalogs.by_id, selected, reasons, terms,
+            max_files=configured_files, max_words=max_words, max_characters=max_characters,
+            close=lambda entries, why: _add_owner_closure(catalogs, entries, why, max_items=working_api.MAX_SCOPE_ITEMS, owner_index=owner_index),
+            hydrate=lambda entries: _verify_selected_content(target, entries),
+            resolve_terms=lambda entries: _semantic_terms(target, router, entries, request.profile, operation_id)[0])
     normalized_reasons = {
         item_id: sorted(values) for item_id, values in sorted(reasons.items())
     }
@@ -1369,6 +1435,8 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         }
     if document_warnings is not None:
         plan["document_warnings"] = document_warnings
+    if working_api is not None:
+        _add_working_view(request, plan, working_view, target, working_api, selected)
     try:
         for graph in graph_snapshot.values():
             assert_graph_current(graph, target)
@@ -1414,6 +1482,10 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
         "context_packet": None,
     }
     result["request"] = {key: _request_echo(value) for key, value in result["request"].items()}
+    for key in ("working_set_request", "previous_plan", "delivery_observation"):
+        value = getattr(request, key)
+        if value is not None:
+            result["request"][key] = _request_echo(value)
     result["plan_digest"] = _canonical_digest(result)
     return result
 
@@ -1423,7 +1495,7 @@ def _validate_request(request: ContextPlanRequest) -> None:
         raise _field_error("request", "target", "a pathlib Path", request.target)
     for field in ("profile", "operation"):
         _text(getattr(request, field), "request", field)
-    for field in ("assistant_surface", "architecture_mode"):
+    for field in ("assistant_surface", "architecture_mode", "working_set_request", "previous_plan", "delivery_observation"):
         value = getattr(request, field)
         if value is not None:
             _text(value, "request", field)
@@ -1441,6 +1513,8 @@ def _validate_request(request: ContextPlanRequest) -> None:
             _positive_integer(value, "request", field)
     if not isinstance(request.document_warnings, bool):
         raise _field_error("request", "document_warnings", "a Boolean", request.document_warnings)
+    if (request.previous_plan is not None or request.delivery_observation is not None) and request.working_set_request is None:
+        raise ContextPlanningError("INVALID_CONTEXT_PLAN_REQUEST", "previous plans and delivery observations require a working-set request", status="invalid-request")
 
 
 def plan_target_context(request: ContextPlanRequest) -> dict[str, Any]:
@@ -1459,6 +1533,7 @@ def plan_target_context(request: ContextPlanRequest) -> dict[str, Any]:
                 )
             ),
             fact_ids=tuple(sorted(set(request.fact_ids))),
+            working_set_request=_normalize_relative(request.working_set_request, "working-set request") if request.working_set_request is not None else None,
         )
         if any(not fact_id or PLACEHOLDER_RE.search(fact_id) for fact_id in normalized.fact_ids):
             raise ContextPlanningError(

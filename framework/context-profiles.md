@@ -39,6 +39,11 @@ and still remain inside the router's hard expanded file, word, and character
 ceilings. Crossing the hard ceiling is a routing failure: split the task,
 reduce duplicated context, or stop for an explicit context decision.
 
+Optional phase-specific working sets follow the
+[selected delivery contract](context-router.md#selected-contract-delivery).
+They preserve mandatory owner closure and enumerate exhaustive scope rather
+than truncating it. Topic scores and delivery views grant no acceptance.
+
 Load generated `.ai/assistant/entry-packet.json` only for recovery, audit or routing
 conflict. Human profile/help prose and full support state stay lazy unless routing
 is missing, stale, disputed or insufficient.

@@ -42,9 +42,6 @@ Load `.ai/framework/task-decomposition.md` only when non-trivial task splitting,
 implementation levels, dependency ordering, or executor selection is ambiguous
 or the target task-decomposition policy needs repair. Routine routing uses
 `.ai/assistant/task-decomposition.json`.
-The generated bootstrap index is repaired from `.ai/alatyr.yaml`,
-`.ai/README.md`, `.ai/assistant/context-router.json`, and
-`.ai/framework/semantics/index.json` when its hashes drift.
 
 ## Recursive Selection And Semantic Terms
 
@@ -84,19 +81,26 @@ cheap automatic routing. Resolve an exact operation ID or alias through
 `.ai/assistant/operation-catalog.json` only for the bare `Alatyr` entry,
 ambiguity, or operation/adapter repair.
 
-Use the router's file, word, deterministic character, portable, and reserved
-target-context budgets. Character limits protect dense structured data and
-text without whitespace; they are not provider token or billing telemetry.
-Resolve and measure target-owned paths before accepting the adapter. When sufficient
-context exceeds a budget, load required safety and owner evidence and record
-selected profiles and areas, loaded files and reasons, approximate volume,
-expansion triggers, intentional omissions, and residual risk. Source estimates
-remain benchmark evidence, not exact runtime or billing data.
+Use file, word, character, portable and reserved-target budgets. Character limits
+protect dense data, not provider billing. Resolve/measure target-owned paths
+before acceptance. Required safety/owner expansion records profiles, areas,
+paths/reasons, volume, triggers, omissions and risk; estimates are not telemetry.
 
 The profile-default budget is the compact route. An expansion receipt may
 cross that budget, but the composed end-to-end route, including bootstrap,
 must remain inside `context_budgets.expanded`. If it cannot, split the task or
 stop for an explicit context decision instead of silently loading more files.
+
+### Optional Working Sets
+
+When the selected planner supports working-set requests, classify information
+need and delivery phase. Preserve mandatory owners/gates; only optional
+candidates compete for remaining budget. Exhaustive review retains every indexed
+item in named contours or blocks for decomposition, never top-k truncation.
+Use compact plan output for navigation, full reports for detail, and verified
+identity deltas at phase boundaries. Keep current obligations in existing task
+projections. Missing delivery/token evidence remains unknown; summaries and
+phase labels grant no approval or host context eviction.
 
 ## Project-Area Overlays
 

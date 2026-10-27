@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alatyr.dev/schemas/alatyr-context-working-set-request.schema.json",
+  "title": "Alatyr Context Working Set Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "request_kind", "phase", "information_need", "required_context_ids", "optional_context"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "request_kind": {"const": "alatyr-context-working-set-request"},
+    "phase": {"enum": ["discover", "design", "implement", "validate"]},
+    "information_need": {"enum": ["lookup", "local-change", "cross-area-change", "exhaustive-review"]},
+    "required_context_ids": {"$ref": "#/$defs/ids"},
+    "exhaustive_contours": {
+      "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true,
+      "items": {"enum": ["framework", "project", "assistant"]}
+    },
+    "optional_context": {
+      "type": "array", "maxItems": 128,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["context_id", "topics"],
+        "properties": {
+          "context_id": {"$ref": "#/$defs/id"},
+          "topics": {"type": "array", "minItems": 1, "maxItems": 32, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+          "phases": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"enum": ["discover", "design", "implement", "validate"]}}
+        }
+      }
+    }
+  },
+  "allOf": [{
+    "if": {"properties": {"information_need": {"const": "exhaustive-review"}}},
+    "then": {"required": ["exhaustive_contours"]},
+    "else": {"not": {"required": ["exhaustive_contours"]}}
+  }],
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "\\S"},
+    "ids": {"type": "array", "maxItems": 128, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+  }
+}

@@ -310,6 +310,11 @@ Classify every proposed target file:
     preload into the bootstrap, and keep domain shards lazy. Record canonical
     prose fallback for unresolved or conflicting terms. Add the context-packet
     template for non-trivial, expanded, handed-off, or resumed work.
+    If verified planning tools support optional working sets, adapt phase and
+    exhaustive-scope guidance without adding routine bootstrap reads. Preserve
+    mandatory context, indexed coverage limits, unknown telemetry and current
+    authorization; compact output and previous plans grant neither acceptance
+    nor host compaction. Leave unsupported controls unavailable.
     Add `.ai/project/architecture/README.md` and
     `.ai/project/architecture/catalog.json` only when architecture knowledge is
     enabled. Derive owner, decision authority, item states, selected evidence,

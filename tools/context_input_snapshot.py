@@ -17,6 +17,22 @@ class ContextInputChanged(ValueError):
         super().__init__(message)
 
 
+class ContextInputLimit(ContextInputChanged):
+    pass
+
+
+def _limited_read(path: Path, max_bytes: int | None) -> bytes:
+    if max_bytes is None:
+        return path.read_bytes()
+    if type(max_bytes) is not int or max_bytes < 1:
+        raise ValueError("context input byte limit must be a positive integer")
+    with path.open("rb") as stream:
+        raw = stream.read(max_bytes + 1)
+    if len(raw) > max_bytes:
+        raise ContextInputLimit(path, f"context input exceeds {max_bytes} bytes")
+    return raw
+
+
 class ContextInputSnapshot:
     """Cache input bytes, not decisions; every successful scope verifies disk bytes."""
 
@@ -26,6 +42,7 @@ class ContextInputSnapshot:
         self.root = root.resolve()
         self.limit = cache_bytes
         self.inputs: dict[Path, str] = {}
+        self.read_limits: dict[Path, int] = {}
         self.cache: OrderedDict[Path, bytes] = OrderedDict()
         self.used = 0
         self.conflict: Path | None = None
@@ -42,20 +59,28 @@ class ContextInputSnapshot:
             _ACTIVE.reset(self.token)
             self.cache.clear()
             self.inputs.clear()
+            self.read_limits.clear()
             self.used = 0
             self.conflict = None
 
-    def read(self, path: Path) -> bytes:
+    def read(self, path: Path, *, max_bytes: int | None = None) -> bytes:
         path = path.absolute()
+        if max_bytes is not None:
+            if type(max_bytes) is not int or max_bytes < 1:
+                raise ValueError("context input byte limit must be a positive integer")
+            self.read_limits[path] = min(max_bytes, self.read_limits.get(path, max_bytes))
         if path != self.root and self.root not in path.parents:
             raise ContextInputChanged(path, "context input escapes the target snapshot")
         cached = self.cache.get(path)
         if cached is not None:
+            if max_bytes is not None and len(cached) > max_bytes:
+                raise ContextInputLimit(path, f"context input exceeds {max_bytes} bytes")
             self.cache.move_to_end(path)
             return cached
-        return self.observe(path, self._physical(path))
+        raw = self._physical(path) if max_bytes is None else self._physical(path, max_bytes=max_bytes)
+        return self.observe(path, raw)
 
-    def _physical(self, path: Path) -> bytes:
+    def _physical(self, path: Path, *, max_bytes: int | None = None) -> bytes:
         try:
             resolved = path.resolve()
         except (OSError, RuntimeError) as exc:
@@ -65,7 +90,7 @@ class ContextInputSnapshot:
             self.conflict = path
             raise ContextInputChanged(path, "context input changed containment during planning")
         try:
-            return path.read_bytes()
+            return _limited_read(path, max_bytes)
         except OSError as exc:
             if path in self.inputs:
                 self.conflict = path
@@ -98,18 +123,20 @@ class ContextInputSnapshot:
             raise ContextInputChanged(self.conflict, "context input changed during planning")
         for path, expected in self.inputs.items():
             try:
-                current = hashlib.sha256(self._physical(path)).hexdigest()
+                limit = self.read_limits.get(path)
+                raw = self._physical(path) if limit is None else self._physical(path, max_bytes=limit)
+                current = hashlib.sha256(raw).hexdigest()
             except OSError as exc:
                 raise ContextInputChanged(path, "context input disappeared during planning") from exc
             if current != expected:
                 raise ContextInputChanged(path, "context input changed during planning")
 
 
-def read_context_bytes(path: Path, *, routing_input: bool = True) -> bytes:
+def read_context_bytes(path: Path, *, routing_input: bool = True, max_bytes: int | None = None) -> bytes:
     snapshot = _ACTIVE.get()
     if snapshot is not None and (routing_input or path.absolute() in snapshot.inputs):
-        return snapshot.read(path)
-    return path.read_bytes()
+        return snapshot.read(path, max_bytes=max_bytes)
+    return _limited_read(path, max_bytes)
 
 
 def observe_context_bytes(root: Path, path: Path, raw: bytes) -> None:

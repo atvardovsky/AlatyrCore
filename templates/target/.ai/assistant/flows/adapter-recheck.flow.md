@@ -16,6 +16,10 @@ policy, current restoration classifications, and reviewed warning inputs.
 Repair stale generated context locally; a blocked planner's decomposition is
 advisory, not a usable packet. Propose checker consolidation through canonical
 delegation without deleting custom checks or changing review gates unapproved.
+Check optional working-set tooling and guidance together: required owners stay
+mandatory, exhaustive overflow blocks, compact views retain diagnostic actions,
+and unobserved delivery/cost remains unknown. Preserve default routes when the
+feature is unused or unavailable.
 
 ## Target Sources
 

@@ -605,6 +605,23 @@ def preload_term_ids(index_path: Path) -> list[str]:
     return preload
 
 
+def context_packet_usage(selected_items: Iterable[CatalogItem], semantic_terms: dict[str, dict[str, Any]]) -> dict[str, int]:
+    """Shared content accounting for admission and final packet enforcement."""
+    items = list(selected_items)
+    if any(type(item.estimated_words) is not int or item.estimated_words < 0 or type(item.estimated_characters) is not int or item.estimated_characters < 0 for item in items):
+        raise ContextCatalogError("context packet requires measured selected content, not metadata-only catalog leaves")
+    definitions = [term.get("definition") for term in semantic_terms.values()]
+    if any(not isinstance(definition, str) for definition in definitions):
+        raise ContextCatalogError("context packet semantic definitions must be strings")
+    words = sum(item.estimated_words for item in items)
+    characters = sum(item.estimated_characters for item in items)
+    semantic_words = sum(len(re.findall(r"\S+", definition)) for definition in definitions)
+    semantic_characters = sum(len(definition) for definition in definitions)
+    return {"selected_content_words": words, "selected_content_characters": characters,
+            "semantic_definition_words": semantic_words, "semantic_definition_characters": semantic_characters,
+            "total_words": words + semantic_words, "total_characters": characters + semantic_characters}
+
+
 def build_context_packet(
     *,
     profile: str,
@@ -641,25 +658,18 @@ def build_context_packet(
         capability_record = None
 
     items = sorted(selected_items, key=lambda item: item.item_id)
-    if any(type(item.estimated_characters) is not int or item.estimated_characters < 0 for item in items):
-        raise ContextCatalogError("context packet requires measured selected content, not metadata-only catalog leaves")
+    usage = context_packet_usage(items, semantic_terms)
     required_refs = sorted({term for item in items for term in item.semantic_refs})
     missing = sorted(set(required_refs) - set(semantic_terms))
     if missing:
         raise ContextCatalogError(f"context packet has unresolved semantic terms: {missing}")
-    selected_words = sum(item.estimated_words for item in items)
+    selected_words = usage["selected_content_words"]
     ordered_term_ids = sorted(semantic_terms)
-    semantic_words = sum(
-        len(re.findall(r"\S+", semantic_terms[term_id]["definition"]))
-        for term_id in ordered_term_ids
-    )
-    selected_characters = sum(item.estimated_characters for item in items)
-    semantic_characters = sum(
-        len(semantic_terms[term_id]["definition"])
-        for term_id in ordered_term_ids
-    )
-    total_words = selected_words + semantic_words
-    total_characters = selected_characters + semantic_characters
+    semantic_words = usage["semantic_definition_words"]
+    selected_characters = usage["selected_content_characters"]
+    semantic_characters = usage["semantic_definition_characters"]
+    total_words = usage["total_words"]
+    total_characters = usage["total_characters"]
     if max_characters is not None and (
         not isinstance(max_characters, int)
         or isinstance(max_characters, bool)

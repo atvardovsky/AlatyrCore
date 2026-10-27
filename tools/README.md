@@ -1270,6 +1270,57 @@ records cache capability as unavailable and preserves bounded routing. It
 returns structured unavailable evidence rather than inventing any other
 missing route.
 
+Optional `--working-set-request request.json` reads a target-relative schema-1
+request; the format is owned by
+[`alatyr-context-working-set-request.schema.json`](../schemas/alatyr-context-working-set-request.schema.json).
+Use it at meaningful phase boundaries, not after every tool call. Required
+profile/operation/impact/owner/semantic context is never ranked away. Optional
+candidates compete by new declared topics per marginal word, including owner
+and semantic-definition costs; all file/word/character ceilings still apply.
+This deterministic heuristic is not a globally optimal selector or semantic
+proof. Unused requests preserve the legacy plan and read path.
+
+```json
+{
+  "schema_version": 1,
+  "request_kind": "alatyr-context-working-set-request",
+  "phase": "discover",
+  "information_need": "local-change",
+  "required_context_ids": [],
+  "optional_context": []
+}
+```
+
+Populate IDs from the target's current catalogs; optional entries have
+`context_id`, `topics`, and optional `phases`. An `exhaustive-review` request
+requires `exhaustive_contours` (framework/project/assistant) and retains every
+indexed content item in them. Additional scope scanning is capped at 16,384
+catalog items and 512 selected/owner items. Overflow is blocked, explicitly
+incomplete and requires decomposition; it never produces a partial executable
+packet. These limits do not bound unindexed source review or grant acceptance.
+
+`--compact` prints navigation with status, diagnostic codes, actionable message
+excerpts/actions, explicit truncation/omission counts and budget evidence. It is never a
+usable context packet. With `--output`, the full report is written outside the
+target before the compact view links its exact SHA-256. Without an artifact,
+rerun without `--compact` for full detail. Write failures remain failures.
+
+`--previous-plan` accepts an explicit full plan outside or inside the target
+(absolute or normalized target-relative path). Digest and physical-target
+binding are required; deltas report current identity additions/changes/retirements,
+not content reuse, authorization or actual host eviction. `--delivery-observation`
+accepts a schema-1
+[`alatyr-context-delivery-observation`](../schemas/alatyr-context-delivery-observation.schema.json)
+binding the existing canonical context receipt to the current packet digest,
+paths and size. Recorded input/output usage is not independently verified by
+the planner; absent cached-token, total-worker and billing evidence stays
+unknown. The three optional JSON inputs are bounded to 4 MiB. No external
+instructions or commands are executed from them.
+
+```sh
+python3 tools/alatyr.py context-plan --target /path/to/target-repo --profile code-local --operation logical-integrity-review --working-set-request request.json --output /tmp/alatyr-context-plan.json --compact
+```
+
 Router schemas 10 and 11 remain readable migration inputs and record character
 budget state as `unavailable-legacy`. Schemas 12 and 13 require the configured
 character ceiling and emit context-packet schema 4 with measured word and

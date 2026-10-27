@@ -4,6 +4,26 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.108 - 2026-10-27
+
+- Add opt-in phase-specific context working sets to `context-plan`. Preserve
+  profile, operation, impact and owner closure; rank only explicit optional
+  candidates by marginal topic coverage including owner and semantic costs.
+  Reuse the canonical complete packet budget calculations and one invocation-
+  local owner index. Ordinary planning keeps its existing route and defaults.
+- Enumerate exhaustive indexed contour scope without score or phase truncation.
+  Bound request, enumeration, closure and prior-plan work; oversized scope blocks
+  for decomposition rather than returning partial coverage as usable context.
+- Add navigation-only compact output, digest/target-bound phase deltas and
+  packet-bound delivery observations. Preserve diagnostic codes, actionable
+  excerpts, omissions and the full-report recovery route. Do not infer host
+  eviction, provider cache hits, comprehension, acceptance or billing savings.
+- Framework advances to alpha.108, adapter schema to `89` for additive planning
+  contracts, and templates to `103`. Reconcile conditional working-set guidance
+  only where verified tooling supports it; no new routine bootstrap read or
+  automatic target rollout is required. Existing mandatory context and safety,
+  approval and validation obligations remain unchanged.
+
 ## 0.1.0-alpha.107 - 2026-10-26
 
 - Detect current-baseline claims in wrapped prose and bounded Markdown sections,

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alatyr.dev/schemas/alatyr-context-delivery-observation.schema.json",
+  "title": "Alatyr Context Delivery Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "observation_kind", "packet_digest", "context_receipt"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "observation_kind": {"const": "alatyr-context-delivery-observation"},
+    "packet_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "context_receipt": {"type": "object"}
+  }
+}

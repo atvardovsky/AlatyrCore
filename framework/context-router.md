@@ -17,30 +17,21 @@ final evidence.
 
 Use a context router to reduce repeated prose parsing before routine work.
 
-A target adapter can load:
+A target adapter starts with host-preloaded instructions, the generated
+`.ai/assistant/bootstrap-index.json`, its semantic preload and three contour
+root indexes. Load matching child indexes and descriptors only. Select assistant
+capability evidence only for relevant provider controls or telemetry; enabled
+workspace modes load their compact catalog, one mode and applicable root context.
 
-1. assistant instructions that the host already preloaded
-2. the generated `.ai/assistant/bootstrap-index.json` routing projection
-3. the selected assistant capability record when provider cache controls or
-   cache telemetry are relevant
-4. the framework semantic-codebook preload closure and three contour root
-   context indexes named by that projection
-5. only matching recursive section indexes and selected content descriptors
-6. the compact workspace-mode catalog when that optional module is enabled
-7. one selected mode descriptor and applicable shared root context
-8. task classification from compact request, operation, risk, and scale
-   signals
-9. task decomposition cues for non-trivial work, using one local task for
-   small work when compact evidence is enough
-10. the selected profile's required context
-11. one or more project-area overlays when the task names affected areas
-12. task-scale overlays only when the classifier selects small-task for a
-   cheap evidence lane, the task is large, resumable, team-active, explicitly
-   debug-enabled, at material evidence finalization, or an enabled-team write
-   preflight finds possible active-work overlap
-13. bounded project-knowledge routing after profile/area selection and again
-   after concrete changed facts, paths, symbols, subsystem or architecture
-   relationships, dependencies, contracts, or issue lineage become known
+Classify request, operation, risk and scale before expansion. Use one local task
+when small-task cues suffice, otherwise select decomposition. Load the selected
+profile's required context and affected project-area overlays. Scale overlays
+apply only to small-task routing, large/resumable work, team activity, explicit
+Debug Mode, material evidence finalization or enabled-team write overlap.
+
+Route bounded project knowledge after profile/area selection, then refine it
+when facts, paths, symbols, subsystem/architecture relationships, dependencies,
+contracts or issue lineage become known.
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
@@ -67,49 +58,27 @@ framework reload.
 
 ## Router Contract
 
-A target context router should define:
+A target router defines:
 
-- schema version
-- human reference file
-- preloaded context that must not be reread
-- generated bootstrap projection and lazy integrity evidence
-- generated recovery entry packet path and schema version
-- framework, project, and assistant recursive context-index roots
-- maximum recursive navigation depth and fail-closed index behavior
-- semantic-codebook index, preload term IDs, namespace boundary, version and
-digest behavior, conditional shard loading, and canonical-prose fallback
-- bootstrap budget plus profile total, portable, and reserved target-context
-  budgets
-- context receipt fields
-- cache-aware stable-prefix and dynamic-tail ordering, selected assistant
-  capability path, optional provider-control policy, observed-telemetry policy,
-  and bounded-context fallback
-- task classification classes, order, ambiguity behavior, expansion triggers,
-  and their task-scale overlay mappings
-- task decomposition policy path, plan template, load triggers, small-task
-  behavior, and executor-selection summary
-- routing order
-- canonical profile entries
-- bounded operation candidates per profile
-- compact operation-index and canonical operation-catalog paths, single entry
-  alias, health operation, and preview policy without embedding either source
-- optional workspace-mode routing to a compact catalog, shared root descriptor,
-  one selected mode directory, ambiguity behavior, and preflight
-- optional intent overlays that compose with every base profile
-- optional project-area overlays
-- task-scale overlays for session continuity and optional large, resumable,
-  team-active, material-evidence, or explicitly debug-enabled work
-- optional consistency routing from changed fact IDs to applicable
-  relationships
-- required project-knowledge routing through a compact root index, bounded
-  shard selectors, initial/refined packet limits, and authority/freshness rules
-- use-when signals
-- required context paths
-- conditional context paths paired with explicit load conditions
-- expansion triggers
-- approval gates
-- validation or manual review
-- final evidence
+- schema, human reference, preloaded context, generated bootstrap/integrity and
+  recovery-entry paths/versions;
+- three contour roots, maximum navigation depth, fail-closed index behavior;
+- semantic index/preload IDs, namespaces, versions, digests, conditional shards
+  and canonical-prose fallback;
+- bootstrap/profile/portable/reserved budgets, receipts, stable-prefix/dynamic-tail
+  ordering, selected capability evidence, optional provider controls, observed
+  telemetry policy and bounded fallback;
+- classification order/classes, ambiguity, expansion and scale mappings;
+  decomposition policy/template/triggers, small-task behavior and executor summary;
+- routing order, canonical profiles, bounded operation candidates, compact
+  operation index/canonical catalog, single entry alias, health and preview policy
+  without embedding those sources;
+- optional workspace catalog/shared root/one mode, ambiguity and preflight;
+  composable intent/project-area overlays; continuity and applicable scale overlays;
+- optional changed-fact relationship routing; bounded project-knowledge index,
+  shard selectors, initial/refined limits, authority and freshness;
+- use-when signals, required paths, conditional paths with load conditions,
+  expansion triggers, approval gates, validation/manual review and final evidence.
 
 Schema 10 adds explicit task classification to schema 9's recursive-index,
 semantic-codebook, profile, overlay, and budget behavior. Schema 11 separates
@@ -141,11 +110,31 @@ selected profile or overlay context.
 ### Selected Contract Delivery
 
 Keep whole-graph/reverse-index validation and freshness independent of selected
-shard/owner delivery. Honor explicit profiles; derived contract views never
-replace owners, task obligations or approval. Preserve enclosing constraints
-and exceptions in indexed leaves. Reuse only invocation-scoped lookups, never
-permissions or acceptance. Persistent caching requires proved invalidation and
-measured benefit; it is not enabled here.
+shard/owner delivery. Honor explicit profiles and enclosing constraints and
+exceptions; derived views replace neither owners, obligations nor approval.
+Invocation-local reuse does not cache permissions or acceptance. Persistent
+caching requires proved invalidation and measured benefit; it is not enabled.
+
+Optional working sets distinguish lookup, local change, cross-area change and
+exhaustive review across discover/design/implement/validate delivery phases,
+not authorization phases. Preserve mandatory profile, operation, impact, owner
+and semantic context. Rank explicit optional candidates by marginal declared-
+topic coverage per word, charging new owners and semantic definitions against
+complete file, word and character budgets. Topics cannot discharge obligations.
+
+Exhaustive review enumerates every indexed item in named contours regardless
+of score or phase. Bound enumeration and owner closure; overflow blocks with
+incomplete-coverage evidence, never a truncated usable packet. Indexed coverage
+proves neither unindexed coverage nor semantic inspection. Decompose mandatory
+scope and reroute each part.
+
+Replan at phase boundaries, not each tool call. Digest-bound prior plans provide
+identity deltas only; re-resolve inputs and authorization. Compact views retain
+diagnostics/actions, omission counts and accessible full reports, not executable
+packets. Bind delivery receipts to the current packet; unavailable tokens/costs
+remain unknown. Keep decisions/obligations in existing task projections. Context
+eviction/compaction requires verified host support; otherwise prevent irrelevant
+loading and follow session continuity.
 
 Keep the compact bootstrap outside assistant catalog content ownership. The
 lazy integrity sidecar is cataloged so discovery can verify that it exists,
