@@ -29,6 +29,11 @@ constraint overflow, contradictions and below/at/above delivery budgets.
 Public CLI routing tests use current source bytes with private Git refs/index;
 ambient `origin/main` and unrelated developer edits must not define fixtures.
 Keep dirty-input and real budget failures as negative controls.
+Resolve temporary fixture roots before exercising strict symlink guards; do not
+weaken the writer to accommodate host aliases such as macOS temporary paths.
+Disable automatic and detached Git maintenance before disposable fixture commits.
+Cleanup errors remain test failures, never ignored; hosted CI applies the same
+settings to its disposable runner only, not to target projects or user Git config.
 
 For current-change contract revisions, test the smallest accepted installation
 with optional modules absent, then enable each affected module and prove its

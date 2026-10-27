@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from contextlib import contextmanager, redirect_stdout
+from contextlib import contextmanager, redirect_stdout, redirect_stderr
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +36,10 @@ def isolated_source_git():
                 ["git", "-c", "core.autocrlf=false", "-c", "commit.gpgSign=false", *args],
                 cwd=ROOT, env=env, input=input, check=True, capture_output=True,
             ).stdout.decode("utf-8").strip()
+
+        for key, value in (("gc.auto", "0"), ("maintenance.auto", "false"),
+                           ("gc.autoDetach", "false"), ("maintenance.autoDetach", "false")):
+            git("config", "--local", key, value)
 
         # The remote is deliberately stale. Only the private baseline is authoritative.
         empty_tree = git("mktree", input=b"")
@@ -254,7 +258,7 @@ class SourceContextSelectionTests(unittest.TestCase):
 
     def test_generator_preserves_exact_lf_bytes_and_detects_crlf_drift(self):
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
+            root = Path(directory).resolve()
             (root / "tools").mkdir()
             (root / "tools/source_context_router.json").write_bytes((ROOT / "tools/source_context_router.json").read_bytes())
             with patch.object(selection, "ROOT", root), patch.object(sys, "argv", ["render-source-context", "--write"]), redirect_stdout(io.StringIO()):
@@ -268,6 +272,22 @@ class SourceContextSelectionTests(unittest.TestCase):
             with patch.object(selection, "ROOT", root), patch.object(sys, "argv", ["render-source-context", "--write"]), redirect_stdout(io.StringIO()):
                 self.assertEqual(selection.main(), 0)
             self.assertEqual(path.read_bytes(), canonical)
+
+    def test_generator_still_rejects_symlinked_output_directories(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as external:
+            root, outside = Path(directory).resolve(), Path(external).resolve()
+            (root / "tools").mkdir()
+            (root / "tools/source_context_router.json").write_bytes((ROOT / "tools/source_context_router.json").read_bytes())
+            try:
+                (root / "tools/source-context").symlink_to(outside, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("directory symlinks unavailable")
+            diagnostics = io.StringIO()
+            with patch.object(selection, "ROOT", root), patch.object(sys, "argv", ["render-source-context", "--write"]), redirect_stderr(diagnostics), self.assertRaises(SystemExit) as error:
+                selection.main()
+            self.assertEqual(error.exception.code, 2)
+            self.assertIn("symlink", diagnostics.getvalue())
+            self.assertEqual(list(outside.iterdir()), [])
 
     def test_malformed_router_and_profile_path_injection_fail_before_generation(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Harden source-only CI fixtures: resolve macOS temporary-root aliases without
+  weakening symlink rejection, disable automatic/detached Git maintenance in
+  disposable repositories and hosted runners, and verify effective Git settings.
+  No framework, adapter schema, template or target migration change.
 
 ## 0.1.0-alpha.109 - 2026-10-27
 

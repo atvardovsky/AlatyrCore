@@ -273,6 +273,9 @@ class RegisteredTestingExecutionTests(unittest.TestCase):
         self.write(root, '.ai/project/testing/test-first-policy.json', p)
         for path in ['tests/a.py', 'src/app.py', 'test.cfg', 'result.txt']: self.write(root, path, 'fixture')
         subprocess.run(['git','init','-q'], cwd=root, check=True)
+        for key, value in (("gc.auto", "0"), ("maintenance.auto", "false"),
+                           ("gc.autoDetach", "false"), ("maintenance.autoDetach", "false")):
+            subprocess.run(['git', 'config', '--local', key, value], cwd=root, check=True)
         subprocess.run(['git','add','.'], cwd=root, check=True)
         subprocess.run(['git','-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-qm','fixture'], cwd=root, check=True)
         r = record(); r['repository_revision'] = subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
@@ -282,6 +285,17 @@ class RegisteredTestingExecutionTests(unittest.TestCase):
         r['result_artifact']['sha256'] = digest('result.txt')
         self.write(root, 'current.json', r)
         return p, r
+
+    def test_disposable_git_fixture_disables_detached_maintenance(self):
+        for _ in range(3):
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory).resolve()
+                self.fixture(root)
+                for key, value in (("gc.auto", "0"), ("maintenance.auto", "false"),
+                                   ("gc.autoDetach", "false"), ("maintenance.autoDetach", "false")):
+                    observed = subprocess.check_output(['git', 'config', '--local', '--get', key], cwd=root, text=True).strip()
+                    self.assertEqual(observed, value)
+            self.assertFalse(root.exists())
 
     def findings(self, root, *, manifest=None, allow_placeholders=False):
         validator = Validator(root, framework_source=None, diff_ref=None, approval_records=[], enforce_approval_scope=False, change_packages=[], enforce_change_package=False, migration_diff=None, allow_placeholders=allow_placeholders, allow_local_paths=[], config=AdapterValidatorConfig())

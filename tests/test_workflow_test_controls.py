@@ -3,6 +3,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -19,6 +21,31 @@ from testing_controls import MAX_PEERS, qualification_failures
 from target_adapter_validation.context import TargetRepositoryView
 from tests import test_test_execution_contract as execution_fixtures
 from tests.test_test_execution_contract import nested_paths, policy, record, set_path
+from yaml_support import safe_load
+
+
+class HostedFixtureIsolationTests(unittest.TestCase):
+    def test_hosted_git_settings_are_effective_in_an_isolated_config(self):
+        workflow = safe_load((ROOT / ".github/workflows/cross-platform-source-checks.yml").read_text())
+        expected = {"gc.auto": "0", "gc.autoDetach": "false", "maintenance.auto": "false", "maintenance.autoDetach": "false"}
+        for name in ("linux-source-checks", "portable-source-checks"):
+            steps = workflow["jobs"][name]["steps"]
+            matching = [(i, step) for i, step in enumerate(steps) if step.get("name") == "Keep disposable Git fixtures synchronous"]
+            self.assertEqual(len(matching), 1)
+            index, step = matching[0]
+            self.assertLess(index, next(i for i, item in enumerate(steps) if item.get("name") in {"Run full source checks", "Run portable source checks"}))
+            commands = [shlex.split(line) for line in step["run"].splitlines() if line.strip()]
+            self.assertEqual(len(commands), len(expected))
+            with tempfile.TemporaryDirectory() as directory:
+                env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+                env.update(GIT_CONFIG_GLOBAL=str(Path(directory) / "fixture.gitconfig"), GIT_CONFIG_NOSYSTEM="1")
+                for command in commands:
+                    self.assertEqual(command[:3], ["git", "config", "--global"])
+                    self.assertEqual(len(command), 5)
+                    subprocess.run(command, cwd=directory, env=env, check=True, capture_output=True)
+                for key, value in expected.items():
+                    observed = subprocess.check_output(["git", "config", "--global", "--get", key], cwd=directory, env=env, text=True).strip()
+                    self.assertEqual(observed, value)
 
 
 def request():
