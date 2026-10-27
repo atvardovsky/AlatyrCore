@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Document a source-only development context contract through existing lazy
+  section routing. Add regression coverage for conditional delivery, required
+  context precedence, missing-section recovery, and unchanged routine routes.
+  Portable rules, bootstrap inputs, installation behavior, versions, and target
+  templates remain unchanged.
 
 ## 0.1.0-alpha.108 - 2026-10-27
 

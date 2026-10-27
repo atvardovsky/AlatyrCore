@@ -69,6 +69,118 @@ class SourceContextSelectionTests(unittest.TestCase):
         context = build_source_profile_context("source-tooling", changed_paths=["tools/README.md"], selector_values={"cli_topics": ["worker-context-preparation"]})
         self.assertNotIn("tools/README.md", context["context_projections"])
 
+    def test_development_context_contract_is_not_read_by_routine_profiles(self):
+        router = json.loads((ROOT / "tools/source_context_router.json").read_text())
+        strategy_paths = {
+            ROOT / "docs/source-architecture.md",
+            ROOT / "docs/source-optimization-workflow.md",
+        }
+        opened = []
+        original_open = Path.open
+
+        def observed_open(path, *args, **kwargs):
+            if path in strategy_paths:
+                opened.append(path)
+            return original_open(path, *args, **kwargs)
+
+        with patch.object(Path, "open", observed_open):
+            for profile in router["profiles"]:
+                with self.subTest(profile=profile):
+                    context = build_source_profile_context(profile)
+                    self.assertNotIn(
+                        "docs/source-architecture.md",
+                        context["context_budget"]["resolved"]["paths"],
+                    )
+                    self.assertNotIn(
+                        "docs/source-optimization-workflow.md",
+                        context["context_budget"]["resolved"]["paths"],
+                    )
+        self.assertEqual(opened, [])
+
+    def test_development_context_contract_uses_existing_section_routes(self):
+        path = "docs/source-architecture.md"
+        for profile in ("source-tooling", "repository-audit"):
+            with self.subTest(profile=profile):
+                default = build_source_profile_context(profile)
+                context = build_source_profile_context(
+                    profile,
+                    selector_values={"architecture_topics": ["development-context-contract"]},
+                )
+                view = context["context_projections"][path]
+                self.assertEqual(context["readiness"]["status"], "ready")
+                self.assertEqual(view, project_file(ROOT, path, ["development-context-contract"]))
+                self.assertTrue(view["content"].startswith("## Development Context Contract\n"))
+                self.assertNotIn("## Engineering Principles", view["content"])
+                self.assertNotIn("## Extraction Rules", view["content"])
+                self.assertIn("source-optimization-workflow.md#development-context-contract", view["content"])
+                self.assertLessEqual(len(view["content"].split()), 100)
+                self.assertLessEqual(len(view["content"]), 1000)
+                self.assertTrue(
+                    set(default["context_budget"]["resolved"]["paths"])
+                    <= set(context["context_budget"]["resolved"]["paths"])
+                )
+                self.assertTrue(context["context_budget"]["reserved_capacity_preserved"])
+
+    def test_development_context_selection_retains_required_whole_file_priority(self):
+        path = "docs/source-architecture.md"
+        context = build_source_profile_context(
+            "source-tooling",
+            selector_values={
+                "architecture_topics": ["development-context-contract"],
+                "contract_paths": [path],
+            },
+        )
+        self.assertEqual(context["readiness"]["status"], "ready")
+        self.assertNotIn(path, context["context_projections"])
+        self.assertIn(path, context["context_budget"]["resolved"]["paths"])
+
+    def test_development_context_guide_is_loaded_only_by_explicit_contract_routes(self):
+        path = "docs/source-optimization-workflow.md"
+        guide = (ROOT / path).read_text(encoding="utf-8")
+        contract = project_file(ROOT, path, ["development-context-contract"])["content"]
+        self.assertLessEqual(len(contract.split()), 850)
+        self.assertLessEqual(len(contract), 7500)
+        for profile, selector in (
+            ("source-tooling", "contract_paths"),
+            ("repository-audit", "audit_context_paths"),
+        ):
+            with self.subTest(profile=profile):
+                context = build_source_profile_context(profile, selector_values={selector: [path]})
+                self.assertEqual(context["readiness"]["status"], "ready")
+                self.assertNotIn(path, context["context_projections"])
+                self.assertIn(path, context["context_budget"]["resolved"]["paths"])
+                self.assertIn("## Development Context Contract", guide)
+                self.assertTrue(context["context_budget"]["reserved_capacity_preserved"])
+
+    def test_public_cli_delivers_strategy_section_and_blocks_unknown_section(self):
+        path = "docs/source-architecture.md"
+        command = [
+            sys.executable, str(ROOT / "tools/alatyr.py"), "plan-work",
+            "--source-profile", "source-tooling", "--compact",
+            "--context-selector",
+        ]
+        for section, status in (
+            ("development-context-contract", "ready"),
+            ("development-context-contract-missing", "needs-expansion"),
+        ):
+            with self.subTest(section=section):
+                result = subprocess.run(
+                    [*command, "architecture_topics=" + section],
+                    cwd=ROOT, capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                view = json.loads(result.stdout)
+                self.assertEqual(view["context_readiness"]["status"], status)
+                if status == "ready":
+                    self.assertEqual(
+                        view["context_projections"][path]["content"],
+                        project_file(ROOT, path, [section])["content"],
+                    )
+                else:
+                    self.assertNotIn(path, view.get("context_projections", {}))
+                    self.assertTrue(view["context_readiness"]["reasons"])
+                self.assertNotIn("Traceback", result.stderr)
+
     def test_generated_descriptors_are_exact_and_do_not_widen_limits(self):
         router = json.loads((ROOT / "tools/source_context_router.json").read_text())
         for name, text in bootstrap_outputs().items():

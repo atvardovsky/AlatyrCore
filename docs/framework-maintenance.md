@@ -4,6 +4,10 @@ See [source optimization](source-optimization-workflow.md) for refresh and timin
 
 Use this guide when changing Alatyr Core itself.
 
+For context-delivery or agent-workflow changes, select the
+[development context contract](source-optimization-workflow.md#development-context-contract).
+Keep it conditional; routine tasks do not load the whole architecture guide.
+
 Support authoring regressions should exercise real Git source advancement,
 active-model/projection/index publication and conflict-preserving rollback,
 typed validation routes through the public planner/validator, and frozen worker

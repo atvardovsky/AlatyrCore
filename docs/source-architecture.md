@@ -129,7 +129,8 @@ different roles and require separate negative controls.
 
 Apply least sufficient context to the source repository itself. Add indexes,
 manifests, and narrow trigger paths so agents and checks load only what the
-task actually needs.
+task actually needs. Context-affecting changes follow the conditional
+[development context contract](#development-context-contract).
 
 Source profile conditionals are typed route declarations, not prose hints.
 Each declaration has a stable ID, a bounded resolver, a concrete path or
@@ -158,6 +159,15 @@ ordering DAG or persist this optimization as release evidence.
 Checker-first generation is opt-in. Entry/bootstrap provenance normalizers
 retain their canonical generators; once outputs change, the full repair path
 runs instead of probing every remaining stage for possible reuse.
+
+## Development Context Contract
+
+For context-delivery or agent-workflow changes, follow the
+[development context contract](source-optimization-workflow.md#development-context-contract).
+Keep the detailed guide conditional. Select it through existing `contract_paths`
+in `source-tooling`, or `audit_context_paths` in `repository-audit`; this pointer
+alone is not the complete contract. Neither route changes authorization,
+canonical owners, or validation requirements. Routine tasks need not load it.
 
 ## Extraction Rules
 
