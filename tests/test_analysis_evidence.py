@@ -215,6 +215,39 @@ class AnalysisEvidenceIntegrationTests(ActiveTaskFixture):
         self.assertEqual(unconfigured["candidates"], [])
         self.assertIsNone(unconfigured["retained_candidates"][0]["dependency_ready"])
 
+    def test_identical_support_and_refutation_are_not_a_discriminating_probe(self):
+        model = copy.deepcopy(self.model)
+        prediction = model["analysis_evidence"]["probes"][0]["predictions"][0]
+        prediction["refutes"] = prediction["supports"]
+        self.assertTrue(any("distinguish supporting" in row for row in self.failures(model)))
+        prediction.update(supports="The key is ID", refutes="The key is id")
+        self.assertFalse(any("distinguish supporting" in row for row in self.failures(model)))
+
+    def test_prediction_count_cannot_win_selection_and_retries_keep_previous_identity(self):
+        model = copy.deepcopy(self.model)
+        model["proof_obligations"][0]["status"] = "open"
+        proof = {**model["proof_obligations"][0], "id": "another-proof"}
+        model["proof_obligations"].append(proof)
+        model["execution_dependencies"] = [{"obligation_id": row["id"], "requires": []} for row in model["proof_obligations"]]
+        probe = copy.deepcopy(model["analysis_evidence"]["probes"][0])
+        probe.update(obligation_id="another-proof", result=None, estimated_tool_calls=2)
+        model["analysis_evidence"]["probes"].append(probe)
+        advice = next_action_advice(model, "a" * 64)
+        self.assertEqual(advice["candidates"][0]["obligation_id"], "another-proof")
+        retry = advice["candidates"][1]
+        self.assertTrue(retry["retry_review_required"])
+        from analysis_evidence import digest
+        self.assertEqual(retry["previous_result_sha256"], digest(model["analysis_evidence"]["probes"][0]["result"]))
+        for row in model["analysis_evidence"]["probes"]:
+            row.update(result=None, estimated_tool_calls=1)
+        for number in range(3):
+            model["hypotheses"].append({**model["hypotheses"][0], "id": f"h-{number}"})
+            model["analysis_evidence"]["probes"][0]["predictions"].append({**probe["predictions"][0], "hypothesis_id": f"h-{number}"})
+        advice = next_action_advice(model, "a" * 64)
+        self.assertEqual(advice["candidates"][0]["obligation_id"], "another-proof")
+        self.assertEqual(advice["candidates"][1]["prediction_count"], 4)
+        self.assertTrue(all(row["selection_review_required"] for row in advice["candidates"]))
+
     def test_selected_task_view_blocks_advice_when_input_changes(self):
         from current_task_view import current_task_view
         from check_change_packages import changed_index_validator

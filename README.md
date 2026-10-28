@@ -97,6 +97,10 @@ bring selected project guidance into the task, not the entire archive. These
 mechanisms support disciplined investigation; they do not prove better reasoning
 or grant permission to act.
 
+For a registered investigation, optional question-bound routing keeps the
+selected question, its evidence inputs and decision owners together. It does
+not replace that question with another recommendation or load all task history.
+
 For longer work, [execution focus](framework/task-state-delivery.md#execution-focus)
 helps the assistant revisit the current goal, unresolved checks and next useful
 action when evidence or scope changes, without loading the whole project again.
@@ -288,7 +292,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.110`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.111`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

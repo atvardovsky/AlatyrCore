@@ -232,6 +232,8 @@ def test_shards(
 
 
 def main() -> int:
+    sys.dont_write_bytecode = True
+    os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--test-file", action="append", default=[], help=argparse.SUPPRESS

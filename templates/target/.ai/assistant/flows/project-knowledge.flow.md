@@ -64,6 +64,8 @@ project edits, commits, publication, or live external actions.
    reference in the promotion record.
 7. Create or update one bounded route entry, link its promotion and engineering
    evidence, add freshness triggers, and register its shard in the root index.
+   Curate reusable examples through the canonical owner's applicability,
+   exception and falsifying-case guidance, not a separate memory registry.
 8. Validate reciprocal contradiction and supersession links. A contradicted
    entry cannot remain current.
 9. Run target adapter and project validation. Report the promotion disposition,

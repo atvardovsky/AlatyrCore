@@ -1179,25 +1179,54 @@ def _knowledge_usage(knowledge):
     return len(rendered_knowledge.split()), len(rendered_knowledge)
 
 
-def _knowledge_optional_limits(knowledge, max_words, max_characters):
+def _question_selection(document, target, catalogs, selected, reasons):
+    if document is None or "question_binding" not in document:
+        return None
+    from context_question import resolve_context_question
+
+    def read(path, limit):
+        normalized = _normalize_relative(path, "question input")
+        return read_context_bytes(_target_path(target, normalized, "question input"), max_bytes=limit)
+    try:
+        question, paths = resolve_context_question(document["question_binding"], read)
+    except (ValueError, OSError, UnicodeError, RecursionError) as exc:
+        raise ContextPlanningError("CONTEXT_QUESTION_INVALID", str(exc), status="blocked",
+            actions=("rebind the request to a current unresolved task question, or narrow the probe",)) from exc
+    for path in paths:
+        _select_profile_required_path(target, path, catalogs, selected, reasons)
+    required_paths = set(paths)
+    for item in selected.values():
+        if item.path in required_paths:
+            reasons[item.item_id].add("selected-task-question")
+    return question
+
+
+def _knowledge_optional_limits(knowledge, max_words, max_characters, question=None):
     words, characters = _knowledge_usage(knowledge)
+    question_words, question_characters = _knowledge_usage(question)
+    words, characters = words + question_words, characters + question_characters
     return max(0, max_words - words), None if max_characters is None else max(0, max_characters - characters)
 
 
-def _add_knowledge_view(request, plan, knowledge, knowledge_digests, content_packet, max_words, max_characters):
+def _add_knowledge_view(request, plan, knowledge, knowledge_digests, content_packet, max_words, max_characters, question=None):
     # Reserve the same delivered metadata cost before optional ranking and here.
     knowledge_words, knowledge_characters = _knowledge_usage(knowledge)
-    if content_packet["budget"]["total_words"] + knowledge_words > max_words:
-        raise ContextPlanningError("CONTEXT_WORD_BUDGET_EXCEEDED", "selected knowledge plus required context exceeds word budget", status="blocked")
-    if max_characters is not None and content_packet["budget"]["total_characters"] + knowledge_characters > max_characters:
-        raise ContextPlanningError("CONTEXT_CHARACTER_BUDGET_EXCEEDED", "selected knowledge plus required context exceeds character budget", status="blocked")
-    plan["request"]["knowledge_request"] = request.knowledge_request
-    plan["knowledge"] = knowledge
+    question_words, question_characters = _knowledge_usage(question)
+    if content_packet["budget"]["total_words"] + knowledge_words + question_words > max_words:
+        raise ContextPlanningError("CONTEXT_WORD_BUDGET_EXCEEDED", "selected delivery metadata plus required context exceeds word budget", status="blocked")
+    if max_characters is not None and content_packet["budget"]["total_characters"] + knowledge_characters + question_characters > max_characters:
+        raise ContextPlanningError("CONTEXT_CHARACTER_BUDGET_EXCEEDED", "selected delivery metadata plus required context exceeds character budget", status="blocked")
+    if knowledge is not None:
+        plan["request"]["knowledge_request"] = request.knowledge_request
+        plan["knowledge"] = knowledge
+        plan["routing_sources"]["knowledge_inputs"] = knowledge_digests
     plan["delivery_budget"] = {"knowledge_words": knowledge_words, "knowledge_characters": knowledge_characters,
-        "total_words": content_packet["budget"]["total_words"] + knowledge_words,
-        "total_characters": content_packet["budget"]["total_characters"] + knowledge_characters,
+        "total_words": content_packet["budget"]["total_words"] + knowledge_words + question_words,
+        "total_characters": content_packet["budget"]["total_characters"] + knowledge_characters + question_characters,
         "max_words": max_words, "max_characters": max_characters}
-    plan["routing_sources"]["knowledge_inputs"] = knowledge_digests
+    if question is not None:
+        plan["question"] = question
+        plan["delivery_budget"].update(question_words=question_words, question_characters=question_characters)
 
 
 def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
@@ -1292,6 +1321,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     knowledge, knowledge_digests = _knowledge_selection(request, target, catalogs, selected, reasons)
     if working_api is not None:
         working_view = _working_call(working_api.required_selection, working_document, catalogs.by_id, selected, reasons)
+    question = _question_selection(working_document, target, catalogs, selected, reasons)
     _add_owner_closure(catalogs, selected, reasons, max_items=working_api.MAX_SCOPE_ITEMS if working_api is not None else None, owner_index=owner_index)
     _verify_selected_content(target, selected)
     terms, semantic_index_path = _semantic_terms(
@@ -1349,7 +1379,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             actions=("record a context expansion or split the task without omitting owners",),
         )
     if working_api is not None:
-        optional_words, optional_characters = _knowledge_optional_limits(knowledge, max_words, max_characters)
+        optional_words, optional_characters = _knowledge_optional_limits(knowledge, max_words, max_characters, question)
         terms = _working_call(working_api.select_optional, working_document, working_view, catalogs.by_id, selected, reasons, terms,
             max_files=configured_files, max_words=optional_words, max_characters=optional_characters,
             close=lambda entries, why: _add_owner_closure(catalogs, entries, why, max_items=working_api.MAX_SCOPE_ITEMS, owner_index=owner_index),
@@ -1488,8 +1518,8 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         }
     if document_warnings is not None:
         plan["document_warnings"] = document_warnings
-    if knowledge is not None:
-        _add_knowledge_view(request, plan, knowledge, knowledge_digests, content_packet, max_words, max_characters)
+    if knowledge is not None or question is not None:
+        _add_knowledge_view(request, plan, knowledge, knowledge_digests, content_packet, max_words, max_characters, question)
     if working_api is not None:
         _add_working_view(request, plan, working_view, target, working_api, selected)
     try:

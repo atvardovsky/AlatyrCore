@@ -1323,7 +1323,18 @@ proof. Unused requests preserve the legacy plan and read path.
 ```
 
 Populate IDs from the target's current catalogs; optional entries have
-`context_id`, `topics`, and optional `phases`. An `exhaustive-review` request
+`context_id`, `topics`, and optional `phases`. For a registered unresolved probe,
+optionally add `question_binding` with the exact `task_id`, current
+`model_sha256` and `obligation_id`. Obtain the digest from the active-task index;
+do not substitute a previous model or the first recommended probe. Planning
+validates canonical task/model/evidence bindings and retains probe inputs and
+task owners. The question view preserves declared readiness and review needs;
+it performs no action, review or context eviction. Missing, stale or malformed
+bindings fail closed. Its limit is 800 rendered words and 8,192 rendered
+characters; overflow requires narrowing. Question and knowledge metadata share
+the delivery budget. Omitted bindings add no task reads or resolver imports.
+
+An `exhaustive-review` request
 requires `exhaustive_contours` (framework/project/assistant) and retains every
 indexed content item in them. Additional scope scanning is capped at 16,384
 catalog items and 512 selected/owner items. Overflow is blocked, explicitly

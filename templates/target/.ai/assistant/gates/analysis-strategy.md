@@ -35,6 +35,8 @@ Before execution:
 - re-anchor at material boundaries through
   `.ai/framework/task-decomposition.md#evidence-guided-analysis`; detailed focus
   is optional, never a missing-pack blocker
+- review next-probe selection and retry rationale through that same owner;
+  a question binding or digest records neither review nor permission
 - the primary retains strategy selection, obligation waiver, acceptance and
   final convergence
 

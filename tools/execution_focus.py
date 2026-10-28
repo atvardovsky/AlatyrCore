@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 
 from analysis_strategy_contract import canonical_utf8_size, structured_word_count
+from analysis_evidence import probe_binding
 
 
 MAX_FOCUS_BYTES = 8192
@@ -53,6 +54,9 @@ def build_execution_focus(model: dict, task: dict, binding: dict,
         probe = next(row for row in block["probes"] if row["obligation_id"] == identity)
         next_action = {"obligation_id": identity, "method": probe["method"],
                        "unknown_ids": probe["unknown_ids"], "action_kind": probe["action_kind"],
+                       "probe_sha256": probe_binding(model, probe),
+                       "selection_review_required": candidate["selection_review_required"],
+                       "previous_result_sha256": candidate["previous_result_sha256"],
                        "retry_review_required": candidate["retry_review_required"],
                        "completion_condition": proof["statement"], "reanchor_required": bool(signals)}
     focus = {

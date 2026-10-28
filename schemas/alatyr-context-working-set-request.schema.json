@@ -10,6 +10,15 @@
     "request_kind": {"const": "alatyr-context-working-set-request"},
     "phase": {"enum": ["discover", "design", "implement", "validate"]},
     "information_need": {"enum": ["lookup", "local-change", "cross-area-change", "exhaustive-review"]},
+    "question_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "model_sha256", "obligation_id"],
+      "properties": {
+        "task_id": {"$ref": "#/$defs/id"},
+        "model_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "obligation_id": {"$ref": "#/$defs/id"}
+      }
+    },
     "required_context_ids": {"$ref": "#/$defs/ids"},
     "exhaustive_contours": {
       "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true,

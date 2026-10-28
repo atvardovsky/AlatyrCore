@@ -682,6 +682,11 @@ final evidence. Do not present a scaffolder run as a completed installation.
 
 ## Conversational Framework Update
 
+Preserve optional task-question requests during updates. Refresh canonical
+tooling before accepting `question_binding`; rebind to the current registered
+model and probe instead of rewriting old evidence. This capability adds no
+default task discovery, bootstrap load or installation requirement.
+
 For presence, apply the [target flow](templates/target/.ai/assistant/flows/session-presence.flow.md):
 new accepted installs default to discovery/own-entry housekeeping; preserve
 existing choices, refresh projections from installed policy, and leave live

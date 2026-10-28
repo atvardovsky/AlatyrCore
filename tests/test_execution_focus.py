@@ -95,6 +95,15 @@ class ExecutionFocusTests(ActiveTaskFixture):
         self.assertEqual(focus["execution_interception"], "not-performed")
         self.assertFalse(focus["acceptance_granted"])
 
+    def test_blocked_work_keeps_its_unsettled_prerequisites(self):
+        self.add_probe("prerequisite", status="blocked")
+        self.add_probe("blocked-dependent", status="blocked", requires=["prerequisite"])
+        view = self.selected()
+        self.assertEqual(view["execution_readiness"]["unsettled_prerequisites"]["blocked-dependent"], ["prerequisite"])
+        retained = {row["obligation_id"]: row for row in view["next_action_advice"]["retained_candidates"]}
+        self.assertEqual(retained["blocked-dependent"]["eligibility"], "blocked")
+        self.assertEqual(retained["blocked-dependent"]["unsettled_prerequisites"], ["prerequisite"])
+
     def test_pending_revision_and_original_failure_require_reanchoring(self):
         self.add_probe("next-proof")
         self.model["analysis_evidence"]["updates"] = [{

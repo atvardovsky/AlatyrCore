@@ -61,6 +61,9 @@ def evidence_failures(model: dict, *, completion: bool = False) -> list[str]:
         predicted.update(predictions)
         if len(predictions) != len(set(predictions)) or not set(predictions) <= hypotheses.keys():
             failures.append(f"probe {identity} predictions must reference unique known hypotheses")
+        for prediction in probe["predictions"]:
+            if prediction["supports"] == prediction["refutes"]:
+                failures.append(f"probe {identity} must distinguish supporting and refuting observations")
         for path in probe["input_paths"]:
             if not is_target_relative_path(path) or "\\" in path:
                 failures.append(f"probe {identity} has unsafe input path: {path}")
@@ -241,7 +244,7 @@ def next_action_advice(model: dict, model_sha256: str, *, readiness: dict | None
         readiness = execution_readiness(model)
     ready = set(readiness.get("ready", []))
     blocked = set(readiness.get("blocked", []))
-    waiting = {row["obligation_id"]: row["requires"] for row in readiness.get("waiting", [])}
+    prerequisites = readiness.get("unsettled_prerequisites", {row["obligation_id"]: row["requires"] for row in readiness.get("waiting", [])})
     obligations = {row["id"]: row for row in model["proof_obligations"]}
     candidates, retained = [], []
     for probe in model["analysis_evidence"]["probes"]:
@@ -255,17 +258,19 @@ def next_action_advice(model: dict, model_sha256: str, *, readiness: dict | None
         row = {"obligation_id": identity, "required": obligation["required"],
                "status": obligation["status"], "eligibility": eligibility,
                "dependency_ready": None if eligibility == "dependency-unconfigured" else identity in ready,
-               "unsettled_prerequisites": waiting.get(identity, []), "unknown_ids": probe["unknown_ids"],
-               "action_kind": probe["action_kind"], "discriminated_hypothesis_count": len(probe["predictions"]),
+               "unsettled_prerequisites": prerequisites.get(identity, []), "unknown_ids": probe["unknown_ids"],
+               "action_kind": probe["action_kind"], "prediction_count": len(probe["predictions"]),
+               "selection_review_required": True,
                "retry_review_required": probe["result"] is not None,
+               "previous_result_sha256": digest(probe["result"]) if probe["result"] is not None else None,
                "estimated_tool_calls": probe["estimated_tool_calls"],
                "reason": "discriminate a named uncertainty; recorded estimates are not measured savings"}
         (candidates if eligibility == "ready" else retained).append(row)
     risk_order = {"read-only": 0, "local-check": 1, "protected-action": 2, "unknown": 3}
     def order(row: dict) -> tuple:
-        return (not row["required"], risk_order[row["action_kind"]],
+        return (not row["required"], risk_order[row["action_kind"]], row["retry_review_required"],
                 row["estimated_tool_calls"] is None, row["estimated_tool_calls"] or 0,
-                -row["discriminated_hypothesis_count"], row["obligation_id"])
+                row["obligation_id"])
     candidates.sort(key=order)
     retained.sort(key=order)
     return {"model_sha256": model_sha256, "task_binding": model["task_binding"], "authority": "none",
@@ -275,4 +280,5 @@ def next_action_advice(model: dict, model_sha256: str, *, readiness: dict | None
             "unresolved_reviews": sorted(set(model["required_review_ids"]) - {row["id"] for row in model["review_results"] if row["status"] == "passed"}),
             "pending_revision_ids": [row["id"] for row in model["analysis_evidence"]["updates"] if row["state"] == "pending"],
             "escalation": "reassess-systemic-repair" if model["incident"]["corrective_iteration"] >= 2 else "none",
+            "selection_policy": "Review which possible observation changes the decision. Hypothesis count is descriptive, not information gain. Within equal duty/risk prefer unrun probes before reviewed retries; cost remains an estimate.",
             "limitation": "Local advice, not a scheduler or proven optimum. Unknown cost remains unknown. Resolve authorization, owners, conflicts and required reviews before action."}

@@ -15,13 +15,11 @@ final evidence.
 
 ## Purpose
 
-Use a context router to reduce repeated prose parsing before routine work.
-
-A target adapter starts with host-preloaded instructions, the generated
-`.ai/assistant/bootstrap-index.json`, its semantic preload and three contour
-root indexes. Load matching child indexes and descriptors only. Select assistant
-capability evidence only for relevant provider controls or telemetry; enabled
-workspace modes load their compact catalog, one mode and applicable root context.
+Reduce repeated prose parsing through bounded navigation. Start with host-
+preloaded instructions, `.ai/assistant/bootstrap-index.json`, its semantic
+preload and three contour roots; load matching child indexes/descriptors only.
+Assistant capability evidence is conditional on provider controls/telemetry.
+Enabled workspace modes load their catalog, one mode and applicable root context.
 
 Classify request, operation, risk and scale before expansion. Use one local task
 when small-task cues suffice, otherwise select decomposition. Load the selected
@@ -36,17 +34,15 @@ contracts or issue lineage become known.
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
 
-The bootstrap index is a deterministic compact projection of the target
-manifest, project map, router, semantic preload, and routing roots. Its lazy
-integrity sidecar owns generation provenance, source hashes, and the complete
-rule selector. Validate that sidecar deterministically without loading it into
-routine model context. If validation is unavailable or fails, load the sidecar
-and named canonical sources, then repair before trusting compact routing.
+The bootstrap projects manifest, project map, router, semantic preload and
+routing roots. Its lazy integrity sidecar owns generation provenance, source
+hashes and the complete rule selector. Validate it deterministically outside
+routine model context. Unavailable/failed validation requires the sidecar, named
+canonical sources and repair before trusting compact routing.
 
-The compact router should be an index, not a second policy corpus. Keep full
-profile, intent, migration, consistency, and task-scale instructions in lazy
-descriptor files. The router may retain short `use_when` signals needed to
-choose a descriptor without opening every profile.
+Keep the router an index, not another policy corpus: lazy descriptors own full
+profile, intent, migration, consistency and scale instructions. Short `use_when`
+signals may select them without opening every profile.
 
 The entry packet is generated recovery metadata, not another policy owner or
 routine first-use requirement. Load it only for bootstrap recovery, adapter
@@ -122,6 +118,13 @@ and semantic context. Rank explicit optional candidates by marginal declared-
 topic coverage per word, charging new owners and semantic definitions against
 complete file, word and character budgets. Topics cannot discharge obligations.
 
+Optional `question_binding` selects a registered active task, exact model SHA-256
+and unresolved probe. Validate canonical header/model/lineage/artifacts; retain
+probe inputs/owners before ranking. Charge bounded question words/characters
+alongside knowledge. Preserve readiness/review disposition and exact selection.
+Missing/stale/malformed/overflow blocks; omission keeps default routing.
+Selection proves neither comprehension, authorization nor probe completion.
+
 Exhaustive review enumerates every indexed item in named contours regardless
 of score or phase. Bound enumeration and owner closure; overflow blocks with
 incomplete-coverage evidence, never a truncated usable packet. Indexed coverage
@@ -157,42 +160,30 @@ operation/adapter repair. Intent overlays such as diagram requests may compose
 with code, security, or other base profiles without duplicating the operation
 candidate in every profile.
 
-Architecture intent should route first to a compact project-owned architecture
-catalog. Selected area, pattern, decision, and repository evidence load after
-catalog selection; full architecture-change, data, security, diagram, or
-blueprint context remains conditional on the question and decision state.
+Use separate optional intent overlays:
 
-Code-comment style proposals, documentation review, and generated-reference
-work should use a separate optional intent overlay. Start from the compact
-code-documentation catalog and profile selector, then load only the selected
-source-set profile, affected symbols, canonical owners, generator
-configuration, and validation. Do not load every profile or generated output.
-
-Project vocabulary lookup, proposal, review, and terminology checks should use
-a separate optional intent overlay. Start from the compact term/alias/acronym
-catalog, then load only selected term records, applicable data-dictionary
-links, and named canonical sources. Do not load the full vocabulary for one
-term or an unrelated task.
-
-Test-first configuration, execution, or a bounded recommendation should use a
-separate optional intent overlay. Evaluate its compact trigger from the
-selected testing/risk context, then load only the target policy and selected
-configuration or change flow. Do not load test-first detail or repeat a
-recommendation for every code edit.
-
-Extension lifecycle work should use a separate optional intent overlay. Start
-with the extension rule, source-access and prompt-injection policy, and compact
-target catalog. Load only one selected lock entry, normalized manifest,
-bindings, item set, lifecycle flow, gate, and evidence record. Do not scan or
-load every extension, and do not access remote sources outside target policy.
-
-Dependency knowledge work should use a separate optional intent overlay. Start
-with the target dependency policy and compact catalog. Load one resolved
-package instance, selected normalized fact records, applicable deviations, and
-named evidence only after the route requires them. Keep package-manager graphs,
-raw vendor documentation, nested adapters, unrelated packages, and historical
-snapshots outside routine bootstrap. Use fingerprints for an unchanged fast
-path and bounded graph traversal for public transitive references.
+- Architecture: compact project-owned catalog, then selected area, pattern,
+  decision and repository evidence. Architecture-change, data, security,
+  diagram and blueprint context depends on the question and decision state.
+- Code-comment proposals, documentation review and generated references:
+  compact documentation catalog/profile selector, then selected source-set
+  profile, symbols, owners, generator configuration and validation; not every
+  profile or generated output.
+- Vocabulary lookup/proposal/review/checks: compact term/alias/acronym catalog,
+  then selected records, applicable data-dictionary links and canonical sources;
+  not the full vocabulary for one term or an unrelated task.
+- Test-first configuration/execution/recommendations: compact trigger from
+  selected testing/risk context, then target policy and selected configuration
+  or change flow; not detailed context or repeated advice for every code edit.
+- Extensions: extension rule, source-access/prompt-injection policy and compact
+  catalog, then one selected lock entry, normalized manifest, bindings, items,
+  lifecycle flow, gate and evidence. Neither scan all extensions nor access
+  remote sources outside target policy.
+- Dependency knowledge: target policy/catalog, then one resolved package,
+  normalized facts, applicable deviations and named evidence when required.
+  Exclude package-manager graphs, raw vendor docs, nested adapters, unrelated
+  packages and history from bootstrap. Retain unchanged fingerprints and
+  bounded traversal for public transitive references.
 
 When an overlay needs a detailed reference only for a subset of requests, put
 the path and its load condition in `conditional_context` instead of the default

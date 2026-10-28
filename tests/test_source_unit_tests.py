@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import json
+import io
+import os
+import subprocess
 import sys
 import tempfile
 import unittest
 from itertools import permutations
+from contextlib import redirect_stdout
 from unittest.mock import patch
 from pathlib import Path
 
@@ -22,6 +26,18 @@ from check_source_unit_tests import (  # noqa: E402
 
 
 class SourceUnitTestSelectionTests(unittest.TestCase):
+    def test_direct_runner_prevents_nested_bytecode_writes(self):
+        import check_source_unit_tests as runner
+        def check_environment():
+            self.assertTrue(sys.dont_write_bytecode)
+            self.assertEqual(os.environ["PYTHONDONTWRITEBYTECODE"], "1")
+            child = subprocess.run([sys.executable, "-c", "import sys; print(sys.dont_write_bytecode)"], capture_output=True, text=True)
+            self.assertEqual(child.returncode, 0, child.stderr)
+            self.assertEqual(child.stdout.strip(), "True")
+        suite = unittest.TestSuite([unittest.FunctionTestCase(check_environment)])
+        with patch.dict(os.environ, {}, clear=True), patch.object(sys, "dont_write_bytecode", False), patch.object(sys, "argv", ["source-unit-tests"]), patch.object(runner, "_all_test_paths", return_value=[]), patch.object(runner, "load_suite", return_value=suite), patch.object(runner, "child_capacity", return_value=1), redirect_stdout(io.StringIO()):
+            self.assertEqual(runner.main(), 0)
+
     def test_serial_discovery_has_repository_root_for_shared_fixtures(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

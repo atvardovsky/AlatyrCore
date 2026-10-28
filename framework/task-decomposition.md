@@ -239,10 +239,13 @@ Passed rich reviews require `review_challenges` binding original/normative
 sources, counterexamples, obligations and artifacts. Derive challenges from
 requirements, not passing fixtures. Reviewer labels prove no independence.
 
-Digest-bound task advice reuses dependency readiness, retains required work
-and unknown costs, prefers lower-impact discriminating checks and suggests
-systemic reassessment for recurrence. It is not authorization, evidence
-acceptance, a second scheduler or a proven optimum.
+Digest-bound advice retains dependency readiness, required work and unknown
+costs; prefer lower-impact checks and reassess recurrence. Primary review judges
+decision relevance, not prediction count. Within equal duty/risk prefer unrun
+probes before retry review, retaining prior-result identity. Supporting/refuting
+observations must differ; justified repeated measurements remain allowed.
+Advice grants neither authorization, evidence acceptance, scheduling authority
+nor proven optimality.
 
 At material evidence/scope changes or worker/continuity boundaries, re-anchor
 to current intent, authorization, owners and unresolved duties. Name the next

@@ -4,6 +4,31 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.111 - 2026-10-28
+
+- Add opt-in task-question context binding to registered unresolved probes.
+  Reuse canonical schemas, lineage, input/artifact digests and final snapshot
+  checks; retain probe inputs and owners before optional ranking. Bound question
+  delivery and charge it together with knowledge metadata. Default planning
+  preserves its imports, reads and required coverage.
+- Make next-probe selection and retry review explicit. Replace the misleading
+  discriminated-hypothesis count with descriptive prediction coverage, remove
+  its ranking tie-break, and prefer unrun probes within equal duty/risk before
+  retries. Preserve prior-result identity; reject identical supporting/refuting
+  observations. Proposals remain non-authoritative and require primary review.
+- Extend the existing effectiveness suite with independently reviewed context
+  application scenarios. Curate applicable examples through existing knowledge
+  owners, without a new memory registry, runner, bootstrap layer or autonomous
+  provider integration. Source regressions do not prove live cognitive or cost
+  improvements; pruning and additional orchestration remain measured experiments.
+- Retain unmet prerequisites for blocked duties through shared readiness,
+  question delivery and advice. Prevent direct source-unit runs from writing
+  nested Python bytecode into template fixtures, matching the full wrapper.
+- Advance framework to alpha.111, adapter schema to `92` and templates to `106`.
+  Existing schema-7 models and schema-5 projections retain their shapes; review
+  newly rejected non-discriminating probes before reuse. Upgrade tooling before
+  opting into question bindings. No target rollout or release publication.
+
 ## 0.1.0-alpha.110 - 2026-10-27
 
 - Invalidate selected-task ready claims together with stale analysis advice.

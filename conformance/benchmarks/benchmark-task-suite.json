@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "suite_kind": "alatyr-effectiveness-task-class-suite",
-  "suite_version": 3,
+  "suite_version": 4,
   "status": "coverage-contract-not-executed",
   "required_adapter_modes": ["none", "minimal", "full"],
   "recommended_minimum_repetitions": 3,
@@ -112,6 +112,13 @@
       "task_scale": "large-or-resumable",
       "risk_focus": "current intent, evidence freshness, action relevance and recovery",
       "purpose": "Compare requirement changes, misleading tool data, stale inputs, compaction, conflicting workers and recurring repairs under the execution-drift protocol; structural replay is not live-agent evidence."
+    },
+    {
+      "id": "context-application-review",
+      "task_profile": "code-local",
+      "task_scale": "cross-cutting",
+      "risk_focus": "observable application of selected evidence, exceptions and boundaries",
+      "purpose": "Compare exact question selection, accepted versus observed facts, stale guidance, exceptions, ripple obligations and justified retries under the context-application protocol; delivery is not comprehension."
     },
     {
       "id": "delegated-context-review",

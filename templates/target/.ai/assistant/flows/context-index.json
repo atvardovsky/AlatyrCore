@@ -458,8 +458,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 755,
-      "content_digest": "sha256:3438530dd784c9e93c6c65e3e5f03554163d8f8ba64ead4564e3a5d2653d372b"
+      "estimated_words": 772,
+      "content_digest": "sha256:533a1c40840a660eb3f2606dcd33e29f2367b08622fbdd7a3b39bb667a547d58"
     },
     {
       "id": "assistant.content.flows-project-vocabulary-flow-md",

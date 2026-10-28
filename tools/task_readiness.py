@@ -7,7 +7,8 @@ from typing import Any
 
 def execution_readiness(model: Any) -> dict[str, Any]:
     result = {"state": "not-configured", "ready": [], "blocked": [], "waiting": [],
-              "retained_unresolved": [], "failures": [], "authority": "none",
+              "retained_unresolved": [], "unsettled_prerequisites": {},
+              "failures": [], "authority": "none",
               "evidence_verified": False}
     if not isinstance(model, dict) or "execution_dependencies" not in model:
         return result
@@ -66,6 +67,7 @@ def execution_readiness(model: Any) -> dict[str, Any]:
                 result["failures"].append(f"settled obligation {key} has unfinished prerequisites: {', '.join(missing)}")
             continue
         result["retained_unresolved"].append(key)
+        result["unsettled_prerequisites"][key] = missing
         if proofs[key]["status"] == "blocked":
             result["blocked"].append(key)
         elif missing:

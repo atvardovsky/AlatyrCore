@@ -16,6 +16,10 @@ distraction, stale-evidence, continuity, worker-conflict and recurring-repair
 scenarios using the same reports and acceptance review. Source unit replays
 are not live-agent results.
 
+The [context-application protocol](context-application.md) evaluates whether
+selected knowledge is actually applied to questions, exceptions and change
+boundaries. It uses the same independent acceptance review, not a second runner.
+
 Reviewed paired results enforce a quality floor: minimal and full modes must
 not increase failed acceptance criteria, hallucinated commands, validation
 errors, missed companion updates, rework, or unresolved consistency gaps

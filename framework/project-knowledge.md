@@ -321,6 +321,11 @@ expiry; expose other freshness triggers as unverified for target review.
 Selection neither promotes authority nor demonstrates reuse/comprehension.
 Full validation still owns complete registry consistency.
 
+Examples retain applicability, exceptions, falsifying cases and freshness in
+existing owners/routes. Curate incrementally, not through another registry or
+growing bootstrap. Evaluate [later application](effectiveness-metrics.md);
+output success alone does not authorize promotion.
+
 ## Final Evidence
 
 Report:

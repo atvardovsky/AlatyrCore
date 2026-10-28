@@ -172,8 +172,8 @@
         "alatyr:observed-is-not-accepted@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:accepted-current@1": "sha256:eafcb50a76d2b211bcba5ecb1aab26bb5f9196d3025864dead8ff649880a858b",
-        "alatyr:observed-is-not-accepted@1": "sha256:eafcb50a76d2b211bcba5ecb1aab26bb5f9196d3025864dead8ff649880a858b"
+        "alatyr:accepted-current@1": "sha256:05b65487e6d82a50422584071e20d06f0010cd2549d47728872e72d9cf97f155",
+        "alatyr:observed-is-not-accepted@1": "sha256:05b65487e6d82a50422584071e20d06f0010cd2549d47728872e72d9cf97f155"
       },
       "content_digest": "sha256:df16defad839350502cefea040b689189cb7cf3481e7c8ac0948759249b3a783"
     },

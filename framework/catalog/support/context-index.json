@@ -57,8 +57,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1452,
-      "content_digest": "sha256:b74a5425833aac5a6b86791b67f468b4f1816116f00e3a7a5f08c6779c7498a3"
+      "estimated_words": 1481,
+      "content_digest": "sha256:aa972fbc4e3d121c987b8e074d962c3fa762063ac7f8751781b182c4325a3c82"
     },
     {
       "id": "framework.support.repair-qualification-md",
@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 754,
-      "content_digest": "sha256:8d1284a2704119e9a4ad19de8b206f50e7766f0a51a9b668d470cf6191549295"
+      "estimated_words": 793,
+      "content_digest": "sha256:8198254e3cf6de28f935405f8a437332dc591984d438479dda17e55fef0ae86e"
     },
     {
       "id": "framework.support.test-execution-selection-md",

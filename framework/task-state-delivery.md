@@ -67,6 +67,10 @@ invariant conflicts, failed gates, inconclusive probes and original-case status
 are signals, not a new incident detector or global freeze on independent work.
 An unchanged failed attempt needs a new discriminating question, input or
 explicit retry rationale; a command-count timer is not evidence of drift.
+The proposal's probe digest and prior-result digest locate the exact question
+and observation for primary selection/retry review; they do not record that
+the review occurred. A question-bound context route selects that same explicit
+obligation, never silently the first recommendation.
 
 Use verified host hooks or a controlled executor for pre-action checks when
 available; otherwise perform the same checkpoint procedurally and report that

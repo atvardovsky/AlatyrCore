@@ -86,6 +86,11 @@ Deterministic replay tests prove output behavior only. Live agent comparisons
 require authorized runs, independent outcome review and matched host/model
 conditions before making a concentration, quality or savings claim.
 
+Use the same reports for exact question selection, accepted/observed facts,
+exceptions, stale guidance, companion changes and justified retries. Delivery
+without application is insufficient. Source protocol:
+`conformance/benchmarks/context-application.md`, not executed results.
+
 ## Measurement Evidence States
 
 Every human-attention, review-cycle, intervention, executor-time, and adapter-

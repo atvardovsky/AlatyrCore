@@ -59,4 +59,8 @@ def compact_plan_view(plan: dict[str, Any], *, source_report: dict | None = None
             "constraint_count": len(knowledge["selection"]["constraints"]), "warning_count": len(knowledge["selection"]["warnings"]),
             "global_coverage": False, "actual_use": "not-observed"}
         result["delivery_budget"] = plan["delivery_budget"]
+    if "question" in plan:
+        question = plan["question"]
+        result["question"] = {key: question[key] for key in ("task_id", "model", "obligation_id", "probe_sha256", "actual_use")}
+        result["delivery_budget"] = plan["delivery_budget"]
     return result
