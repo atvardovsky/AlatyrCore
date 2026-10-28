@@ -814,6 +814,8 @@ class GitEvidenceView:
                             lambda: _git_merge_base(self.target, selected, self.initial_head))
 
     def _file_entry_at_ref(self, revision: str, path: str) -> bytes | None:
+        if "\0" in path:
+            return None
         try:
             path.encode("utf-8")
         except UnicodeEncodeError:

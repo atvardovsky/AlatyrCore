@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Reject embedded NULs before literal Git metadata lookup, returning an invalid
+  path finding instead of a subprocess exception. Add registered task-closure
+  and shared-reader regressions. This source-tool robustness fix does not change
+  valid-input contracts, framework/schema/template versions or migration rules.
 
 ## 0.1.0-alpha.112 - 2026-10-28
 

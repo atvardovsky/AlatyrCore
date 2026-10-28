@@ -50,7 +50,7 @@ class ActiveTaskTests(fixture.ActiveTaskFixture):
 
     def test_unresolved_bracket_patterns_and_wildcards_remain_rejected(self):
         self.close()
-        for path in ("src/routes/[id]/missing.ts", "src/routes/[abc]/route.ts", "src/*/route.ts", "src/route?.ts", "../outside.ts", "/outside.ts"):
+        for path in ("src/routes/[id]/missing.ts", "src/routes/[abc]/route.ts", "src/routes/[id]/\0route.ts", "src/*/route.ts", "src/route?.ts", "../outside.ts", "/outside.ts"):
             with self.subTest(path=path):
                 self.closure["implementation_surfaces"] = [path]
                 self.write_closure()

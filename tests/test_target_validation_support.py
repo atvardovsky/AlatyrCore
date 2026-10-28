@@ -70,7 +70,7 @@ class GitChangeSetTests(unittest.TestCase):
                 self.assertFalse(evidence.is_regular_file_at_ref(revision, "../outside"))
                 self.assertFalse(any("cat-file" in call.args for call in read.call_args_list))
                 count = sum("ls-tree" in call.args for call in read.call_args_list)
-                for point in (0xD800, 0xDC00):
+                for point in (0, 0xD800, 0xDC00):
                     path = "routes/" + chr(point)
                     self.assertFalse(evidence.is_regular_file_at_ref(revision, path))
                     self.assertEqual(evidence.bounded_file_result_at_ref(revision, path, 20), (None, False))
