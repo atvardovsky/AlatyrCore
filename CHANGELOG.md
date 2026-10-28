@@ -6,6 +6,9 @@
   path finding instead of a subprocess exception. Add registered task-closure
   and shared-reader regressions. This source-tool robustness fix does not change
   valid-input contracts, framework/schema/template versions or migration rules.
+- Reject POSIX-rooted, Windows drive-relative/absolute and UNC task-closure
+  surfaces consistently on every host, before result lookup. Preserve exact
+  scope findings and add a host-independent path-flavor regression for Windows CI.
 
 ## 0.1.0-alpha.112 - 2026-10-28
 

@@ -6,7 +6,7 @@ import hashlib
 import json
 import re
 from datetime import datetime, timezone
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
 import jsonschema
@@ -303,7 +303,14 @@ def _validate_current_result(validator: Any, closure: dict[str, Any], source: st
         return
     paths = {_normalized_path(path) for path in closure["implementation_surfaces"] + closure["canonical_owners"]}
     # Literal routes may exist only in the base after a committed deletion.
-    if any(not is_target_relative_path(path) or any(char in path for char in "*?") or "[" in path and not _literal_bracket_surface(validator, path, binding) for path in paths):
+    if any(
+        not is_target_relative_path(path)
+        or PurePosixPath(path).is_absolute()
+        or PureWindowsPath(path).drive
+        or any(char in path for char in "*?")
+        or "[" in path and not _literal_bracket_surface(validator, path, binding)
+        for path in paths
+    ):
         validator.error("TASK_CLOSURE_RESULT_SCOPE", "current result requires exact target-relative files", source)
         return
     if _normalized_path(source) in paths:

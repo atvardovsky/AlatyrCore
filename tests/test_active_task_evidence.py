@@ -70,6 +70,15 @@ class ActiveTaskTests(fixture.ActiveTaskFixture):
         artifact.write_bytes(b"changed\n")
         self.assertIn("TASK_CLOSURE_RESULT_DRIFT", self.errors(self.check()))
 
+    def test_rooted_paths_are_rejected_independently_of_host_path_flavor(self):
+        self.close()
+        for path in ("/outside.ts", "C:/outside.ts", "C:outside.ts", "//server/share/outside.ts"):
+            with self.subTest(path=path):
+                self.closure["implementation_surfaces"] = [path]
+                self.write_closure()
+                with patch("target_adapter_validation.active_tasks.is_target_relative_path", return_value=True):
+                    self.assertIn("TASK_CLOSURE_RESULT_SCOPE", self.errors(self.check()))
+
     def test_committed_literal_route_deletions_remain_exact_surfaces(self):
         for folder in ("plain", "[id]", "[[...slug]]"):
             with self.subTest(folder=folder):
