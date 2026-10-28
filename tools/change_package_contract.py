@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+from pathlib import PurePosixPath
 from typing import Any
 
 
@@ -41,6 +43,67 @@ INCIDENT_INDEX_PROJECTION_FIELDS = (
     "corrective_iteration",
     "latest_failed_gate_state",
 )
+
+
+def historical_snapshot_commit_failures(git: Any, snapshot: dict[str, Any], base: Any, *, eligible: bool) -> list[str]:
+    """Verify historical bytes without granting current-task acceptance authority."""
+    if not eligible:
+        return ["historical snapshot commits cannot establish a selected/current result or a strong claim"]
+    revision, digest, paths = snapshot.get("source_commit"), snapshot.get("digest"), snapshot.get("paths")
+    if not isinstance(revision, str) or not re.fullmatch(r"[a-f0-9]{40}|[a-f0-9]{64}", revision) or git.resolve_object(revision, "commit") != revision:
+        return ["snapshot source_commit must be an exact available immutable commit ID"]
+    if not isinstance(base, str) or git.resolve_object(base, "commit") != base or git.is_ancestor(base, revision) is not True:
+        return ["snapshot base must be an exact available ancestor commit"]
+    if snapshot.get("algorithm") != "sha256" or not isinstance(digest, str) or not re.fullmatch(r"[a-f0-9]{64}", digest):
+        return ["historical snapshot requires an exact SHA-256 digest"]
+    if not isinstance(paths, list) or not 1 <= len(paths) <= 256 or not all(isinstance(path, str) for path in paths) or len(set(paths)) != len(paths):
+        return ["historical snapshot requires 1..256 unique exact paths"]
+    for path in paths:
+        try:
+            path.encode("utf-8")
+        except UnicodeEncodeError:
+            return ["historical snapshot paths must be valid UTF-8"]
+        parsed = PurePosixPath(path)
+        if not path or parsed.is_absolute() or parsed.as_posix() != path or path == "." or ".." in parsed.parts or any(char in path for char in "*?\\:\0"):
+            return ["historical snapshot paths must be exact safe target-relative files"]
+    observed = git.snapshot_sha256(revision, paths, byte_limits=(4 * 1024 * 1024, 64 * 1024 * 1024))
+    if observed != digest:
+        return ["historical snapshot digest differs, or a blob is unavailable, unsafe or over the byte limit"]
+    return []
+
+
+def historical_snapshot_task_is_distinct(raw_index: bytes | None, task_id: str | None, package: dict[str, Any]) -> bool:
+    """Unknown or malformed task ownership cannot authorize historical reuse."""
+    if task_id is None:
+        return True
+    operation = package.get("operation")
+    operation_id = operation.get("id") if isinstance(operation, dict) else None
+    package_id = package.get("package_id")
+    if not isinstance(package_id, str) or not isinstance(operation_id, str):
+        return False
+    if task_id in {package_id, operation_id} or raw_index is None:
+        return False
+    def unique_object(pairs):
+        value = dict(pairs)
+        if len(value) != len(pairs):
+            raise ValueError("duplicate task-index fields")
+        return value
+    try:
+        index = json.loads(raw_index, object_pairs_hook=unique_object)
+    except (ValueError, UnicodeError, RecursionError):
+        return False
+    from task_evidence_contract import task_schema
+    if not task_schema("active-task-index").is_valid(index):
+        return False
+    if len({task["task_id"] for task in index["tasks"]}) != len(index["tasks"]):
+        return False
+    matches = [task for task in index["tasks"] if task["task_id"] == task_id]
+    if len(matches) != 1 or matches[0]["operation_id"] == operation_id:
+        return False
+    incident = package.get("incident_continuity")
+    binding = incident.get("problem_model") if isinstance(incident, dict) else None
+    selected = matches[0]["problem_model"]
+    return not (isinstance(binding, dict) and isinstance(selected, dict) and selected.get("sha256") == binding.get("sha256"))
 
 
 def _mapping(value: Any) -> dict[str, Any]:

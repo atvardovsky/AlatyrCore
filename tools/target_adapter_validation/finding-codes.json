@@ -205,7 +205,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 112
+      "code_count": 114
     },
     {
       "id": "PLACEHOLDERS",
@@ -9953,6 +9953,15 @@
       ]
     },
     {
+      "code": "PACKAGE_SNAPSHOT_COMMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "PACKAGE_SNAPSHOT_HASH",
       "levels": [
         "dynamic"
@@ -9965,6 +9974,15 @@
       "code": "PACKAGE_SNAPSHOT_HISTORICAL",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SNAPSHOT_HISTORICAL_BOUND",
+      "levels": [
+        "info"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

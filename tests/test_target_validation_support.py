@@ -49,6 +49,35 @@ def write_json(path: Path, value: object) -> None:
 
 
 class GitChangeSetTests(unittest.TestCase):
+    def test_literal_file_metadata_avoids_blob_reads_and_is_reused(self):
+        import target_validation_support as support
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            run_git(target, "init", "-q")
+            run_git(target, "config", "user.name", "Alatyr Tests")
+            run_git(target, "config", "user.email", "tests@example.invalid")
+            for path in ("routes/[id]/route.ts", "routes/a/route.ts", "routes/\u03bb/route.ts"):
+                file = target / path
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_bytes(b"route\n")
+            revision = commit(target, "literal routes")
+            evidence = GitEvidenceView(target)
+            with patch.object(support, "_git_bytes", wraps=support._git_bytes) as read:
+                self.assertTrue(evidence.is_regular_file_at_ref(revision, "routes/[id]/route.ts"))
+                self.assertTrue(evidence.is_regular_file_at_ref(revision, "routes/\u03bb/route.ts"))
+                self.assertFalse(evidence.is_regular_file_at_ref(revision, "routes/[abc]/route.ts"))
+                self.assertFalse(evidence.is_regular_file_at_ref(revision, "routes/[id]"))
+                self.assertFalse(evidence.is_regular_file_at_ref(revision, "../outside"))
+                self.assertFalse(any("cat-file" in call.args for call in read.call_args_list))
+                count = sum("ls-tree" in call.args for call in read.call_args_list)
+                for point in (0xD800, 0xDC00):
+                    path = "routes/" + chr(point)
+                    self.assertFalse(evidence.is_regular_file_at_ref(revision, path))
+                    self.assertEqual(evidence.bounded_file_result_at_ref(revision, path, 20), (None, False))
+                self.assertEqual(sum("ls-tree" in call.args for call in read.call_args_list), count)
+                self.assertEqual(evidence.bounded_file_result_at_ref(revision, "routes/[id]/route.ts", 20), (b"route\n", True))
+                self.assertEqual(sum("ls-tree" in call.args for call in read.call_args_list), count)
+
     def test_change_set_uses_one_merge_base_for_every_repository_layer(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)

@@ -813,12 +813,30 @@ class GitEvidenceView:
         return self._cached(("comparison-base", selected, self.initial_head),
                             lambda: _git_merge_base(self.target, selected, self.initial_head))
 
+    def _file_entry_at_ref(self, revision: str, path: str) -> bytes | None:
+        try:
+            path.encode("utf-8")
+        except UnicodeEncodeError:
+            return None
+        return self._cached(
+            ("file-entry-at-ref", revision, path),
+            lambda: _git_bytes(self.target, "--literal-pathspecs", "ls-tree", "-z", "--full-tree", revision, "--", path),
+        )
+
+    def is_regular_file_at_ref(self, ref: str, path: str, *, object_kind: str = "commit") -> bool:
+        """Inspect immutable literal-path metadata without loading blob contents."""
+        revision = self.resolve_object(ref, object_kind)
+        if revision is None or not is_target_relative_path(path):
+            return False
+        entry = self._file_entry_at_ref(revision, path)
+        return entry is not None and entry.startswith((b"100644 blob ", b"100755 blob "))
+
     def bounded_file_result_at_ref(self, ref: str, path: str, max_bytes: int, *, object_kind: str = "commit") -> tuple[bytes | None, bool]:
         revision = self.resolve_object(ref, object_kind)
         if revision is None or not is_target_relative_path(path):
             return None, False
         def read() -> tuple[bytes | None, bool]:
-            entry = _git_bytes(self.target, "ls-tree", "-z", "--full-tree", revision, "--", path)
+            entry = self._file_entry_at_ref(revision, path)
             if entry is None:
                 return None, False
             if not entry:

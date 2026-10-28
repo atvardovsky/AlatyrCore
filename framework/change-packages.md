@@ -203,32 +203,34 @@ privacy, redaction, and whether the summary is tracked.
 
 ## Repository Provenance
 
-Classify package evidence as one of:
+Classify evidence:
 
-- `git-range`: resolvable before and after revisions with a reproducible diff
-- `pull-request`: a named review surface with base/head revisions and a stable
-  reference
-- `selected-file-snapshot`: an explicit path set and content digest used when
-  a clean repository range is unavailable
+- `git-range`: resolvable before/after revisions and reproducible diff
+- `pull-request`: stable review reference with base/head revisions
+- `selected-file-snapshot`: explicit paths and digest without a clean range
 - `unverified`: insufficient revision or snapshot evidence
 
-Only `git-range` and `pull-request` support a strong public claim about the
-complete change set. `selected-file-snapshot` can support bounded internal
-evidence, but unrelated working-tree changes and omitted paths limit the
-  claim. `unverified` supports no historical completeness claim.
+Only ranges and pull requests support strong complete-change claims. Snapshots
+provide bounded internal evidence; omissions and unrelated edits limit claims.
+Unverified evidence supports no historical completeness claim.
 
-For a deterministic selected-file snapshot, sort normalized target-relative
-paths, then hash each UTF-8 path, a NUL byte, the file's raw bytes, and a final
-NUL byte with SHA-256. Missing, directory, absolute, or parent-traversal paths
-invalidate the snapshot.
+Snapshot SHA-256 hashes sorted normalized target-relative paths: each UTF-8
+path, NUL, raw file bytes, NUL. Missing files, directories, absolute paths and
+parent traversal invalidate it.
 
-A clean single commit is useful but not mandatory. A clean commit range or
-pull request is equally valid when the complete package is reviewable.
-For public or audit cases, prefer a dedicated branch or worktree, record
-whether the tree was clean at start and validation, and explain how unrelated
-changes were isolated. Dirty-tree evidence does not automatically invalidate a
-Git range, but it weakens confidence when package and unrelated changes cannot
-be separated.
+Optional `provenance.selected_file_snapshot.source_commit` pins historical
+bytes to an exact available immutable commit, with exact `before_revision`
+ancestry. Verification requires SHA-256 and 1..256 unique safe literal paths,
+bounded to 4 MiB/file and 64 MiB total. Only unselected `historical-record`
+packages, distinct from the selected task's identity, operation and model,
+qualify; unknown or malformed task ownership fails closed. Claims remain
+`limited` or `unsupported`, never current freshness, task completion or strong
+case acceptance. Omitting this field preserves existing snapshot behavior.
+
+A complete clean commit, range or pull request is valid. Prefer dedicated
+branches/worktrees for public/audit cases; record cleanliness at start and
+validation and how unrelated work was isolated. Dirty worktrees do not
+automatically invalidate ranges, but inseparable unrelated changes weaken them.
 
 ## Machine Validation
 
@@ -256,24 +258,18 @@ declared. Those remain project reasoning, ownership, review, and test duties.
 
 ## Cost Control
 
-Keep the default package index compact: identity, status, changed-fact IDs,
-owners, project areas, provenance, approval references, active workstream,
-incident family, corrective iteration, latest failed-gate state, and residual
-risk. Load plan details, discussion evidence, companion decisions,
-corrections, or validation logs only when the active task needs them.
+Keep the compact index derived from its named record: package ID/status;
+changed-fact IDs/owners from `changed_facts`; project areas from `routing`;
+evidence quality from `provenance`; approvals from `approved_scope`; active
+workstream from `operation`; incident family, corrective iteration and latest
+failed-gate state. Load plans, discussions, companion decisions, corrections
+and validation logs only when needed.
 
-Treat the compact entry as a derived projection of its named package record.
-Its package ID and status must match the record; changed-fact IDs and canonical
-owners derive from `changed_facts`; project areas derive from `routing`;
-evidence quality derives from `provenance`; approval references derive from
-`approved_scope`; and active workstream derives from `operation`.
 Residual risk derives only from `validation.residual_risks`: empty means `none`;
-otherwise retain a bounded count, digest, and pointer to that exact list, not a
-manually maintained risk sentence. Regeneration never rewrites source records.
-Full adapter
-validation checks every projection. Changed-scope validation checks the index
-when it changed and otherwise checks only changed package records, so routine
-product work does not reopen historical package evidence.
+otherwise retain its bounded count, digest and pointer, never a manual sentence.
+Regeneration never rewrites source records. Full validation checks every
+projection; changed scope checks changed indexes/records without reopening
+unrelated historical evidence.
 
 An unchanged index shard proves only that the shard bytes are unchanged. When
 a referenced package record changes, changed-scope validation must still open

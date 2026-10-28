@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1747
+Catalog entries: 1749
 
 ## Families
 
@@ -51,7 +51,7 @@ Catalog entries: 1747
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 112 codes.
+- `PACKAGE`: 114 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -2218,10 +2218,14 @@ Catalog entries: 1747
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SEMANTIC_SCOPE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_SNAPSHOT_COMMIT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SNAPSHOT_HASH`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SNAPSHOT_HISTORICAL`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_SNAPSHOT_HISTORICAL_BOUND`
+  Level: info. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SNAPSHOT_PATH`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SNAPSHOT_READ`

@@ -32,6 +32,8 @@ from change_package_contract import (
     CHANGE_PACKAGE_STATUSES,
     INCIDENT_INDEX_PROJECTION_FIELDS,
     incident_continuity_failures,
+    historical_snapshot_commit_failures,
+    historical_snapshot_task_is_distinct,
     package_index_projection_mismatches,
 )
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
@@ -6194,6 +6196,41 @@ class Validator:
             if isinstance(entry, dict) and isinstance(entry.get("evidence_id"), str)
         }
 
+    def check_package_snapshot(self, data: dict[str, Any], source: str, package: Path, *, status: str, before: str, claim: str) -> None:
+        paths = self.package_list(data, ("provenance", "selected_file_snapshot", "paths"), source)
+        recorded = self.package_string(data, ("provenance", "selected_file_snapshot", "digest"), source).lower()
+        provenance = data.get("provenance")
+        snapshot = provenance.get("selected_file_snapshot") if isinstance(provenance, dict) else None
+        if not isinstance(snapshot, dict):
+            self.error("PACKAGE_SNAPSHOT_COMMIT", "selected snapshot must be an object", source)
+            return
+        if "source_commit" in snapshot:
+            try:
+                raw_index = self.context.read_bytes_result(self.target_path(".ai/assistant/active-tasks.json"), max_bytes=512 * 1024).value if self.current_task_id else None
+            except (OSError, ValueError):
+                raw_index = None
+            failures = historical_snapshot_commit_failures(
+                self.git, snapshot, before,
+                eligible=data.get("evidence_classification") == "historical-record"
+                and package not in self.change_packages
+                and historical_snapshot_task_is_distinct(raw_index, self.current_task_id, data)
+                and claim in {"limited", "unsupported"},
+            )
+            for failure in failures:
+                self.error("PACKAGE_SNAPSHOT_COMMIT", failure, source)
+            if not failures:
+                self.info("PACKAGE_SNAPSHOT_HISTORICAL_BOUND", "original selected bytes verified at the exact source commit; no current freshness, task completion or original-case acceptance is implied", source)
+        else:
+            historical = status in {"validated", "complete"}
+            computed = self.package_snapshot_digest(paths, source, historical=historical)
+            if computed and recorded != computed:
+                if historical:
+                    self.warn("PACKAGE_SNAPSHOT_HISTORICAL", "historical selected-file snapshot no longer matches current files", source)
+                else:
+                    self.change_package_finding("PACKAGE_SNAPSHOT_HASH", "selected-file snapshot SHA-256 does not match current files", source)
+        if claim not in {"limited", "unsupported"}:
+            self.change_package_finding("PACKAGE_PUBLIC_CLAIM", "selected-file-snapshot cannot support a strong public claim", source)
+
     def check_change_packages(self) -> None:
         self.check_change_package_directory_hygiene()
         index_path = self.target_path(".ai/assistant/change-packages/index.json")
@@ -6670,35 +6707,7 @@ class Validator:
                         source,
                     )
             elif quality == "selected-file-snapshot":
-                snapshot_paths = self.package_list(
-                    data, ("provenance", "selected_file_snapshot", "paths"), source
-                )
-                recorded_digest = self.package_string(
-                    data, ("provenance", "selected_file_snapshot", "digest"), source
-                ).lower()
-                historical_snapshot = status in {"validated", "complete"}
-                computed_digest = self.package_snapshot_digest(
-                    snapshot_paths, source, historical=historical_snapshot
-                )
-                if computed_digest and recorded_digest != computed_digest:
-                    if historical_snapshot:
-                        self.warn(
-                            "PACKAGE_SNAPSHOT_HISTORICAL",
-                            "historical selected-file snapshot no longer matches current files",
-                            source,
-                        )
-                    else:
-                        self.change_package_finding(
-                            "PACKAGE_SNAPSHOT_HASH",
-                            "selected-file snapshot SHA-256 does not match current files",
-                            source,
-                        )
-                if claim not in {"limited", "unsupported"}:
-                    self.change_package_finding(
-                        "PACKAGE_PUBLIC_CLAIM",
-                        "selected-file-snapshot cannot support a strong public claim",
-                        source,
-                    )
+                self.check_package_snapshot(data, source, package, status=status, before=before, claim=claim)
             elif quality == "unverified":
                 if claim != "unsupported":
                     self.change_package_finding(

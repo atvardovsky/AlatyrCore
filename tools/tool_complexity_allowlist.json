@@ -87,7 +87,7 @@
     {
       "path": "tools/validate_target_adapter.py",
       "qualname": "Validator.check_change_packages",
-      "max_lines": 599,
+      "max_lines": 565,
       "reason": "target validator method; extract change-package schema and retention checks"
     },
     {

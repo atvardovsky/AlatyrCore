@@ -4,6 +4,26 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.112 - 2026-10-28
+
+- Verify optional historical selected-file snapshots against exact immutable
+  source commits, ancestry, literal paths and bounded SHA-256 reads. Unknown or
+  malformed task ownership, selected/current evidence and strong claims cannot
+  use the historical path; weaker unsupported claims remain supported. Existing
+  snapshots without the optional field keep their prior validation behavior.
+- Accept real literal bracket route filenames in task closure, including
+  committed deletions. Share cached literal Git entry metadata with bounded
+  blob reads; metadata discovery does not load blob content. Preserve unresolved
+  scope, containment, symlink, result-drift and byte-limit enforcement.
+- Add real-Git and malformed-input regressions, synchronize finding catalogs,
+  and run historical/route regressions on Windows and macOS. Reject non-UTF-8
+  paths before Git access; valid Unicode filenames remain supported. Document
+  the opt-in binding without new bootstrap or template fields.
+- Advance framework to alpha.112, adapter validation contract to `93` and
+  template projections to `107`. No rule IDs, active model/projection shapes,
+  installation commands or target-project facts change. Upgrade tooling before
+  adopting historical bindings; no evidence backfill, target rollout or tag.
+
 ## 0.1.0-alpha.111 - 2026-10-28
 
 - Add opt-in task-question context binding to registered unresolved probes.

@@ -68,6 +68,13 @@ privacy-review obligation. Synthetic tests do not certify a private mapping.
 
 ## Reliable Support Authoring
 
+Historical package snapshots can opt into the exact-commit binding described
+in [repository provenance](../framework/change-packages.md#repository-provenance).
+This verifies retained bytes, not current completion; do not add the optional
+field to active package templates. Task closure accepts literal bracket route
+names, including committed deletions proven by base/result metadata. Exact-path,
+result-drift and target-containment checks still apply.
+
 `validate-adapter --framework-source <source>` compares a recorded
 full Git ID in `framework.source_commit` against locally available history, even when the
 tooling checkout has advanced or has uncommitted framework edits. Tooling,

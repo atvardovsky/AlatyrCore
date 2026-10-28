@@ -26,6 +26,90 @@ from tests import active_task_fixture as fixture
 
 
 class ActiveTaskTests(fixture.ActiveTaskFixture):
+    def test_literal_bracket_route_files_are_exact_closure_surfaces(self):
+        for folder in ("[id]", "[...slug]", "[[...slug]]"):
+            with self.subTest(folder=folder):
+                path = f"src/routes/{folder}/route.ts"
+                artifact = self.target / path
+                artifact.parent.mkdir(parents=True, exist_ok=True)
+                artifact.write_bytes(b"export const route = true;\n")
+                git(self.target, "--literal-pathspecs", "add", path)
+                git(self.target, "commit", "-qm", "literal route fixture")
+                self.result = git(self.target, "rev-parse", "HEAD")
+                self.close()
+                self.closure["implementation_surfaces"] = [path]
+                self.write_closure()
+                self.assertEqual(self.errors(self.check()), set())
+                selected = ["design.md", path]
+                self.closure["repository_binding"].update(
+                    kind="selected-file-snapshot", selected_paths=selected,
+                    snapshot_sha256=self.snapshot(selected),
+                )
+                self.write_closure()
+                self.assertEqual(self.errors(self.check()), set())
+
+    def test_unresolved_bracket_patterns_and_wildcards_remain_rejected(self):
+        self.close()
+        for path in ("src/routes/[id]/missing.ts", "src/routes/[abc]/route.ts", "src/*/route.ts", "src/route?.ts", "../outside.ts", "/outside.ts"):
+            with self.subTest(path=path):
+                self.closure["implementation_surfaces"] = [path]
+                self.write_closure()
+                self.assertIn("TASK_CLOSURE_RESULT_SCOPE", self.errors(self.check()))
+
+    def test_literal_bracket_file_still_requires_matching_result_bytes(self):
+        path = "src/routes/[id]/route.ts"
+        artifact = self.target / path
+        artifact.parent.mkdir(parents=True)
+        artifact.write_bytes(b"original\n")
+        git(self.target, "--literal-pathspecs", "add", path)
+        git(self.target, "commit", "-qm", "literal route fixture")
+        self.result = git(self.target, "rev-parse", "HEAD")
+        self.close()
+        self.closure["implementation_surfaces"] = [path]
+        self.write_closure()
+        artifact.write_bytes(b"changed\n")
+        self.assertIn("TASK_CLOSURE_RESULT_DRIFT", self.errors(self.check()))
+
+    def test_committed_literal_route_deletions_remain_exact_surfaces(self):
+        for folder in ("plain", "[id]", "[[...slug]]"):
+            with self.subTest(folder=folder):
+                path = f"src/routes/{folder}/route.ts"
+                artifact = self.target / path
+                artifact.parent.mkdir(parents=True, exist_ok=True)
+                artifact.write_bytes(b"removed route\n")
+                git(self.target, "--literal-pathspecs", "add", path)
+                git(self.target, "commit", "-qm", "route before deletion")
+                self.base = git(self.target, "rev-parse", "HEAD")
+                artifact.unlink()
+                git(self.target, "--literal-pathspecs", "add", "-u", path)
+                git(self.target, "commit", "-qm", "delete route")
+                self.result = git(self.target, "rev-parse", "HEAD")
+                self.close()
+                self.closure["implementation_surfaces"] = [path]
+                self.write_closure()
+                self.assertEqual(self.errors(self.check()), set())
+                self.closure["repository_binding"].update(
+                    kind="tree", result_revision=git(self.target, "rev-parse", "HEAD^{tree}"),
+                )
+                self.write_closure()
+                self.assertEqual(self.errors(self.check()), set())
+
+    def test_bracket_route_symlink_cannot_escape_the_target(self):
+        with tempfile.TemporaryDirectory() as outside:
+            external = Path(outside) / "route.ts"
+            external.write_bytes(b"outside\n")
+            path = "src/routes/[id]/route.ts"
+            artifact = self.target / path
+            artifact.parent.mkdir(parents=True)
+            try:
+                artifact.symlink_to(external)
+            except OSError as exc:
+                self.skipTest(str(exc))
+            self.close()
+            self.closure["implementation_surfaces"] = [path]
+            self.write_closure()
+            self.assertIn("TASK_CLOSURE_RESULT_SCOPE", self.errors(self.check()))
+
     def test_registered_active_and_closed_tasks_pass_without_publication(self):
         self.assertEqual(self.errors(self.check()), set())
         self.close()

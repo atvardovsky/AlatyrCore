@@ -284,12 +284,26 @@ def _registration_projection(content: bytes, task_id: str) -> dict[str, Any] | N
     return index
 
 
+def _literal_bracket_surface(validator: Any, path: str, binding: dict[str, Any]) -> bool:
+    if _target_file(validator, path):
+        return True
+    if binding.get("kind") not in {"commit", "pull-request", "tree"}:
+        return False
+    kind = "tree" if binding["kind"] == "tree" else "commit"
+    for field, object_kind in (("result_revision", kind), ("base_revision", "commit")):
+        revision = binding.get(field)
+        if isinstance(revision, str) and validator.git.is_regular_file_at_ref(revision, path, object_kind=object_kind):
+            return True
+    return False
+
+
 def _validate_current_result(validator: Any, closure: dict[str, Any], source: str) -> None:
     binding = closure["repository_binding"]
     if not isinstance(binding, dict) or not isinstance(binding.get("kind"), str):
         return
     paths = {_normalized_path(path) for path in closure["implementation_surfaces"] + closure["canonical_owners"]}
-    if any(not is_target_relative_path(path) or any(char in path for char in "*?[") for path in paths):
+    # Literal routes may exist only in the base after a committed deletion.
+    if any(not is_target_relative_path(path) or any(char in path for char in "*?") or "[" in path and not _literal_bracket_surface(validator, path, binding) for path in paths):
         validator.error("TASK_CLOSURE_RESULT_SCOPE", "current result requires exact target-relative files", source)
         return
     if _normalized_path(source) in paths:
