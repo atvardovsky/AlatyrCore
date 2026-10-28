@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from target_adapter_validation.context import ValidationContext  # noqa: E402
+import target_adapter_validation.context as context_module  # noqa: E402
 from target_adapter_validation.harness_scenarios.common import validator  # noqa: E402
 from validate_target_adapter import Finding  # noqa: E402
 
@@ -37,12 +38,217 @@ class TargetMutationDiagnosticsTests(unittest.TestCase):
             self.assertEqual(details["content"], {
                 "comparison": "not-measured", "before_sha256": None, "after_sha256": None,
             })
+            self.assertEqual(details["directory_entries"]["comparison"], "unchanged")
+            self.assertEqual(details["directory_entries"]["before"]["entry_count"], 1)
             for field in ("mtime_ns", "link_mtime_ns"):
                 self.assertEqual(details["metadata_changes"][field], {
                     "before": getattr(before, field), "after": observed.stat().st_mtime_ns,
                 })
             self.assertEqual((observed / "owner.md").read_bytes(), b"stable\n")
             self.assertNotIn(str(target), json.dumps(details))
+
+    def test_backward_directory_timestamp_stays_blocking_without_claiming_a_writer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory).resolve()
+            observed = target / "approvals"
+            observed.mkdir()
+            (observed / "approval.json").write_bytes(b"{}")
+            context = ValidationContext(target)
+            context.status(observed)
+            info = observed.stat()
+            os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
+
+            mutation, = context.finalize()
+            details = mutation.diagnostics(target)
+            delta = details["metadata_changes"]["mtime_ns"]
+            self.assertLess(delta["after"], delta["before"])
+            self.assertEqual(details["directory_entries"]["comparison"], "unchanged")
+            self.assertEqual(details["content"]["comparison"], "not-measured")
+            self.assertNotIn("writer", details)
+
+    def test_directory_membership_and_entry_identity_changes_are_distinguished(self):
+        for change in ("create", "delete", "rename", "replace"):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                target = Path(directory).resolve()
+                observed = target / "approvals"
+                observed.mkdir()
+                path = observed / "approval.json"
+                path.write_bytes(b"{}")
+                context = ValidationContext(target)
+                context.status(observed)
+                info = observed.stat()
+                if change == "create":
+                    (observed / "extra.json").write_bytes(b"{}")
+                elif change == "delete":
+                    path.unlink()
+                elif change == "rename":
+                    path.rename(observed / "renamed.json")
+                else:
+                    replacement = target / "replacement.json"
+                    replacement.write_bytes(b"{}")
+                    replacement.replace(path)
+                # Make the metadata mismatch deterministic on every host.
+                os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
+                mutation, = context.finalize()
+                details = mutation.diagnostics(target)
+                self.assertEqual(details["directory_entries"]["comparison"], "changed")
+                self.assertNotEqual(details["directory_entries"]["before"]["sha256"],
+                                    details["directory_entries"]["after"]["sha256"])
+                self.assertNotIn("approval.json", json.dumps(details))
+                self.assertNotIn(str(target), json.dumps(details))
+
+    def test_incomplete_directory_capture_never_claims_unchanged_entries(self):
+        for phase in ("before", "after"):
+            for failure in ("entry-limit", "name-limit", "permission", "unstable"):
+                with self.subTest(phase=phase, failure=failure), tempfile.TemporaryDirectory() as directory:
+                    target = Path(directory).resolve()
+                    observed = target / "approvals"
+                    observed.mkdir()
+                    (observed / "approval.json").write_bytes(b"{}")
+                    context = ValidationContext(target)
+
+                    def capture():
+                        if phase == "before":
+                            context.status(observed)
+                        else:
+                            return context.finalize()
+
+                    if phase == "after":
+                        context.status(observed)
+                    info = observed.stat()
+                    if failure == "entry-limit":
+                        boundary = patch.object(context_module, "MAX_DIRECTORY_ENTRIES", 0)
+                    elif failure == "name-limit":
+                        boundary = patch.object(context_module, "MAX_DIRECTORY_NAME_BYTES", 0)
+                    elif failure == "permission":
+                        boundary = patch.object(context_module.os, "scandir", side_effect=PermissionError("private"))
+                    else:
+                        original = context._status
+                        calls = 0
+
+                        def changed_status(path):
+                            nonlocal calls
+                            calls += 1
+                            os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns + calls * 2_000_000_000))
+                            return original(path)
+
+                        boundary = patch.object(context, "_status", side_effect=changed_status)
+                    if phase == "after":
+                        os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
+                    with boundary:
+                        mutations = capture()
+                    if phase == "before":
+                        os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
+                        mutations = context.finalize()
+                    mutation, = mutations
+                    details = mutation.diagnostics(target)
+                    entries = details["directory_entries"]
+                    self.assertEqual(entries[phase]["state"], {
+                        "entry-limit": "limit-exceeded", "name-limit": "limit-exceeded",
+                        "permission": "unavailable", "unstable": "unstable",
+                    }[failure])
+                    self.assertIsNone(entries[phase]["sha256"])
+                    self.assertEqual(entries["comparison"], "not-measured" if phase == "before" else "unavailable")
+                    self.assertNotIn("private", json.dumps(details))
+
+    def test_stable_finalize_does_not_rescan_directory_or_read_children(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory).resolve()
+            observed = target / "approvals"
+            observed.mkdir()
+            (observed / "approval.json").write_bytes(b"{}")
+            context = ValidationContext(target)
+            with patch.object(Path, "read_bytes", side_effect=AssertionError("unexpected content read")), \
+                    patch.object(context_module.os, "scandir", wraps=os.scandir) as scan:
+                context.status(observed)
+                context.status(observed)
+                self.assertEqual(context.finalize(), ())
+                self.assertEqual(scan.call_count, 1)
+
+    def test_directory_capture_limits_include_the_boundary(self):
+        for limit_kind in ("entries", "name-bytes"):
+            for count in (1, 2, 3):
+                with self.subTest(limit=limit_kind, count=count), tempfile.TemporaryDirectory() as directory:
+                    target = Path(directory).resolve()
+                    observed = target / "observed"
+                    observed.mkdir()
+                    for number in range(count):
+                        (observed / str(number)).write_bytes(b"unread")
+                    limit = "MAX_DIRECTORY_ENTRIES" if limit_kind == "entries" else "MAX_DIRECTORY_NAME_BYTES"
+                    context = ValidationContext(target)
+                    with patch.object(context_module, limit, 2):
+                        context.status(observed)
+                        info = observed.stat()
+                        os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
+                        mutation, = context.finalize()
+                    entries = mutation.diagnostics(target)["directory_entries"]
+                    self.assertEqual(entries["comparison"], "unchanged" if count <= 2 else "not-measured")
+                    self.assertEqual(entries["before"]["state"], "complete" if count <= 2 else "limit-exceeded")
+                    self.assertLessEqual(entries["before"]["entries_measured"], 2)
+
+    def test_incomplete_diagnostics_do_not_change_existing_stability_decisions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory).resolve()
+            observed = target / "observed"
+            observed.mkdir()
+            (observed / "owner.json").write_bytes(b"{}")
+            context = ValidationContext(target)
+            with patch.object(context_module.os, "scandir", side_effect=PermissionError("private")):
+                context.status(observed)
+                self.assertEqual(context.finalize(), ())
+
+    def test_directory_removal_and_containment_change_keep_blocking_evidence(self):
+        for change in ("delete", "outside-link"):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                parent = Path(directory).resolve()
+                target = parent / "target"
+                target.mkdir()
+                observed = target / "approvals"
+                observed.mkdir()
+                context = ValidationContext(target)
+                context.status(observed)
+                observed.rmdir()
+                if change == "outside-link":
+                    outside = parent / "private"
+                    outside.mkdir()
+                    try:
+                        observed.symlink_to(outside, target_is_directory=True)
+                    except (OSError, NotImplementedError):
+                        self.skipTest("host does not allow symlink creation")
+                mutation, = context.finalize()
+                details = mutation.diagnostics(target)
+                self.assertEqual(details["after_state"], "missing" if change == "delete" else "outside-target")
+                self.assertEqual(details["directory_entries"]["comparison"], "unavailable")
+                self.assertNotIn("private", json.dumps(details))
+                self.assertNotIn(str(parent), json.dumps(details))
+
+    def test_directory_snapshot_never_follows_child_symlinks_or_recurses(self):
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory).resolve()
+            target = parent / "target"
+            target.mkdir()
+            observed = target / "observed"
+            observed.mkdir()
+            outside = parent / "private"
+            outside.mkdir()
+            (outside / "private.txt").write_bytes(b"not target evidence")
+            try:
+                (observed / "link").symlink_to(outside, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("host does not allow symlink creation")
+            context = ValidationContext(target)
+            with patch.object(Path, "read_bytes", side_effect=AssertionError("unexpected content read")), \
+                    patch.object(context_module.os, "scandir", wraps=os.scandir) as scan:
+                context.status(observed)
+                info = observed.stat()
+                os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
+                mutation, = context.finalize()
+            self.assertEqual(scan.call_count, 2)
+            self.assertTrue(all(call.args == (observed,) for call in scan.call_args_list))
+            details = mutation.diagnostics(target)
+            self.assertEqual(details["directory_entries"]["comparison"], "unchanged")
+            self.assertEqual(details["directory_entries"]["before"]["entry_count"], 1)
+            self.assertNotIn("private", json.dumps(details))
 
     def test_metadata_only_file_change_preserves_measured_content_status(self):
         with tempfile.TemporaryDirectory() as directory:

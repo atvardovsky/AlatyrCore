@@ -1702,14 +1702,23 @@ operations outside that context. There is no reflective fallback dispatch.
 `TARGET_INPUT_MUTATED` and `VALIDATOR_SCHEMA_MUTATED` remain blocking errors.
 Text findings name the changed metadata fields and content-comparison status;
 JSON findings add `details` with before/after states, metadata deltas, and
-captured SHA-256 values. Directory content is `not-measured`, not assumed
-unchanged. These diagnostics reuse the existing observations without extra
-filesystem reads, file contents, or a filesystem-writer attribution claim.
+captured SHA-256 values. Directory file content remains `not-measured`.
+For observed directories, a separate bounded fingerprint captures immediate
+child names and non-following stat identity: at most 1,024 entries and 64 KiB
+of encoded names, without recursion or child-content reads. It is captured
+once on first observation, and again only for a detected mutation. Reports
+distinguish changed/unchanged entry metadata from incomplete, unavailable or
+unstable captures. Entry names and exception text are not exposed. Rendering
+uses captured evidence without further I/O. These fingerprints are diagnostic
+only: they do not relax or extend the existing mutation acceptance rules,
+prove unchanged child contents, or identify a filesystem writer.
 The optional report file is written only after input finalization. For recurring
 findings, retain the failed report and correlate the named paths and deltas
 with concurrent processes or filesystem activity before rerunning in isolation.
 Do not treat a successful retry as proof of first-attempt stability or suppress
 metadata-only changes automatically.
+See [target input stability](../docs/target-input-stability.md) for the
+investigation boundary and regression coverage.
 
 It does not install Alatyr Core, inspect project business truth, approve
 protected changes, run target validation, or replace assistant logical

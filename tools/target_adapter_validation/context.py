@@ -9,11 +9,16 @@ else:
 
 import hashlib
 import json
+import os
 import stat
 from dataclasses import dataclass, fields, replace
 from enum import Enum
 from pathlib import Path
 from typing import Any, Generic, Iterator, TypeVar
+
+
+MAX_DIRECTORY_ENTRIES = 1024
+MAX_DIRECTORY_NAME_BYTES = 64 * 1024
 
 
 class TargetPathEscapeError(ValueError):
@@ -87,6 +92,23 @@ class ValidationRead(Generic[T]):
 
 
 @dataclass(frozen=True)
+class _DirectorySnapshot:
+    """Bounded immediate-entry metadata, never recursive content evidence."""
+
+    state: str
+    entries_measured: int = 0
+    digest: str | None = None
+
+    def diagnostics(self) -> dict[str, Any]:
+        return {
+            "state": self.state,
+            "entry_count": self.entries_measured if self.state == "complete" else None,
+            "entries_measured": self.entries_measured,
+            "sha256": self.digest,
+        }
+
+
+@dataclass(frozen=True)
 class TargetMutation:
     """A relevant target path changed after its first observation."""
 
@@ -96,6 +118,8 @@ class TargetMutation:
     content_changed: bool
     before_digest: str | None = None
     after_digest: str | None = None
+    before_entries: _DirectorySnapshot | None = None
+    after_entries: _DirectorySnapshot | None = None
 
     def diagnostics(self, root: Path) -> dict[str, Any]:
         """Explain captured changes without more I/O or exposing input contents."""
@@ -124,7 +148,7 @@ class TargetMutation:
             content_state = "unavailable"
         else:
             content_state = "changed" if self.content_changed else "unchanged"
-        return {
+        details = {
             "before_state": self.before.state.value,
             "after_state": self.after.state.value,
             "metadata_changes": changes,
@@ -134,17 +158,36 @@ class TargetMutation:
                 "after_sha256": self.after_digest,
             },
         }
+        if self.before_entries is not None:
+            before = self.before_entries
+            after = self.after_entries or _DirectorySnapshot("unavailable")
+            comparison = (
+                "not-measured" if before.digest is None else
+                "unavailable" if after.digest is None else
+                "unchanged" if before.digest == after.digest else "changed"
+            )
+            details["directory_entries"] = {
+                "scope": "immediate-child-names-and-lstat; not file contents or recursive evidence",
+                "comparison": comparison,
+                "before": before.diagnostics(),
+                "after": after.diagnostics(),
+            }
+        return details
 
     @staticmethod
     def summary(diagnostics: dict[str, Any]) -> str:
         changed = ", ".join(diagnostics["metadata_changes"]) or "none"
-        return f"changed metadata: {changed}; content: {diagnostics['content']['comparison']}"
+        result = f"changed metadata: {changed}; content: {diagnostics['content']['comparison']}"
+        if "directory_entries" in diagnostics:
+            result += f"; directory entries: {diagnostics['directory_entries']['comparison']}"
+        return result
 
 
 @dataclass(frozen=True)
 class _ObservedTarget:
     status: TargetFileStatus
     digest: str | None
+    entries: _DirectorySnapshot | None = None
 
 
 @dataclass(frozen=True)
@@ -255,10 +298,36 @@ class TargetRepositoryView:
         observed = self._observed.get(status.path)
         if observed is None:
             self._observed[status.path] = _ObservedTarget(
-                status=status, digest=digest
+                status=status, digest=digest,
+                entries=self._directory_snapshot(status)
+                if status.state == TargetFileState.DIRECTORY else None,
             )
         elif observed.digest is None and digest is not None:
             self._observed[status.path] = replace(observed, digest=digest)
+
+    def _directory_snapshot(self, before: TargetFileStatus) -> _DirectorySnapshot:
+        """Capture diagnostic identity without following entries or reading content."""
+
+        entries = []
+        name_bytes = 0
+        try:
+            resolved = self.resolve_path(before.path)
+            if resolved != before.resolved_path:
+                return _DirectorySnapshot("unstable")
+            with os.scandir(resolved) as children:
+                for child in children:
+                    name_bytes += len(os.fsencode(child.name))
+                    if len(entries) >= MAX_DIRECTORY_ENTRIES or name_bytes > MAX_DIRECTORY_NAME_BYTES:
+                        return _DirectorySnapshot("limit-exceeded", len(entries))
+                    info = child.stat(follow_symlinks=False)
+                    entries.append((child.name, info.st_dev, info.st_ino, info.st_mode,
+                                    info.st_size, info.st_mtime_ns))
+            if not self._same_status(before, self._status(before.path)):
+                return _DirectorySnapshot("unstable", len(entries))
+        except (OSError, TargetPathEscapeError):
+            return _DirectorySnapshot("unavailable", len(entries))
+        data = json.dumps(sorted(entries), ensure_ascii=True, separators=(",", ":")).encode("ascii")
+        return _DirectorySnapshot("complete", len(entries), hashlib.sha256(data).hexdigest())
 
     def status(self, path: Path) -> TargetFileStatus:
         """Capture typed path state without caching path authorization."""
@@ -488,6 +557,9 @@ class TargetRepositoryView:
                         content_changed=content_changed,
                         before_digest=observed.digest,
                         after_digest=after_digest,
+                        before_entries=observed.entries,
+                        after_entries=self._directory_snapshot(after)
+                        if observed.entries is not None and after.state == TargetFileState.DIRECTORY else None,
                     )
                 )
         return tuple(mutations)

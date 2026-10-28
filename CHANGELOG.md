@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add bounded, non-recursive directory-entry fingerprints to target-mutation
+  diagnostics, distinguishing entry metadata from unmeasured file content.
+  Cover backwards timestamps, entry changes, incomplete captures and the public
+  CLI failure/replay boundary. Preserve blocking metadata guards; the field
+  incident's original writer remains unknown. No accepted-input contract,
+  framework, adapter-schema or template version change is required.
 - Reject embedded NULs before literal Git metadata lookup, returning an invalid
   path finding instead of a subprocess exception. Add registered task-closure
   and shared-reader regressions. This source-tool robustness fix does not change

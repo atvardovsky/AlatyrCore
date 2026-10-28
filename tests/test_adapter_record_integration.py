@@ -347,7 +347,7 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
 
     def test_metadata_only_mutation_blocks_cli_acceptance_with_captured_details(self):
         bindings, _ = self.accepted_bindings()
-        observed = self.target / ".ai/project"
+        observed = self.target / ".ai/assistant/approvals"
         report = self.target.parent / "mutated-validation.json"
         original = Validator.check_migration_diff_evidence
 
@@ -355,7 +355,7 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
             original(check)
             check.context.status(observed)
             info = observed.stat()
-            os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns + 2_000_000_000))
+            os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
 
         arguments = ["validate_target_adapter.py", *bindings, "--validation-phase", "acceptance",
                      "--validation-scope", "full", "--approval-archive-mode", "full",
@@ -369,12 +369,26 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
         self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
         errors = [f for f in payload["findings"] if f["level"] == "error"]
         self.assertEqual([f["code"] for f in errors], ["TARGET_INPUT_MUTATED"])
-        self.assertEqual(errors[0]["path"], ".ai/project")
+        self.assertEqual(errors[0]["path"], ".ai/assistant/approvals")
         details = errors[0]["details"]
         self.assertEqual(details["before_state"], "directory")
         self.assertEqual(details["content"]["comparison"], "not-measured")
+        self.assertEqual(details["directory_entries"]["comparison"], "unchanged")
+        self.assertLess(details["metadata_changes"]["mtime_ns"]["after"],
+                        details["metadata_changes"]["mtime_ns"]["before"])
         self.assertIn("mtime_ns", details["metadata_changes"])
         self.assertNotIn(str(self.target), json.dumps(errors[0]))
+
+        # An explicit stable replay must neither rewrite nor invalidate the
+        # retained first failure. It does not identify the original writer.
+        failed_report = report.read_bytes()
+        replay_report = self.target.parent / "replay-validation.json"
+        result = self.command(str(ROOT / "tools/validate_target_adapter.py"), *bindings,
+                              "--validation-phase", "acceptance", "--validation-scope", "full",
+                              "--approval-archive-mode", "full", "--output", str(replay_report))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue(json.loads(replay_report.read_bytes())["placeholder_validation"]["acceptance_eligible"])
+        self.assertEqual(report.read_bytes(), failed_report)
 
     def test_scoped_finalization_and_full_acceptance_reject_missing_owner(self):
         bindings, delegate = self.accepted_bindings()
