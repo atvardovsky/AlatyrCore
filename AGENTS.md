@@ -12,8 +12,10 @@ Agents working here must preserve the separation between:
 
 ## Bootstrap Context
 
-Treat this file as host-preloaded context and do not reread it. Read
-`tools/source-context/index.json`, choose the smallest matching source task
+Treat this file as host-preloaded context and do not reread it.
+Use `session-context --source-contour` with retained bindings at request/phase
+and pre-mutation checkpoints; reconcile changed selected context before writes.
+Read `tools/source-context/index.json`, choose the smallest matching source task
 profile and load only its linked descriptor. The canonical machine router is
 `tools/source_context_router.json`; do not preload it in full. First classify task scale before expansion,
 resolve its bounded semantic

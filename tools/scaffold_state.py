@@ -61,7 +61,7 @@ def validate_installation_state_record(
     if record.get("record_kind") != "alatyr-installation-state":
         failures.append("installation-state record_kind is invalid")
     current_state = record.get("current_state")
-    if current_state not in INSTALLATION_STATES:
+    if not isinstance(current_state, str) or current_state not in INSTALLATION_STATES:
         failures.append("installation-state current_state is invalid")
     if manifest_state is not None and current_state != manifest_state:
         failures.append("installation-state current_state differs from manifest state")
@@ -87,7 +87,11 @@ def validate_installation_state_record(
         elif previous != previous_next:
             failures.append(f"{label} previous_state breaks transition continuity")
 
-        expected_reason = TRANSITION_REASONS.get((previous, next_state))
+        expected_reason = (
+            TRANSITION_REASONS.get((previous, next_state))
+            if (previous is None or isinstance(previous, str)) and isinstance(next_state, str)
+            else None
+        )
         if expected_reason is None:
             failures.append(f"{label} transition {previous!r} -> {next_state!r} is invalid")
         elif transition.get("reason") != expected_reason:
@@ -109,7 +113,7 @@ def validate_installation_state_record(
             failures.append(f"{label} validation must be an object")
         else:
             status = validation.get("status")
-            if status not in {"not-run", "passed", "failed", "unavailable"}:
+            if not isinstance(status, str) or status not in {"not-run", "passed", "failed", "unavailable"}:
                 failures.append(f"{label} validation status is invalid")
             if not isinstance(validation.get("evidence"), str) or not validation["evidence"]:
                 failures.append(f"{label} validation evidence must be non-empty")
@@ -123,7 +127,7 @@ def validate_installation_state_record(
                 f"{label} acceptance repository_revision must be an immutable Git object ID"
             )
 
-        previous_next = next_state if next_state in INSTALLATION_STATES else None
+        previous_next = next_state if isinstance(next_state, str) and next_state in INSTALLATION_STATES else None
 
     if previous_next != current_state:
         failures.append("installation-state final transition differs from current_state")

@@ -284,6 +284,12 @@ preserved. Linked worktrees share the registry, and each session removes its
 own entry when finished. It is not a scheduler or an exclusive work lock.
 See [session presence](framework/session-continuity.md#concurrent-session-presence).
 
+When another session updates Alatyr, participating agents check their loaded
+context at the next request or work checkpoint and reconcile affected rules
+before continuing. Existing sessions need the checkpoint instructions first;
+an update cannot silently replace context already held by a client. See
+[active-session freshness](framework/session-continuity.md#active-session-freshness).
+
 The assistant-facing details, including validation coverage and the
 transactional support finalizer, remain in [AI_ASSISTANTS.md](AI_ASSISTANTS.md)
 and the [source tooling reference](tools/README.md). Installed request routing
@@ -292,7 +298,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.112`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.113`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

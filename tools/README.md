@@ -314,6 +314,35 @@ uncooperative filesystem races, external services, or arbitrary editors.
 
 ### Local Session Presence
 
+`session-context` independently compares an active session's retained context
+at request/resume, phase and pre-mutation checkpoints. It hashes canonical
+bootstrap sources plus explicitly selected loaded files, without Git commands
+or a recursive scan. Default output is read-only; `--output` explicitly writes
+an evidence report. Capture is a baseline candidate, never proof of instruction
+delivery or approval. Keep a prior baseline until changed owners and affected
+plans, approvals, checks and workers have been reconciled.
+Stdout stays compact; saved capture reports contain the per-file baseline.
+Persistent capture publishes a new file atomically without replacing an existing
+baseline. If the filesystem cannot publish with a hardlink, use the memory-only
+fingerprint route instead; no persistent storage is required.
+
+```sh
+python3 tools/alatyr.py session-context --target /path/to/target-repo capture --context .ai/project/contour.md --output /path/to/session-context.json
+python3 tools/alatyr.py session-context --target /path/to/target-repo check --baseline /path/to/session-context.json
+```
+
+Repeat `--context` for all still-applicable loaded files. Use `python` on Windows.
+For session-memory baselines, use `check --expected sha256:DIGEST` with the same
+paths. For this source repository add `--source-contour` before `capture/check`.
+Limits: 256 inputs, 4 MiB per file, 16 MiB total, 128 KiB saved baseline. Inputs
+are verified again before a result is emitted. Missing, escaping, unstable or
+invalid evidence returns exit 2. Drift or nonaccepted installation returns 1;
+matching accepted context or a candidate capture returns 0. A staged/degraded
+installation blocks peer continuation even if the fingerprint matches. The
+helper compares declared evidence; it does not run acceptance validation,
+observe hidden client context, notify idle agents or lock concurrent writes.
+See the [flow](../templates/target/.ai/assistant/flows/session-continuity.flow.md).
+
 `manage_session_presence.py` (facade command `session-presence`) reads the
 target continuity policy. New accepted installs enable presence and narrow
 own-entry housekeeping; explicit opt-outs and legacy absence are preserved.

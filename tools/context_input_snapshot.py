@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import hashlib
+import os
+import stat
 from collections import OrderedDict
 from contextvars import ContextVar
 from pathlib import Path
@@ -21,25 +23,41 @@ class ContextInputLimit(ContextInputChanged):
     pass
 
 
-def _limited_read(path: Path, max_bytes: int | None) -> bytes:
-    if max_bytes is None:
-        return path.read_bytes()
-    if type(max_bytes) is not int or max_bytes < 1:
+def _limited_read(path: Path, max_bytes: int | None, *, regular_only: bool = False) -> bytes:
+    if max_bytes is not None and (type(max_bytes) is not int or max_bytes < 1):
         raise ValueError("context input byte limit must be a positive integer")
-    with path.open("rb") as stream:
-        raw = stream.read(max_bytes + 1)
-    if len(raw) > max_bytes:
+    if regular_only:
+        flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_BINARY", 0)
+        descriptor = os.open(path, flags)
+        with os.fdopen(descriptor, "rb") as stream:
+            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                raise ContextInputChanged(path, "context input must be a regular file")
+            raw = stream.read() if max_bytes is None else stream.read(max_bytes + 1)
+    elif max_bytes is None:
+        return path.read_bytes()
+    else:
+        with path.open("rb") as stream:
+            raw = stream.read(max_bytes + 1)
+    if max_bytes is not None and len(raw) > max_bytes:
         raise ContextInputLimit(path, f"context input exceeds {max_bytes} bytes")
     return raw
+
+
+def read_regular_context_bytes(path: Path, *, max_bytes: int) -> bytes:
+    """Read bounded regular-file evidence without blocking on a FIFO."""
+
+    return _limited_read(path, max_bytes, regular_only=True)
 
 
 class ContextInputSnapshot:
     """Cache input bytes, not decisions; every successful scope verifies disk bytes."""
 
-    def __init__(self, root: Path, *, cache_bytes: int = 4 * 1024 * 1024):
+    def __init__(self, root: Path, *, cache_bytes: int = 4 * 1024 * 1024,
+                 regular_files_only: bool = False):
         if type(cache_bytes) is not int or cache_bytes < 0:
             raise ValueError("snapshot cache_bytes must be a non-negative integer")
         self.root = root.resolve()
+        self.regular_files_only = regular_files_only
         self.limit = cache_bytes
         self.inputs: dict[Path, str] = {}
         self.read_limits: dict[Path, int] = {}
@@ -90,6 +108,8 @@ class ContextInputSnapshot:
             self.conflict = path
             raise ContextInputChanged(path, "context input changed containment during planning")
         try:
+            if self.regular_files_only:
+                return _limited_read(path, max_bytes, regular_only=True)
             return _limited_read(path, max_bytes)
         except OSError as exc:
             if path in self.inputs:

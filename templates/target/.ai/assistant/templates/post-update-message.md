@@ -37,6 +37,9 @@ Updated adapter surfaces:
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
+- Other active sessions recheck retained context through `session-continuity`.
+  Previously unaware clients need one explicit recheck/restart; acceptance
+  cannot acknowledge instruction delivery for peers.
 - Treat `AGENTS.md` as preloaded; start from
   `.ai/assistant/bootstrap-index.json`. Keep integrity and recovery metadata
   lazy unless validation fails, recovery or audit is requested, or routing

@@ -682,6 +682,12 @@ final evidence. Do not present a scaffolder run as a completed installation.
 
 ## Conversational Framework Update
 
+Updates install active-session context checkpoints through the continuity
+policy and portable delegate. Record `staged` before editing an accepted
+adapter; peers reconcile their selected rules after acceptance. Existing
+sessions that never loaded this mechanism need one explicit recheck or restart.
+See [session continuity](framework/session-continuity.md#active-session-freshness).
+
 Preserve optional task-question requests during updates. Refresh canonical
 tooling before accepting `question_binding`; rebind to the current registered
 model and probe instead of rewriting old evidence. This capability adds no

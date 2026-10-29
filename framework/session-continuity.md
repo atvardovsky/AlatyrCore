@@ -13,19 +13,15 @@ alatyr_doc:
 ---
 # Session Continuity
 
-This document defines the portable safeguard for context compaction, session
-resume, assistant handoff, and comparable boundaries where conversational
-state may be shortened, replaced, or lost.
+This safeguard preserves work across compaction, resume, handoff and other
+context loss.
 
-The safeguard preserves task continuity without treating a generated summary
-as authority. It complements provider-native compaction when that capability
-is verified, and provides a provider-neutral fallback when it is unavailable
-or unknown.
+Summaries preserve continuity without authority. Use provider-native compaction
+when verified; otherwise use this portable fallback.
 
 ## Boundary Model
 
-A continuity boundary exists when any of these events may change the context
-available to the acting assistant:
+Boundaries can change the assistant's available context:
 
 - automatic or manual context compaction
 - session, task, or process restart
@@ -33,6 +29,7 @@ available to the acting assistant:
 - assistant, client, provider, or model change
 - primary/subagent convergence
 - explicit context reset or recovery
+- an installed framework, adapter policy, routing or selected context change
 
 The assistant should prepare a bounded continuity packet before a predictable
 boundary. After any observed or suspected boundary, it must rehydrate before
@@ -40,10 +37,9 @@ the next state-changing action.
 
 ## Authority
 
-A continuity packet and a compacted conversation are evidence, not sources of
-truth. Current repository state, canonical project owners, the newest user
-instruction, active approval records, and current tool or host constraints
-remain authoritative in their own domains.
+Packets and compacted conversations are evidence. Current repository state,
+canonical owners, newest user instructions, active approvals and tool/host
+constraints retain authority in their domains.
 
 Compaction, resume, or handoff must not:
 
@@ -59,9 +55,7 @@ smallest missing confirmation.
 
 ## Continuity Packet
 
-The target adapter defines the machine-readable packet schema and storage
-route. A packet should remain bounded and contain only the state needed to
-resume safely:
+The target adapter owns packet schema/storage. Record only bounded recovery state:
 
 - task and operation identity, objective, phase, and next safe action
 - selected profiles, modes, areas, rule owners, and context digests
@@ -70,23 +64,41 @@ resume safely:
 - selected approval references and content digests
 - accepted decisions, unresolved questions, validation results, and risks
 - primary analysis strategy and problem-model digest
-- active-projection path, digest, source-model digest, and measured size; the
-  projection carries current scope, changed facts, obligations, reviews,
-  assumptions, decisions, and omitted-history counts without copying full
-  model history
+- active-projection path/digest, source-model digest and size, carrying scope,
+  changed facts, obligations, reviews, assumptions, decisions and omitted-history
+  counts without full model history
 - boundary kind, assistant surface, and capability evidence state
 
-Do not store raw conversation history, hidden reasoning, secrets, credentials,
-or unnecessary source content. Prefer identifiers, hashes, and target-relative
-paths over copied prose.
+Exclude raw chat, private reasoning, secrets, credentials and unnecessary source
+content. Prefer IDs, hashes and target-relative references.
 
-Creating a persistent packet is itself a repository or local-state mutation.
-For inspect-only work, use a host-native or in-memory checkpoint when possible;
-otherwise report that durable continuity is unavailable. A target may write an
-ignored local packet only when the current request authorizes the applicable
-local adapter/runtime mutation.
+Persistence is a mutation. Inspect-only tasks use host-native/in-memory packets;
+otherwise report unavailable durable continuity. Ignored local packets require
+current local adapter/runtime-write authorization.
 
 ## Rehydration Gate
+
+### Active Session Freshness
+
+Compare retained bindings at entry/resume, new requests, phase changes and
+before mutation batches; coalesce adjacent checks without polling. Bind the
+worktree, contour, actual bootstrap inputs and every still-applicable loaded
+file. Versions alone are insufficient. Keep baselines in session memory or
+authorized ignored continuity records.
+
+On drift, use this gate: reload changed owners/dependencies and reconsider
+affected assumptions, plans, approvals, validation and worker results. Preserve
+unaffected work and the old baseline until reconciliation. New selected paths
+need reviewed bindings. Fingerprints establish identity, never instruction
+delivery, correctness or authority; capture alone cannot acknowledge reloading.
+Without a helper, obtain equivalent bounded evidence or report context unverified
+before mutation.
+
+Nonaccepted installations keep peers inspect-only; the authorized updater uses
+the [lifecycle](lifecycle.md#upgrade-process) path. Worktrees retain distinct
+bindings. Checkpoints are samples, not locks or notifications. Existing sessions
+unaware of this rule need an explicit recheck/restart; updates cannot inject
+instructions into retained context.
 
 Before state-changing work resumes:
 
@@ -107,9 +119,8 @@ Before state-changing work resumes:
    Continue only after applicable boundaries pass; preserve the original outcome
    and unsettled duties.
 
-No full framework or project reread is required merely because compaction
-occurred. Expand context only for a concrete mismatch, stale digest, named
-dependency, failed check, or unresolved authority boundary.
+Compaction alone never requires a full-corpus reread. Expand only for mismatches,
+stale digests, named dependencies, failed checks or authority conflicts.
 
 ## Assistant Capability
 
@@ -119,9 +130,8 @@ instruction reload behavior. Unknown capability remains `unknown`; it must not
 be inferred from provider marketing or from another client using the same
 model.
 
-Provider-native compaction may optimize delivery, but the portable continuity
-flow remains the fallback. Context caching is a separate capability and does
-not prove compaction, context-window reduction, or safe rehydration.
+Provider compaction may improve delivery. Continuity remains the fallback;
+caching proves neither compaction, window reduction nor safe rehydration.
 
 ## Concurrent Session Presence
 
@@ -155,21 +165,18 @@ no daemon, message history, scheduler, task reservation, or build lock. Stale
 entries indicate uncertain freshness and must not be automatically deleted.
 Missing entries cannot establish that no other agent is working.
 
-Updates preserve explicit enablement and housekeeping choices, rebind derived
-routes from installed policy, and never mutate live entries. Recent means
-recently reported, not verified alive; stale/future-dated entries are uncertain.
-Refresh at bounded checkpoints, not every prompt or through background polling.
-Without a helper, report unavailable cooperation; inspection may continue but
-unresolved overlap needs an alternative coordination decision before mutation.
-Presence is advisory, cannot instantly notify idle agents or ensure every
-client follows instructions, and is not an authentication boundary.
+Updates preserve enablement/housekeeping choices and live entries; rebind routes
+from installed policy. Recent means reported, not proven alive; stale/future-dated
+entries remain uncertain. Refresh at bounded checkpoints, without per-prompt or
+background polling. Missing helpers allow inspection with an unavailable-cooperation
+report; unresolved overlap requires coordination before mutation. Presence cannot
+notify idle agents, enforce instructions or authenticate users.
 
-Prospective read-only presence inspection may compare an explicit bounded
-scope without creating or adopting a session. Compose it with existing
-test-resource conflict planning when useful. Whole-resource presence identity
-is conservative across namespaces; it does not establish isolation. Disabled,
-stale, unknown or omitted peer evidence remains uncertain, never a clearance.
-No reported conflict is not a reservation, liveness proof or action permission.
+Read-only inspection can compare bounded prospective scope without session
+creation/adoption. Compose test-resource planning when useful. Whole-resource
+identities span namespaces without proving isolation. Disabled/stale/unknown/
+omitted peers remain uncertain. No conflict report proves liveness or grants
+reservation, clearance or action permission.
 
 ## Completion Evidence
 
@@ -187,15 +194,8 @@ For a resumed state-changing task, final evidence should identify:
 
 ## Rejection Criteria
 
-Reject or stop a state-changing continuation that:
-
-- relies only on a compacted summary or memory of earlier instructions
-- restores authorization without checking the newest user instruction
-- restores publish or live-external authority from a packet
-- ignores branch, revision, changed-path, approval, or digest drift
-- reloads the entire corpus without a named expansion reason
-- claims a provider compaction capability without current target evidence
-- resumes from stale problem-model evidence without reopening affected proof
-  obligations
-- loads full problem-model history during routine recovery when a current,
-  valid active projection is sufficient
+Reject mutation when recovery relies only on summaries/memory, ignores newest
+instructions or branch/revision/path/approval/digest drift, or restores
+publish/live authority from packets. Also reject unreasoned full-corpus loading,
+unsupported provider-capability claims, stale models without reopened affected
+obligations, or full-model history when a valid active projection suffices.

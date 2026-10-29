@@ -9,6 +9,7 @@ from pathlib import Path
 
 import jsonschema
 from session_presence_contract import FLOW_PATH, SOURCE_FLOW_PATH, SOURCE_POLICY_PATH, presence_policy
+from inspect_session_context import policy_failures
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,8 +54,9 @@ def main() -> int:
             failures.append("source presence flow is missing")
         if not (TARGET / FLOW_PATH).is_file():
             failures.append("presence template flow is missing")
-        if policy.get("schema_version") != 3:
-            failures.append("continuity policy schema_version must be 3")
+        if policy.get("schema_version") != 4:
+            failures.append("continuity policy schema_version must be 4")
+        failures.extend(policy_failures(policy))
         if policy.get("packet_schema") != "alatyr-session-continuity-packet-v3":
             failures.append("continuity policy must use packet schema v3")
         if policy.get("canonical_rule") != "ALATYR-CONTINUITY-001":

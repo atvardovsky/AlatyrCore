@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "session-context",
+      "script": "inspect_session_context.py",
+      "purpose": "compare active-session context bindings before continuation without granting authority",
+      "write_scope": "explicit-evidence-output-only"
+    },
+    {
       "name": "plan-test-selection",
       "script": "plan_test_selection.py",
       "purpose": "reconcile exact test requests against captured discovery without running tests",

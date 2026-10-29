@@ -5,6 +5,13 @@ Scope: AlatyrCore source contour only. Canonical owners are
 and [authorization](../framework/action-authorization.md#own-presence-housekeeping).
 This source route does not activate a target, dependency, or vendor adapter.
 
+At request/phase and pre-mutation checkpoints, also compare the source session's
+retained context with `python3 tools/alatyr.py session-context --target .
+--source-contour check --expected sha256:DIGEST`, repeating `--context` for
+loaded files. Obtain a candidate with `capture`; use `--baseline` for a saved
+authorized report. This works independently of presence enablement. A changed
+binding requires selective reconciliation, not a full-corpus reload.
+
 The source policy is `tools/source_session_presence_policy.json`. By default it enables
 bounded own-entry housekeeping, including inspection, unless an explicit
 no-writes request, worker envelope, or host restriction prohibits it. Workers

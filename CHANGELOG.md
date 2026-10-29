@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.113 - 2026-10-29
+
+- Add bounded active-session context capture/check through the portable
+  delegate and source-contour route. Compare actual bootstrap inputs and
+  explicitly loaded files, including same-version changes, without recursive
+  scans or global session acknowledgements. Preserve prior baselines and
+  distinguish candidate capture, matching context and rehydration needs.
+- Make installed-context changes an explicit continuity boundary. Policy 4
+  requires request/phase/pre-mutation checkpoints and selective reconciliation;
+  staged/degraded installations block peers while the authorized updater follows
+  lifecycle adaptation. Old running clients need one explicit recheck/restart.
+- Guard malformed installation-state enums before canonical transition lookups.
+  Add public-CLI, boundary, parser, source/target and registered-policy tests.
+- Advance framework to alpha.113, adapter schema to `94` and templates to `108`.
+  Existing packet-v3 shapes remain supported with a framework-update boundary.
+  Migrate policy, delegate, entry instructions and checkpoints together; no
+  retroactive acknowledgement, target rollout or release publication.
+
 - Add bounded, non-recursive directory-entry fingerprints to target-mutation
   diagnostics, distinguishing entry metadata from unmeasured file content.
   Cover backwards timestamps, entry changes, incomplete captures and the public

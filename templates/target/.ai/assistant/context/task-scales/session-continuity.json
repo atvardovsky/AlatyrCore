@@ -3,6 +3,7 @@
   "descriptor_kind": "target-task-scale-overlay",
   "overlay": "session-continuity",
   "use_when": [
+    "an active-session checkpoint detects installed framework adapter or selected-context drift",
     "automatic or manual context compaction is observed or expected",
     "a task resumes after a session process client provider or model boundary",
     "a conversation fork assistant handoff context reset or subagent convergence may have shortened or replaced context"

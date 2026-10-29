@@ -238,6 +238,12 @@ New accepted installs enable discovery; coordinator-owned workers do not
 register separately. Explicit no-writes restrictions override the narrow
 own-entry allowance. See [presence rules](framework/session-continuity.md#concurrent-session-presence).
 
+At request/resume, meaningful phase and pre-mutation checkpoints, use retained
+`session-context` bindings for canonical bootstrap inputs and all selected loaded
+files. Reconcile drift through the continuity gate; keep staged/degraded peers
+inspect-only. See [freshness](framework/session-continuity.md#active-session-freshness).
+Existing clients unaware of this rule need one explicit recheck or restart.
+
 Exact operation IDs and aliases come from the installed target's compact
 operation index and canonical catalog. Do not infer an operation from this
 source guide when the target adapter says otherwise.

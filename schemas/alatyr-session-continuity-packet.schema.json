@@ -45,7 +45,7 @@
       "additionalProperties": false,
       "required": ["kind", "observed_at", "assistant_surface", "client_version", "model", "capability_record_state", "capability_record", "capability_record_sha256", "capability_evidence_state"],
       "properties": {
-        "kind": {"enum": ["manual-compaction", "automatic-compaction", "session-resume", "session-fork", "assistant-handoff", "client-change", "provider-change", "model-change", "subagent-convergence", "context-reset", "unknown"]},
+        "kind": {"enum": ["manual-compaction", "automatic-compaction", "session-resume", "session-fork", "assistant-handoff", "client-change", "provider-change", "model-change", "subagent-convergence", "context-reset", "framework-update", "unknown"]},
         "observed_at": {"type": "string", "minLength": 1},
         "assistant_surface": {"type": "string", "minLength": 1},
         "client_version": {"type": "string", "minLength": 1},

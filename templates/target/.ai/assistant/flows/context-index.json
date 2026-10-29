@@ -528,8 +528,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 459,
-      "content_digest": "sha256:6d19f2034d8dea51351bad38cfc52bfbbb5d368d754a6c9c29c067e5e1f91f51"
+      "estimated_words": 398,
+      "content_digest": "sha256:f4760bc181a95aaf315132c5a70eb4c74c763ea9f53f86f9b34de17d3a5588e3"
     },
     {
       "id": "assistant.content.flows-session-presence-flow-md",

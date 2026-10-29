@@ -4,8 +4,8 @@ This file is host-preloaded.
 
 ## Bootstrap
 
-Load `.ai/assistant/bootstrap-index.json`; select the smallest route and gates.
-On failure load the canonical owner. Repair/audit/conflict only:
+Load `.ai/assistant/bootstrap-index.json`; select minimal routes/gates.
+On failure: canonical owner. Repair/audit/conflict only:
 `.ai/assistant/entry-packet.json`. Follow matching indexes, not directories.
 Recovery: `.ai/README.md`. Check `session_presence` at entry; if enabled,
 follow its flow before overlap and on scope changes/completion.
@@ -22,9 +22,9 @@ Discussion, planning, issue return, or ambiguity are inspect-only.
 Implementation does not imply commit; commit does not imply push.
 Scoped authorization.
 
-After context loss/boundaries, apply `ALATYR-CONTINUITY-001` via
-`session-continuity` before mutation. Re-establish newest-request scope;
-packets/summaries are evidence only.
+At request/phase/pre-mutation compare `session-context`; coalesce.
+For drift/context loss use `session-continuity` (`ALATYR-CONTINUITY-001`).
+Recheck newest-request scope; packets/summaries lack authority.
 
 Protected architecture, behavior, security, permissions, dependencies,
 destructive/live/production actions, spend, imports, or weaker gates require
@@ -39,12 +39,12 @@ relationships. Do not infer acceptance.
 For every code or test change, record a Project Contour Sync Decision:
 `updated`, `not-required`, `blocked`, or `unverified`. Name fact IDs, checked
 owners, affected surfaces, evidence, and any fact-specific `not-required`
-reason. Update `.ai/project/contour.md` only for changed orientation/routing
-facts. `blocked`/`unverified` blocks completion.
+reason. Update `.ai/project/contour.md` only when orientation/routing changes.
+`blocked`/`unverified` blocks completion.
 
 Non-trivial work: `.ai/assistant/task-decomposition.json`, one strategy,
 bounded model/projection/obligations. History is conditional; small work:
-`direct-local`. Delegate with capability evidence. The primary retains
+`direct-local`. Delegate with capability evidence. Primary retains
 decisions, authorization, integration, and acceptance. Validate.
 
 ## Evidence

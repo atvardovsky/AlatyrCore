@@ -110,8 +110,8 @@
       "owner_refs": [
         "ALATYR-CONTINUITY-001"
       ],
-      "estimated_words": 1294,
-      "content_digest": "sha256:62c40a5b6403fea6638394dd7e0ae4ec7d7feb3ee76d18f85819b7b3f01047bd"
+      "estimated_words": 1230,
+      "content_digest": "sha256:594dc8278419c6e22af35e5af3ac06cbe9a11c8e623a0bf75ee2e58d7166ec94"
     },
     {
       "id": "framework.support.support-information-md",

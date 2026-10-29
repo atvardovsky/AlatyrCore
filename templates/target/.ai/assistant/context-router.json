@@ -443,7 +443,7 @@
     },
     "session-continuity": {
       "use_when": [
-        "context compaction resume fork handoff client/model change context reset or suspected context loss"
+        "compaction resume fork handoff client/model change reset loss or installed-context drift"
       ],
       "descriptor": ".ai/assistant/context/task-scales/session-continuity.json"
     }

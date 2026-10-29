@@ -2,6 +2,10 @@
 
 Before state-changing work resumes after a context boundary, verify:
 
+- context bindings match or were reconciled; replacement follows review
+- installation is accepted, or the authorized updater follows lifecycle
+- affected plans/approvals/checks/workers were reconsidered; capture alone
+  does not establish instruction delivery
 - the continuity packet is structurally valid and its digest matches
 - current repository, branch, revision, changed-path, and approval evidence
   matches the packet or every difference was explicitly reconciled

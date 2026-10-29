@@ -59,10 +59,11 @@ class Once(argparse.Action):
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     subparsers = parser.add_subparsers(dest="operation", required=True)
-    presence = subparsers.add_parser("session-presence", allow_abbrev=False)
-    presence.add_argument("--target", type=Path, required=True, action=Once)
-    presence.add_argument("--framework-source", type=Path, action=Once)
-    presence.add_argument("arguments", nargs=argparse.REMAINDER)
+    for name in ("session-presence", "session-context"):
+        operation = subparsers.add_parser(name, allow_abbrev=False)
+        operation.add_argument("--target", type=Path, required=True, action=Once)
+        operation.add_argument("--framework-source", type=Path, action=Once)
+        operation.add_argument("arguments", nargs=argparse.REMAINDER)
     cooperation = subparsers.add_parser("cooperation-preflight", allow_abbrev=False)
     add_common(cooperation)
     cooperation.add_argument("--scope", action="append", default=[])
@@ -108,8 +109,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) -> list[str]:
-    if args.operation == "session-presence":
-        return ["session-presence", "--target", str(target), *args.arguments]
+    if args.operation in {"session-presence", "session-context"}:
+        return [args.operation, "--target", str(target), *args.arguments]
     if args.operation == "cooperation-preflight":
         command = ["cooperation-preflight", "--target", str(target)]
         for name in ("scope", "command"):

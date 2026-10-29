@@ -376,6 +376,11 @@ Classify every proposed target file:
     Apply `session-presence.flow.md`: new accepted installs default to discovery
     and own-entry housekeeping; preserve existing choices/live entries, verify
     helper availability, and refresh routes from the installed policy.
+    Install policy-4 session-context checkpoints and verify the delegate's
+    capture/check route. Bind every selected loaded file, preserve peer
+    baselines, and tell already-running sessions to recheck once if they never
+    loaded the checkpoint rule. Record `staged` before changing an accepted
+    adapter; the authorized updater follows the lifecycle path.
     Resolve source via explicit argument, `ALATYR_CORE`, or ignored
     `.ai/local/framework-source`; fail closed. Never commit workstation paths.
     Route enabled team operations and matched state-changing work through the

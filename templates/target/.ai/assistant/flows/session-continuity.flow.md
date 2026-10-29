@@ -1,67 +1,64 @@
 # Session Continuity Flow
 
-Use this flow before a predictable context boundary and after an observed or
-suspected compaction, resume, fork, handoff, client/model change, context
-reset, or subagent convergence.
+Use for compaction, resume, fork, handoff, client/model changes, context loss,
+subagent convergence or installed/selected-context drift.
+Owner: `ALATYR-CONTINUITY-001` in `.ai/framework/session-continuity.md`.
+Semantic reference: `alatyr:session-continuity@1`.
 
-Canonical rule: `ALATYR-CONTINUITY-001` in
-`.ai/framework/session-continuity.md`.
-Compact semantic reference: `alatyr:session-continuity@1`.
+## Active Session Checkpoint
+
+Compare retained context at entry/resume, new requests, phase changes and before
+mutation batches. Coalesce adjacent checks.
+
+```sh
+python3 .ai/assistant/tools/alatyr_delegate.py session-context --target . capture --context .ai/project/contour.md --output .ai/.runtime/continuity/SESSION-context.json
+python3 .ai/assistant/tools/alatyr_delegate.py session-context --target . check --baseline .ai/.runtime/continuity/SESSION-context.json
+```
+
+Use `python` on Windows and your session ID. Repeat `--context` for **every**
+still-applicable loaded profile, gate, rule, skill, prompt and owner, beyond the example.
+Bootstrap inputs are automatic. Capture cannot acknowledge reading.
+
+Without local-write authorization retain fingerprint/paths in memory:
+`check --expected sha256:DIGEST` with the same
+`--context` set. Preserve old baselines; after reconciliation capture a new one.
+`current` means matching declared content, without authority or acceptance.
+Drift/unavailable evidence requires recovery below. Nonaccepted installs keep
+peers inspect-only; authorized updaters follow lifecycle adaptation. Without a
+helper, obtain equivalent bounded evidence or report context unverified before
+mutation. Previously unaware clients need one explicit recheck/restart.
 
 ## Prepare
 
-1. Keep the current task scope and action authorization separate.
-2. Select the current operation, profiles, overlays, project areas, rule IDs,
-   changed paths, approvals, decisions, checks, risks, and next safe action.
-3. Increment `packet_sequence` for the same task and bind
-   `previous_packet_sha256`; sequence 1 uses `none`.
-4. Record current Git evidence with the canonical change-set hash when Git is
-   available.
-5. Bind any referenced capability record and context packet by target-relative
-   path and file-content SHA-256.
-6. Record the primary analysis strategy, problem-model path and digest, and the
-   active-projection path, digest, source-model digest, and measured size.
-   Keep open proof obligations, completed reviews, and invalidated assumptions
-   in the bounded projection instead of copying full history into the packet.
-7. Prefer identifiers, target-relative paths, and digests. Do not copy raw
-   chat, hidden reasoning, secrets, or unnecessary source content.
-8. During inspect-only work, use a host-native or in-memory checkpoint. Write
-   `.ai/.runtime/continuity/<task-id>.json` only when the current request
-   authorizes that local adapter/runtime mutation.
-9. Compute `integrity.packet_sha256` over canonical JSON with the complete
-   `integrity` object omitted.
+1. Use the packet template; record task/operation, profiles/areas/rules/paths,
+   scope and authorization separately, decisions, checks, risks and next action.
+2. Increment `packet_sequence`, binding `previous_packet_sha256` (`none` first).
+3. Bind available Git evidence/canonical change-set hash, referenced capability
+   and context packets by target-relative path and content SHA-256.
+4. Bind analysis strategy, model and active-projection paths/digests, projection
+   source-model digest/size, open obligations, reviews and invalid assumptions.
+   Keep history referenced, not copied; exclude raw chat/reasoning and secrets.
+5. Inspect-only storage is host-native/in-memory. Authorized persistent packets
+   use `.ai/.runtime/continuity/<task-id>.json`. Hash canonical JSON excluding
+   the complete `integrity` object into `integrity.packet_sha256`.
+   Keep the context baseline reference/fingerprint in `decisions`; selected
+   files remain in `routing.loaded_paths` for recovery.
 
 ## Rehydrate
 
-1. Enter inspect-only recovery mode.
-2. Load the compact bootstrap, continuity policy, packet, and this flow.
-3. Validate packet structure and digest.
-4. Compare its branch, revisions, changed paths, change-set digest, approval
-   hashes, and referenced rule IDs with current evidence.
-5. Load only owners or evidence whose identity changed or cannot be verified.
-6. Verify the active projection against both its content digest and bound
-   problem-model digest. Load the projection for routine recovery; load the
-   full model only when the projection is stale, invalid, or insufficient for
-   a named conflict. Reopen affected obligations when strategy, assumptions,
-   or evidence changed.
-7. Re-evaluate current logical scope and every action phase from the newest
-   user instruction. Never restore publish or live-external authority from the
-   packet.
-8. Reclassify risk and approval needs if facts, scope, or effects changed.
-   Derive the next action again; discard stale recommendations.
-9. Run the smallest focused validation that proves the resumed next action.
-10. Continue only after `.ai/assistant/gates/session-continuity.md` passes.
+1. Start inspect-only; load bootstrap, policy, packet and this flow.
+2. Validate packet shape/digest and current branch/revisions/changed paths,
+   canonical change-set hash, approvals and referenced rules. Reload only
+   changed or unverifiable owners/evidence.
+3. Verify projection/content/model bindings. Full model loading requires stale,
+   invalid or insufficient projection evidence; reopen affected obligations.
+4. Re-establish newest-request scope/action phases; never restore publish/live
+   authority from packets. Reclassify changed risk/approval needs and replace
+   stale advice with a verified next action.
+5. Run focused validation and pass `.ai/assistant/gates/session-continuity.md`.
 
-## Failure Behavior
-
-- Packet missing: reconstruct from durable current evidence and remain
-  inspect-only until authorization is re-established.
-- Packet invalid or stale: do not use it to justify state-changing work; load
-  only the mismatched owners and refresh the packet when authorized.
-- Capability unknown: use this provider-neutral flow without claiming native
-  compaction, hooks, instruction reload, or summary inspection.
-- Repository evidence unavailable: report the limitation and do not claim
-  branch, revision, or change-set continuity.
-
-Do not reload the full framework or project corpus solely because a boundary
-occurred.
+Missing/invalid packets require reconstruction from current durable evidence
+before mutation. Unknown client capability uses this portable fallback without
+native-hook claims. Unavailable Git evidence cannot establish repository
+continuity. Neither recovery nor fingerprints require a full-corpus reread,
+identify a writer, lock concurrent work or notify idle sessions.

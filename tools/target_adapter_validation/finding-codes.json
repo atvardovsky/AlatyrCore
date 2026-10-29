@@ -245,7 +245,7 @@
     },
     {
       "id": "SESSION",
-      "code_count": 69
+      "code_count": 70
     },
     {
       "id": "SOURCE",
@@ -11643,6 +11643,15 @@
       ],
       "sources": [
         "tools/target_adapter_validation/runtime_observation.py"
+      ]
+    },
+    {
+      "code": "SESSION_CONTEXT_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/session_continuity.py"
       ]
     },
     {

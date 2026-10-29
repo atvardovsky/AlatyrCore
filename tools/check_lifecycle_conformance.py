@@ -16,6 +16,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import yaml
+from inspect_session_context import capture as capture_session_context
 
 from analysis_strategy_contract import AUTHORING_PLACEHOLDER_VALUES
 from bootstrap_index import (
@@ -762,6 +763,15 @@ def exercise_profile(
     accepted_payload = accepted_findings_payload(
         accepted, accepted_findings, repo, base
     )
+    session_initial = None
+    try:
+        session_initial, session_state, _ = capture_session_context(
+            repo, [".ai/framework/contour.md"]
+        )
+        if session_state != "accepted":
+            failures.append(f"{support_profile} session capture missed accepted installation")
+    except (OSError, ValueError) as exc:
+        failures.append(f"{support_profile} installed session-context capture failed: {exc}")
     if accepted_payload["adapter_health"]["state"] not in {"ready", "attention"} or not accepted_payload[
         "placeholder_validation"
     ]["acceptance_eligible"]:
@@ -816,6 +826,12 @@ def exercise_profile(
     update_approval_path = write_update_approval(repo, update_base, support_profile)
 
     apply_synthetic_framework_update(repo, source, expected_pack)
+    try:
+        _, session_state, _ = capture_session_context(repo, [".ai/framework/contour.md"])
+        if session_state != "staged":
+            failures.append(f"{support_profile} session capture missed update in progress")
+    except (OSError, ValueError) as exc:
+        failures.append(f"{support_profile} staged session-context capture failed: {exc}")
     staged_update = make_validator(
         repo,
         source,
@@ -861,6 +877,13 @@ def exercise_profile(
     updated_payload = accepted_findings_payload(
         updated, updated_findings, repo, update_base, post_update=True
     )
+    try:
+        session_updated, session_state, _ = capture_session_context(repo, [".ai/framework/contour.md"])
+        if session_state != "accepted" or (session_initial is not None and
+                session_updated["fingerprint"] == session_initial["fingerprint"]):
+            failures.append(f"{support_profile} session context did not observe the accepted update")
+    except (OSError, ValueError) as exc:
+        failures.append(f"{support_profile} updated session-context capture failed: {exc}")
     if (
         updated_payload.get("installation_state") != "accepted"
         or updated_payload.get("placeholder_validation", {}).get(

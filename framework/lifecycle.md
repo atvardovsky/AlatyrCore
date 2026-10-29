@@ -100,6 +100,11 @@ for the next `accepted` transition.
 
 Before upgrading framework files in a target project:
 
+Before modifying an accepted adapter, record `controlled-update` to `staged`;
+preserve peer records. Peers reconcile through session continuity after
+acceptance. The updater retains its authorized adaptation path; acceptance
+cannot acknowledge instruction delivery for peers.
+
 1. Load the compact bootstrap and the generated upgrade impact only. Verify
    the installed semantic-codebook index and resolve the bootstrap preload;
    then use recursive contour indexes for every additional migration surface.

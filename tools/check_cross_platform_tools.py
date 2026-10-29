@@ -40,6 +40,7 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "session-context",
     "plan-test-selection",
     "publication-preflight",
     "render-source-context",
