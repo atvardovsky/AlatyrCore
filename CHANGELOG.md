@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Defer reviewed-warning dependencies until warning sources are requested and
+  prepare knowledge schemas once per lookup while validating every selected
+  shard and retaining the first actionable schema diagnostic.
+- Reuse completed release-checkpoint lineage nodes in one rechecked input view,
+  preserving cycle detection, ancestry, report bindings and fresh later calls.
+- Run the unchanged portable regression inventories with the existing bounded
+  test executor and skip optional Windows pip-cache restoration after observed
+  cache-egress stalls. Required setup, checks and timeouts remain unchanged.
+- Source-tooling performance changes only: framework, adapter schema and target
+  template versions remain unchanged; no target migration is required.
+
 - Coalesce identical target-file selections from required profiles, knowledge,
   impact owners and changed paths before context budgets and packet creation.
   Preserve route reasons, semantic/owner obligations and impact identity links;

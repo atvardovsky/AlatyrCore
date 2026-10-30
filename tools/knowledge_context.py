@@ -45,11 +45,14 @@ def select_context_knowledge(profile: str, query: dict, load: Callable[[str], di
     if type(limit) is not int or not 1 <= limit <= 30:
         raise ValueError("knowledge request limit must be an integer in 1..30")
     schemas = Path(__file__).resolve().parents[1] / "schemas"
+    validators = {}
     def validate(value: dict, name: str):
-        schema = json.loads((schemas / f"alatyr-project-knowledge-{name}.schema.json").read_text(encoding="utf-8"))
-        errors = list(jsonschema.Draft7Validator(schema).iter_errors(value))
-        if errors:
-            raise ValueError(f"knowledge {name} schema: {errors[0].json_path}: {errors[0].message}")
+        if name not in validators:
+            schema = json.loads((schemas / f"alatyr-project-knowledge-{name}.schema.json").read_text(encoding="utf-8"))
+            validators[name] = jsonschema.Draft7Validator(schema)
+        error = next(validators[name].iter_errors(value), None)
+        if error is not None:
+            raise ValueError(f"knowledge {name} schema: {error.json_path}: {error.message}")
     index = load(INDEX)
     validate(index, "index")
     descriptors = {row["shard_id"]: row for row in index["shards"]}

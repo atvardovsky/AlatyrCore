@@ -25,6 +25,28 @@ from yaml_support import safe_load
 
 
 class HostedFixtureIsolationTests(unittest.TestCase):
+    def test_portable_groups_preserve_the_exact_original_inventories(self):
+        from check_source_unit_tests import explicit_test_modules
+        workflow = safe_load((ROOT / ".github/workflows/cross-platform-source-checks.yml").read_text())
+        steps = workflow["jobs"]["portable-source-checks"]["steps"]
+        expected = {
+            "Run portable support authoring regressions": (32, "19fda75427046a126feff993c29db5ebf350c4f37ccb7ec622f4a4a5b0b378e1"),
+            "Run filesystem and session regressions": (5, "5ac0abeaa6fb1379b3c8cfeaf9739e11b113037951fb366a05a24f1740e5a20c"),
+        }
+        for name, (count, digest) in expected.items():
+            step = next(row for row in steps if row.get("name") == name)
+            arguments = shlex.split(step["run"])
+            self.assertEqual(arguments[:4], ["python", "-B", "tools/check_source_unit_tests.py", "--test-module"])
+            modules = arguments[4:]
+            self.assertEqual(len(modules), count)
+            self.assertEqual(hashlib.sha256("\0".join(modules).encode()).hexdigest(), digest)
+            self.assertEqual(len(explicit_test_modules(modules)), count)
+            self.assertEqual(step["env"]["ALATYR_CHILD_CAPACITY"], "2")
+        setup = next(row for row in steps if row.get("name") == "Set up Python")
+        self.assertEqual(setup["with"]["cache"], "${{ runner.os != 'Windows' && 'pip' || '' }}")
+        self.assertNotIn("continue-on-error", setup)
+        self.assertTrue(any(row.get("run") == "python -m pip check" for row in steps))
+
     def test_hosted_git_settings_are_effective_in_an_isolated_config(self):
         workflow = safe_load((ROOT / ".github/workflows/cross-platform-source-checks.yml").read_text())
         expected = {"gc.auto": "0", "gc.autoDetach": "false", "maintenance.auto": "false", "maintenance.autoDetach": "false"}

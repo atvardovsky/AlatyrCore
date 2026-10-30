@@ -89,6 +89,85 @@ class KnowledgeContextTests(unittest.TestCase):
         self.assertNotIn("knowledge", plan)
         self.assertFalse(any("/knowledge/" in path or "knowledge-query" in path for path in paths), paths)
 
+    def add_shards(self, count):
+        self.index["shards"] = self.index["shards"][:1]
+        for number in range(1, count):
+            identity = f"additional-{number}"
+            descriptor = dict(self.index["shards"][0], shard_id=identity,
+                              path=f".ai/project/knowledge/routes/{identity}.json")
+            shard = copy.deepcopy(self.shard)
+            shard["shard_id"] = identity
+            shard["entries"] = []
+            self.index["shards"].append(descriptor)
+            write_json(self.target / descriptor["path"], shard)
+        self.query["shard_ids"] = [row["shard_id"] for row in self.index["shards"]]
+        self.save()
+
+    def test_schema_preparation_is_per_operation_not_per_shard(self):
+        import knowledge_context
+        original = knowledge_context.jsonschema.Draft7Validator
+        for count in (1, 8):
+            self.add_shards(count)
+            with self.subTest(count=count), patch.object(knowledge_context.jsonschema, "Draft7Validator", wraps=original) as prepared:
+                result = self.plan()
+                self.assertEqual(result["status"], "ready", result)
+                self.assertEqual(prepared.call_count, 2)
+                self.assertEqual(self.plan(), result)
+                self.assertEqual(prepared.call_count, 4)
+        self.add_shards(9)
+        self.assertNotEqual(self.plan()["status"], "ready")
+
+    def test_every_shard_is_validated_and_changed_schema_is_seen_next_call(self):
+        self.add_shards(8)
+        path = self.target / self.index["shards"][-1]["path"]
+        shard = json.loads(path.read_text())
+        shard["entries"] = "invalid"
+        write_json(path, shard)
+        self.assertIn("knowledge shard schema", json.dumps(self.plan()))
+        shard["entries"] = []
+        write_json(path, shard)
+        self.assertEqual(self.plan()["status"], "ready")
+
+        original = Path.read_text
+        def changed_schema(path, *args, **kwargs):
+            text = original(path, *args, **kwargs)
+            if path.name == "alatyr-project-knowledge-shard.schema.json":
+                schema = json.loads(text)
+                schema["not"] = {}
+                return json.dumps(schema)
+            return text
+        with patch.object(Path, "read_text", changed_schema):
+            self.assertIn("knowledge shard schema", json.dumps(self.plan()))
+        self.assertEqual(self.plan()["status"], "ready")
+
+    def test_first_error_only_schema_path_does_not_enumerate_unused_errors(self):
+        import knowledge_context
+        from jsonschema import ValidationError
+        class InvalidSchema:
+            def iter_errors(self, value):
+                yield ValidationError("first diagnostic")
+                raise AssertionError("unused schema errors must not be enumerated")
+        with patch.object(knowledge_context.jsonschema, "Draft7Validator", return_value=InvalidSchema()):
+            self.assertIn("first diagnostic", json.dumps(self.plan()))
+
+    def test_optional_warning_stack_is_not_loaded_for_default_planning(self):
+        script = """
+import sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+from context_planning import ContextPlanRequest, plan_target_context
+from reviewed_warnings import selected_candidate_warnings
+assert selected_candidate_warnings(Path(sys.argv[2]), None, ()) == {
+    'source': None, 'warnings': [], 'diagnostics': [], 'authority': 'none'}
+assert plan_target_context(ContextPlanRequest(Path(sys.argv[2]), 'code-local', 'product-change'))['status'] == 'ready'
+assert 'architecture_review' not in sys.modules
+assert 'relationship_candidates' not in sys.modules
+assert 'jsonschema' not in sys.modules
+"""
+        result = subprocess.run([sys.executable, "-B", "-c", script, str(ROOT / "tools"), str(self.target)],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_constraint_overflow_and_stale_owner_fail_closed(self):
         other = copy.deepcopy(self.shard["entries"][0])
         other["knowledge_id"] = "second-constraint"

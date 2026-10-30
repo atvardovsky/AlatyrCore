@@ -798,10 +798,29 @@ may use only that reservation for isolated child processes. This avoids nested
 CPU oversubscription. Child output is collected in declaration order, lifecycle
 and scaffold scenarios use private temporary repositories, and unit-test shards
 must cover every selected test file exactly once before execution begins.
+For an explicit portable regression subset, use
+`python3 tools/check_source_unit_tests.py --test-module tests.test_yaml_support
+tests.test_parallel_execution`. This exact module list bypasses changed-path
+inference; it never expands to discovery or silently drops a missing module.
+Set `ALATYR_CHILD_CAPACITY` to the available reservation to enable the existing
+bounded executor (default: serial). Child `--test-file` invocations remain
+serial. CI retains its authoring and filesystem/session inventories and gives
+each group two isolated workers. Windows skips optional pip-cache restoration;
+Python setup, constrained dependency installation and `pip check` remain required.
+
 Source-check dependency routing and focused unit-test selection share one
 cached static Python import graph. Literal dynamic imports are resolved;
 unresolved dynamic imports make focused unit selection fall back to the full
 suite rather than silently narrowing coverage.
+
+Release checkpoint audits reuse completed lineage nodes only within one
+invocation. The view retains consulted file bytes and missing-file decisions,
+uses immutable tag targets and a captured HEAD, then rechecks bytes, checkpoint
+membership, existence, HEAD and tag objects before success. Later invocations
+start fresh. These checks are not a repository lock and cannot prove that no
+change-and-restore activity occurred; they do prevent mixed rereads of retained
+inputs and detect changes still present at verification. Materialized contract
+digest verification remains a separate release gate.
 
 Machine-readable reports should normally be written outside the repository.
 A repository-local `--report` path is accepted only under `tmp/` when Git

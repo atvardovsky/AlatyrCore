@@ -718,8 +718,8 @@
       "profiles": ["change", "full"],
       "excluded_profiles": ["release"],
       "contract_inputs": ["ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION", "VERSION", "framework/**", "schemas/**", "templates/target/**"],
-      "implementation_paths": ["tools/check_release_drift.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"],
-      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION", "VERSION", "framework/**", "schemas/**", "templates/target/**", "tools/check_release_drift.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"]
+      "implementation_paths": ["tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"],
+      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION", "VERSION", "framework/**", "schemas/**", "templates/target/**", "tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"]
     },
     {
       "id": "release-drift-release",
@@ -727,8 +727,8 @@
       "profiles": ["full", "release"],
       "depends_on": ["versioning", "migration-diff-report", "release-migration-template"],
       "contract_inputs": ["ADAPTER_SCHEMA_VERSION", "CHANGELOG.md", "TEMPLATE_VERSION", "VERSION", "docs/releases/**", "framework/**", "schemas/**", "templates/target/**"],
-      "implementation_paths": ["tools/check_release_drift.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"],
-      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "CHANGELOG.md", "TEMPLATE_VERSION", "VERSION", "docs/releases/**", "framework/**", "schemas/**", "templates/target/**", "tools/check_release_drift.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"]
+      "implementation_paths": ["tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"],
+      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "CHANGELOG.md", "TEMPLATE_VERSION", "VERSION", "docs/releases/**", "framework/**", "schemas/**", "templates/target/**", "tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"]
     }
   ]
 }

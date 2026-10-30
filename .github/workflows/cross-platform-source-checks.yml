@@ -101,7 +101,8 @@ jobs:
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.13"
-          cache: pip
+          # Cache restoration is optional; avoid the failing Windows egress path.
+          cache: ${{ runner.os != 'Windows' && 'pip' || '' }}
           cache-dependency-path: |
             requirements-dev.txt
             constraints-ci.txt
@@ -112,10 +113,14 @@ jobs:
       - name: Run portable source checks
         run: python tools/check_all.py --profile platform --report "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json"
       - name: Run portable support authoring regressions
-        run: python -B -m unittest tests.test_analysis_evidence tests.test_execution_focus tests.test_knowledge_context tests.test_source_context_selection tests.test_check_manifest_contract tests.test_framework_source_binding tests.test_publish_active_task tests.test_validation_routes tests.test_prepare_delegation_context tests.test_prepare_delegation_result tests.test_support_write_transaction tests.test_delegation_evidence_closure tests.test_source_context_closure tests.test_change_flow_phases tests.test_cooperation_planning tests.test_current_task_view tests.test_incident_quality tests.test_field_audit_quality tests.test_source_unit_tests tests.test_runtime_observation tests.test_validation_contract_invocation tests.test_external_case_identity tests.test_context_planning_malformed tests.test_optional_package_delegation tests.test_historical_evidence_classification tests.test_workflow_test_controls tests.test_publication_preflight tests.test_workflow_health_views tests.test_task_closure_evidence tests.test_target_delegate tests.test_adapter_record_integration tests.test_target_mutation_diagnostics
+        env:
+          ALATYR_CHILD_CAPACITY: "2"
+        run: python -B tools/check_source_unit_tests.py --test-module tests.test_analysis_evidence tests.test_execution_focus tests.test_knowledge_context tests.test_source_context_selection tests.test_check_manifest_contract tests.test_framework_source_binding tests.test_publish_active_task tests.test_validation_routes tests.test_prepare_delegation_context tests.test_prepare_delegation_result tests.test_support_write_transaction tests.test_delegation_evidence_closure tests.test_source_context_closure tests.test_change_flow_phases tests.test_cooperation_planning tests.test_current_task_view tests.test_incident_quality tests.test_field_audit_quality tests.test_source_unit_tests tests.test_runtime_observation tests.test_validation_contract_invocation tests.test_external_case_identity tests.test_context_planning_malformed tests.test_optional_package_delegation tests.test_historical_evidence_classification tests.test_workflow_test_controls tests.test_publication_preflight tests.test_workflow_health_views tests.test_task_closure_evidence tests.test_target_delegate tests.test_adapter_record_integration tests.test_target_mutation_diagnostics
       - name: Run filesystem and session regressions
+        env:
+          ALATYR_CHILD_CAPACITY: "2"
         run: >-
-          python -B -m unittest
+          python -B tools/check_source_unit_tests.py --test-module
           tests.test_historical_snapshot_binding
           tests.test_active_task_evidence
           tests.test_target_validation_support

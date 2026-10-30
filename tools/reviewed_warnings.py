@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable
 
-from jsonschema import Draft7Validator
+if TYPE_CHECKING:
+    from target_adapter_validation.context import TargetRepositoryView
 
-from architecture_review import BoundedReviewDigests, review_failures
-from target_adapter_validation.context import TargetRepositoryView
 from path_spec import logical_path
-from relationship_candidates import candidate_semantic_failures
 
 SCHEMA = Path(__file__).resolve().parents[1] / "schemas/alatyr-relationship-candidates.schema.json"
 
@@ -19,6 +17,11 @@ def selected_candidate_warnings(target: Path, candidate_path: str | None, select
     result = {"source": None, "warnings": [], "diagnostics": [], "authority": "none"}
     if candidate_path is None:
         return result
+    from jsonschema import Draft7Validator
+    from architecture_review import BoundedReviewDigests, review_failures
+    from target_adapter_validation.context import TargetRepositoryView
+    from relationship_candidates import candidate_semantic_failures
+
     view = TargetRepositoryView(target)
     try:
         logical_path(candidate_path)

@@ -8,6 +8,7 @@ import io
 import json
 import math
 import os
+import re
 import sys
 import time
 import unittest
@@ -92,6 +93,21 @@ def _test_module_name(path: Path, *, root: Path = ROOT) -> str:
 
 def _all_test_paths(root: Path = ROOT) -> list[Path]:
     return sorted((root / "tests").glob("test_*.py"))
+
+
+def explicit_test_modules(modules: list[str], *, root: Path = ROOT) -> list[Path]:
+    """Resolve an exact portable subset without changed-path inference."""
+    if len(modules) != len(set(modules)):
+        raise ValueError("duplicate --test-module arguments")
+    paths = []
+    for module in modules:
+        if re.fullmatch(r"tests\.test_[A-Za-z0-9_]+", module) is None:
+            raise ValueError(f"--test-module requires an exact tests.test_* module: {module}")
+        path = root / (module.replace(".", "/") + ".py")
+        if not path.is_file() or path.is_symlink():
+            raise ValueError(f"--test-module is missing or symlinked: {module}")
+        paths.append(path)
+    return paths
 
 
 def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[Path] | None:
@@ -235,8 +251,13 @@ def main() -> int:
     sys.dont_write_bytecode = True
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument(
         "--test-file", action="append", default=[], help=argparse.SUPPRESS
+    )
+    selection.add_argument(
+        "--test-module", nargs="+", action="extend", default=[],
+        help="Exact tests.test_* modules to run with the bounded shard executor.",
     )
     parser.add_argument(
         "--verbose",
@@ -252,6 +273,10 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
+    try:
+        module_paths = explicit_test_modules(args.test_module)
+    except ValueError as exc:
+        parser.error(str(exc))
     if len(args.test_file) != len({(ROOT / p).resolve() for p in args.test_file}):
         parser.error("duplicate --test-file arguments")
     args.verbose = args.verbose or os.environ.get("ALATYR_CHECK_VERBOSE") == "1"
@@ -260,7 +285,7 @@ def main() -> int:
     selected_paths = (
         [ROOT / path for path in args.test_file]
         if args.test_file
-        else (
+        else module_paths if args.test_module else (
             focused_test_paths(changed_paths)
             if profile in {"micro", "fast"} and changed_paths
             else None

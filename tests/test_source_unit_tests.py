@@ -8,7 +8,7 @@ import sys
 import tempfile
 import unittest
 from itertools import permutations
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import patch
 from pathlib import Path
 
@@ -22,10 +22,74 @@ from check_source_unit_tests import (  # noqa: E402
     load_duration_hints,
     test_shards,
     load_suite,
+    explicit_test_modules,
 )
 
 
 class SourceUnitTestSelectionTests(unittest.TestCase):
+    def test_explicit_modules_reject_invalid_missing_and_duplicate_requests(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tests").mkdir()
+            path = root / "tests/test_one.py"
+            path.write_text("import unittest\n", encoding="utf-8")
+            self.assertEqual(explicit_test_modules(["tests.test_one"], root=root), [path])
+            for values in (["tests.test_one"] * 2, ["tests.test_missing"],
+                           ["tests.test_one.Case"], ["../tests.test_one"], ["tests/test_one.py"]):
+                with self.subTest(values=values), self.assertRaises(ValueError):
+                    explicit_test_modules(values, root=root)
+
+    def test_explicit_subset_uses_existing_shards_and_ignores_focused_environment(self):
+        import check_source_unit_tests as runner
+        from parallel_execution import CommandResult
+        modules = ["tests.test_source_unit_tests", "tests.test_yaml_support"]
+        commands_seen = []
+        def execute(commands, **kwargs):
+            commands_seen.extend(commands)
+            self.assertEqual(kwargs["capacity"], 2)
+            return [CommandResult(key, 0, "", "", 0.01) for key, _ in commands]
+        with patch.object(sys, "argv", ["runner", "--test-module", *modules]), \
+                patch.dict(os.environ, {"ALATYR_SOURCE_CHECK_PROFILE": "fast", "ALATYR_CHANGED_PATHS_JSON": '["README.md"]'}), \
+                patch.object(runner, "child_capacity", return_value=2), \
+                patch.object(runner, "_all_test_paths", side_effect=AssertionError("must not discover")), \
+                patch.object(runner, "run_commands", side_effect=execute), redirect_stdout(io.StringIO()):
+            self.assertEqual(runner.main(), 0)
+        files = [command[i + 1] for _, command in commands_seen
+                 for i, argument in enumerate(command) if argument == "--test-file"]
+        self.assertCountEqual(files, [name.replace(".", "/") + ".py" for name in modules])
+        self.assertEqual(len(files), len(set(files)))
+
+    def test_explicit_subset_cli_runs_with_bounded_workers_and_propagates_errors(self):
+        env = dict(os.environ, ALATYR_CHILD_CAPACITY="2", ALATYR_SOURCE_CHECK_PROFILE="fast",
+                   ALATYR_CHANGED_PATHS_JSON='["README.md"]')
+        command = [sys.executable, "-B", str(ROOT / "tools/check_source_unit_tests.py"), "--test-module"]
+        completed = subprocess.run([*command, "tests.test_yaml_support", "tests.test_parallel_execution"],
+                                   env=env, capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("2 files", completed.stdout)
+        repeated = subprocess.run([*command, "tests.test_yaml_support", "--test-module", "tests.test_parallel_execution"],
+                                  env=env, capture_output=True, text=True)
+        self.assertEqual(repeated.returncode, 0, repeated.stdout + repeated.stderr)
+        self.assertIn("2 files", repeated.stdout)
+        for arguments in (["tests.test_missing"], ["tests.test_yaml_support"] * 2):
+            invalid = subprocess.run([*command, *arguments], env=env, capture_output=True, text=True)
+            self.assertEqual(invalid.returncode, 2, invalid.stdout + invalid.stderr)
+        for first in ("tests.test_missing", "tests.test_yaml_support"):
+            invalid = subprocess.run([*command, first, "--test-module", "tests.test_yaml_support"],
+                                     env=env, capture_output=True, text=True)
+            self.assertEqual(invalid.returncode, 2, invalid.stdout + invalid.stderr)
+
+    def test_explicit_subset_reports_child_failure(self):
+        import check_source_unit_tests as runner
+        from parallel_execution import CommandResult
+        error = io.StringIO()
+        with patch.object(sys, "argv", ["runner", "--test-module", "tests.test_yaml_support", "tests.test_parallel_execution"]), \
+                patch.object(runner, "child_capacity", return_value=2), \
+                patch.object(runner, "run_commands", return_value=[CommandResult("shard-1", 7, "", "fixture failure", 0.1), CommandResult("shard-2", 0, "", "", 0.1)]), \
+                redirect_stdout(io.StringIO()), redirect_stderr(error):
+            self.assertEqual(runner.main(), 1)
+        self.assertIn("fixture failure", error.getvalue())
+
     def test_direct_runner_prevents_nested_bytecode_writes(self):
         import check_source_unit_tests as runner
         def check_environment():

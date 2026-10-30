@@ -19,6 +19,11 @@ from datetime import datetime
 from pathlib import Path
 
 try:
+    from context_input_snapshot import ContextInputSnapshot
+except ModuleNotFoundError:
+    from tools.context_input_snapshot import ContextInputSnapshot
+
+try:
     from report_migration_diff import contract_surface_digest
 except ModuleNotFoundError:  # Support package-style imports in source tests.
     from tools.report_migration_diff import contract_surface_digest
@@ -81,6 +86,77 @@ class ReleaseBaseline:
     version: str
     kind: str
     expected_digest: str | None = None
+
+
+@dataclass
+class _CheckpointAudit:
+    root: Path
+    head: str
+    tags: dict[str, str]
+    inputs: ContextInputSnapshot
+    membership: tuple[str, ...]
+    existence: dict[Path, bool] = field(default_factory=dict)
+    complete: dict[str, ReleaseBaseline | None] = field(default_factory=dict)
+    active: set[str] = field(default_factory=set)
+    lineages: dict[str, list[str]] = field(default_factory=dict)
+
+
+_CHECKPOINT_AUDIT: ContextVar[_CheckpointAudit | None] = ContextVar("release_checkpoint_audit", default=None)
+
+
+def _checkpoint_membership() -> tuple[str, ...]:
+    return tuple(sorted(path.name for path in RELEASE_BASELINE_DIR.glob("*.json")
+                        if re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\.json", path.name)))
+
+
+def _tag_objects() -> dict[str, str]:
+    text = require_git_text("for-each-ref", "--format=%(refname) %(objectname)", "refs/tags/")
+    return dict(line.split(" ", 1) for line in text.splitlines())
+
+
+@contextmanager
+def scoped_release_checkpoints():
+    """Reuse completed DAG nodes only inside one rechecked input view."""
+    current = _CHECKPOINT_AUDIT.get()
+    if current is not None:
+        if current.root != ROOT.resolve():
+            raise RuntimeError("release audit repository changed")
+        yield current
+        return
+    head = require_git_text("rev-parse", "--verify", "HEAD^{commit}")
+    tags, membership = _tag_objects(), _checkpoint_membership()
+    with ContextInputSnapshot(ROOT, regular_files_only=True) as inputs, scoped_committed_reads():
+        audit = _CheckpointAudit(ROOT.resolve(), head, tags, inputs, membership)
+        token = _CHECKPOINT_AUDIT.set(audit)
+        try:
+            yield audit
+            if (audit.head != require_git_text("rev-parse", "--verify", "HEAD^{commit}")
+                    or audit.tags != _tag_objects()
+                    or audit.membership != _checkpoint_membership()
+                    or any(path.is_file() != exists for path, exists in audit.existence.items())):
+                raise RuntimeError("release audit inputs changed during validation")
+            # The shared snapshot verifies all consulted bytes on scope exit.
+        finally:
+            _CHECKPOINT_AUDIT.reset(token)
+
+
+def _release_file_exists(path: Path) -> bool:
+    audit = _CHECKPOINT_AUDIT.get()
+    if audit is None:
+        return path.is_file()
+    if path not in audit.existence:
+        audit.existence[path] = path.is_file()
+    return audit.existence[path]
+
+
+def _release_bytes(path: Path) -> bytes:
+    audit = _CHECKPOINT_AUDIT.get()
+    return path.read_bytes() if audit is None else audit.inputs.read(path)
+
+
+def _release_text(path: Path) -> str:
+    with io.TextIOWrapper(io.BytesIO(_release_bytes(path)), encoding="utf-8") as stream:
+        return stream.read()
 
 
 def git(
@@ -213,7 +289,7 @@ def contract_digest_at(ref: str) -> str:
 
 
 def file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(_release_bytes(path)).hexdigest()
 
 
 def validate_committed_report(
@@ -229,9 +305,9 @@ def validate_committed_report(
     to_digest: str,
 ) -> list[str]:
     report_path = ROOT / "docs" / "releases" / f"{to_version}-migration.md"
-    if not report_path.is_file():
+    if not _release_file_exists(report_path):
         return [f"missing committed migration report: {report_path.relative_to(ROOT)}"]
-    text = report_path.read_text(encoding="utf-8")
+    text = _release_text(report_path)
     required = [
         f"From manifest: `{baseline}:framework/rule-registry.json`",
         "To manifest: `source-tree:framework/rule-registry.json`",
@@ -310,7 +386,7 @@ def report_has_changes(report: str) -> bool:
 
 
 def prior_changelog_versions(current_version: str) -> list[str]:
-    changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    changelog = _release_text(ROOT / "CHANGELOG.md")
     versions = re.findall(
         r"^## (?!Unreleased\b)v?([^\s]+)(?: - \d{4}-\d{2}-\d{2})?$",
         changelog,
@@ -367,11 +443,35 @@ def nearest_tagged_baseline(current_version: str) -> tuple[str, list[str]]:
 def release_checkpoint(
     version: str, *, seen: set[str] | None = None
 ) -> ReleaseBaseline | None:
+    with scoped_release_checkpoints() as audit:
+        # Cached results still inherit the caller's path-local cycle constraints.
+        lineage = audit.lineages.get(version, [version])
+        blocked = audit.active | (seen or set())
+        for dependency in lineage:
+            if dependency in blocked:
+                raise RuntimeError(f"release checkpoint cycle detected at {dependency}")
+        for parent in audit.active:
+            audit.lineages[parent].extend(item for item in lineage if item not in audit.lineages[parent])
+        if version not in audit.complete:
+            audit.active.add(version)
+            audit.lineages[version] = [version]
+            try:
+                audit.complete[version] = _validate_release_checkpoint(version, seen=seen)
+            finally:
+                audit.active.remove(version)
+                if version not in audit.complete:
+                    audit.lineages.pop(version, None)
+        return audit.complete[version]
+
+
+def _validate_release_checkpoint(
+    version: str, *, seen: set[str] | None = None
+) -> ReleaseBaseline | None:
     path = RELEASE_BASELINE_DIR / f"{version}.json"
-    if not path.is_file():
+    if not _release_file_exists(path):
         return None
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        data = json.loads(_release_text(path))
     except (OSError, json.JSONDecodeError) as exc:
         raise RuntimeError(f"invalid release checkpoint {path.relative_to(ROOT)}: {exc}") from exc
     if not isinstance(data, dict):
@@ -424,7 +524,8 @@ def release_checkpoint(
     if not isinstance(template, str) or not template.isdigit():
         raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} has invalid template version")
     require_git_text("rev-parse", "--verify", f"{commit}^{{commit}}")
-    ancestry = git("merge-base", "--is-ancestor", commit, "HEAD")
+    audit = _CHECKPOINT_AUDIT.get()
+    ancestry = git("merge-base", "--is-ancestor", commit, audit.head if audit else "HEAD")
     if ancestry.returncode != 0:
         raise RuntimeError(
             f"release checkpoint {path.relative_to(ROOT)} source_commit is not an ancestor of HEAD"
@@ -445,11 +546,11 @@ def release_checkpoint(
             "non-empty Unreleased changes"
         )
     report_path = ROOT / data["migration_report"]
-    if not report_path.is_file():
+    if not _release_file_exists(report_path):
         raise RuntimeError(
             f"release checkpoint {path.relative_to(ROOT)} migration report is missing"
         )
-    report = report_path.read_text(encoding="utf-8")
+    report = _release_text(report_path)
     report_bindings = [
         f"To framework version: `{version}`",
         f"To adapter schema version: `{adapter}`",
@@ -493,7 +594,7 @@ def release_checkpoint(
         missing_reports = [
             item
             for item in intervening
-            if not (ROOT / "docs" / "releases" / f"{item}-migration.md").is_file()
+            if not _release_file_exists(ROOT / "docs" / "releases" / f"{item}-migration.md")
         ]
         if missing_reports:
             raise RuntimeError(
@@ -529,11 +630,9 @@ def release_checkpoint(
 def audit_release_checkpoints() -> None:
     """Validate every retained checkpoint or explicit historical quarantine."""
 
-    with scoped_committed_reads():
-        for path in sorted(RELEASE_BASELINE_DIR.glob("*.json")):
-            if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\.json", path.name):
-                continue
-            release_checkpoint(path.stem)
+    with scoped_release_checkpoints() as audit:
+        for name in audit.membership:
+            release_checkpoint(Path(name).stem)
 
 
 def _nearest_release_baseline(
@@ -542,9 +641,11 @@ def _nearest_release_baseline(
     prior_versions = prior_changelog_versions(current_version)
     for index, version in enumerate(prior_versions):
         tag = f"v{version}"
-        result = git("rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}")
-        if result.returncode == 0:
-            baseline = ReleaseBaseline(tag, tag, version, "tag")
+        audit = _CHECKPOINT_AUDIT.get()
+        ref = audit.tags.get(f"refs/tags/{tag}") if audit else f"refs/tags/{tag}"
+        result = git("rev-parse", "--verify", f"{ref}^{{commit}}") if ref else None
+        if result is not None and result.returncode == 0:
+            baseline = ReleaseBaseline(result.stdout.strip(), tag, version, "tag")
         else:
             baseline = release_checkpoint(version, seen=seen)
             if baseline is None:
@@ -553,7 +654,7 @@ def _nearest_release_baseline(
         missing_reports = [
             item
             for item in intervening
-            if not (ROOT / "docs" / "releases" / f"{item}-migration.md").is_file()
+            if not _release_file_exists(ROOT / "docs" / "releases" / f"{item}-migration.md")
         ]
         if missing_reports:
             raise RuntimeError(
@@ -568,7 +669,8 @@ def _nearest_release_baseline(
 
 
 def nearest_release_baseline(current_version: str) -> tuple[ReleaseBaseline, list[str]]:
-    return _nearest_release_baseline(current_version, set())
+    with scoped_release_checkpoints():
+        return _nearest_release_baseline(current_version, set())
 
 
 def resolve_baseline(mode: str, from_ref: str | None) -> ReleaseBaseline:
