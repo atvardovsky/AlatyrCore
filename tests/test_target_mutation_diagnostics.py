@@ -6,7 +6,9 @@ import os
 import sys
 import tempfile
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +18,20 @@ from target_adapter_validation.context import ValidationContext  # noqa: E402
 import target_adapter_validation.context as context_module  # noqa: E402
 from target_adapter_validation.harness_scenarios.common import validator  # noqa: E402
 from validate_target_adapter import Finding  # noqa: E402
+
+
+@contextmanager
+def entries_without_file_ids(path, *, scandir=os.scandir):
+    """Model the zero identity fields exposed by Windows DirEntry.stat()."""
+    with scandir(path) as children:
+        entries = []
+        for child in children:
+            info = child.stat(follow_symlinks=False)
+            metadata = SimpleNamespace(st_dev=0, st_ino=0, st_mode=info.st_mode,
+                                       st_size=info.st_size, st_mtime_ns=info.st_mtime_ns)
+            entries.append(SimpleNamespace(name=child.name,
+                                           stat=lambda follow_symlinks=False, info=metadata: info))
+        yield entries
 
 
 class TargetMutationDiagnosticsTests(unittest.TestCase):
@@ -86,7 +102,9 @@ class TargetMutationDiagnosticsTests(unittest.TestCase):
                 else:
                     replacement = target / "replacement.json"
                     replacement.write_bytes(b"{}")
+                    original = path.stat()
                     replacement.replace(path)
+                    os.utime(path, ns=(original.st_atime_ns, original.st_mtime_ns - 4_000_000_000))
                 # Make the metadata mismatch deterministic on every host.
                 os.utime(observed, ns=(info.st_atime_ns, info.st_mtime_ns - 2_000_000_000))
                 mutation, = context.finalize()
@@ -96,6 +114,32 @@ class TargetMutationDiagnosticsTests(unittest.TestCase):
                                     details["directory_entries"]["after"]["sha256"])
                 self.assertNotIn("approval.json", json.dumps(details))
                 self.assertNotIn(str(target), json.dumps(details))
+
+    def test_replacement_diagnostics_with_unavailable_entry_file_ids(self):
+        for timestamp_delta in (0, -4_000_000_000):
+            with self.subTest(timestamp_delta=timestamp_delta), tempfile.TemporaryDirectory() as directory:
+                target = Path(directory).resolve()
+                observed = target / "observed"
+                observed.mkdir()
+                path = observed / "entry.json"
+                path.write_bytes(b"{}")
+                timestamp = 1_700_000_000_000_000_000
+                os.utime(path, ns=(timestamp, timestamp))
+                context = ValidationContext(target)
+                with patch.object(context_module.os, "scandir", side_effect=entries_without_file_ids):
+                    context.status(observed)
+                    before = observed.stat()
+                    replacement = target / "replacement.json"
+                    replacement.write_bytes(b"[]")
+                    replacement.replace(path)
+                    os.utime(path, ns=(timestamp, timestamp + timestamp_delta))
+                    os.utime(observed, ns=(before.st_atime_ns, before.st_mtime_ns - 2_000_000_000))
+                    mutation, = context.finalize()
+                details = mutation.diagnostics(target)
+                self.assertEqual(details["directory_entries"]["comparison"],
+                                 "unchanged" if timestamp_delta == 0 else "changed")
+                self.assertEqual(details["content"]["comparison"], "not-measured")
+                self.assertNotEqual(mutation.before.mtime_ns, mutation.after.mtime_ns)
 
     def test_incomplete_directory_capture_never_claims_unchanged_entries(self):
         for phase in ("before", "after"):
