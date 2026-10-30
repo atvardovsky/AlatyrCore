@@ -65,15 +65,16 @@ def _bound_object(validator: Any, binding: Any, label: str) -> dict[str, Any] | 
 
 
 def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = None) -> tuple[Any, Any, Path | None]:
-    """Closed witnesses retain the original model identity without runtime I/O."""
+    """Retained witnesses preserve exact bindings, not current-task authority."""
     binding = task.get("problem_model")
     if task.get("state") == "closed" and closure is None:
         closure = _bound_object(validator, task.get("completion_evidence"), "predecessor closure")
-    witness = closure.get("analysis_witness") if isinstance(closure, dict) else None
+    active = task.get("state") == "active"
+    witness = task.get("analysis_handoff") if active else closure.get("analysis_witness") if isinstance(closure, dict) else None
     if witness is None:
         return _bound_object(validator, binding, "problem model"), binding, None
-    if task.get("state") != "closed" or not isinstance(witness, dict) or set(witness) != {"model", "projection", "retention_review"} or not is_resolved_string(witness.get("retention_review")):
-        validator.error("ACTIVE_TASK_WITNESS", "durable evidence requires a closed task and retention review", INDEX_PATH)
+    if not isinstance(witness, dict) or set(witness) != {"model", "projection", "retention_review"} or not is_resolved_string(witness.get("retention_review")):
+        validator.error("ACTIVE_TASK_WITNESS", "durable evidence requires explicit bindings and retention review", INDEX_PATH)
         return None, None, None
     task_id = task["task_id"]
     if re.fullmatch(r"[A-Za-z0-9._-]+", task_id) is None or task_id in (".", ".."):
@@ -92,6 +93,21 @@ def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = No
     projection = _bound_object(validator, witness["projection"], "durable active projection")
     if projection is None:
         return None, None, None
+    if active and isinstance(binding, dict):
+        if not isinstance(binding.get("path"), str) or not is_target_relative_path(binding["path"]):
+            validator.error("ACTIVE_TASK_BINDING", "active runtime path is unsafe", INDEX_PATH)
+            return None, None, None
+        if _target_file(validator, binding["path"]):
+            _bound_object(validator, binding, f"{task_id} active runtime model")
+        elif getattr(validator, "current_task_id", None) == task_id:
+            validator.error("ACTIVE_TASK_REHYDRATION_REQUIRED", f"{task_id}: restore the reviewed active handoff to {binding['path']} before current-task work", INDEX_PATH)
+        runtime_projection = model.get("active_projection") if isinstance(model, dict) else None
+        runtime_projection_path = runtime_projection.get("path") if isinstance(runtime_projection, dict) else None
+        if isinstance(runtime_projection_path, str) and is_target_relative_path(runtime_projection_path):
+            if _target_file(validator, runtime_projection_path):
+                _bound_object(validator, {"path": runtime_projection_path, "sha256": witness["projection"]["sha256"]}, f"{task_id} runtime projection")
+            elif getattr(validator, "current_task_id", None) == task_id:
+                validator.error("ACTIVE_TASK_REHYDRATION_REQUIRED", f"{task_id}: restore the reviewed projection to {runtime_projection_path}", INDEX_PATH)
     return model, witness["model"], validator.target_path(witness["projection"]["path"])
 
 
@@ -482,7 +498,8 @@ def validate_active_tasks(validator: Any) -> None:
                 if state == "closed" and archived_projection is None:
                     validator.error("ACTIVE_TASK_WITNESS", "closed non-small tasks require durable model and projection witnesses", INDEX_PATH)
                 validated_model = validate_selected_problem_model(validator, path, model_schema, require_completion=require_completion,
-                    archived_projection=archived_projection, original_source_path=model_binding["path"], current_task=task_id == selected_task)
+                    archived_projection=archived_projection, original_source_path=model_binding["path"], current_task=task_id == selected_task,
+                    historical_witness=state == "closed")
                 if task_id == selected_task and isinstance(validated_model, dict):
                     from target_adapter_validation.repair_review import validate_task_repair_review
                     validate_task_repair_review(validator, task, validated_model, completion=require_completion)

@@ -13,9 +13,53 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from report_adapter_health import build_capability_advisory, render_text  # noqa: E402
 from validate_target_adapter import Finding, findings_payload  # noqa: E402
+from adapter_health_views import repair_plan
+from target_adapter_validation.context import TargetRepositoryView
 
 
 class AdapterHealthReportTests(unittest.TestCase):
+    def test_repair_plan_names_exact_missing_bindings_without_waiving_findings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            path = target / ".ai/assistant/active-tasks.json"
+            path.parent.mkdir(parents=True)
+            binding = {"path": ".ai/.runtime/problem-models/task.json", "sha256": "a" * 64}
+            path.write_text(json.dumps({"tasks": [{"task_id": "active-one", "state": "active", "problem_model": binding}]}))
+            findings = [{"level": "error", "code": "ACTIVE_TASK_BINDING", "path": path.relative_to(target).as_posix(), "message": "missing registered model"},
+                        {"level": "warning", "code": "TASK_HISTORICAL_SNAPSHOT", "path": "closure.json", "message": "historical attention"}]
+            before = json.dumps(findings, sort_keys=True)
+            plan = repair_plan(TargetRepositoryView(target), findings)
+            self.assertEqual(json.dumps(findings, sort_keys=True), before)
+            prerequisite = plan["steps"][0]
+            self.assertEqual(prerequisite["task_id"], "active-one")
+            self.assertEqual(prerequisite["path"], binding["path"])
+            self.assertEqual(prerequisite["expected_sha256"], binding["sha256"])
+            self.assertEqual(prerequisite["action"], "recover-exact-evidence")
+            self.assertIn(prerequisite["id"], plan["steps"][1]["requires"])
+            self.assertEqual(len(plan["historical_attention_groups"]), 1)
+            self.assertEqual(plan["findings_preserved"], 2)
+            self.assertFalse(plan["findings_waived"])
+
+    def test_repair_guidance_does_not_reopen_a_valid_foreign_handoff(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            witness = {}
+            for name in ("model", "projection"):
+                path = target / f".ai/assistant/task-evidence/foreign-task/content/{name}.json"
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"{}")
+                witness[name] = {"path": path.relative_to(target).as_posix(), "sha256": hashlib.sha256(b"{}").hexdigest()}
+            header = {"task_id": "foreign-task", "state": "active", "problem_model": {"path": ".ai/.runtime/problem-models/foreign.json", "sha256": witness["model"]["sha256"]}, "analysis_handoff": witness}
+            index = target / ".ai/assistant/active-tasks.json"
+            index.write_text(json.dumps({"tasks": [header]}))
+            findings = [{"level": "error", "code": "ACTIVE_TASK_BINDING", "path": index.relative_to(target).as_posix(), "message": "a separate registered task is unavailable"}]
+            plan = repair_plan(TargetRepositoryView(target), findings)
+            self.assertFalse(any(step["kind"] == "prerequisite" for step in plan["steps"]))
+            findings.append({"level": "error", "code": "ACTIVE_TASK_REHYDRATION_REQUIRED", "path": index.relative_to(target).as_posix(), "message": "foreign-task: restore selected task"})
+            plan = repair_plan(TargetRepositoryView(target), findings)
+            self.assertTrue(any(step["kind"] == "prerequisite" for step in plan["steps"]))
+
     def test_required_task_acceptance_cannot_pass_without_checked_closure(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             payload = findings_payload(

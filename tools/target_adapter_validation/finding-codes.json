@@ -57,7 +57,7 @@
   "families": [
     {
       "id": "ACTIVE",
-      "code_count": 23
+      "code_count": 25
     },
     {
       "id": "AGENT",
@@ -383,6 +383,15 @@
       ]
     },
     {
+      "code": "ACTIVE_TASK_HANDOFF_RETENTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
       "code": "ACTIVE_TASK_INDEX_CONTRACT",
       "levels": [
         "error"
@@ -447,6 +456,15 @@
     },
     {
       "code": "ACTIVE_TASK_PROJECTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_REHYDRATION_REQUIRED",
       "levels": [
         "error"
       ],

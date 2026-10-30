@@ -473,6 +473,10 @@ metadata.
 - Host-preloaded context:
 - Compact bootstrap context:
 - Generated bootstrap source-hash verification:
+- New-worktree source locator, baseline/task preflight and reviewed active
+  handoff recovery (no invented historical evidence):
+- Optional acknowledged publisher handoff, origin/pin freshness and per-host
+  capacity observations; separate current publication authorization:
 - Context router:
 - Task context profiles:
 - Project Contour Sync Decision routing for every code/test profile, including

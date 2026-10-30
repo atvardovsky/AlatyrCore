@@ -35,6 +35,13 @@ Disable automatic and detached Git maintenance before disposable fixture commits
 Cleanup errors remain test failures, never ignored; hosted CI applies the same
 settings to its disposable runner only, not to target projects or user Git config.
 
+Worktree collaboration regressions use real linked worktrees and the public
+dispatcher: exact retained-byte recovery, projection availability, conflicting
+postimages, source configuration and active source freshness. Publication
+observations cover every intent binding, malformed values and per-host demand
+boundaries; optional inputs never clear existing cooperation uncertainty. The
+portable filesystem group includes these regressions on Windows and macOS.
+
 Execution-focus regressions must couple freshness, readiness and presentation:
 stale evidence clears actionable lists, blocked/waiting/unknown duties remain
 distinct, pending revisions retain independent work, and invalid snapshots clear

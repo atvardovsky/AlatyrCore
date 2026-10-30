@@ -284,6 +284,11 @@ preserved. Linked worktrees share the registry, and each session removes its
 own entry when finished. It is not a scheduler or an exclusive work lock.
 See [session presence](framework/session-continuity.md#concurrent-session-presence).
 
+Linked worktrees can share an explicitly configured local tooling locator and
+carry reviewed active-task evidence. Optional publisher handoffs and build-capacity
+observations help expose coordination gaps without claiming a lock or permission.
+See [worktree collaboration](docs/collaboration-worktrees.md).
+
 When another session updates Alatyr, participating agents check their loaded
 context at the next request or work checkpoint and reconcile affected rules
 before continuing. Existing sessions need the checkpoint instructions first;
@@ -301,7 +306,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.114`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.115`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

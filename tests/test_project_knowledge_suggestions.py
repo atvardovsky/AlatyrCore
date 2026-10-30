@@ -17,6 +17,49 @@ from suggest_project_knowledge import suggestions  # noqa: E402
 
 
 class ProjectKnowledgeSuggestionTests(unittest.TestCase):
+    def test_owner_selection_and_proposal_limits_preserve_validated_candidates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            (target / "docs").mkdir()
+            (target / "docs/billing.md").write_text("Accepted billing owner")
+            (target / "docs/other.md").write_text("Accepted other owner")
+            self.write_target(target, [
+                {"package_id": "A", "status": "complete"}, {"package_id": "B", "status": "validated"},
+                {"package_id": "C", "status": "complete", "canonical_owners": ["docs/other.md"]},
+                {"package_id": "D", "status": "complete", "canonical_owners": ["docs/other.md"]}])
+            full = suggestions(target)
+            filtered = suggestions(target, owners=["docs/billing.md"], limit=1)
+            self.assertEqual(len(full["candidates"]), 2)
+            self.assertEqual(filtered["candidates"], [item for item in full["candidates"] if item["selector"]["canonical_owner"] == "docs/billing.md"])
+            self.assertEqual(filtered["candidate_projection_verified_packages"], 2)
+            limited = suggestions(target, limit=1)
+            self.assertEqual(limited["selection"]["omitted_candidates"], 1)
+            self.assertFalse(limited["automatic_promotion_performed"])
+            for owner in ("../outside.md", ".ai/framework/context.md", "missing.md"):
+                with self.subTest(owner=owner), self.assertRaises(ValueError):
+                    suggestions(target, owners=[owner])
+
+    def test_registered_task_selection_and_mixed_owner_packages_stay_bounded(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            (target / "docs").mkdir()
+            for name in ("billing", "other"):
+                (target / f"docs/{name}.md").write_text("accepted owner")
+            self.write_target(target, [{"package_id": identity, "status": "complete",
+                "canonical_owners": ["docs/billing.md", "docs/other.md"], "changed_fact_ids": ["billing-fact", "other-fact"]} for identity in ("A", "B")])
+            task_index = target / ".ai/assistant/active-tasks.json"
+            task_index.write_text(json.dumps({"schema_version": 1, "index_kind": "target-active-task-index", "tasks": [{
+                "task_id": "selected-task", "operation_id": "operation-1", "state": "active", "task_class": "small-task",
+                "problem_model": None, "completion_evidence": None, "canonical_owners": ["docs/billing.md"],
+                "changed_fact_ids": ["billing-fact"], "incident_family_id": "none", "predecessor_task_ids": [], "latest_failed_gate_id": "none"}]}))
+            run = subprocess.run([sys.executable, str(ROOT / "tools/alatyr.py"), "suggest-knowledge", "--target", str(target), "--task-id", "selected-task", "--limit", "3"], capture_output=True, text=True)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            result = json.loads(run.stdout)
+            self.assertEqual(len(result["candidates"]), 1)
+            self.assertEqual(result["candidates"][0]["selector"]["canonical_owner"], "docs/billing.md")
+            self.assertEqual(result["candidates"][0]["changed_fact_ids"], ["billing-fact"])
+            self.assertFalse(result["automatic_promotion_performed"])
+
     def test_helper_supports_package_style_import(self) -> None:
         result = subprocess.run(
             [sys.executable, "-c", "from tools.suggest_project_knowledge import suggestions"],

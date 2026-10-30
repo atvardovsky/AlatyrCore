@@ -2,6 +2,18 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "worktree-preflight",
+      "script": "worktree_readiness.py",
+      "purpose": "inspect local source, baseline and active-task prerequisites before worktree tasks",
+      "write_scope": "none"
+    },
+    {
+      "name": "restore-task",
+      "script": "restore_active_task.py",
+      "purpose": "preview or restore exact reviewed active-task handoff bytes",
+      "write_scope": "target-ignored-runtime-with-explicit-write"
+    },
+    {
       "name": "session-context",
       "script": "inspect_session_context.py",
       "purpose": "compare active-session context bindings before continuation without granting authority",

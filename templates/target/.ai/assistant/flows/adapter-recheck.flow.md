@@ -136,6 +136,8 @@ Applying modes:
    last.
    Preserve closed-task model/projection witnesses with reviewed retention;
    never rewrite historical model authority or manufacture missing evidence.
+   Preserve active handoffs; migrate model/projection/header together with renewed
+   retention review, then use worktree preflight and exact recovery when needed.
    For task completion, bind task ID, independently classified task scale,
    and current model through finalization and verification, and require task
    acceptance. General adapter health is not selected-task closure.

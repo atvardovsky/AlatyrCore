@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from capability_catalog import load_modules
-from adapter_health_views import finding_groups, tooling_comparison, work_overview
+from adapter_health_views import finding_groups, tooling_comparison, work_overview, repair_plan
 
 from validate_target_adapter import (
     AdapterValidatorConfig,
@@ -122,6 +122,7 @@ def health_payload(
         required_capabilities=required_capabilities,
     )
     payload["capability_advisory"] = advisory
+    payload["repair_plan"] = repair_plan(validator.context, payload.get("findings", []))
     payload["tooling_comparison"] = tooling_comparison(validator.context, Path(__file__).resolve().parents[1])
     if include_work_overview:
         payload["work_overview"] = work_overview(validator.context)
@@ -292,6 +293,15 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         lines.extend(finding_line(item) + (f" ({item['count']} findings; full details in JSON)" if item["count"] > 1 else "") for item in groups[:5])
         if len(groups) > 5:
             lines.append(f"Additional blocking groups: {len(groups) - 5}")
+    plan = payload.get("repair_plan", {})
+    prerequisites = [step for step in plan.get("steps", []) if step.get("kind") == "prerequisite"]
+    if prerequisites:
+        lines.append("")
+        lines.append("Evidence prerequisites (before revalidation):")
+        for step in prerequisites[:3]:
+            lines.append(f"- {step['action']}: task {step['task_id']} [{step['path']}]; preserve exact digest {step['expected_sha256']}")
+        if len(prerequisites) > 3:
+            lines.append(f"Additional prerequisite steps in JSON: {len(prerequisites) - 3}")
     if attention:
         lines.append("")
         lines.append("Attention findings:")

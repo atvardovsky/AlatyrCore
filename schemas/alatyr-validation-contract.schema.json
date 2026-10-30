@@ -112,6 +112,7 @@
           "properties": {
             "environment_variable": {"const": "ALATYR_CORE"},
             "local_config": {"const": ".ai/local/framework-source"},
+            "common_git_config": {"const": "alatyr/framework-source"},
             "unavailable_behavior": {"const": "fail-closed"}
           }
         },

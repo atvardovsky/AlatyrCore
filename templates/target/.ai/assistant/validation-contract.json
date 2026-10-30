@@ -4,6 +4,7 @@
   "source_resolution": {
     "environment_variable": "ALATYR_CORE",
     "local_config": ".ai/local/framework-source",
+    "common_git_config": "alatyr/framework-source",
     "unavailable_behavior": "fail-closed"
   },
   "entrypoints": {

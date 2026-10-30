@@ -244,6 +244,12 @@ files. Reconcile drift through the continuity gate; keep staged/degraded peers
 inspect-only. See [freshness](framework/session-continuity.md#active-session-freshness).
 Existing clients unaware of this rule need one explicit recheck or restart.
 
+For linked worktrees, verify source/baseline/task prerequisites before writes;
+reviewed active handoffs restore exact bytes, not authority. Optional publisher
+handoff and capacity observations remain advisory across every supported surface.
+See [worktree continuity](framework/session-continuity.md#worktree-prerequisites-and-active-handoffs)
+and [source helper formats](docs/collaboration-worktrees.md).
+
 Exact operation IDs and aliases come from the installed target's compact
 operation index and canonical catalog. Do not infer an operation from this
 source guide when the target adapter says otherwise.

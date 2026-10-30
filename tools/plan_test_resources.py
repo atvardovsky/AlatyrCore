@@ -36,6 +36,12 @@ def resource_plan(target: Path, command_ids: list[str]) -> dict:
                  for resource in command["execution"]["resources"]]
     plan["presence_scope_refs"] = sorted({scope for resource in resources
                                          for scope in presence_resource_scopes([resource])})
+    plan["selected_test_context"] = [{"command_id": command["id"],
+        "canonical_policy": policy["execution_contract"]["canonical_policy"],
+        **{key: command["execution"][key] for key in (
+            "configuration_paths", "prerequisites", "environment", "effects", "proof_boundary")}}
+        for command in policy["commands"] if command["id"] in command_ids]
+    plan["execution_authorized"] = False
     return plan
 
 

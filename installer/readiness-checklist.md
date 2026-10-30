@@ -625,6 +625,11 @@ Final evidence must say:
   stale baselines require reconciliation and no update acknowledges for peers
 - used knowledge-aware plans bind owners, explicit source hashes, routing and
   expiry; unchanged checks preserve warnings without rewriting canonical knowledge
+- new-worktree source/baseline/task readiness is explicit; reviewed active
+  handoffs preserve exact runtime bindings, and selected tasks require recovery
+  before continuation without historical freshness exemptions
+- optional publication handoffs bind full acknowledged intent and current
+  origin/pin observations; build estimates never imply locks or capacity guarantees
 - presence defaults and own-entry allowance are accepted or explicitly disabled;
   bootstrap/recovery agree with installed policy, updates preserve choices/live
   entries, and helper availability and same-clone limitations are explicit

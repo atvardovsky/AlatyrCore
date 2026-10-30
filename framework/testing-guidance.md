@@ -97,6 +97,10 @@ framework commands.
 
 ## Stack-Aware Structure Advice
 
+Verify selected positive-case initial conditions against accepted target behavior.
+Distinguish fixture, authentication and feature-setting mismatches from production
+defects; never infer another environment's facts or weaken assertions.
+
 Adapt structure to the target stack instead of copying another project:
 
 - service or backend projects often separate pure unit tests, application tests

@@ -171,6 +171,8 @@ cannot acknowledge instruction delivery for peers.
    paths rather than overwriting them. A rollback conflict is not acceptance.
    Freeze retention-reviewed closed-task witnesses; upgrade active models and
    projections together without fabricating authority or original-case results.
+   Preserve reviewed active handoffs; rebind them with renewed retention review
+   after model migration. Check new-worktree prerequisites before continuation.
    Bind registered update-task completion separately from installation health.
    Reconcile all registry owner declarations with canonical bindings on their
    fact nodes, selected additional testing templates, reviewed-warning inputs,

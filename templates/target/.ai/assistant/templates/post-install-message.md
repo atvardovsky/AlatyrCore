@@ -22,8 +22,8 @@ reported as `ready`.
 
 Canonical source tooling:
 - Resolve it through `.ai/assistant/tools/alatyr_delegate.py` using an
-  explicit source path, `ALATYR_CORE`, or the ignored local source-config
-  path declared by the validation contract.
+  explicit source path, `ALATYR_CORE`, or uncommitted worktree/Git-common config
+  declared by the validation contract.
 - Run transactional support finalization before accepted completion; source
   resolution or downstream validation failure is a blocker, not a local pass.
 

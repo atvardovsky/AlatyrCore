@@ -788,8 +788,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1793,
-      "content_digest": "sha256:c5255854a72b2ce56aa6d386b8d604a38783e68138859baada4b96174477465e"
+      "estimated_words": 1791,
+      "content_digest": "sha256:0d7f08ea67159c3d1e44d0ef872b6ce3737ea07f56c34b4d31419917f41492f7"
     },
     {
       "id": "assistant.content.templates-post-update-message-md",

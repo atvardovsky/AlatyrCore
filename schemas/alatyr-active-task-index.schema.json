@@ -17,6 +17,15 @@
           "state": {"enum": ["active", "closed"]},
           "task_class": {"enum": ["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"]},
           "problem_model": {"anyOf": [{"$ref": "#/definitions/binding"}, {"type": "null"}]},
+          "analysis_handoff": {
+            "type": "object", "additionalProperties": false,
+            "required": ["model", "projection", "retention_review"],
+            "properties": {
+              "model": {"$ref": "#/definitions/binding"},
+              "projection": {"$ref": "#/definitions/binding"},
+              "retention_review": {"$ref": "#/definitions/text"}
+            }
+          },
           "completion_evidence": {"anyOf": [{"$ref": "#/definitions/binding"}, {"type": "null"}]},
           "canonical_owners": {"$ref": "#/definitions/paths"},
           "changed_fact_ids": {"$ref": "#/definitions/strings"},

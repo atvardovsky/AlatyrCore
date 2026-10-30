@@ -83,7 +83,10 @@ without a model or durable receipt by default.
 
 Keep at most 128 current/recent headers. Changed-scope checks load active,
 selected or changed receipts; full checks may inspect all registered entries,
-not arbitrary ignored history. Active tasks retain live models/projections.
+not arbitrary ignored history. Active tasks retain live models/projections;
+reviewed cross-worktree handoffs follow
+[session continuity](session-continuity.md#worktree-prerequisites-and-active-handoffs)
+without historical freshness exemptions.
 Closed non-small tasks retain sanitized hash-bound model/projection witnesses
 in durable task-evidence storage, bound from closure with original model digest
 and task/operation/fact lineage. Historical validation uses frozen witnesses,

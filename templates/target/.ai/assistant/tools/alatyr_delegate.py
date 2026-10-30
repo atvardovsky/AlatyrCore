@@ -13,6 +13,29 @@ from pathlib import Path
 LOCAL_SOURCE = Path(".ai/local/framework-source")
 
 
+def common_source_config(target: Path) -> Path | None:
+    """One explicit local locator shared by linked worktrees; never discovery."""
+    env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+    try:
+        result = subprocess.run(["git", "-C", str(target), "rev-parse", "--git-common-dir"],
+                                capture_output=True, text=True, env=env, timeout=10, check=False)
+    except OSError:
+        return None
+    if result.returncode:
+        return None
+    common = Path(result.stdout.strip())
+    return (common if common.is_absolute() else target / common).resolve() / "alatyr/framework-source"
+
+
+def configured_path(path: Path) -> str:
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > 16384:
+        raise ValueError(f"framework-source configuration must be a bounded regular file: {path}")
+    value = path.read_text(encoding="utf-8").strip()
+    if not value or "\n" in value or "\r" in value or "\x00" in value:
+        raise ValueError(f"framework-source configuration must contain one resolved path: {path}")
+    return value
+
+
 def resolve_source(target: Path, explicit: Path | None) -> Path:
     candidates: list[tuple[str, Path, Path | None]] = []
     if explicit is not None:
@@ -21,10 +44,12 @@ def resolve_source(target: Path, explicit: Path | None) -> Path:
     if environment:
         candidates.append(("ALATYR_CORE", Path(environment), None))
     local_config = target / LOCAL_SOURCE
-    if local_config.is_file():
-        value = local_config.read_text(encoding="utf-8").strip()
-        if value:
-            candidates.append((LOCAL_SOURCE.as_posix(), Path(value), target))
+    if not candidates and (local_config.exists() or local_config.is_symlink()):
+        candidates.append((LOCAL_SOURCE.as_posix(), Path(configured_path(local_config)), target))
+    if not candidates:
+        common = common_source_config(target)
+        if common is not None and (common.exists() or common.is_symlink()):
+            candidates.append(("Git-common alatyr/framework-source", Path(configured_path(common)), common.parent))
 
     for source_name, candidate, relative_base in candidates:
         expanded = candidate.expanduser()
@@ -38,7 +63,8 @@ def resolve_source(target: Path, explicit: Path | None) -> Path:
         )
     raise ValueError(
         "AlatyrCore source is unresolved; provide --framework-source, set "
-        "ALATYR_CORE, or write its path to .ai/local/framework-source"
+        "ALATYR_CORE, or write its path to .ai/local/framework-source or the "
+        "Git-common alatyr/framework-source file"
     )
 
 
@@ -70,6 +96,12 @@ def build_parser() -> argparse.ArgumentParser:
     cooperation.add_argument("--command", action="append", default=[])
     cooperation.add_argument("--session-uid")
     cooperation.add_argument("--require-clear", action="store_true")
+    for name in ("handoff", "handoff-current", "capacity"):
+        cooperation.add_argument("--" + name, action=Once)
+    readiness = subparsers.add_parser("worktree-preflight", allow_abbrev=False)
+    add_common(readiness)
+    readiness.add_argument("--task-id", action=Once)
+    readiness.add_argument("--require-ready", action="store_true")
     for name in ("status", "doctor", "archive-audit"):
         operation = subparsers.add_parser(name, allow_abbrev=False)
         add_common(operation)
@@ -109,6 +141,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) -> list[str]:
+    if args.operation == "worktree-preflight":
+        command = [args.operation, "--target", str(target), "--framework-source", str(source)]
+        if args.task_id:
+            command.extend(["--task-id", args.task_id])
+        if args.require_ready:
+            command.append("--require-ready")
+        return command
     if args.operation in {"session-presence", "session-context"}:
         return [args.operation, "--target", str(target), *args.arguments]
     if args.operation == "cooperation-preflight":
@@ -120,6 +159,9 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
             command.extend(["--session-uid", args.session_uid])
         if getattr(args, "require_clear", False):
             command.append("--require-clear")
+        for name in ("handoff", "handoff_current", "capacity"):
+            if getattr(args, name, None):
+                command.extend(["--" + name.replace("_", "-"), getattr(args, name)])
         return command
     common = ["--target", str(target), "--framework-source", str(source)]
     if args.operation in {"status", "doctor"}:

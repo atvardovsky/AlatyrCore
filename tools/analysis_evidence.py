@@ -170,6 +170,13 @@ def artifact_bindings(model: dict) -> list[tuple[str, str]]:
     return result
 
 
+def active_retention_failures(model: dict, is_ignored: Callable[[str], bool | None]) -> list[str]:
+    """A schema-validated active witness must carry retainable dependencies."""
+    return [f"active handoff depends on ignored or unverified analysis artifact: {path}"
+            for path in sorted({path for path, _ in artifact_bindings(model)})
+            if is_ignored(path) is not False]
+
+
 def verify_artifacts(model: dict, read: Callable[[str, int], bytes]) -> list[str]:
     failures = []
     measured: dict[str, bytes] = {}

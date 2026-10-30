@@ -86,6 +86,13 @@ comparison; candidate evidence cannot establish installed acceptance. Historical
 schema/template comparison prefers the exact installed pin over version history.
 
 `publish-task` previews one active model, derived projection and index binding.
+
+For linked-worktree prerequisites, reviewed active handoffs, exact restoration,
+acknowledged publication observations and optional per-host build planning, see
+[Worktree Collaboration Helpers](../docs/collaboration-worktrees.md). These
+conditional helpers do not add bootstrap context, grant permission or replace
+full acceptance. `worktree-preflight` is read-only; `restore-task` writes ignored
+runtime bytes only with explicit `--write`.
 It reads a separate ignored draft, validates the canonical schema and header,
 and keeps unresolved proof and pending reviews unchanged. New tasks also need
 an explicit `--registration` draft matching the active-task index entry shape.
@@ -283,6 +290,13 @@ secrets automatically. Missing history is a blocker, not permission to invent it
 reports conflicts in the target's execution-contract resources without running
 commands. Identity/access, namespace isolation and observed write coordination
 must come from the target; no universal database names or ports are supplied.
+Its `selected_test_context` includes the selected canonical prerequisites,
+configuration, effects, environment and proof boundary without executing tests.
+
+At non-trivial completion, `suggest-knowledge --target <repo> --task-id <id>
+--limit 3` selects relevant owner-bound proposals from the existing mechanism.
+Repeat `--owner <file>` for explicit existing target owners. Omitted proposals
+remain counted; this neither promotes knowledge nor claims complete discovery.
 
 Execution contract 3 adds separately adopted exact selection and observed
 timing controls; legacy version-2 evidence remains readable, not retroactively

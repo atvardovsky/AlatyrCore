@@ -42,7 +42,7 @@ canonical acceptance.
 
 The portable `.ai/assistant/tools/alatyr_delegate.py` is the installed entry
 to canonical source checks. Resolve the source with `--framework-source`, the
-`ALATYR_CORE` environment variable, or the ignored local source-config path
+`ALATYR_CORE` environment variable, or explicit local worktree/Git-common config
 declared by the validation contract. Resolution fails closed; do not commit an
 absolute workstation source path. Canonical coverage requires a direct
 invocation of this shipped delegate and the operation assigned to that

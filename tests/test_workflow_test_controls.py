@@ -25,13 +25,13 @@ from yaml_support import safe_load
 
 
 class HostedFixtureIsolationTests(unittest.TestCase):
-    def test_portable_groups_preserve_the_exact_original_inventories(self):
+    def test_portable_groups_preserve_the_exact_reviewed_inventories(self):
         from check_source_unit_tests import explicit_test_modules
         workflow = safe_load((ROOT / ".github/workflows/cross-platform-source-checks.yml").read_text())
         steps = workflow["jobs"]["portable-source-checks"]["steps"]
         expected = {
             "Run portable support authoring regressions": (32, "19fda75427046a126feff993c29db5ebf350c4f37ccb7ec622f4a4a5b0b378e1"),
-            "Run filesystem and session regressions": (5, "5ac0abeaa6fb1379b3c8cfeaf9739e11b113037951fb366a05a24f1740e5a20c"),
+            "Run filesystem and session regressions": (7, "9eadb034420049d15b415bdb339148429d152a60d330a4c6090899298e5fdde0"),
         }
         for name, (count, digest) in expected.items():
             step = next(row for row in steps if row.get("name") == name)

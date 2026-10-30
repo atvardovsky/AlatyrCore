@@ -10,11 +10,11 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1750
+Catalog entries: 1752
 
 ## Families
 
-- `ACTIVE`: 23 codes.
+- `ACTIVE`: 25 codes.
 - `AGENT`: 2 codes.
 - `AI`: 18 codes.
 - `ANALYSIS`: 48 codes.
@@ -96,6 +96,8 @@ Catalog entries: 1750
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_ENTRY`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_HANDOFF_RETENTION`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ACTIVE_TASK_INDEX_CONTRACT`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_INDEX_INVALID_JSON`
@@ -111,6 +113,8 @@ Catalog entries: 1750
 - `ACTIVE_TASK_PREDECESSOR`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_PROJECTION`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `ACTIVE_TASK_REHYDRATION_REQUIRED`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_REMOVED`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.

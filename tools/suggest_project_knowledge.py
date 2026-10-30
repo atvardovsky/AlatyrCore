@@ -33,7 +33,7 @@ MAX_EVIDENCE_IDS = 8
 TASK_INDEX = Path(".ai/assistant/active-tasks.json")
 
 
-def recent_task_signals(target: Path) -> dict[str, Any]:
+def recent_task_signals(target: Path, *, owners: set[str] | None = None) -> dict[str, Any]:
     """Inspect only registered closure headers; never scan arbitrary runtime logs."""
     try:
         view = TargetRepositoryView(target)
@@ -52,6 +52,8 @@ def recent_task_signals(target: Path) -> dict[str, Any]:
             incomplete.append("invalid or duplicate task header")
             continue
         seen.add(task["task_id"])
+        if owners and not owners.intersection(task.get("canonical_owners", [])):
+            continue
         if task.get("state") != "closed":
             incomplete.append(f"{task['task_id']}: active work has no closed receipt")
             continue
@@ -72,10 +74,10 @@ def recent_task_signals(target: Path) -> dict[str, Any]:
         if not isinstance(delivery, dict) or delivery.get("implementation") != "complete" or delivery.get("evidence_finalization") != "final":
             incomplete.append(f"{task['task_id']}: closure is not finalized")
             continue
-        owners = [owner for owner in string_values(closure.get("canonical_owners")) if target_owned_owner(owner)]
-        if not owners:
+        task_owners = [owner for owner in string_values(closure.get("canonical_owners")) if target_owned_owner(owner)]
+        if not task_owners:
             continue
-        for kind, value in [("canonical-owner", owner) for owner in owners] + [("incident-family", closure.get("incident_family_id")), ("failed-gate", closure.get("latest_failed_gate_id"))]:
+        for kind, value in [("canonical-owner", owner) for owner in task_owners if not owners or owner in owners] + [("incident-family", closure.get("incident_family_id")), ("failed-gate", closure.get("latest_failed_gate_id"))]:
             if isinstance(value, str) and value not in {"", "none"}:
                 grouped.setdefault((kind, value), []).append(task["task_id"])
     return {
@@ -396,12 +398,32 @@ def suggestions(
     *,
     minimum_occurrences: int = 2,
     recommend_at_occurrences: int = 3,
+    owners: list[str] | None = None,
+    task_id: str | None = None,
+    limit: int | None = None,
 ) -> dict[str, Any]:
     if minimum_occurrences < 2:
         raise ValueError("minimum_occurrences must be at least 2")
     if recommend_at_occurrences < minimum_occurrences:
         raise ValueError("recommend_at_occurrences must be at least minimum_occurrences")
     target = target.resolve()
+    selected_owners = set(owners or [])
+    if any(not target_owned_owner(owner) or safe_target_path(target, owner) is None for owner in selected_owners):
+        raise ValueError("selected owners must be existing target-owned files")
+    if limit is not None and (type(limit) is not int or not 1 <= limit <= 128):
+        raise ValueError("candidate limit must be in 1..128")
+    if task_id is not None:
+        index, _ = _read_task_object(TargetRepositoryView(target), TASK_INDEX.as_posix())
+        if not task_schema("active-task-index").is_valid(index):
+            raise ValueError("selected task index is invalid")
+        matching = [task for task in index["tasks"] if task["task_id"] == task_id]
+        if len(matching) != 1:
+            raise ValueError("select exactly one registered task")
+        selected_owners.update(owner for owner in matching[0]["canonical_owners"] if target_owned_owner(owner))
+        if not selected_owners:
+            raise ValueError("selected task has no target-owned canonical owners")
+        if any(safe_target_path(target, owner) is None for owner in selected_owners):
+            raise ValueError("selected task canonical owners must exist")
     package_path = target / PACKAGE_INDEX
     knowledge_path = target / KNOWLEDGE_INDEX
     package_index = load_object(package_path)
@@ -445,6 +467,8 @@ def suggestions(
         seen_package_ids.add(package_id)
         terminal_records += 1
         compact_owners = string_values(record.get("canonical_owners"))
+        if selected_owners and not selected_owners.intersection(compact_owners):
+            continue
         if compact_owners and all(not target_owned_owner(owner) for owner in compact_owners):
             excluded_framework_packages += 1
             continue
@@ -463,6 +487,8 @@ def suggestions(
                 ambiguous_package_ids.append(package_id)
         seen_signals: set[tuple[str, str]] = set()
         for kind, selector, fact_ids in candidate_signals(verified):
+            if selected_owners and "canonical_owner" in selector and selector["canonical_owner"] not in selected_owners:
+                continue
             selector_key = json.dumps(
                 selector, sort_keys=True, separators=(",", ":")
             )
@@ -512,7 +538,11 @@ def suggestions(
 
     existing_promotions = knowledge_index.get("promotion_records")
     existing_count = len(existing_promotions) if isinstance(existing_promotions, list) else 0
-    task_discovery = recent_task_signals(target)
+    task_discovery = recent_task_signals(target, owners=selected_owners)
+    if limit is not None:
+        signals = task_discovery["signals"]
+        task_discovery["omitted_signals"] = max(0, len(signals) - limit)
+        task_discovery["signals"] = signals[:limit]
     source_bindings.extend(task_discovery.get("source_files", [{"path": TASK_INDEX.as_posix(), "state": task_discovery["coverage"]}]))
     return {
         "schema_version": 3,
@@ -538,7 +568,9 @@ def suggestions(
         "invalid_promotion_records_ignored": invalid_promotions,
         "suppressed_existing_candidates": len(suppressed_candidate_ids),
         "suppressed_candidate_ids": suppressed_candidate_ids,
-        "candidates": candidates,
+        "selection": {"task_id": task_id, "canonical_owners": sorted(selected_owners),
+                      "candidate_count": len(candidates), "omitted_candidates": max(0, len(candidates) - limit) if limit is not None else 0},
+        "candidates": candidates[:limit] if limit is not None else candidates,
         "automatic_promotion_performed": False,
         "reasoning_boundary": (
             "Repeated validated projections are discovery evidence only. A project owner "
@@ -550,10 +582,13 @@ def suggestions(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--target", required=True, type=Path)
     parser.add_argument("--minimum-occurrences", type=int, default=2)
     parser.add_argument("--recommend-at-occurrences", type=int, default=3)
+    parser.add_argument("--owner", action="append", default=[], help="Select existing canonical target owners before opening package records.")
+    parser.add_argument("--task-id", help="Use one registered task's canonical owners for completion-time proposals.")
+    parser.add_argument("--limit", type=int, help="Bound displayed proposals; omitted count remains explicit.")
     args = parser.parse_args()
     if args.minimum_occurrences < 2:
         parser.error("--minimum-occurrences must be at least 2")
@@ -566,6 +601,7 @@ def main() -> int:
             args.target,
             minimum_occurrences=args.minimum_occurrences,
             recommend_at_occurrences=args.recommend_at_occurrences,
+            owners=args.owner, task_id=args.task_id, limit=args.limit,
         )
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)

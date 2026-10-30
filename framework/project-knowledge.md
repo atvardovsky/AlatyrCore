@@ -91,6 +91,13 @@ read-only suggestions. Frequency cannot prove semantics, create promotions,
 edit owners or accept guidance. When available, source helper
 `tools/suggest_project_knowledge.py` supplies this bounded route.
 
+At non-trivial task completion, review a small set of existing candidates
+selected by that task's canonical owners, especially after recurring repairs.
+Return contributing evidence and explicit omitted counts, or explain why no
+reusable candidate is indicated. Keep this conditional and review-only: empty
+knowledge indexes are valid, frequency is not authority, and completion must not
+automatically promote proposals or preload unrelated project history.
+
 The helper combines area/owner signals for single-area packages. For multi-area
 packages it may suggest owner recurrence but never invented Cartesian pairs.
 Incident families, failed gates and corrective owners remain separate signals.

@@ -29,6 +29,15 @@ finally:
 
 
 class TargetDelegateTests(unittest.TestCase):
+    def test_common_locator_and_readiness_are_declared_and_forwarded(self) -> None:
+        contract = json.loads((ROOT / "templates/target/.ai/assistant/validation-contract.json").read_text())
+        self.assertEqual(contract["source_resolution"]["common_git_config"], "alatyr/framework-source")
+        parsed = delegate.build_parser().parse_args(["worktree-preflight", "--target", ".", "--task-id", "TASK", "--require-ready"])
+        canonical = delegate.canonical_arguments(parsed, ROOT, ROOT)
+        self.assertEqual(canonical[0], "worktree-preflight")
+        self.assertIn("--require-ready", canonical)
+        self.assertEqual(canonical[canonical.index("--task-id") + 1], "TASK")
+
     def test_optional_workflow_flags_are_forwarded(self) -> None:
         for operation, flag, extra in (("doctor", "--work-overview", []),
                                        ("status", "--work-overview", []),

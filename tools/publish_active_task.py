@@ -57,7 +57,8 @@ def _object(target: Path, relative: str, limit: int) -> tuple[bytes, dict]:
     return raw, value
 
 
-def prepare(target: Path, task_id: str, draft: str, registration: str | None = None) -> TaskPublication:
+def prepare(target: Path, task_id: str, draft: str, registration: str | None = None,
+            retention_review: str | None = None) -> TaskPublication:
     if not isinstance(task_id, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", task_id) is None:
         raise ValueError("task ID must be a safe resolved identifier")
     raw_index, index = _object(target, INDEX, 512 * 1024)
@@ -81,6 +82,8 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
         task = copy.deepcopy(old)
     else:
         raise ValueError("new task publication requires an explicit registration draft")
+    if "analysis_handoff" in task and (old is None or task["analysis_handoff"] != old.get("analysis_handoff")):
+        raise ValueError("registration cannot introduce or modify handoff bindings; derive them with --retention-review")
     if task.get("task_id") != task_id or task.get("state") != "active" or task.get("completion_evidence") is not None or task.get("task_class") == "small-task":
         raise ValueError("publication requires one active non-small task without completion claims")
     raw_draft, model = _object(target, draft, MAX_PROBLEM_MODEL_FILE_BYTES)
@@ -139,6 +142,31 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
     if graph_failures:
         raise ValueError("invalid task predecessor graph: " + "; ".join(graph_failures))
     outputs = {target / model_relpath: raw_model, target / projection_relpath: _render(projection), target / INDEX: _render(index)}
+    if retention_review is not None or old is not None and "analysis_handoff" in old:
+        from behavior_acceptance import resolved
+        if not resolved(retention_review) or len(retention_review) > 1024:
+            raise ValueError("each active handoff revision requires an explicit retention-review source")
+        if "analysis_evidence" in model:
+            from analysis_evidence import active_retention_failures
+            failures = active_retention_failures(model, git.is_ignored)
+            if failures:
+                raise ValueError("; ".join(failures) + "; explicitly move reviewed evidence to retainable target paths and revise its bindings first")
+        destination = f".ai/assistant/task-evidence/{task_id}/{model_sha}"
+        witness = {"model": {"path": destination + "/model.json", "sha256": model_sha},
+                   "projection": {"path": destination + "/projection.json", "sha256": hashlib.sha256(_render(projection)).hexdigest()},
+                   "retention_review": retention_review}
+        for name, content in (("model", raw_model), ("projection", _render(projection))):
+            relative = witness[name]["path"]
+            if git.is_ignored(relative) is not False:
+                raise ValueError("active handoff destinations must be retainable by Git")
+            path = target / relative
+            previous = read_output(target, path, max_bytes=MAX_PROBLEM_MODEL_FILE_BYTES)
+            if previous is not None and previous != content:
+                raise ValueError("existing immutable handoff differs from proposed bytes")
+            inputs[path] = previous
+            outputs[path] = content
+        task["analysis_handoff"] = witness
+        outputs[target / INDEX] = _render(index)
     published = {_portable_identity(path) for path in (model_relpath, projection_relpath, INDEX)}
     if _portable_identity(draft) in published or registration is not None and _portable_identity(registration) in published:
         raise ValueError("authoring drafts must be separate from published outputs")
@@ -178,6 +206,7 @@ def main() -> int:
     parser.add_argument("--task-id", required=True)
     parser.add_argument("--draft", required=True, help="Ignored target-relative JSON authoring draft; never a completion receipt.")
     parser.add_argument("--registration", help="Target-relative active registration draft, required for a new task.")
+    parser.add_argument("--retention-review", help="Explicit review source permitting an active model/projection handoff to be retained by Git; required again on revisions.")
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
     target = args.target.resolve()
@@ -185,7 +214,7 @@ def main() -> int:
         if args.write:
             assert_write_compatible(target, tool_name="publish_active_task.py")
             with support_writer_lock(target):
-                plan = prepare(target, args.task_id, args.draft, args.registration)
+                plan = prepare(target, args.task_id, args.draft, args.registration, args.retention_review)
                 transaction = SupportTransaction(target)
                 try:
                     transaction.apply(plan.outputs, expected_inputs=plan.inputs)
@@ -195,7 +224,7 @@ def main() -> int:
                         print(f"Rollback conflicts preserved: {conflicts}", file=sys.stderr)
                     raise
         else:
-            plan = prepare(target, args.task_id, args.draft, args.registration)
+            plan = prepare(target, args.task_id, args.draft, args.registration, args.retention_review)
         print(json.dumps({"write": args.write, "task_id": args.task_id, "acceptance_granted": False,
             "changed_paths": [path.relative_to(target).as_posix() for path, value in plan.outputs.items() if value != plan.inputs.get(path)]}, indent=2))
         return 0

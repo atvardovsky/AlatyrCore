@@ -141,6 +141,25 @@ caching proves neither compaction, window reduction nor safe rehydration.
 
 ## Concurrent Session Presence
 
+### Worktree Prerequisites And Active Handoffs
+
+At a new worktree or resumed task, verify an explicitly configured canonical
+source, compatible installed baseline and selected task bindings before writes.
+An optional local source locator in Git's common directory may serve linked
+worktrees; it grants no adapter activation, compatibility or authority. Never
+guess a source from nearby repositories or commit workstation paths.
+
+Tracked active headers must not depend solely on another worktree's ignored
+files. After explicit retention/privacy review, an `analysis_handoff` may bind
+the exact active model and derived projection under the task's durable evidence
+directory. Each revision needs a renewed review; preserve immutable prior bytes.
+Foreign active tasks may use that witness without inventing local runtime files.
+Active evidence still uses the current schema and source-freshness checks, not
+the historical exemptions of closed witnesses. A selected task must restore its
+exact runtime bindings before work, then re-establish current authorization and
+affected owners. Missing or conflicting bytes remain blockers; no copying an
+alternate model, automatic retirement, or acceptance from a recovered snapshot.
+
 New accepted installations default to minimal local presence, independent of
 optional team governance. Coordination activates from multiple reported
 independent participants, not by rewriting policy. The compact bootstrap routes
@@ -183,6 +202,22 @@ creation/adoption. Compose test-resource planning when useful. Whole-resource
 identities span namespaces without proving isolation. Disabled/stale/unknown/
 omitted peers remain uncertain. No conflict report proves liveness or grants
 reservation, clearance or action permission.
+
+For contested publication, the target may retain an acknowledged handoff binding
+the resource, publisher UID, current approval reference, exact candidate, intended
+origin, predecessor pin and pin generation. The acknowledgement binds the whole
+unchanged intent. Compare independent current inputs with fresh acknowledgement,
+origin-availability and pin observations; changed/missing bindings require
+coordination. Local tree equivalence cannot prove remote availability. Reobserve
+immediately before separately authorized publication and use target conditional
+updates where available. The receipt is unauthenticated reported evidence, not a
+lock, permission, automatic takeover, or proof that later activation was ordered.
+
+Optional build planning compares simultaneous process-tree peak estimates and
+CPU demand with fresh available headroom per capacity domain. Count distinct
+build instances, never pool hosts, and keep missing/stale estimates unresolved.
+A compiler heap target is not a process-tree memory limit. Estimated fit cannot
+guarantee absence of OOM, reserve capacity or clear presence/resource conflicts.
 
 ## Completion Evidence
 

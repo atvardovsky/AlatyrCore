@@ -386,12 +386,13 @@ In a typical target repository:
    the bootstrap; keep domain shards lazy and retain canonical prose fallback.
    Neither an index nor a semantic term becomes a source of truth.
    Install `.ai/assistant/tools/alatyr_delegate.py` and validation-contract
-   schema version 2. The delegate resolves source tooling from an explicit
-   argument, `ALATYR_CORE`, or ignored `.ai/local/framework-source`; it
-   fails closed and replaces committed workstation-specific source paths.
-   Record installed `framework.source_commit` from Git evidence; keep tooling
-   and candidate roles distinct. Bind typed upgrade validation routes and
-   preserve unresolved task evidence. See [lifecycle](framework/lifecycle.md).
+   schema version 2. Resolve source explicitly through `--framework-source`,
+   `ALATYR_CORE`, `.ai/local/framework-source`, or Git-common
+   `alatyr/framework-source`; fail closed and keep workstation paths uncommitted.
+   Record `framework.source_commit` from Git evidence, distinguish tooling from
+   candidates, and bind typed upgrade routes per [lifecycle](framework/lifecycle.md).
+   Apply continuity's new-worktree prerequisite, reviewed-handoff and exact-recovery
+   rules before continuation; missing evidence stays blocked.
    Adapt `.ai/project/support-policy.json` from target evidence. Rebuild the
    optional consistency reverse index and support-generation index after their
    owners are final, then generate `.ai/support-state.json` last. Do not include

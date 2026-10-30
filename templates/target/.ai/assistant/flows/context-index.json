@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2777,
-      "content_digest": "sha256:47320cb4846cb0e823f4be891cef86dd0efc5d1199228034239d00c2dbbc152c"
+      "estimated_words": 2796,
+      "content_digest": "sha256:2577d48acb62bc74610ed69ddfe5eabacd6da27f812aa4e18ef6289cff9c582a"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -458,8 +458,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 709,
-      "content_digest": "sha256:6f0b2cfa51b18342a2b992336e4013154080795c25e61cab3625222880ae6b9f"
+      "estimated_words": 462,
+      "content_digest": "sha256:c4b939c175afad7ab56d501018179d17c3acc0ed9da741bd11bd60d07a37611a"
     },
     {
       "id": "assistant.content.flows-project-vocabulary-flow-md",
@@ -528,8 +528,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 491,
-      "content_digest": "sha256:5332075f8378a92e628a4986cce13305fb271b3074b4d2eb5e75b591c5199f24"
+      "estimated_words": 344,
+      "content_digest": "sha256:1973c2d40b7812fcffdc2de2c2a20934edec774d384a3ae6b826dc28f400640f"
     },
     {
       "id": "assistant.content.flows-session-presence-flow-md",
@@ -550,8 +550,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 703,
-      "content_digest": "sha256:723414f36e225162d580ae16d0556f325fe33db93b0f30819870e414430f268e"
+      "estimated_words": 346,
+      "content_digest": "sha256:6f98bf427fb5cdb62a38ca0d96ff7db93d216424cff8a71f99e702d2661b838e"
     },
     {
       "id": "assistant.content.flows-skill-adaptation-flow-md",
@@ -762,8 +762,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 880,
-      "content_digest": "sha256:0648d780cf2d8ee737cbedec9ce3c6c06b17ba4cc14de7e8ac0e263cad46e15d"
+      "estimated_words": 886,
+      "content_digest": "sha256:55891f14200dba43a660f6355561bb414511156f49e3759bdaf5896c2608207d"
     },
     {
       "id": "assistant.content.flows-test-first-configuration-flow-md",

@@ -369,20 +369,17 @@ Classify every proposed target file:
     and minimal workflows from target facts. Operations, bridges, capabilities,
     and optional flows require selected profiles/modules. Generate indexes
     from the final installed set, not the full template.
-    Install the portable delegate and validation contract.
-    Bind framework-upgrade inspection/completion entrypoint IDs to that contract.
-    Record an exact installed source commit when Git evidence is available;
-    keep tooling, installed baseline and upgrade candidate identities separate.
-    Apply `session-presence.flow.md`: new accepted installs default to discovery
-    and own-entry housekeeping; preserve existing choices/live entries, verify
-    helper availability, and refresh routes from the installed policy.
-    Install policy-5 session-context checkpoints and verify the delegate's
-    capture/check route. Bind every selected loaded file, preserve peer
-    baselines, and tell already-running sessions to recheck once if they never
-    loaded the checkpoint rule. Record `staged` before changing an accepted
-    adapter; the authorized updater follows the lifecycle path.
-    Resolve source via explicit argument, `ALATYR_CORE`, or ignored
-    `.ai/local/framework-source`; fail closed. Never commit workstation paths.
+    Install the delegate/validation contract and bind upgrade inspection/completion
+    entrypoint IDs. Record Git-proven installed source commit; distinguish tooling,
+    baseline and candidate. Apply `session-presence.flow.md`, preserving choices/live
+    entries and verifying helper availability and installed-policy routes.
+    Install policy-5 checkpoints; verify capture/check, bind selected loaded files,
+    preserve peer baselines and request unaware sessions' explicit recheck.
+    Stage accepted adapters before mutation; authorized updates follow lifecycle.
+    Resolve source explicitly via argument, `ALATYR_CORE`, uncommitted
+    `.ai/local/framework-source` or Git-common `alatyr/framework-source`; fail closed.
+    Apply continuity's worktree prerequisites and reviewed exact handoff recovery;
+    never auto-retire missing evidence.
     Route enabled team operations and matched state-changing work through the
     lazy `.ai/assistant/team/context-overlay.json`. Read the compact active-work
     index first; do not put full team state in bootstrap.

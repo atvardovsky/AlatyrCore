@@ -168,6 +168,12 @@ class CooperationRuntimeTests(unittest.TestCase):
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertEqual(json.loads(run.stdout)["decision"], "coordinate-before-work")
         self.assertEqual((hub / "sessions.json").read_bytes(), before)
+        brief = json.loads(run.stdout)["resources"]["selected_test_context"]
+        self.assertEqual(len(brief), 1)
+        self.assertEqual(brief[0]["command_id"], "unit")
+        self.assertEqual(brief[0]["prerequisites"], policy["commands"][0]["execution"]["prerequisites"])
+        self.assertEqual(brief[0]["environment"], "disposable")
+        self.assertFalse(json.loads(run.stdout)["resources"]["execution_authorized"])
         invalid = subprocess.run([*args[:-1], "missing"], capture_output=True, text=True)
         self.assertEqual(invalid.returncode, 2, invalid.stderr)
         self.assertNotIn("Traceback", invalid.stderr)

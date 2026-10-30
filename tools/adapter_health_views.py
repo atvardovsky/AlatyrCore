@@ -56,6 +56,67 @@ def finding_groups(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return list(groups.values())
 
 
+def repair_plan(view: TargetRepositoryView, findings: list[dict[str, Any]]) -> dict[str, Any]:
+    """Explain observed prerequisites without waiving or reclassifying findings."""
+    tasks = None
+    task_codes = {"ACTIVE_TASK_BINDING", "ACTIVE_TASK_DIGEST", "ACTIVE_TASK_REHYDRATION_REQUIRED"}
+    if any(item["level"] == "error" and item["code"] in task_codes for item in findings):
+        index, _ = _overview_index(view, ".ai/assistant/active-tasks.json", "tasks")
+        if index is not None:
+            tasks = index["tasks"]
+    steps = []
+    if tasks is not None:
+        from analysis_strategy_contract import MAX_PROBLEM_MODEL_FILE_BYTES, MAX_ACTIVE_PROJECTION_FILE_BYTES
+        for task in tasks:
+            binding = task.get("problem_model")
+            if task.get("state") != "active" or not isinstance(binding, dict) or not isinstance(binding.get("path"), str):
+                continue
+            relative = binding["path"]
+            if not is_target_relative_path(relative):
+                continue
+            content = view.read_bytes_result(view.target / relative, max_bytes=MAX_PROBLEM_MODEL_FILE_BYTES)
+            if content.value is not None and content.digest == binding.get("sha256"):
+                continue
+            witness = task.get("analysis_handoff")
+            selected_recovery = any(item["code"] == "ACTIVE_TASK_REHYDRATION_REQUIRED" and item["message"].startswith(f"{task.get('task_id')}:") for item in findings)
+            if content.value is None and isinstance(witness, dict) and not selected_recovery:
+                retained = True
+                for name, limit in (("model", MAX_PROBLEM_MODEL_FILE_BYTES), ("projection", MAX_ACTIVE_PROJECTION_FILE_BYTES)):
+                    entry = witness.get(name)
+                    path = entry.get("path") if isinstance(entry, dict) else None
+                    if not isinstance(path, str) or not is_target_relative_path(path) or not path.startswith(f".ai/assistant/task-evidence/{task.get('task_id')}/"):
+                        retained = False
+                        break
+                    raw = view.read_bytes_result(view.target / path, max_bytes=limit)
+                    if raw.value is None or raw.digest != entry.get("sha256") or name == "model" and entry.get("sha256") != binding.get("sha256"):
+                        retained = False
+                        break
+                if retained:
+                    continue
+            steps.append({"id": f"task-evidence:{task.get('task_id')}", "kind": "prerequisite",
+                          "task_id": task.get("task_id"), "path": relative,
+                          "expected_sha256": binding.get("sha256"),
+                          "action": "reconcile-conflicting-evidence" if content.value is not None else "inspect-reviewed-handoff-for-restore" if isinstance(task.get("analysis_handoff"), dict) else "recover-exact-evidence",
+                          "requires": ["worktree-preflight", "current-scope-modify-authorization"],
+                          "explanation": "Recover only the registered bytes; another model version is not evidence recovery. Recheck freshness and authorization before work."})
+    prerequisite_ids = [step["id"] for step in steps]
+    grouped = finding_groups(findings)
+    historical = [group for group in grouped if group["level"] != "error" and any(token in group["code"] for token in ("HISTORICAL", "SNAPSHOT"))]
+    for group in grouped:
+        if group["level"] != "error":
+            continue
+        steps.append({"id": f"finding:{group['finding_indexes'][0]}", "kind": "finding-review",
+                      "code": group["code"], "path": group["path"],
+                      "finding_indexes": group["finding_indexes"],
+                      "requires": prerequisite_ids if group["code"] in task_codes else [],
+                      "action": "revalidate-after-prerequisite-recovery" if group["code"] in task_codes else "inspect-canonical-owner",
+                      "explanation": group["message"]})
+    return {"state": "derived-guidance", "steps": steps,
+            "historical_attention_groups": historical, "findings_preserved": len(findings),
+            "acceptance_granted": False, "findings_waived": False,
+            "limitation": "Observed binding prerequisites, not inferred domain causality; full findings and acceptance remain unchanged."}
+
+
 def _overview_index(view: TargetRepositoryView, path: str, field: str) -> tuple[dict[str, Any] | None, str | None]:
     if not is_target_relative_path(path):
         return None, "owner path is unsafe"

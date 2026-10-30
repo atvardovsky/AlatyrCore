@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.115 - 2026-10-30
+
+- Add explicit Git-common source location fallback and bounded worktree
+  readiness without activating another adapter or inferring compatibility.
+- Retain opt-in reviewed active model/projection handoffs and restore exact
+  runtime bytes transactionally. Keep missing/conflicting evidence blocked,
+  active schema/source freshness enforced and closed historical rules distinct.
+- Compose acknowledged whole-intent publication handoffs and optional per-host
+  process-tree capacity estimates with advisory cooperation checks. Keep origin,
+  pin generation, current approval, uncertainty and execution authority separate.
+- Deliver selected canonical test preconditions, task-owner-filtered completion
+  knowledge proposals and artifact-specific diagnostic recovery prerequisites.
+  Retain all findings, owner review and unchanged acceptance requirements.
+- Advance framework to alpha.115, adapter schema to 96 and templates to 110.
+  Migrate helpers, task headers and conditional flows together; no target rollout,
+  live deployment, tag or release publication is implied.
+
 - Defer reviewed-warning dependencies until warning sources are requested and
   prepare knowledge schemas once per lookup while validating every selected
   shard and retaining the first actionable schema diagnostic.
@@ -10,8 +29,8 @@
 - Run the unchanged portable regression inventories with the existing bounded
   test executor and skip optional Windows pip-cache restoration after observed
   cache-egress stalls. Required setup, checks and timeouts remain unchanged.
-- Source-tooling performance changes only: framework, adapter schema and target
-  template versions remain unchanged; no target migration is required.
+- Those source-tooling performance changes alone require no target migration;
+  the separate worktree collaboration additions above have their stated impact.
 
 - Coalesce identical target-file selections from required profiles, knowledge,
   impact owners and changed paths before context budgets and packet creation.

@@ -1,100 +1,73 @@
 # Project Knowledge Promotion And Delivery Flow
 
 Propose, review, promote, route, revalidate, supersede or explain knowledge in
-`{PROJECT_NAME}`. This flow authorizes no edits, commits, publication or live actions.
+`{PROJECT_NAME}`. This flow grants no action authority.
 
 ## Sources
 
 - Rule owner: `.ai/framework/project-knowledge.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
 - Routing index: `.ai/project/knowledge/index.json`
-- Routing descriptor: `.ai/assistant/context/project-knowledge-routing.json`
-- Promotion template: `.ai/assistant/templates/project-knowledge-promotion.json`
-- Route-shard template: `.ai/assistant/templates/project-knowledge-route-shard.json`
+- Descriptor: `.ai/assistant/context/project-knowledge-routing.json`
+- Templates: `.ai/assistant/templates/project-knowledge-promotion.json` and
+  `.ai/assistant/templates/project-knowledge-route-shard.json`
 - Gate: `.ai/assistant/gates/project-knowledge.md`
-- Selected engineering evidence, canonical owners, and repository evidence
+- Selected engineering evidence, canonical owners and repository evidence
 
 ## Delivery
 
-1. Select the smallest task profile and applicable project areas.
-2. Read the compact root index. Select shard descriptors using profile plus at
-   least one area, subsystem, architecture item, dependency, contract, path,
-   symbol, fact, or issue signal.
-3. Apply the initial packet limit. Do not open unrelated shards.
-4. Reverify each selected canonical owner and applicable freshness trigger.
-5. Supply only accepted and current items as candidate constraints. Supply
-   stale items as warnings and contradictions as blockers. Keep all other
-   states lazy.
-6. After initial inspection identifies concrete facts, paths, symbols,
-   subsystems, architecture items, dependencies, contracts, or issue lineage,
-   perform one refined route.
-7. Record selected, used, stale, blocked, rejected-as-inapplicable, and omitted
-   item IDs in the context receipt.
-8. Bind the used ready plan through the session-continuity flow. Recheck owners,
-   declared sources, query/index/shards and expiry at work checkpoints; retain
-   warnings. New matches after an empty result require rerouting too.
+1. Select the smallest profile/areas and read the compact index. Match bounded
+   shard descriptors by profile plus a concrete area, subsystem, architecture,
+   dependency, contract, path, symbol, fact or issue signal. Never load unrelated
+   shards or treat profile-only matches as sufficient.
+2. Enforce initial packet limits and verify selected owners/freshness. Supply
+   accepted/current items as candidate constraints, stale items as warnings and
+   contradictions as blockers; keep other states lazy.
+3. After inspection identifies concrete selectors, perform one refined route.
+   Record selected, used, inapplicable, stale, blocked, rejected and omitted IDs.
+4. Bind used ready plans through session continuity. Recheck owners, sources,
+   query/index/shards and expiry at checkpoints, preserving warnings. New matches
+   after an empty result require rerouting.
 
-## Promotion Or Direct Guidance Intake
+## Completion Proposals And Promotion
 
-1. Suggestions inspect only validated/completed package and engineering-evidence
-   summaries. Return bounded candidates and contributing evidence IDs. Verify
-   compact entries against records, combine area/owner signals, bound samples
-   and suppress unchanged snapshots already named by promotions. Input hashes
-   permit external invalidation, never trusted cached candidates. `read-only`
-   creates neither promotions nor knowledge edits.
-2. Classify `engineering-discovery` (durable engineering evidence required) or
-   recorded `decision-owner-directive` (verified authority and durable decision
-   required). Both need bounded repository evidence and a registered owner.
-3. Promotion records and canonical edits require current-scope target-compatible
-   authorization. Read-only results remain proposals.
-4. Identify the fact type, fact IDs, proposed canonical owner, decision owner,
-   and route hints. Report an ownership gap instead of inventing an owner.
-5. The target owner accepts, narrows, rejects or defers discoveries. Directives
-   require authority for this fact type/scope; arbitrary messages, silence,
-   frequency, passing tests and previous-scope approvals cannot establish it.
-6. Acceptance/narrowing first verifies or updates the canonical owner and its
-   SHA-256. Promotions preserve accepted wording and decision references.
-7. Create or update one bounded route entry, link its promotion and engineering
-   evidence, add freshness triggers, and register its shard in the root index.
-   Bind applicable literal code/contract dependencies with `source-sha256`;
-   unknown dependency coverage is not proof of freshness.
-   Curate reusable examples through the canonical owner's applicability,
-   exception and falsifying-case guidance, not a separate memory registry.
-8. Validate reciprocal contradiction and supersession links. A contradicted
-   entry cannot remain current.
-9. Run adapter/project validation; report disposition, canonical/route changes
-   and residual uncertainty.
-10. Synchronize the index adoption state. Use `enabled-empty` only with no
-   promotions, coverage, or route entries; use `populated` after reviewed route
-   entries exist; use `reuse-observed` only with explicit later-task delivery
-   or operation evidence.
+1. At non-trivial completion, use available `suggest-knowledge --task-id ID
+   --limit 3` or explicit `--owner` files. Review relevant recurrence proposals,
+   contributing evidence and omissions. No match/empty index is not a defect.
+2. Suggestions use validated/completed summaries with verified record projections,
+   bounded samples and existing-promotion suppression. Frequency/digests are not
+   semantic proof; never invent area/owner pairs or promote automatically.
+3. Apply the owner's Promotion Lifecycle: distinguish `engineering-discovery`
+   from `decision-owner-directive`. Verify durable evidence, current authority,
+   fact IDs, canonical/decision owners and route hints. Report gaps, not guessed
+   owners. Current-scope authorization is required for canonical/promotion edits.
+4. Obtain the owner's accept/narrow/reject/defer disposition. First verify/update
+   the canonical owner and SHA-256; retain accepted wording and decision sources.
+   Messages, silence, repeated use and previous approvals do not establish authority.
+5. Publish one bounded route entry linked to promotion/evidence and register its
+   shard. Bind literal code/contract dependencies with `source-sha256`;
+   undeclared dependency coverage remains unverified.
+6. Validate reciprocal contradiction/supersession links and run target validation.
+   Reconcile adoption state: `enabled-empty`, `populated`, or `reuse-observed`
+   only with the owner's required evidence; never infer measured benefit.
 
-## Narrowing, Exceptions, And Coverage
+## Exceptions, Coverage And Revalidation
 
-1. Classify each routed entry as a base rule, narrower rule, or authorized
-   exception. A narrowing or exception names its base guidance ID.
-2. Verify scope, decision authority, rationale, validation, revalidation
-   triggers, and expiry. Never use a global precedence shortcut or let a lower
-   authority override target safety.
-3. Maintain the derived coverage view with `mapped`, `known-gap`, or `unknown`
-   states by area and fact type. Mapped entries reference existing guidance IDs.
-4. Do not publish a completeness percentage or treat missing index coverage as
-   proof that no guidance exists.
+Follow the owner's Narrowing And Authorized Exceptions contract: name base
+guidance, scope, authority, rationale, validation, revalidation and expiry.
+No global precedence shortcut permits safety override.
 
-## Revalidation And Conflict
+Maintain area/fact coverage as `mapped`, `known-gap` or `unknown`; mapped
+entries reference existing guidance. Do not publish completeness percentages
+or infer absent guidance from index gaps.
 
-1. Compare canonical-owner/source digests and applicable dependency, ownership,
-   contract, upstream, replacement, maintainer-review, and expiry triggers.
-2. Change `current` to `revalidation-required` when evidence changed or cannot
-   be checked. Do not infer the new fact from a digest difference.
-3. Mark conflicting applicable items `contradicted`, preserve provenance, and
-   route the issue to the source-of-truth conflict resolver.
-4. After a decision, update the canonical owner and reciprocal relationship
-   links. Keep replaced entries as `superseded` historical evidence.
+Compare owner/source digests and applicable freshness triggers. Changed or
+unverifiable evidence requires `revalidation-required`; hashes cannot infer
+new facts. Preserve provenance for contradictions, resolve through canonical
+ownership and retain replaced entries as `superseded`, never current.
 
 ## Final Evidence
 
-Report operation mode, current authorization, proposal and disposition,
-canonical owner update, initial and refined selectors, selected and omitted
-items, freshness and conflict results, packet limits, adoption state and reuse
-evidence or enabled-empty limitation, validation, and residual risk.
+Report mode/authorization, proposal/disposition, canonical and route changes,
+initial/refined selectors, selected/omitted IDs, freshness/conflicts, packet
+limits, adoption/reuse evidence or enabled-empty limitations, validation and risk.

@@ -29,6 +29,10 @@ headers. Changed scope does not reopen unchanged closed-task models just because
 the root index changed; full scope checks every retained header. Retain selected
 models or explicitly retire headers after preserving durable evidence.
 
+Optional reviewed active handoffs and exact-byte recovery follow
+[worktree collaboration](collaboration-worktrees.md). Foreign active witnesses
+keep current schema/source freshness; selected tasks require runtime rehydration.
+
 ## Closure
 
 Captured receipts must match task, operation, and result. A material capture

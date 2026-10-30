@@ -70,8 +70,8 @@
       "owner_refs": [
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 2875,
-      "content_digest": "sha256:f50bcfe517c9b99c459eef81d3574cca9e6c87cf31f56579c1d83ace051cce55"
+      "estimated_words": 2885,
+      "content_digest": "sha256:78f9299ea6f5cd08d532a42f816014c8c96a1acddd802c9f188dd6d84c2e7382"
     },
     {
       "id": "framework.collaboration.team-collaboration-md",

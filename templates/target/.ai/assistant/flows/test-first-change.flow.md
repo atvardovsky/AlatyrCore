@@ -29,6 +29,7 @@ fact, defect, invariant, contract, or refactor.
    Read its execution contract: canonical owners, configuration, prerequisites,
    effects, environment, suite selection/exclusions, filter support and proof
    boundary. Inventory membership and module enablement never authorize a run.
+   Use `selected_test_context` from available resource/cooperation preflight.
    If the selected command requires schema-3 selection/timing controls, load
    `.ai/framework/test-execution-selection.md`. Reconcile the complete exact
    request against captured discovery before execution; a missing filename or

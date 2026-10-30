@@ -311,6 +311,7 @@ def validate_selected_problem_model(
     archived_projection: Path | None = None,
     original_source_path: str | None = None,
     current_task: bool = False,
+    historical_witness: bool = True,
 ) -> dict[str, Any] | None:
     relpath = validator.rel(model_path)
     archived = archived_projection is not None
@@ -354,7 +355,8 @@ def validate_selected_problem_model(
     model = validator.load_json_object(model_path, "ANALYSIS_PROBLEM_MODEL")
     if not isinstance(model, dict):
         return None
-    if archived and model.get("schema_version") in (4, 5, 6):
+    frozen = archived and historical_witness
+    if frozen and model.get("schema_version") in (4, 5, 6):
         try:
             schema = _schema(PROBLEM_MODEL_SCHEMA.with_name(f"alatyr-problem-model-v{model['schema_version']}.schema.json"), validator.schema_context)
             if model["schema_version"] == 4:
@@ -371,6 +373,10 @@ def validate_selected_problem_model(
         validator.error("ANALYSIS_PROBLEM_MODEL_INVALID", failure, relpath)
     if model_failures:
         return None
+    if archived and not historical_witness:
+        from analysis_evidence import active_retention_failures
+        for failure in active_retention_failures(model, validator.git.is_ignored):
+            validator.error("ACTIVE_TASK_HANDOFF_RETENTION", failure, relpath)
     if model.get("schema_version") == 7:
         from analysis_evidence import evidence_failures, verify_artifacts
         def read_artifact(path: str, limit: int) -> bytes:
@@ -380,7 +386,7 @@ def validate_selected_problem_model(
             return result.value
         # Frozen witnesses retain historical source bindings; do not compare them
         # with today's implementation files. Current tasks must verify both.
-        if not archived or current_task and require_completion:
+        if not frozen or current_task and require_completion:
             for failure in verify_artifacts(model, read_artifact):
                 validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
         for failure in evidence_failures(model, completion=require_completion):
