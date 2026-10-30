@@ -1,19 +1,21 @@
 from __future__ import annotations
 
 import hashlib
+import copy
 import json
 import subprocess
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from context_catalog import file_digest, word_count  # noqa: E402
-from context_planning import ContextPlanRequest, plan_target_context  # noqa: E402
+from context_catalog import CatalogItem, file_digest, word_count  # noqa: E402
+from context_planning import ContextPlanRequest, ContextPlanningError, _select_synthetic, plan_target_context  # noqa: E402
 from impact_graph import build_reverse_index, load_impact_graph  # noqa: E402
 
 
@@ -426,6 +428,47 @@ class TargetFixture:
         )
 
 
+class SyntheticSelectionTests(unittest.TestCase):
+    def item(self, **changes):
+        return replace(CatalogItem(
+            item_id="target.required.owner", kind="content", path="docs/owner.md", summary="owner",
+            selectors={"tasks": ("local",)}, load_when=("required",),
+            semantic_refs=("alatyr:first@1",), owner_refs=("ALATYR-FIRST-001",),
+            estimated_words=3, estimated_characters=14, content_digest="sha256:" + "a" * 64,
+        ), **changes)
+
+    def test_same_path_merges_routes_and_obligations_under_the_selected_identity(self):
+        first = self.item()
+        second = self.item(item_id="target.knowledge.owner", selectors={"tasks": ("review",)},
+                           load_when=("knowledge",), semantic_refs=("alatyr:second@1",), owner_refs=("ALATYR-SECOND-001",))
+        for initial, incoming in ((first, second), (second, first)):
+            selected, reasons = {}, {}
+            _select_synthetic(initial, "profile-required-context", selected, reasons)
+            merged = _select_synthetic(incoming, "selected-knowledge-canonical-owner", selected, reasons)
+            with self.subTest(initial=initial.item_id):
+                self.assertEqual(list(selected), [initial.item_id])
+                self.assertEqual(merged.item_id, initial.item_id)
+                self.assertEqual(set(merged.semantic_refs), {"alatyr:first@1", "alatyr:second@1"})
+                self.assertEqual(set(merged.owner_refs), {"ALATYR-FIRST-001", "ALATYR-SECOND-001"})
+                self.assertEqual(set(merged.load_when), {"required", "knowledge"})
+                self.assertEqual(set(merged.selectors["tasks"]), {"local", "review"})
+                self.assertEqual(reasons[merged.item_id], {"profile-required-context", "selected-knowledge-canonical-owner"})
+                self.assertEqual(sum(item.estimated_words for item in selected.values()), 3)
+
+    def test_colliding_path_bindings_and_id_reuse_fail_without_mutating_selection(self):
+        original = self.item()
+        for item_id in (original.item_id, "target.knowledge.owner"):
+            for changes in ({"content_digest": "sha256:" + "b" * 64}, {"estimated_words": 4},
+                            {"estimated_characters": 15}, {"kind": "index"}):
+                selected, reasons = {original.item_id: original}, {original.item_id: {"required"}}
+                with self.subTest(item_id=item_id, changes=changes), self.assertRaises(ContextPlanningError):
+                    _select_synthetic(self.item(item_id=item_id, **changes), "knowledge", selected, reasons)
+                self.assertEqual(selected, {original.item_id: original})
+                self.assertEqual(reasons, {original.item_id: {"required"}})
+        with self.assertRaisesRegex(ContextPlanningError, "ID collision"):
+            _select_synthetic(self.item(path="docs/other.md"), "knowledge", {original.item_id: original}, {})
+
+
 class ContextPlanningTests(unittest.TestCase):
     def setUp(self) -> None:
         self.directory = tempfile.TemporaryDirectory()
@@ -640,6 +683,32 @@ class ContextPlanningTests(unittest.TestCase):
         }
         self.assertIn("docs/billing.md", selected)
         self.assertRegex(selected["docs/billing.md"]["content_digest"], r"^sha256:")
+
+    def test_repeated_impact_owners_keep_references_to_the_canonical_selection(self) -> None:
+        profile_path = self.fixture.assistant / "context/profiles/code-local.json"
+        profile = json.loads(profile_path.read_text(encoding="utf-8"))
+        profile["required_context"].append("docs/billing.md")
+        write_json(profile_path, profile)
+        graph_path = self.fixture.project / "consistency/areas/billing.json"
+        document = json.loads(graph_path.read_text(encoding="utf-8"))
+        second = copy.deepcopy(document["nodes"][0])
+        second["id"] = "fact.payment-expiry"
+        second["bindings"][0]["id"] = "binding.payment-expiry"
+        document["nodes"].append(second)
+        write_json(graph_path, document)
+        graph = load_impact_graph(self.target)
+        write_json(self.fixture.assistant / "consistency-reverse-index.json", build_reverse_index(graph))
+        self.fixture.refresh_catalogs()
+        result = plan_target_context(self.request(changed_paths=("docs/billing.md",),
+                                                 fact_ids=("fact.payment-retry", "fact.payment-expiry")))
+        self.assertEqual(result["status"], "ready", result)
+        selected = result["context_packet"]["selected_items"]
+        self.assertEqual(len(selected), len({item["path"] for item in selected}))
+        owner = next(item for item in selected if item["path"] == "docs/billing.md")
+        self.assertEqual(set(owner["reason"]), {"profile-required-context", "explicit-changed-path",
+                         "canonical-owner:fact.payment-retry", "canonical-owner:fact.payment-expiry"})
+        self.assertEqual({row["context_id"] for row in result["impact"]["canonical_owners"]}, {owner["id"]})
+        self.assertEqual(result["task_contract"]["canonical_owners"], result["impact"]["canonical_owners"])
 
     def test_missing_optional_capability_index_records_unavailable_cache_state(self) -> None:
         router_path = self.fixture.assistant / "context-router.json"

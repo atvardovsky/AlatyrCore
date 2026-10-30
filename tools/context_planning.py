@@ -499,15 +499,39 @@ def _select_synthetic(
     reason: str,
     selected: dict[str, CatalogItem],
     reasons: dict[str, set[str]],
-) -> None:
+) -> CatalogItem:
     existing = selected.get(item.item_id)
-    if existing is not None and existing != item:
+    if existing is not None and existing.path != item.path:
         raise ContextPlanningError(
             "CONTEXT_ID_COLLISION", f"context item ID collision: {item.item_id}",
             status="blocked",
         )
+    if existing is None:
+        existing = next((value for value in selected.values() if value.path == item.path), None)
+    if existing is not None:
+        # Selection routes can differ, but one content-bound file is delivered once.
+        if (existing.kind != item.kind or existing.content_digest != item.content_digest
+                or existing.estimated_words != item.estimated_words
+                or (existing.estimated_characters is not None and item.estimated_characters is not None
+                    and existing.estimated_characters != item.estimated_characters)
+                or (existing.index_chain and item.index_chain and existing.index_chain != item.index_chain)):
+            raise ContextPlanningError(
+                "CONTEXT_PATH_COLLISION", f"conflicting context bindings for path: {item.path}",
+                status="blocked",
+            )
+        item = replace(
+            existing,
+            selectors={key: tuple(sorted(set(existing.selectors.get(key, ())) | set(item.selectors.get(key, ()))))
+                       for key in sorted(existing.selectors.keys() | item.selectors.keys())},
+            load_when=tuple(sorted(set(existing.load_when) | set(item.load_when))),
+            semantic_refs=tuple(sorted(set(existing.semantic_refs) | set(item.semantic_refs))),
+            owner_refs=tuple(sorted(set(existing.owner_refs) | set(item.owner_refs))),
+            estimated_characters=existing.estimated_characters if existing.estimated_characters is not None else item.estimated_characters,
+            index_chain=existing.index_chain or item.index_chain,
+        )
     selected[item.item_id] = item
     reasons.setdefault(item.item_id, set()).add(reason)
+    return item
 
 
 def _select_profile_required_path(
@@ -722,7 +746,7 @@ def _impact_selection(
                 synthetic = _synthetic_file_item(
                     target, owner, f"impact.owner.{node_id}", f"canonical-owner:{node_id}"
                 )
-                _select_synthetic(
+                synthetic = _select_synthetic(
                     synthetic, f"canonical-owner:{node_id}", selected, reasons
                 )
                 owner_record.update(

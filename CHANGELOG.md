@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Coalesce identical target-file selections from required profiles, knowledge,
+  impact owners and changed paths before context budgets and packet creation.
+  Preserve route reasons, semantic/owner obligations and impact identity links;
+  reject conflicting content and duplicate packet paths. Cover the public
+  planner-to-installed-session checkpoint, overlap composition, stale bindings
+  and file/word/character boundaries. This source-tool bug fix does not change
+  packet/baseline shapes, framework rules, adapter schema or target templates.
 
 ## 0.1.0-alpha.114 - 2026-10-30
 

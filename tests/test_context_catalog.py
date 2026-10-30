@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
@@ -647,6 +648,10 @@ class ContextCatalogTests(unittest.TestCase):
                 "canonical_owner": "framework/source.md",
             }
         }
+        for duplicate in (item, replace(item, item_id="other-id"), replace(item, path="other.md")):
+            with self.subTest(duplicate=duplicate), self.assertRaisesRegex(ContextCatalogError, "unique selected IDs and paths"):
+                build_context_packet(profile="code-local", operation="review", selected_items=[item, duplicate],
+                                     semantic_terms=terms, max_words=100, max_characters=1000)
         packet = build_context_packet(
             profile="code-local",
             operation="review",

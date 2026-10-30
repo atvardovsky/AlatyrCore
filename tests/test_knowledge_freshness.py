@@ -5,6 +5,7 @@ import copy
 import hashlib
 import io
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -123,6 +124,128 @@ class KnowledgeCheckpointTests(unittest.TestCase):
 
     def check(self, **kwargs):
         return self.invoke("check", "--baseline", str(self.baseline_path), **kwargs)
+
+    def require_knowledge_owner(self):
+        path = self.target / ".ai/assistant/context/profiles/code-local.json"
+        descriptor = json.loads(path.read_text(encoding="utf-8"))
+        descriptor["required_context"].append("docs/contracts/result-mapping.md")
+        write_json(path, descriptor)
+        TargetFixture(self.target).refresh_catalogs()
+
+    def test_public_planner_roundtrips_overlapping_owner_through_installed_delegate(self):
+        self.require_knowledge_owner()
+        delegate = self.target / ".ai/assistant/tools/alatyr_delegate.py"
+        delegate.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py", delegate)
+        output = tempfile.TemporaryDirectory()
+        self.addCleanup(output.cleanup)
+        report_path = Path(output.name) / "plan.json"
+        planned = subprocess.run([
+            sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "context-plan",
+            "--target", str(self.target), "--profile", "code-local", "--operation", "product-change",
+            "--knowledge-request", ".ai/.runtime/query.json", "--output", str(report_path),
+        ], capture_output=True, text=True, cwd=ROOT)
+        self.assertEqual(planned.returncode, 0, planned.stdout + planned.stderr)
+        shutil.copyfile(report_path, self.target / self.plan_path)
+        plan = json.loads((self.target / self.plan_path).read_text(encoding="utf-8"))
+        selected = plan["context_packet"]["selected_items"]
+        self.assertEqual(len(selected), len({item["path"] for item in selected}))
+        owner = next(item for item in selected if item["path"] == "docs/contracts/result-mapping.md")
+        self.assertEqual(set(owner["reason"]), {"profile-required-context", "selected-knowledge-canonical-owner"})
+        command = [sys.executable, "-B", str(delegate), "session-context", "--target", str(self.target),
+                   "--framework-source", str(ROOT)]
+        captured = subprocess.run([*command, "capture", "--context-plan", self.plan_path,
+                                   "--output", str(self.baseline_path)], capture_output=True, text=True)
+        self.assertEqual(captured.returncode, 0, captured.stdout + captured.stderr)
+        baseline = json.loads(self.baseline_path.read_text(encoding="utf-8"))
+        self.assertEqual(baseline["baseline"]["schema_version"], 2)
+        checked = subprocess.run([*command, "check", "--baseline", str(self.baseline_path)], capture_output=True, text=True)
+        self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+        self.source.write_bytes(b"changed after overlapping capture\n")
+        changed = subprocess.run([*command, "check", "--baseline", str(self.baseline_path)], capture_output=True, text=True)
+        self.assertEqual(changed.returncode, 1, changed.stdout + changed.stderr)
+        self.assertEqual(json.loads(changed.stdout)["knowledge"]["affected_ids"], [self.shard["entries"][0]["knowledge_id"]])
+
+    def test_indexed_owner_keeps_semantic_and_owner_closure_through_capture(self):
+        owner_path = ".ai/project/billing.md"
+        entry = self.shard["entries"][0]
+        digest = hashlib.sha256((self.target / owner_path).read_bytes()).hexdigest()
+        entry["authority"].update(canonical_owner=owner_path, canonical_owner_sha256=digest)
+        entry["freshness"]["triggers"][0].update(subject=owner_path, expected=digest)
+        self.save()
+        plan = self.make_plan()
+        selected = plan["context_packet"]["selected_items"]
+        self.assertEqual(len(selected), len({item["path"] for item in selected}))
+        owner = next(item for item in selected if item["path"] == owner_path)
+        self.assertEqual(set(owner["reason"]), {"profile-required-context", "selected-knowledge-canonical-owner"})
+        self.assertEqual(owner["semantic_refs"], ["alatyr:bounded-context-expansion@1"])
+        self.assertEqual(owner["owner_refs"], ["ALATYR-CONTEXT-001"])
+        closure = next(item for item in selected if item["id"] == "framework.context-owner")
+        self.assertIn("owner-reference:ALATYR-CONTEXT-001", closure["reason"])
+        session.capture(self.target, [], context_plans=[self.plan_path])
+
+    def test_overlapping_ready_plan_still_requires_current_owner_and_source_bindings(self):
+        self.require_knowledge_owner()
+        plan = self.make_plan()
+        owner = "docs/contracts/result-mapping.md"
+        for mutation in ("missing-owner", "missing-source", "stale-digest", "stale-source"):
+            changed = copy.deepcopy(plan)
+            original = self.source.read_bytes()
+            if mutation == "missing-owner":
+                changed["context_packet"]["selected_items"] = [item for item in changed["context_packet"]["selected_items"] if item["path"] != owner]
+            elif mutation == "missing-source":
+                changed["routing_sources"]["knowledge_inputs"].pop("src/payment/retry.py")
+            elif mutation == "stale-digest":
+                next(item for item in changed["context_packet"]["selected_items"] if item["path"] == owner)["content_digest"] = "sha256:" + "0" * 64
+            else:
+                self.source.write_bytes(original + b"changed\n")
+            write_json(self.target / self.plan_path, changed)
+            try:
+                with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                    session.capture(self.target, [], context_plans=[self.plan_path])
+            finally:
+                self.source.write_bytes(original)
+
+    def test_overlapping_owner_uses_unique_file_word_and_character_budgets(self):
+        self.require_knowledge_owner()
+        plan = self.make_plan()
+        selected = plan["context_packet"]["selected_items"]
+        self.assertEqual(len(selected), len({item["path"] for item in selected}))
+        router_path = self.target / ".ai/assistant/context-router.json"
+        router = json.loads(router_path.read_text(encoding="utf-8"))
+        for dimension, limit, code in (
+            ("files", len(selected), "CONTEXT_FILE_BUDGET_EXCEEDED"),
+            ("words", plan["delivery_budget"]["total_words"], "CONTEXT_WORD_BUDGET_EXCEEDED"),
+            ("characters", plan["delivery_budget"]["total_characters"], "CONTEXT_CHARACTER_BUDGET_EXCEEDED"),
+        ):
+            for offset in (-1, 0, 1):
+                current = copy.deepcopy(router)
+                key = "max_files" if dimension == "files" else "max_total_" + dimension
+                current["context_budgets"]["profile_default"][key] = limit + offset
+                write_json(router_path, current)
+                result = plan_target_context(ContextPlanRequest(self.target, "code-local", "product-change",
+                                             knowledge_request=".ai/.runtime/query.json"))
+                with self.subTest(dimension=dimension, offset=offset):
+                    if offset < 0:
+                        self.assertEqual(result["status"], "blocked", result)
+                        self.assertEqual(result["errors"][0]["code"], code)
+                    else:
+                        self.assertEqual(result["status"], "ready", result)
+                        write_json(self.target / self.plan_path, result)
+                        session.capture(self.target, [], context_plans=[self.plan_path])
+
+    def test_capture_still_rejects_duplicate_or_conflicting_ready_plan_paths(self):
+        plan = self.make_plan()
+        for conflict in (False, True):
+            changed = copy.deepcopy(plan)
+            duplicate = copy.deepcopy(changed["context_packet"]["selected_items"][0])
+            duplicate["id"] += ".duplicate"
+            if conflict:
+                duplicate["content_digest"] = "sha256:" + "0" * 64
+            changed["context_packet"]["selected_items"].append(duplicate)
+            write_json(self.target / self.plan_path, changed)
+            with self.subTest(conflict=conflict), self.assertRaisesRegex(ValueError, "unique content-bound"):
+                session.capture(self.target, [], context_plans=[self.plan_path])
 
     def test_public_cli_plan_capture_and_same_version_source_drift(self):
         self.make_plan()

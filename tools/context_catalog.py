@@ -658,6 +658,8 @@ def build_context_packet(
         capability_record = None
 
     items = sorted(selected_items, key=lambda item: item.item_id)
+    if len({item.item_id for item in items}) != len(items) or len({item.path for item in items}) != len(items):
+        raise ContextCatalogError("context packet requires unique selected IDs and paths")
     usage = context_packet_usage(items, semantic_terms)
     required_refs = sorted({term for item in items for term in item.semantic_refs})
     missing = sorted(set(required_refs) - set(semantic_terms))
