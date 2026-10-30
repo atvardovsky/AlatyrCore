@@ -120,6 +120,7 @@ jobs:
           tests.test_active_task_evidence
           tests.test_target_validation_support
           tests.test_session_context
+          tests.test_knowledge_freshness
       - name: Summarize source-check diagnostics
         if: always()
         run: python tools/summarize_source_check_report.py "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json" --allow-missing --github-step-summary

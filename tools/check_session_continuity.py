@@ -54,8 +54,8 @@ def main() -> int:
             failures.append("source presence flow is missing")
         if not (TARGET / FLOW_PATH).is_file():
             failures.append("presence template flow is missing")
-        if policy.get("schema_version") != 4:
-            failures.append("continuity policy schema_version must be 4")
+        if policy.get("schema_version") != 5:
+            failures.append("continuity policy schema_version must be 5")
         failures.extend(policy_failures(policy))
         if policy.get("packet_schema") != "alatyr-session-continuity-packet-v3":
             failures.append("continuity policy must use packet schema v3")

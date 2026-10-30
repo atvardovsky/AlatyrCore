@@ -343,6 +343,30 @@ helper compares declared evidence; it does not run acceptance validation,
 observe hidden client context, notify idle agents or lock concurrent writes.
 See the [flow](../templates/target/.ai/assistant/flows/session-continuity.flow.md).
 
+For a used ready target context plan, add `--context-plan` to `capture`. The
+helper revalidates its selected knowledge and exact input bindings before
+retaining them; it cannot acknowledge a stale or incomplete plan by hashing
+new bytes. Repeat for at most eight plans. Checks using the saved baseline
+compare the bounded read set without rerunning knowledge selection. Memory-only
+`check --expected` repeats the plan argument and verifies the plan again.
+
+```sh
+python3 tools/alatyr.py session-context --target /path/to/target-repo capture --context-plan .ai/.runtime/context-plan.json --output /path/to/new-session-baseline.json
+python3 tools/alatyr.py session-context --target /path/to/target-repo check --baseline /path/to/new-session-baseline.json
+```
+
+Plan-bound baselines use schema 2; ordinary schema-1 baselines remain supported.
+Every imported file counts toward the same checkpoint caps. `checked_at` is a
+UTC session observation outside the fingerprint. Expiry can require rehydration
+with matching hashes. `knowledge.affected_ids`, `reroute_required`, `warning_ids`
+and unverified triggers remain separate from content matching and authority.
+Root/shard/query changes require bounded reselection even after an empty match.
+No default query, global scan, canonical write or provider effectiveness claim
+is introduced. See [knowledge freshness](../framework/project-knowledge.md#authority-and-freshness).
+Explicit knowledge queries are bounded to 256 inputs and 16 MiB total: metadata
+files at most 4 MiB, owner/source reads at most 1 MiB. Exceeding limits requires
+decomposition, never silent omission.
+
 `manage_session_presence.py` (facade command `session-presence`) reads the
 target continuity policy. New accepted installs enable presence and narrow
 own-entry housekeeping; explicit opt-outs and legacy absence are preserved.

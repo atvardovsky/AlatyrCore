@@ -1150,12 +1150,24 @@ def _knowledge_selection(request, target, catalogs, selected, reasons):
     knowledge = None
     knowledge_digests: dict[str, str] = {}
     if request.knowledge_request is not None:
-        from knowledge_context import select_context_knowledge
+        from knowledge_context import MAX_INPUTS, MAX_INPUT_BYTES, MAX_METADATA_BYTES, select_context_knowledge
+        measured: dict[str, int] = {}
         def load_knowledge(path: str) -> dict:
-            return _load_json(target, _normalize_relative(path, "knowledge input"), "knowledge input", digest_evidence=knowledge_digests)
-        def read_knowledge(path: str) -> bytes:
+            value = json.loads(read_knowledge(path, max_bytes=MAX_METADATA_BYTES).decode("utf-8"))
+            if not isinstance(value, dict):
+                raise ValueError(f"knowledge input {path} must be an object")
+            return value
+        def read_knowledge(path: str, *, max_bytes=1024 * 1024) -> bytes:
             path = _normalize_relative(path, "knowledge owner")
-            raw = read_context_bytes(target / path, max_bytes=1024 * 1024)
+            if path not in measured and len(measured) >= MAX_INPUTS:
+                raise ValueError(f"knowledge query exceeds {MAX_INPUTS} input files; narrow or decompose")
+            remaining = MAX_INPUT_BYTES - sum(measured.values()) + measured.get(path, 0)
+            if remaining < 0:
+                raise ValueError(f"knowledge query exceeds {MAX_INPUT_BYTES} bytes; narrow or decompose")
+            raw = read_context_bytes(_target_path(target, path, "knowledge input"), max_bytes=min(max_bytes, remaining or 1))
+            if len(raw) > remaining:
+                raise ValueError(f"knowledge query exceeds {MAX_INPUT_BYTES} bytes; narrow or decompose")
+            measured[path] = len(raw)
             knowledge_digests[path] = "sha256:" + hashlib.sha256(raw).hexdigest()
             return raw
         try:

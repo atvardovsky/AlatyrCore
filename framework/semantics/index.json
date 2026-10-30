@@ -85,7 +85,7 @@
         "alatyr:session-continuity@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:session-continuity@1": "sha256:594dc8278419c6e22af35e5af3ac06cbe9a11c8e623a0bf75ee2e58d7166ec94"
+        "alatyr:session-continuity@1": "sha256:2705ff8364350ee28c83e2536f18984b9dbc0769c79874e0b8a76860973fceca"
       },
       "content_digest": "sha256:e0f9cb30abaa0aff433e63a603dc1abdc6bdf13b9856365351c4357a51afb348"
     },
@@ -172,8 +172,8 @@
         "alatyr:observed-is-not-accepted@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:accepted-current@1": "sha256:05b65487e6d82a50422584071e20d06f0010cd2549d47728872e72d9cf97f155",
-        "alatyr:observed-is-not-accepted@1": "sha256:05b65487e6d82a50422584071e20d06f0010cd2549d47728872e72d9cf97f155"
+        "alatyr:accepted-current@1": "sha256:f2add793822d2712d86dca1a00343a5aad2707c289d7b8a3031a5d27723a34e6",
+        "alatyr:observed-is-not-accepted@1": "sha256:f2add793822d2712d86dca1a00343a5aad2707c289d7b8a3031a5d27723a34e6"
       },
       "content_digest": "sha256:df16defad839350502cefea040b689189cb7cf3481e7c8ac0948759249b3a783"
     },

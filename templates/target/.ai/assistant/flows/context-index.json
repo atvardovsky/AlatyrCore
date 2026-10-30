@@ -458,8 +458,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 772,
-      "content_digest": "sha256:533a1c40840a660eb3f2606dcd33e29f2367b08622fbdd7a3b39bb667a547d58"
+      "estimated_words": 709,
+      "content_digest": "sha256:6f0b2cfa51b18342a2b992336e4013154080795c25e61cab3625222880ae6b9f"
     },
     {
       "id": "assistant.content.flows-project-vocabulary-flow-md",
@@ -528,8 +528,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 398,
-      "content_digest": "sha256:f4760bc181a95aaf315132c5a70eb4c74c763ea9f53f86f9b34de17d3a5588e3"
+      "estimated_words": 491,
+      "content_digest": "sha256:5332075f8378a92e628a4986cce13305fb271b3074b4d2eb5e75b591c5199f24"
     },
     {
       "id": "assistant.content.flows-session-presence-flow-md",

@@ -24,6 +24,7 @@ from target_adapter_validation.analysis_strategies import (
 from analysis_strategy_contract import MAX_ACTIVE_PROJECTION_FILE_BYTES
 from session_presence_contract import FLOW_PATH as PRESENCE_FLOW, decode_json, presence_policy
 from inspect_session_context import policy_failures
+from context_catalog import PACKET_KIND, PACKET_SCHEMA_VERSION
 
 
 POLICY_RELPATH = ".ai/assistant/policies/session-continuity.json"
@@ -101,7 +102,7 @@ def _check_static_contract(validator: Any) -> None:
     if "presence" in policy and not validator.is_target_file(PRESENCE_FLOW):
         validator.error("SESSION_PRESENCE_FLOW", "presence policy requires its installed flow", PRESENCE_FLOW)
     expected = {
-        "schema_version": 4,
+        "schema_version": 5,
         "policy_kind": "target-session-continuity",
         "canonical_rule": "ALATYR-CONTINUITY-001",
         "canonical_owner": ".ai/framework/session-continuity.md",
@@ -598,8 +599,8 @@ def _check_packet(
                         relpath,
                     )
                 elif (
-                    context_value.get("schema_version") != 4
-                    or context_value.get("packet_kind") != "alatyr-context-packet"
+                    context_value.get("schema_version") != PACKET_SCHEMA_VERSION
+                    or context_value.get("packet_kind") != PACKET_KIND
                 ):
                     validator.error(
                         "SESSION_CONTINUITY_CONTEXT_IDENTITY",

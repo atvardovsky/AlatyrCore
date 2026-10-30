@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
+import check_release_drift as drift
 
 from check_release_drift import (  # noqa: E402
     SCHEMA_CONTRACT_PATHS,
@@ -26,6 +27,62 @@ from check_versioning import (  # noqa: E402
     validate_current_release_binding,
     validate_release_tag,
 )
+
+
+class CommittedReadTests(unittest.TestCase):
+    def test_only_immutable_blobs_are_reused_and_only_within_one_audit(self):
+        commit = "a" * 40
+        with patch.object(drift, "require_git_text", return_value="content") as read:
+            with drift.scoped_committed_reads():
+                self.assertEqual(drift.read_at(commit, "VERSION"), "content")
+                self.assertEqual(drift.read_at(commit, "VERSION"), "content")
+                self.assertEqual(read.call_count, 1)
+                for ref in ("HEAD", "v1.0.0", commit[:7]):
+                    drift.read_at(ref, "VERSION")
+                    drift.read_at(ref, "VERSION")
+                self.assertEqual(read.call_count, 7)
+                with patch.object(drift, "ROOT", ROOT / "other-fixture"):
+                    drift.read_at(commit, "VERSION")
+                self.assertEqual(read.call_count, 8)
+            with drift.scoped_committed_reads():
+                drift.read_at(commit, "VERSION")
+            self.assertEqual(read.call_count, 9)
+            drift.read_at(commit, "VERSION")
+            self.assertEqual(read.call_count, 10)
+
+    def test_missing_objects_are_not_cached_as_success(self):
+        with patch.object(drift, "require_git_text", side_effect=[RuntimeError("missing"), "recovered"]) as read:
+            with drift.scoped_committed_reads():
+                with self.assertRaisesRegex(RuntimeError, "missing"):
+                    drift.read_at("a" * 64, "VERSION")
+                self.assertEqual(drift.read_at("a" * 64, "VERSION"), "recovered")
+                self.assertEqual(drift.read_at("a" * 64, "VERSION"), "recovered")
+            self.assertEqual(read.call_count, 2)
+
+    def test_byte_and_entry_boundaries_fall_back_to_live_reads(self):
+        for size in (3, 4, 5):
+            with self.subTest(size=size), patch.object(drift, "MAX_COMMITTED_READ_BYTES", 4), \
+                    patch.object(drift, "require_git_text", return_value="x" * size) as read:
+                with drift.scoped_committed_reads():
+                    drift.read_at("a" * 40, "VERSION")
+                    drift.read_at("a" * 40, "VERSION")
+                self.assertEqual(read.call_count, 2 if size > 4 else 1)
+        with patch.object(drift, "MAX_COMMITTED_READ_ENTRIES", 2), \
+                patch.object(drift, "require_git_text", return_value="x") as read:
+            with drift.scoped_committed_reads():
+                for index in range(3):
+                    drift.read_at("a" * 40, str(index))
+                    drift.read_at("a" * 40, str(index))
+            self.assertEqual(read.call_count, 4)
+
+    def test_current_files_are_never_cached(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(drift, "ROOT", Path(directory)):
+            path = Path(directory) / "VERSION"
+            with drift.scoped_committed_reads():
+                path.write_text("first", encoding="utf-8")
+                self.assertEqual(drift.read_current("VERSION"), "first")
+                path.write_text("second", encoding="utf-8")
+                self.assertEqual(drift.read_current("VERSION"), "second")
 
 
 class ReleaseBaselineTests(unittest.TestCase):
@@ -85,7 +142,7 @@ class ReleaseBaselineTests(unittest.TestCase):
                 "from_digest": "from-digest",
                 "to_digest": "to-digest",
             }
-            with patch("check_release_drift.ROOT", root):
+            with patch("check_release_drift.ROOT", root), drift.scoped_committed_reads():
                 self.assertEqual(validate_committed_report(**args), [])
                 report.write_text(
                     report.read_text(encoding="utf-8").replace(

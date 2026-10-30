@@ -620,9 +620,11 @@ Final evidence must say:
 - the core session-continuity policy, overlay, flow, gate, packet template, and
   ignored runtime path are installed; the entry packet routes recovery and no
   summary or packet restores action authority
-- policy-4 session-context checkpoints, selected-file bindings and the installed
+- policy-5 session-context checkpoints, selected-file bindings and the installed
   delegate capture/check route work; staged/degraded peers remain inspect-only,
   stale baselines require reconciliation and no update acknowledges for peers
+- used knowledge-aware plans bind owners, explicit source hashes, routing and
+  expiry; unchanged checks preserve warnings without rewriting canonical knowledge
 - presence defaults and own-entry allowance are accepted or explicitly disabled;
   bootstrap/recovery agree with installed policy, updates preserve choices/live
   entries, and helper availability and same-clone limitations are explicit

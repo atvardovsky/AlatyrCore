@@ -12,6 +12,7 @@ from typing import Callable
 import jsonschema
 
 from project_knowledge import select_project_knowledge
+from knowledge_freshness import review_deadlines, source_bindings
 
 
 INDEX = ".ai/project/knowledge/index.json"
@@ -19,6 +20,10 @@ SELECTORS = {"project_areas", "subsystems", "architecture_item_ids", "dependency
              "contract_ids", "issue_lineage", "fact_ids", "paths", "symbols"}
 MAX_SHARDS = 8
 MAX_ENTRIES = 256
+MAX_INPUTS = 256
+MAX_INPUT_BYTES = 16 * 1024 * 1024
+MAX_METADATA_BYTES = 4 * 1024 * 1024
+VERIFIED_TRIGGER_KINDS = {"canonical-owner-sha256", "source-sha256", "review-expiry"}
 
 
 def select_context_knowledge(profile: str, query: dict, load: Callable[[str], dict], read: Callable[[str], bytes]) -> dict:
@@ -78,7 +83,7 @@ def select_context_knowledge(profile: str, query: dict, load: Callable[[str], di
     declared_freshness = {entry["knowledge_id"]: entry["freshness"]["state"] for entry in entries}
     entries = copy.deepcopy(entries)
     for entry in entries:
-        if entry["freshness"]["state"] == "current" and any(trigger["kind"] not in {"canonical-owner-sha256", "review-expiry"} for trigger in entry["freshness"]["triggers"]):
+        if entry["freshness"]["state"] == "current" and any(trigger["kind"] not in VERIFIED_TRIGGER_KINDS for trigger in entry["freshness"]["triggers"]):
             entry["freshness"]["state"] = "revalidation-required"
     route = dict(selectors, task_profile=profile)
     selected = select_project_knowledge(entries, route, stage=query["stage"], limit=limit)
@@ -106,21 +111,24 @@ def select_context_knowledge(profile: str, query: dict, load: Callable[[str], di
             raise ValueError(f"knowledge {row['knowledge_id']} owner digest trigger disagrees with its authority binding")
         if declared_freshness[row["knowledge_id"]] == "current" and hashlib.sha256(raw).hexdigest().lower() != authority["canonical_owner_sha256"].lower():
             raise ValueError(f"knowledge {row['knowledge_id']} owner changed; revalidate before using it as a constraint")
-        for trigger in entry["freshness"]["triggers"]:
-            if trigger["kind"] == "review-expiry":
-                try:
-                    expired = date.fromisoformat(trigger["expected"]) < date.today()
-                except ValueError as exc:
-                    raise ValueError(f"knowledge {row['knowledge_id']} has invalid review expiry") from exc
-                if expired:
-                    raise ValueError(f"knowledge {row['knowledge_id']} review expired; revalidation required")
+        bindings = source_bindings(entry["freshness"]["triggers"], read,
+                                   verify=declared_freshness[row["knowledge_id"]] == "current")
+        deadlines = review_deadlines(entry["freshness"]["triggers"])
+        if any(date.fromisoformat(value) < date.today() for value in deadlines):
+            raise ValueError(f"knowledge {row['knowledge_id']} review expired; revalidation required")
+        if bindings:
+            row["source_paths"] = sorted(bindings)
+        if deadlines:
+            row["review_expires_on"] = deadlines[0]
         owners.append(authority["canonical_owner"])
-        row["unverified_trigger_kinds"] = sorted({trigger["kind"] for trigger in entry["freshness"]["triggers"] if trigger["kind"] not in {"canonical-owner-sha256", "review-expiry"}})
+        row["unverified_trigger_kinds"] = sorted({trigger["kind"] for trigger in entry["freshness"]["triggers"] if trigger["kind"] not in VERIFIED_TRIGGER_KINDS})
         row["declared_freshness_state"] = declared_freshness[row["knowledge_id"]]
-        row["freshness_verification"] = "owner-digest-and-review-expiry-only"
+        row["freshness_verification"] = ("owner-source-digests-and-review-expiry-only" if bindings
+                                         else "owner-digest-and-review-expiry-only")
     selected["omitted_count"] = len(selected["omitted"])
     selected["omitted"] = [{key: row[key] for key in ("knowledge_id", "authority_state", "freshness_state")} for row in selected["omitted"]]
     return {"stage": query["stage"], "selection": selected, "owner_paths": sorted(set(owners)),
+            "routing_paths": sorted({INDEX, *(descriptors[identity]["path"] for identity in ids)}),
             "searched_shard_ids": ids, "unsearched_shard_ids": sorted(set(descriptors) - set(ids)),
             "global_coverage": False, "actual_use": "not-observed", "authority_promoted": False,
             "limitation": "Explicit selected-shard search only. No match does not mean no project knowledge. Selection is not evidence of comprehension, reuse or effectiveness."}

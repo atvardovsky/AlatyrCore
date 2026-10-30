@@ -376,7 +376,7 @@ Classify every proposed target file:
     Apply `session-presence.flow.md`: new accepted installs default to discovery
     and own-entry housekeeping; preserve existing choices/live entries, verify
     helper availability, and refresh routes from the installed policy.
-    Install policy-4 session-context checkpoints and verify the delegate's
+    Install policy-5 session-context checkpoints and verify the delegate's
     capture/check route. Bind every selected loaded file, preserve peer
     baselines, and tell already-running sessions to recheck once if they never
     loaded the checkpoint rule. Record `staged` before changing an accepted
@@ -440,7 +440,7 @@ Classify every proposed target file:
     project-knowledge routing policy, compact index, promotion and route-shard
     templates, direct decision-owner intake, guidance kind and exception
     semantics, mapped/known-gap/unknown coverage, two-stage semantic routing
-    descriptor, flow, and gate,
+    descriptor, flow and gate, with source-hash and ready-plan continuity bindings,
     read-only adapter-health, risk-gated pre-change preview,
     diagram-discussion flow, ASCII layout template, and presentation template
     when the diagrams module is enabled,

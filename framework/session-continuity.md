@@ -86,6 +86,12 @@ worktree, contour, actual bootstrap inputs and every still-applicable loaded
 file. Versions alone are insufficient. Keep baselines in session memory or
 authorized ignored continuity records.
 
+Also check before material decisions, worker convergence and finalization. When
+using a ready knowledge-aware plan, retain its automatic owner/source and routing
+bindings. Reconcile affected knowledge on change or review expiry, preserving
+warnings; keep observation times outside content identity and canonical files.
+See [knowledge freshness](project-knowledge.md#authority-and-freshness).
+
 On drift, use this gate: reload changed owners/dependencies and reconsider
 affected assumptions, plans, approvals, validation and worker results. Preserve
 unaffected work and the old baseline until reconciliation. New selected paths

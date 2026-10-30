@@ -227,6 +227,21 @@ def run(target: Path, failures: list[str]) -> None:
             + ", ".join(sorted(valid_errors))
         )
 
+    original_context, original_packet = context_packet_path.read_bytes(), packet_path.read_bytes()
+    wrong_context = json.loads(original_context)
+    wrong_context["schema_version"] += 1
+    write_json(context_packet_path, wrong_context)
+    wrong_packet = json.loads(original_packet)
+    wrong_packet["routing"]["context_packet"]["sha256"] = hashlib.sha256(context_packet_path.read_bytes()).hexdigest()
+    wrong_packet["integrity"]["packet_sha256"] = _digest(wrong_packet)
+    write_json(packet_path, wrong_packet)
+    wrong_version = validator(continuity_target, continuity_packets=[packet_path])
+    validate_session_continuity(wrong_version)
+    if "SESSION_CONTINUITY_CONTEXT_IDENTITY" not in {finding.code for finding in wrong_version.findings}:
+        failures.append("continuity policy upgrades must not accept unsupported context packet schemas")
+    context_packet_path.write_bytes(original_context)
+    packet_path.write_bytes(original_packet)
+
     model_path = (
         continuity_target / ".ai/.runtime/problem-models/fixture.json"
     )

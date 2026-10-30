@@ -676,16 +676,16 @@ modes, and support-delta entry points. It is not routine first-use context. If s
 and missing or stale, repair it before trusting help, module, or context-profile
 summaries.
 
-Scaffolding does not replace target inspection, installation planning,
-approval gates, adapter rewriting, validation, logical integrity review, or
-final evidence. Do not present a scaffolder run as a completed installation.
+Scaffolding alone is not installation. Target inspection, planning, approval
+gates, adapter rewriting, validation, logical integrity review and final
+evidence remain required.
 
 ## Conversational Framework Update
 
-Updates install active-session context checkpoints through the continuity
-policy and portable delegate. Record `staged` before editing an accepted
-adapter; peers reconcile their selected rules after acceptance. Existing
-sessions that never loaded this mechanism need one explicit recheck or restart.
+Install continuity policy 5, delegate and plan-bound checkpoints together.
+Record `staged` before editing accepted adapters; peers reconcile after acceptance.
+Preserve baselines; rebuild used plans with source, routing and expiry bindings.
+Keep observations session-local. Uninformed sessions need explicit recheck/restart.
 See [session continuity](framework/session-continuity.md#active-session-freshness).
 
 Preserve optional task-question requests during updates. Refresh canonical

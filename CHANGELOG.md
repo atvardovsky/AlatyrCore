@@ -4,6 +4,25 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.114 - 2026-10-30
+
+- Bind selected project knowledge to explicit source-sha256 dependencies and
+  shared strict review deadlines. Bounded planning and registered target
+  validation reuse those resolvers; tracked source reads join mutation checks.
+- Let session-context import used ready context plans and retain their selected
+  knowledge, owner/source hashes and query/index/shard scope. Reject stale or
+  incomplete plans instead of silently acknowledging new bytes. Schema-1
+  baselines remain valid; plan-bound baselines use schema 2.
+- Check expiry independently of content identity; report affected knowledge,
+  rerouting needs and retained warnings. Keep checked_at session-local and
+  outside fingerprints. Unchanged checks avoid query reruns, while ordinary
+  no-query planning and checkpoints add no knowledge discovery.
+- Install continuity policy 5 and synchronize flows, gates and update guidance.
+  Prepare framework alpha.114, adapter schema 95 and templates 109; no target
+  rollout, source checkpoint, tag or release publication is implied.
+- Bound historical Git blob reuse to one source release audit. Continue checking
+  every checkpoint, mutable ref and working-tree report without cached verdicts.
+
 ## 0.1.0-alpha.113 - 2026-10-29
 
 - Add bounded active-session context capture/check through the portable

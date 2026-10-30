@@ -401,8 +401,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 188,
-      "content_digest": "sha256:3b3fd310a78beee1c60beb85a0247c47a24c0c467bfef7d90d45d7a76ed6fe3c"
+      "estimated_words": 219,
+      "content_digest": "sha256:58b239c9f5e0aac04c8d6ce7cb40ab5458ca30581065345279d59256d59c1cd4"
     },
     {
       "id": "assistant.content.gates-support-generation-md",

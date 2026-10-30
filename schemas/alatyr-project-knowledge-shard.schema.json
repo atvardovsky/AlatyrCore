@@ -131,6 +131,7 @@
                   "kind": {
                     "enum": [
                       "canonical-owner-sha256",
+                      "source-sha256",
                       "dependency-version",
                       "canonical-source-change",
                       "ownership-change",

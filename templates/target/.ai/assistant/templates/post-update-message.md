@@ -38,6 +38,8 @@ Updated adapter surfaces:
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
 - Other active sessions recheck retained context through `session-continuity`.
+- Used knowledge plans retain owner/source/routing bindings and review expiry;
+  recheck them during work without updating shared last-read timestamps.
   Previously unaware clients need one explicit recheck/restart; acceptance
   cannot acknowledge instruction delivery for peers.
 - Treat `AGENTS.md` as preloaded; start from

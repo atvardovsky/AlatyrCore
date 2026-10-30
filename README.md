@@ -289,6 +289,9 @@ context at the next request or work checkpoint and reconcile affected rules
 before continuing. Existing sessions need the checkpoint instructions first;
 an update cannot silently replace context already held by a client. See
 [active-session freshness](framework/session-continuity.md#active-session-freshness).
+The same checkpoints can track selected project knowledge and its declared
+sources, so another session's contract or code edit prompts review rather than
+silent reuse of an outdated conclusion.
 
 The assistant-facing details, including validation coverage and the
 transactional support finalizer, remain in [AI_ASSISTANTS.md](AI_ASSISTANTS.md)
@@ -298,7 +301,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.113`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.114`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

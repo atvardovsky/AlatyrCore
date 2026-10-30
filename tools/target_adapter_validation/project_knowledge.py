@@ -49,10 +49,17 @@ def validate_project_knowledge_contract(self: DomainValidationHost, manifest: Ma
                 ".ai/alatyr.yaml",
             )
 
+    def read_source(path: str) -> bytes:
+        result = self.context.read_bytes_result(self.target_path(path), max_bytes=1024 * 1024)
+        if result.value is None:
+            raise ValueError(f"knowledge source {path} unavailable: {result.error or result.status.state.value}")
+        return result.value
+
     findings = validate_project_knowledge(
         self.target,
         ROOT / "schemas",
         allow_placeholders=self.allow_placeholders,
+        read_source=read_source,
     )
     for finding in findings:
         self.add_finding(

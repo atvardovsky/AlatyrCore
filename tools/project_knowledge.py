@@ -7,11 +7,13 @@ import json
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 import jsonschema
 
 from path_spec import PathDialect, PathSpec
+from context_input_snapshot import read_regular_context_bytes
+from knowledge_freshness import review_deadlines, source_bindings
 
 
 CANONICAL_PROFILES = {
@@ -98,12 +100,28 @@ def _schema_errors(
     return findings
 
 
+def _source_freshness_findings(entry, target, relpath, today, read_source):
+    freshness = entry.get("freshness", {})
+    knowledge_id = entry.get("knowledge_id")
+    try:
+        reader = read_source or (lambda path: read_regular_context_bytes(_safe_path(target, path), max_bytes=1024 * 1024))
+        source_bindings(freshness.get("triggers", []), reader if freshness.get("state") == "current" else None)
+        if freshness.get("state") == "current" and any(
+            date.fromisoformat(value) < today for value in review_deadlines(freshness.get("triggers", []))
+        ):
+            return [KnowledgeFinding("error", "PROJECT_KNOWLEDGE_REVIEW_EXPIRED", f"{knowledge_id} review expiry passed", relpath)]
+    except (OSError, ValueError) as exc:
+        return [KnowledgeFinding("error", "PROJECT_KNOWLEDGE_FRESHNESS_TRIGGER", f"{knowledge_id}: {exc}", relpath)]
+    return []
+
+
 def validate_project_knowledge(
     target: Path,
     schema_root: Path,
     *,
     allow_placeholders: bool = False,
     today: date | None = None,
+    read_source: Callable[[str], bytes] | None = None,
 ) -> list[KnowledgeFinding]:
     index_relpath = ".ai/project/knowledge/index.json"
     findings: list[KnowledgeFinding] = []
@@ -380,14 +398,8 @@ def validate_project_knowledge(
                     )
                 )
 
-        for trigger in freshness.get("triggers", []):
-            if trigger.get("kind") == "review-expiry" and freshness_state == "current":
-                try:
-                    expired = date.fromisoformat(trigger.get("expected", "")) < today
-                except ValueError:
-                    expired = False
-                if expired:
-                    findings.append(KnowledgeFinding("error", "PROJECT_KNOWLEDGE_REVIEW_EXPIRED", f"{knowledge_id} review expiry passed", relpath))
+        if not allow_placeholders:
+            findings.extend(_source_freshness_findings(entry, target, relpath, today, read_source))
 
         promotion_ref = entry.get("provenance", {}).get("promotion_record")
         matching_promotion = next((promotion_id for promotion_id, path in promotion_path_by_id.items() if path == promotion_ref), None)

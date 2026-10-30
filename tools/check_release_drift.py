@@ -12,7 +12,9 @@ import subprocess
 import sys
 import tarfile
 import tempfile
-from dataclasses import dataclass
+from contextlib import contextmanager
+from contextvars import ContextVar
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 
@@ -49,6 +51,27 @@ SCHEMA_CONTRACT_PATHS = SHIPPED_SCHEMA_PATHS | {
 }
 CONTRACT_VERSION_FILES = ("VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION")
 RELEASE_BASELINE_DIR = ROOT / "docs" / "releases" / "baselines"
+MAX_COMMITTED_READ_ENTRIES = 1024
+MAX_COMMITTED_READ_BYTES = 16 * 1024 * 1024
+
+
+@dataclass
+class _CommittedReads:
+    values: dict[tuple[Path, str, str], str] = field(default_factory=dict)
+    size: int = 0
+
+
+_COMMITTED_READS: ContextVar[_CommittedReads | None] = ContextVar("release_committed_reads", default=None)
+
+
+@contextmanager
+def scoped_committed_reads():
+    """Reuse immutable blobs within one audit, never validation results or refs."""
+    token = _COMMITTED_READS.set(_CommittedReads())
+    try:
+        yield
+    finally:
+        _COMMITTED_READS.reset(token)
 
 
 @dataclass(frozen=True)
@@ -85,7 +108,20 @@ def read_current(path: str) -> str:
 
 
 def read_at(ref: str, path: str) -> str:
-    return require_git_text("show", f"{ref}:{path}")
+    cache = _COMMITTED_READS.get()
+    if (cache is None or not isinstance(ref, str) or not isinstance(path, str)
+            or re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", ref) is None):
+        return require_git_text("show", f"{ref}:{path}")
+    key = (ROOT.resolve(), ref, path)
+    if key in cache.values:
+        return cache.values[key]
+    value = require_git_text("show", f"{ref}:{path}")
+    size = len(value.encode("utf-8"))
+    if (len(cache.values) < MAX_COMMITTED_READ_ENTRIES
+            and cache.size + size <= MAX_COMMITTED_READ_BYTES):
+        cache.values[key] = value
+        cache.size += size
+    return value
 
 
 def changed_paths(ref: str) -> set[str]:
@@ -493,10 +529,11 @@ def release_checkpoint(
 def audit_release_checkpoints() -> None:
     """Validate every retained checkpoint or explicit historical quarantine."""
 
-    for path in sorted(RELEASE_BASELINE_DIR.glob("*.json")):
-        if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\.json", path.name):
-            continue
-        release_checkpoint(path.stem)
+    with scoped_committed_reads():
+        for path in sorted(RELEASE_BASELINE_DIR.glob("*.json")):
+            if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\.json", path.name):
+                continue
+            release_checkpoint(path.stem)
 
 
 def _nearest_release_baseline(

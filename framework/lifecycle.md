@@ -245,6 +245,9 @@ cannot acknowledge instruction delivery for peers.
     durable evidence references, then discard and regenerate them from current
     task and repository evidence. Never invent fields to make an old runtime
     record appear current.
+    Install continuity policy 5 and rebuild used ready knowledge plans before
+    capturing new plan-bound baselines. Preserve older baselines until review;
+    recheck owner/source/routing bindings and expiry, never shared last-read times.
 13. Recheck adapter owners, review cadence, CODEOWNERS or equivalent owner
     map, operation catalog, help, routing/health/preview flows, and post-update
     chat message

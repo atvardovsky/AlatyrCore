@@ -93,6 +93,16 @@ change. See the
 [project adapter contract](../../framework/project-adapter-contract.md) and
 [support-information rule](../../framework/support-information.md).
 
+## Can Ongoing Sessions Notice Changes Made By Other Sessions?
+
+Participating agents check the files behind their selected context at work
+checkpoints. Knowledge-aware plans also retain declared source dependencies,
+routing inputs and review deadlines. A change requires affected knowledge and
+decisions to be reviewed, not simply given a newer timestamp. Unchanged prose
+can still be stale if its declared code dependency changed. This is bounded
+checking, not an instant notification service, lock or guarantee of complete
+dependency discovery. See [session continuity](../../framework/session-continuity.md#active-session-freshness).
+
 ## What Happens When Project Documentation Contradicts The Code?
 
 The assistant should identify the fact type, consult its source-of-truth owner,
@@ -103,7 +113,7 @@ newest file or the implementation is automatically correct. See the
 
 ## Is The Project Production-Ready?
 
-The source [VERSION](../../VERSION) currently records `0.1.0-alpha.113`.
+The source [VERSION](../../VERSION) currently records `0.1.0-alpha.114`.
 AlatyrCore has implemented framework contracts, target templates, source
 checks, conformance fixtures, optional scaffolding, and an optional structural
 target validator. It should not be

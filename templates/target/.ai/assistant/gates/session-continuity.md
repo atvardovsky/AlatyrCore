@@ -1,5 +1,9 @@
 # Session Continuity Gate
 
+For used context plans, verify retained owner/source and routing bindings,
+review expiry, unresolved warnings and affected conclusions before continuation.
+Do not replace these checks with timestamps or rewrite shared last-read metadata.
+
 Before state-changing work resumes after a context boundary, verify:
 
 - context bindings match or were reconciled; replacement follows review

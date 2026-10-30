@@ -10,6 +10,7 @@ import os
 import re
 import sys
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
@@ -40,12 +41,14 @@ HASH = re.compile(r"sha256:[0-9a-f]{64}\Z")
 
 def policy_failures(policy: dict[str, Any]) -> list[str]:
     expected = {
-        "schema_version": 1, "operation": "session-context",
-        "checkpoints": ["entry-or-resume", "new-request", "task-phase-change", "before-mutation-batch"],
+        "schema_version": 2, "operation": "session-context",
+        "checkpoints": ["entry-or-resume", "new-request", "task-phase-change", "before-mutation-batch", "before-material-decision", "worker-convergence", "finalization"],
         "selected_files": "all still-applicable context actually loaded for the task",
         "baseline": "session-memory-or-authorized-ignored-continuity-record",
         "on_change": "session-continuity",
         "nonaccepted_installation": "inspect-only-except-authorized-adaptation",
+        "knowledge_binding": "selected-ready-plan-with-owner-and-explicit-source-hashes",
+        "observation_storage": "session-only-outside-content-identity",
         "background_polling": False, "full_tree_scan": False, "grants_authority": False,
     }
     contract = policy.get("installed_context")
@@ -96,9 +99,13 @@ def anchor_paths(source_contour: bool, state_path: str = STATE_PATH) -> frozense
 
 
 def validate_baseline(record: Any) -> dict[str, Any]:
-    if (not isinstance(record, dict) or set(record) != {
+    fields = {
         "schema_version", "record_kind", "target_identity", "contour", "installation_state_path", "inputs", "fingerprint"
-    } or type(record.get("schema_version")) is not int or record["schema_version"] != 1
+    }
+    if isinstance(record, dict) and record.get("schema_version") == 2:
+        fields.add("knowledge")
+    if (not isinstance(record, dict) or set(record) != fields
+            or type(record.get("schema_version")) is not int or record["schema_version"] not in {1, 2}
             or record.get("record_kind") != "alatyr-session-context"):
         raise ValueError("invalid session-context baseline contract")
     if not isinstance(record.get("contour"), str) or record["contour"] not in {"source", "target"}:
@@ -124,6 +131,11 @@ def validate_baseline(record: Any) -> dict[str, Any]:
     anchors = anchor_paths(record["contour"] == "source", state_path)
     if not anchors.issubset(paths):
         raise ValueError("session-context baseline omits required anchors")
+    if record["schema_version"] == 2:
+        from session_knowledge import validate_binding
+        if record["contour"] != "target":
+            raise ValueError("target context plans cannot activate a source-contour adapter")
+        validate_binding(record["knowledge"], set(paths))
     if record["fingerprint"] != fingerprint(record):
         raise ValueError("session-context baseline fingerprint differs from its bindings")
     if len(canonical(record)) > MAX_BASELINE_BYTES:
@@ -131,20 +143,45 @@ def validate_baseline(record: Any) -> dict[str, Any]:
     return record
 
 
-def capture(target: Path, paths: list[str], *, source_contour: bool = False) -> tuple[dict[str, Any], str, dict[str, int]]:
+def capture(target: Path, paths: list[str], *, source_contour: bool = False,
+            context_plans: list[str] | None = None,
+            _retained_baseline: dict | None = None) -> tuple[dict[str, Any], str, dict[str, int]]:
     root = target.resolve(strict=True)
     if not root.is_dir():
         raise ValueError("target must be a directory")
     selected = [relative_path(path) for path in paths]
     if len(selected) != len(set(selected)):
         raise ValueError("context paths must not be repeated")
+    plans = [relative_path(path) for path in (context_plans or [])]
+    if plans and source_contour:
+        raise ValueError("target context plans cannot activate a source-contour adapter")
+    knowledge = _retained_baseline.get("knowledge") if _retained_baseline else None
+    if knowledge is not None and plans:
+        raise ValueError("changed context plans require a fresh reviewed capture")
     total = 0
-    inputs = []
+    inputs: dict[str, dict] = {}
     with ContextInputSnapshot(root, regular_files_only=True) as snapshot:
+        def read(relpath):
+            nonlocal total
+            relpath = relative_path(relpath)
+            previous = inputs.get(relpath)
+            if previous is None and len(inputs) >= MAX_INPUTS:
+                raise ValueError(f"session context exceeds {MAX_INPUTS} inputs")
+            remaining = MAX_TOTAL_BYTES - total + (previous["size"] if previous else 0)
+            if remaining < 0:
+                raise ValueError(f"session context exceeds {MAX_TOTAL_BYTES} bytes")
+            raw = snapshot.read(root / relpath, max_bytes=min(MAX_FILE_BYTES, remaining or 1))
+            if len(raw) > remaining:
+                raise ValueError(f"session context exceeds {MAX_TOTAL_BYTES} bytes")
+            total += len(raw) - (previous["size"] if previous else 0)
+            inputs[relpath] = {"sha256": digest(raw), "size": len(raw)}
+            return raw
+        def load(relpath):
+            return json_object(read(relpath), relpath)
         state = "source-contour"
         state_path = "not-applicable"
         if not source_contour:
-            manifest_raw = snapshot.read(root / ".ai/alatyr.yaml", max_bytes=MAX_FILE_BYTES)
+            manifest_raw = read(".ai/alatyr.yaml")
             manifest = safe_load(manifest_raw.decode("utf-8"))
             installation = manifest.get("installation") if isinstance(manifest, dict) else None
             if not isinstance(installation, dict):
@@ -166,14 +203,16 @@ def capture(target: Path, paths: list[str], *, source_contour: bool = False) -> 
             raise ValueError(f"session context exceeds {MAX_INPUTS} inputs")
         state_raw = None
         for relpath in selected:
-            remaining = MAX_TOTAL_BYTES - total
-            if remaining < 1:
-                raise ValueError(f"session context exceeds {MAX_TOTAL_BYTES} bytes")
-            raw = snapshot.read(root / relpath, max_bytes=min(MAX_FILE_BYTES, remaining))
-            total += len(raw)
-            inputs.append({"path": relpath, "sha256": digest(raw)})
+            raw = read(relpath)
             if relpath == state_path:
                 state_raw = raw
+        if plans:
+            from session_knowledge import bind_plans
+            knowledge = bind_plans(plans, load, read)
+        elif knowledge is not None:
+            from session_knowledge import verify_retained
+            verify_retained(knowledge, {item["path"]: item["sha256"] for item in _retained_baseline["inputs"]},
+                            {path: item["sha256"] for path, item in inputs.items()}, load, read)
         if not source_contour:
             record = json_object(state_raw, "installation state")
             failures = validate_installation_state_record(record, manifest_state=state)
@@ -188,11 +227,14 @@ def capture(target: Path, paths: list[str], *, source_contour: bool = False) -> 
                 if present != (relpath in optional):
                     raise ValueError("optional bootstrap input changed during capture")
     baseline = {
-        "schema_version": 1, "record_kind": "alatyr-session-context",
+        "schema_version": 2 if knowledge is not None else 1, "record_kind": "alatyr-session-context",
         "target_identity": digest(str(root).encode("utf-8")),
         "contour": "source" if source_contour else "target",
-        "installation_state_path": state_path, "inputs": inputs,
+        "installation_state_path": state_path,
+        "inputs": [{"path": path, "sha256": item["sha256"]} for path, item in sorted(inputs.items())],
     }
+    if knowledge is not None:
+        baseline["knowledge"] = knowledge
     baseline["fingerprint"] = fingerprint(baseline)
     validate_baseline(baseline)
     return baseline, state, {"input_files": len(inputs), "input_bytes": total,
@@ -216,6 +258,7 @@ def build_parser() -> argparse.ArgumentParser:
     for name in ("capture", "check"):
         child = actions.add_parser(name, allow_abbrev=False)
         child.add_argument("--context", action="append", default=[])
+        child.add_argument("--context-plan", action="append", default=[], help="Selected ready target plan; its bounded input bindings are retained automatically.")
         child.add_argument("--output", type=Path, action=Once, help="Explicit report output; otherwise no writes.")
         if name == "check":
             binding = child.add_mutually_exclusive_group(required=True)
@@ -242,7 +285,8 @@ def main() -> int:
             paths = sorted(set(paths) | {item["path"] for item in prior["inputs"] if item["path"] not in anchors})
         if expected is not None and (not isinstance(expected, str) or not HASH.fullmatch(expected)):
             raise ValueError("expected fingerprint must be a resolved SHA-256")
-        current, state, measurement = capture(args.target, paths, source_contour=args.source_contour)
+        current, state, measurement = capture(args.target, paths, source_contour=args.source_contour,
+                                               context_plans=args.context_plan, _retained_baseline=prior)
         comparable = prior is None or (prior["target_identity"] == current["target_identity"]
                                       and prior["contour"] == current["contour"])
         matches = expected is not None and expected == current["fingerprint"] and comparable
@@ -261,6 +305,12 @@ def main() -> int:
             after = {item["path"]: item["sha256"] for item in current["inputs"]}
             report["changed_paths"] = sorted(path for path in before.keys() | after.keys() if before.get(path) != after.get(path))
             report["same_target_and_contour"] = comparable
+        if "knowledge" in current:
+            from session_knowledge import knowledge_delta
+            report["knowledge"] = knowledge_delta(current["knowledge"], report.get("changed_paths", []))
+            report["checked_at"] = datetime.now(timezone.utc).isoformat(timespec="microseconds")
+            if report["knowledge"]["expired_ids"] and status in {"current", "baseline-candidate"}:
+                status = report["status"] = "rehydration-required"
         if baseline_path is not None and read_regular_context_bytes(
             baseline_path, max_bytes=MAX_BASELINE_BYTES
         ) != raw:

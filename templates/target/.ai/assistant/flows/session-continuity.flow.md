@@ -19,6 +19,16 @@ Use `python` on Windows and your session ID. Repeat `--context` for **every**
 still-applicable loaded profile, gate, rule, skill, prompt and owner, beyond the example.
 Bootstrap inputs are automatic. Capture cannot acknowledge reading.
 
+When using a ready context plan, pass `--context-plan` with its target-relative
+path. This binds selected content and knowledge owners, declared sources and
+query/index/shards automatically. Reuse the saved baseline for checks; memory-only
+checks repeat the plan argument. Old or incomplete plans must be rebuilt.
+Check before material decisions, worker convergence and finalization too.
+Changed routing requires reselection even after an empty match; source changes
+reopen affected conclusions even if prose is unchanged. Review expiry is checked
+with unchanged hashes. `current` does not clear knowledge warnings. Check times
+stay session-local; canonical rewrites still require authorization.
+
 Without local-write authorization retain fingerprint/paths in memory:
 `check --expected sha256:DIGEST` with the same
 `--context` set. Preserve old baselines; after reconciliation capture a new one.

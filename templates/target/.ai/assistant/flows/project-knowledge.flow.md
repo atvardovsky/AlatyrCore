@@ -1,8 +1,7 @@
 # Project Knowledge Promotion And Delivery Flow
 
-Use this flow to propose, review, promote, route, revalidate, supersede, or
-explain reusable project knowledge in `{PROJECT_NAME}`. It does not authorize
-project edits, commits, publication, or live external actions.
+Propose, review, promote, route, revalidate, supersede or explain knowledge in
+`{PROJECT_NAME}`. This flow authorizes no edits, commits, publication or live actions.
 
 ## Sources
 
@@ -31,45 +30,40 @@ project edits, commits, publication, or live external actions.
    perform one refined route.
 7. Record selected, used, stale, blocked, rejected-as-inapplicable, and omitted
    item IDs in the context receipt.
+8. Bind the used ready plan through the session-continuity flow. Recheck owners,
+   declared sources, query/index/shards and expiry at work checkpoints; retain
+   warnings. New matches after an empty result require rerouting too.
 
 ## Promotion Or Direct Guidance Intake
 
-1. For a suggestion request, inspect only validated or completed package and
-   engineering-evidence summaries. Return bounded candidates and the evidence
-   IDs that caused each suggestion. Do not create a promotion or edit project
-   knowledge under `read-only`.
-   Verify candidate-supporting compact package entries against their records,
-   combine area and canonical-owner signals, retain bounded evidence samples,
-   and suppress an unchanged deterministic candidate snapshot already named by
-   a promotion record. Input digests may support external cache decisions, but
-   cached candidate content is not trusted automatically.
-2. Classify the origin as an `engineering-discovery` or an explicitly recorded
-   `decision-owner-directive`. Engineering discovery requires durable
-   engineering evidence. A directive requires verified target decision
-   authority and a durable decision reference. Both require bounded repository
-   evidence and a registered canonical owner.
-3. Under `read-only`, return a proposal only. Creating a promotion record or
-   changing a canonical source requires current-scope authorization compatible
-   with target policy.
+1. Suggestions inspect only validated/completed package and engineering-evidence
+   summaries. Return bounded candidates and contributing evidence IDs. Verify
+   compact entries against records, combine area/owner signals, bound samples
+   and suppress unchanged snapshots already named by promotions. Input hashes
+   permit external invalidation, never trusted cached candidates. `read-only`
+   creates neither promotions nor knowledge edits.
+2. Classify `engineering-discovery` (durable engineering evidence required) or
+   recorded `decision-owner-directive` (verified authority and durable decision
+   required). Both need bounded repository evidence and a registered owner.
+3. Promotion records and canonical edits require current-scope target-compatible
+   authorization. Read-only results remain proposals.
 4. Identify the fact type, fact IDs, proposed canonical owner, decision owner,
    and route hints. Report an ownership gap instead of inventing an owner.
-5. Ask the target decision owner to accept, narrow, reject, or defer an
-   engineering-discovery candidate. For a direct directive, verify that the
-   named decision owner is authorized for the fact type and scope. Do not treat
-   an arbitrary human message as project authority. Do not infer acceptance
-   from silence, implementation frequency, test success, or previous approval
-   for another scope.
-6. For acceptance or narrowing, update or verify the canonical owner first and
-   record its content SHA-256. Preserve the accepted wording and decision
-   reference in the promotion record.
+5. The target owner accepts, narrows, rejects or defers discoveries. Directives
+   require authority for this fact type/scope; arbitrary messages, silence,
+   frequency, passing tests and previous-scope approvals cannot establish it.
+6. Acceptance/narrowing first verifies or updates the canonical owner and its
+   SHA-256. Promotions preserve accepted wording and decision references.
 7. Create or update one bounded route entry, link its promotion and engineering
    evidence, add freshness triggers, and register its shard in the root index.
+   Bind applicable literal code/contract dependencies with `source-sha256`;
+   unknown dependency coverage is not proof of freshness.
    Curate reusable examples through the canonical owner's applicability,
    exception and falsifying-case guidance, not a separate memory registry.
 8. Validate reciprocal contradiction and supersession links. A contradicted
    entry cannot remain current.
-9. Run target adapter and project validation. Report the promotion disposition,
-   canonical update, route result, and residual uncertainty.
+9. Run adapter/project validation; report disposition, canonical/route changes
+   and residual uncertainty.
 10. Synchronize the index adoption state. Use `enabled-empty` only with no
    promotions, coverage, or route entries; use `populated` after reviewed route
    entries exist; use `reuse-observed` only with explicit later-task delivery
@@ -89,7 +83,7 @@ project edits, commits, publication, or live external actions.
 
 ## Revalidation And Conflict
 
-1. Compare canonical-owner digests and applicable dependency, ownership,
+1. Compare canonical-owner/source digests and applicable dependency, ownership,
    contract, upstream, replacement, maintainer-review, and expiry triggers.
 2. Change `current` to `revalidation-required` when evidence changed or cannot
    be checked. Do not infer the new fact from a digest difference.

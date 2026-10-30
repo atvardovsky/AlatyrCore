@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "policy_kind": "target-session-continuity",
   "canonical_rule": "ALATYR-CONTINUITY-001",
   "canonical_owner": ".ai/framework/session-continuity.md",
@@ -9,13 +9,15 @@
   "packet_schema": "alatyr-session-continuity-packet-v3",
   "runtime_directory": ".ai/.runtime/continuity",
   "installed_context": {
-    "schema_version": 1,
+    "schema_version": 2,
     "operation": "session-context",
-    "checkpoints": ["entry-or-resume", "new-request", "task-phase-change", "before-mutation-batch"],
+    "checkpoints": ["entry-or-resume", "new-request", "task-phase-change", "before-mutation-batch", "before-material-decision", "worker-convergence", "finalization"],
     "selected_files": "all still-applicable context actually loaded for the task",
     "baseline": "session-memory-or-authorized-ignored-continuity-record",
     "on_change": "session-continuity",
     "nonaccepted_installation": "inspect-only-except-authorized-adaptation",
+    "knowledge_binding": "selected-ready-plan-with-owner-and-explicit-source-hashes",
+    "observation_storage": "session-only-outside-content-identity",
     "background_polling": false,
     "full_tree_scan": false,
     "grants_authority": false

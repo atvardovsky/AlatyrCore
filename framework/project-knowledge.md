@@ -20,10 +20,9 @@ alatyr_doc:
 ---
 # Project Development Guidance And Knowledge Delivery
 
-This derived Project Development Model layer routes reviewed discoveries and
-authorized owner directives to later work. Canonical architecture, business,
-validation, security, API and data sources retain authority; routing and
-promotion records never become competing owners.
+This derived Project Development Model routes reviewed discoveries and authorized
+directives. Architecture, business, validation, security, API and data owners
+retain authority; routing and promotion records cannot replace them.
 
 Discovery concerns target-owned knowledge, excluding normalized `.ai/framework/`
 owners. Mixed packages retain target-owned signals only. Bounded task/package
@@ -36,16 +35,11 @@ project intent.
 
 Classify every version-2 routed item as one of:
 
-- `development-rule`: an accepted way the target expects engineering work to
-  be performed
-- `architectural-intent`: a recorded design boundary or rationale owned by an
-  architecture source
-- `reviewed-knowledge`: a reusable conclusion accepted after engineering
-  discovery
-- `validation-contract`: a required proof or check owned by target validation
-  policy
-- `known-restriction`: an accepted limitation, compatibility boundary, or
-  prohibited direction
+- `development-rule`: accepted engineering practice
+- `architectural-intent`: an architecture-owned boundary or rationale
+- `reviewed-knowledge`: an accepted reusable engineering discovery
+- `validation-contract`: a validation-owned proof requirement
+- `known-restriction`: an accepted limitation, compatibility boundary or prohibition
 
 Each item needs a stable ID, kind, canonical owner, decision owner, authority,
 rationale, applicability, freshness evidence, validation, exception or
@@ -56,14 +50,11 @@ for selection, but it must retain owner references and content digests.
 
 Keep these surfaces separate:
 
-- durable engineering evidence records what a completed investigation found
-- a promotion record preserves the human disposition of one reusable
-  conclusion or the intake of one authorized decision-owner directive
-- the source-of-truth registry identifies the canonical owner and conflict
-  resolver for the accepted fact type
-- the canonical target source owns the accepted project fact
-- the project-knowledge routing index and shards are compact derived
-  projections used to find that owner during later work
+- engineering evidence records completed investigation findings
+- promotions retain human dispositions or authorized directive intake
+- the source-of-truth registry identifies fact owners and conflict resolvers
+- canonical target sources own accepted facts
+- derived routing indexes/shards locate those owners for later work
 
 Routing carries bounded summaries, never canonical authority. Cite and reverify
 the owner before material decisions.
@@ -88,22 +79,17 @@ authorized decision-owner directive
         -> bounded delivery to a later task
 ```
 
-The assistant may propose a candidate when the conclusion is expensive to
-reconstruct, non-obvious from local code, cross-area, dependency-sensitive,
-historically important, a compatibility trap, a rejected direction likely to
-recur, or an explanation of why a constraint exists. Do not propose line
-numbers, obvious declarations, complete source summaries, or facts that are
-already cheaply and reliably routed from their canonical owner.
+Suggest conclusions that are costly to reconstruct, non-obvious, cross-area,
+dependency-sensitive, historically important, compatibility traps, recurring
+rejected directions or constraint rationales. Exclude line numbers, obvious
+declarations, full source summaries and facts already cheaply/reliably routed.
 
-Candidate discovery should start from compact, validated change-package and
-engineering-evidence summaries. Repeated project-area/owner pairs, cross-area
-canonical owners, incident families, failed gates, corrective ownership,
-stable fact IDs, invariants, rejected directions, or compatibility traps may
-trigger a read-only suggestion. A frequency signal is not semantic proof and
-must never create a promotion, edit a canonical owner, or mark guidance
-accepted automatically. The source helper `tools/suggest_project_knowledge.py`
-provides this bounded suggestion route when AlatyrCore source tools are
-available.
+Start from compact validated package/evidence summaries. Area/owner recurrence,
+cross-area owners, incident families, failed gates, corrective ownership, stable
+facts, invariants, rejected directions and compatibility traps can trigger
+read-only suggestions. Frequency cannot prove semantics, create promotions,
+edit owners or accept guidance. When available, source helper
+`tools/suggest_project_knowledge.py` supplies this bounded route.
 
 The helper combines area/owner signals for single-area packages. For multi-area
 packages it may suggest owner recurrence but never invented Cartesian pairs.
@@ -126,12 +112,10 @@ Each proposal or directive should identify:
   repository evidence for either origin
 - proposed canonical owner and decision owner, or an explicit ownership gap
 
-Promotion requires a target-authorized decision owner. A direct directive is
-valid only when the target can identify that authority and a durable decision
-reference; an arbitrary human message does not become project guidance. The reviewer
-may accept, narrow, reject, or defer the candidate. Acceptance is incomplete
-until the canonical owner is updated or already contains the exact accepted
-fact. A promotion record cannot itself substitute for that owner.
+Promotion needs a target-authorized decision owner; directives need verified
+authority and durable decisions, not arbitrary human messages. Review may accept,
+narrow, reject or defer. Acceptance requires the canonical owner to contain the
+exact fact, through an update or existing wording; promotions cannot substitute.
 
 ## Authority And Freshness
 
@@ -165,35 +149,44 @@ decision, or review-expiry triggers when those conditions affect validity. A
 digest difference proves that revalidation is needed; it does not prove which
 statement is now correct.
 
+For knowledge derived from code or contracts, bind applicable literal source
+files with `source-sha256` triggers: target-relative `subject`, file-byte SHA-256
+`expected`,
+review `evidence` and revalidation `action`. At most 32 source bindings per item;
+no globs, commands or inferred dependency closure. Missing coverage stays
+unverified. Selection checks these hashes; unknown trigger kinds remain warnings.
+
+Bind used ready plans to continuity: knowledge, owners, explicit sources and
+query/index/shards. Without tooling, retain equivalent bounded versions and
+expiry; unresolved coverage remains unverified. Recheck before material
+decisions, edits, worker convergence and finalization. A changed source can
+invalidate knowledge even when its prose is unchanged; changed routing requires
+bounded reselection, including prior empty results. Preserve unresolved warnings
+and reconsider affected conclusions, plans, tests and worker evidence. Hashes
+locate changes, never decide which fact is accepted. Canonical updates require
+current authorization; per-session check times never rewrite shared knowledge.
+
 ## Two-Stage Delivery
 
-Every non-trivial selected task profile should perform a bounded knowledge
-preflight after bootstrap and project-area selection:
+Non-trivial profiles preflight knowledge after bootstrap and area selection:
 
-1. Initial route: select candidate shards from the task profile, project area,
-   subsystem, architecture item, named dependency, contract, and explicit task
-   wording.
-2. Load no more than the configured initial item limit. Current accepted items
-   become candidate constraints; stale or contradicted items become warnings or
-   blockers.
+1. Select initial shards by profile, area, subsystem, architecture item,
+   dependency, contract and task wording.
+2. Enforce the initial item limit: accepted/current items are candidate
+   constraints; stale/contradicted items are warnings/blockers.
 3. Read each selected canonical owner before using the summary in a material
    decision.
-4. Refined route: after initial inspection identifies changed fact IDs, paths,
-   symbols, subsystem or architecture relationships, contracts, dependencies,
-   or issue lineage, query the selected shards again.
-5. Load no more than the configured refined item limit and record which items
-   were used, rejected as inapplicable, stale, conflicted, or intentionally
-   omitted.
+4. Refine selected shards after inspection identifies fact IDs, paths, symbols,
+   subsystem/architecture relationships, contracts, dependencies or issue lineage.
+5. Enforce the refined limit; record used, inapplicable, stale, conflicted and
+   intentionally omitted items.
 
-Task-profile matching alone is not enough to load an item. At least one
-project-area, subsystem, architecture item, dependency, fact, contract, path,
-symbol, or issue-lineage signal must match. A target may add deterministic
-retrieval tooling, but natural-
-language similarity, embeddings, or model judgment must not silently override
-authority, freshness, applicability, or packet limits.
+Profile-only matches cannot load items: require an area, subsystem, architecture,
+dependency, fact, contract, path, symbol or issue-lineage match. Deterministic
+retrieval is optional; similarity, embeddings and model judgment cannot override
+authority, freshness, applicability or packet limits.
 
-If no item matches, continue with normal repository discovery. Absence from the
-routing index does not prove that the project has no relevant knowledge.
+No match resumes normal discovery, without proving absent relevant knowledge.
 
 ## Compact Index And Shards
 
@@ -253,14 +246,10 @@ safety boundary. An absent or expired exception is not permission.
 
 ## Coverage And Known Gaps
 
-The compact index may publish a derived coverage view by project area and fact
-type. Use only `mapped`, `known-gap`, and `unknown` states. `Mapped` entries
-name existing guidance IDs. `Known-gap` entries state the missing evidence or
-owner. `Unknown` means coverage has not been established.
-
-Do not calculate a completeness percentage or infer that an area has no rule
-because no routing entry exists. The coverage view is discovery evidence, not
-project authority.
+Coverage is derived by area/fact type: `mapped` names existing guidance IDs;
+`known-gap` identifies missing evidence/owners; `unknown` means unestablished.
+No completeness percentages or absence-of-rule claims from missing entries.
+Coverage supports discovery, not authority.
 
 ## Adoption State
 
@@ -273,10 +262,9 @@ The routing index records one machine-checkable adoption state:
 - `reuse-observed`: reviewed route entries exist and the index names explicit
   delivery or operation evidence from a later task
 
-An empty module must not block adapter acceptance or imply that the project has
-no knowledge. It must also not be presented as proof that Project Development
-Model guidance affected engineering work. Move to `reuse-observed` only from
-recorded delivery evidence, never from the mere presence of a route entry.
+An empty module cannot block adapter acceptance, imply absent knowledge or prove
+Project Development Model impact. `reuse-observed` requires recorded later-task
+delivery, not merely installed entries.
 
 ## Cost And Evidence
 
@@ -317,7 +305,7 @@ symbols require refinement. Ordinary planning does not scan knowledge.
 Report unsearched shards and incomplete global coverage. Contradictions and
 applicable constraint/warning overflow block, not truncate. Count selected owners
 and delivered results against existing budgets. Verify owner hashes and review
-expiry; expose other freshness triggers as unverified for target review.
+expiry plus explicit source hashes; expose other freshness triggers as unverified for target review.
 Selection neither promotes authority nor demonstrates reuse/comprehension.
 Full validation still owns complete registry consistency.
 
