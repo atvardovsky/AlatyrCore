@@ -40,9 +40,12 @@ def build_execution_focus(model: dict, task: dict, binding: dict,
     if inconclusive:
         signals.append({"reason": "probe-inconclusive", "ids": inconclusive})
     stale = advice is not None and advice.get("state") == "blocked-by-stale-evidence"
+    runtime_blocked = readiness["state"] == "blocked-by-runtime-evidence"
+    if runtime_blocked:
+        signals.append({"reason": "runtime-evidence-unresolved", "ids": []})
     if stale:
         signals.append({"reason": "input-artifacts-changed", "ids": []})
-    candidates = advice.get("candidates", []) if advice is not None and not stale else []
+    candidates = advice.get("candidates", []) if advice is not None and not stale and not runtime_blocked else []
     retries = [row["obligation_id"] for row in candidates if row["retry_review_required"]]
     if retries:
         signals.append({"reason": "recorded-probe-needs-retry-review", "ids": retries})
@@ -65,6 +68,7 @@ def build_execution_focus(model: dict, task: dict, binding: dict,
         "active_projection_locator": model["active_projection"] if task["state"] == "active" else None,
         "projection_content_verified": False,
         "state": "historical-disposition" if task["state"] == "closed" else
+                 "blocked-by-runtime-evidence" if runtime_blocked else
                  "blocked-by-stale-evidence" if stale else "reanchor-required" if signals else
                  "declared-frontier" if candidates else "orientation-only",
         "scope": {"source": "bound-model-and-active-projection", "non_goals": model["non_goals"],

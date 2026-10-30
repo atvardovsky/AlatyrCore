@@ -16,6 +16,7 @@ from target_adapter_validation.analysis_strategies import (
     validate_selected_problem_model,
 )
 from target_adapter_validation.values import is_resolved_string
+from target_adapter_validation.context import TargetFileState
 from target_adapter_validation.consistency_map import parse_registry_fact_entries
 from target_validation_support import is_target_relative_path
 from task_evidence_contract import task_projection_mismatches, task_schema, task_model_header_failures, task_predecessor_failures
@@ -45,26 +46,26 @@ def _schema_valid(validator: Any, value: Any, name: str, source: str) -> bool:
     return not errors
 
 
-def _bound_object(validator: Any, binding: Any, label: str) -> dict[str, Any] | None:
+def _bound_object(validator: Any, binding: Any, label: str, *, details: dict[str, Any] | None = None) -> dict[str, Any] | None:
     if not isinstance(binding, dict) or set(binding) != {"path", "sha256"}:
-        validator.error("ACTIVE_TASK_BINDING", f"{label} requires path and SHA-256", INDEX_PATH)
+        validator.error("ACTIVE_TASK_BINDING", f"{label} requires path and SHA-256", INDEX_PATH, details=details)
         return None
     path, digest = binding["path"], binding["sha256"]
     if not is_resolved_string(path) or "\\" in path or not is_target_relative_path(path) or not _target_file(validator, path):
-        validator.error("ACTIVE_TASK_BINDING", f"{label} path is unavailable or unsafe: {path!r}", INDEX_PATH)
+        validator.error("ACTIVE_TASK_BINDING", f"{label} path is unavailable or unsafe: {path!r}", INDEX_PATH, details=details)
         return None
     artifact = validator.target_path(path)
     if artifact.is_symlink():
-        validator.error("ACTIVE_TASK_BINDING", f"{label} must be a bounded regular file", path)
+        validator.error("ACTIVE_TASK_BINDING", f"{label} must be a bounded regular file", path, details=details)
         return None
     content = validator.context.read_bytes_result(artifact, max_bytes=MAX_ARTIFACT_BYTES)
     if content.value is None or digest != hashlib.sha256(content.value).hexdigest():
-        validator.error("ACTIVE_TASK_DIGEST", f"{label} SHA-256 does not match its artifact", path)
+        validator.error("ACTIVE_TASK_DIGEST", f"{label} SHA-256 does not match its artifact", path, details=details)
         return None
     return validator.load_json_object(artifact, "ACTIVE_TASK_ARTIFACT")
 
 
-def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = None) -> tuple[Any, Any, Path | None]:
+def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = None, *, require_runtime: bool = False) -> tuple[Any, Any, Path | None]:
     """Retained witnesses preserve exact bindings, not current-task authority."""
     binding = task.get("problem_model")
     if task.get("state") == "closed" and closure is None:
@@ -77,6 +78,7 @@ def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = No
         validator.error("ACTIVE_TASK_WITNESS", "durable evidence requires explicit bindings and retention review", INDEX_PATH)
         return None, None, None
     task_id = task["task_id"]
+    selected_runtime = require_runtime or getattr(validator, "current_task_id", None) == task_id
     if re.fullmatch(r"[A-Za-z0-9._-]+", task_id) is None or task_id in (".", ".."):
         validator.error("ACTIVE_TASK_WITNESS", "retained task identities must be safe path tokens", INDEX_PATH)
         return None, None, None
@@ -89,25 +91,41 @@ def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = No
     if not isinstance(binding, dict) or witness["model"].get("sha256") != binding.get("sha256"):
         validator.error("ACTIVE_TASK_WITNESS", "durable model must preserve the registered runtime model digest", INDEX_PATH)
         return None, None, None
-    model = _bound_object(validator, witness["model"], "durable problem model")
-    projection = _bound_object(validator, witness["projection"], "durable active projection")
-    if projection is None:
+    retained_details = {name: {"task_id": task_id, "evidence_binding": witness[name], "action": "recover-exact-evidence"}
+                        for name in ("model", "projection")}
+    model = _bound_object(validator, witness["model"], "durable problem model", details=retained_details["model"])
+    projection = _bound_object(validator, witness["projection"], "durable active projection", details=retained_details["projection"])
+    if model is None or projection is None:
         return None, None, None
     if active and isinstance(binding, dict):
         if not isinstance(binding.get("path"), str) or not is_target_relative_path(binding["path"]):
             validator.error("ACTIVE_TASK_BINDING", "active runtime path is unsafe", INDEX_PATH)
             return None, None, None
-        if _target_file(validator, binding["path"]):
-            _bound_object(validator, binding, f"{task_id} active runtime model")
-        elif getattr(validator, "current_task_id", None) == task_id:
-            validator.error("ACTIVE_TASK_REHYDRATION_REQUIRED", f"{task_id}: restore the reviewed active handoff to {binding['path']} before current-task work", INDEX_PATH)
         runtime_projection = model.get("active_projection") if isinstance(model, dict) else None
         runtime_projection_path = runtime_projection.get("path") if isinstance(runtime_projection, dict) else None
+        runtime_bindings = [("model", binding)]
         if isinstance(runtime_projection_path, str) and is_target_relative_path(runtime_projection_path):
-            if _target_file(validator, runtime_projection_path):
-                _bound_object(validator, {"path": runtime_projection_path, "sha256": witness["projection"]["sha256"]}, f"{task_id} runtime projection")
-            elif getattr(validator, "current_task_id", None) == task_id:
-                validator.error("ACTIVE_TASK_REHYDRATION_REQUIRED", f"{task_id}: restore the reviewed projection to {runtime_projection_path}", INDEX_PATH)
+            runtime_bindings.append(("projection", {"path": runtime_projection_path, "sha256": witness["projection"]["sha256"]}))
+        for name, runtime_binding in runtime_bindings:
+            details = {"task_id": task_id, "runtime_binding": runtime_binding,
+                       "action": "reconcile-conflicting-evidence"}
+            if _target_file(validator, runtime_binding["path"]):
+                _bound_object(validator, runtime_binding, f"{task_id} runtime {name}", details=details)
+            elif selected_runtime:
+                candidate = validator.target / runtime_binding["path"]
+                try:
+                    missing = validator.context.status(candidate).state == TargetFileState.MISSING and not candidate.is_symlink()
+                except (OSError, ValueError):
+                    missing = False
+                if missing:
+                    details["action"] = "inspect-reviewed-handoff-for-restore"
+                    validator.error("ACTIVE_TASK_REHYDRATION_REQUIRED",
+                        f"{task_id}: restore the reviewed {name} to {runtime_binding['path']} before current-task work",
+                        INDEX_PATH, details=details)
+                else:
+                    validator.error("ACTIVE_TASK_BINDING",
+                        f"{task_id}: runtime {name} is unsafe or unavailable; preserve it and inspect {runtime_binding['path']}",
+                        INDEX_PATH, details=details)
     return model, witness["model"], validator.target_path(witness["projection"]["path"])
 
 

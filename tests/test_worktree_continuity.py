@@ -42,6 +42,175 @@ class WorktreeContinuityTests(ActiveTaskFixture):
         self.task = json.loads((self.target / INDEX).read_text())["tasks"][0]
         return plan
 
+    def doctor(self, *, selected=True, text=False):
+        args = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "doctor",
+                "--target", str(self.target), "--framework-source", str(ROOT)]
+        if selected:
+            args += ["--current-task", "fixture-task"]
+        if not text:
+            args += ["--json"]
+        result = subprocess.run(args, capture_output=True, text=True)
+        self.assertNotIn("Traceback", result.stderr)
+        return result, result.stdout if text else json.loads(result.stdout)
+
+    def test_public_doctor_selected_runtime_matrix_preserves_foreign_handoffs(self):
+        self.retained()
+        paths = [self.model_path, self.target / self.model["active_projection"]["path"]]
+        originals = {path: path.read_bytes() for path in paths}
+        for absent in ((0,), (1,), (0, 1)):
+            with self.subTest(absent=absent):
+                for path, content in originals.items():
+                    path.write_bytes(content)
+                for index in absent:
+                    paths[index].unlink()
+                before = {path.relative_to(self.target).as_posix(): path.read_bytes()
+                          for path in self.target.rglob("*") if path.is_file() and ".git" not in path.parts}
+                _, foreign = self.doctor(selected=False)
+                self.assertNotIn("ACTIVE_TASK_REHYDRATION_REQUIRED", {row["code"] for row in foreign["findings"]})
+                result, selected = self.doctor()
+                self.assertNotEqual(result.returncode, 0)
+                current = selected["current_task"]
+                self.assertIn("ACTIVE_TASK_REHYDRATION_REQUIRED", {row["code"] for row in selected["findings"]})
+                self.assertEqual(current["state"], "bound-recorded-disposition")
+                self.assertFalse(current["acceptance_granted"])
+                runtime = current["runtime_readiness"]
+                self.assertEqual(runtime["state"], "rehydration-required")
+                self.assertEqual({row["path"] for row in runtime["prerequisites"]},
+                                 {paths[index].relative_to(self.target).as_posix() for index in absent})
+                self.assertTrue(current["diagnostics"])
+                self.assertEqual(current["execution_focus"]["state"], "blocked-by-runtime-evidence")
+                self.assertIsNone(current["execution_focus"]["next_action"])
+                codes = {row["code"] for row in selected["findings"]}
+                self.assertIn("ACTIVE_TASK_REHYDRATION_REQUIRED", codes)
+                self.assertNotIn("ACTIVE_TASK_NOT_CLOSED", codes)
+                self.assertNotIn("TASK_ACCEPTANCE_CLOSURE", codes)
+                prerequisites = [row for row in selected["repair_plan"]["steps"] if row["kind"] == "prerequisite"]
+                self.assertEqual({row["path"] for row in prerequisites}, {row["path"] for row in runtime["prerequisites"]})
+                self.assertTrue(all(row["action"] == "inspect-reviewed-handoff-for-restore" for row in prerequisites))
+                after = {path.relative_to(self.target).as_posix(): path.read_bytes()
+                         for path in self.target.rglob("*") if path.is_file() and ".git" not in path.parts}
+                self.assertEqual(after, before)
+                plan = restore(self.target, "fixture-task")
+                SupportTransaction(self.target).apply(plan.outputs, expected_inputs=plan.inputs)
+                self.assertEqual({path: path.read_bytes() for path in paths}, originals)
+        _, restored = self.doctor()
+        self.assertEqual(restored["current_task"]["runtime_readiness"]["state"], "bound-not-execution-proof")
+        self.assertFalse(restored["current_task"]["runtime_readiness"]["prerequisites"])
+        self.assertNotIn("ACTIVE_TASK_REHYDRATION_REQUIRED", {row["code"] for row in restored["findings"]})
+
+    def test_public_doctor_conflicts_never_become_restore_permission(self):
+        self.retained()
+        for path in (self.model_path, self.target / self.model["active_projection"]["path"]):
+            original = path.read_bytes()
+            with self.subTest(path=path.name):
+                path.write_bytes(b"conflicting runtime bytes")
+                result, payload = self.doctor()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("ACTIVE_TASK_DIGEST", {row["code"] for row in payload["findings"]})
+                current = payload["current_task"]
+                self.assertEqual(current["state"], "bound-recorded-disposition")
+                self.assertEqual(current["runtime_readiness"]["state"], "blocked")
+                prerequisites = [row for row in payload["repair_plan"]["steps"] if row["kind"] == "prerequisite"]
+                self.assertEqual(len(prerequisites), 1)
+                self.assertEqual(prerequisites[0]["path"], path.relative_to(self.target).as_posix())
+                self.assertEqual(prerequisites[0]["action"], "reconcile-conflicting-evidence")
+                self.assertFalse(current["runtime_readiness"]["authorization_granted"])
+                self.assertFalse(payload["repair_plan"]["acceptance_granted"])
+                with self.assertRaisesRegex(ValueError, "conflicting runtime"):
+                    restore(self.target, "fixture-task")
+                self.assertEqual(path.read_bytes(), b"conflicting runtime bytes")
+                path.write_bytes(original)
+
+    def test_public_doctor_missing_or_corrupt_retained_evidence_is_not_ready(self):
+        self.retained()
+        for name in ("model", "projection"):
+            path = self.target / self.task["analysis_handoff"][name]["path"]
+            original = path.read_bytes()
+            for missing in (False, True):
+                with self.subTest(artifact=name, missing=missing):
+                    if missing:
+                        path.unlink()
+                    else:
+                        path.write_bytes(b"corrupt retained bytes")
+                    result, payload = self.doctor()
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertEqual(payload["current_task"]["state"], "unknown")
+                    self.assertEqual(payload["current_task"]["runtime_readiness"]["state"], "blocked")
+                    self.assertTrue(payload["current_task"]["diagnostics"])
+                    self.assertFalse(payload["current_task"]["acceptance_granted"])
+                    prerequisites = [row for row in payload["repair_plan"]["steps"] if row["kind"] == "prerequisite"]
+                    self.assertEqual(len(prerequisites), 1)
+                    self.assertEqual(prerequisites[0]["path"], path.relative_to(self.target).as_posix())
+                    self.assertEqual(prerequisites[0]["action"], "recover-exact-evidence")
+                    with self.assertRaises(ValueError):
+                        restore(self.target, "fixture-task")
+                    self.assertEqual(path.exists(), not missing)
+                    path.write_bytes(original)
+
+    def test_public_doctor_text_names_projection_only_recovery(self):
+        self.retained()
+        projection = self.target / self.model["active_projection"]["path"]
+        projection.unlink()
+        result, text = self.doctor(text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Selected runtime: rehydration-required", text)
+        self.assertIn("inspect-reviewed-handoff-for-restore: task fixture-task [" + projection.relative_to(self.target).as_posix(), text)
+        self.assertIn("not execution permission", text)
+        self.assertFalse(projection.exists())
+
+    def test_runtime_diagnostic_selection_matches_canonical_evidence_resolver(self):
+        from check_change_packages import changed_index_validator
+        from target_adapter_validation.active_tasks import _task_model_evidence
+        self.retained()
+        paths = [self.model_path, self.target / self.model["active_projection"]["path"]]
+        for absent in ((), (0,), (1,), (0, 1)):
+            contents = {path: path.read_bytes() for path in paths}
+            for index in absent:
+                paths[index].unlink()
+            selected = changed_index_validator(self.target)
+            selected.current_task_id = "fixture-task"
+            diagnostic = changed_index_validator(self.target)
+            _task_model_evidence(selected, self.task)
+            _task_model_evidence(diagnostic, self.task, require_runtime=True)
+            self.assertEqual([row.to_json() for row in selected.findings],
+                             [row.to_json() for row in diagnostic.findings])
+            for path, content in contents.items():
+                path.write_bytes(content)
+
+    def test_unavailable_runtime_is_not_misreported_as_missing(self):
+        from check_change_packages import changed_index_validator
+        from current_task_view import current_task_view
+        self.retained()
+        projection = self.target / self.model["active_projection"]["path"]
+        original = projection.read_bytes()
+        projection.unlink()
+        projection.mkdir()
+        checked = changed_index_validator(self.target)
+        current = current_task_view(checked, "fixture-task")
+        self.assertEqual(current["runtime_readiness"]["state"], "blocked")
+        self.assertEqual(current["runtime_readiness"]["prerequisites"][0]["action"], "reconcile-conflicting-evidence")
+        self.assertNotIn("ACTIVE_TASK_REHYDRATION_REQUIRED", self.errors(checked))
+        self.assertTrue(projection.is_dir())
+        projection.rmdir()
+        projection.write_bytes(original)
+
+    def test_runtime_and_diagnostic_binding_reads_keep_the_canonical_size_limit(self):
+        from check_change_packages import changed_index_validator
+        from target_adapter_validation.active_tasks import _bound_object, MAX_ARTIFACT_BYTES
+        for size in (MAX_ARTIFACT_BYTES - 1, MAX_ARTIFACT_BYTES, MAX_ARTIFACT_BYTES + 1):
+            with self.subTest(size=size):
+                self.model_path.write_bytes(b"{}" + b" " * (size - 2))
+                binding = self.bind(self.model_path)
+                checked = changed_index_validator(self.target)
+                value = _bound_object(checked, binding, "selected runtime model",
+                    details={"task_id": "fixture-task", "runtime_binding": binding, "action": "reconcile-conflicting-evidence"})
+                if size <= MAX_ARTIFACT_BYTES:
+                    self.assertEqual(value, {})
+                    self.assertFalse(self.errors(checked))
+                else:
+                    self.assertIsNone(value)
+                    self.assertIn("ACTIVE_TASK_DIGEST", self.errors(checked))
+
     def test_foreign_retained_active_evidence_stays_valid_but_selected_requires_runtime(self):
         self.retained()
         self.model_path.unlink()

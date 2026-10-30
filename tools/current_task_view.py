@@ -81,7 +81,25 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
         if closure["task_id"] != task_id or closure["operation_id"] != task["operation_id"]:
             result["diagnostics"].append("selected closure identity differs from its registered task")
             return result
-    model, binding, _ = _task_model_evidence(validator, task, closure)
+    # Selecting a disposition requires local runtime diagnostics, not closure.
+    start = len(validator.findings)
+    model, binding, _ = _task_model_evidence(validator, task, closure, require_runtime=True)
+    evidence_errors = [item for item in validator.findings[start:] if item.level == "error"]
+    if task["state"] == "active" and "analysis_handoff" in task:
+        prerequisites = []
+        for item in evidence_errors:
+            details = item.details or {}
+            runtime = details.get("runtime_binding")
+            if isinstance(runtime, dict):
+                prerequisites.append({"task_id": task_id, "path": runtime["path"],
+                                      "expected_sha256": runtime["sha256"], "action": details["action"]})
+        result["runtime_readiness"] = {
+            "state": "blocked" if any(item.code != "ACTIVE_TASK_REHYDRATION_REQUIRED" for item in evidence_errors)
+                     else "rehydration-required" if evidence_errors else "bound-not-execution-proof",
+            "prerequisites": prerequisites, "authorization_granted": False, "acceptance_granted": False,
+            "limitation": "Exact runtime bindings only; retained disposition, execution readiness and completion acceptance are separate.",
+        }
+        result["diagnostics"].extend(item.message for item in evidence_errors[:8])
     if not isinstance(model, dict):
         result["diagnostics"].append("selected bound model is unavailable")
         return result
@@ -143,6 +161,15 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
             result["next_action_advice"] = next_action_advice(model, binding["sha256"], readiness=readiness)
             result["next_action_advice"]["artifact_binding_state"] = "current-content-not-execution-proof"
         advice = result["next_action_advice"]
+    runtime = result.get("runtime_readiness")
+    if isinstance(runtime, dict) and runtime["state"] != "bound-not-execution-proof":
+        readiness = {**readiness, "state": "blocked-by-runtime-evidence", "ready": [],
+                     "failures": [*readiness["failures"], *result["diagnostics"]]}
+        if "execution_readiness" in result:
+            result["execution_readiness"] = readiness
+        if advice is not None:
+            result["next_action_advice"] = {**advice, "state": "blocked-by-runtime-evidence", "candidates": []}
+            advice = result["next_action_advice"]
     from execution_focus import build_execution_focus
     result["execution_focus"] = build_execution_focus(model, task, binding, readiness, advice)
     if closure:

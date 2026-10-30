@@ -58,16 +58,44 @@ def finding_groups(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def repair_plan(view: TargetRepositoryView, findings: list[dict[str, Any]]) -> dict[str, Any]:
     """Explain observed prerequisites without waiving or reclassifying findings."""
-    tasks = None
+    # Prefer artifact bindings emitted by the canonical evidence resolver. A
+    # valid model must not hide a missing or conflicting runtime projection.
     task_codes = {"ACTIVE_TASK_BINDING", "ACTIVE_TASK_DIGEST", "ACTIVE_TASK_REHYDRATION_REQUIRED"}
-    if any(item["level"] == "error" and item["code"] in task_codes for item in findings):
+    steps = []
+    step_ids = set()
+    routed_tasks = set()
+    for item in findings:
+        details = item.get("details")
+        if item["level"] != "error" or item["code"] not in task_codes or not isinstance(details, dict):
+            continue
+        binding = details.get("runtime_binding", details.get("evidence_binding"))
+        task_id = details.get("task_id")
+        if not isinstance(binding, dict) or not isinstance(task_id, str):
+            continue
+        path = binding.get("path")
+        if not isinstance(path, str) or not is_target_relative_path(path):
+            continue
+        step_id = f"task-artifact:{task_id}:{path}"
+        if step_id in step_ids:
+            continue
+        step_ids.add(step_id)
+        routed_tasks.add(task_id)
+        steps.append({"id": step_id, "kind": "prerequisite", "task_id": task_id,
+                      "path": path, "expected_sha256": binding.get("sha256"),
+                      "action": details["action"],
+                      "requires": ["worktree-preflight", "current-scope-modify-authorization"],
+                      "explanation": "Recover only exact reviewed evidence; inspect restore-task only with valid retained sources. Preserve conflicts and recheck freshness and authorization before work."})
+    tasks = None
+    if any(item["level"] == "error" and item["code"] in task_codes
+           and not any(isinstance((item.get("details") or {}).get(key), dict) for key in ("runtime_binding", "evidence_binding")) for item in findings):
         index, _ = _overview_index(view, ".ai/assistant/active-tasks.json", "tasks")
         if index is not None:
             tasks = index["tasks"]
-    steps = []
     if tasks is not None:
         from analysis_strategy_contract import MAX_PROBLEM_MODEL_FILE_BYTES, MAX_ACTIVE_PROJECTION_FILE_BYTES
         for task in tasks:
+            if task.get("task_id") in routed_tasks:
+                continue
             binding = task.get("problem_model")
             if task.get("state") != "active" or not isinstance(binding, dict) or not isinstance(binding.get("path"), str):
                 continue

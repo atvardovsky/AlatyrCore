@@ -148,3 +148,18 @@ index is valid. See [project knowledge](../framework/project-knowledge.md).
 prerequisites for unavailable task bindings, with exact task/path/digest and a
 recovery action. Historical attention is listed separately. These views do not
 waive findings, infer domain causality or make full validation cheaper.
+Use `doctor --current-task TASK_ID --json` to distinguish a valid retained
+disposition from missing or conflicting local runtime model/projection bytes.
+The shared [task evidence resolver](../tools/target_adapter_validation/active_tasks.py)
+provides the selected runtime diagnostics and artifact-specific repair bindings;
+a matching model does not waive projection recovery. Doctor never restores files
+or requests closure merely to inspect an active task. After an authorized exact
+restore, rerun selected diagnostics and the worktree preflight before resuming.
+
+The alpha.115 omission came from testing the validator and preflight in isolation
+without exercising selection through the doctor CLI. Regression coverage in
+[`test_worktree_continuity.py`](../tests/test_worktree_continuity.py) now covers
+foreign versus selected handoffs, each missing runtime artifact, exact recovery,
+conflicts, missing/corrupt retained evidence and JSON/text CLI output. This is a
+source-tool diagnostic fix; framework rules, adapter schema and template versions
+are unchanged, with no target migration requirement.

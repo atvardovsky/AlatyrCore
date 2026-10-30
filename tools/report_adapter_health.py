@@ -248,6 +248,9 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     if current is not None:
         lines.extend(["", "Selected task: " + str(current["task_id"]),
                       "Disposition: " + current["state"] + " (not acceptance)"])
+        runtime = current.get("runtime_readiness")
+        if isinstance(runtime, dict):
+            lines.append("Selected runtime: " + runtime["state"] + " (not execution permission)")
         if "delivery" in current:
             lines.append("Recorded delivery: " + json.dumps(current["delivery"], sort_keys=True))
         outcome = current.get("incident_outcome")

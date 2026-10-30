@@ -64,6 +64,39 @@ class ExecutionFocusTests(ActiveTaskFixture):
         self.assertIsNone(view["execution_focus"]["next_action"])
         self.assertFalse(view["execution_focus"]["authorization_granted"])
 
+    def test_missing_selected_runtime_clears_action_candidates_but_retains_duties(self):
+        from publish_active_task import prepare
+        from support_write_transaction import SupportTransaction
+        self.add_probe("next-proof")
+        evidence = self.model["analysis_evidence"]
+        retained_artifact = self.target / "probe-result.txt"
+        retained_artifact.write_bytes((self.target / self.artifact).read_bytes())
+        for key in ("proof_obligations", "hypotheses", "counterexamples"):
+            for row in self.model[key]:
+                row["evidence_refs"] = ["probe-result.txt" if path == self.artifact else path for path in row["evidence_refs"]]
+        for artifact in (evidence["probes"][0]["result"]["artifacts"][0],
+                         evidence["review_challenges"][0]["artifacts"][0]):
+            artifact["path"] = "probe-result.txt"
+        self.selected()
+        draft = self.target / ".ai/.runtime/draft.json"
+        draft.write_text(json.dumps(self.model))
+        plan = prepare(self.target, "fixture-task", draft.relative_to(self.target).as_posix(), retention_review="reviewed-portable-evidence")
+        SupportTransaction(self.target).apply(plan.outputs, expected_inputs=plan.inputs)
+        projection = self.target / self.model["active_projection"]["path"]
+        original = projection.read_bytes()
+        projection.unlink()
+        view = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(view["state"], "bound-recorded-disposition")
+        self.assertEqual(view["execution_readiness"]["state"], "blocked-by-runtime-evidence")
+        self.assertEqual(view["execution_readiness"]["ready"], [])
+        self.assertIn("next-proof", view["execution_readiness"]["retained_unresolved"])
+        self.assertEqual(view["next_action_advice"]["candidates"], [])
+        self.assertEqual(view["execution_focus"]["state"], "blocked-by-runtime-evidence")
+        self.assertIsNone(view["execution_focus"]["next_action"])
+        projection.write_bytes(original)
+        restored = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(restored["execution_focus"]["next_action"]["obligation_id"], "next-proof")
+
     def test_blocked_waiting_and_unconfigured_probes_are_not_action_candidates(self):
         self.add_probe("blocked", status="blocked")
         self.add_probe("waiting", requires=["blocked"])

@@ -248,6 +248,14 @@ controls prompt an explicit adoption decision, not automatic enablement.
 Health distinguishes producer versions from the installed baseline; a newer
 tool comparison does not prove corruption of the older installation. Compact
 output groups repeated diagnostics without dropping raw JSON findings.
+For an explicitly selected active handoff, `doctor --current-task TASK_ID`
+also checks local runtime model/projection bindings through the canonical task
+evidence resolver. `current_task.runtime_readiness` distinguishes missing runtime
+from conflicting or invalid evidence while retaining any valid recorded
+disposition. Recovery prerequisites name each artifact and exact digest; inspect
+`restore-task` before a separately authorized write. This is not task closure,
+execution permission or acceptance. Unselected foreign handoffs need no local
+runtime, and ordinary health does not expand selected-task diagnostics.
 `doctor --work-overview` explicitly adds separate analysis-task and team-index
 headers; session presence remains a separate observation. Empty or stale team
 claims are not evidence that no work is active. Default health loads neither

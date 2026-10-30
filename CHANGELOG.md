@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fix selected-task doctor diagnostics for reviewed active handoffs with missing
+  runtime models/projections, using the canonical resolver without requesting
+  closure. Route exact per-artifact recovery and preserve conflicts, foreign
+  handoffs and read-only behavior; add public JSON/text CLI regression coverage.
+  This source-only diagnostic repair changes no framework, adapter-schema or
+  template version and requires no target migration. The separately observed
+  metadata-only validation interruption remains unexplained; guards stay strict.
 
 ## 0.1.0-alpha.115 - 2026-10-30
 

@@ -14,6 +14,14 @@ not on the failed run. Those observations neither prove a false positive nor
 identify the original writer. The original target and process trace were not
 available for this investigation.
 
+The alpha.115 review separately observed an interrupted migration finalizer on
+`.ai/assistant`: directory timestamps changed, bounded entry fingerprints did
+not, and directory content was not measured. A separately requested replay
+passed. No failed-run writer trace or deterministic reproduction was supplied;
+the original cause remains unresolved. Neither that replay nor injected-mutation
+regressions establish that the first failure was harmless or fixed. Preserve the
+first failure and transaction outcome before investigating a recurrence.
+
 The confirmed product limitation was missing directory-entry evidence. The
 existing regression intentionally expected `content: not-measured`; it checked
 that a timestamp change blocked validation, not whether a subsequent report
