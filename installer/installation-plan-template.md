@@ -147,6 +147,8 @@ List what must not be changed.
 - Module profile:
 - Task-specific maturity profile:
 - Bridge capability matrix:
+- Optional lifecycle hooks: separate adoption, exact client/evidence and existing
+  trust; follow the conditional lifecycle flow. No automatic activation.
 - Compact operation index, generated assistant-capability index, and selected
   per-surface records:
 - Blueprint-driven change or equivalent product-change workflow:

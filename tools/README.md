@@ -48,9 +48,20 @@ files, but excludes unobserved runtime output and hidden provider context.
 Unit-test timing feedback records suite execution, excluding discovery/import
 time. Partial duration hints use a seconds-based fallback, not file bytes.
 Hints affect scheduling only and never reduce selected tests or checks.
+Duplicate nested observations invalidate only their ambiguous module hints;
+unrelated current measurements remain usable.
 
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
+
+## Optional Lifecycle Delivery
+
+`lifecycle-checkpoint` provides bounded event, status and reviewed-bind operations
+for an explicitly adopted target policy. It writes only ignored session state,
+never executes project work and grants no authority. The installed delegate
+forwards this operation to the selected source. See the
+[adoption and provider guide](../docs/assistant-lifecycle-hooks.md) for exact
+event mappings, trust review, cancellation, fallback and evidence limits.
 
 ## External Case Identity Audit
 

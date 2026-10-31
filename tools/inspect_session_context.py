@@ -267,60 +267,74 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def context_report(args: argparse.Namespace) -> tuple[dict, dict]:
+    """Canonical comparison shared by the CLI and optional lifecycle checkpoints."""
+    prior = None
+    paths = list(args.context)
+    expected = getattr(args, "expected", None)
+    baseline_path = getattr(args, "baseline", None)
+    if baseline_path is not None:
+        raw = read_regular_context_bytes(baseline_path, max_bytes=MAX_BASELINE_BYTES)
+        saved = json_object(raw, "baseline")
+        prior = validate_baseline(saved.get("baseline", saved))
+        expected = prior["fingerprint"]
+        anchors = anchor_paths(prior["contour"] == "source", prior["installation_state_path"])
+        if prior["contour"] == "target":
+            anchors = anchors | OPTIONAL_TARGET_ANCHORS
+        paths = sorted(set(paths) | {item["path"] for item in prior["inputs"] if item["path"] not in anchors})
+    if expected is not None and (not isinstance(expected, str) or not HASH.fullmatch(expected)):
+        raise ValueError("expected fingerprint must be a resolved SHA-256")
+    current, state, measurement = capture(args.target, paths, source_contour=args.source_contour,
+                                           context_plans=args.context_plan, _retained_baseline=prior)
+    comparable = prior is None or (prior["target_identity"] == current["target_identity"]
+                                  and prior["contour"] == current["contour"])
+    matches = expected is not None and expected == current["fingerprint"] and comparable
+    status = ("update-in-progress" if state in {"staged", "scaffolded"} else
+              "installation-degraded" if state == "degraded" else
+              "baseline-candidate" if args.action == "capture" else
+              "current" if matches else "rehydration-required")
+    report = {"status": status, "fingerprint": current["fingerprint"],
+              "installation_state": state, "context_matches": matches,
+              "authorization_granted": False, "acceptance_granted": False,
+              "measurement": measurement}
+    if args.action == "capture":
+        report["baseline"] = current
+    elif prior is not None:
+        before = {item["path"]: item["sha256"] for item in prior["inputs"]}
+        after = {item["path"]: item["sha256"] for item in current["inputs"]}
+        report["changed_paths"] = sorted(path for path in before.keys() | after.keys() if before.get(path) != after.get(path))
+        report["same_target_and_contour"] = comparable
+    if "knowledge" in current:
+        from session_knowledge import knowledge_delta
+        report["knowledge"] = knowledge_delta(current["knowledge"], report.get("changed_paths", []))
+        report["checked_at"] = datetime.now(timezone.utc).isoformat(timespec="microseconds")
+        if report["knowledge"]["expired_ids"] and status in {"current", "baseline-candidate"}:
+            status = report["status"] = "rehydration-required"
+    if baseline_path is not None and read_regular_context_bytes(
+        baseline_path, max_bytes=MAX_BASELINE_BYTES
+    ) != raw:
+        raise ValueError("retained session-context baseline changed during comparison")
+    if status not in {"current", "baseline-candidate"}:
+        report["recovery"] = (
+            "Peers remain inspect-only; the authorized installer/updater follows lifecycle adaptation and strict acceptance."
+            if status in {"update-in-progress", "installation-degraded"} else
+            "Use session-continuity before mutation; reconcile changed owners and affected plans, approvals, validation and worker evidence."
+        )
+    return report, current
+
+
+def check_retained_context(target: Path, baseline: Path) -> dict:
+    return context_report(argparse.Namespace(target=target, action="check",
+        source_contour=False, context=[], context_plan=[], baseline=baseline,
+        expected=None))[0]
+
+
 def main() -> int:
     args = build_parser().parse_args()
     try:
-        prior = None
-        paths = list(args.context)
-        expected = getattr(args, "expected", None)
+        report, current = context_report(args)
+        status = report["status"]
         baseline_path = getattr(args, "baseline", None)
-        if baseline_path is not None:
-            raw = read_regular_context_bytes(baseline_path, max_bytes=MAX_BASELINE_BYTES)
-            saved = json_object(raw, "baseline")
-            prior = validate_baseline(saved.get("baseline", saved))
-            expected = prior["fingerprint"]
-            anchors = anchor_paths(prior["contour"] == "source", prior["installation_state_path"])
-            if prior["contour"] == "target":
-                anchors = anchors | OPTIONAL_TARGET_ANCHORS
-            paths = sorted(set(paths) | {item["path"] for item in prior["inputs"] if item["path"] not in anchors})
-        if expected is not None and (not isinstance(expected, str) or not HASH.fullmatch(expected)):
-            raise ValueError("expected fingerprint must be a resolved SHA-256")
-        current, state, measurement = capture(args.target, paths, source_contour=args.source_contour,
-                                               context_plans=args.context_plan, _retained_baseline=prior)
-        comparable = prior is None or (prior["target_identity"] == current["target_identity"]
-                                      and prior["contour"] == current["contour"])
-        matches = expected is not None and expected == current["fingerprint"] and comparable
-        status = ("update-in-progress" if state in {"staged", "scaffolded"} else
-                  "installation-degraded" if state == "degraded" else
-                  "baseline-candidate" if args.action == "capture" else
-                  "current" if matches else "rehydration-required")
-        report = {"status": status, "fingerprint": current["fingerprint"],
-                  "installation_state": state, "context_matches": matches,
-                  "authorization_granted": False, "acceptance_granted": False,
-                  "measurement": measurement}
-        if args.action == "capture":
-            report["baseline"] = current
-        elif prior is not None:
-            before = {item["path"]: item["sha256"] for item in prior["inputs"]}
-            after = {item["path"]: item["sha256"] for item in current["inputs"]}
-            report["changed_paths"] = sorted(path for path in before.keys() | after.keys() if before.get(path) != after.get(path))
-            report["same_target_and_contour"] = comparable
-        if "knowledge" in current:
-            from session_knowledge import knowledge_delta
-            report["knowledge"] = knowledge_delta(current["knowledge"], report.get("changed_paths", []))
-            report["checked_at"] = datetime.now(timezone.utc).isoformat(timespec="microseconds")
-            if report["knowledge"]["expired_ids"] and status in {"current", "baseline-candidate"}:
-                status = report["status"] = "rehydration-required"
-        if baseline_path is not None and read_regular_context_bytes(
-            baseline_path, max_bytes=MAX_BASELINE_BYTES
-        ) != raw:
-            raise ValueError("retained session-context baseline changed during comparison")
-        if status not in {"current", "baseline-candidate"}:
-            report["recovery"] = (
-                "Peers remain inspect-only; the authorized installer/updater follows lifecycle adaptation and strict acceptance."
-                if status in {"update-in-progress", "installation-degraded"} else
-                "Use session-continuity before mutation; reconcile changed owners and affected plans, approvals, validation and worker evidence."
-            )
         encoded = json.dumps(report, ensure_ascii=True, indent=2) + "\n"
         if "baseline" in report and len(encoded.encode("ascii")) > MAX_BASELINE_BYTES:
             raise ValueError("session-context capture report exceeds baseline byte limit")

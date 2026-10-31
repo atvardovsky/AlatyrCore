@@ -17,6 +17,10 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 
 These aliases are chat/request shortcuts, not shell commands.
 
+Optional native lifecycle checkpoints require separate adoption and remain
+disabled by default; they grant neither authorization nor acceptance.
+Companion flow: `.ai/assistant/flows/lifecycle-checkpoints.flow.md`
+
 Action authorization is current-scope and phase-specific. Returning to an
 issue or backlog item, discussing a report, checking status, requesting
 analysis or a plan, and ambiguous continuation are read-only. Implementation

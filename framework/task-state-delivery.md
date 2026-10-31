@@ -80,6 +80,13 @@ repeat a growing summary, or add focus to routine bootstrap. Evaluate actual
 agent behavior using the [drift comparison protocol](effectiveness-metrics.md#execution-drift-evaluation),
 separately from deterministic record and projection tests.
 
+Opt-in lifecycle delivery reuses these owners. New requests invalidate reviewed
+bindings; synthetic continuations grant no authority. Bound reminders, retain
+interruption revocations against delayed callbacks, and never automatically
+reopen closed scopes. Installation/update preserves native definitions, trust
+and disabled state. Separate configuration, exercised interception and
+procedural fallback.
+
 ## Selected Document Warnings
 
 During consistency routing, exact selected documents also select their reviewed

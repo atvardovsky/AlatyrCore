@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "lifecycle-checkpoint",
+      "script": "run_lifecycle_checkpoint.py",
+      "purpose": "deliver opt-in session lifecycle checkpoints without granting authority or running work",
+      "write_scope": "target-ignored-runtime-for-explicitly-enabled-policy"
+    },
+    {
       "name": "worktree-preflight",
       "script": "worktree_readiness.py",
       "purpose": "inspect local source, baseline and active-task prerequisites before worktree tasks",

@@ -549,6 +549,9 @@ evidence, a canonical owner, rejection, or a blocker. Related implementation
 starts a separately authorized continuation rather than extending a completed
 analysis record.
 
+Optional [lifecycle hooks](docs/assistant-lifecycle-hooks.md) require separate
+adoption; preserve definitions, trust and disabled state during updates.
+
 When the target enables subagent delegation, the assistant may keep its
 critical-path action and dispatch bounded independent sidecars under the target
 policy. Installation must record per-surface capability freshness, role/model

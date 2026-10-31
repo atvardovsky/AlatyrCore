@@ -366,6 +366,28 @@
       "content_digest": "sha256:b7d23d17eeaed33509a3313de9f600c90c1cea4ff7cc228d858472b3ddeef770"
     },
     {
+      "id": "assistant.content.flows-lifecycle-checkpoints-flow-md",
+      "kind": "content",
+      "path": "flows/lifecycle-checkpoints.flow.md",
+      "summary": "Optional Lifecycle Checkpoints",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "lifecycle",
+          "checkpoints",
+          "flow"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 266,
+      "content_digest": "sha256:59e645488606e7b17049005e4f54eb5ea7227385b0a41e8b3666b4e536271b10"
+    },
+    {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",
       "kind": "content",
       "path": "flows/logical-integrity-review.flow.md",

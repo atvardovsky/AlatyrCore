@@ -184,6 +184,10 @@
       "code_count": 8
     },
     {
+      "id": "LIFECYCLE",
+      "code_count": 2
+    },
+    {
       "id": "LOCAL",
       "code_count": 1
     },
@@ -8406,6 +8410,24 @@
       ],
       "sources": [
         "tools/target_adapter_validation/installation_state.py"
+      ]
+    },
+    {
+      "code": "LIFECYCLE_HOOK_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "LIFECYCLE_HOOK_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
       ]
     },
     {

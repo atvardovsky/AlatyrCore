@@ -1371,9 +1371,27 @@ class Validator:
         )
         return selected
 
+    def check_lifecycle_hook_policy(self) -> None:
+        from lifecycle_checkpoints import MAX_INPUT_BYTES, POLICY as hook_policy, load_policy
+        if self.target_exists(hook_policy):
+            raw = self.context.read_bytes_result(self.target_path(hook_policy), max_bytes=MAX_INPUT_BYTES)
+            try:
+                if raw.value is None:
+                    raise ValueError(raw.error or "lifecycle policy is unavailable")
+                observed, policy = load_policy(self.target)
+                if observed != raw.value or policy is None:
+                    raise ValueError("lifecycle policy changed during validation")
+            except (OSError, UnicodeError, ValueError, RecursionError) as exc:
+                self.error("LIFECYCLE_HOOK_POLICY", str(exc)[:500], hook_policy)
+                return
+            if isinstance(policy, dict) and policy.get("enabled") is True:
+                self.info("LIFECYCLE_HOOK_EVIDENCE_LIMIT",
+                    "Lifecycle configuration and record consistency do not prove native interception; retain procedural authorization and acceptance checks.", hook_policy)
+
     def check_assistant_instruction_capabilities(
         self, manifest: ManifestData | None
     ) -> None:
+        self.check_lifecycle_hook_policy()
         index_relpath = ".ai/assistant/assistant-capabilities.json"
         if not self.is_target_file(index_relpath):
             return

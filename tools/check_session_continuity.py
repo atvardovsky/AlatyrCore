@@ -132,6 +132,12 @@ def main() -> int:
         generic = load_object(
             TARGET / ".ai/assistant/assistant-capabilities/generic.json"
         )
+        from lifecycle_checkpoints import load_policy as load_hook_policy
+        _, hooks = load_hook_policy(TARGET)
+        if hooks is None:
+            raise ValueError("lifecycle-hook template is missing")
+        if hooks.get("enabled") is not False or hooks.get("mode") != "observe" or hooks.get("max_reminders") != 0:
+            failures.append("lifecycle-hook template must remain disabled, observe-only and without reminders")
         compaction = generic.get("context_compaction")
         if not isinstance(compaction, dict) or compaction.get(
             "fallback"

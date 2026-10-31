@@ -62,6 +62,27 @@
       "content_digest": "sha256:62cfd1dfa23b3d29fea5d1f25fb34a8bd663e48c4401fb56a7fce712393f4544"
     },
     {
+      "id": "assistant.content.policies-lifecycle-hooks-json",
+      "kind": "content",
+      "path": "policies/lifecycle-hooks.json",
+      "summary": "Lifecycle Hooks",
+      "selectors": {
+        "path_terms": [
+          "policies",
+          "lifecycle",
+          "hooks"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 27,
+      "content_digest": "sha256:df96d97a60ca0c5bfcabb3890d0e2ac1e229751dc10134e105673257df2213a0"
+    },
+    {
       "id": "assistant.content.policies-prompt-injection-md",
       "kind": "content",
       "path": "policies/prompt-injection.md",

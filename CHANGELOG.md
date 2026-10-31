@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.116 - 2026-10-31
+
+- Add opt-in lifecycle checkpoints with exact native event/output adapters for
+  local Codex, Claude Code, Gemini CLI, Cursor and Copilot CLI, plus procedural
+  fallback for other/unverified routes. Native hooks remain disabled and are
+  never installed, trusted or enabled automatically.
+- Keep delivery task-bound: small work needs no registered model; resume retains
+  interruption/end boundaries and cannot restart a revoked scope.
+- Preserve unrelated current unit-suite timings when nested test artifacts
+  duplicate another module. Omit only ambiguous hints; keep all tests, limits,
+  freshness checks and acceptance requirements unchanged.
+- Reuse canonical selected-task and context-freshness resolvers, including
+  knowledge expiry. Keep reviewed session bindings, independent interruption
+  revocation and bounded reminders distinct from authorization and acceptance.
+  Skip task/context reads when disabled and reject expired bindings before I/O.
+- Validate optional hook policy through the registered target validator; cover
+  the installed delegate, malformed inputs, cancellation races, reminder/expiry
+  boundaries and selected-content drift. No live native interception is claimed.
+- Advance framework to alpha.116, adapter schema to 97 and templates to 111.
+  Existing targets preserve disabled state and custom hooks; adoption and native
+  smoke verification remain separately reviewed target actions.
+
 - Fix selected-task doctor diagnostics for reviewed active handoffs with missing
   runtime models/projections, using the canonical resolver without requesting
   closure. Route exact per-artifact recovery and preserve conflicts, foreign

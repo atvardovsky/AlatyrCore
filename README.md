@@ -231,6 +231,11 @@ modules cover areas such as architecture knowledge, vocabulary, code-reference
 documentation, test-first development, diagrams, team coordination, and
 adapted AI infrastructure.
 
+Optional [lifecycle checkpoints](docs/assistant-lifecycle-hooks.md) can deliver
+selected context and unfinished-task reminders through reviewed assistant hooks.
+They remain disabled by default and do not grant permission, prove completion,
+or replace project validation; unverified clients use procedural checks.
+
 For recurring defects, an optional repair review helps distinguish a test that
 ran from one that exercised the intended scenario. A faithful failing test can
 guide a repair; component success or a faster benchmark does not establish that
@@ -306,7 +311,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.115`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.116`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

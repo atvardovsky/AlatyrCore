@@ -234,7 +234,7 @@ Classify every proposed target file:
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
    When an enabled module requires assistant capability evidence, create the
-   projected capability index and detailed schema-6 records for the generic
+   projected capability index and detailed current-schema records for the generic
    fallback plus explicitly selected target surfaces. Omit unselected records;
    do not leave index references to files that were not installed.
    Resolve instruction loading, skill source and activation, client permission
@@ -244,6 +244,9 @@ Classify every proposed target file:
    preserve bounded context routing when caching is unavailable or unverified.
    A selected but untested surface remains unknown; client permissions or
    auto-approval never grant Alatyr action authorization.
+   Keep optional lifecycle hooks disabled on install/update unless separately
+   approved; follow the lifecycle-checkpoints flow, preserving native definitions,
+   trust and procedural fallback.
 11. Create or adapt target `.ai/README.md`.
 12. Copy or adapt the selected portable framework pack into target
     `.ai/framework`. Record the pack in the manifest and preserve its projected

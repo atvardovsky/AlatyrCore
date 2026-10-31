@@ -85,10 +85,12 @@ class Once(argparse.Action):
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     subparsers = parser.add_subparsers(dest="operation", required=True)
-    for name in ("session-presence", "session-context"):
+    for name in ("session-presence", "session-context", "lifecycle-checkpoint"):
         operation = subparsers.add_parser(name, allow_abbrev=False)
         operation.add_argument("--target", type=Path, required=True, action=Once)
         operation.add_argument("--framework-source", type=Path, action=Once)
+        if name == "lifecycle-checkpoint":
+            operation.add_argument("--provider", choices=["procedural", "codex", "claude", "gemini", "cursor", "copilot"], default="procedural", action=Once)
         operation.add_argument("arguments", nargs=argparse.REMAINDER)
     cooperation = subparsers.add_parser("cooperation-preflight", allow_abbrev=False)
     add_common(cooperation)
@@ -150,6 +152,8 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
         return command
     if args.operation in {"session-presence", "session-context"}:
         return [args.operation, "--target", str(target), *args.arguments]
+    if args.operation == "lifecycle-checkpoint":
+        return [args.operation, "--target", str(target), "--provider", args.provider, *args.arguments]
     if args.operation == "cooperation-preflight":
         command = ["cooperation-preflight", "--target", str(target)]
         for name in ("scope", "command"):

@@ -40,6 +40,7 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "lifecycle-checkpoint",
     "worktree-preflight",
     "restore-task",
     "session-context",
@@ -94,6 +95,7 @@ EXPECTED_COMMANDS = {
     "clean-artifacts",
 }
 ALLOWED_WRITE_SCOPES = {
+    "target-ignored-runtime-for-explicitly-enabled-policy",
     "target-ignored-runtime-with-explicit-write",
     "git-common-local-presence-with-explicit-write",
     "none",

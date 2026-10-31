@@ -128,6 +128,7 @@ jobs:
           tests.test_knowledge_freshness
           tests.test_worktree_continuity
           tests.test_collaboration_observations
+          tests.test_lifecycle_checkpoints
       - name: Summarize source-check diagnostics
         if: always()
         run: python tools/summarize_source_check_report.py "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json" --allow-missing --github-step-summary

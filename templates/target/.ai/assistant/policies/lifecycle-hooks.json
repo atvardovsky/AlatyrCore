@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "provider": "procedural",
+  "mode": "observe",
+  "binding_ttl_seconds": 900,
+  "max_reminders": 0,
+  "native_evidence": {
+    "state": "unverified",
+    "client_version": null,
+    "source": null,
+    "verified_at": null,
+    "expires_at": null
+  }
+}

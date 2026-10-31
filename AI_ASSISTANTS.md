@@ -301,6 +301,11 @@ and do not claim a cache hit, token saving, or smaller model context.
 
 ## Subagent Delegation
 
+Optional [lifecycle hook delivery](docs/assistant-lifecycle-hooks.md) stays
+separate from assistant instruction loading and delegation. Keep it disabled
+until target approval; native configuration, trust and observed interception
+are distinct. Unknown clients retain procedural checkpoints.
+
 When the target enables `subagent-delegation`, the primary assistant may keep
 its immediate critical-path action and dispatch independent, locally
 verifiable sidecars through the target delegation policy. Start with only the

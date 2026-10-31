@@ -46,6 +46,8 @@ checker behavior and review timing when proposing canonical delegation.
 - Existing module profile:
 - Existing task-specific maturity profile:
 - Existing bridge capability matrix:
+- Existing optional lifecycle hooks, trust and exercised client evidence;
+  preserve disabled state on install/update.
 - Existing generated assistant-capability index, per-surface records, and
   freshness or expiry evidence:
 - Existing blueprint or equivalent source-of-truth docs:
