@@ -5966,6 +5966,8 @@ class Validator:
         indexed_entries: list[dict[str, Any]],
     ) -> None:
         if status not in ACTIVE_CHANGE_PACKAGE_STATUSES:
+            if isinstance(data.get("incident_continuity"), dict) and "evidence_loss_disposition" in data["incident_continuity"]:
+                self.error("PACKAGE_INCIDENT_EVIDENCE_LOSS", "historical model loss cannot qualify a complete package", source)
             return
         incident = data.get("incident_continuity")
         for failure in incident_continuity_failures(data):
@@ -6061,6 +6063,9 @@ class Validator:
                     source,
                 )
 
+        from historical_task_evidence import validate_package_loss
+        if validate_package_loss(self, data, source, status):
+            return
         model_binding = incident.get("problem_model")
         if not isinstance(model_binding, dict):
             return

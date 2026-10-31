@@ -40,8 +40,8 @@
           "template": "templates/target/.ai/assistant/templates/problem-model-active-projection.json"
         },
         "active-task-index": {
-          "current": 1,
-          "supported": [1],
+          "current": 2,
+          "supported": [1, 2],
           "migration_limited": [],
           "schema": "schemas/alatyr-active-task-index.schema.json",
           "template": "templates/target/.ai/assistant/active-tasks.json"

@@ -13,6 +13,14 @@
   },
   "checks": [
     {
+      "id": "historical-task-loss",
+      "command": ["tools/check_source_unit_tests.py", "--test-module", "tests.test_historical_task_loss"],
+      "profiles": ["fast", "full"],
+      "contract_inputs": ["schemas/alatyr-active-task-index.schema.json", "schemas/alatyr-task-evidence-loss.schema.json", "schemas/alatyr-evidence-loss-approval.schema.json", "framework/task-state-delivery.md", "templates/target/.ai/assistant/templates/task-evidence-loss.md"],
+      "implementation_paths": ["tools/check_source_unit_tests.py", "tools/local_python_import_graph.py", "tools/parallel_execution.py", "tools/source_test_timing.py", "tools/historical_task_evidence.py", "tools/task_evidence_contract.py", "tools/target_adapter_validation/active_tasks.py", "tools/current_task_view.py", "tools/worktree_readiness.py", "tools/validate_target_adapter.py", "tests/test_historical_task_loss.py"],
+      "trigger_paths": ["schemas/alatyr-active-task-index.schema.json", "schemas/alatyr-task-evidence-loss.schema.json", "schemas/alatyr-evidence-loss-approval.schema.json", "framework/task-state-delivery.md", "templates/target/.ai/assistant/templates/task-evidence-loss.md", "tools/historical_task_evidence.py", "tools/task_evidence_contract.py", "tools/target_adapter_validation/active_tasks.py", "tools/current_task_view.py", "tools/worktree_readiness.py", "tools/validate_target_adapter.py", "tools/check_source_unit_tests.py", "tools/local_python_import_graph.py", "tools/parallel_execution.py", "tools/source_test_timing.py", "tests/test_historical_task_loss.py"]
+    },
+    {
       "id": "framework-metadata",
       "command": ["tools/check_framework_metadata.py"],
       "profiles": ["quick", "fast", "full"],

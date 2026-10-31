@@ -41,6 +41,9 @@ never rewrite canonical knowledge or authorize work.
    Git-common source locators are optional; `publish-task --retention-review`
    retains reviewed bytes and `restore-task --task-id ID` previews exact recovery.
    Separately authorize `--write`; preserve conflicts and missing-history blockers.
+   If exact recovery fails, follow the canonical reviewed historical evidence-loss
+   requirements and `templates/task-evidence-loss.md`. This is never closure or
+   permission to resume; current/selected work and active dependents remain blocked.
 4. Validate packet/digests against current branch, diff, approvals and owners.
    Reconcile changed sources, expired reviews, assumptions and worker results;
    load full models only for stale, invalid or insufficient projection evidence.

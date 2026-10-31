@@ -1132,6 +1132,28 @@
       "content_digest": "sha256:b265149199d7d892bcedc58330fd602bc76d2b7ef7a602053a054cab4d7283ce"
     },
     {
+      "id": "assistant.content.templates-task-evidence-loss-md",
+      "kind": "content",
+      "path": "templates/task-evidence-loss.md",
+      "summary": "Reviewed Historical Evidence Loss",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "task",
+          "evidence",
+          "loss"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 281,
+      "content_digest": "sha256:af5d0d0c04a05a83fc60e5111a406e0e00e6ba5a1421ca3d6513dbadddc5c063"
+    },
+    {
       "id": "assistant.content.templates-team-checkpoint-md",
       "kind": "content",
       "path": "templates/team-checkpoint.md",

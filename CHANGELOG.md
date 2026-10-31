@@ -10,6 +10,19 @@
   template version and requires no target migration. The separately observed
   metadata-only validation interruption remains unexplained; guards stay strict.
 
+## 0.1.0-alpha.116 - 2026-10-31
+
+- Add opt-in task-index schema 2 with owner-reviewed historical evidence-loss
+  dispositions, immutable original Git registration, bounded search/dependency
+  evidence and retained unverified outcomes. Schema-1 tasks remain compatible.
+- Reject altered identities, hidden duties, unsafe/stale witnesses, active
+  dependencies, selected acceptance and use by validated/complete packages.
+  Doctor and readiness show non-resumable history, never fabricated closure.
+- Advance adapter schema to 97 and templates to 111. Migrate affected tools and
+  explicit dispositions together; no automatic task retirement, publication,
+  authenticated reviewer identity or business acceptance is implied.
+- This is an uncommitted development candidate, not a published source release.
+
 ## 0.1.0-alpha.115 - 2026-10-30
 
 - Add explicit Git-common source location fallback and bounded worktree

@@ -256,6 +256,12 @@ disposition. Recovery prerequisites name each artifact and exact digest; inspect
 `restore-task` before a separately authorized write. This is not task closure,
 execution permission or acceptance. Unselected foreign handoffs need no local
 runtime, and ordinary health does not expand selected-task diagnostics.
+Task-index schema 2 additionally supports owner-reviewed
+`historical-evidence-missing` records. See the [conditional template](../templates/target/.ai/assistant/templates/task-evidence-loss.md)
+and [canonical requirements](../framework/task-state-delivery.md#reviewed-historical-evidence-loss).
+No helper automatically authorizes or infers this classification. Doctor returns
+the retained unresolved outcomes and `not-resumable`; selected acceptance and
+active dependents remain blocked. Schema-1 active/closed records are unchanged.
 `doctor --work-overview` explicitly adds separate analysis-task and team-index
 headers; session presence remains a separate observation. Empty or stale team
 claims are not evidence that no work is active. Default health loads neither

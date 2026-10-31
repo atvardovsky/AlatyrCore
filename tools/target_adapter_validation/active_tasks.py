@@ -442,8 +442,8 @@ def validate_active_tasks(validator: Any) -> None:
     if not _schema_valid(validator, index, "active-task-index", INDEX_PATH):
         return
     tasks = index.get("tasks")
-    if type(index.get("schema_version")) is not int or index.get("schema_version") != 1 or index.get("index_kind") != "target-active-task-index" or not isinstance(tasks, list) or len(tasks) > MAX_TASKS:
-        validator.error("ACTIVE_TASK_INDEX_CONTRACT", f"index requires schema 1 and at most {MAX_TASKS} tasks", INDEX_PATH)
+    if type(index.get("schema_version")) is not int or index.get("schema_version") not in {1, 2} or index.get("index_kind") != "target-active-task-index" or not isinstance(tasks, list) or len(tasks) > MAX_TASKS:
+        validator.error("ACTIVE_TASK_INDEX_CONTRACT", f"index requires schema 1/2 and at most {MAX_TASKS} tasks", INDEX_PATH)
         return
     seen: set[str] = set()
     seen_closures: set[str] = set()
@@ -466,8 +466,21 @@ def validate_active_tasks(validator: Any) -> None:
         except (ValueError, UnicodeError, RecursionError):
             validator.warn("ACTIVE_TASK_BASELINE_UNAVAILABLE", "baseline headers cannot be read; historical selection cannot be narrowed", INDEX_PATH)
     task_by_id = {task["task_id"]: task for task in tasks}
+    # Loss records are durable unresolved history, not disposable active headers.
+    # Inspect HEAD even on a full run so changing validation scope cannot revive
+    # a historical task without the explicit reconciliation route.
+    head_bytes = validator.git.bounded_file_at_ref("HEAD", INDEX_PATH, MAX_ARTIFACT_BYTES)
+    try:
+        head_index = json.loads(head_bytes) if head_bytes else None
+        historical_headers = [task for task in head_index.get("tasks", []) if isinstance(task, dict) and task.get("state") == "historical-evidence-missing"] if isinstance(head_index, dict) else []
+    except (ValueError, UnicodeError, RecursionError):
+        historical_headers = []
+    for previous in historical_headers:
+        current = task_by_id.get(previous.get("task_id"))
+        if current is None or current.get("state") != "historical-evidence-missing":
+            validator.error("TASK_EVIDENCE_LOSS_REOPEN", "retained historical loss cannot be deleted or silently reopened; authorize an independent task or reconcile explicitly", INDEX_PATH)
     for task_id, previous in previous_tasks.items():
-        if previous.get("state") == "active" and task_id not in task_by_id:
+        if previous.get("state") in {"active", "historical-evidence-missing"} and task_id not in task_by_id:
             validator.error("ACTIVE_TASK_REMOVED", f"active task {task_id} requires a terminal closure before retirement", INDEX_PATH)
     for message in task_predecessor_failures(tasks):
         validator.error("ACTIVE_TASK_PREDECESSOR", message, INDEX_PATH)
@@ -480,6 +493,14 @@ def validate_active_tasks(validator: Any) -> None:
             validator.error("ACTIVE_TASK_DUPLICATE", f"duplicate task_id: {task_id}", INDEX_PATH)
         seen.add(task_id)
         state, scale = task.get("state"), task.get("task_class")
+        if state == "historical-evidence-missing":
+            from historical_task_evidence import validate_loss_disposition
+            loss = validate_loss_disposition(validator, task, tasks)
+            if loss is not None:
+                validator.warn("TASK_EVIDENCE_LOST", f"{task_id}: reviewed historical evidence loss; original duties remain unverified, not completed", INDEX_PATH)
+            if task_id == selected_task:
+                validator.error("TASK_EVIDENCE_LOSS_SELECTED", "historical evidence loss cannot be selected as executable or accepted current work", INDEX_PATH)
+            continue
         previous = previous_tasks.get(task_id)
         expected_class = getattr(validator, "current_task_class", None) or "standard-task"
         if task_id == selected_task and scale != expected_class:

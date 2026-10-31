@@ -105,6 +105,10 @@ For longer work, [execution focus](framework/task-state-delivery.md#execution-fo
 helps the assistant revisit the current goal, unresolved checks and next useful
 action when evidence or scope changes, without loading the whole project again.
 
+When exact historical task evidence is lost, [reviewed loss dispositions](framework/task-state-delivery.md#reviewed-historical-evidence-loss)
+can preserve the registration and unresolved duties. They are not completion,
+acceptance, or permission to resume the missing work.
+
 When code or tests change, the assistant must review the effect on project
 knowledge: update affected sources, explain why no update is needed, or report
 blocked or unverified work. A useful discovery can be proposed for review by a
@@ -306,7 +310,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.115`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.116`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

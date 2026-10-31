@@ -4,6 +4,7 @@
   "generated_from": [
     "tools/validate_target_adapter.py",
     "tools/project_knowledge.py",
+    "tools/historical_task_evidence.py",
     "tools/target_adapter_validation/__init__.py",
     "tools/target_adapter_validation/action_modes.py",
     "tools/target_adapter_validation/active_tasks.py",
@@ -176,6 +177,10 @@
       "code_count": 1
     },
     {
+      "id": "HEAD",
+      "code_count": 1
+    },
+    {
       "id": "HISTORICAL",
       "code_count": 4
     },
@@ -205,7 +210,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 114
+      "code_count": 116
     },
     {
       "id": "PLACEHOLDERS",
@@ -265,7 +270,7 @@
     },
     {
       "id": "TASK",
-      "code_count": 57
+      "code_count": 61
     },
     {
       "id": "TDD",
@@ -8301,6 +8306,15 @@
       ]
     },
     {
+      "code": "HEAD",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
       "code": "HISTORICAL_EVIDENCE_INVALID",
       "levels": [
         "error"
@@ -9401,6 +9415,25 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_EVIDENCE_LOSS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/historical_task_evidence.py",
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_EVIDENCE_LOST",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/historical_task_evidence.py"
       ]
     },
     {
@@ -13269,6 +13302,42 @@
       "code": "TASK_EVIDENCE_LINEAGE",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/historical_task_evidence.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS_REOPEN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS_SELECTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOST",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/target_adapter_validation/active_tasks.py"
