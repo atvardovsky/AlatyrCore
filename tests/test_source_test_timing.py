@@ -139,3 +139,17 @@ class SourceTimingTests(unittest.TestCase):
                 path.write_text("x" * 10000)
             shards = test_shards(paths, 2, duration_hints={paths[0].as_posix(): 0.5})
             self.assertCountEqual([p for shard in shards for p in shard], paths)
+
+    def test_duplicate_nested_observations_do_not_discard_unrelated_valid_timings(self):
+        import json
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); self.fixture(root)
+            (root / "tests/test_other.py").write_text("other", encoding="utf-8")
+            records = [observation(root, {"tests/test_demo.py": 1, "tests/test_other.py": 2}),
+                       observation(root, {"tests/test_demo.py": 9}),
+                       observation(root, {"tests/test_demo.py": 10})]
+            for number, value in enumerate(records):
+                (root / f"unit-timing-{number}.json").write_text(json.dumps(value), encoding="utf-8")
+            self.assertEqual(hints(collect(root, root), root), {"tests/test_other.py": 2})
+            (root / "tests/test_other.py").write_text("changed", encoding="utf-8")
+            self.assertEqual(hints(collect(root, root), root), {})

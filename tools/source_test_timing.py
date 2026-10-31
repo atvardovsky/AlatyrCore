@@ -134,6 +134,7 @@ def timed_suite(suite: unittest.TestSuite, durations: dict[str, float], root: Pa
 
 def collect(directory: Path, root: Path) -> dict[str, Any]:
     files: dict[str, Any] = {}
+    ambiguous: set[str] = set()
     for path in sorted(directory.glob("unit-timing-*.json")):
         try:
             value = json.loads(path.read_text(encoding="utf-8"))
@@ -142,8 +143,10 @@ def collect(directory: Path, root: Path) -> dict[str, Any]:
             continue
         for key in valid:
             if key in files:
-                return {}
-            files[key] = value["files"][key]
+                files.pop(key)
+                ambiguous.add(key)
+            elif key not in ambiguous:
+                files[key] = value["files"][key]
     try:
         return {"schema_version": 1, "identity": identity(root), "files": files}
     except OSError:
