@@ -89,6 +89,14 @@ module agreement is not a substitute for this cross-module proof.
 
 ## Change Categories
 
+Worker-communication changes must exercise real scoped reads and competing
+publication processes through the public CLI: foreign session/tree/worktree,
+nested membership, sender/recipient scope, source/snapshot drift, malformed
+types, byte/count boundaries, terminal updates and exact compare-and-swap.
+Optional communication must also fail through canonical execution-tree
+validation, while unchanged legacy trees retain their no-channel path. Native
+delivery, authentication and semantic correctness remain separate evidence.
+
 Contract-work regressions must use the registered active-task route with real
 contract bytes and existing delegation evidence tiers. Cover malformed fields,
 missing/wrong model bindings, positive/negative versus wider obligation reuse,

@@ -1089,7 +1089,7 @@ def _validate_nodes(
 def _validate_header_and_budget(
     tree: dict[str, Any], policy: dict[str, Any], *, artifact_root: Path
 ) -> tuple[datetime, str, int, set[str], dict[str, Any]]:
-    _exact(_object(tree, "execution tree"), TREE_FIELDS, "execution tree")
+    _exact(_object(tree, "execution tree"), TREE_FIELDS | ({"communication"} if "communication" in tree else set()), "execution tree")
     if tree.get("schema_version") != 3 or tree.get("tree_kind") != (
         "alatyr-delegation-execution-tree"
     ):
@@ -1376,6 +1376,14 @@ def validate_execution_tree(
                 )
 
     root, children = _validate_topology(tree, nodes, budget)
+    if "communication" in tree:
+        from worker_communication import validate_communication, validate_view_sizes
+        try:
+            validate_communication(tree, nodes, read_source=lambda path: _read_evidence(
+                _contained_file(artifact_root, path, "worker communication source"), MAX_JSON_BYTES))
+            validate_view_sizes(tree, "0" * 64)
+        except ValueError as exc:
+            raise DelegationEvidenceError(str(exc)) from exc
     for node in nodes.values():
         if any(not _selector_within(surface, [surface]) for surface in node["surface_refs"]):
             raise DelegationEvidenceError("execution node surface selector is invalid")

@@ -388,6 +388,50 @@ a rejection or rework condition.
 
 ## Retry And Conflict Handling
 
+### Parent-Scoped Communication
+
+Keep canonical project knowledge, independent-session working state and worker
+groups separate. A group contains one parent and its direct children; a nested
+coordinator participates in two distinct groups, never a merged namespace.
+Workers submit proposals through verified native transport. The primary alone
+publishes the existing ledger; group progress is derived from nodes, not another
+status registry. A child sends to its parent; the parent explicitly relays a
+reviewed, recipient-scoped update to siblings. No automatic cross-session or
+cross-branch knowledge promotion.
+
+Optional execution-tree `communication` binds session/tree UUIDs, local
+repository/worktree identities, monotonic generation, state and bounded groups.
+Updates carry unique IDs, sender/recipients, kind, bounded summary and exact
+source references; findings require hashed source evidence. Preserve blockers
+and contradictions in their canonical task obligations, not only disposable
+updates. Keep raw conversations, secrets and private reasoning out. Validate
+membership and source scope before delivery; recheck selected hashes and the
+retained snapshot digest at material boundaries. Do not infer current identity
+or acknowledge changes by copying fields from an unreviewed incoming record.
+
+An optional canonical-source helper provides identity, scoped inspection and
+compare-and-swap publication of an existing ignored ledger. Otherwise use a
+verified target equivalent; no universal runtime command is required.
+Initial channel adoption requires current primary-owned runtime-write
+authorization. Publication advances one generation, preserves noncommunication
+fields, uses an atomic replacement under a cooperative lock, and rejects stale
+snapshots and terminal channels/primaries. It cannot alter progress or scope.
+Concurrent uncooperative filesystem writers and independent clones are outside
+that lock. Namespaces and reported sender IDs are not authentication or OS
+isolation. Communication grants neither action authority nor acceptance.
+
+Snapshot reads provide no push notification or proof of agent comprehension.
+Use verified host messages for updates; otherwise checkpoint, pause and provide
+a refreshed bounded packet before dependent work. Treat cancellation as a stop
+signal, never a grant; late results require primary review and cannot reopen
+closed work. Charge delivered updates against existing cumulative context
+budgets. Overflow requires partition/review, never silent duty truncation.
+The optional helper bounds each complete wire view to 32 KiB and unique source
+hydration to 8 MiB per verification pass. Publication checks every prospective
+recipient view, permits explicit stale/oversized-state repair, and forbids
+mutable-ledger self-bindings. Current routing/identity must still validate;
+repair cannot bypass terminal state, scope or authorization.
+
 Retry only when the target policy allows it, the parent scope and authorization
 are unchanged, and the failure is transient or has one bounded local repair.
 Do not retry authorization, capability, approval, scope, dependency, semantic,

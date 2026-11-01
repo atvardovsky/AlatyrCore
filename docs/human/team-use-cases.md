@@ -108,6 +108,11 @@ Stale entries remain uncertain, not automatically erased. Recursive workers
 are represented by their coordinator, not extra independent sessions.
 See [session presence](../../framework/session-continuity.md#concurrent-session-presence).
 
+Private session work is not a global shared memory. Optional worker-group
+updates let a parent share selected evidence and progress with its own children;
+nested groups remain separate. Source changes require review, and messages do
+not authorize work. See [worker communication](../../framework/subagent-delegation.md#parent-scoped-communication).
+
 An assistant can inspect a proposed scope before registering, including when
 the user permits no writes. Optional cooperation preflight also checks declared
 shared test resources without running tests. Reported conflicts need

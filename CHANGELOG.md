@@ -4,6 +4,25 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.121 - 2026-11-01
+
+- Separate independent-session working state from parent-scoped worker
+  communication. Nested groups retain distinct membership; children report to
+  parents, and reviewed sibling delivery remains explicit and scope-bound.
+- Add optional schema-3 execution-tree communication metadata, generation and
+  source bindings, with canonical evidence validation. Existing trees without
+  the optional section remain valid; no channel is automatically created.
+- Add `worker-communication` identity, bounded read-only inspection and explicit
+  atomic compare-and-swap publication. Reject foreign identities, stale snapshots,
+  source drift, cross-group delivery, scope escapes and late terminal updates.
+  Messages confer no authority, authentication, hard isolation or acceptance.
+- Preserve the existing presence registry and node-owned progress. Load the new
+  machinery only when requested; no polling, provider calls, bootstrap files or
+  context/footprint limit increases. Charge delivered updates to worker budgets.
+- Advance framework content to alpha.121, adapter schema to 99 and templates
+  to 116. Review worker flow/prompt wording during controlled upgrades; channel
+  adoption and runtime writes require current primary authorization.
+
 ## 0.1.0-alpha.120 - 2026-11-01
 
 - Extend topic-layout guidance to structured support: reuse schema-supported

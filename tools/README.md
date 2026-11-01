@@ -138,6 +138,48 @@ Both context and support-impact plans can deliver selected, digest-bound
 
 ## Worker Context Preparation
 
+### Parent-Scoped Communication
+
+The optional execution-tree `communication` section is specified by
+[delegation](../framework/subagent-delegation.md#parent-scoped-communication)
+and its existing [schema](../schemas/alatyr-delegation-execution-tree.schema.json).
+It is current coordination data, not canonical project knowledge or a second
+progress registry. No channel is created automatically. A primary coordinator
+may initialize the optional section in its existing ignored ledger only with
+current runtime-write authorization. Retain the session UUID, a fresh tree UUID,
+generation and snapshot hash independently; never adopt incoming identity as proof.
+
+Use the canonical tool checkout, replacing the illustrative target/ledger and
+uppercase binding values with actual retained values:
+
+```sh
+python3 tools/alatyr.py worker-communication --target /path/to/target-repo identity
+python3 tools/alatyr.py worker-communication --target /path/to/target-repo inspect --tree runtime/tree.json --session-uid SESSION_UUID --tree-uid TREE_UUID --parent-node PARENT_ID --participant-node WORKER_ID --expected-generation 1 --expected-sha256 SNAPSHOT_SHA256
+python3 tools/alatyr.py worker-communication --target /path/to/target-repo publish --tree runtime/tree.json --session-uid SESSION_UUID --tree-uid TREE_UUID --parent-node ROOT_ID --participant-node ROOT_ID --expected-generation 1 --expected-sha256 SNAPSHOT_SHA256 --candidate runtime/candidate.json --write
+```
+
+On Windows use `python` with the same arguments. `identity` reports local
+repository/worktree hashes, not session authentication. Inspection requires
+the exact current ledger digest and generation. It emits only addressed updates
+and direct-child status, verifies selected literal source hashes, refuses a
+complete serialized view above 32 KiB, and grants no execution or acceptance.
+Unique source hydration is limited to 8 MiB per verification pass. Publication
+checks all prospective recipient outputs, including the final snapshot hash.
+Its identity-only current-state preflight allows explicit repair of stale
+sources or an oversized old view; it never repairs malformed identity or
+terminal state. Self-bindings to the mutable ledger are rejected.
+Unrelated groups' source contents are not opened. Freeze delivered views through
+normal worker-context preparation so cumulative context limits still apply.
+
+Publication requires primary-coordinator identity, an ignored ledger, an unchanged
+snapshot and a candidate advancing exactly one generation. Only communication
+may change; node progress, scope, permissions and evidence stay with their owners.
+Terminal channels/primaries reject late updates. Writes use cooperative locking
+and atomic replacement; unrelated writers are not controlled. No network call,
+worker launch, timer, shared inbox or automatic notification is provided. Use
+verified native transport or checkpoint/re-dispatch; do not claim receipt merely
+because a snapshot was published. Runtime views are not project knowledge.
+
 With `--compact` or `--metrics`, `prepare-worker-result` writes `handoff.json` with measured
 artifact references, canonical result identity and incomplete candidate node
 bookkeeping. Use `--compact` for this view instead of loading the full draft.

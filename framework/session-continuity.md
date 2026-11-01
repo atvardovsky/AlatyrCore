@@ -166,14 +166,15 @@ independent participants, not by rewriting policy. The compact bootstrap routes
 to the target policy; a user can disable presence. Legacy missing configuration
 remains disabled until an authorized migration explicitly adopts defaults.
 
-Each cooperative independent session registers once per work period, retains
-its UUID/version across established resumes, updates its bounded task/scope/
-activity, and leaves on completion. Forks use fresh UUIDs; parent UID is lineage,
-not shared identity. Delegated workers are represented by their coordinator's
-aggregate scope, not separate competing entries. Lost UID is a recovery gap,
-never authority to adopt a peer. Use the narrow own-entry allowance defined by
-`ALATYR-AUTHORIZATION-001`, or current local-metadata authorization. Explicit
-no-writes and worker no-write scope still prohibit registration.
+Independent sessions register per work period, retain UUID/version on established
+resumes, update task/scope/activity and leave on completion. Forks receive fresh
+UUIDs; lineage is not shared identity. Workers use their coordinator's aggregate
+presence and separate [parent-scoped communication](subagent-delegation.md#parent-scoped-communication),
+not peer-session entries. Keep session working state private by default;
+reviewed handoffs remain explicit. Expose bounded coordination. Lost UID requires
+recovery, never peer adoption. Own-entry
+housekeeping follows `ALATYR-AUTHORIZATION-001`; explicit no-writes and worker
+restrictions still win.
 
 Inspect bounded peer summaries at entry/resume, scope expansion, before edits,
 shared builds, Git mutations/publication, and completion. Scope references can

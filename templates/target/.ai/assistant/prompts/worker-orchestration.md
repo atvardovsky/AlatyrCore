@@ -2,8 +2,8 @@
 
 Use after parent operation/profile, changed facts, risk, authorization,
 task decomposition and critical path are known. The primary assistant remains responsible
-for decisions and convergence. This is the normal authoritative route;
-load the full flow only for ambiguity, conflict or repair.
+for decisions and convergence. Follow the normal authoritative route;
+load the full flow only for communication, ambiguity, conflict or repair.
 
 1. Load `.ai/assistant/assistant-capabilities.json` and only the selected
    surface record. Continue only when current evidence verifies worker

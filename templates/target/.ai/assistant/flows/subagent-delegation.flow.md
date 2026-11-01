@@ -145,6 +145,13 @@ verified and the work requires the governed tree tier.
 
 ## Result Review And Convergence
 
+For ongoing communication, apply
+`.ai/framework/subagent-delegation.md#parent-scoped-communication`. Use the existing
+ledger's optional `communication` only after explicit adoption. Independent
+sessions never share working state implicitly; nested parents use separate
+groups. Native transport remains capability-dependent; otherwise checkpoint and
+refresh the bounded packet. Channel views are not acceptance or permissions.
+
 1. Normalize the return through the machine result and human view; record the
    measured input-context, raw, and accepted-summary artifacts, SHA-256 identity, actual
    surface, role, model or unverified status, base

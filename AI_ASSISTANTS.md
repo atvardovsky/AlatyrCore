@@ -335,6 +335,10 @@ accepted coordinator summaries enter routine primary context; descendant raw
 results remain referenced for conflict or audit expansion. A provider-native
 worker summary is input evidence, not operation completion.
 
+Ongoing updates follow [parent-scoped communication](framework/subagent-delegation.md#parent-scoped-communication).
+Keep session/tree/group identities distinct. Use verified native transport or
+checkpoint/re-dispatch; no universal live messaging or hard isolation is implied.
+
 Known model names do not prove selection support. Require a target-verified
 role/model binding and current client evidence. If workers, model override,
 parallelism or actual-model reporting are unsupported or stale, use primary

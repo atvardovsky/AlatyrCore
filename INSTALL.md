@@ -558,6 +558,12 @@ verified surface support and remain thin bindings to target policy, role,
 packet, machine result, envelope/checkpoint, tree and validation. Fall back
 from unavailable models; never report an unobserved model as used.
 
+For ongoing exchange, preserve independent-session boundaries and follow
+[parent-scoped communication](framework/subagent-delegation.md#parent-scoped-communication).
+Update the worker flow/prompt during controlled migration. Do not create or
+enable runtime channels automatically, copy live state between sessions, or
+claim native messaging support without current capability evidence.
+
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
 equivalent target-language requests route to `diagram-discussion`. Installation
 must always provide the portable ASCII baseline and record each supported

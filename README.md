@@ -294,6 +294,11 @@ preserved. Linked worktrees share the registry, and each session removes its
 own entry when finished. It is not a scheduler or an exclusive work lock.
 See [session presence](framework/session-continuity.md#concurrent-session-presence).
 
+Session working state stays separate. Optional worker communication shares
+review-required updates only within a parent group, with source/snapshot checks
+and explicit sibling relays. It is not shared authority or automatic messaging.
+See [worker communication](framework/subagent-delegation.md#parent-scoped-communication).
+
 Linked worktrees can share an explicitly configured local tooling locator and
 carry reviewed active-task evidence. Optional publisher handoffs and build-capacity
 observations help expose coordination gaps without claiming a lock or permission.
@@ -316,7 +321,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.120`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.121`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

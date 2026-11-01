@@ -140,3 +140,9 @@ symbol evidence and required validation.
 
 Worker availability grants no action phase, protected approval, tool permission,
 file scope or architectural authority.
+
+Ongoing exchange follows the canonical parent's
+[communication boundary](../framework/subagent-delegation.md#parent-scoped-communication).
+Use `worker-communication` only for an explicitly adopted existing tree; source
+workers remain inspect-only and their coordinator publishes updates. Do not copy
+another session's working state or recursively merge group namespaces.
