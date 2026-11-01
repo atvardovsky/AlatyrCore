@@ -51,7 +51,17 @@ CHECK_FIELDS = DEFAULT_FIELDS | {
     "trigger_paths",
     "micro_trigger_paths",
     "owned_paths",
+    "requires_release_evidence",
 }
+
+
+def release_evidence_required(check: dict[str, Any]) -> bool:
+    value = check.get("requires_release_evidence", False)
+    profiles = check.get("profiles")
+    if not isinstance(value, bool) or (value and (
+            not isinstance(profiles, list) or "release" not in profiles)):
+        raise ValueError(f"{check.get('id')}.requires_release_evidence must be Boolean and release-scoped")
+    return value
 
 
 def valid_manifest_path(value: str) -> bool:
@@ -187,6 +197,7 @@ def load_manifest(
         profiles = validate_enum_list(
             check_id, "profiles", profiles, ALLOWED_PROFILES, required=True
         )
+        release_evidence_required(check)
         excluded_profiles = validate_enum_list(
             check_id,
             "excluded_profiles",

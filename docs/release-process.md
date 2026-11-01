@@ -125,6 +125,12 @@ and unresolved version labels before accepting it as release evidence. A
 generated `pending` validation block is not release evidence and must not be
 changed to `passed` until the named commands complete against the bound tree.
 
+## Staged Source Validation
+
+When preparing a pending migration note, follow [staged source validation](source-validation-stages.md).
+The source stage cannot grant acceptance or publication authority; the default
+cold full profile remains mandatory.
+
 ## Pre-Release Checklist
 
 Before tagging a source release:

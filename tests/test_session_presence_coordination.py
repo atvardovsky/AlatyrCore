@@ -136,17 +136,26 @@ class PresenceCoordinationTests(unittest.TestCase):
             self.assertFalse(json.loads(projected_policy)["presence"]["own_entry_housekeeping"])
 
     def test_freshness_and_refresh_boundaries_without_registry_changes(self):
-        one = self.join()
+        registered = datetime(2026, 9, 3, 12, tzinfo=timezone.utc)
+        with patch("session_presence_store.now_text", return_value=registered.strftime("%Y-%m-%dT%H:%M:%SZ")), \
+                patch("session_presence_store.datetime") as clock:
+            clock.now.return_value = registered + timedelta(seconds=2)
+            one = self.join()
         _, hub, _ = git_identity(self.target)
         before = (hub / "sessions.json").read_bytes()
-        start = datetime.strptime(one["own_session"].get("started_at", one["observed_at"]), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-        for seconds, state, refresh in ((-1, "uncertain", True), (1799, "single-reported", False), (1800, "single-reported", True), (3599, "single-reported", True), (3600, "uncertain", True)):
-            with patch("session_presence_store.datetime") as clock:
+        entry = json.loads(before)["sessions"][one["session_uid"]]
+        start = datetime.strptime(entry["updated_at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        self.assertEqual(one["observed_at"], (start + timedelta(seconds=2)).strftime("%Y-%m-%dT%H:%M:%SZ"))
+        for seconds, state, refresh in ((-1, "uncertain", True), (0, "single-reported", False),
+                (1799, "single-reported", False), (1800, "single-reported", True),
+                (1801, "single-reported", True), (3599, "single-reported", True),
+                (3600, "uncertain", True), (3601, "uncertain", True)):
+            with self.subTest(seconds=seconds), patch("session_presence_store.datetime") as clock:
                 clock.now.return_value = start + timedelta(seconds=seconds)
                 result = operate(self.target, "status", session_uid=one["session_uid"])
-            self.assertEqual(result["coordination"]["state"], state)
-            self.assertEqual(result["own_session"]["refresh_due"], refresh)
-            self.assertEqual((hub / "sessions.json").read_bytes(), before)
+                self.assertEqual(result["coordination"]["state"], state)
+                self.assertEqual(result["own_session"]["refresh_due"], refresh)
+                self.assertEqual((hub / "sessions.json").read_bytes(), before)
 
     def test_legacy_typed_looking_records_remain_readable_and_removable(self):
         from session_presence_contract import encoded_registry

@@ -150,8 +150,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 880,
-      "content_digest": "sha256:1e121ca28150591fe6bccbdbd7d4705bff0f172293384afc20f2ccbad231a74f"
+      "estimated_words": 863,
+      "content_digest": "sha256:6449228b04b76ef1fac1039d0f80dbee5a23fb9fcdf805cd3150c39fc8d8c1fd"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -292,8 +292,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 710,
-      "content_digest": "sha256:4288006c86377cda647d407ab94fd7f124c7266409dd673e1fbbdfe037f6e29e"
+      "estimated_words": 701,
+      "content_digest": "sha256:8bb9508c2dbcf71fb7452cd1164aa9bedc5ef5f77b496a4a1affa57f7eb17aa5"
     },
     {
       "id": "assistant.content.flows-engineering-evidence-capture-flow-md",

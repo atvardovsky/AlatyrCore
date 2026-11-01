@@ -94,36 +94,33 @@ for installation, update, packaging, or drift comparison.
 
 ## Context-Loaded Semantic Codebook
 
-Compact machine records may reference versioned semantic terms instead of
-repeating stable framework sentences. Resolve those references through the
-installed framework semantic-codebook index before interpreting the compact
-record. Load the small `preload` closure before other compact records and load
-domain shards only when selected records reference their terms.
+Before interpreting compact semantic references, resolve them through the
+installed framework semantic-codebook index. Load the `preload` closure before
+other compact records; load domain shards only when selected records reference
+their terms.
 
-Semantic-codebook schema 2 resolves only explicit term references and their
-dependency closure. Shard selectors remain discovery metadata and must not
-expand a schema-2 packet. Schema-1 indexes retain selector expansion only as a
-bounded migration compatibility path.
+Semantic-codebook schema 2 resolves only explicit references and their dependency
+closure. Shard selectors are discovery metadata, not schema-2 packet expansion.
+Schema-1 selector expansion remains a bounded migration compatibility path.
 
-Framework terms use the `alatyr:*` namespace. Target project vocabulary uses
-the `project:*` namespace and cannot replace or redefine a framework term.
-Every semantic term must provide a complete definition, version, owning rule,
-canonical owner, scope, explicit non-meanings when needed, dependency IDs, and
-replacement state. Dependencies must resolve once in acyclic order.
+Use `alatyr:*` for framework terms and `project:*` for target vocabulary. Project
+terms cannot replace or redefine framework terms. Every term must provide a
+complete definition, version, owning rule, canonical owner, scope, dependency IDs,
+replacement state and explicit non-meanings when needed. Resolve dependencies
+once, in acyclic order.
 
 Semantic compression is lossless only when every referenced term resolves at
 the expected version and digest. On a missing, stale, conflicting, cyclic, or
-unsupported term, load the named canonical owner and do not infer the compact
-meaning. Keep canonical human policies complete and readable; use compact
-terms primarily in indexes, descriptors, gates, records, and resolved context
-packets where repeated definitions produce measured savings.
+unsupported term, load the named canonical owner; do not infer meaning. Keep
+canonical human policies complete and readable. Use compact terms primarily in
+indexes, descriptors, gates, records and resolved packets where replacing
+repeated definitions produces measured savings.
 
-The resolved packet should contain selected item identities and digests,
-required semantic definitions once, their owning rule IDs as an explicit
-obligation set, budget accounting, and a deterministic packet digest. A term
-name is not assumed to be one provider token. Measure word or provider-token
-effects and retain compression only when the serialized definition and
-resolution overhead costs less than the repeated prose it replaces.
+Resolved packets should contain selected item identities and digests, required
+semantic definitions once, owning rule IDs as an explicit obligation set, budget
+accounting and a deterministic packet digest. Do not assume a term name is one
+provider token. Measure word or provider-token effects; retain compression only when
+serialized definitions plus resolution overhead cost less than the replaced prose.
 
 Architecture inventory, explanation, pattern discussion, comparison, review,
 and documentation use an intent overlay over the smallest base profile. Start
@@ -259,23 +256,22 @@ requires it.
 
 ## Cache-Aware Delivery
 
-Every selected profile uses the same provider-neutral delivery order: stable
-assistant/framework/project guidance first, selected canonical evidence next,
-and volatile task, revision, timestamp, and runtime data last. This order makes
-repeated prefixes eligible for provider caching where the selected client and
-model support it. It does not enlarge a profile to reach a provider minimum and
-does not make a cache hit part of correctness.
+Deliver stable assistant, framework and project guidance first, selected canonical
+evidence next, and volatile task, revision, timestamp and runtime data last.
+This permits provider caching where the selected client and model support it.
+Never enlarge a profile to meet a provider minimum or make correctness depend
+on a cache hit.
 
-Read context-cache capability only from the selected surface record under
-`.ai/assistant/assistant-capabilities/`. The record separates assistant client,
-model provider, model, provider cache mode, exposed controls, exposed telemetry,
-retention, and minimum cacheable size. Unknown or stale evidence uses the same
-bounded context route without cache claims. Cached tokens still count as model
-context, so profile budgets and lazy expansion remain unchanged.
+Read cache capability only from the selected surface record under
+`.ai/assistant/assistant-capabilities/`. Keep assistant client, model provider,
+model, provider cache mode, exposed controls, exposed telemetry, retention and
+minimum cacheable size distinct. For unknown or stale evidence, retain bounded
+routing without cache claims. Cached tokens still count as model context;
+budgets and lazy expansion remain unchanged.
 
-Resolved context packets record stable-prefix and dynamic-tail digests. Exact
-cache-hit, token, latency, or monetary claims require observed host/provider
-telemetry; deterministic digests alone are only identity evidence.
+Record stable-prefix and dynamic-tail digests in resolved packets as identity
+evidence only. Exact cache-hit, token, latency or monetary claims require
+observed host/provider telemetry.
 
 ## Context Budgets And Receipts
 
@@ -310,9 +306,9 @@ branch. Record every selected profile's conditional context path and load
 condition as `selected` or `omitted`; an omitted dependency remains a live
 expansion obligation when its named condition becomes true.
 
-When selected project guidance can affect changed facts, approval, validation,
-or a material decision, extend that receipt with `semantic_guidance` schema 1.
-Record three distinct identity sets:
+When selected project guidance can affect changed facts, approval, validation
+or a material decision, extend the receipt with `semantic_guidance` schema 1
+and three distinct identity sets:
 
 - `planned`: guidance selected before canonical-owner resolution
 - `resolved`: the ordered guidance actually resolved for the task, with exact
@@ -320,20 +316,18 @@ Record three distinct identity sets:
 - `observed`: only guidance identities whose delivery is supported by host or
   provider evidence; use `partial` or `unavailable` honestly
 
-Each semantic identity contains a stable guidance ID, canonical-owner path and
-digest, authority, freshness, and applicability. A planned identity may use
-`unknown` for an owner digest; a resolved or reported observed identity may
-not. Preserve delivery order because narrower or later selected guidance may
-depend on that order. For project-knowledge routes, normalize `knowledge_id` as
-the receipt `guidance_id` and `canonical_owner_sha256` as lowercase
-`sha256:<digest>`; record only the authority state, freshness state, and
-applicability result needed to identify the selected guidance.
+Each identity contains a stable guidance ID, canonical-owner path and digest,
+authority, freshness and applicability. Only planned owner digests may be
+`unknown`. Preserve delivery order: narrower or later guidance may depend on it.
+For project-knowledge routes, normalize `knowledge_id` to `guidance_id` and
+`canonical_owner_sha256` to lowercase `sha256:<digest>`; record only the authority
+state, freshness state and applicability result needed to identify the guidance.
 
-For each identity set, record a bundle digest with digest schema version `1`
-and algorithm `sha256`. Compute it over the UTF-8 JSON array of the ordered
-identity objects using sorted object keys, ASCII escaping, and compact
-separators. The array order is significant. The empty applicable-guidance set
-has its own valid digest and is different from unavailable evidence.
+For each identity set, compute a bundle digest using digest schema version `1`
+and algorithm `sha256`. Hash the UTF-8 JSON array of ordered identity objects
+with sorted object keys, ASCII escaping and compact separators. Array order is
+significant. The empty applicable-guidance set has a valid digest distinct from
+unavailable evidence.
 
 Only exact host or provider telemetry supports observed context or token-cost
 comparisons. Planned and resolved estimates remain routing evidence even when

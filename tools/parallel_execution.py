@@ -8,7 +8,7 @@ import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Callable, Iterable
 
 
 CHILD_CAPACITY_ENV = "ALATYR_CHILD_CAPACITY"
@@ -40,8 +40,14 @@ def run_commands(
     *,
     cwd: Path,
     capacity: int | None = None,
+    on_complete: Callable[[CommandResult], None] | None = None,
 ) -> list[CommandResult]:
-    """Run independent commands concurrently and return declaration-ordered results."""
+    """Notify as results become ready; return in declaration order.
+
+    Notifications run on the collecting thread after command timing ends.
+    Ordinary worker/observer errors propagate after all commands converge.
+    Children inherit the caller's process group for its outer watchdog.
+    """
 
     declared = list(commands)
     if not declared:
@@ -83,7 +89,23 @@ def run_commands(
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         futures = {
-            item_id: executor.submit(execute, (item_id, command))
+            executor.submit(execute, (item_id, command)): item_id
             for item_id, command in declared
         }
-        return [futures[item_id].result() for item_id, _command in declared]
+        results: dict[str, CommandResult] = {}
+        errors: dict[str, Exception] = {}
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                result = future.result()
+            except Exception as exc:
+                errors[futures[future]] = exc
+                continue
+            results[futures[future]] = result
+            if on_complete is not None:
+                try:
+                    on_complete(result)
+                except Exception as exc:
+                    errors[futures[future]] = exc
+        if errors:
+            raise next(errors[item_id] for item_id in item_ids if item_id in errors)
+        return [results[item_id] for item_id, _command in declared]

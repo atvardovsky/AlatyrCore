@@ -4,6 +4,31 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.117 - 2026-11-01
+
+- Make source-unit progress visible in captured timeout logs; reject missing,
+  duplicate, unexpected or malformed shard results while retaining deterministic
+  results, bounded concurrency and the outer process-tree watchdog.
+- Calibrate only the source-unit suite watchdog to 600 seconds and its scheduling
+  estimate to 300 seconds. Reuse isolated pristine fixture setup without caching
+  validation results or removing real CLI lifecycle regressions.
+- Add a cold, non-acceptance source-validation stage before preparing release
+  evidence. The default full gate still includes every release check.
+- Tighten context, operation/help, source-assistant and installation prose.
+  Preserve canonical rule ownership, conditions, fallback cases, authorization
+  phases, validation obligations and independently loaded safety reminders.
+- Replace duplicated source-worker field enumerations with exact references to
+  the already-required policy contracts; retain budget, provenance and stop
+  enforcement without new bootstrap content or opaque shorthand.
+- Condense target contour, acceptance-gate and documentation/product-change
+  guidance while preserving distinct pre-finalization and final-result checks.
+- Stabilize presence freshness tests against delayed response observations:
+  bind boundaries to the stored update timestamp and exercise an explicit clock
+  gap without changing runtime freshness rules.
+- Advance framework content to alpha.117 and templates to 112 under the source
+  content-versioning rules. Adapter schema remains 97; no behavioral or schema
+  migration is introduced.
+
 ## 0.1.0-alpha.116 - 2026-10-31
 
 - Add opt-in lifecycle checkpoints with exact native event/output adapters for

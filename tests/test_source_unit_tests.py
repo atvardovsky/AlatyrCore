@@ -23,6 +23,7 @@ from check_source_unit_tests import (  # noqa: E402
     test_shards,
     load_suite,
     explicit_test_modules,
+    checked_shard_results,
 )
 
 
@@ -89,6 +90,86 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
                 redirect_stdout(io.StringIO()), redirect_stderr(error):
             self.assertEqual(runner.main(), 1)
         self.assertIn("fixture failure", error.getvalue())
+
+    def test_shard_convergence_rejects_missing_duplicate_and_malformed_results(self):
+        import check_source_unit_tests as runner
+        from parallel_execution import CommandResult
+        one = CommandResult("shard-1", 0, "", "", 0.01)
+        two = CommandResult("shard-2", 0, "", "", 0.01)
+        cases = [[], [one], [one, one], [one, two, one],
+                 [one, CommandResult("other-1", 0, "", "")],
+                 [one, CommandResult("shard-99", 0, "", "")], [one, {}]]
+        cases.extend([one, CommandResult(value, 0, "", "")] for value in ({}, [], None, True))
+        cases.extend([one, CommandResult("shard-2", 0, "", "", value)]
+                     for value in (None, {}, [], True, False, -1, "0", float("nan"), float("inf"), 10**400))
+        cases.extend(([one, CommandResult("shard-2", True, "", "")],
+                      [one, CommandResult("shard-2", 0, {}, "")],
+                      [one, CommandResult("shard-2", 0, "", [])]))
+        for verbose in (False, True):
+            arguments = ["runner", "--test-module", "tests.test_yaml_support", "tests.test_parallel_execution"]
+            if verbose:
+                arguments.append("--verbose")
+            for results in cases:
+                output, error = io.StringIO(), io.StringIO()
+                with self.subTest(verbose=verbose, results=results), \
+                        patch.object(sys, "argv", arguments), \
+                        patch.object(runner, "child_capacity", return_value=2), \
+                        patch.object(runner, "run_commands", return_value=results), \
+                        redirect_stdout(output), redirect_stderr(error):
+                    self.assertEqual(runner.main(), 1)
+                self.assertIn("did not converge", error.getvalue())
+                self.assertNotIn("OK:", output.getvalue())
+
+    def test_complete_out_of_order_results_are_reconciled_not_dropped(self):
+        from parallel_execution import CommandResult
+        results = [CommandResult("two", 0, "", ""), CommandResult("one", 0, "", "")]
+        self.assertEqual([result.item_id for result in checked_shard_results(results, ["one", "two"])],
+                         ["one", "two"])
+
+    def test_plan_is_flushed_before_dispatch_and_notifications_are_not_success(self):
+        import check_source_unit_tests as runner
+        from parallel_execution import CommandResult
+        class Output(io.StringIO):
+            flush_count = 0
+            def flush(self):
+                self.flush_count += 1
+        output = Output()
+        def execute(commands, **kwargs):
+            self.assertEqual(output.getvalue().count("PLAN:"), 2)
+            self.assertGreaterEqual(output.flush_count, 2)
+            result = CommandResult("shard-1", 0, "", "", 0.01)
+            kwargs["on_complete"](result)
+            return [result]
+        with patch.object(sys, "argv", ["runner", "--test-module", "tests.test_yaml_support", "tests.test_parallel_execution"]), \
+                patch.object(runner, "child_capacity", return_value=2), \
+                patch.object(runner, "run_commands", side_effect=execute), \
+                redirect_stdout(output), redirect_stderr(io.StringIO()):
+            self.assertEqual(runner.main(), 1)
+        self.assertIn("PASS: shard-1", output.getvalue())
+        self.assertNotIn("OK:", output.getvalue())
+
+    def test_interruptions_and_observer_failures_cannot_report_success(self):
+        import check_source_unit_tests as runner
+        from parallel_execution import CommandResult
+        for value, expected in ((KeyboardInterrupt(), 130), (OSError("observer failure"), 1),
+                                (RuntimeError("worker failure"), 1)):
+            output = io.StringIO()
+            with self.subTest(value=value), \
+                    patch.object(sys, "argv", ["runner", "--test-module", "tests.test_yaml_support", "tests.test_parallel_execution"]), \
+                    patch.object(runner, "child_capacity", return_value=2), \
+                    patch.object(runner, "run_commands", side_effect=value), \
+                    redirect_stdout(output), redirect_stderr(io.StringIO()):
+                self.assertEqual(runner.main(), expected)
+            self.assertNotIn("OK:", output.getvalue())
+        for code in (-9, 1, 127):
+            results = [CommandResult("shard-1", code, "", "fixture failure", 0.01),
+                       CommandResult("shard-2", 0, "", "", 0.01)]
+            with self.subTest(code=code), \
+                    patch.object(sys, "argv", ["runner", "--test-module", "tests.test_yaml_support", "tests.test_parallel_execution"]), \
+                    patch.object(runner, "child_capacity", return_value=2), \
+                    patch.object(runner, "run_commands", return_value=results), \
+                    redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(runner.main(), 1)
 
     def test_direct_runner_prevents_nested_bytecode_writes(self):
         import check_source_unit_tests as runner

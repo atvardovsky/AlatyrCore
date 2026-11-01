@@ -125,11 +125,11 @@ commands from another project.
   adapter actions.
 - Operation catalog/module checked when routed; status/doctor remains
   read-only, and risk-gated preview is shown, refreshed, or explicitly skipped.
-- Current logical scope and newest user authorization checked separately for
-  `inspect`, `modify`, `commit`, `publish`, and `live-external`; topic switches,
-  backlog/issue returns, reports, discussion, status, analysis, plans, and
-  ambiguous continuation remain read-only, and prior completed-task phase
-  authorization is not reused.
+- Verify current logical scope and newest user authorization separately for
+  `inspect`, `modify`, `commit`, `publish` and `live-external`. Treat topic
+  switches, backlog/issue returns, reports, discussion, status, analysis, plans
+  and ambiguous continuation as read-only; never reuse completed-task phase
+  authorization.
 - Team status, conflict review, review, and merge check remain read-only;
   record-changing team operations stay adapter-only, assignment or priority
   never grants approval, and merge readiness is bound to current revisions.
@@ -139,13 +139,12 @@ commands from another project.
   references are present where bootstrap routing is described, unresolved owner
   placeholders remain known gaps, and any target-local adapter checker evidence
   matches the repository.
-- Human approvals verified when required; approval records created when
-  protected-change scope needs durable evidence.
-- When scoped approval is used, explicitly selected machine-readable approval
-  records are bound to the approved diff base and the complete changed path
-  set, including committed, staged, unstaged, renamed, deleted, and untracked
-  paths, is verified as a subset of allowed scope and disjoint from excluded
-  scope.
+- Verify required human approvals; create approval records when protected-change
+  scope requires durable evidence.
+- When using scoped approval, explicitly select machine-readable approval records
+  bound to the approved diff base. Verify that the complete changed path set,
+  including committed, staged, unstaged, renamed, deleted and untracked paths,
+  is a subset of allowed scope and disjoint from excluded scope.
 - Adaptation record created or updated for imported or materially changed AI
   infrastructure, including rejected source instructions and router result.
 - Final evidence reports run checks, skipped checks, assumptions, and residual

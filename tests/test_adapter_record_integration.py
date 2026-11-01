@@ -25,6 +25,7 @@ from render_installed_context_catalogs import expected_outputs  # noqa: E402
 from scaffold_target_structure import plan as scaffold_plan  # noqa: E402
 from target_adapter_validation.harness_scenarios.common import validator, write_json  # noqa: E402
 from validate_target_adapter import Validator, main as validator_main, parse_manifest  # noqa: E402
+from source_state import source_snapshot  # noqa: E402
 import yaml  # noqa: E402
 
 
@@ -266,14 +267,20 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
             self.assertTrue(any(f.level == "error" for f in self.findings("team_collaboration")))
 
     def test_malformed_vocabulary_lists_and_link_identities_produce_findings(self):
+        path = self.target / LINKS
+        pristine = path.read_bytes()
+        before = source_snapshot(self.target)
         for field in ("id", "term_id"):
             for value in (None, {}, [], True, 1, "{ID}", "unknown"):
                 with self.subTest(field=field, value=value):
-                    links = read_json(self.target, LINKS)
+                    links = json.loads(pristine)
                     links["links"][0][field] = value
                     write_json(self.target / LINKS, links)
-                    self.assertIn("VOCABULARY_LINK_UNRESOLVED", [f.code for f in self.findings("project_vocabulary")])
-                    configure_records(self.target)
+                    try:
+                        self.assertIn("VOCABULARY_LINK_UNRESOLVED", [f.code for f in self.findings("project_vocabulary")])
+                    finally:
+                        path.write_bytes(pristine)
+        self.assertEqual(source_snapshot(self.target), before)
         for source, key in (("catalog", "entries"), ("terms", "terms")):
             path = self.target / f".ai/project/vocabulary/{source}.json"
             original = read_json(self.target, str(path.relative_to(self.target)))

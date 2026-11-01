@@ -35,11 +35,22 @@ def manifest_entry(**overrides: object) -> dict[str, object]:
 
 
 class CheckManifestContractTests(unittest.TestCase):
-    def test_unit_suite_reserves_its_existing_capacity_without_raising_limits(self):
+    def test_release_evidence_deferral_is_explicit_typed_and_release_scoped(self):
+        for value in (None, 1, 0, "true", {}, []):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "requires_release_evidence"):
+                self.load(manifest_entry(requires_release_evidence=value, profiles=["full", "release"]))
+        with self.assertRaisesRegex(ValueError, "requires_release_evidence"):
+            self.load(manifest_entry(requires_release_evidence=True, profiles=["full"]))
+        self.assertTrue(self.load(manifest_entry(requires_release_evidence=True,
+                                                profiles=["full", "release"]))[0]["requires_release_evidence"])
+        self.assertFalse(self.load(manifest_entry(requires_release_evidence=False))[0]["requires_release_evidence"])
+
+    def test_unit_suite_reserves_existing_capacity_with_a_bounded_suite_watchdog(self):
         unit = next(row for row in check_all.load_manifest() if row["id"] == "source-unit-tests")
         self.assertEqual(unit["scheduler_slots"], unit["child_capacity_max"])
         self.assertEqual(unit["child_capacity_max"], 4)
-        self.assertEqual(unit["timeout_seconds"], 300)
+        self.assertEqual(unit["timeout_seconds"], 600)
+        self.assertEqual(unit["duration_hint_seconds"], 300)
         for jobs in (1, 2, 4, 8):
             observed = {}
             def runner(item, _baseline):

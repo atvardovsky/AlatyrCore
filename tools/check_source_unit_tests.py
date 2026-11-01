@@ -15,7 +15,7 @@ import unittest
 import statistics
 from pathlib import Path, PureWindowsPath
 
-from parallel_execution import child_capacity, run_commands
+from parallel_execution import CommandResult, child_capacity, run_commands
 from local_python_import_graph import LocalPythonImportGraph
 from source_test_timing import timed_suite, observation, positive_seconds
 
@@ -247,6 +247,94 @@ def test_shards(
     return [sorted(shard) for shard in shards if shard]
 
 
+def checked_shard_results(
+    results: list[CommandResult], expected_ids: list[str]
+) -> list[CommandResult]:
+    """Require one well-formed completion per planned shard before success."""
+    if not isinstance(results, list):
+        raise ValueError("shard results must be a list")
+    by_id: dict[str, CommandResult] = {}
+    for result in results:
+        if not isinstance(result, CommandResult) or not isinstance(result.item_id, str):
+            raise ValueError("malformed shard result identity")
+        if result.item_id in by_id:
+            raise ValueError(f"duplicate shard result: {result.item_id}")
+        if (not isinstance(result.returncode, int) or isinstance(result.returncode, bool)
+                or not isinstance(result.stdout, str) or not isinstance(result.stderr, str)
+                or not isinstance(result.duration_seconds, (int, float))
+                or (positive_seconds(result.duration_seconds) is None and result.duration_seconds != 0)
+                or isinstance(result.duration_seconds, bool)):
+            raise ValueError(f"malformed shard result fields: {result.item_id}")
+        by_id[result.item_id] = result
+    missing = sorted(set(expected_ids) - by_id.keys())
+    unexpected = sorted(by_id.keys() - set(expected_ids))
+    if missing or unexpected:
+        raise ValueError(f"incomplete shard results: missing={missing}; unexpected={unexpected}")
+    return [by_id[item_id] for item_id in expected_ids]
+
+
+def run_shards(
+    paths: list[Path], capacity: int, *, hints: dict[str, float], verbose: bool
+) -> int:
+    if not paths:
+        print("FAIL: no files selected for sharded execution", file=sys.stderr)
+        return 1
+    shards = test_shards(paths, capacity, duration_hints=hints)
+    flattened = [path for shard in shards for path in shard]
+    if sorted(flattened) != sorted(paths) or len(flattened) != len(set(flattened)):
+        print("FAIL: unit-test shard coverage is incomplete or duplicated", file=sys.stderr)
+        return 1
+    by_id = {f"shard-{index + 1}": shard for index, shard in enumerate(shards)}
+    commands = [
+        (item_id, [sys.executable, str(Path(__file__).resolve()),
+                   *(["--verbose"] if verbose else []),
+                   *[argument for path in shard
+                     for argument in ("--test-file", path.relative_to(ROOT).as_posix())]])
+        for item_id, shard in by_id.items()
+    ]
+    for item_id, shard in by_id.items():
+        names = ", ".join(path.relative_to(ROOT).as_posix() for path in shard)
+        print(f"PLAN: {item_id} ({len(shard)} files): {names}", flush=True)
+    reported: set[str] = set()
+
+    def report(result: CommandResult) -> None:
+        checked_shard_results([result], [result.item_id])
+        if result.item_id not in by_id or result.item_id in reported:
+            raise ValueError(f"unexpected or repeated shard notification: {result.item_id}")
+        reported.add(result.item_id)
+        state = "PASS" if result.returncode == 0 else "FAIL"
+        print(f"{state}: {result.item_id} ({len(by_id[result.item_id])} files, "
+              f"{result.duration_seconds:.3f}s)", flush=True)
+        if verbose or result.returncode != 0:
+            if result.stdout:
+                print(result.stdout, end="" if result.stdout.endswith("\n") else "\n", flush=True)
+            if result.stderr:
+                print(result.stderr, end="" if result.stderr.endswith("\n") else "\n",
+                      file=sys.stderr, flush=True)
+
+    started = time.monotonic()
+    try:
+        results = checked_shard_results(
+            run_commands(commands, cwd=ROOT, capacity=capacity, on_complete=report), list(by_id)
+        )
+        for result in results:
+            if result.item_id not in reported:
+                report(result)
+    except KeyboardInterrupt:
+        print("FAIL: unit-test execution interrupted; no success evidence", file=sys.stderr)
+        return 130
+    except Exception as exc:
+        print(f"FAIL: unit-test execution did not converge: {exc}", file=sys.stderr)
+        return 1
+    if any(result.returncode != 0 for result in results):
+        return 1
+    if not verbose:
+        print(f"OK: source unit tests passed for {len(paths)} files in {len(shards)} shards "
+              f"({time.monotonic() - started:.3f}s; "
+              f"slowest shard {max(result.duration_seconds for result in results):.3f}s)")
+    return 0
+
+
 def main() -> int:
     sys.dont_write_bytecode = True
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -307,62 +395,8 @@ def main() -> int:
                     f"WARN: cannot read duration hints ({exc}); using file sizes",
                     file=sys.stderr,
                 )
-        shards = test_shards(
-            all_paths,
-            capacity,
-            duration_hints=load_duration_hints(hint_payload),
-        )
-        flattened = [path for shard in shards for path in shard]
-        if sorted(flattened) != sorted(all_paths) or len(flattened) != len(
-            set(flattened)
-        ):
-            print(
-                "FAIL: unit-test shard coverage is incomplete or duplicated",
-                file=sys.stderr,
-            )
-            return 1
-        commands = [
-            (
-                f"shard-{index + 1}",
-                [
-                    sys.executable,
-                    str(Path(__file__).resolve()),
-                    *(["--verbose"] if args.verbose else []),
-                    *[
-                        argument
-                        for path in shard
-                        for argument in ("--test-file", path.relative_to(ROOT).as_posix())
-                    ],
-                ],
-            )
-            for index, shard in enumerate(shards)
-        ]
-        started = time.monotonic()
-        results = run_commands(commands, cwd=ROOT, capacity=capacity)
-        failed = False
-        for result in results:
-            index = int(result.item_id.split("-")[1]) - 1
-            if args.verbose or result.returncode != 0:
-                print(
-                    f"INFO: {result.item_id} ({len(shards[index])} files, "
-                    f"{result.duration_seconds:.3f}s)"
-                )
-                if result.stdout:
-                    print(result.stdout, end="" if result.stdout.endswith("\n") else "\n")
-                if result.stderr:
-                    print(
-                        result.stderr,
-                        end="" if result.stderr.endswith("\n") else "\n",
-                        file=sys.stderr,
-                    )
-            failed = failed or result.returncode != 0
-        if not failed and not args.verbose:
-            print(
-                f"OK: source unit tests passed for {len(all_paths)} files in "
-                f"{len(shards)} shards ({time.monotonic() - started:.3f}s; "
-                f"slowest shard {max(result.duration_seconds for result in results):.3f}s)"
-            )
-        return 1 if failed else 0
+        return run_shards(all_paths, capacity, hints=load_duration_hints(hint_payload),
+                          verbose=args.verbose)
     durations: dict[str, float] = {}
     timing_warnings: list[str] = []
     suite = timed_suite(load_suite(selected_paths), durations, ROOT, warnings=timing_warnings)

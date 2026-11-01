@@ -697,8 +697,8 @@
       "resource_class": "heavy",
       "child_capacity_max": 4,
       "scheduler_slots": 4,
-      "duration_hint_seconds": 59,
-      "timeout_seconds": 300
+      "duration_hint_seconds": 300,
+      "timeout_seconds": 600
     },
     {
       "id": "framework-consistency",
@@ -723,6 +723,7 @@
     },
     {
       "id": "release-drift-release",
+      "requires_release_evidence": true,
       "command": ["tools/check_release_drift.py", "--mode", "release"],
       "profiles": ["full", "release"],
       "depends_on": ["versioning", "migration-diff-report", "release-migration-template"],

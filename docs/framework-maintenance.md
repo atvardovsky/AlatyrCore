@@ -171,6 +171,9 @@ does not establish original-name absence.
 
 ## Manual Gate Review
 
+For a pending release note, use [staged source validation](source-validation-stages.md)
+before recording its result; the default full profile remains mandatory.
+
 Before accepting a change, check:
 
 - `python3 tools/check_all.py` passes when the source validation wrapper is
