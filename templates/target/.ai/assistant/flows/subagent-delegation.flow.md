@@ -50,7 +50,9 @@ verified and the work requires the governed tree tier.
    execution, is independently useful, non-blocking, locally verifiable, and
    disjoint from concurrent writes and semantic ownership.
 4. Skip delegation when preparation, coordination, or review is likely to cost
-   more than primary execution.
+   more than primary execution, unless the canonical executor-preference rule
+   requires that part to use a worker or remain explicitly blocked. Never silently
+   weaken `require-supported`; `forbid` and authorization still win.
    Treat the minimum independent-packet threshold as an activation gate, not a
    requested worker count.
 5. Keep semantic, architecture, security, migration, approval, external-

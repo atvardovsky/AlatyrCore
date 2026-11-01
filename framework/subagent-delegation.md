@@ -32,7 +32,10 @@ The word `subagent` names a portable worker role, not a product-specific API.
 A supported assistant surface may execute the same packet through a native
 worker, an approved external dispatcher such as a target tool, MCP server, or
 wrapper, or a suggestion-only handoff. When none is supported, the primary
-assistant continues locally.
+assistant continues locally unless explicit required delegation blocks that part.
+Apply [executor preference precedence](task-decomposition.md#executor-selection)
+before cost fallback. Contract-bound parts use the existing receipt/tree verifier,
+not a second acceptance engine or a declaration that a worker ran.
 
 An enabled target owns a portable worker layer made of a delegation policy,
 role catalog, orchestration prompt, task graph, execution-tree ledger, bounded

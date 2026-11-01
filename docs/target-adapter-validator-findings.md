@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1754
+Catalog entries: 1757
 
 ## Families
 
@@ -31,6 +31,7 @@ Catalog entries: 1754
 - `CODEDOC`: 37 codes.
 - `CONSISTENCY`: 49 codes.
 - `CONTEXT`: 26 codes.
+- `CONTRACT`: 3 codes.
 - `DEBUG`: 140 codes.
 - `DELEGATION`: 101 codes.
 - `DEPENDENCY`: 63 codes.
@@ -827,6 +828,12 @@ Catalog entries: 1754
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_SEMANTIC_SCHEMA_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTRACT_WORK_ARTIFACT`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `CONTRACT_WORK_DELEGATION`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+- `CONTRACT_WORK_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `DEBUG_MODE_ACTIVATION`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ACTIVE_COMPLETION_TIME`
@@ -1202,9 +1209,9 @@ Catalog entries: 1754
 - `DELEGATION_POLICY_CAP_CONFLICT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_INVALID_JSON`
-  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`, `tools/target_adapter_validation/task_decomposition.py`.
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`, `tools/target_adapter_validation/subagent_delegation.py`, `tools/target_adapter_validation/task_decomposition.py`.
 - `DELEGATION_POLICY_INVALID_SHAPE`
-  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`, `tools/target_adapter_validation/task_decomposition.py`.
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`, `tools/target_adapter_validation/subagent_delegation.py`, `tools/target_adapter_validation/task_decomposition.py`.
 - `DELEGATION_POLICY_KIND`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_SCHEMA`

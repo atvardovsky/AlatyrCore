@@ -247,6 +247,11 @@ Classify every proposed target file:
    Keep optional lifecycle hooks disabled on install/update unless separately
    approved; follow the lifecycle-checkpoints flow, preserving native definitions,
    trust and procedural fallback.
+   Preserve target delegation preferences. For adopted contract-sensitive work,
+   route to `framework/task-decomposition.md#contract-bound-work-parts`; do not
+   invent task parts, contracts, run evidence or worker provenance during update.
+   Keep `contract_work` absent for small tasks. Existing hooks remain opt-in;
+   completion-only review never reopens execution.
 11. Create or adapt target `.ai/README.md`.
 12. Copy or adapt the selected portable framework pack into target
     `.ai/framework`. Record the pack in the manifest and preserve its projected

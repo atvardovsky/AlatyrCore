@@ -1,5 +1,11 @@
 # Optional Assistant Lifecycle Checkpoints
 
+Closed-task evidence may be rebound with `lifecycle-checkpoint ... bind
+--completion-only` after capturing the actual closure and archived projection.
+It cannot reopen execution. The terminal consistency status reuses canonical
+model/closure checks and is not full adapter acceptance or runtime readiness.
+See the [installed flow](../templates/target/.ai/assistant/flows/lifecycle-checkpoints.flow.md).
+
 This is an opt-in delivery mechanism for the existing
 [task-state](../framework/task-state-delivery.md),
 [authorization](../framework/action-authorization.md) and

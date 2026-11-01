@@ -30,6 +30,7 @@ Problem model: `{PROBLEM_MODEL_PATH_INLINE_SUMMARY_OR_NOT_REQUIRED}`
 Problem model digest: `{LOWERCASE_SHA256_OR_NOT_PERSISTED}`
 Required review passes: `{ADVERSARIAL_REVIEW_OR_NONE}`
 Machine-contract enforcement closure: `{NOT_REQUIRED_OR_REQUIREMENT_ENFORCEMENT_POSITIVE_COUNTEREXAMPLE_OBLIGATION_BINDINGS}`
+Contract-bound parts: `{NOT_REQUIRED_OR_CONTRACT_WORK_IN_EXISTING_PROBLEM_MODEL}`
 Business authority: `{PER_FACT_ACCEPTED_SOURCE_OR_UNRESOLVED_DELTA_OR_NOT_REQUIRED}`
 Original-case acceptance: `{SOURCE_AND_VERIFIED_FIXED_STILL_FAILING_UNVERIFIED_SUPERSEDED_OR_NOT_APPLICABLE}`
 Debug Mode: `{EXPLICITLY_ENABLED_OR_NOT_ENABLED}`
@@ -39,6 +40,13 @@ Debug Mode: `{EXPLICITLY_ENABLED_OR_NOT_ENABLED}`
 Use one task when the request is small and locally provable. Use multiple
 tasks only when semantic owners, dependencies, validation, or support surfaces
 justify the coordination cost.
+
+For behavior-changing module/interface work, use the portable
+`task-decomposition.md#contract-bound-work-parts` contract. Bind existing part
+IDs to current contract hashes and positive/negative obligations in the model's
+optional `contract_work`; keep integration/end-to-end obligations separate.
+Do not reproduce the contracts or create another task inventory. Worker evidence
+uses existing receipts/trees and primary convergence, never a worker label alone.
 
 Task ID: `{TASK_ID}`
 Status: `{PLANNED_BLOCKED_READY_RUNNING_REVIEW_REQUIRED_DONE_FAILED_CANCELLED}`

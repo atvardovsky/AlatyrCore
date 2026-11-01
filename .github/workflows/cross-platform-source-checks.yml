@@ -129,6 +129,8 @@ jobs:
           tests.test_worktree_continuity
           tests.test_collaboration_observations
           tests.test_lifecycle_checkpoints
+          tests.test_contract_work
+          tests.test_contract_work_delegation
           tests.test_conformance_artifacts
       - name: Summarize source-check diagnostics
         if: always()

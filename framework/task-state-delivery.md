@@ -87,6 +87,17 @@ reopen closed scopes. Installation/update preserves native definitions, trust
 and disabled state. Separate configuration, exercised interception and
 procedural fallback.
 
+Checkpoint validity, permission to end a response, and completed-task acceptance
+are separate. An empty ready list requires handoff review, not a success claim.
+Terminal review reuses canonical selected-model completion and closure checks,
+including current result bindings, original outcomes, obligations and reviews.
+Capture the actual closure and authoritative archived projection with the
+selected context. Explicit completion-only binding may inspect a closed scope;
+it must deny execution and cannot reopen that scope. A consistent terminal
+record still grants no acceptance, publication or live-runtime readiness.
+New requests/end events revoke pending continuation before waiting on a slow
+checkpoint lock; interruption and freshness checks still win at delivery.
+
 ## Selected Document Warnings
 
 During consistency routing, exact selected documents also select their reviewed

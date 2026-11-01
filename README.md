@@ -311,10 +311,14 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.117`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.118`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.
+
+For changes spanning modules, agents can bind work to existing contracts and
+separate component tests from integrated outcomes. Optional completion checkpoints
+review that evidence without treating a progress report as proof of completion.
 
 Important limits:
 

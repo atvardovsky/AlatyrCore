@@ -63,6 +63,9 @@ forwards this operation to the selected source. See the
 [adoption and provider guide](../docs/assistant-lifecycle-hooks.md) for exact
 event mappings, trust review, cancellation, fallback and evidence limits.
 
+`bind --completion-only` reviews closed-task evidence without reopening execution.
+Its consistency result is not canonical acceptance or live-runtime readiness.
+
 ## External Case Identity Audit
 
 For external project reviews, follow the source

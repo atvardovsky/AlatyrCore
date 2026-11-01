@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 97,
+  "adapter_schema_version": 98,
   "files": [
     {
       "path": "framework/README.md",
@@ -79,12 +79,12 @@
     {
       "path": "framework/catalog/collaboration/context-index.json",
       "rule_ids": [],
-      "sha256": "05afd0659b10277c09b886f2029034ba990fa59391cf862eb6bc0771053241a9"
+      "sha256": "509649f3e4f521ec4a679d1837db450a2ff7cfa68928170760dc0bf94708bce4"
     },
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "7d9ce98c7b34c1d1fdc05aa2bcda5d9a5c02e9a4ba07588170a9515e47542620"
+      "sha256": "9b957783f0b33768f58b47afc7d23070b290d41819f2b1044ae1375ff8dab671"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -104,7 +104,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "8bbb059b9ac45092d9bb040ec912f2bcf94ecf54f4a4e825e316f27556dace16"
+      "sha256": "87dc625a8e791ab69a1382922914fb036fa8f1c009a469fbc70c92f5be07b074"
     },
     {
       "path": "framework/change-packages.md",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "c9567df1fb7b024d8b3f462145154bfa3e3272fdd2867542c7de6beb9c0e26cf"
+      "sha256": "6ad0a14d6b817ececc37e9435a00699303b127fe6f23ffc63f5bd1f90389a491"
     },
     {
       "path": "framework/context-profiles.md",
@@ -347,7 +347,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "08212bd40ad8917a9e4ed71cc7a804a789cf205bf99d076f3cc7d042361d5077"
+      "sha256": "cc71eb5a701a27453246f1c3280fcf0ce037bb5af98278c01eaba168fe8a8c3c"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -388,7 +388,7 @@
       "rule_ids": [
         "ALATYR-DELEGATION-001"
       ],
-      "sha256": "9ed5c70aacb89af5852318706d94f936386a693ef3a6937c292f8febeef36fc9"
+      "sha256": "629390bb0a7f2c023b2c095fee2f171afa5345160eb117108495d2a99e672ba3"
     },
     {
       "path": "framework/support-information.md",
@@ -407,12 +407,12 @@
       "rule_ids": [
         "ALATYR-DECOMPOSITION-001"
       ],
-      "sha256": "78f9299ea6f5cd08d532a42f816014c8c96a1acddd802c9f188dd6d84c2e7382"
+      "sha256": "44a66a7f7b5fade968899e86f7f1fcdac07e09f7c7f9e0dd507a470f682342ab"
     },
     {
       "path": "framework/task-state-delivery.md",
       "rule_ids": [],
-      "sha256": "ce9b0cab94480f953c8c70f901393eb559ff254da316ef9375a493680b244485"
+      "sha256": "4e8106244367e6994a4f8e8ae8c019e17af0e22884041b87dee47884a701537c"
     },
     {
       "path": "framework/team-collaboration.md",
@@ -446,8 +446,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.117",
+  "framework_version": "0.1.0-alpha.118",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 112
+  "template_version": 113
 }

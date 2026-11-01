@@ -365,6 +365,9 @@ def validate_problem_model(
     failures.extend(_forbidden_reasoning_failures(model))
     if failures:
         return failures
+    if "contract_work" in model or "contract-sensitive-multipart" in model.get("risk_classes", []):
+        from contract_work import work_failures
+        failures.extend(work_failures(model))
     if model.get("schema_version") in (5, 6, 7):
         failures.extend(behavior_failures(model))
     if model.get("schema_version") == 7:

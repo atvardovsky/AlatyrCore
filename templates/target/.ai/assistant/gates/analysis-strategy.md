@@ -1,5 +1,10 @@
 # Analysis Strategy Gate
 
+For behavior-changing module/interface work, apply
+`.ai/framework/task-decomposition.md#contract-bound-work-parts`: current contracts,
+distinct component/integration/end-to-end obligations and canonical delegation
+evidence belong to the existing model, not a separate gate record.
+
 Owner: `ALATYR-DECOMPOSITION-001`.
 
 Non-trivial work only. Eligible small tasks stay `direct-local` without loading

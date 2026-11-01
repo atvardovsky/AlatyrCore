@@ -89,6 +89,15 @@ module agreement is not a substitute for this cross-module proof.
 
 ## Change Categories
 
+Contract-work regressions must use the registered active-task route with real
+contract bytes and existing delegation evidence tiers. Cover malformed fields,
+missing/wrong model bindings, positive/negative versus wider obligation reuse,
+forbid/required precedence, blocked parts, byte limits and deduplicated reads.
+Lifecycle tests retain the no-model fast path and exercise terminal-only binding,
+current result freshness and request/interruption revocation during slow checks.
+Recorded consistency and fixture passes do not establish actual worker provenance,
+semantic acceptance, live readiness or measured real-team improvement.
+
 - Framework rule change: update `framework/`, installer docs, target
   templates, README, and changelog when affected.
 - Installation process change: update `installer/`, README, target templates,

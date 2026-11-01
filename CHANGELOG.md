@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.118 - 2026-11-01
+
+- Add conditional contract-bound work parts to the existing problem model:
+  current owner hashes, distinct positive/negative and integration/end-to-end
+  obligations, bounded deduplicated artifact verification and explicit executor
+  decisions. Model schema 7 remains backward compatible; small tasks need no
+  new field, registry, module or bootstrap read.
+- Enforce target/request delegation preferences per represented part. Required
+  delegation cannot silently fall back to primary execution; forbid, unavailable
+  capability and primary-owned levels remain boundaries. Reuse canonical receipt
+  and execution-tree verification with exact model/operation/node bindings and
+  coherent target reads, without claiming authenticated provider provenance.
+- Connect optional terminal lifecycle review to canonical selected-model and
+  closure validation. Completion-only bindings cannot reopen execution; original
+  obligations, current result, closure and archived projection remain checked.
+  New requests revoke stale continuation before waiting for the session lock.
+- Advance framework content to alpha.118, adapter schema to 98 for conditional
+  acceptance requirements, and target templates to 113. Preserve existing
+  delegation budgets, cost-aware automatic routing and opt-in hook adoption.
+
 - Fix Windows scaffold-cache creation following late dangling destination links:
   use native create-new/no-reparse creation and explicit handle/descriptor
   ownership. Preserve all nested-collision tests and add API/cleanup regressions;

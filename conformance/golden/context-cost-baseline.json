@@ -284,14 +284,14 @@
     },
     "delegated-governed-tree": {
       "activated_conditional_context": [],
-      "bytes": 37812,
-      "characters": 37812,
+      "bytes": 37861,
+      "characters": 37861,
       "declared_files": 12,
       "end_to_end": {
-        "bytes": 55168,
-        "characters": 55168,
+        "bytes": 55217,
+        "characters": 55217,
         "declared_files": 16,
-        "estimated_tokens_4_chars": 13792,
+        "estimated_tokens_4_chars": 13805,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
@@ -330,13 +330,13 @@
           ".ai/assistant/workers/role-catalog.json",
           ".ai/assistant/prompts/worker-orchestration.md"
         ],
-        "target_words": 4460,
+        "target_words": 4463,
         "unresolved_references": [
           "{TARGET_CODE_SOURCE_OF_TRUTH}"
         ],
-        "words": 4460
+        "words": 4463
       },
-      "estimated_tokens_4_chars": 9453,
+      "estimated_tokens_4_chars": 9466,
       "expected_budget_state": "expansion-receipt-required",
       "missing_paths": [],
       "portable_paths": [],
@@ -369,11 +369,11 @@
         ".ai/assistant/workers/role-catalog.json",
         ".ai/assistant/prompts/worker-orchestration.md"
       ],
-      "target_words": 3070,
+      "target_words": 3073,
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 3070
+      "words": 3073
     },
     "delegation-capability-preflight": {
       "activated_conditional_context": [],
@@ -1980,7 +1980,7 @@
   },
   "pairwise_compositions": {
     "compact_pairs": 136,
-    "composition_digest": "sha256:77927a0201c71e0ba287ee769db687c2082b2f60587f1d1df6ab2d883b1db5dc",
+    "composition_digest": "sha256:578c3dbe0205ca2911a4e93fcf61884c475f7d535d89229a9438d19b9ba69099",
     "evaluated_pairs": 152,
     "expansion_receipt_pairs": 16,
     "max_characters": 53897,
@@ -2965,10 +2965,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 840985,
-        "characters": 840985,
+        "bytes": 844501,
+        "characters": 844501,
         "declared_files": 68,
-        "estimated_tokens_4_chars": 210247,
+        "estimated_tokens_4_chars": 211126,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -3040,7 +3040,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 103470,
+        "portable_words": 103895,
         "resolved_files": 68,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -3115,7 +3115,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 103470
+        "words": 103895
       },
       "selected_route": {
         "bytes": 35194,
@@ -3246,10 +3246,10 @@
       "words": 4243
     },
     "delegated-execution": {
-      "bytes": 31202,
-      "characters": 31202,
+      "bytes": 31251,
+      "characters": 31251,
       "declared_files": 7,
-      "estimated_tokens_4_chars": 7801,
+      "estimated_tokens_4_chars": 7813,
       "missing_paths": [],
       "portable_paths": [],
       "portable_words": 0,
@@ -3272,9 +3272,9 @@
         ".ai/assistant/prompts/worker-orchestration.md",
         ".ai/assistant/assistant-capabilities.json"
       ],
-      "target_words": 2394,
+      "target_words": 2397,
       "unresolved_references": [],
-      "words": 2394
+      "words": 2397
     },
     "delegation-preflight": {
       "bytes": 3726,

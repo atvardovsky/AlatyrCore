@@ -285,6 +285,12 @@ and do not claim a cache hit, token saving, or smaller model context.
 
 ## Subagent Delegation
 
+For contract-sensitive multi-part work, use
+[contract-bound parts](framework/task-decomposition.md#contract-bound-work-parts)
+in the existing model. Honor required/forbidden delegation before cost fallback;
+verify existing receipt/tree evidence rather than trusting executor labels.
+Completion-only lifecycle bindings review closed evidence without reopening work.
+
 Optional [lifecycle hook delivery](docs/assistant-lifecycle-hooks.md) stays
 separate from assistant instruction loading and delegation. Keep it disabled
 until target approval; native configuration, trust and observed interception

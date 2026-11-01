@@ -5,10 +5,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import datetime, timezone
 from fnmatch import fnmatchcase
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, Callable, Iterator
 
 from path_spec import logical_path
 
@@ -71,6 +73,7 @@ PORTABLE_MAX_PRIMARY_SUMMARY_WORDS = 4000
 PORTABLE_MAX_RETRIES = 2
 CHARACTERS_PER_WORD_LIMIT = 12
 MAX_JSON_BYTES = 4 * 1024 * 1024
+_ARTIFACT_READER: ContextVar[Callable[[Path, int], bytes] | None] = ContextVar("delegation-artifact-reader", default=None)
 PRIMARY_ANALYSIS_STRATEGIES = {
     "direct-local",
     "invariant-first",
@@ -83,6 +86,24 @@ PRIMARY_ANALYSIS_STRATEGIES = {
 
 class DelegationEvidenceError(ValueError):
     """Raised when delegation evidence violates its portable contract."""
+
+
+@contextmanager
+def artifact_reader(read: Callable[[Path, int], bytes]) -> Iterator[None]:
+    """Compose canonical evidence checks with a caller's coherent file view."""
+    token = _ARTIFACT_READER.set(read)
+    try:
+        yield
+    finally:
+        _ARTIFACT_READER.reset(token)
+
+
+def _read_evidence(path: Path, limit: int) -> bytes:
+    reader = _ARTIFACT_READER.get()
+    if reader is not None:
+        return reader(path, limit)
+    with path.open("rb") as stream:
+        return stream.read(limit + 1)
 
 
 def _object(value: Any, label: str) -> dict[str, Any]:
@@ -239,8 +260,10 @@ def _contained_file(root: Path, relpath: Any, label: str) -> Path:
 
 def _measure_file(path: Path, label: str) -> tuple[str, int, int]:
     try:
-        payload = path.read_bytes()
-    except (OSError, UnicodeError) as exc:
+        payload = _read_evidence(path, MAX_JSON_BYTES)
+        if len(payload) > MAX_JSON_BYTES:
+            raise ValueError(f"artifact exceeds {MAX_JSON_BYTES} bytes")
+    except (OSError, UnicodeError, ValueError) as exc:
         raise DelegationEvidenceError(f"{label} is not readable") from exc
     digest = hashlib.sha256(payload).hexdigest()
     try:
@@ -273,8 +296,7 @@ def validate_artifact(
 
 def load_json_object(path: Path, label: str) -> dict[str, Any]:
     try:
-        with path.open("rb") as stream:
-            payload = stream.read(MAX_JSON_BYTES + 1)
+        payload = _read_evidence(path, MAX_JSON_BYTES)
         if len(payload) > MAX_JSON_BYTES:
             raise ValueError(f"JSON input exceeds {MAX_JSON_BYTES} bytes")
         return _object(json.loads(payload.decode("utf-8")), label)

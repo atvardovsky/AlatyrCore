@@ -79,6 +79,7 @@ def build_parser() -> argparse.ArgumentParser:
     bind = actions.add_parser("bind", allow_abbrev=False)
     for field in ("session-id", "request-id", "baseline", "task-id"):
         bind.add_argument("--" + field, required=True, action=Once)
+    bind.add_argument("--completion-only", action="store_true", help="Review terminal evidence without reopening execution.")
     status = actions.add_parser("status", allow_abbrev=False)
     status.add_argument("--session-id", required=True, action=Once)
     return parser
@@ -102,7 +103,8 @@ def main() -> int:
             result = session_status(target, args.session_id)
         elif args.action == "bind":
             result = handle(target, args.provider, "before-action", {"session_id": args.session_id},
-                bind={"request_id": args.request_id, "baseline": args.baseline, "task_id": args.task_id})
+                bind={"request_id": args.request_id, "baseline": args.baseline, "task_id": args.task_id,
+                      "completion_only": args.completion_only})
         else:
             raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
             if len(raw) > MAX_INPUT_BYTES:

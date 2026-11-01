@@ -528,6 +528,12 @@ class TargetRepositoryView:
 
         return self.read_bytes_result(path).digest
 
+    def content_bindings(self) -> dict[str, str]:
+        """Expose already-read file bindings without new reads or discovery."""
+        return {path.relative_to(self.target).as_posix(): observed.digest
+                for path, observed in sorted(self._observed.items(), key=lambda item: str(item[0]))
+                if observed.digest is not None}
+
     @staticmethod
     def _same_status(before: TargetFileStatus, after: TargetFileStatus) -> bool:
         return replace(before, error=None) == replace(after, error=None)

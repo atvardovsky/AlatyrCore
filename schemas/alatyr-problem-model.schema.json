@@ -38,6 +38,7 @@
     "behavior_review": {"$ref": "#/definitions/behaviorReview"},
     "original_case": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/originalCase"}]},
     "analysis_evidence": {"$ref": "#/definitions/analysisEvidence"},
+    "contract_work": {"$ref": "#/definitions/contractWork"},
     "execution_dependencies": {
       "type": "array", "minItems": 1, "maxItems": 64,
       "items": {
@@ -168,6 +169,38 @@
     "evidence_refs": {"$ref": "#/definitions/stringArray"}
   },
   "definitions": {
+    "contractWork": {
+      "type": "object", "additionalProperties": false,
+      "required": ["delegation_preference", "parts", "integration_obligation_ids", "end_to_end_obligation_ids"],
+      "properties": {
+        "delegation_preference": {"enum": ["auto", "allow", "forbid", "require-supported"]},
+        "parts": {"type": "array", "minItems": 1, "maxItems": 16, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "implementation_level", "contract_refs", "positive_obligation_ids", "negative_obligation_ids", "executor", "reason", "delegation_evidence"],
+          "properties": {
+            "id": {"$ref": "#/definitions/identifier"},
+            "implementation_level": {"enum": ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7"]},
+            "contract_refs": {"type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": {"$ref": "#/definitions/analysisArtifact"}},
+            "positive_obligation_ids": {"$ref": "#/definitions/nonEmptyStringArray"},
+            "negative_obligation_ids": {"$ref": "#/definitions/nonEmptyStringArray"},
+            "executor": {"enum": ["primary", "worker", "blocked"]},
+            "reason": {"$ref": "#/definitions/statement"},
+            "delegation_evidence": {"oneOf": [{"type": "null"}, {
+              "type": "object", "additionalProperties": false,
+              "required": ["kind", "path", "node_id", "capability_path"],
+              "properties": {
+                "kind": {"enum": ["execution-tree", "single-read-only-receipt"]},
+                "path": {"$ref": "#/definitions/reference"},
+                "node_id": {"$ref": "#/definitions/identifier"},
+                "capability_path": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024}
+              }
+            }]}
+          }
+        }},
+        "integration_obligation_ids": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "end_to_end_obligation_ids": {"$ref": "#/definitions/nonEmptyStringArray"}
+      }
+    },
     "evidenceHash": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"

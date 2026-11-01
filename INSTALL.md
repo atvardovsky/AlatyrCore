@@ -121,6 +121,12 @@ an explicit final disposition.
 
 ## Planning Rule
 
+For contract-sensitive multi-part behavior changes, adapt the existing problem
+model's optional `contract_work` using target-owned contracts and acceptance
+obligations. Follow [contract-bound parts](framework/task-decomposition.md#contract-bound-work-parts)
+and preserve explicit delegation preferences; installation/update does not
+invent evidence, require workers for all tasks, or enable lifecycle hooks.
+
 Prepare an installation plan using
 `installer/installation-plan-core-template.md`. Load only the selected sections
 of `installer/installation-plan-template.md` when enabled optional capabilities

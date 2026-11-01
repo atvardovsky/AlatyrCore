@@ -8,8 +8,8 @@ load the full flow only for ambiguity, conflict or repair.
 1. Load `.ai/assistant/assistant-capabilities.json` and only the selected
    surface record. Continue only when current evidence verifies worker
    availability and `worker_context_mode` is `isolated-explicit` or
-   `inherited-measured`. Keep work local for unknown, unsupported, stale, or
-   inherited-unmeasured context.
+   `inherited-measured`. Unverified/unsafe context requires policy-permitted local
+   work or a blocked required-delegation part, never invented capability.
 2. After successful preflight, load `.ai/assistant/task-decomposition.json`,
    `.ai/assistant/delegation-policy.json`, and
    `.ai/assistant/workers/role-catalog.json`.
@@ -18,8 +18,8 @@ load the full flow only for ambiguity, conflict or repair.
    Mark `READY` only when Implementation level,
    dependencies, context, acceptance, assigned proof obligations and write scope
    allow it. Strategy and global obligation acceptance remain primary-owned.
-4. Prefer primary execution when packet/review overhead outweighs
-   benefit. Never delegate non-delegable work.
+4. Apply canonical executor-preference precedence; `auto` stays cost-aware.
+   Never delegate non-delegable work.
 5. Select an enabled role within its action ceiling. Bind current capability
    evidence, else use suggestion-only or sequential-primary fallback.
 6. Use `.ai/assistant/templates/single-read-only-delegation-receipt.json` for
@@ -49,7 +49,7 @@ load the full flow only for ambiguity, conflict or repair.
    Require structured findings with canonical-owner, surface, evidence, and
    proof-obligation references so the primary can merge results without loading
    every raw transcript.
-9. Integrate accepted evidence or changes against current repository state.
+9. Reconcile accepted work and contract-work evidence against current state.
    Re-run combined validation and primary-owned logical integrity,
    authorization, approval, commit, and publish gates.
 10. Stop when acceptance/evidence are covered or a depth, worker, context,

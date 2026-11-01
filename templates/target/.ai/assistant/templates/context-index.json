@@ -1085,8 +1085,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 356,
-      "content_digest": "sha256:4a93b3bbe965d86be43fccf54887dc4c0fee73948fa11eb1f3385153f578834e"
+      "estimated_words": 362,
+      "content_digest": "sha256:d7b4768d52c890e64ef4ff63a076ea59b11c08c81f2892b591554d1a1b6d5e96"
     },
     {
       "id": "assistant.content.templates-task-closure-json",
@@ -1128,8 +1128,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 307,
-      "content_digest": "sha256:b265149199d7d892bcedc58330fd602bc76d2b7ef7a602053a054cab4d7283ce"
+      "estimated_words": 362,
+      "content_digest": "sha256:1ad4d1b43129e8579dba6e48de1f4fcb9022ffc9111612e4d012f3bbc4383f39"
     },
     {
       "id": "assistant.content.templates-team-checkpoint-md",
