@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fix Windows scaffold-cache creation following late dangling destination links:
+  use native create-new/no-reparse creation and explicit handle/descriptor
+  ownership. Preserve all nested-collision tests and add API/cleanup regressions;
+  POSIX creation, validation guards and framework/schema/template contracts
+  remain unchanged.
 - Apply one exclusive-create file copier to direct and recursive scaffold-cache
   materialization. Reject late nested files, directories and links without
   overwriting peer content; reject nonregular inputs before opening streams.
