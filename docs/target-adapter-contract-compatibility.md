@@ -11,8 +11,8 @@ Manifest key: `operations.task_decomposition_schema`.
 Current contract version: `2`.
 
 Artifact: `active-task-index`
-Current version: `1`.
-Supported versions: `1`.
+Current version: `2`.
+Supported versions: `1`, `2`.
 Migration-limited versions: none.
 
 Artifact: `problem-model`

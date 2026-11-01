@@ -35,6 +35,36 @@ machine verification as unperformed; no portable runtime command is required.
 
 ## Declared Readiness
 
+### Reviewed Historical Evidence Loss
+
+Recover exact original evidence first. If a bounded search cannot recover a
+registered model, explicit current owner approval may classify the task as
+`historical-evidence-missing` in task-index schema 2. Schema 1 remains readable
+for active/closed tasks. Never fabricate a closure, drop the registration,
+substitute a similar model, or infer approval from missing history.
+
+The disposition retains the exact original active header from an immutable
+ancestor Git commit and its index digest, the original model path/digest,
+digest-bound owner review, bounded search and dependency review, every changed
+fact as an unverified outcome, and the unknown missing proof obligations. Owner
+review is historical classification only, not executable or publication approval.
+The recorded reviewer is not authenticated by a content hash. Keep authorization
+verification a separate primary duty.
+
+Recheck current task dependencies; active direct or transitive successors still
+block. Only an explicitly linked, unselected, blocked package with the same task,
+operation, model and incident lineage may expose the loss warning instead of a
+missing-model error. Its original outcome stays unverified and its status stays
+blocked. No selected/current acceptance, completion or execution readiness may use
+the disposition. Readiness and doctor views show unresolved duties and no runnable
+action. Original model recovery or conflicting evidence invalidates the loss
+claim and requires explicit reconciliation; it never silently resumes the task.
+
+Retain loss receipts under the task's durable evidence directory, not as ordinary
+action approval records. Missing/changed/unsafe evidence, altered original identity,
+missing facts or an active dependency remain errors. Historical loss is a warning,
+not a repaired business outcome, waived obligation or proof of current health.
+
 Schema-6 models may explicitly adopt `execution_dependencies`: one
 `{obligation_id, requires}` row per proof obligation, including empty prerequisites.
 The shared resolver rejects cycles, unknown/duplicate IDs, incomplete coverage

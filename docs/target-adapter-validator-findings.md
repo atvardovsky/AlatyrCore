@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1754
+Catalog entries: 1761
 
 ## Families
 
@@ -44,6 +44,7 @@ Catalog entries: 1754
 - `EXTENSION`: 75 codes.
 - `FRAMEWORK`: 21 codes.
 - `GATE`: 1 codes.
+- `HEAD`: 1 codes.
 - `HISTORICAL`: 4 codes.
 - `INSTALLATION`: 8 codes.
 - `LIFECYCLE`: 2 codes.
@@ -52,7 +53,7 @@ Catalog entries: 1754
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 114 codes.
+- `PACKAGE`: 116 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -67,7 +68,7 @@ Catalog entries: 1754
 - `STALE`: 2 codes.
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
-- `TASK`: 57 codes.
+- `TASK`: 61 codes.
 - `TDD`: 68 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
@@ -1855,6 +1856,8 @@ Catalog entries: 1754
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `GATE_CONTEXT_ROUTER_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `HEAD`
+  Level: dynamic. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `HISTORICAL_EVIDENCE_INVALID`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `HISTORICAL_EVIDENCE_NON_AUTHORITATIVE`
@@ -2101,6 +2104,10 @@ Catalog entries: 1754
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_CONTINUITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_EVIDENCE_LOSS`
+  Level: error. Source: `tools/historical_task_evidence.py`, `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_EVIDENCE_LOST`
+  Level: warning. Source: `tools/historical_task_evidence.py`.
 - `PACKAGE_INCIDENT_MODEL_DIGEST`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_MODEL_DRIFT`
@@ -2957,6 +2964,14 @@ Catalog entries: 1754
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_EVIDENCE_LINEAGE`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LOSS`
+  Level: error. Source: `tools/historical_task_evidence.py`.
+- `TASK_EVIDENCE_LOSS_REOPEN`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LOSS_SELECTED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LOST`
+  Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_EVIDENCE_PRESERVATION`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_EVIDENCE_RESULT`

@@ -4,6 +4,22 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.117 - 2026-11-01
+
+- Combine reviewed historical-evidence recovery with the alpha.116 lifecycle
+  checkpoint implementation. Preserve disabled hooks, native configuration,
+  interruption boundaries and separate human authorization.
+- Add opt-in task-index schema 2 historical-loss records with exact original
+  Git registration, owner/search/dependency witnesses and unresolved outcomes.
+  Schema-1 tasks remain compatible; missing history is neither completion nor
+  an executable lifecycle binding or successful prerequisite.
+- Preserve the reviewed alpha.116 migration report and release checkpoint.
+  Record this combined contract separately rather than reusing its version.
+- Advance framework to alpha.117, adapter schema to 98 and templates to 112.
+  Migrate compatible tools and explicit loss classifications together. No
+  automatic retirement, hook activation, source publication or original
+  business acceptance is implied.
+
 ## 0.1.0-alpha.116 - 2026-10-31
 
 - Add opt-in lifecycle checkpoints with exact native event/output adapters for

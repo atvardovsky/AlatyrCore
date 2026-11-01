@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "tools" / "validate_target_adapter.py"
 MODULES = ROOT / "tools" / "target_adapter_validation"
 PROJECT_KNOWLEDGE = ROOT / "tools" / "project_knowledge.py"
+HISTORICAL_TASKS = ROOT / "tools" / "historical_task_evidence.py"
 JSON_OUTPUT = MODULES / "finding-codes.json"
 MARKDOWN_OUTPUT = ROOT / "docs" / "target-adapter-validator-findings.md"
 CODE_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]+$")
@@ -23,7 +24,7 @@ LEVELS = {"error", "warn", "info"}
 
 
 def source_paths() -> list[Path]:
-    return [VALIDATOR, PROJECT_KNOWLEDGE, *sorted(MODULES.glob("*.py"))]
+    return [VALIDATOR, PROJECT_KNOWLEDGE, HISTORICAL_TASKS, *sorted(MODULES.glob("*.py"))]
 
 
 def literal_code(node: ast.AST) -> str | None:

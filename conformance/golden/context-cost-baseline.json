@@ -2965,10 +2965,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 842512,
-        "characters": 842512,
+        "bytes": 844411,
+        "characters": 844411,
         "declared_files": 68,
-        "estimated_tokens_4_chars": 210628,
+        "estimated_tokens_4_chars": 211103,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -3040,7 +3040,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 103714,
+        "portable_words": 103976,
         "resolved_files": 68,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -3115,7 +3115,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 103714
+        "words": 103976
       },
       "selected_route": {
         "bytes": 35194,
@@ -3143,13 +3143,13 @@
       "word_reduction_percent": 96.9
     },
     "semantic_codebook": {
-      "compact_definition_and_reference_words": 1057,
-      "compact_serialized_characters": 27716,
-      "estimated_token_reduction_percent": 78.3,
-      "expanded_characters": 128005,
-      "expanded_definition_words": 17055,
+      "compact_definition_and_reference_words": 1058,
+      "compact_serialized_characters": 27753,
+      "estimated_token_reduction_percent": 78.4,
+      "expanded_characters": 128279,
+      "expanded_definition_words": 17092,
       "measurement_limit": "synthetic repeated-definition comparison; not provider telemetry or billing evidence",
-      "reference_count": 469,
+      "reference_count": 470,
       "resolved_term_count": 18,
       "word_reduction_percent": 93.8
     }
