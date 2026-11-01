@@ -4,6 +4,22 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.120 - 2026-11-01
+
+- Extend topic-layout guidance to structured support: reuse schema-supported
+  indexes/shards, retain small cohesive records, and prefer bounded views of
+  machine inventories. Require status, coverage, acceptance limits and blocking
+  diagnostics in report delivery, or explicit overflow refusal.
+- Add opt-in `support-json` navigation with exact JSON Pointers, raw-source
+  hashes and complete UTF-8 output budgets. Saved-view checks reconstruct all
+  fields; they establish correspondence, not schema validity or acceptance.
+  Existing full adapter checks retain authoritative consistency coverage.
+- Bind legacy artifact migrations to current sources/schemas, stable identity,
+  ordered collections, mapped references, generated owners, a bounded approved
+  pilot and rollback. Generic update/sync never authorizes restructuring.
+- Advance framework content to alpha.120 and templates to 115. Adapter schema
+  remains 98; no new installed record, automatic migration or bootstrap read.
+
 ## 0.1.0-alpha.119 - 2026-11-01
 
 - Apply coherent indexed topics to produced project documentation, including

@@ -71,6 +71,7 @@ EXPECTED_COMMANDS = {
     "support-delta",
     "change-cost",
     "support-costs",
+    "support-json",
     "impact",
     "generate-support",
     "validate-adapter",

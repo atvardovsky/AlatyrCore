@@ -270,6 +270,12 @@
       "write_scope": "explicit-report-output-only"
     },
     {
+      "name": "support-json",
+      "script": "support_json.py",
+      "purpose": "inspect bounded JSON support views or check their source consistency",
+      "write_scope": "none"
+    },
+    {
       "name": "support-costs",
       "script": "report_support_costs.py",
       "purpose": "measure standing Alatyr support-surface cost",

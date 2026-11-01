@@ -206,26 +206,36 @@ not force the optional module into every target.
 
 ### Topic Layout And Legacy Refactoring
 
-Create project support as coherent canonical topics behind existing recursive
-indexes, including docs outside `.ai/`. Keep short cohesive files intact.
-Split by responsibility, not headings or word limits. Indexes route; they do
-not duplicate facts. Preserve required definitions, constraints and dependency
-closure; batch selected reads without growing default bootstrap.
+Organize project support as canonical topics behind existing recursive indexes,
+including docs outside `.ai/`. Split by responsibility, not headings or size;
+keep cohesive docs, configs and individual records whole. Indexes route, not
+duplicate facts. Preserve constraints and dependency closure; batch selected
+reads without growing bootstrap.
 
-During installation, update or recheck, propose legacy refactoring only when
-measured bulk, repetition, unclear ownership or routing warrants it. Record
-source hashes, owners, generated boundaries, proposed paths, reference and
-relationship impact, unresolved conflicts, validation and rollback mapping.
-Generic update/sync approval does not approve restructuring. Require explicit
-current-scope approval for the concrete migration and recheck its bindings.
+For JSON collections, reuse schema-supported indexes/shards and stable IDs.
+Keep machine inventories authoritative; deliver bounded source/hash-bound
+views, not wholesale context. Report views retain status, coverage, acceptance
+limits and blocking diagnostics, or refuse overflow; never silently truncate.
+Views neither replace evidence nor establish acceptance. Other formats use
+their native parsers, not regex splitting.
 
-Pilot one area. Preserve authority, provenance and historical identity; do not
-hand-edit generated outputs. Update references, registries, routes and catalogs
-together. Validate before retiring old paths; retain redirects, not duplicate
-owners. Compare equivalent tasks against whole-file and existing section
-extraction. Count index, common-context and dependency costs; smaller files
-alone prove no latency, billing or quality benefit. Unaffected valid routes
-remain usable; size observations never authorize automatic migration.
+At installation, update or recheck, propose legacy refactoring only for measured
+bulk, repetition or unclear ownership/routing. Bind source/schema hashes,
+owners, generated boundaries, proposed paths, ID/reference mappings,
+relationship impact, conflicts, validation and rollback. Generic update/sync
+does not authorize restructuring; require concrete current-scope approval and
+fresh bindings. Pilot one area; preserve authority, provenance and historical
+identity. Never hand-edit generated outputs.
+
+Synchronize references, registries, routes and catalogs before retiring paths;
+retain redirects, not duplicate owners. Verify schema compatibility, unique
+IDs, shard hashes/counts, identity-bound source/projection equivalence, ordered
+collections and mapped reference/dependency reachability
+and full aggregate validation. A view check proves selected content identity
+only. Compare equivalent tasks with whole-file and existing extraction,
+including index/common/dependency costs. Smaller artifacts prove no latency,
+billing or quality benefit. Unaffected routes remain usable; assessment never
+authorizes migration.
 
 During installation or update:
 

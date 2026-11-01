@@ -582,6 +582,8 @@ The stable command set is:
 - `change-cost`: read-only support/product file and line-change cost report
 - `support-costs`: read-only standing support-surface footprint report for a
   scaffold profile or installed target adapter
+- `support-json`: bounded source-bound JSON navigation and saved-view consistency;
+  no source mutation or adapter acceptance
 - `impact`: bounded changed-path/fact traversal through accepted target
   relationships; includes an impact-plan digest, but machine routing does not
   replace invariant reasoning
@@ -1987,6 +1989,64 @@ python3 tools/alatyr.py support-costs --target /path/to/target-repo --format tex
 python3 tools/alatyr.py support-costs --target /path/to/target-repo --layout-review --layout-path docs/architecture.md
 python3 tools/check_support_costs.py
 ```
+
+### Structured Support Views
+
+Use `support-json` for one explicitly selected JSON object, including reports
+outside `.ai/`. It does not split, rewrite or migrate files. Without `--select`,
+it returns root field shapes, collection counts and a layout recommendation;
+repeat exact JSON Pointers for needed values. Empty pointer selects the whole
+object. Existing schema-supported indexes remain the route to shards; the tool
+does not open referenced files or infer semantic independence from size.
+
+```sh
+python3 tools/alatyr.py support-json --target /path/to/target-repo --path .ai/support-state.json --select /groups
+python3 tools/alatyr.py support-json --target /path/to/target-repo --path tmp/validation.json > tmp/validation-view.json
+python3 tools/alatyr.py support-json --target /path/to/target-repo --path tmp/validation.json --check tmp/validation-view.json
+```
+
+The redirection in the second example writes in the shell's current directory;
+run it from the target repository, or use that target's absolute output path.
+Use `python` and the same arguments on Windows; no shell-specific syntax is
+needed unless saving output. The checker never writes.
+
+Views bind the exact source bytes, selectors and complete UTF-8 output size.
+Defaults: 8 MiB source ceiling, 32 user selectors, 64 root fields/container
+levels and 32 KiB
+delivery; `--max-output-bytes` can explicitly select up to 256 KiB. Invalid
+JSON, duplicate keys, numbers that cannot round-trip without precision loss,
+missing pointers, stale/tampered views and overflow fail
+without truncation. Overlapping selections are delivered once. Compare
+`delivery.bytes` with `source.bytes`, including envelope cost; reductions can
+be negative and are not token or latency savings.
+
+Schema-3 target-validation reports retain all findings and health, acceptance,
+scope and evidence limits. Schema-3 source-check reports retain completion,
+acceptance and scope plus every row not explicitly successful; successful
+per-check details remain in the bound source, with the total count disclosed.
+Unsupported versions of these reports are refused. Other JSON formats retain
+explicit root diagnostic/status fields, but their semantics are not inferred.
+Views are navigation, never accepted evidence or complete task context.
+
+`--check` reconstructs the saved view from the specified current source and
+compares all fields, including values, budget, layout and non-authority markers.
+It proves view correspondence only. For schema, shard hash/count, registry,
+reference and source/projection consistency, run the existing full
+`validate-adapter` acceptance path with its current-change bindings; individual
+`render-package-index` / `archive-approvals` checks are not final acceptance.
+
+Existing artifacts follow the
+[approved migration contract](../framework/support-information.md#topic-layout-and-legacy-refactoring).
+Before physical segmentation, record current source/schema hashes, owners,
+generator boundaries, old-to-new paths and stable IDs, ordered collections,
+reference/relationship mappings, unresolved conflicts and rollback. Pilot one
+area after explicit approval; regenerate through existing owners, validate
+identity-bound content and reference equivalence, then run full aggregate
+validation. A failure restores affected routes/catalogs/generated state
+together. Do not silently retarget historical evidence or saved views; their
+old bindings must become stale. Small configs and individual records stay
+whole; machine inventories prefer bounded views. No new task-time scan or
+bootstrap dependency is introduced by this optional source tool.
 
 `report_support_delta.py` compares the recorded support state with current
 support files and, when a Git base is supplied, separates changed support paths

@@ -135,8 +135,8 @@
       "owner_refs": [
         "ALATYR-SUPPORT-001"
       ],
-      "estimated_words": 1957,
-      "content_digest": "sha256:78c3ada648c70ef71e6e6cfd7d330b6b1a0fc7b3f3ac10ceac31dadfdb253627"
+      "estimated_words": 2010,
+      "content_digest": "sha256:3fe8105053ca38253c90d061ec8fe5d1471e060d531d4541110d29bd409cbd81"
     },
     {
       "id": "framework.support.task-classes-json",
