@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 from functools import lru_cache
 from pathlib import Path
 
@@ -128,6 +129,16 @@ def _valid_artifact(path: Path, profile: str) -> bool:
     )
 
 
+def _copy_new_file(source: str | Path, destination: str | Path) -> str:
+    if not stat.S_ISREG(os.stat(source).st_mode):
+        raise shutil.SpecialFileError(f"scaffold source is not a regular file: {source}")
+    # Preflight cannot exclude a peer arriving before this individual write.
+    with open(source, "rb") as incoming, open(destination, "xb") as outgoing:
+        shutil.copyfileobj(incoming, outgoing)
+    shutil.copystat(source, destination)
+    return os.fspath(destination)
+
+
 def materialize_support_profile(profile: str, target: Path) -> int | None:
     """Copy a valid artifact into an unpublished target, never merge support."""
     root = artifact_root()
@@ -145,11 +156,9 @@ def materialize_support_profile(profile: str, target: Path) -> int | None:
     for item in items:
         destination = target / item.name
         if item.is_dir():
-            shutil.copytree(item, destination)
+            shutil.copytree(item, destination, copy_function=_copy_new_file)
             copied += sum(1 for path in item.rglob("*") if path.is_file())
         elif item.is_file():
-            with item.open("rb") as incoming, destination.open("xb") as outgoing:
-                shutil.copyfileobj(incoming, outgoing)
-            shutil.copystat(item, destination)
+            _copy_new_file(item, destination)
             copied += 1
     return copied

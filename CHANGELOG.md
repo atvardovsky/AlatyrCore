@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Apply one exclusive-create file copier to direct and recursive scaffold-cache
+  materialization. Reject late nested files, directories and links without
+  overwriting peer content; reject nonregular inputs before opening streams.
+  Cover three nested depths and metadata-preserving fresh copies. Correct the
+  previous path-specific coverage and document
+  partial-output and arbitrary-writer limits; target mutation guards and
+  framework/schema/template contracts are unchanged.
 - Prevent run-local scaffold cache reuse from merging into existing target
   support or restoring older observed directory timestamps. Reject overlapping
   source/artifact destinations and preserve files appearing during copy.

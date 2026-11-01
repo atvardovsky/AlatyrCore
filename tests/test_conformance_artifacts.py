@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -51,7 +52,6 @@ class ConformanceArtifactTests(unittest.TestCase):
             self.assertEqual(list((target / ".git").iterdir()), [])
 
     def test_late_file_collision_is_not_overwritten(self) -> None:
-        import shutil
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source, target, artifacts = (root / name for name in ("source", "target", "artifacts"))
@@ -70,6 +70,114 @@ class ConformanceArtifactTests(unittest.TestCase):
                     with self.assertRaises(FileExistsError):
                         materialize_support_profile("kernel", target)
             self.assertEqual((target / "AGENTS.md").read_bytes(), b"peer instructions")
+
+    def test_late_nested_collisions_preserve_peer_entries(self) -> None:
+        paths = ("owner.md", "assistant/owner.md", "assistant/approvals/owner.md")
+        for relative in paths:
+            for kind in ("file", "directory", "symlink", "dangling-link"):
+                with self.subTest(relative=relative, kind=kind), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    source, target, artifacts = (root / name for name in ("source", "target", "artifacts"))
+                    cached = source / ".ai" / relative
+                    cached.parent.mkdir(parents=True)
+                    cached.write_bytes(b"cached owner")
+                    target.mkdir()
+                    destination = target / ".ai" / relative
+                    peer = root / "peer.md"
+                    peer.write_bytes(b"peer bytes")
+                    makedirs = os.makedirs
+                    injected = []
+
+                    def introduce_peer(name, *args, **kwargs):
+                        result = makedirs(name, *args, **kwargs)
+                        if Path(name) == destination.parent and not injected:
+                            if kind == "file":
+                                destination.write_bytes(b"peer bytes")
+                            elif kind == "directory":
+                                destination.mkdir()
+                                (destination / "peer.md").write_bytes(b"peer bytes")
+                            else:
+                                referent = peer if kind == "symlink" else root / "missing.md"
+                                try:
+                                    destination.symlink_to(referent)
+                                except OSError:
+                                    self.skipTest("symlinks unavailable")
+                            injected.append(destination.lstat())
+                        return result
+
+                    with patch.dict(os.environ, {ARTIFACT_ROOT_ENV: str(artifacts)}):
+                        self.assertTrue(publish_support_profile("kernel", source))
+                        with patch("conformance_artifacts.shutil.os.makedirs", side_effect=introduce_peer):
+                            with self.assertRaises(shutil.Error) as raised:
+                                materialize_support_profile("kernel", target)
+                    self.assertEqual(len(injected), 1, "late collision boundary was not exercised")
+                    self.assertIn(destination.name, str(raised.exception))
+                    after = destination.lstat()
+                    self.assertEqual((after.st_ino, after.st_mode, after.st_mtime_ns),
+                                     (injected[0].st_ino, injected[0].st_mode, injected[0].st_mtime_ns))
+                    self.assertEqual(peer.read_bytes(), b"peer bytes")
+                    if kind == "file":
+                        self.assertEqual(destination.read_bytes(), b"peer bytes")
+                    elif kind == "directory":
+                        self.assertEqual((destination / "peer.md").read_bytes(), b"peer bytes")
+                    else:
+                        self.assertTrue(destination.is_symlink())
+                        if kind == "dangling-link":
+                            self.assertFalse((root / "missing.md").exists())
+
+    def test_fresh_nested_files_preserve_content_and_metadata(self) -> None:
+        import stat
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, target, artifacts = (root / name for name in ("source", "target", "artifacts"))
+            target.mkdir()
+            paths = ("check.sh", ".ai/check.sh", ".ai/assistant/tools/check.sh")
+            timestamp = 1_700_000_000_000_000_000
+            for relative in paths:
+                path = source / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"#!/bin/sh\nexit 0\n")
+                path.chmod(0o755)
+                os.utime(path, ns=(timestamp, timestamp))
+            for path in source.rglob("*"):
+                if path.is_dir():
+                    os.utime(path, ns=(timestamp, timestamp))
+            with patch.dict(os.environ, {ARTIFACT_ROOT_ENV: str(artifacts)}):
+                self.assertTrue(publish_support_profile("kernel", source))
+                self.assertEqual(materialize_support_profile("kernel", target), len(paths))
+            for original in source.rglob("*"):
+                copied = target / original.relative_to(source)
+                with self.subTest(path=original.relative_to(source).as_posix()):
+                    self.assertEqual(copied.stat().st_mtime_ns, original.stat().st_mtime_ns)
+                    if os.name != "nt":
+                        self.assertEqual(stat.S_IMODE(copied.stat().st_mode),
+                                         stat.S_IMODE(original.stat().st_mode))
+                    if original.is_file():
+                        self.assertEqual(copied.read_bytes(), original.read_bytes())
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "FIFOs unavailable")
+    def test_nonregular_cache_entry_is_rejected_before_opening(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, target, artifacts = (root / name for name in ("source", "target", "artifacts"))
+            (source / ".ai").mkdir(parents=True)
+            (source / ".ai/owner.md").write_bytes(b"owner")
+            target.mkdir()
+            real_open = open
+            with patch.dict(os.environ, {ARTIFACT_ROOT_ENV: str(artifacts)}):
+                self.assertTrue(publish_support_profile("kernel", source))
+                fifo = artifacts / "support-profile-kernel/.ai/late.pipe"
+                os.mkfifo(fifo)
+
+                def reject_fifo_open(file, *args, **kwargs):
+                    if isinstance(file, (str, os.PathLike)) and Path(file) == fifo:
+                        self.fail("nonregular cache entry must be rejected before stream open")
+                    return real_open(file, *args, **kwargs)
+
+                with patch("builtins.open", side_effect=reject_fifo_open), patch("io.open", side_effect=reject_fifo_open):
+                    with self.assertRaises(shutil.Error):
+                        materialize_support_profile("kernel", target)
+                self.assertFalse((target / ".ai/late.pipe").exists())
 
     def test_publication_rejects_source_overlap_before_creating_outputs(self) -> None:
         for placement in ("destination", "temporary", "nested"):
