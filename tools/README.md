@@ -1971,10 +1971,20 @@ For scaffold profiles, the report projects the generated
 `.ai/support-state.json` for that profile instead of charging the complete
 source template inventory to every installation.
 
+Use `--target <repo> --layout-review` for proposal-only topic-layout assessment
+of the largest non-excluded project Markdown documents. Repeat `--layout-path`
+for exact canonical docs outside `.ai/` or a different bounded selection.
+The report binds current content hashes and includes index/common-text costs;
+dependency completeness, latency and billing remain unmeasured. Default reports
+do not run this assessment. The
+[topic-layout contract](../framework/support-information.md#topic-layout-and-legacy-refactoring)
+requires separate approval before any migration.
+
 ```sh
 python3 tools/alatyr.py support-costs
 python3 tools/alatyr.py support-costs --profile standard --format text
 python3 tools/alatyr.py support-costs --target /path/to/target-repo --format text
+python3 tools/alatyr.py support-costs --target /path/to/target-repo --layout-review --layout-path docs/architecture.md
 python3 tools/check_support_costs.py
 ```
 

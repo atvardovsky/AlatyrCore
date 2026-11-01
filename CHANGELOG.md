@@ -4,6 +4,28 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.119 - 2026-11-01
+
+- Apply coherent indexed topics to produced project documentation, including
+  existing canonical docs outside `.ai/`. Preserve required dependencies,
+  ownership and default bootstrap; do not split solely by size or headings.
+- Require evidence-backed legacy layout proposals during installation, update
+  and recheck when warranted. Restructuring requires explicit current-scope
+  approval, source bindings, a bounded pilot, reference synchronization and
+  rollback; generic update authorization is insufficient.
+- Add opt-in `support-costs --layout-review` with exact `--layout-path` selection,
+  current source hashes and explicit index/common-text cost assumptions.
+  Reports remain proposal-only and compare physical splits with existing
+  extraction without claiming latency, billing or semantic completeness.
+- Split the source optimization guide into independently selected topics while
+  preserving its old navigation anchors. Default report/routing paths remain
+  unchanged. Advance framework content to alpha.119 and templates to 114;
+  adapter schema remains 98, with no new required record or acceptance shape.
+- Keep target footprint/layout measurements on one invocation-local snapshot,
+  bound iterable inputs before consumption, and rank project candidates
+  independently of large framework files. Cover fenced and indented headings
+  without treating example text as the retained common-context boundary.
+
 ## 0.1.0-alpha.118 - 2026-11-01
 
 - Add conditional contract-bound work parts to the existing problem model:

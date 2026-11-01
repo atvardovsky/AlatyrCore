@@ -84,7 +84,7 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "9b957783f0b33768f58b47afc7d23070b290d41819f2b1044ae1375ff8dab671"
+      "sha256": "7269944eae4d322c71095d6cfff4a1ca930a6c46ba9c700e7a2a6a601da084bd"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -104,7 +104,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "87dc625a8e791ab69a1382922914fb036fa8f1c009a469fbc70c92f5be07b074"
+      "sha256": "2e0f5bb8244b604ee59438e6495450ae7adc670c0b0d03448444cd1fe425bd7b"
     },
     {
       "path": "framework/change-packages.md",
@@ -140,14 +140,14 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "6ad0a14d6b817ececc37e9435a00699303b127fe6f23ffc63f5bd1f90389a491"
+      "sha256": "603803aec2642f6d82879d6f92d2d37c30b124eb5a4d3bc9241d657343c1398a"
     },
     {
       "path": "framework/context-profiles.md",
       "rule_ids": [
         "ALATYR-CONTEXT-001"
       ],
-      "sha256": "f26e7c21bf0cf1ca888e80d883ce869ac7beb03c3d8057dba71b4b763e5625eb"
+      "sha256": "419fb8ec9e6b109b07b62803d3b93581b9d6a749461f3426ffee3c9ec057bbc8"
     },
     {
       "path": "framework/context-router.md",
@@ -347,7 +347,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "cc71eb5a701a27453246f1c3280fcf0ce037bb5af98278c01eaba168fe8a8c3c"
+      "sha256": "5d1db89f08595ffd471fe363cdb2d3f16f2ff673e65824cf633199d0c9661029"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -395,7 +395,7 @@
       "rule_ids": [
         "ALATYR-SUPPORT-001"
       ],
-      "sha256": "c6b4302380e16a3a34a75976e46b756709a6bfdcbc9b4e70cd23e0bb4ee7bed7"
+      "sha256": "78c3ada648c70ef71e6e6cfd7d330b6b1a0fc7b3f3ac10ceac31dadfdb253627"
     },
     {
       "path": "framework/task-classes.json",
@@ -446,8 +446,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.118",
+  "framework_version": "0.1.0-alpha.119",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 113
+  "template_version": 114
 }

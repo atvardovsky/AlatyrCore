@@ -110,6 +110,7 @@ class SourceContextSelectionTests(unittest.TestCase):
         strategy_paths = {
             ROOT / "docs/source-architecture.md",
             ROOT / "docs/source-optimization-workflow.md",
+            ROOT / "docs/source-optimization/development-context-contract.md",
         }
         opened = []
         original_open = Path.open
@@ -148,7 +149,7 @@ class SourceContextSelectionTests(unittest.TestCase):
                 self.assertTrue(view["content"].startswith("## Development Context Contract\n"))
                 self.assertNotIn("## Engineering Principles", view["content"])
                 self.assertNotIn("## Extraction Rules", view["content"])
-                self.assertIn("source-optimization-workflow.md#development-context-contract", view["content"])
+                self.assertIn("source-optimization/development-context-contract.md", view["content"])
                 self.assertLessEqual(len(view["content"].split()), 100)
                 self.assertLessEqual(len(view["content"]), 1000)
                 self.assertTrue(
@@ -171,7 +172,7 @@ class SourceContextSelectionTests(unittest.TestCase):
         self.assertIn(path, context["context_budget"]["resolved"]["paths"])
 
     def test_development_context_guide_is_loaded_only_by_explicit_contract_routes(self):
-        path = "docs/source-optimization-workflow.md"
+        path = "docs/source-optimization/development-context-contract.md"
         guide = (ROOT / path).read_text(encoding="utf-8")
         contract = project_file(ROOT, path, ["development-context-contract"])["content"]
         self.assertLessEqual(len(contract.split()), 850)
@@ -187,6 +188,20 @@ class SourceContextSelectionTests(unittest.TestCase):
                 self.assertIn(path, context["context_budget"]["resolved"]["paths"])
                 self.assertIn("## Development Context Contract", guide)
                 self.assertTrue(context["context_budget"]["reserved_capacity_preserved"])
+
+    def test_source_topic_pilot_keeps_legacy_anchors_and_does_not_expand_siblings(self):
+        index = "docs/source-optimization-workflow.md"
+        topics = ["development-context-contract", "projection-refresh", "timing-feedback",
+                  "delegation-drafts", "context-costs"]
+        for topic in topics:
+            path = f"docs/source-optimization/{topic}.md"
+            view = project_file(ROOT, index, [topic])["content"]
+            self.assertIn(f"source-optimization/{topic}.md", view)
+            context = build_source_profile_context("source-tooling", selector_values={"contract_paths": [path]})
+            resolved = context["context_budget"]["resolved"]["paths"]
+            self.assertIn(path, resolved)
+            self.assertEqual([p for p in resolved if p.startswith("docs/source-optimization/")], [path])
+            self.assertEqual(context["readiness"]["status"], "ready")
 
     def test_public_cli_delivers_strategy_section_and_blocks_unknown_section(self):
         path = "docs/source-architecture.md"

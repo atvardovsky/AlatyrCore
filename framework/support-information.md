@@ -204,6 +204,29 @@ not force the optional module into every target.
 
 ## Installation And Update
 
+### Topic Layout And Legacy Refactoring
+
+Create project support as coherent canonical topics behind existing recursive
+indexes, including docs outside `.ai/`. Keep short cohesive files intact.
+Split by responsibility, not headings or word limits. Indexes route; they do
+not duplicate facts. Preserve required definitions, constraints and dependency
+closure; batch selected reads without growing default bootstrap.
+
+During installation, update or recheck, propose legacy refactoring only when
+measured bulk, repetition, unclear ownership or routing warrants it. Record
+source hashes, owners, generated boundaries, proposed paths, reference and
+relationship impact, unresolved conflicts, validation and rollback mapping.
+Generic update/sync approval does not approve restructuring. Require explicit
+current-scope approval for the concrete migration and recheck its bindings.
+
+Pilot one area. Preserve authority, provenance and historical identity; do not
+hand-edit generated outputs. Update references, registries, routes and catalogs
+together. Validate before retiring old paths; retain redirects, not duplicate
+owners. Compare equivalent tasks against whole-file and existing section
+extraction. Count index, common-context and dependency costs; smaller files
+alone prove no latency, billing or quality benefit. Unaffected valid routes
+remain usable; size observations never authorize automatic migration.
+
 During installation or update:
 
 1. Adapt support collections and exclusions from target evidence.

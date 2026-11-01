@@ -335,6 +335,10 @@ In a typical target repository:
    distinct context. Propose zero or more evidence-bound modes after
    inspection, but keep them proposed until a separate user decision accepts
    them. Installation approval is not mode acceptance.
+   Apply `framework/support-information.md#topic-layout-and-legacy-refactoring`
+   to produced project docs and evidence-backed legacy refactor proposals.
+   Existing canonical docs may stay outside `.ai/`; installation approval does
+   not authorize an unrelated documentation restructuring.
 7. Create `kernel` surfaces: `.ai/assistant/contour.md`, hash-bound bootstrap,
    compact router, recursive framework/project/assistant `context-index.json`
    trees, projected codebook, context-packet template, continuity policy/

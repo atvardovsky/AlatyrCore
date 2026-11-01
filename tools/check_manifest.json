@@ -285,8 +285,8 @@
       "profiles": ["quick", "fast", "full"],
       "depends_on": ["scaffold-profiles", "framework-packs"],
       "contract_inputs": ["framework/capabilities.json", "framework/framework-packs.json", "templates/target/**", "tools/scaffold_profiles.json"],
-      "implementation_paths": ["tools/check_support_costs.py", "tools/report_support_costs.py"],
-      "trigger_paths": ["framework/capabilities.json", "framework/framework-packs.json", "templates/target/**", "tools/check_support_costs.py", "tools/report_support_costs.py", "tools/scaffold_profiles.json"],
+      "implementation_paths": ["tools/check_support_costs.py", "tools/report_support_costs.py", "tools/support_topic_layout.py"],
+      "trigger_paths": ["framework/capabilities.json", "framework/framework-packs.json", "templates/target/**", "tools/check_support_costs.py", "tools/report_support_costs.py", "tools/support_topic_layout.py", "tools/scaffold_profiles.json"],
       "resource_class": "light"
     },
     {

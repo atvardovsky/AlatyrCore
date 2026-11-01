@@ -36,6 +36,8 @@ Replace placeholders with target facts before accepting installation.
 5. Propose only facts supported by target evidence, without writing project
    files or changing accepted architecture. Link concise human
    orientation text to canonical owners instead of duplicating their policy.
+   Use coherent indexed topic files; propose legacy restructuring separately
+   through [documentation sync](documentation-sync.flow.md).
 6. Mark missing or contradictory facts explicitly and propose each material
    discovery finding's projected, rejected, deferred, or not-applicable disposition.
 

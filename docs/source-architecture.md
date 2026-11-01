@@ -163,7 +163,7 @@ runs instead of probing every remaining stage for possible reuse.
 ## Development Context Contract
 
 For context-delivery or agent-workflow changes, follow the
-[development context contract](source-optimization-workflow.md#development-context-contract).
+[development context contract](source-optimization/development-context-contract.md).
 Keep the detailed guide conditional. Select it through existing `contract_paths`
 in `source-tooling`, or `audit_context_paths` in `repository-audit`; this pointer
 alone is not the complete contract. Neither route changes authorization,

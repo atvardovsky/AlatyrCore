@@ -12,7 +12,7 @@ import json
 import math
 import re
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 from capability_catalog import dependency_closure, load_modules, minimum_pack
 from assistant_capability_projection import (
@@ -161,14 +161,15 @@ def measure_text_entries(entries: Iterable[tuple[str, str]]) -> dict[str, Any]:
     }
 
 
-def measure_files(files: Iterable[tuple[str, Path]]) -> dict[str, Any]:
+def measure_files(files: Iterable[tuple[str, Path]], *,
+                  reader: Callable[[Path], str] = read_text) -> dict[str, Any]:
     entries: list[tuple[str, str]] = []
     missing: list[str] = []
     for label, path in sorted(files):
         if not path.is_file():
             missing.append(label)
             continue
-        entries.append((label, read_text(path)))
+        entries.append((label, reader(path)))
     measured = measure_text_entries(entries)
     measured["missing_paths"] = missing
     return measured
@@ -600,8 +601,29 @@ def index_pressure(target: Path, paths: set[Path]) -> dict[str, Any]:
     }
 
 
-def build_installed_report(target: Path) -> dict[str, Any]:
+def build_installed_report(target: Path, *, layout_review: bool = False,
+                           layout_paths: Iterable[str] = ()) -> dict[str, Any]:
+    if layout_paths:
+        from support_topic_layout import bounded_layout_inputs
+
+        layout_paths = bounded_layout_inputs(layout_paths)
+    if layout_paths and not layout_review:
+        raise ValueError("layout paths require layout_review")
     target = target.resolve()
+    texts: dict[Path, str] = {}
+    observed_bytes: dict[Path, bytes] = {}
+
+    def current_text(path: Path) -> str:
+        key = path.resolve()
+        if key not in texts:
+            if layout_review:
+                raw = path.read_bytes()
+                observed_bytes[key] = raw
+                texts[key] = raw.decode("utf-8", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
+            else:
+                texts[key] = path.read_text(encoding="utf-8", errors="replace")
+        return texts[key]
+
     policy = load_support_policy(target)
     bridge_paths = {
         path
@@ -617,7 +639,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
     paths.update(Path(path) for path in bridge_paths if (target / path).is_file())
     paths.update(Path(path) for path in ROOT_ENTRYPOINTS if (target / path).is_file())
     pairs = [(path.as_posix(), target / path) for path in sorted(paths)]
-    measured = measure_files(pairs)
+    measured = measure_files(pairs, reader=current_text)
     classifications: dict[str, int] = {}
     classified_pairs: dict[str, list[tuple[str, Path]]] = {}
     for label, path in pairs:
@@ -625,18 +647,18 @@ def build_installed_report(target: Path) -> dict[str, Any]:
             classification = classify_path(label, policy)
             classifications[classification] = classifications.get(classification, 0) + 1
             classified_pairs.setdefault(classification, []).append((label, path))
-    excluded = measure_files(classified_pairs.get("excluded", []))
-    ignored = measure_files(classified_pairs.get("ignored-local", []))
+    excluded = measure_files(classified_pairs.get("excluded", []), reader=current_text)
+    ignored = measure_files(classified_pairs.get("ignored-local", []), reader=current_text)
     managed = measure_files(
         [
             pair
             for classification, entries in classified_pairs.items()
             if classification not in {"excluded", "ignored-local", "unclassified"}
             for pair in entries
-        ]
+        ], reader=current_text
     )
-    unclassified = measure_files(classified_pairs.get("unclassified", []))
-    return {
+    unclassified = measure_files(classified_pairs.get("unclassified", []), reader=current_text)
+    report = {
         "schema_version": 1,
         "report_kind": "installed-alatyr-standing-support-cost",
         "target": str(target),
@@ -689,6 +711,40 @@ def build_installed_report(target: Path) -> dict[str, Any]:
             "runtime context depends on the selected task route",
         ],
     }
+    if layout_review:
+        from source_context_selection import contained_source_path
+        from support_topic_layout import assess_topic_layout, bounded_layout_inputs
+
+        selected = bounded_layout_inputs(layout_paths)
+        explicit_paths = bool(selected)
+        if not selected:
+            candidates = [(label, len(current_text(path).split())) for label, path in pairs
+                          if label.startswith(".ai/project/") and label.endswith(".md")
+                          and classify_path(label, policy) not in {"excluded", "ignored-local"}]
+            selected = [label for label, _words in sorted(candidates, key=lambda item: (-item[1], item[0]))[:15]]
+        if any(not isinstance(path, str) for path in selected):
+            raise ValueError("topic review requires exact project document paths")
+        selected = list(dict.fromkeys(selected))
+        entries = []
+        for relpath in selected:
+            if not relpath.endswith(".md") or relpath.startswith((".ai/framework/", ".ai/assistant/")):
+                raise ValueError(f"topic review requires project-owned Markdown: {relpath}")
+            path = contained_source_path(target, relpath)
+            if not path.is_file():
+                raise ValueError(f"topic review requires a regular document of at most 1 MiB: {relpath}")
+            raw = observed_bytes.get(path.resolve())
+            if raw is None:
+                with path.open("rb") as stream:
+                    raw = stream.read(1024 * 1024 + 1)
+            if len(raw) > 1024 * 1024:
+                raise ValueError(f"topic review document exceeds 1 MiB: {relpath}")
+            entries.append((relpath, raw.decode("utf-8")))
+        report["topic_layout"] = assess_topic_layout(entries)
+        report["topic_layout"]["selection"] = (
+            "explicit documents" if explicit_paths else
+            "15 largest non-excluded project Markdown documents; not exhaustive"
+        )
+    return report
 
 
 def render_text(report: dict[str, Any]) -> str:
@@ -726,6 +782,11 @@ def render_text(report: dict[str, Any]) -> str:
             "Indexes requiring sharding review: "
             f"{pressure['indexes_under_pressure']} of {pressure['indexes_measured']}"
         )
+        if "topic_layout" in report:
+            lines.append("Topic layout: proposal-only; no migration performed")
+            for item in report["topic_layout"]["documents"]:
+                lines.append(f"- {item['path']}: {item['words']} words; {item['disposition']}")
+            lines.append("Dependency cost, semantic completeness, latency and billing are unmeasured.")
     else:
         support = report["combined_support"]
         inventory = report["cost_scopes"]["complete_managed_inventory"]
@@ -772,6 +833,8 @@ def render_text(report: dict[str, Any]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", type=Path)
+    parser.add_argument("--layout-review", action="store_true", help="Propose a read-only project topic-layout review; requires --target.")
+    parser.add_argument("--layout-path", action="append", default=[], help="Exact project Markdown path, including outside .ai; requires --layout-review.")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--format", choices=["json", "text"], default="json")
     parser.add_argument(
@@ -797,17 +860,21 @@ def main() -> int:
         help="Include native bridge files for one selected assistant surface.",
     )
     args = parser.parse_args()
+    if (args.layout_review or args.layout_path) and not args.target:
+        parser.error("layout review requires --target")
+    if args.layout_path and not args.layout_review:
+        parser.error("--layout-path requires --layout-review")
 
-    report = (
-        build_installed_report(args.target)
-        if args.target
-        else build_scaffold_report(
-            args.profile,
-            args.enable_module,
-            args.framework_pack,
-            args.assistant_surface,
+    try:
+        report = (
+            build_installed_report(args.target, layout_review=args.layout_review, layout_paths=args.layout_path)
+            if args.target
+            else build_scaffold_report(
+                args.profile, args.enable_module, args.framework_pack, args.assistant_surface,
+            )
         )
-    )
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
     rendered = (
         json.dumps(report, indent=2, sort_keys=True) + "\n"
         if args.format == "json"

@@ -71,6 +71,10 @@ machine index points to canonical owners. A folder may contain further
 subfolders without imposing a universal physical depth, but routine traversal
 must stop at the router's configured depth and context budgets.
 
+Produced project documentation follows the
+[topic-layout contract](support-information.md#topic-layout-and-legacy-refactoring),
+including evidence-backed proposals for legacy support structures.
+
 Do not index the preloaded bootstrap as assistant content.
 Rebuild generated surfaces in this canonical order:
 

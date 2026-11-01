@@ -310,7 +310,11 @@ Classify every proposed target file:
     affected. Keep the full documentation gate conditional unless the change
     actually requires documentation analysis or updates.
     Generate the framework, project, and assistant recursive context indexes
-    from the exact selected and projected installation. Validate acyclic
+    from the exact selected and projected installation,
+    using coherent topic owners under the topic-layout contract in
+    `framework/support-information.md#topic-layout-and-legacy-refactoring`;
+    propose legacy restructuring separately rather than applying it implicitly.
+    Validate acyclic
     single-parent traversal, bounded depth, one content entry per installed
     routable file, exact word estimates and digests, resolvable owner and
     semantic references, and no entries for omitted profile files. Install the
