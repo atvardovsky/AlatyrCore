@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Prevent run-local scaffold cache reuse from merging into existing target
+  support or restoring older observed directory timestamps. Reject overlapping
+  source/artifact destinations and preserve files appearing during copy.
+  Keep fresh-fixture reuse and every target mutation guard; the original
+  alpha.112/115 writer attribution remains unresolved. Source-only repair,
+  with no framework, schema, template or target migration change.
 
 ## 0.1.0-alpha.117 - 2026-11-01
 

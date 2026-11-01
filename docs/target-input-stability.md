@@ -77,6 +77,30 @@ regressions also run in the existing Windows/macOS workflow steps.
 
 ## Recurrence Investigation
 
+### Confirmed Cache Writer Boundary
+
+A controlled source-tool reproduction identified a separate unsafe writer:
+`conformance_artifacts.materialize_support_profile` could merge cached scaffold
+content into an existing target. `copytree` restored older directory timestamps
+even when file bytes matched. This reproduces the reported *mechanism*, not the
+original alpha.112/115 incidents; their cache use and writer remain unproved.
+
+Run-local cache materialization now requires unpublished destinations: every
+artifact-owned top-level path must be absent before copying. Existing files,
+directories and dangling links fail before any copy; late file collisions are
+not overwritten. Source/artifact/destination overlap is rejected. Fresh private
+fixtures retain cache reuse, while normal target validation performs no extra
+work. This is not a lock against arbitrary writers or an atomic transaction
+for an otherwise shared target. Failed private copies must not be published or
+treated as installed adapters.
+
+The new regression first failed on the backwards timestamp itself. Companion
+tests cover collisions, overlap and the public validator rejecting the cache
+write attempt without input changes. Existing real-mutation negatives remain
+blocking. No framework, schema, template or installation behavior changed.
+
+### Field Attribution Still Required
+
 Retain the first failed report, command and timing before an explicit replay.
 Compare metadata and entry fingerprints independently from file hashes. Pause
 known writers or use a frozen disposable copy, keeping reports outside the
