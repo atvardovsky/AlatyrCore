@@ -4,6 +4,51 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.118 - 2026-11-01
+
+- Combine upstream source 61a01fb with the separately reviewed d217db0 recovery
+  candidate. Preserve both Git histories and schema-2 historical-loss handling;
+  same alpha.117 labels did not identify equivalent contracts. Keep original
+  alpha.117 evidence in its original commit and retain the installed candidate's
+  report as the reviewed incremental baseline.
+- Apply one exclusive-create file copier to direct and recursive scaffold-cache
+  materialization. Reject late nested files, directories and links without
+  overwriting peer content; reject nonregular inputs before opening streams.
+  Cover three nested depths and metadata-preserving fresh copies. Correct the
+  previous path-specific coverage and document
+  partial-output and arbitrary-writer limits; target mutation guards and
+  framework/schema/template contracts are unchanged.
+- Prevent run-local scaffold cache reuse from merging into existing target
+  support or restoring older observed directory timestamps. Reject overlapping
+  source/artifact destinations and preserve files appearing during copy.
+  Keep fresh-fixture reuse and every target mutation guard; the original
+  alpha.112/115 writer attribution remains unresolved. Source-only repair,
+  with no framework, schema, template or target migration change.
+
+- Make source-unit progress visible in captured timeout logs; reject missing,
+  duplicate, unexpected or malformed shard results while retaining deterministic
+  results, bounded concurrency and the outer process-tree watchdog.
+- Calibrate only the source-unit suite watchdog to 600 seconds and its scheduling
+  estimate to 300 seconds. Reuse isolated pristine fixture setup without caching
+  validation results or removing real CLI lifecycle regressions.
+- Add a cold, non-acceptance source-validation stage before preparing release
+  evidence. The default full gate still includes every release check.
+- Tighten context, operation/help, source-assistant and installation prose.
+  Preserve canonical rule ownership, conditions, fallback cases, authorization
+  phases, validation obligations and independently loaded safety reminders.
+- Replace duplicated source-worker field enumerations with exact references to
+  the already-required policy contracts; retain budget, provenance and stop
+  enforcement without new bootstrap content or opaque shorthand.
+- Condense target contour, acceptance-gate and documentation/product-change
+  guidance while preserving distinct pre-finalization and final-result checks.
+- Stabilize presence freshness tests against delayed response observations:
+  bind boundaries to the stored update timestamp and exercise an explicit clock
+  gap without changing runtime freshness rules.
+- Advance combined framework content to alpha.118 and templates to 113 under
+  content-versioning rules. Retain adapter schema 98 and its backward-compatible
+  historical-loss contract. Do not enable lifecycle hooks, waive missing
+  historical outcomes, or imply publication of this local source candidate.
+
 ## 0.1.0-alpha.117 - 2026-11-01
 
 - Combine reviewed historical-evidence recovery with the alpha.116 lifecycle

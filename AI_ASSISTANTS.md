@@ -1,19 +1,14 @@
 # AI Assistant Guide
 
-Supported surfaces share the target-owned baseline, active-task and validation
-entrypoint contracts. Worker context preparation measures visible input before
-dispatch and expansion; observed artifacts remain separately checked. Native
-limits and execution remain capability-dependent.
+Select the repository mode, then load its smallest canonical context. Supported
+surfaces share target-owned baseline, active-task and validation contracts.
+Measure visible worker context before dispatch or expansion; check observed
+artifacts separately. Native limits and execution require capability evidence.
 
-This is the dedicated assistant-facing entry point for AlatyrCore. Use it to
-identify the current repository mode and then load the smallest canonical
-context for that mode.
-
-AlatyrCore is a repository-owned project guardian, not an autonomous agent,
-hosted service, or shell command. The assistant performs the interaction and
-execution. AlatyrCore supplies portable rules and a target-specific adapter
-that preserve project knowledge, boundaries, validation, and unresolved gaps
-across assistant sessions and vendors.
+AlatyrCore preserves project knowledge, boundaries, validation and unresolved
+gaps through portable rules and a target-specific adapter. The assistant
+interacts and executes; AlatyrCore is not an autonomous agent, hosted service
+or shell command.
 
 Human readers should start with the [public overview](README.md) or
 [What is AlatyrCore?](docs/human/what-is-alatyr.md).
@@ -51,27 +46,21 @@ The source repository supplies portable rules and placeholder templates. It
 does not supply the target's business facts, architecture, commands, security
 policy, owners, or validation.
 
-An installed target must also declare what its local checker actually proves.
-Use the target validation contract to distinguish adapter health,
-current-change validation, and full archive audit. Do not equate a fast local
-structural pass with canonical acceptance, and do not collapse accepted
-installation state, support freshness, and current-change coverage into one
-claim.
+Use the target validation contract to distinguish adapter health, current-change
+validation and full archive audit. A structural pass is not canonical acceptance;
+report installation state, support freshness and change coverage separately.
 
-Current templates install a portable target delegate. Resolve source tooling
-with an explicit path, `ALATYR_CORE`, or ignored local configuration; never
-commit a workstation-specific absolute path. Use structured validation
-metadata together with a directly parsed delegate invocation; metadata or a
-delegate-path token alone does not prove the selected operation. Treat the
-shipped delegate parser as the syntax owner: complete absent runtime bindings
-for contract checks, but do not reinterpret or repair supplied arguments. Use
-exact long-option names; the root parser and every subparser disable
-abbreviations. Verify parser compatibility and stricter contract invariants as
-separate obligations so parser acceptance cannot waive single-value
-cardinality or authorization constraints.
-After installation or update, prefer the transactional support finalizer so
-generated indexes and support state either converge with canonical validation
-or roll back together.
+Resolve the portable delegate's source through an explicit path, `ALATYR_CORE`
+or ignored local configuration; never commit workstation-specific paths.
+Before claiming canonical coverage, apply the
+[adapter contract](framework/project-adapter-contract.md#adapter-must-provide):
+structured metadata and a direct, operation-specific invocation must agree.
+The shipped parser owns syntax. Complete only absent runtime bindings; never
+repair supplied arguments. Keep exact long-option names, disabled abbreviations
+on root and subparsers, single-value cardinality and authorization constraints.
+Test parser parity and stricter contract rules separately.
+After installation or update, prefer the transactional support finalizer:
+indexes and support state must converge with canonical validation or roll back.
 
 ### Working In An Installed Target Project
 
@@ -126,29 +115,24 @@ completion. Persist conclusions and evidence, never private chain-of-thought.
 
 If the user asks to install AlatyrCore:
 
-1. Treat `AGENTS.md` as host-preloaded context.
-2. Read `installer/context-router.json` and select the current stage.
-3. Inspect the target repository before writing files.
-4. Record a typed discovery receipt for observed metadata, bounded source
-   evidence, unknowns, and every material finding's disposition. The optional
-   `python3 tools/alatyr.py inspect-target` helper is read-only unless an
-   explicit report output is authorized; it does not infer project authority.
-5. Load only stage-required canonical owners and selected target templates.
-6. Identify existing AI instructions, project documentation, code-documentation
-   conventions, validation,
-   ownership, generated files, diagrams, and protected surfaces.
-7. Create and review an installation plan before protected changes.
-8. Use `framework/file-inventory.json` for deterministic file and hash
-   comparison without loading unchanged framework prose.
-9. Rewrite target adapter facts from target evidence. Keep observations,
-   proposals, accepted authority, freshness, and known gaps distinct.
-10. Use `templates/target` only as placeholders.
-11. Run only validation that exists in the target or the explicitly selected
-    source tooling. Do not invent commands. When available, use the portable
-    delegate and transactional support finalizer before final acceptance.
-12. Report created or changed surfaces, discovery dispositions, approvals,
-    validation, unresolved
-    checks, and residual risk.
+1. Treat `AGENTS.md` as host-preloaded. Select the current stage from
+   `installer/context-router.json`. Load only stage-required canonical owners
+   and selected target templates.
+2. Inspect target AI instructions, documentation and comment conventions,
+   validation, ownership, generated files, diagrams and protected surfaces.
+   Record metadata, bounded evidence, unknowns and each material finding's
+   disposition in a typed discovery receipt. Optional
+   `python3 tools/alatyr.py inspect-target` is read-only except an authorized
+   report output; it cannot infer project authority.
+3. Review the installation plan before protected changes. Compare files and
+   hashes through `framework/file-inventory.json` without loading unchanged prose.
+4. Rewrite `templates/target` placeholders from target evidence. Keep observations,
+   proposals, accepted authority, freshness and known gaps distinct.
+5. Run existing target validation or explicitly selected source tooling only;
+   never invent commands. Use the portable delegate and transactional support
+   finalizer when available before final acceptance.
+6. Report changed surfaces, discovery dispositions, approvals, validation,
+   skipped checks and residual risk.
 
 Optional scaffolding creates structure only. It does not inspect project truth,
 complete adaptation, grant approval, or prove that the installed adapter is
@@ -326,10 +310,9 @@ child, retry, context, raw-result, and primary-summary budgets, records
 semantic-overlap decisions, and stops or cancels branches when required
 evidence is complete or coordination no longer pays for itself.
 
-This strategy applies equally to every surface in the canonical conformance
-registry. `Subagent` is a portable role: the selected surface may use native
-workers, an approved external dispatcher, suggestion-only packet handoff, or
-primary execution as recorded by exact-client target evidence.
+Apply this strategy to every canonical conformance surface. Exact-client target
+evidence selects native workers, an approved external dispatcher,
+suggestion-only packet handoff or primary execution; `subagent` is a portable role.
 
 Create assistant-native worker definitions only after the exact target client
 confirms project definition support. Keep each definition as a thin binding to
@@ -346,10 +329,10 @@ accepted coordinator summaries enter routine primary context; descendant raw
 results remain referenced for conflict or audit expansion. A provider-native
 worker summary is input evidence, not operation completion.
 
-Do not assume a model can be selected because its name is known. Use a target-
-verified role/model binding and current client evidence, then fall back to
-primary execution or a stronger verified model when subagents, model override,
-parallelism, or actual-model reporting is unsupported or stale.
+Known model names do not prove selection support. Require a target-verified
+role/model binding and current client evidence. If workers, model override,
+parallelism or actual-model reporting are unsupported or stale, use primary
+execution or a stronger verified model.
 
 When AlatyrCore itself is the active project contour, follow the lazy source
 route in `AGENTS.md`, `tools/source_worker_policy.json`, and

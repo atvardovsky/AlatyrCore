@@ -25,6 +25,8 @@ from render_installed_context_catalogs import expected_outputs  # noqa: E402
 from scaffold_target_structure import plan as scaffold_plan  # noqa: E402
 from target_adapter_validation.harness_scenarios.common import validator, write_json  # noqa: E402
 from validate_target_adapter import Validator, main as validator_main, parse_manifest  # noqa: E402
+from source_state import source_snapshot  # noqa: E402
+from conformance_artifacts import ARTIFACT_ROOT_ENV, materialize_support_profile, publish_support_profile  # noqa: E402
 import yaml  # noqa: E402
 
 
@@ -266,14 +268,20 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
             self.assertTrue(any(f.level == "error" for f in self.findings("team_collaboration")))
 
     def test_malformed_vocabulary_lists_and_link_identities_produce_findings(self):
+        path = self.target / LINKS
+        pristine = path.read_bytes()
+        before = source_snapshot(self.target)
         for field in ("id", "term_id"):
             for value in (None, {}, [], True, 1, "{ID}", "unknown"):
                 with self.subTest(field=field, value=value):
-                    links = read_json(self.target, LINKS)
+                    links = json.loads(pristine)
                     links["links"][0][field] = value
                     write_json(self.target / LINKS, links)
-                    self.assertIn("VOCABULARY_LINK_UNRESOLVED", [f.code for f in self.findings("project_vocabulary")])
-                    configure_records(self.target)
+                    try:
+                        self.assertIn("VOCABULARY_LINK_UNRESOLVED", [f.code for f in self.findings("project_vocabulary")])
+                    finally:
+                        path.write_bytes(pristine)
+        self.assertEqual(source_snapshot(self.target), before)
         for source, key in (("catalog", "entries"), ("terms", "terms")):
             path = self.target / f".ai/project/vocabulary/{source}.json"
             original = read_json(self.target, str(path.relative_to(self.target)))
@@ -389,6 +397,41 @@ class AdapterRecordIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertTrue(json.loads(replay_report.read_bytes())["placeholder_validation"]["acceptance_eligible"])
         self.assertEqual(report.read_bytes(), failed_report)
+
+    def test_existing_target_cache_merge_is_rejected_during_public_validation(self):
+        bindings, _ = self.accepted_bindings()
+        source = self.target.parent / "cache-source"
+        observed = self.target / ".ai/assistant/approvals"
+        cached_approvals = source / ".ai/assistant/approvals"
+        shutil.copytree(observed, cached_approvals)
+        old = observed.stat().st_mtime_ns - 4_000_000_000
+        os.utime(cached_approvals, ns=(old, old))
+        report = self.target.parent / "cache-merge-rejected.json"
+        original = Validator.check_migration_diff_evidence
+        before = source_snapshot(self.target)
+        attempts = []
+
+        def attempt_merge(check):
+            check.context.status(observed)
+            with self.assertRaisesRegex(ValueError, "destination already exists"):
+                materialize_support_profile("kernel", self.target)
+            attempts.append("rejected")
+            original(check)
+
+        arguments = ["validate_target_adapter.py", *bindings, "--validation-phase", "acceptance",
+                     "--validation-scope", "full", "--approval-archive-mode", "full",
+                     "--output", str(report)]
+        with patch.dict(os.environ, {ARTIFACT_ROOT_ENV: str(self.target.parent / "artifacts")}):
+            self.assertTrue(publish_support_profile("kernel", source))
+            with patch.object(sys, "argv", arguments), \
+                    patch.object(Validator, "check_migration_diff_evidence", attempt_merge), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(validator_main(), 0)
+        payload = json.loads(report.read_bytes())
+        self.assertEqual(attempts, ["rejected"])
+        self.assertTrue(payload["placeholder_validation"]["acceptance_eligible"])
+        self.assertFalse(any(row["code"] == "TARGET_INPUT_MUTATED" for row in payload["findings"]))
+        self.assertEqual(source_snapshot(self.target), before)
 
     def test_scoped_finalization_and_full_acceptance_reject_missing_owner(self):
         bindings, delegate = self.accepted_bindings()

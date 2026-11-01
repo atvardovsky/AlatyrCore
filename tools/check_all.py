@@ -32,6 +32,7 @@ from source_check_manifest import (
     load_manifest as load_source_check_manifest,
     matches,
     micro_routes,
+    release_evidence_required,
     routes,
 )
 from source_check_reuse import (
@@ -86,6 +87,8 @@ class SelectionResult:
     effective_profile: str
     escalated_from_micro: bool = False
     micro_escalation_reasons: list[str] | None = None
+    validation_stage: str = "acceptance"
+    deferred_check_ids: list[str] | None = None
 
 
 @dataclass
@@ -296,7 +299,12 @@ def select_check_plan(
     changed_from: str | None,
     *,
     platform: str | None = None,
+    validation_stage: str = "acceptance",
 ) -> SelectionResult:
+    if not isinstance(validation_stage, str) or validation_stage not in {"source", "acceptance"}:
+        raise ValueError("validation stage must be source or acceptance")
+    if validation_stage == "source" and profile != "full":
+        raise ValueError("source stage requires the full profile")
     selected_platform = platform or current_platform()
     changed: list[str] = []
     unmatched: list[str] = []
@@ -452,6 +460,14 @@ def select_check_plan(
                     for check_id in non_micro_dependencies
                 ],
             )
+    deferred = {
+        check_id for check_id in selected_ids
+        if validation_stage == "source" and release_evidence_required(by_id[check_id])
+    }
+    for check_id in selected_ids - deferred:
+        if set(by_id[check_id]["depends_on"]) & deferred:
+            raise ValueError(f"source stage check {check_id} depends on deferred release evidence")
+    selected_ids -= deferred
     selected = [
         _selected_check(
             check,
@@ -473,6 +489,8 @@ def select_check_plan(
         effective_profile=profile,
         escalated_from_micro=False,
         micro_escalation_reasons=[],
+        validation_stage=validation_stage,
+        deferred_check_ids=sorted(deferred),
     )
 
 
@@ -523,6 +541,7 @@ def selection_report(
     selected_ids = {check["id"] for check in plan.selected}
     acceptance_scope_complete = (
         profile in {"full", "release"}
+        and plan.validation_stage == "acceptance"
         and plan.effective_profile == profile
         and bool(expected_acceptance_ids)
         and selected_ids == expected_acceptance_ids
@@ -530,6 +549,8 @@ def selection_report(
     return {
         "profile": profile,
         "effective_profile": plan.effective_profile,
+        "validation_stage": plan.validation_stage,
+        "deferred_check_ids": plan.deferred_check_ids or [],
         "platform": plan.platform,
         "changed_from": changed_from,
         "changed_path_count": len(plan.changed_paths),
@@ -572,6 +593,8 @@ def build_run_identity(
         "contract": RUN_IDENTITY_CONTRACT,
         "requested_profile": requested_profile,
         "effective_profile": selection.get("effective_profile", requested_profile),
+        "validation_stage": selection.get("validation_stage", "acceptance"),
+        "deferred_check_ids": selection.get("deferred_check_ids", []),
         "platform": selection.get("platform"),
         "jobs": jobs,
         "selected_check_ids": selection.get("selected_check_ids", []),
@@ -969,6 +992,8 @@ def render_report(
     resolved_selection = selection or {
         "profile": profile,
         "effective_profile": profile,
+        "validation_stage": "acceptance",
+        "deferred_check_ids": [],
         "platform": current_platform(),
         "changed_from": None,
         "changed_path_count": 0,
@@ -991,6 +1016,8 @@ def render_report(
         "contract": RUN_IDENTITY_CONTRACT,
         "requested_profile": profile,
         "effective_profile": resolved_selection.get("effective_profile", profile),
+        "validation_stage": resolved_selection.get("validation_stage", "acceptance"),
+        "deferred_check_ids": resolved_selection.get("deferred_check_ids", []),
         "platform": resolved_selection.get("platform"),
         "jobs": None,
         "selected_check_ids": resolved_selection.get("selected_check_ids", []),
@@ -1166,6 +1193,7 @@ def render_report(
     ]
     acceptance_scope_complete = (
         resolved_selection.get("acceptance_scope_complete") is True
+        and resolved_selection.get("validation_stage", "acceptance") == "acceptance"
     )
     acceptance_eligible = (
         successful and not reused_check_ids and acceptance_scope_complete
@@ -1180,6 +1208,9 @@ def render_report(
         acceptance_limitation = (
             "reused local results are optimization evidence, not cold release evidence"
         )
+    elif resolved_selection.get("validation_stage") == "source":
+        acceptance_reason = "source-stage-preflight"
+        acceptance_limitation = "source checks precede release evidence; final cold full validation remains required"
     elif not acceptance_scope_complete:
         acceptance_reason = "profile-not-acceptance-capable"
         acceptance_limitation = (
@@ -1826,6 +1857,8 @@ def finalize_run(run: CompletedSourceCheckRun) -> int:
     profile_label = run.args.profile
     if run.plan.effective_profile != run.args.profile:
         profile_label = f"{run.args.profile} (effective {run.plan.effective_profile})"
+    if run.plan.validation_stage == "source":
+        profile_label += " (source stage; not acceptance evidence)"
     reused_count = sum(
         run.telemetry.get(check["id"], {}).get("reused") is True
         for check in run.selected
@@ -1844,6 +1877,11 @@ def finalize_run(run: CompletedSourceCheckRun) -> int:
 def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", choices=sorted(ALLOWED_PROFILES), default="full")
+    parser.add_argument(
+        "--stage", dest="validation_stage", choices=("acceptance", "source"),
+        default="acceptance",
+        help="With full, source runs non-release checks before preparing release evidence; it cannot grant acceptance.",
+    )
     parser.add_argument(
         "--changed-from",
         help=(
@@ -1911,6 +1949,11 @@ def main() -> int:
         parser.error("--all-fast is only valid with --profile fast")
     if args.all_fast and args.changed_from:
         parser.error("--all-fast cannot be combined with --changed-from")
+    if args.validation_stage == "source":
+        if args.profile != "full":
+            parser.error("--stage source requires --profile full")
+        if args.reuse_report is not None or args.cache_mode == "local":
+            parser.error("result reuse is not permitted for source-stage validation")
     if args.profile == "release" and args.reuse_report is not None:
         parser.error("--reuse-report is not permitted for release validation")
     if args.profile == "release" and args.cache_mode == "local":
@@ -1924,7 +1967,8 @@ def main() -> int:
             args.profile, args.changed_from, all_fast=args.all_fast
         )
         baseline = effective_baseline(args.profile, changed_from, args.from_ref)
-        plan = select_check_plan(checks, args.profile, changed_from)
+        plan = select_check_plan(checks, args.profile, changed_from,
+                                 validation_stage=args.validation_stage)
         selected = [{**check, "_verbose": args.verbose} for check in plan.selected]
         commands = [resolved_command(check, baseline) for check in selected]
         commands_by_id = {

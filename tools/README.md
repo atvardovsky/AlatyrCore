@@ -672,6 +672,12 @@ baseline from `origin/main` when available, otherwise `HEAD`. With
 small invariant set always runs; unmatched paths retain the conservative
 full-suite fallback. Use `fast --all-fast` only when intentionally running the
 whole fast profile without changed-path selection.
+
+For release preparation, `--profile full --stage source` is a cold,
+non-acceptance stage that defers only manifest entries marked
+`requires_release_evidence`. Follow [staged source validation](../docs/source-validation-stages.md)
+before the final default full gate; source-stage success alone is not acceptance.
+
 `tools/alatyr.py plan-work --summary` is the cheapest first pass for source
 changes. It reports the effective profile, selected checks, heavy checks,
 micro escalation reasons, the selected source context packet, decomposition,
@@ -834,9 +840,14 @@ their complete captured output, while failures always retain complete output.
 The top-level runner owns concurrency. It assigns each process a bounded
 `ALATYR_CHILD_CAPACITY`; lifecycle, scaffold-conformance, and source-unit checks
 may use only that reservation for isolated child processes. This avoids nested
-CPU oversubscription. Child output is collected in declaration order, lifecycle
+CPU oversubscription. Results retain declaration order; lifecycle
 and scaffold scenarios use private temporary repositories, and unit-test shards
 must cover every selected test file exactly once before execution begins.
+Unit logs flush each planned shard and its completed outcome, while returned
+results remain declaration-ordered. Missing, duplicate or malformed results
+cannot establish success. The unit suite has a finite 600-second outer watchdog;
+other checks retain their manifest limits. Child processes keep the inherited
+group so a suite timeout still terminates the whole checker tree.
 For an explicit portable regression subset, use
 `python3 tools/check_source_unit_tests.py --test-module tests.test_yaml_support
 tests.test_parallel_execution`. This exact module list bypasses changed-path

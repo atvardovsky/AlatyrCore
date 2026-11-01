@@ -1,8 +1,7 @@
 # Repository AI Adapter Contour
 
-This contour describes how assistants operate in `{PROJECT_NAME}`.
-
-Replace placeholders with target facts before accepting installation.
+Replace placeholders with target facts for `{PROJECT_NAME}` before accepting
+installation.
 
 ## Owns
 
@@ -58,15 +57,13 @@ Replace placeholders with target facts before accepting installation.
 - diagram discussion routing and presentation mechanics when the diagrams
   module is enabled; project diagram facts and accepted source ownership remain
   in the project contour
-- team operation mechanics, work registry projection, claims, conflict checks,
-  checkpoints, handoffs, decision capture, team review, and revision-bound
-  merge-readiness evidence when the optional module is enabled; project-owned
-  actors, authority, priorities, and accepted decisions remain in the project
-  contour
-- ignored current-actor selection, compact active-work preflight, per-task
-  record mechanics, optimistic concurrency, and coordination-backend contracts
-  when team collaboration is enabled; local selection is attribution, not
-  authentication or authority
+- when team collaboration is enabled: team operation mechanics, work registry
+  projection, claims, conflict checks, checkpoints, handoffs, decision capture,
+  team review, revision-bound merge-readiness evidence, ignored current-actor
+  selection, compact active-work preflight, per-task records, optimistic
+  concurrency and coordination-backend contracts. Actors, authority, priorities
+  and accepted decisions remain project-owned. Local selection is attribution,
+  not authentication or authority
 - documentation-sync rules
 - code-documentation intent routing, accepted-profile selection, adapted skill,
   generator execution, and derived-output evidence when the optional module is
@@ -109,5 +106,5 @@ Replace placeholders with target facts before accepting installation.
 
 ## Relationship To Framework Core
 
-`.ai/framework` defines portable Alatyr Core rules. This adapter applies those
-rules to `{PROJECT_NAME}` using target facts and validation.
+Apply portable Alatyr Core rules from `.ai/framework` to `{PROJECT_NAME}` using
+target facts and validation.

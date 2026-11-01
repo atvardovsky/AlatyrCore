@@ -1,10 +1,7 @@
 # Installing Alatyr Core With An Assistant
 
-Alatyr Core is installed by assistant reasoning, not by an installer script.
-
-The assistant receives this repository, reads the framework and installer
-documents, inspects the target repository, writes an installation plan, and
-then adapts the framework into the target.
+The assistant inspects the target, plans the installation and adapts Alatyr
+from repository evidence. An installer script cannot make those decisions.
 
 ## Source Bootstrap
 
@@ -129,6 +126,10 @@ Prepare an installation plan using
 of `installer/installation-plan-template.md` when enabled optional capabilities
 or unresolved target evidence require their detailed questions.
 
+The core template owns required plan fields. For selected capabilities, load
+their detailed plan sections and catalog-named canonical owners before adapting
+files; the scope index below does not replace those contracts.
+
 The plan must identify:
 
 - target repository profile
@@ -169,33 +170,22 @@ The plan must identify:
   storage, conflict, handoff, decision, review, retention, and privacy needs
 - minimal baseline needs and optional modules justified by target evidence or
   the user request
-- optional Debug Mode need, owner, explicit task/session activation and expiry,
-  non-canonical storage, privacy/retention, versioned actor/causality/
-  intervention/contribution attribution, executor versus Alatyr-system roles,
-  target-local actor identity, runtime provenance, correction disposition,
-  known-guidance routing/compliance evidence, structured
-  architectural impacts, direction-change hypothesis/replacement causality,
-  lifecycle-bounded timing evidence, immutable completion and continuation
-  lineage, supervision metrics, typed evidence-event roles, complete
-  materiality evaluation, canonical skip preservation, claim-validation
-  fidelity, exact durable engineering-evidence decision/reference resolution,
-  repository-binding state/lineage, active-versus-finalized comparison, and
-  clean-upstream projection policy
+- optional Debug Mode need, owner, explicit task/session activation, expiry,
+  non-canonical storage and privacy. Plan attribution, causality, lifecycle,
+  materiality, claim-validation and durable-evidence bindings through the
+  selected detailed template and canonical Debug Mode contract
 - source-of-truth registry needs
-- Project Development Model guidance owner and decision authority, direct
-  decision-owner intake and engineering-discovery review, guidance kinds,
-  canonical-owner/freshness bindings, target-owned narrowing and exception
-  semantics, subsystem and architecture selectors, mapped/known-gap/unknown
-  coverage, compact packet limits, contradiction/supersession,
-  retention/redaction, and paired reuse evidence needs
+- Project Development Model guidance owner and authority, intake and review,
+  canonical-owner/freshness bindings, narrowing and exceptions, selectors,
+  coverage, packet limits, contradictions, supersession, retention, redaction
+  and paired reuse evidence
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
 - optional architecture-knowledge owner, compact catalog, pattern/area docs,
   evidence revision, decision authority, and validation needs
-- optional code-documentation owner, bounded source-set profiles, existing
-  frontend/backend/shared/infrastructure conventions, style proposal and
-  acceptance evidence, canonical fact-owner boundaries, generator,
-  output/publication policy, validation, and adapted skill needs
+- optional code-documentation owner, bounded source-set conventions and
+  profiles, style acceptance, fact ownership, generator, output/publication
+  policy, validation and adapted skill
 - optional project-vocabulary owner, decision authority, compact catalog,
   scoped term records, aliases, acronyms, ambiguity, normalization policy,
   data-dictionary links, validation, and adapted skill needs
@@ -205,10 +195,9 @@ The plan must identify:
 - optional extensions need, owner, source-access policy, catalog and lock,
   immutable source and digest evidence, compatibility, target bindings,
   permissions, approval, installed-file ownership, update, and removal needs
-- optional dependency-knowledge need, owner, selected package ecosystems and
-  lockfiles, native export discovery, exact artifact identity, trust and
-  semantic state, target deviations, retention, bounded graph routing,
-  synchronization, explanation, impact, and validation needs
+- optional dependency-knowledge need, owner, ecosystems and lockfiles, native
+  exports, exact artifact identity, trust, semantic state, deviations,
+  retention, bounded routing, synchronization, explanation, impact and validation
 - optional workspace-mode need, workspace identity, active adapter, proposed
   application/framework/library/skeleton/dependency/workspace perspectives,
   shared root support, per-mode context, user decision authority, selection
@@ -223,10 +212,8 @@ The plan must identify:
   enabled-module expansion that the smallest matching pack does not cover
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
-- Debug Mode index/record, overlay, operation, flow, gate, summary, target
-  validator, structured classification, lifecycle, materiality, claim fidelity,
-  canonical preservation and durable evidence reference checks, and post-
-  install/update guidance needs when the module is selected
+- selected Debug Mode surfaces and checks from the canonical capability
+  closure, including post-install/update guidance
 - AI infrastructure router/item, recommendation, and adaptation-record needs
 - target development-evidence index, owner, retention/privacy policy, and lazy
   capture needs when recommendations should learn from recurring project work
@@ -510,32 +497,27 @@ Mode activation/status/finalization/comparison. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
-The post-install chat handoff must tell the next assistant to load the compact
-bootstrap, use its resolved semantic preload, and navigate the recursive
-contour indexes rather than loading support directories. The reusable
-post-install template is optional; the operation handoff is not. The
-post-update chat handoff must additionally name rebuilt index/codebook surfaces
-and unresolved fallbacks or stale entries.
+Always deliver a chat handoff: name the compact bootstrap, resolved semantic
+preload and recursive contour navigation, not support-directory loading.
+Post-update handoffs also name rebuilt index/codebook surfaces and unresolved
+fallbacks or stale entries. Reusable message templates are optional; delivery
+is not.
 
-If the programmer asks for help, commands, or an unclear Alatyr action, the
-assistant should show the installed operation menu from the target adapter
-instead of guessing or inventing a CLI command.
+For help, command questions or unclear actions, show the target's installed
+operation menu; never invent a CLI command.
 
-The target should accept `Alatyr` as one conversational entry point,
-`Alatyr status` or `Alatyr doctor` as a read-only health request, and ordinary
-clear development requests without requiring an operation ID. Route exact IDs
-and aliases from the compact operation index; use the full machine-readable
-catalog and module profile only for ambiguity or repair. Show a bounded
-pre-change preview only when changed-fact risk, protected scope, boundary
-crossing, external effects, or unclear allowed actions require it; a preview
-does not grant approval.
+Accept `Alatyr` as the conversational entry, `Alatyr status` or `Alatyr doctor`
+as read-only health requests, and clear ordinary requests without an operation
+ID. Resolve exact IDs and aliases through the compact operation index; load
+the full catalog and module profile only for ambiguity or repair. Preview
+changes only for changed-fact risk, protected scope, boundary crossing,
+external effects or unclear allowed actions. A preview grants no approval.
 
-When workspace modes are enabled, aliases such as `Alatyr modes`, `Alatyr
-suggest modes`, `Alatyr mode <id>`, `Alatyr define mode`, and `Alatyr accept
-mode <id>` route through the canonical workspace-mode operation. Suggestions
-remain proposed. A selected mode can narrow context and actions but cannot
-activate nested adapters or grant approval, write scope, permissions,
-authority, tools, or gate bypass.
+When workspace modes are enabled, route `Alatyr modes`, `Alatyr suggest modes`,
+`Alatyr mode <id>`, `Alatyr define mode` and `Alatyr accept mode <id>` through
+the workspace-mode operation. Suggestions stay proposed. Modes may narrow
+context and actions, never activate nested adapters or grant approval, write
+scope, permissions, authority, tools or gate bypass.
 
 When Debug Mode is enabled, `Enable Alatyr Debug Mode for this task` starts one
 explicit task-local record; `Alatyr debug status`, `Alatyr debug checkpoint`,
@@ -552,22 +534,19 @@ analysis record.
 Optional [lifecycle hooks](docs/assistant-lifecycle-hooks.md) require separate
 adoption; preserve definitions, trust and disabled state during updates.
 
-When the target enables subagent delegation, the assistant may keep its
-critical-path action and dispatch bounded independent sidecars under the target
-policy. Installation must record per-surface capability freshness, role/model
-bindings, exact client/runtime, explicit/automatic dispatch, project worker-
-definition format and paths, write and tool limits, background/nested behavior,
-execution-tree ledger, aggregate worker/context/result/summary/retry budgets,
-semantic overlap decisions, cancellation stop reasons, retry/conflict fallback,
-privacy, validation, and primary convergence. The primary owns branch
-authorization. A verified coordinator may dispatch read-only depth-two
-children only inside its hash-bound branch envelope and must return a measured,
-hash-bound summary checkpoint. The primary rechecks current authorization
-before integration, commit, publication, or live effects. Create provider-
-native worker definitions only for a verified supported target surface. Keep
-them as thin bindings to the target-owned policy, role prompt, packet, machine
-result, branch envelope/checkpoint, execution tree, and validation. An unavailable requested model falls back; it
-is never silently reported as used.
+When delegation is enabled, keep the critical path primary-owned and dispatch
+bounded independent sidecars under target policy. Record per-surface freshness,
+role/model bindings, exact client/runtime, dispatch mode, worker-definition
+format and paths, write/tool limits, background/nested behavior, execution
+tree, cumulative worker/context/result/summary/retry budgets, overlap,
+cancellation, fallback, privacy, validation and primary convergence.
+Only a verified coordinator inside a hash-bound branch envelope may dispatch
+read-only depth-two children; it returns a measured, hash-bound summary
+checkpoint. Branch authorization stays primary-owned and is rechecked before
+integration, commit, publication or live effects. Native definitions require
+verified surface support and remain thin bindings to target policy, role,
+packet, machine result, envelope/checkpoint, tree and validation. Fall back
+from unavailable models; never report an unobserved model as used.
 
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
 equivalent target-language requests route to `diagram-discussion`. Installation
@@ -621,9 +600,8 @@ The AlatyrCore source repository may include helper tools such as
 `tools/scaffold_target_structure.py`. Use them only as optional scaffolding
 for placeholder files.
 
-The scaffolder is Python-based and can be run on Linux, macOS, and Windows.
-Windows users may use the provided Command Prompt or PowerShell wrappers under
-`tools/`.
+The Python scaffolder supports Linux, macOS and Windows. Windows users may use
+the Command Prompt or PowerShell wrappers under `tools/`.
 
 Writable scaffolding preflights the complete resolved composition before the
 first file change. A known overwrite or shared-surface conflict blocks the
@@ -637,17 +615,10 @@ pack and explicitly selected native bridges (`full`) are required. Optional
 modules remain opt-in in every target profile; exhaustive template projection
 is reserved for isolated source conformance fixtures.
 
-The selected support profile and compatible framework pack must be recorded in
-`.ai/alatyr.yaml`. Scaffold projection must remove manifest, router, operation,
-capability, and framework-rule claims for omitted optional surfaces; a smaller
-profile or pack is not a complete installation with unexplained missing files.
-Use `kernel` when the target only needs low-cost bootstrap, routing,
-authorization, integrity, generated entry packet, support-state, and
-final-evidence support. Use `core` when the target also needs durable
-engineering evidence and project-knowledge delivery. Use `standard` for
-common lifecycle/product operations and `full` only when the complete portable
-framework pack is justified. Do not treat `full` as permission to install or
-enable every optional module.
+Record the selected support profile and compatible framework pack in
+`.ai/alatyr.yaml`. Remove manifest, router, operation, capability and rule
+claims for omitted surfaces; do not label unexplained missing files a smaller
+installation. `full` never authorizes every optional module.
 Use repeatable `--enable-module <capability-id>` options to stage only reviewed
 capabilities and their dependency closure. The scaffolder raises the matched
 framework pack when a selected capability requires a broader canonical owner.
@@ -790,23 +761,17 @@ The changed validation scope is a bounded development-loop check and cannot
 produce final acceptance evidence. Always rerun the default full scope before
 accepting an installation or update.
 
-Installed adapters declare their target-local entry points in
-`.ai/assistant/validation-contract.json`. The contract separates adapter
-health, current-change validation, and complete archive audit and states
-whether each entry point delegates to canonical validation, provides a
-target-equivalent check, checks structure only, or remains manual. A local
-checker pass must not be presented as canonical acceptance without that
-binding and its result evidence. Canonical coverage requires a direct portable
-delegate invocation, the entrypoint-specific delegate operation, one target-
-root binding, arguments accepted by the shipped delegate parser, and an
-installed delegate semantically matching the shipped implementation. A
-command that only mentions the delegate path or selects another operation is
-not canonical delegation. Validation may complete required runtime bindings
-missing from a command prefix, but must not repair malformed supplied
-arguments or replace the canonical parser with parallel syntax logic. The
-delegate accepts only exact long-option names; abbreviations cannot replace or
-duplicate canonical bindings. Parser-parity checks and stricter contract-rule
-checks are independent proof obligations.
+Declare target-local entry points in `.ai/assistant/validation-contract.json`:
+adapter health, current-change validation and complete archive audit. Classify
+coverage as canonical delegation, target-equivalent, structural-only or manual.
+Require the binding and result evidence before claiming canonical acceptance.
+The [adapter contract](framework/project-adapter-contract.md#adapter-must-provide)
+owns delegate requirements: a direct invocation, correct operation, one target
+root, shipped-parser-compatible arguments and matching executable semantics.
+A path mention or different operation is not delegation. Complete only absent
+runtime bindings in prefixes; never repair supplied arguments or invent a
+parallel parser. Exact long-option spelling prevents abbreviated replacement
+or duplication. Verify parser parity and stricter contract rules independently.
 
 Large approval histories may be stored under monthly archive directories. The
 archive index lets routine changed-scope validation verify unchanged shards by

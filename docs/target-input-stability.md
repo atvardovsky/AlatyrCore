@@ -77,6 +77,52 @@ regressions also run in the existing Windows/macOS workflow steps.
 
 ## Recurrence Investigation
 
+### Confirmed Cache Writer Boundary
+
+A controlled source-tool reproduction identified a separate unsafe writer:
+`conformance_artifacts.materialize_support_profile` could merge cached scaffold
+content into an existing target. `copytree` restored older directory timestamps
+even when file bytes matched. This reproduces the reported *mechanism*, not the
+original alpha.112/115 incidents; their cache use and writer remain unproved.
+
+Run-local cache materialization now requires unpublished destinations: every
+artifact-owned top-level path must be absent before copying. Existing files,
+directories and dangling links fail before any copy. Direct and recursive file
+copies share exclusive creation: an entry arriving before a destination file
+is opened makes the operation fail rather than overwrite, follow a destination
+link, or copy into a peer directory. Source/artifact/destination overlap is
+rejected. Fresh private fixtures retain cache reuse, while normal target
+validation performs no extra work. This is not a lock against arbitrary
+writers, protection against parent/path replacement after creation, or an
+atomic transaction for a shared target. Failure may leave partial private
+output; it is neither a successful scaffold nor an installed adapter. Do not
+delete peer entries as cleanup or publish an interrupted copy.
+
+The new regression first failed on the backwards timestamp itself. Companion
+tests cover collisions, overlap and the public validator rejecting the cache
+write attempt without input changes. Existing real-mutation negatives remain
+blocking. No framework, schema, template or installation behavior changed.
+
+### Recursive Copy Regression
+
+The follow-up reproduction exposed a depth-dependent repair: top-level files
+used exclusive creation, but `copytree` still used an overwriting file copier.
+The earlier late-collision test exercised only the direct path. Its success
+could not establish the stated recursive no-overwrite invariant.
+
+One file writer now owns that invariant at every depth. Regression tests
+introduce files, directories, links and dangling links immediately after parent
+creation at three nested depths. They require an exception instead of a copied
+count and preserve peer contents and entry timestamps. Positive tests compare
+fresh file/directory content, mode and timestamps across direct and recursive
+copies. Keep these invariant-level tests alongside the existing top-level,
+overlap, backwards-timestamp and canonical input-mutation negatives; a passing
+single-path test is not evidence for another writer's behavior. The replacement
+copier also rejects nonregular sources before opening their streams; a FIFO
+regression preserves the old copier's failure instead of introducing a hang.
+
+### Field Attribution Still Required
+
 Retain the first failed report, command and timing before an explicit replay.
 Compare metadata and entry fingerprints independently from file hashes. Pause
 known writers or use a frozen disposable copy, keeping reports outside the

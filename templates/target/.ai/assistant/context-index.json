@@ -171,8 +171,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 699,
-      "content_digest": "sha256:72a4f49772ac9b208711cd111252a933310582b098c017cd31ee4f4e0cd9551f"
+      "estimated_words": 676,
+      "content_digest": "sha256:e5925b7189a6e16aaf8c8c08240bb73aab568e04f90212c3af5825338dfee8db"
     },
     {
       "id": "assistant.content.delegation-policy-json",
@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1304,
-      "content_digest": "sha256:e1189c408ed9ff08e158cd9f20f68440ece410ea1c3737d12db0482a8db25410"
+      "content_digest": "sha256:af8a3533b41b58510f6938ed9c81405f89ef94730d6d23f9525d911e4a70952b"
     },
     {
       "id": "assistant.section.gates",
@@ -568,7 +568,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 825,
-      "content_digest": "sha256:3d7a25bf67fe6962cf4dcd8bf0bbea739d91ee5253b54b77ffc76551b82d3d04"
+      "content_digest": "sha256:a4d0b5116020c06f2d13c3afa436c2a71cf4d79931d969d6b366a768d365fed2"
     },
     {
       "id": "assistant.section.policies",

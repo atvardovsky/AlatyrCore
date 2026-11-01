@@ -59,6 +59,161 @@ def check(check_id: str, *dependencies: str) -> dict[str, Any]:
 
 
 class CheckGraphTests(unittest.TestCase):
+    def test_source_stage_defers_only_explicit_release_checks(self) -> None:
+        ordinary = {**check("ordinary"), "profiles": ["full"], "platforms": ["all"]}
+        change = {**check("change"), "profiles": ["full", "change"], "platforms": ["all"]}
+        release = {**check("release"), "profiles": ["full", "release"], "platforms": ["all"],
+                   "requires_release_evidence": True}
+        version = {**check("version"), "profiles": ["full", "release"], "platforms": ["all"]}
+        checks = [ordinary, change, version, release]
+        source = select_check_plan(checks, "full", None, platform="linux", validation_stage="source")
+        self.assertEqual([item["id"] for item in source.selected], ["ordinary", "change", "version"])
+        self.assertEqual(source.deferred_check_ids, ["release"])
+        report = selection_report(profile="full", changed_from=None, plan=source, manifest_checks=checks)
+        self.assertFalse(report["acceptance_scope_complete"])
+        self.assertEqual(report["validation_stage"], "source")
+        complete = select_check_plan(checks, "full", None, platform="linux")
+        self.assertEqual([item["id"] for item in complete.selected], ["ordinary", "change", "version", "release"])
+        self.assertTrue(selection_report(profile="full", changed_from=None, plan=complete,
+                                         manifest_checks=checks)["acceptance_scope_complete"])
+
+    def test_source_stage_rejects_release_dependencies_and_invalid_stage_values(self) -> None:
+        ordinary = {**check("ordinary", "release"), "profiles": ["full"], "platforms": ["all"]}
+        release = {**check("release"), "profiles": ["full", "release"], "platforms": ["all"],
+                   "requires_release_evidence": True}
+        with self.assertRaisesRegex(ValueError, "depends on deferred release"):
+            select_check_plan([ordinary, release], "full", None, validation_stage="source")
+        for value in (None, {}, [], True, 1, "invalid"):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "validation stage"):
+                select_check_plan([release], "full", None, validation_stage=value)
+        with self.assertRaisesRegex(ValueError, "requires the full profile"):
+            select_check_plan([release], "release", None, validation_stage="source")
+
+    def test_source_stage_cannot_be_promoted_by_a_complete_scope_claim(self) -> None:
+        item = check("one")
+        selection = {"effective_profile": "full", "validation_stage": "source",
+                     "acceptance_scope_complete": True, "selected_check_ids": ["one"]}
+        report = render_report(profile="full", selected=[item],
+                               results={"one": (0, "", "", ["python", "one.py"])},
+                               blocked={}, source_changes=[], selection=selection,
+                               source={}, environment={})
+        self.assertFalse(report["acceptance_evidence"]["eligible"])
+        self.assertEqual(report["acceptance_evidence"]["reason"], "source-stage-preflight")
+        one = build_run_identity(requested_profile="full", selection=selection,
+                                 changed_from=None, baseline=None, source={})
+        two = build_run_identity(requested_profile="full", selection={**selection, "validation_stage": "acceptance"},
+                                 changed_from=None, baseline=None, source={})
+        self.assertNotEqual(one, two)
+
+    def test_source_stage_cli_is_cold_only_and_default_full_is_unchanged(self) -> None:
+        import check_all as checker
+        from unittest.mock import patch
+        for arguments in (["--profile", "release", "--stage", "source"],
+                          ["--stage", "source", "--reuse-report", "missing.json"],
+                          ["--stage", "source", "--cache-mode", "local"]):
+            with self.subTest(arguments=arguments), \
+                    patch.object(sys, "argv", ["check_all", *arguments]), \
+                    patch.object(checker, "load_manifest", side_effect=AssertionError("must not execute")), \
+                    contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as exit:
+                checker.main()
+            self.assertEqual(exit.exception.code, 2)
+        import subprocess
+        command = [sys.executable, "-B", str(ROOT / "tools/check_all.py"), "--profile", "full",
+                   "--from-ref", "HEAD", "--changed-from", "HEAD", "--list"]
+        full = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=30)
+        source = subprocess.run([*command, "--stage", "source"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+        self.assertEqual(full.returncode, 0, full.stderr)
+        self.assertEqual(source.returncode, 0, source.stderr)
+        self.assertIn("--mode release", full.stdout)
+        self.assertNotIn("--mode release", source.stdout)
+        self.assertIn("--mode change", source.stdout)
+        self.assertEqual(len(full.stdout.splitlines()), len(source.stdout.splitlines()) + 1)
+
+    @unittest.skipUnless(sys.platform.startswith("linux"), "native PID-state checks use Linux procfs")
+    def test_outer_watchdog_contains_real_shards_and_parent_only_interruptions(self) -> None:
+        import os
+        import shutil
+        import signal
+        import subprocess
+        import check_all as checker
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tools").mkdir()
+            (root / "tests").mkdir()
+            (root / "tests/__init__.py").touch()
+            for name in ("check_source_unit_tests.py", "parallel_execution.py",
+                         "local_python_import_graph.py", "source_test_timing.py"):
+                shutil.copyfile(ROOT / "tools" / name, root / "tools" / name)
+            (root / "tests/test_fast.py").write_text(
+                "import unittest\nclass Fast(unittest.TestCase):\n def test_pass(self): pass\n")
+            for interrupted in (False, True):
+                with self.subTest(interrupted=interrupted):
+                    acknowledgements = []
+                    for number in (1, 2):
+                        ready = root / f"ready-{interrupted}-{number}"
+                        descendant = root / f"child-{interrupted}-{number}"
+                        acknowledgements.extend((ready, descendant))
+                        child = ("import os,time; from pathlib import Path; "
+                                 f"Path({str(descendant)!r}).write_text(str(os.getpid())); time.sleep(30)")
+                        (root / f"tests/test_slow{number}.py").write_text(
+                            "import os,subprocess,sys,time,unittest\nfrom pathlib import Path\n"
+                            "class Slow(unittest.TestCase):\n def test_wait(self):\n"
+                            f"  subprocess.Popen([sys.executable, '-c', {child!r}])\n"
+                            f"  Path({str(ready)!r}).write_text(str(os.getpid()))\n  time.sleep(30)\n")
+                    roots = []
+                    started, stop, signaled = threading.Event(), threading.Event(), threading.Event()
+                    original = subprocess.Popen
+                    def launch(*args, **kwargs):
+                        process = original(*args, **kwargs)
+                        roots.append(process)
+                        started.set()
+                        return process
+                    def interrupt():
+                        if started.wait(2):
+                            while not stop.wait(0.01):
+                                if all(path.is_file() for path in acknowledgements):
+                                    os.kill(roots[0].pid, signal.SIGINT)
+                                    signaled.set()
+                                    return
+                    monitor = threading.Thread(target=interrupt)
+                    if interrupted:
+                        monitor.start()
+                    item = check("timed-real-shards")
+                    item.update(command=[str(root / "tools/check_source_unit_tests.py")],
+                                timeout_seconds=2, _child_capacity=3)
+                    try:
+                        with patch.object(checker.subprocess, "Popen", side_effect=launch):
+                            result = run_check(item, None)
+                    finally:
+                        stop.set()
+                        if interrupted:
+                            monitor.join(3)
+                    self.assertTrue(all(path.is_file() for path in acknowledgements), result.result[2])
+                    self.assertNotEqual(result.result[0], 0)
+                    if not interrupted or result.timed_out:
+                        self.assertTrue(result.timed_out)
+                        self.assertEqual(result.result[0], 124)
+                    self.assertIn("PLAN:", result.result[1])
+                    self.assertNotIn("OK:", result.result[1])
+                    self.assertIsNotNone(roots[0].poll())
+                    if interrupted:
+                        self.assertTrue(signaled.is_set(), "parent-only SIGINT was not delivered")
+                        self.assertFalse(monitor.is_alive())
+                    for path in acknowledgements:
+                        pid = int(path.read_text())
+                        deadline = time.monotonic() + 1
+                        while True:
+                            try:
+                                state = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0]
+                            except FileNotFoundError:
+                                break
+                            if state in {"Z", "X"}:
+                                break
+                            if time.monotonic() > deadline:
+                                self.fail(f"recorded descendant {pid} is still running: {state}")
+                            time.sleep(0.01)
+
     def test_timing_cache_never_stores_reusable_check_results(self) -> None:
         class RecordingCache:
             def __init__(self) -> None:

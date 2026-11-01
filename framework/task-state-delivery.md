@@ -120,11 +120,11 @@ procedural fallback.
 ## Selected Document Warnings
 
 During consistency routing, exact selected documents also select their reviewed
-stale-document warnings. For profile-only document discussion, explicitly request
-`context-plan --document-warnings`; no fabricated changed paths are needed.
-Canonical graph, owner, structured-finding and digest checks remain required.
-Review inputs never recursively select other warnings or promote relationships.
-Unrelated default tasks do not perform this additional lookup.
+stale-document warnings. For profile-only discussion, explicitly request
+`context-plan --document-warnings`; do not fabricate changed paths.
+Retain canonical graph, owner, structured-finding and digest checks. Review inputs
+must neither recursively select other warnings nor promote relationships.
+Do not perform this additional lookup for unrelated default tasks.
 
 ## Independent Work Views
 

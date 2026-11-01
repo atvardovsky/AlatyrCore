@@ -147,13 +147,12 @@ Automatic routing should use this order:
 10. Route unsupported or disabled operations to help with the specific missing
    module or adapter fact.
 
-The assistant should state the selected operation and reason briefly before
-edits, but must not turn routine low-risk work into a form-filling exchange.
-Operation routing selects the process; it does not grant approval or broaden
-allowed actions. Allowed actions are a ceiling, not user authorization. Clear
-implementation intent may authorize repository edits for the current scope,
-but it does not authorize commit or publication. Commit does not authorize
-push. A previous scope's phase authorization is never carried forward.
+Before edits, briefly state the selected operation and reason without turning
+routine low-risk work into form-filling. Routing grants neither approval nor
+broader allowed actions; allowed actions are a ceiling, not authorization.
+Clear implementation intent may authorize current-scope edits, not commit or
+publication; commit does not authorize push. Never carry phase authorization
+from a previous scope.
 
 `update Alatyr` is clear implementation intent for the installed adapter. It
 authorizes `inspect` and target-adapter `modify` for that logical scope, but
@@ -185,16 +184,15 @@ finding details. The operation should inspect available target evidence for:
 - checker availability and the freshness of recorded validation evidence
 - approval-scope support and other enabled-module requirements
 
-Health must remain separate from adapter maturity. Health is a current
-structural state: `ready`, `attention`, `blocked`, or `unverified`. Maturity is
-task-specific capability. A health result must identify evidence time or
-commit when known, the validated installation state, acceptance eligibility,
-and checks run or unavailable. Doctor mode may include at most three
-prioritized repair operations. Neither mode may edit files, fetch sources,
-install dependencies, or silently repair findings.
+Keep health separate from task-specific maturity. Report current structural
+health as `ready`, `attention`, `blocked` or `unverified`, with evidence time
+or commit when known, validated installation state, acceptance eligibility and
+checks run or unavailable. Doctor may include at most three prioritized repair
+operations. Neither status nor doctor may edit files, fetch sources, install
+dependencies or silently repair findings.
 
-Each actionable finding should include severity, stable finding code, owning
-surface, evidence, proposed repair operation, approval need, and whether the
+For each actionable finding, report severity, stable finding code, owning
+surface, evidence, proposed repair operation, approval need and whether the
 target explicitly permits automatic repair.
 
 ## Pre-Change Preview

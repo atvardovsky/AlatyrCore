@@ -16,7 +16,15 @@ from source_state import source_snapshot
 
 
 class SourceProjectionRefreshTests(unittest.TestCase):
-    def fixture(self, root):
+    @classmethod
+    def setUpClass(cls):
+        directory = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(directory.cleanup)
+        cls.fixture_seed = Path(directory.name)
+        cls.initialize_fixture(cls.fixture_seed)
+
+    @staticmethod
+    def initialize_fixture(root):
         (root / "tools").mkdir()
         (root / "input.txt").write_text("new")
         (root / "docs").mkdir()
@@ -31,8 +39,32 @@ class SourceProjectionRefreshTests(unittest.TestCase):
         subprocess.run(["git", "init", "-q"], cwd=root, check=True)
         subprocess.run(["git", "add", "."], cwd=root, check=True)
         subprocess.run(["git", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-qm", "fixture"], cwd=root, check=True)
+
+    def fixture(self, root):
+        shutil.copytree(self.fixture_seed, root, dirs_exist_ok=True)
         return (Stage("b", ("a",), ("docs/b.txt",), ("b.py",), ("b.py", "--check"), check_first=True),
                 Stage("a", (), ("docs/a.txt",), ("a.py",), ("a.py", "--check"), check_first=True))
+
+    def test_seed_copies_do_not_share_content_modes_index_or_refs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            first, second = Path(directory) / "first", Path(directory) / "second"
+            self.fixture(first)
+            self.fixture(second)
+            before = source_snapshot(self.fixture_seed)
+            self.assertEqual(source_snapshot(first), before)
+            self.assertEqual(source_snapshot(second), before)
+            args = ["git", "for-each-ref", "--format=%(refname) %(objectname)"]
+            refs = subprocess.check_output(args, cwd=self.fixture_seed)
+            flags = subprocess.check_output(["git", "ls-files", "-v"], cwd=self.fixture_seed)
+            (first / "input.txt").write_text("isolated mutation")
+            if os.name != "nt":
+                (first / "input.txt").chmod((first / "input.txt").stat().st_mode ^ 0o100)
+            subprocess.run(["git", "update-index", "--assume-unchanged", "input.txt"], cwd=first, check=True)
+            subprocess.run(["git", "update-ref", "refs/fixture/isolated", "HEAD"], cwd=first, check=True)
+            for root in (self.fixture_seed, second):
+                self.assertEqual(source_snapshot(root), before)
+                self.assertEqual(subprocess.check_output(args, cwd=root), refs)
+                self.assertEqual(subprocess.check_output(["git", "ls-files", "-v"], cwd=root), flags)
 
     def test_dry_run_predicts_dependency_closure_and_second_apply_is_noop(self):
         with tempfile.TemporaryDirectory() as directory:

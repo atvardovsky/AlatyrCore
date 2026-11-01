@@ -392,13 +392,12 @@ target source files, commands, or policies.
 
 ## Markdown Relationship
 
-The router does not replace Markdown context profiles. It narrows the first
-routing decision. Load the human profile only when routing is ambiguous, the
-router and evidence conflict, or a missing entry must be repaired.
+Use the router to narrow the first routing decision, not replace Markdown
+context profiles. Load the human profile only for ambiguous routing, conflict
+between router and evidence, or missing-entry repair.
 
-When the router and Markdown profile disagree, the assistant should report
-adapter drift and use the human-readable context profile as the explanation
-surface until the target adapter repairs the conflict.
+If router and Markdown profile disagree, report adapter drift and use the
+human-readable profile for explanation until the target adapter repairs it.
 
 ## Safety
 

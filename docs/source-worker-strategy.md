@@ -19,18 +19,17 @@ the policy's independent read-only minimum, otherwise
 coordination cost; keeping eligible work local requires a policy reason and
 task evidence.
 
-The policy threshold is not a preferred fan-out. The primary
-owns the tree, ledger, branch authorization, decisions, and convergence.
-Candidate inventory may exceed simultaneous capacity: explicit selected work
-is planned in waves bounded by policy and verified runtime parallelism. Default
-selection remains the required minimum. Total, parent, context and retry limits
-remain cumulative; a wave boundary is not a new budget or permission grant.
-Read-only source workers normally return proposals. With verified nested
-transport, a depth-1 coordinator may dispatch depth-2 read-only children inside
-an unexpired hash-bound primary envelope. Enforce every worker, child, context,
-result, summary, retry, overlap, capability, authority, cancellation, and cost
-limit; stop when acceptance, required evidence, and assigned proof obligations
-are covered or at the first boundary, then record its reason.
+The threshold is a minimum, not a preferred fan-out. The primary owns the tree,
+ledger, branch authorization, decisions and convergence. Default selection
+remains the required minimum. Schedule selected work
+in waves within policy and verified runtime parallelism. All total, parent,
+context and retry limits remain cumulative; waves grant no new budget or
+permission. Workers normally return proposals. With verified nested transport,
+a depth-1 coordinator may dispatch read-only depth-2 children only inside an
+unexpired hash-bound primary envelope. Enforce every worker, child, context,
+result, summary, retry, overlap, capability, authority, cancellation and cost
+limit. Stop when acceptance, required evidence and assigned obligations are
+covered, or at the first boundary; record the reason.
 
 For an explicit `repository-audit`, delegation evaluation is deterministic:
 
@@ -59,13 +58,11 @@ The active assistant verifies current native-worker, parallel, model-routing,
 and result-delivery capability. Source policy never hard-codes a provider,
 client, backend, executable, or model.
 
-Record the evaluation status, runtime capability status, selected workstream
-IDs, decision, reason, and `skip_reason_id`. The policy defines which decisions
-require or forbid a skip reason. When workers are unavailable or unverified,
-state that explicitly and continue with the primary assistant. When workers
-are available but an eligible packet remains local, use one applicable policy
-reason ID and task-specific evidence; a generic statement that delegation was
-not useful is not sufficient.
+Record all policy `decision_evidence` fields. Its decision rules require or
+forbid `skip_reason_id`. If workers are unavailable or unverified, report that
+and continue primary-owned. Keeping an eligible available packet local requires
+an applicable policy reason ID and task-specific evidence, not a generic claim
+that delegation was unhelpful.
 
 After runtime verification, `tools/alatyr.py plan-work` accepts a current-session
 capability record plus workstream, kept-local, skip-reason and evidence inputs.
@@ -83,14 +80,12 @@ claim a native cutoff. `prepare-worker-result --context-preflight` checks the
 observed context against that allocation. Drafts remain review-required; neither
 helper dispatches, verifies provider provenance, or accepts obligations.
 
-Schema-6 packets must satisfy the policy's complete `worker_packet_contract`:
-ancestry and budgets, unique coverage/workstream identity, objective/non-goals,
-bounded/conditional context and provenance, inspect-only/no-write scope,
-facts/owners/surfaces/relationships, proof obligations, independence, overlap
-and expected evidence. Policy validation measures required file content and
-rejects initial payloads above their declared limits. Pass task-specific packets
-with repeatable `--worker-packet`; paths must exist, remain repository-relative
-and contained, and never escape through symlinks.
+Schema-6 packets must satisfy every field in the loaded policy's
+`worker_packet_contract`; keep source workers inspect-only with no write scope.
+Policy validation measures required file content and rejects oversized initial
+payloads. Pass task-specific packets with repeatable `--worker-packet`; paths
+must exist, remain repository-relative and contained, and not escape through
+symlinks.
 
 Expansion uses only conditional context and counts against aggregate budgets.
 Without a primary branch envelope, workers propose children; inside one, a
@@ -101,11 +96,10 @@ recursive branches retain resumable checkpoints. Validate with
 `python3 tools/alatyr.py validate-delegation-tree ...`. Schema-1/2 ledgers remain
 historical structural evidence, never current acceptance.
 
-Keep the policy's complete schema-3 `alatyr-delegation-execution-tree` contract:
-authorization/time, revision, policy/capability digests, topology, budgets,
-scope/coverage, evidence/checkpoints, validation and primary convergence.
-Routine context loads accepted summaries and the latest checkpoint, not raw
-descendant payloads. Missing or inconsistent ledgers block integration.
+Keep every field in the policy's schema-3 `execution_tree_contract` for
+`alatyr-delegation-execution-tree`. Routine context loads accepted summaries
+and the latest checkpoint, not raw descendant payloads. Missing or inconsistent
+ledgers block integration.
 
 The result helper's `handoff.json` is a derived node-update candidate, not a
 complete node or accepted summary. `--compact` loads that view only. Review the
@@ -132,11 +126,11 @@ verified fallback or keep the work with the primary assistant.
 
 ## Responsibility
 
-The primary assistant retains project decisions, current-scope authorization,
-source-profile selection, capability verification, packet review, integration,
-logical integrity review, conflict resolution, final synthesis, final
-validation, and completion evidence. Modification, commit, publication, and
-live external actions remain primary-owned and separately authorized.
+The policy's `primary_owned_actions` remain primary-owned, including decisions,
+authorization, source-profile selection, capability verification, packet/result review,
+integration, integrity, conflict resolution, synthesis, validation and completion
+evidence. Modification, commit, publication and live external actions each
+require current-scope authorization.
 
 Every worker packet must define bounded context, explicit non-goals, allowed
 actions, write ownership, and objective validation. A worker must not broaden

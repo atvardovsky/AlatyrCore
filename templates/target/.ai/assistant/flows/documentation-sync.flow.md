@@ -45,9 +45,8 @@ Route clear requests automatically. The user does not need to name a mode.
 3. Resolve changed fact IDs and canonical owners. When the optional
    `consistency-map` module is enabled, follow applicable `documents`,
    `visualizes`, `generates`, `verifies`, and dependent-contract edges.
-4. If code comments or generated reference documentation are in scope, check
-   that `code-documentation` is enabled and load
-   `.ai/project/documentation/catalog.json` plus
+4. For code comments or generated reference documentation, check that
+   `code-documentation` is enabled; load `.ai/project/documentation/catalog.json` and
    `.ai/project/documentation/profiles.json`.
 5. Select accepted profile candidates by path/source-set, language, framework,
    specificity, and explicit priority. Stop automatic generation on an equal
@@ -61,11 +60,11 @@ Route clear requests automatically. The user does not need to name a mode.
 7. Record proposed syntax and project-area content separately. Frontend,
    backend, shared-library, and infrastructure profiles may require different
    semantic sections even when they share a language.
-8. Before changing comments, confirm that the selected profile is accepted and
-   unambiguous. Apply its required symbol set, semantic content, avoid rules,
+8. Before changing comments, require an accepted, unambiguous profile. Apply
+   its required symbol set, semantic content, avoid rules,
    uncertainty policy, and source-of-truth boundary.
 9. Never edit a configured generated output directly. Run the target-recorded
-   generator only when allowed actions permit it.
+   generator only when allowed actions permit.
 10. Enforce the selected output policy:
     - `ci-artifact`: generation succeeds without requiring committed output
     - `committed-generated`: regeneration leaves no unexplained generated diff

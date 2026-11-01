@@ -72,16 +72,15 @@ Replace placeholders with target facts before accepting installation.
    invariant inferred from a compact view. For recurring incidents, reconcile
    the original outcome and retention rationale before another local repair.
 
-After implementation and local checks, obtain global reconciliation through
-[integrity verification](logical-integrity-review.flow.md#verify). Required
-repairs remain in authorized Apply. As outer coordinator, finalize an active
-package once through [Finalize](change-package.flow.md#finalize). Without a
-package, perform authorized support-state synchronization last. Preserve the
-canonical finalizer transaction; nested orchestration returns evidence and
-does not run a competing finalizer. Refresh final-result validation afterward.
-The first review is pre-finalization convergence; the later check is
-post-finalization binding validation. They share still-current semantic
-evidence, not stale acceptance or permission to skip final validation.
+After implementation and local checks, obtain global pre-finalization convergence through
+[integrity verification](logical-integrity-review.flow.md#verify); return required
+repairs to authorized Apply. As outer coordinator, finalize an active package once
+through [Finalize](change-package.flow.md#finalize), or, without a package, perform
+authorized support-state synchronization last. Preserve the canonical finalizer
+transaction; nested orchestration returns evidence without a competing finalizer.
+Refresh final-result validation afterward for post-finalization binding. Reuse
+only still-current semantic evidence, never stale acceptance, and do not skip
+final validation.
 
 ### Verify
 
@@ -113,9 +112,10 @@ Require explicit programmer approval before:
 
 ## Final Evidence
 
-Reuse the same task/operation-bound evidence from each phase; these fields are
-views, not instructions to create one artifact per field. Do not merge distinct
-approval, checkpoint, closure, or publication roles or reuse stale bindings.
+Reuse task/operation-bound phase evidence. These fields are
+views, not instructions to create one artifact per field. Keep approval,
+checkpoint, closure and publication roles
+distinct; never reuse stale bindings.
 
 Report:
 

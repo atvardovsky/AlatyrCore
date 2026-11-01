@@ -135,19 +135,18 @@ operation request:
 If the requested operation exceeds the allowed actions, the assistant should
 stop before editing and ask for a narrower operation or explicit approval.
 
-Allowed actions are a maximum surface, not authorization to use that surface.
-Apply `ALATYR-AUTHORIZATION-001` separately for `inspect`, `modify`, `commit`,
-`publish`, and `live-external`. The latest request must authorize each
-state-changing phase in the current logical scope. `Fix` or `implement` may
-authorize `modify`, but not commit or push. `Commit` does not authorize push.
-A direct current request may authorize multiple named phases together.
+Allowed actions limit change surfaces; they do not authorize action. Apply
+`ALATYR-AUTHORIZATION-001` separately to `inspect`, `modify`, `commit`, `publish`
+and `live-external`. The newest request must authorize each state-changing phase
+in the current scope. `Fix` or `implement` may authorize `modify`, not commit
+or push. `Commit` does not authorize push. A current request may authorize
+multiple named phases.
 
-A subject-only transition such as returning to an issue or backlog item,
-switching discussion topics, asking for status, reviewing a report, requesting
-analysis, or asking what comes next defaults to `inspect`. Prior phase
-authorization expires after completion, redirection, material scope expansion,
-pause, cancellation, or replacement. Ambiguous `continue` inherits phases only
-for one clearly unfinished current scope; otherwise it remains read-only.
+Default subject-only transitions to `inspect`, including returning to an issue or backlog item,
+discussion switches, status, report review, analysis and next-step questions. Prior phase
+authorization expires on completion, redirection, material scope expansion,
+pause, cancellation or replacement. Ambiguous `continue` inherits phases only
+for one clearly unfinished current scope; otherwise remain read-only.
 
 If a request says `Alatyr`, "ask Alatyr", or similar, interpret that as "ask an
 assistant to use the installed Alatyr Core adapter in this repository." A bare
@@ -315,20 +314,19 @@ For installed operations:
 
 ## Workspace Modes
 
-Workspace modes are an optional project-contour capability for repositories
-where application, framework, library, skeleton, dependency, or workspace
-roles require different support context. Installation and framework-update
-review may suggest zero or more evidence-bound modes, but installation approval
-does not accept those suggestions. The user owns acceptance and lifecycle
-decisions.
+Workspace modes are optional project-contour support for application, framework,
+library, skeleton, dependency or workspace roles needing different context.
+Installation and framework-update review may suggest zero or more evidence-bound
+modes; installation approval does not accept them. The user owns acceptance
+and lifecycle decisions.
 
-Each actual mode has its own target directory. Optional root support contains
-only context shared across applicable modes. For each task, keep workspace
-identity, artifact relationship, and selected mode separate; load the compact
-catalog first and only one selected descriptor. If selection is ambiguous,
-remain read-only and ask one bounded question. A mode selects and narrows
-context. It never grants write scope, approval, permissions, tools, decision
-authority, nested-adapter activation, or validation bypass.
+Give each actual mode its own target directory. Optional root support contains
+only context shared across applicable modes. Distinguish workspace identity,
+artifact relationship and selected mode. Load the compact catalog first, then
+one selected descriptor. On ambiguity, remain read-only and ask one bounded
+question. A mode narrows context; it never grants write scope, approval,
+permissions, tools, decision authority, nested-adapter activation or validation
+bypass.
 
 ## Blueprint Creation
 
@@ -349,57 +347,49 @@ or lifecycle notes.
 
 ## Diagram Discussion
 
-Diagram discussion is an optional target operation. It may explain current
-facts, compare proposed alternatives, or revise a draft interactively. It must
-use the target's diagram source and presentation policy and the current
-assistant surface's recorded capabilities.
+Optional diagram discussion may explain current facts, compare proposed
+alternatives or revise drafts interactively. Use target diagram sources,
+presentation policy and the current assistant surface's recorded capabilities.
 
-Read-only diagram discussion returns the presentation in chat without creating
-files. A persisted source or generated visual requires `docs-only` or broader
-allowed actions. A proposal that changes accepted project facts must hand off
-to the applicable decision or product-change operation before those facts are
-treated as accepted.
+Return read-only presentations in chat without creating files. Persist source
+or generated visuals only under `docs-only` or broader allowed actions. Before
+accepting proposed changes to accepted project facts, hand off to the applicable
+decision or product-change operation.
 
-The result reports draft/source-of-truth status, source revision, presentation
-mode, source or artifact path when present, assumptions, validation, and the
-portable ASCII view. Native inline rendering and file attachment remain client
-capabilities, not framework guarantees.
+Report draft/source-of-truth status, source revision, presentation mode, source
+or artifact path when present, assumptions, validation and the portable ASCII
+view. Native inline rendering and file attachment are client capabilities,
+not framework guarantees.
 
 ## Architecture Assistance
 
-Architecture assistance is an optional target operation. It inventories,
-explains, discusses, compares, reviews, or documents selected project
-architecture items from a compact project-owned catalog and repository
-evidence.
+Optional architecture assistance inventories, explains, discusses, compares,
+reviews or documents selected items using the compact project-owned catalog
+and repository evidence.
 
-Read-only work may recommend reuse, adaptation, introduction, restriction, or
-retirement of a pattern, but the recommendation remains proposed. Under
-`docs-only`, supporting docs may record observed, proposed, contradicted, or
-unknown items; they must not accept architecture. Accepted, preferred,
-restricted, or deprecated status requires the target decision owner and
-approval policy, then handoff to blueprint-driven change and logical integrity
-review.
+Read-only recommendations to reuse, adapt, introduce, restrict or retire a
+pattern remain proposed. Under `docs-only`, record observed, proposed,
+contradicted or unknown items; do not grant architecture acceptance. Accepted, preferred,
+restricted or deprecated status requires the target decision owner and approval
+policy, followed by blueprint-driven change and logical integrity review.
 
-Architecture discussion should identify the problem and common drivers,
-separate observed from intended architecture, and evaluate no-change, reuse,
-adaptation, and new-pattern options before adding another approach. The result
-reports selected evidence, catalog revision, states, alternatives, pattern-
-proliferation result, documentation or change handoff, validation, and residual
-risk.
+Identify the problem and common drivers; distinguish observed from intended
+architecture. Before adding an approach, evaluate no-change, reuse, adaptation
+and new-pattern options. Report selected evidence, catalog revision, states,
+alternatives, pattern-proliferation result, documentation or change handoff,
+validation and residual risk.
 
 ## Code Documentation
 
-Code documentation is an optional project-contour capability routed through
-the existing documentation-sync operation. The assistant inventories or
-proposes source-set profiles from target evidence, permits different frontend,
-backend, shared-library, and infrastructure conventions, and uses only one
-unambiguous accepted profile for routine comment or generation work.
+Route optional project-contour code documentation through documentation-sync.
+Inventory or propose source-set profiles from target evidence; permit different
+frontend, backend, shared-library and infrastructure conventions. Routine comment
+or generation work requires one unambiguous accepted profile.
 
 Structured comments may explain bounded symbol behavior under the target
-source-of-truth registry. Generated reference documentation remains derived
-and is never edited directly. Dependencies, CI changes, external publication,
-profile acceptance, and broad source migrations require the target's normal
-risk and approval handling.
+source-of-truth registry. Generated references remain derived; never edit them
+directly. Apply target risk and approval handling to dependencies, CI changes,
+external publication, profile acceptance and broad source migrations.
 
 ## Large Or Resumable Operations
 
@@ -538,18 +528,16 @@ After installation or framework upgrade, an assistant should recheck:
 - validation commands or manual checks
 - adapter maturity gaps, local deviations, and lifecycle notes
 
-If a framework update adds requirements, the assistant should identify whether
-the target adapter needs migration, approval, new placeholders, or manual
-follow-up. The exact request `update Alatyr` authorizes target-adapter
-modification for the current scope and should converge in one operation:
-assessment, target-aware migration, derived-surface regeneration, staged
-strict validation, accepted-state transition, and final strict acceptance on
-the resulting branch and revision. It does not authorize commit, push,
-deployment, protected changes without approval, or unrelated product work.
-Read-only assessment requests stop after impact evidence. Applying updates
-must not stop there or require a second generic recheck request; report either
-accepted completion or the exact approval, owner, fact, validation, or scope
-blocker.
+When an update adds requirements, identify migration, approval, new-placeholder
+and manual-follow-up needs. The exact request `update Alatyr` authorizes
+current-scope target-adapter modification, not commit, push, deployment,
+protected changes without approval or unrelated product work. Complete
+assessment, target-aware migration, derived-surface regeneration, staged strict
+validation, accepted-state transition and final strict acceptance on the resulting
+branch and revision in one operation. Read-only assessment stops after impact
+evidence. Applying updates must not stop there or require a second generic
+recheck: report accepted completion or the exact approval, owner, fact,
+validation or scope blocker.
 
 ## Effectiveness Review
 

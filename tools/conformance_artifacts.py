@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 from functools import lru_cache
 from pathlib import Path
 
@@ -74,13 +75,20 @@ def artifact_required() -> bool:
     return os.environ.get(ARTIFACT_REQUIRED_ENV) == "1"
 
 
+def _overlaps(first: Path, second: Path) -> bool:
+    first, second = first.resolve(), second.resolve()
+    return first.is_relative_to(second) or second.is_relative_to(first)
+
+
 def publish_support_profile(profile: str, source: Path) -> bool:
     root = artifact_root()
     if root is None:
         return False
-    root.mkdir(parents=True, exist_ok=True)
     destination = root / f"support-profile-{profile}"
     temporary = root / f".support-profile-{profile}-{os.getpid()}"
+    if _overlaps(source, destination) or _overlaps(source, temporary):
+        raise ValueError("scaffold source and artifact output must not overlap")
+    root.mkdir(parents=True, exist_ok=True)
     shutil.rmtree(temporary, ignore_errors=True)
     shutil.copytree(source, temporary)
     artifact_digest = tree_digest(temporary)
@@ -121,20 +129,36 @@ def _valid_artifact(path: Path, profile: str) -> bool:
     )
 
 
+def _copy_new_file(source: str | Path, destination: str | Path) -> str:
+    if not stat.S_ISREG(os.stat(source).st_mode):
+        raise shutil.SpecialFileError(f"scaffold source is not a regular file: {source}")
+    # Preflight cannot exclude a peer arriving before this individual write.
+    with open(source, "rb") as incoming, open(destination, "xb") as outgoing:
+        shutil.copyfileobj(incoming, outgoing)
+    shutil.copystat(source, destination)
+    return os.fspath(destination)
+
+
 def materialize_support_profile(profile: str, target: Path) -> int | None:
+    """Copy a valid artifact into an unpublished target, never merge support."""
     root = artifact_root()
     source = root / f"support-profile-{profile}" if root is not None else None
     if source is None or not _valid_artifact(source, profile):
         return None
+    if _overlaps(source, target):
+        raise ValueError("scaffold artifact and destination must not overlap")
+    items = sorted((item for item in source.iterdir() if item.name != METADATA), key=lambda item: item.name)
+    for item in items:
+        destination = target / item.name
+        if destination.exists() or destination.is_symlink():
+            raise ValueError(f"scaffold destination already exists: {item.name}")
     copied = 0
-    for item in sorted(source.iterdir(), key=lambda path: path.name):
-        if item.name == METADATA:
-            continue
+    for item in items:
         destination = target / item.name
         if item.is_dir():
-            shutil.copytree(item, destination, dirs_exist_ok=True)
+            shutil.copytree(item, destination, copy_function=_copy_new_file)
             copied += sum(1 for path in item.rglob("*") if path.is_file())
         elif item.is_file():
-            shutil.copy2(item, destination)
+            _copy_new_file(item, destination)
             copied += 1
     return copied
