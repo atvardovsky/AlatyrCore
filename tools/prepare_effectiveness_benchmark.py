@@ -213,6 +213,7 @@ This is one isolated run in a paired effectiveness benchmark.
 
 - Benchmark: `{benchmark_id}`
 - Task id: `{task['id']}`
+- Report `task` (exact JSON string): {json.dumps(task['name'], ensure_ascii=True)}
 - Task class: `{task['class_id']}`
 - Adapter mode: `{mode}`
 - Repetition: `{repetition}`
@@ -251,6 +252,11 @@ run provenance.
 Keep `review.status` as `pending`; an independent reviewer evaluates the same
 acceptance criteria for every adapter mode. Do not claim that this run proves
 Alatyr is cheaper or more effective.
+Before stopping, invoke `<AlatyrCore>/tools/check_effectiveness_benchmark.py`
+with the supplied Python interpreter and these exact arguments (JSON array):
+{json.dumps(['--run-contract', str(report.parent / 'run-contract.json'), '--report', str(report)], ensure_ascii=True)}
+Replace `<AlatyrCore>` with the supplied source-tool location. This format check
+does not establish independent review, product acceptance or comparative benefit.
 """
 
 
@@ -412,6 +418,15 @@ def prepare_benchmark(plan_path: Path, output: Path, *, overwrite: bool) -> Path
                         "snapshot_hash": snapshot_hashes[mode],
                     }
                 )
+                (workspace / "run-contract.json").write_text(json.dumps({
+                    "schema_version": 1,
+                    "contract_kind": "alatyr-benchmark-run-contract",
+                    "manifest": {"benchmark_id": benchmark_id, "source_commit": commit,
+                                 "evidence_contract_digest": evidence_digest},
+                    "task": prepared_tasks[-1],
+                    "run": {key: value for key, value in runs[-1].items()
+                            if key in {"run_id", "task_id", "adapter_mode", "repetition", "project_baseline_hash"}},
+                }, indent=2) + "\n", encoding="utf-8")
 
     manifest = {
         "schema_version": 1,

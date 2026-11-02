@@ -230,6 +230,9 @@ instructions, bootstrap and selected sources precede variable packet/task data.
 
 ## Task Acceptance And Shared Resources
 
+For the complete core-only sequence, see the conditional
+[repair and finalization walkthrough](../docs/core-repair-workflow.md).
+
 Optional incident `repair_review` belongs to the canonical testing
 policy, not a second project policy. Enabled incident tasks retain required
 `repair-evidence-review` obligations and select task/path records from
@@ -2618,6 +2621,18 @@ content drift outside declared adapter surfaces and writes
 `prepared-not-executed` run prompts. Every task must select a `class_id` from
 `conformance/benchmarks/benchmark-task-suite.json`; its `task_profile` must
 match that declared class.
+
+Generated prompts include the exact report task name. Each run also receives
+`run-contract.json` containing only its own identity and criteria. Before STOP,
+use `check_effectiveness_benchmark.py --run-contract <run-contract.json>
+--report <report.json>` for the same canonical report-format checks, without
+accessing the organizer manifest or sibling runs. This editable subject copy
+is not authority: the organizer rechecks against its original manifest and
+independent review remains required. No agent or product command is executed.
+
+`check_engineering_evidence.py` is a source self-check: no arguments run its
+public fixtures; `--help` only prints usage and unknown arguments fail before
+checks or fixture creation.
 
 `check_effectiveness_benchmark.py` validates prepared isolation and, with
 `--require-reports --require-reviewed`, requires every paired run plus

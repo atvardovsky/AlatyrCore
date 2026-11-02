@@ -242,12 +242,14 @@ rankings from an instrumented test environment are diagnostic until checked
 against the intended runtime. Never change deadlines or thresholds to qualify
 a proposed optimization.
 
-The target may enable optional `repair_review` in its canonical test policy.
-Schema 1 retains existing `repair-review.json` records. Explicitly adopted
-schema 2 uses `repair-qualification.json` and policy-selected observations;
-installing its authoring template does not enable it. Both name full end-to-end
-acceptance command IDs and bounded current task/path records. Installation and
-update propose enablement rather than inventing target decisions.
+The canonical test policy may explicitly enable optional `repair_review`.
+Schema 1 uses `repair-review.json`; adopted schema 2 uses
+`repair-qualification.json` with policy-selected observations. Both select full
+end-to-end command IDs and bounded task/path records. Templates do not enable
+policy; installation/update propose adoption, never invent decisions.
+Reserve `repair-evidence-review` for valid enabled policy and incident identity;
+reject incompatible capture before publication. Core-only work uses ordinary
+evidence-backed obligations, without implicit adoption.
 Enabled uncertain/systemic incident tasks retain a required `repair-evidence-review` proof
 obligation. Removal or deferral cannot turn that captured requirement into
 successful acceptance. Record checks reuse canonical execution evidence,

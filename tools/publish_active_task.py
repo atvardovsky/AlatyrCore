@@ -38,6 +38,12 @@ def _portable_identity(path: str) -> str:
     return PurePosixPath(path).as_posix().casefold()
 
 
+def _bind_input(inputs: dict[Path, bytes | None], path: Path, raw: bytes | None) -> None:
+    if path in inputs and inputs[path] != raw:
+        raise ValueError("task input changed during planning; replan from one current snapshot")
+    inputs[path] = raw
+
+
 def _object(target: Path, relative: str, limit: int) -> tuple[bytes, dict]:
     if not is_target_relative_path(relative) or "\\" in relative:
         raise ValueError("task inputs must be contained forward-slash target paths")
@@ -75,7 +81,7 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
     inputs = {target / INDEX: raw_index}
     if registration:
         raw_registration, task = _object(target, registration, 64 * 1024)
-        inputs[target / registration] = raw_registration
+        _bind_input(inputs, target / registration, raw_registration)
         if old is not None and any(task.get(key) != old.get(key) for key in ("task_id", "operation_id", "task_class", "predecessor_task_ids", "incident_family_id")):
             raise ValueError("active task identity, class, incident family, and predecessor lineage cannot be replaced")
     elif old is not None:
@@ -87,7 +93,7 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
     if task.get("task_id") != task_id or task.get("state") != "active" or task.get("completion_evidence") is not None or task.get("task_class") == "small-task":
         raise ValueError("publication requires one active non-small task without completion claims")
     raw_draft, model = _object(target, draft, MAX_PROBLEM_MODEL_FILE_BYTES)
-    inputs[target / draft] = raw_draft
+    _bind_input(inputs, target / draft, raw_draft)
     failures = validate_problem_model(model, load_json_object(ROOT / "schemas/alatyr-problem-model.schema.json"))
     if failures:
         raise ValueError("invalid proposed model: " + "; ".join(failures))
@@ -97,7 +103,7 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
             raw = read_output(target, target / path, max_bytes=limit)
             if raw is None:
                 raise ValueError("missing evidence artifact")
-            inputs[target / path] = raw
+            _bind_input(inputs, target / path, raw)
             return raw
         failures = verify_artifacts(model, read_artifact)
         if failures:
@@ -163,7 +169,7 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
             previous = read_output(target, path, max_bytes=MAX_PROBLEM_MODEL_FILE_BYTES)
             if previous is not None and previous != content:
                 raise ValueError("existing immutable handoff differs from proposed bytes")
-            inputs[path] = previous
+            _bind_input(inputs, path, previous)
             outputs[path] = content
         task["analysis_handoff"] = witness
         outputs[target / INDEX] = _render(index)
@@ -171,7 +177,7 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
     if _portable_identity(draft) in published or registration is not None and _portable_identity(registration) in published:
         raise ValueError("authoring drafts must be separate from published outputs")
     for path, limit in ((target / model_relpath, MAX_PROBLEM_MODEL_FILE_BYTES), (target / projection_relpath, MAX_ACTIVE_PROJECTION_FILE_BYTES)):
-        inputs[path] = read_output(target, path, max_bytes=limit)
+        _bind_input(inputs, path, read_output(target, path, max_bytes=limit))
     prior_projection = inputs[target / projection_relpath]
     if prior_projection is not None:
         previous_projection = json.loads(prior_projection)
@@ -197,6 +203,24 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
         failures = revision_failures(previous, model)
         if failures:
             raise ValueError("invalid evidence revision: " + "; ".join(failures))
+    # Do not make an optional policy requirement sticky before checking adoption.
+    if any(item.get("id") == "repair-evidence-review" for item in model["proof_obligations"]):
+        from test_execution_contract import REPAIR_POLICY, repair_review_capture_failures, policy_projection_failures
+        try:
+            raw_policy, policy = _object(target, REPAIR_POLICY, 512 * 1024)
+        except ValueError as exc:
+            raise ValueError("reserved repair-evidence-review requires a readable explicitly adopted repair_review policy; use generic obligations for core-only work: " + str(exc)) from exc
+        _bind_input(inputs, target / REPAIR_POLICY, raw_policy)
+        failures = repair_review_capture_failures(model, policy)
+        if failures:
+            raise ValueError("repair-review capture is not applicable: " + "; ".join(failures))
+        owner = policy["execution_contract"]["canonical_policy"]
+        if owner != REPAIR_POLICY:
+            raw_owner, canonical = _object(target, owner, 512 * 1024)
+            _bind_input(inputs, target / owner, raw_owner)
+            failures = policy_projection_failures(policy, canonical)
+            if failures:
+                raise ValueError("repair-review canonical policy mismatch: " + "; ".join(failures))
     return TaskPublication(outputs, inputs)
 
 

@@ -250,41 +250,46 @@ obligation's current state and evidence, not frozen by an earlier transition.
 
 ### Evidence-Guided Analysis
 
-Schema 7 conditionally adds `analysis_evidence`; `hypothesis-driven` work
-requires it, small settled work does not. Probes bind existing obligations and
-uncertainties to methods, action kinds, supporting/refuting predictions, input
-hashes and result artifacts. Unrun/inconclusive/stale evidence cannot establish
-a cause. Execution still requires authorization; hashes prove identity, not
-authenticity or causality.
+Schema 7 requires `analysis_evidence` for hypothesis-driven work, not small
+settled tasks. Probes bind obligations/uncertainties, methods, action kinds,
+supporting/refuting predictions, input hashes and results. Unrun, inconclusive
+or stale evidence proves no cause. Execution requires authorization; hashes
+prove identity, not authenticity or causality.
 
-Freeze diagnostic inputs in approved evidence paths before implementation when
-they must remain historical. Live-input checks must be rerun after changes;
-historical snapshots never establish current implementation validity.
+Before implementation, freeze required diagnostic inputs in approved evidence
+paths. Rerun changed live-input checks; historical snapshots never prove current
+validity. Retain source/test copies in target-reviewed inert formats, such as
+`test_case.py.snapshot`; verify actual discovery configuration. After packaging,
+rerun affected prescribed validation without narrowing scope to hide failures.
+Structural/hash checks do not execute it.
 
-Evidence `updates` revise conclusions without a strategy switch. Preserve
-captured questions, revision effects and challenge duties. Resolution needs
-bound new evidence. Projection 5 retains pending revisions, relevant rejected
-explanations and unresolved duties; publication verifies artifacts transactionally.
-Historical witnesses do not establish current-task acceptance.
+Artifact verification accepts 4 MiB per unique path and 16 MiB total. Reads use
+remaining allowance, permitting one overflow-probe byte. Reuse duplicate-path
+digests; stop on unreadable or oversized input.
 
-Passed rich reviews require `review_challenges` binding original/normative
-sources, counterexamples, obligations and artifacts. Derive challenges from
-requirements, not passing fixtures. Reviewer labels prove no independence.
+Evidence `updates` revise conclusions without switching strategy. Preserve
+captured questions, revision effects and challenges; resolve with bound new
+evidence. Projection 5 retains pending revisions, relevant rejected explanations
+and unresolved duties. Publication verifies artifacts transactionally;
+historical witnesses do not establish current-task acceptance.
 
-Digest-bound advice retains dependency readiness, required work and unknown
-costs; prefer lower-impact checks and reassess recurrence. Primary review judges
-decision relevance, not prediction count. Within equal duty/risk prefer unrun
-probes before retry review, retaining prior-result identity. Supporting/refuting
-observations must differ; justified repeated measurements remain allowed.
-Advice grants neither authorization, evidence acceptance, scheduling authority
-nor proven optimality.
+Passed rich reviews bind `review_challenges` to original/normative sources,
+counterexamples, obligations and artifacts. Derive challenges from requirements,
+not passing fixtures; reviewer labels prove no independence.
 
-At material evidence/scope changes or worker/continuity boundaries, re-anchor
-to current intent, authorization, owners and unresolved duties. Name the next
-obligation, question and proof condition. Separate ready/blocked/unknown work;
-invalidate stale readiness and advice together. Optional
-[execution focus](task-state-delivery.md#execution-focus) elaborates this
-checkpoint when installed; otherwise use the bound active projection manually.
+Digest-bound advice retains readiness, required work and unknown costs. Prefer
+lower-impact checks; reassess recurrence. Primary review judges relevance, not
+prediction count. At equal duty/risk, prefer unrun probes before retry review;
+retain prior-result identity. Supporting/refuting observations must differ;
+justified repeats remain allowed. Advice grants no authorization, acceptance,
+scheduling authority or proven optimality.
+
+At material evidence/scope, worker or continuity boundaries, re-anchor current
+intent, authorization, owners and unresolved duties. Name the next obligation,
+question and proof condition; distinguish ready/blocked/unknown work. Invalidate
+stale readiness and advice together. Use optional
+[execution focus](task-state-delivery.md#execution-focus) when installed,
+otherwise use the bound active projection manually.
 
 ## Implementation Levels
 

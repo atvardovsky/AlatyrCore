@@ -167,6 +167,9 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
     for path in sorted(repo.rglob("*")):
         if not path.is_file() or ".git" in path.parts:
             continue
+        relative = path.relative_to(repo)
+        if relative.parts[0] != ".ai" and not (ROOT / "templates/target" / relative).is_file():
+            continue
         if framework_root in path.parents:
             continue
         try:

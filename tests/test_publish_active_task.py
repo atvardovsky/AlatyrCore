@@ -61,6 +61,134 @@ class PublishActiveTaskTests(ActiveTaskFixture):
         self.assertEqual(projection["payload"]["required_reviews"][0]["status"], "pending")
         self.assertEqual(projection["source_model"]["sha256"], hashlib.sha256(self.model_path.read_bytes()).hexdigest())
 
+    def repair_draft(self):
+        from tests.test_behavior_acceptance import original_case
+        self.model["incident"].update(mode="new", family_id="fixture-incident", trigger="reported-defect")
+        self.model["original_case"] = original_case()
+        self.task["incident_family_id"] = "fixture-incident"
+        self.model["proof_obligations"].append(dict(self.model["proof_obligations"][0], id="repair-evidence-review"))
+        self.write_index()
+        self.write_draft()
+
+    def adopted_policy(self):
+        from tests.test_test_execution_contract import policy
+        from tests.test_incident_quality import repair_policy
+        value = policy()
+        value["commands"][0]["execution"]["proof_boundary"] = "end-to-end"
+        value["repair_review"] = repair_policy()
+        path = self.target / ".ai/project/testing/test-first-policy.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value))
+        return path, value
+
+    def test_reserved_capture_rejects_unadopted_or_invalid_policy_without_writes(self):
+        self.repair_draft()
+        before = {path: path.read_bytes() for path in (self.model_path, self.target / INDEX,
+                  self.target / self.model["active_projection"]["path"])}
+        with self.assertRaisesRegex(ValueError, "explicitly adopted"):
+            self.plan()
+        path, policy = self.adopted_policy()
+        for value in ({}, {**policy, "repair_review": None},
+                      {**policy, "repair_review": {**policy["repair_review"], "state": "deferred", "records": []}},
+                      {**policy, "repair_review": {**policy["repair_review"], "acceptance_command_ids": ["absent"]}}):
+            path.write_text(json.dumps(value))
+            with self.subTest(policy=value), self.assertRaisesRegex(ValueError, "repair-review capture"):
+                self.plan()
+            self.assertEqual({p: p.read_bytes() for p in before}, before)
+        result = subprocess.run([sys.executable, str(ROOT / "tools/publish_active_task.py"),
+            "--target", str(self.target), "--task-id", "fixture-task", "--draft",
+            self.draft.relative_to(self.target).as_posix(), "--write"], capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual({p: p.read_bytes() for p in before}, before)
+
+    def test_adopted_capture_binds_policy_and_keeps_sticky_guard(self):
+        self.repair_draft()
+        path, policy = self.adopted_policy()
+        plan = self.plan()
+        self.assertEqual(plan.inputs[path], path.read_bytes())
+        path.write_bytes(path.read_bytes() + b"\n")
+        with self.assertRaisesRegex(ValueError, "changed while planning"):
+            SupportTransaction(self.target).apply(plan.outputs, expected_inputs=plan.inputs)
+        path.write_bytes(plan.inputs[path])
+        SupportTransaction(self.target).apply(plan.outputs, expected_inputs=plan.inputs)
+        task = json.loads((self.target / INDEX).read_text())["tasks"][0]
+        self.assertTrue(task["repair_review_required"])
+        self.model["proof_obligations"].pop()
+        self.write_draft()
+        with self.assertRaisesRegex(ValueError, "cannot be removed or downgraded"):
+            self.plan()
+
+    def test_generic_core_review_does_not_read_or_enable_optional_policy(self):
+        self.model["proof_obligations"][0]["id"] = "generic-adversarial-review"
+        self.write_draft()
+        plan = self.plan()
+        policy_path = self.target / ".ai/project/testing/test-first-policy.json"
+        self.assertNotIn(policy_path, plan.inputs)
+        SupportTransaction(self.target).apply(plan.outputs, expected_inputs=plan.inputs)
+        self.assertFalse(policy_path.exists())
+        self.assertFalse(json.loads((self.target / INDEX).read_text())["tasks"][0]["repair_review_required"])
+
+    def test_policy_cannot_replace_an_already_verified_artifact_snapshot(self):
+        from tests.test_analysis_evidence import add_evidence
+        import publish_active_task
+        self.repair_draft()
+        policy_path, policy = self.adopted_policy()
+        add_evidence(self.model, self.target)
+        self.model["analysis_evidence"]["review_challenges"][0]["original_source_ref"] = self.model["original_case"]["source_ref"]
+        self.model["analysis_evidence"]["review_challenges"][0]["artifacts"].append({
+            "path": ".ai/project/testing/test-first-policy.json", "sha256": hashlib.sha256(policy_path.read_bytes()).hexdigest()})
+        self.write_draft()
+        original = publish_active_task._object
+        def changed(target, relative, limit):
+            if relative == ".ai/project/testing/test-first-policy.json":
+                policy["last_reviewed"] = "2026-10-17"
+                policy_path.write_text(json.dumps(policy))
+            return original(target, relative, limit)
+        with patch.object(publish_active_task, "_object", side_effect=changed), \
+                self.assertRaisesRegex(ValueError, "input changed during planning"):
+            self.plan()
+
+    def test_reserved_capture_requires_incident_and_exact_required_marker(self):
+        from test_execution_contract import repair_review_capture_failures
+        self.repair_draft()
+        _, policy = self.adopted_policy()
+        for mutation in ("duplicate", "optional", "no-incident"):
+            model = copy.deepcopy(self.model)
+            if mutation == "duplicate":
+                model["proof_obligations"].append(model["proof_obligations"][-1].copy())
+            elif mutation == "optional":
+                model["proof_obligations"][-1]["required"] = False
+            else:
+                model["incident"]["mode"] = "none"
+            with self.subTest(mutation=mutation):
+                self.assertTrue(repair_review_capture_failures(model, policy))
+
+    def test_capture_verifies_and_binds_distinct_canonical_policy_owner(self):
+        self.repair_draft()
+        policy_path, policy = self.adopted_policy()
+        owner = self.target / "test-policy.json"
+        policy["execution_contract"]["canonical_policy"] = "test-policy.json"
+        policy_path.write_text(json.dumps(policy))
+        with self.assertRaisesRegex(ValueError, "missing"):
+            self.plan()
+        owner.write_text("{}")
+        with self.assertRaisesRegex(ValueError, "canonical policy mismatch"):
+            self.plan()
+        owner.write_bytes(policy_path.read_bytes())
+        self.assertEqual(self.plan().inputs[owner], owner.read_bytes())
+
+    def test_generic_review_does_not_read_existing_malformed_optional_policy(self):
+        import publish_active_task
+        path, _ = self.adopted_policy()
+        original = publish_active_task._object
+        def read(target, relative, limit):
+            self.assertNotEqual(relative, ".ai/project/testing/test-first-policy.json")
+            return original(target, relative, limit)
+        for raw in (b"{", b'{"state": "disabled"}'):
+            path.write_bytes(raw)
+            with self.subTest(raw=raw), patch.object(publish_active_task, "_object", side_effect=read):
+                self.assertNotIn(path, self.plan().inputs)
+
     def test_invalid_review_and_lifecycle_drafts_leave_all_files_unchanged(self):
         before = {path: path.read_bytes() for path in (self.model_path, self.target / INDEX, self.target / self.model["active_projection"]["path"])}
         for field in ("review", "lifecycle"):

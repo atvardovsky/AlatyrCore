@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -1071,8 +1072,7 @@ def source_self_check() -> list[str]:
                     },
                 }
             )
-            report_path = safe_path(output, run["report"], "report")
-            report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+            failures.extend(_subject_contract_failures(output, run, task, report))
         completed_failures, reports = validate_benchmark(
             manifest_path, require_reports=True, require_reviewed=True
         )
@@ -1170,18 +1170,81 @@ def source_self_check() -> list[str]:
     return failures
 
 
+def _subject_contract_failures(output: Path, run: dict, task: dict, report: dict) -> list[str]:
+    failures = []
+    report_path = safe_path(output, run["report"], "report")
+    report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    prompt = safe_path(output, run["prompt"], "prompt").read_text(encoding="utf-8")
+    if f"Report `task` (exact JSON string): {json.dumps(task['name'], ensure_ascii=True)}" not in prompt:
+        failures.append("generated prompt omits the exact checked task name")
+    contract_path = report_path.with_name("run-contract.json")
+    failures.extend(validate_run_report(contract_path, report_path))
+    result = subprocess.run([sys.executable, str(Path(__file__).resolve()), "--run-contract", str(contract_path),
+                             "--report", str(report_path)], capture_output=True, text=True, timeout=30)
+    if result.returncode:
+        failures.append("single-report CLI rejected its valid own-run fixture: " + result.stderr)
+    original = report_path.read_bytes()
+    try:
+        report = json.loads(original)
+        report["task"] = task["name"] + " invalid"
+        report_path.write_text(json.dumps(report), encoding="utf-8")
+        if not validate_run_report(contract_path, report_path):
+            failures.append("single-report validation accepted an incorrect task identity")
+        result = subprocess.run([sys.executable, str(Path(__file__).resolve()), "--run-contract", str(contract_path),
+                                 "--report", str(report_path)], capture_output=True, text=True, timeout=30)
+        if result.returncode != 1 or "field task does not match benchmark" not in result.stderr:
+            failures.append("single-report CLI did not diagnose incorrect task identity")
+    finally:
+        report_path.write_bytes(original)
+    return failures
+
+
+def validate_run_report(contract_path: Path, report_path: Path) -> list[str]:
+    """Format-only subject check; organizer manifest remains the final authority."""
+    try:
+        contract, report = load_json(contract_path), load_json(report_path)
+        if type(contract.get("schema_version")) is not int or contract.get("schema_version") != 1 or contract.get("contract_kind") != "alatyr-benchmark-run-contract":
+            raise ValueError("unsupported run contract")
+        manifest, task, run = (contract[key] for key in ("manifest", "task", "run"))
+        task_index({"tasks": [task]})
+        if (not isinstance(manifest, dict) or not isinstance(run, dict)
+                or run["task_id"] != task["id"] or run["adapter_mode"] not in MODES
+                or type(run["repetition"]) is not int or run["repetition"] < 1
+                or not valid_sha256(run["project_baseline_hash"])
+                or not valid_sha256(manifest["evidence_contract_digest"])
+                or not all(isinstance(value, str) and value for value in
+                           (manifest["benchmark_id"], manifest["source_commit"], run["run_id"]))):
+            raise ValueError("invalid run contract identity")
+        validate_benchmark_report(report_path, report, manifest, run, task, require_reviewed=False)
+    except (OSError, ValueError, KeyError, TypeError, AssertionError) as exc:
+        return [str(exc)]
+    return []
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate prepared or completed effectiveness benchmarks."
     )
-    parser.add_argument(
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument(
         "--benchmark",
         type=Path,
         help="Path to prepared benchmark.json. Omit for the source self-check.",
     )
+    selection.add_argument("--run-contract", type=Path, help="Check one subject report without organizer or sibling access; format only.")
+    parser.add_argument("--report", type=Path, help="Report for --run-contract.")
     parser.add_argument("--require-reports", action="store_true")
     parser.add_argument("--require-reviewed", action="store_true")
     args = parser.parse_args()
+    if args.run_contract or args.report:
+        if not (args.run_contract and args.report) or args.require_reports or args.require_reviewed:
+            parser.error("--run-contract and --report must be used together without comparative flags")
+        failures = validate_run_report(args.run_contract, args.report)
+        for failure in failures:
+            print(f"FAIL: {failure}", file=sys.stderr)
+        if not failures:
+            print("OK: single report format matches supplied run contract; not review or acceptance evidence")
+        return 1 if failures else 0
     if args.require_reviewed and not args.require_reports:
         print("FAIL: --require-reviewed requires --require-reports", file=sys.stderr)
         return 1

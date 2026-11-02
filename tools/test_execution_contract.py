@@ -24,6 +24,29 @@ SURFACES = (
     ".ai/assistant/templates/test-first-evidence.md",
 )
 
+REPAIR_POLICY = ".ai/project/testing/test-first-policy.json"
+REPAIR_OBLIGATION = "repair-evidence-review"
+
+
+def repair_review_capture_failures(model: dict[str, Any], policy: Any, *,
+                                   contract: TestExecutionContract | None = None) -> list[str]:
+    """Validate optional-policy adoption before retaining its reserved obligation."""
+    obligations = [item for item in model.get("proof_obligations", [])
+                   if item.get("id") == REPAIR_OBLIGATION]
+    if not obligations:
+        return []
+    failures = []
+    if len(obligations) != 1 or obligations[0].get("required") is not True:
+        failures.append("reserved repair-evidence-review must be one required obligation")
+    if model.get("incident", {}).get("mode") not in {"new", "continuation", "systemic-repair"}:
+        failures.append("captured incident review cannot drop its incident identity")
+    review = policy.get("repair_review") if isinstance(policy, dict) else None
+    if not isinstance(review, dict) or review.get("state") != "enabled":
+        failures.append("reserved repair-evidence-review requires explicit enabled repair_review policy; use generic proof obligations for core-only work")
+        return failures
+    failures.extend((contract or TestExecutionContract()).policy_failures(policy))
+    return failures
+
 
 def has_placeholders(value: Any) -> bool:
     if isinstance(value, dict):

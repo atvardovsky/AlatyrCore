@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import copy
 import hashlib
 import json
@@ -348,7 +349,9 @@ def validate_fixture(failures: list[str]) -> None:
             failures.append("historical snapshot drift was not reported as non-corrupting evidence")
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
+    parser.parse_args(argv)
     failures: list[str] = []
     require_text(FRAMEWORK, ["ALATYR-ENGINEERING-EVIDENCE-001", "## Capture Decision", "## Publication Boundary", "Do not store raw chat", "materiality", "source-of-truth registry", "Debug session IDs", "bidirectionally"], failures)
     require_text(FLOW, ["## Steps", "captured", "skipped", "blocked", "Reject raw chats", "applicable, not applicable, or unknown", "canonical source", "link back to this evidence ID"], failures)

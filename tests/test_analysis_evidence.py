@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from analysis_evidence import (MAX_ARTIFACT_BYTES, next_action_advice, probe_binding,
+from analysis_evidence import (MAX_ARTIFACT_BYTES, MAX_EVIDENCE_BYTES, next_action_advice, probe_binding,
                                revision_failures, verify_artifacts)
 from analysis_strategy_contract import load_json_object, validate_problem_model
 from publish_active_task import prepare
@@ -286,6 +286,71 @@ class AnalysisEvidenceIntegrationTests(ActiveTaskFixture):
             "--target", str(self.target), "--task-id", "fixture-task", "--draft", relative], capture_output=True, text=True)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("artifact digest changed", result.stderr)
+
+    def test_aggregate_budget_bounds_real_reads_and_preserves_duplicate_bindings(self):
+        from unittest.mock import patch
+        bindings = []
+        for number in range(5):
+            relative = f".ai/.runtime/input-{number}.snapshot"
+            path = self.target / relative
+            path.write_bytes(b"x" * MAX_ARTIFACT_BYTES)
+            bindings.append((relative, hashlib.sha256(path.read_bytes()).hexdigest()))
+        for delta in (-1, 0, 1):
+            last = self.target / bindings[3][0]
+            last.write_bytes(b"x" * (MAX_ARTIFACT_BYTES - 1 if delta == -1 else MAX_ARTIFACT_BYTES))
+            selected = [(p, hashlib.sha256((self.target / p).read_bytes()).hexdigest()) for p, _ in bindings[:4]]
+            if delta == 1:
+                selected.append(bindings[4])
+            reads = []
+            def read(path, limit):
+                with (self.target / path).open("rb") as stream:
+                    raw = stream.read(limit + 1)
+                reads.append((path, limit, len(raw)))
+                return raw
+            with patch("analysis_evidence.artifact_bindings", return_value=selected):
+                failures = verify_artifacts(self.model, read)
+            with self.subTest(delta=delta):
+                self.assertEqual(bool(failures), delta == 1)
+                self.assertLessEqual(sum(row[2] for row in reads), MAX_EVIDENCE_BYTES + 1)
+                if delta == 1:
+                    self.assertEqual(reads[-1][1:], (0, 1))
+        selected = [bindings[0], bindings[0], (bindings[0][0], "0" * 64)]
+        reads = []
+        with patch("analysis_evidence.artifact_bindings", return_value=selected):
+            failures = verify_artifacts(self.model, read)
+        self.assertEqual(len(reads), 1)
+        self.assertTrue(any("digest changed" in value for value in failures))
+
+    def test_remaining_budget_is_passed_to_reader_and_read_failure_stops(self):
+        from unittest.mock import patch
+        reads = []
+        def read(path, limit):
+            reads.append(limit)
+            if path == "failure":
+                raise ValueError("bounded read failed")
+            return b"x" * min(limit, MAX_ARTIFACT_BYTES - 1)
+        bindings = [(f"input-{i}", "0" * 64) for i in range(5)]
+        with patch("analysis_evidence.artifact_bindings", return_value=bindings):
+            verify_artifacts(self.model, read)
+        self.assertEqual(reads, [MAX_ARTIFACT_BYTES] * 4 + [4])
+        reads.clear()
+        with patch("analysis_evidence.artifact_bindings", return_value=[("failure", "0" * 64), *bindings]):
+            self.assertTrue(verify_artifacts(self.model, read))
+        self.assertEqual(reads, [MAX_ARTIFACT_BYTES])
+
+    def test_exhausted_budget_allows_cached_and_empty_artifacts_then_stops(self):
+        from unittest.mock import patch
+        data = {"first": b"aaaa", "second": b"bbbb", "empty": b"", "overflow": b"x", "unread": b"x"}
+        bindings = [(path, hashlib.sha256(data[path]).hexdigest())
+                    for path in ("first", "second", "first", "empty", "overflow", "unread")]
+        reads = []
+        def read(path, limit):
+            reads.append((path, limit))
+            return data[path][:limit + 1]
+        with patch("analysis_evidence.MAX_ARTIFACT_BYTES", 4), patch("analysis_evidence.MAX_EVIDENCE_BYTES", 8), \
+                patch("analysis_evidence.artifact_bindings", return_value=bindings):
+            self.assertTrue(verify_artifacts(self.model, read))
+        self.assertEqual(reads, [("first", 4), ("second", 4), ("empty", 0), ("overflow", 0)])
 
 
 if __name__ == "__main__":

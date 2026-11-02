@@ -47,9 +47,10 @@ Before execution:
 
 Before completion:
 
-- required obligations are passed with evidence or waived under explicit
-  target-authorized policy
+- required obligations passed with evidence or waived under explicit target-authorized policy
 - required reviews passed with evidence
+- reserve `repair-evidence-review` for valid explicitly enabled repair policy
+- snapshots stay inert; rerun affected prescribed validation after packaging
 - schema-7 business authority, restoration classification and original-case acceptance are resolved;
 - conditional analysis_evidence binds predictions, current inputs and results; pending revisions and source-derived challenges remain visible and block completion when unresolved;
   owner supersession remains distinct from fixing the original expectation
@@ -60,14 +61,12 @@ Before completion:
   normative requirement; positive fixtures and generated synchronization do
   not count as adversarial evidence
 - invalidated assumptions and unresolved decisions remain explicit
-- historical transitions reference existing assumptions and obligations without
-  requiring their current states to remain invalidated or unresolved
+- historical transitions retain existing assumption/obligation references, not necessarily
+  their past invalidated/unresolved states
 - no private reasoning, hidden chain-of-thought, or raw scratchpad was stored
-- reusable outcomes are classified, but promotion remains an explicit
-  project-owned action
+- classify reusable outcomes; promotion requires explicit project-owned action
 - close registered work with hash-bound `task-closure.json`; retain reviewed
-  model/projection witnesses in `.ai/assistant/task-evidence/` before closing
-  non-small work. Full checks must not require ignored runtime files
-  separate implementation, evidence finalization, and publication. Resolve
-  capture to the engineering index or justified preservation/blocker, and
-  check relevant architecture source reviews rather than only support hashes
+  model/projection witnesses for non-small work in `.ai/assistant/task-evidence/`.
+  Full checks need no ignored runtime. Distinguish implementation,
+  finalization and publication. Resolve capture to engineering records,
+  justified preservation or blockers; review relevant architecture sources, not just hashes

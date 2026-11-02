@@ -7,14 +7,15 @@ import hashlib
 from typing import Any
 
 from repair_review import evidence_failures
-from test_execution_contract import TestExecutionContract
+from test_execution_contract import (TestExecutionContract, REPAIR_POLICY, REPAIR_OBLIGATION,
+                                     repair_review_capture_failures)
 from target_adapter_validation.testing_execution import validate_testing_execution
 from target_validation_support import is_target_relative_path
 from repair_classification import classify_repairs
 from repair_history import captured_repair_required
 
-POLICY = ".ai/project/testing/test-first-policy.json"
-OBLIGATION = "repair-evidence-review"
+POLICY = REPAIR_POLICY
+OBLIGATION = REPAIR_OBLIGATION
 MAX_RECORD_BYTES = 128 * 1024
 
 
@@ -102,12 +103,21 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
     uncertain = uncertain or captured
     if not uncertain and not obligations:
         return
-    if obligations and incident.get("mode") == "none":
-        validator.error("TDD_EXECUTION_CONTRACT", "captured incident review cannot drop its incident identity", POLICY)
-        return
     policy_path = validator.target_path(POLICY)
     policy = validator.load_json_object(policy_path, "TDD_EXECUTION_CONTRACT") if validator.is_target_file(POLICY) else None
     review = policy.get("repair_review") if isinstance(policy, dict) else None
+    contract = None
+    if obligations:
+        try:
+            if isinstance(review, dict) and review.get("state") == "enabled":
+                contract = TestExecutionContract()
+            capture_failures = repair_review_capture_failures(model, policy, contract=contract)
+        except (OSError, ValueError) as exc:
+            capture_failures = [str(exc)]
+        for failure in capture_failures:
+            validator.error("TDD_EXECUTION_CONTRACT", failure, POLICY)
+        if capture_failures:
+            return
     if review is not None and not isinstance(review, dict):
         validator.error("TDD_EXECUTION_CONTRACT", "repair_review must be a policy object", POLICY)
         return
@@ -128,11 +138,11 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
             validator.error("TDD_EXECUTION_CONTRACT", "captured repair-review requirement cannot be removed or deferred into successful acceptance", POLICY)
         return
     try:
-        contract = TestExecutionContract()
+        contract = contract or TestExecutionContract()
     except (OSError, ValueError) as exc:
         validator.error("TDD_EXECUTION_SCHEMA", str(exc), POLICY)
         return
-    failures = contract.policy_failures(policy)
+    failures = [] if obligations else contract.policy_failures(policy)
     for failure in failures:
         validator.error("TDD_EXECUTION_CONTRACT", failure, POLICY)
     if failures:

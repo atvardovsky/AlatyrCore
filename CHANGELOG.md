@@ -4,6 +4,27 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.122 - 2026-11-02
+
+- Reject reserved optional repair-review obligations before task publication
+  unless the canonical policy is valid and explicitly enabled. Reuse the same
+  applicability check during validation, bind policy bytes transactionally and
+  preserve sticky history. Generic core reviews remain policy-free.
+- Keep historical source snapshots outside executable test discovery and run
+  affected prescribed validation after packaging. Add a tested core-only
+  publication, witness retention and strict current-change/task finalization
+  walkthrough, including stale-result rejection and explicit recovery limits.
+- Allocate artifact reads from the remaining aggregate allowance, stop on
+  unreadable/oversized input and reuse unique-path digests. Keep 4 MiB per-file
+  and 16 MiB accepted-payload ceilings; bounded readers may probe one extra byte.
+- Supply exact benchmark report identity and per-run format validation without
+  sibling-run access. Make engineering-evidence help side-effect-free and reject
+  unknown options before checks. No agent cohort or comparative benefit claimed.
+- Advance framework content to alpha.122 and templates to 117. Adapter schema
+  remains 99: accepted record shapes and optional-policy adoption are unchanged.
+  No default bootstrap files, provider calls, ceiling increases or automatic
+  policy enablement are introduced.
+
 ## 0.1.0-alpha.121 - 2026-11-01
 
 - Separate independent-session working state from parent-scoped worker

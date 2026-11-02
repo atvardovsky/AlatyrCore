@@ -178,25 +178,27 @@ def active_retention_failures(model: dict, is_ignored: Callable[[str], bool | No
 
 
 def verify_artifacts(model: dict, read: Callable[[str, int], bytes]) -> list[str]:
+    """Cap accepted payload and each read allocation; readers may probe one byte."""
     failures = []
-    measured: dict[str, bytes] = {}
+    measured: dict[str, str] = {}
     total = 0
     for path, expected in artifact_bindings(model):
         if not is_target_relative_path(path) or "\\" in path:
             failures.append(f"analysis evidence has unsafe artifact path: {path}")
             continue
         if path not in measured:
+            limit = min(MAX_ARTIFACT_BYTES, MAX_EVIDENCE_BYTES - total)
             try:
-                raw = read(path, MAX_ARTIFACT_BYTES)
+                raw = read(path, limit)
             except (OSError, ValueError) as exc:
                 failures.append(f"analysis evidence artifact {path}: {exc}")
-                continue
-            total += len(raw)
-            if len(raw) > MAX_ARTIFACT_BYTES or total > MAX_EVIDENCE_BYTES:
+                break
+            if len(raw) > limit:
                 failures.append("analysis evidence exceeds artifact verification byte budget")
                 break
-            measured[path] = raw
-        if hashlib.sha256(measured[path]).hexdigest() != expected:
+            total += len(raw)
+            measured[path] = hashlib.sha256(raw).hexdigest()
+        if measured[path] != expected:
             failures.append(f"analysis evidence artifact digest changed: {path}")
     return failures
 

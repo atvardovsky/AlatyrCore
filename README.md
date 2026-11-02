@@ -240,6 +240,8 @@ For recurring defects, an optional repair review helps distinguish a test that
 ran from one that exercised the intended scenario. A faithful failing test can
 guide a repair; component success or a faster benchmark does not establish that
 the original incident is fixed. See [repair evidence](framework/test-first-development.md#incident-repair-review).
+Ordinary repairs need not enable that policy; follow the
+[core-only workflow](docs/core-repair-workflow.md) for evidence and finalization.
 
 Task-specific routing is designed to avoid loading the complete support
 library for routine work. Optional phase-specific working sets preserve required
@@ -321,7 +323,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.121`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.122`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.
