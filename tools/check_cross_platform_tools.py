@@ -40,6 +40,7 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "worker-communication",
     "lifecycle-checkpoint",
     "worktree-preflight",
     "restore-task",
@@ -71,6 +72,7 @@ EXPECTED_COMMANDS = {
     "support-delta",
     "change-cost",
     "support-costs",
+    "support-json",
     "impact",
     "generate-support",
     "validate-adapter",

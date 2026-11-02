@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import contextlib
 import json
 import subprocess
 import sys
@@ -65,6 +66,130 @@ class LifecycleTests(ActiveTaskFixture):
             "expires_at": datetime.fromtimestamp(time.time()+600, timezone.utc).isoformat()}
         self.write_policy()
         self.refresh_baseline()
+
+    def terminal_binding(self):
+        self.model["proof_obligations"][0]["status"] = "passed"
+        self.write_model(); self.close()
+        view = hooks.selected_task(self.target, "fixture-task")
+        paths = sorted({*view["checkpoint_inputs"], "design.md", hooks.POLICY})
+        (self.target / self.baseline).write_text(json.dumps(capture(self.target, paths)[0]), encoding="utf-8")
+        request = self.event("request")
+        return hooks.handle(self.target, self.policy["provider"], "before-action", {"session_id": "fixture-session"},
+            bind={"request_id": request["request_id"], "baseline": self.baseline, "task_id": "fixture-task", "completion_only": True})
+
+    def test_terminal_evidence_reuses_canonical_checks_without_reopening_execution(self):
+        from validate_target_adapter import Validator
+        with patch.object(Validator, "run", side_effect=AssertionError("full validator invoked by hook")):
+            self.assertEqual(self.terminal_binding()["status"], "bound")
+            result = self.event("completion")
+        self.assertEqual(result["status"], "completion-evidence-consistent", result)
+        self.assertFalse(result["acceptance_granted"])
+        self.assertFalse(result["authorization_granted"])
+        self.assertTrue(self.event("before-action")["checkpoint_required"])
+        self.assertEqual(self.event("before-action")["status"], "completion-only")
+
+    def test_no_ready_duties_are_not_evidence_of_completion(self):
+        self.model["proof_obligations"][0]["status"] = "blocked"
+        self.write_model(); self.write_index(); self.refresh_baseline(); self.bind_session()
+        result = self.event("completion")
+        self.assertEqual(result["status"], "handoff-review")
+        self.assertEqual(result["completion_review"], "closure-required")
+        self.assertFalse(result["acceptance_granted"])
+
+    def test_terminal_review_rejects_incomplete_models_and_stale_result_bytes(self):
+        self.terminal_binding()
+        self.model["proof_obligations"][0]["status"] = "open"
+        self.write_model(); self.write_closure()
+        with self.assertRaisesRegex(ValueError, "required proof obligations"):
+            hooks.selected_task(self.target, "fixture-task")
+        self.model["proof_obligations"][0]["status"] = "passed"
+        self.write_model(); self.write_closure()
+        (self.target / "src/example.txt").write_bytes(b"changed implementation\n")
+        with self.assertRaisesRegex(ValueError, "differs from closure result"):
+            hooks.selected_task(self.target, "fixture-task")
+
+    def test_terminal_closure_and_archived_projection_remain_retained_inputs(self):
+        self.terminal_binding()
+        real = hooks.selected_task
+        closure_path = self.target / self.task["completion_evidence"]["path"]
+        def changed(*args):
+            value = real(*args)
+            closure_path.write_bytes(closure_path.read_bytes() + b"\n")
+            return value
+        with patch.object(hooks, "selected_task", side_effect=changed):
+            result = self.event("completion")
+        self.assertEqual(result["status"], "review-required")
+        self.assertFalse(result["acceptance_granted"])
+
+    def test_terminal_review_still_obeys_interrupt_and_request_replacement(self):
+        self.terminal_binding()
+        old = hooks.session_status(self.target, "fixture-session")["request_id"]
+        request = self.event("request")
+        result = self.event("completion", request_id=old)
+        self.assertEqual(result["status"], "review-required")
+        self.assertFalse(result["emit_native_block"])
+        self.event("interrupt")
+        self.assertEqual(self.event("completion")["status"], "interrupted")
+
+    def test_new_request_revokes_a_slow_completion_before_acquiring_session_lock(self):
+        self.observed(); self.bind_session()
+        real = hooks.selected_task
+        def replacement(*args):
+            with self.assertRaisesRegex(ValueError, "lock timed out"):
+                self.event("request")
+            return real(*args)
+        with patch.object(hooks, "selected_task", side_effect=replacement):
+            result = self.event("completion")
+        self.assertEqual(result["status"], "interrupted")
+        self.assertFalse(result["emit_native_block"])
+
+    def test_waiting_request_cannot_acknowledge_a_newer_interrupt(self):
+        self.bind_session()
+        real_lock = hooks.file_lock
+        @contextlib.contextmanager
+        def interrupted_lock(*args, **kwargs):
+            self.event("interrupt")
+            with real_lock(*args, **kwargs):
+                yield
+        with patch.object(hooks, "file_lock", side_effect=interrupted_lock):
+            request = self.event("request")
+        self.assertEqual(request["status"], "interrupted")
+        self.assertEqual(self.bind_session(request)["status"], "interrupted")
+        self.assertEqual(self.event("before-action")["status"], "interrupted")
+        self.assertEqual(self.bind_session()["status"], "bound")
+
+    def test_terminal_result_mutated_after_selection_cannot_be_delivered_as_consistent(self):
+        self.terminal_binding()
+        real = hooks.selected_task
+        def changed(*args):
+            value = real(*args)
+            (self.target / "src/example.txt").write_bytes(b"changed after canonical review\n")
+            return value
+        with patch.object(hooks, "selected_task", side_effect=changed):
+            result = self.event("completion")
+        self.assertEqual(result["status"], "review-required")
+        self.assertFalse(result["acceptance_granted"])
+
+    def test_active_contract_bindings_are_checked_before_reviewed_binding(self):
+        from tests.test_contract_work import contract_model
+        self.model = contract_model()
+        self.write_model(); self.write_index(); self.refresh_baseline()
+        self.assertEqual(self.bind_session()["status"], "bound")
+        (self.target / "design.md").write_bytes(b"unreviewed contract\n")
+        with self.assertRaisesRegex(ValueError, "bound contract"):
+            hooks.selected_task(self.target, "fixture-task")
+
+    def test_terminal_review_cli_supports_completion_only_without_execution(self):
+        self.terminal_binding()
+        request = hooks.session_status(self.target, "fixture-session")["request_id"]
+        command = [sys.executable, str(ROOT / "tools/alatyr.py"), "lifecycle-checkpoint", "--target", str(self.target), "--provider", "codex"]
+        bound = subprocess.run(command + ["bind", "--session-id", "fixture-session", "--request-id", request,
+            "--baseline", self.baseline, "--task-id", "fixture-task", "--completion-only"], capture_output=True, text=True)
+        self.assertEqual(bound.returncode, 0, bound.stdout + bound.stderr)
+        for event, expected, exit_code in (("Stop", "completion-evidence-consistent", 0), ("PreToolUse", "completion-only", 1)):
+            result = subprocess.run(command + ["event", "--event", event], input=json.dumps({"session_id": "fixture-session"}), capture_output=True, text=True)
+            self.assertEqual(result.returncode, exit_code, result.stdout + result.stderr)
+            self.assertEqual(json.loads(result.stdout)["status"], expected)
 
     def test_disabled_path_does_not_inspect_tasks_or_write_state(self):
         self.policy["enabled"] = False; self.write_policy()

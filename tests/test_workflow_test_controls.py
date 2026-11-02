@@ -31,7 +31,7 @@ class HostedFixtureIsolationTests(unittest.TestCase):
         steps = workflow["jobs"]["portable-source-checks"]["steps"]
         expected = {
             "Run portable support authoring regressions": (32, "19fda75427046a126feff993c29db5ebf350c4f37ccb7ec622f4a4a5b0b378e1"),
-            "Run filesystem and session regressions": (8, "c0611c636f0c68c29e8550ee0a786069885569929481fa523ce8ca8e72bffe5f"),
+            "Run filesystem and session regressions": (11, "50fdbe8bfe21c53acb64758b57cabaeb3ae865c7e349c68206655c1536cfe33c"),
         }
         for name, (count, digest) in expected.items():
             step = next(row for row in steps if row.get("name") == name)

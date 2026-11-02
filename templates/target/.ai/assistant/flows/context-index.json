@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2796,
-      "content_digest": "sha256:2577d48acb62bc74610ed69ddfe5eabacd6da27f812aa4e18ef6289cff9c582a"
+      "estimated_words": 2820,
+      "content_digest": "sha256:6cfcffc1a5952f835d7b9e8576fec91ff3239f30b58dc49f3d289f62e8a89023"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -292,8 +292,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 701,
-      "content_digest": "sha256:8bb9508c2dbcf71fb7452cd1164aa9bedc5ef5f77b496a4a1affa57f7eb17aa5"
+      "estimated_words": 466,
+      "content_digest": "sha256:60a8c07ac719a23e785a7dee7afdcc28ffc61e2fddfc7e90559a7a1de3e354c4"
     },
     {
       "id": "assistant.content.flows-engineering-evidence-capture-flow-md",
@@ -384,8 +384,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 266,
-      "content_digest": "sha256:59e645488606e7b17049005e4f54eb5ea7227385b0a41e8b3666b4e536271b10"
+      "estimated_words": 321,
+      "content_digest": "sha256:30491d187cd444dbe328e6d02fdd735d2e2f62195866dd793186b8501c0eafaa"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",
@@ -454,8 +454,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 345,
-      "content_digest": "sha256:a03aae6edda9fd2a718882bc6c4e0140b823100eb21bd7c4499e30750ad8f1ba"
+      "estimated_words": 357,
+      "content_digest": "sha256:21641de20e5e986cf39183f3bc52d9c693406039f38a6446c8a97c91818eb95e"
     },
     {
       "id": "assistant.content.flows-project-knowledge-flow-md",
@@ -618,8 +618,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 1288,
-      "content_digest": "sha256:9a4f5eb370421188b4ac583ab7e66ed920d9f0c773c0eca70d241702597a78fa"
+      "estimated_words": 1358,
+      "content_digest": "sha256:10ca76446552a08e9b6f39504bfe1cea5b61b55dde1fe3d22bfd1a4524a96094"
     },
     {
       "id": "assistant.content.flows-support-generation-flow-md",

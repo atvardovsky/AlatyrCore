@@ -50,7 +50,9 @@ verified and the work requires the governed tree tier.
    execution, is independently useful, non-blocking, locally verifiable, and
    disjoint from concurrent writes and semantic ownership.
 4. Skip delegation when preparation, coordination, or review is likely to cost
-   more than primary execution.
+   more than primary execution, unless the canonical executor-preference rule
+   requires that part to use a worker or remain explicitly blocked. Never silently
+   weaken `require-supported`; `forbid` and authorization still win.
    Treat the minimum independent-packet threshold as an activation gate, not a
    requested worker count.
 5. Keep semantic, architecture, security, migration, approval, external-
@@ -142,6 +144,13 @@ verified and the work requires the governed tree tier.
    that surface's capability record.
 
 ## Result Review And Convergence
+
+For ongoing communication, apply
+`.ai/framework/subagent-delegation.md#parent-scoped-communication`. Use the existing
+ledger's optional `communication` only after explicit adoption. Independent
+sessions never share working state implicitly; nested parents use separate
+groups. Native transport remains capability-dependent; otherwise checkpoint and
+refresh the bounded packet. Channel views are not acceptance or permissions.
 
 1. Normalize the return through the machine result and human view; record the
    measured input-context, raw, and accepted-summary artifacts, SHA-256 identity, actual

@@ -4,13 +4,100 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.122 - 2026-11-02
+
+- Local compatibility candidate combines published alpha.121 with the retained
+  dcef646 recovery protections. Preserve schema-2 historical-loss records and
+  fail-closed validation while adopting topic/schema-aware support storage,
+  verified bounded JSON views, contract work and parent-scoped communication.
+- Preserve both source histories and the published release reports; the prior
+  recovery-specific alpha.118 report remains verifiable at its original commit.
+- Advance the combined adapter schema to 100 and templates to 117. No target
+  business behavior, authority, automatic artifact move or optional hook is
+  enabled. This local compatibility source is not an upstream publication.
+
+## 0.1.0-alpha.121 - 2026-11-01
+
+- Separate independent-session working state from parent-scoped worker
+  communication. Nested groups retain distinct membership; children report to
+  parents, and reviewed sibling delivery remains explicit and scope-bound.
+- Add optional schema-3 execution-tree communication metadata, generation and
+  source bindings, with canonical evidence validation. Existing trees without
+  the optional section remain valid; no channel is automatically created.
+- Add `worker-communication` identity, bounded read-only inspection and explicit
+  atomic compare-and-swap publication. Reject foreign identities, stale snapshots,
+  source drift, cross-group delivery, scope escapes and late terminal updates.
+  Messages confer no authority, authentication, hard isolation or acceptance.
+- Preserve the existing presence registry and node-owned progress. Load the new
+  machinery only when requested; no polling, provider calls, bootstrap files or
+  context/footprint limit increases. Charge delivered updates to worker budgets.
+- Advance framework content to alpha.121, adapter schema to 99 and templates
+  to 116. Review worker flow/prompt wording during controlled upgrades; channel
+  adoption and runtime writes require current primary authorization.
+
+## 0.1.0-alpha.120 - 2026-11-01
+
+- Extend topic-layout guidance to structured support: reuse schema-supported
+  indexes/shards, retain small cohesive records, and prefer bounded views of
+  machine inventories. Require status, coverage, acceptance limits and blocking
+  diagnostics in report delivery, or explicit overflow refusal.
+- Add opt-in `support-json` navigation with exact JSON Pointers, raw-source
+  hashes and complete UTF-8 output budgets. Saved-view checks reconstruct all
+  fields; they establish correspondence, not schema validity or acceptance.
+  Existing full adapter checks retain authoritative consistency coverage.
+- Bind legacy artifact migrations to current sources/schemas, stable identity,
+  ordered collections, mapped references, generated owners, a bounded approved
+  pilot and rollback. Generic update/sync never authorizes restructuring.
+- Advance framework content to alpha.120 and templates to 115. Adapter schema
+  remains 98; no new installed record, automatic migration or bootstrap read.
+
+## 0.1.0-alpha.119 - 2026-11-01
+
+- Apply coherent indexed topics to produced project documentation, including
+  existing canonical docs outside `.ai/`. Preserve required dependencies,
+  ownership and default bootstrap; do not split solely by size or headings.
+- Require evidence-backed legacy layout proposals during installation, update
+  and recheck when warranted. Restructuring requires explicit current-scope
+  approval, source bindings, a bounded pilot, reference synchronization and
+  rollback; generic update authorization is insufficient.
+- Add opt-in `support-costs --layout-review` with exact `--layout-path` selection,
+  current source hashes and explicit index/common-text cost assumptions.
+  Reports remain proposal-only and compare physical splits with existing
+  extraction without claiming latency, billing or semantic completeness.
+- Split the source optimization guide into independently selected topics while
+  preserving its old navigation anchors. Default report/routing paths remain
+  unchanged. Advance framework content to alpha.119 and templates to 114;
+  adapter schema remains 98, with no new required record or acceptance shape.
+- Keep target footprint/layout measurements on one invocation-local snapshot,
+  bound iterable inputs before consumption, and rank project candidates
+  independently of large framework files. Cover fenced and indented headings
+  without treating example text as the retained common-context boundary.
+
 ## 0.1.0-alpha.118 - 2026-11-01
 
-- Combine upstream source 61a01fb with the separately reviewed d217db0 recovery
-  candidate. Preserve both Git histories and schema-2 historical-loss handling;
-  same alpha.117 labels did not identify equivalent contracts. Keep original
-  alpha.117 evidence in its original commit and retain the installed candidate's
-  report as the reviewed incremental baseline.
+- Add conditional contract-bound work parts to the existing problem model:
+  current owner hashes, distinct positive/negative and integration/end-to-end
+  obligations, bounded deduplicated artifact verification and explicit executor
+  decisions. Model schema 7 remains backward compatible; small tasks need no
+  new field, registry, module or bootstrap read.
+- Enforce target/request delegation preferences per represented part. Required
+  delegation cannot silently fall back to primary execution; forbid, unavailable
+  capability and primary-owned levels remain boundaries. Reuse canonical receipt
+  and execution-tree verification with exact model/operation/node bindings and
+  coherent target reads, without claiming authenticated provider provenance.
+- Connect optional terminal lifecycle review to canonical selected-model and
+  closure validation. Completion-only bindings cannot reopen execution; original
+  obligations, current result, closure and archived projection remain checked.
+  New requests revoke stale continuation before waiting for the session lock.
+- Advance framework content to alpha.118, adapter schema to 98 for conditional
+  acceptance requirements, and target templates to 113. Preserve existing
+  delegation budgets, cost-aware automatic routing and opt-in hook adoption.
+
+- Fix Windows scaffold-cache creation following late dangling destination links:
+  use native create-new/no-reparse creation and explicit handle/descriptor
+  ownership. Preserve all nested-collision tests and add API/cleanup regressions;
+  POSIX creation, validation guards and framework/schema/template contracts
+  remain unchanged.
 - Apply one exclusive-create file copier to direct and recursive scaffold-cache
   materialization. Reject late nested files, directories and links without
   overwriting peer content; reject nonregular inputs before opening streams.

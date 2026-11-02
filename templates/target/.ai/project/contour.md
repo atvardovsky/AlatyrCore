@@ -35,6 +35,9 @@ when those modules are enabled and relevant to the question.
 
 ## Maintenance
 
+Produce and refactor support through the topic-layout contract in
+`.ai/framework/support-information.md#topic-layout-and-legacy-refactoring`.
+
 Every code or test change requires a Project Contour Sync Decision. Update this
 file only when purpose, users, architectural areas or owners, primary
 workflows, validation entry points, or known gaps changed. Update the selected

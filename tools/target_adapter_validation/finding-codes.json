@@ -125,6 +125,10 @@
       "code_count": 26
     },
     {
+      "id": "CONTRACT",
+      "code_count": 3
+    },
+    {
       "id": "DEBUG",
       "code_count": 140
     },
@@ -3682,6 +3686,33 @@
       ]
     },
     {
+      "code": "CONTRACT_WORK_ARTIFACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "CONTRACT_WORK_DELEGATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
+      "code": "CONTRACT_WORK_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_ACTIVATION",
       "levels": [
         "error"
@@ -5370,6 +5401,7 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py",
         "tools/target_adapter_validation/subagent_delegation.py",
         "tools/target_adapter_validation/task_decomposition.py"
       ]
@@ -5380,6 +5412,7 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/analysis_strategies.py",
         "tools/target_adapter_validation/subagent_delegation.py",
         "tools/target_adapter_validation/task_decomposition.py"
       ]

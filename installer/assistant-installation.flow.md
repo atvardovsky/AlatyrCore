@@ -247,6 +247,11 @@ Classify every proposed target file:
    Keep optional lifecycle hooks disabled on install/update unless separately
    approved; follow the lifecycle-checkpoints flow, preserving native definitions,
    trust and procedural fallback.
+   Preserve target delegation preferences. For adopted contract-sensitive work,
+   route to `framework/task-decomposition.md#contract-bound-work-parts`; do not
+   invent task parts, contracts, run evidence or worker provenance during update.
+   Keep `contract_work` absent for small tasks. Existing hooks remain opt-in;
+   completion-only review never reopens execution.
 11. Create or adapt target `.ai/README.md`.
 12. Copy or adapt the selected portable framework pack into target
     `.ai/framework`. Record the pack in the manifest and preserve its projected
@@ -305,7 +310,11 @@ Classify every proposed target file:
     affected. Keep the full documentation gate conditional unless the change
     actually requires documentation analysis or updates.
     Generate the framework, project, and assistant recursive context indexes
-    from the exact selected and projected installation. Validate acyclic
+    from the exact selected and projected installation,
+    using coherent topic owners under the topic-layout contract in
+    `framework/support-information.md#topic-layout-and-legacy-refactoring`;
+    propose legacy restructuring separately rather than applying it implicitly.
+    Validate acyclic
     single-parent traversal, bounded depth, one content entry per installed
     routable file, exact word estimates and digests, resolvable owner and
     semantic references, and no entries for omitted profile files. Install the

@@ -49,8 +49,8 @@
       "owner_refs": [
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 3371,
-      "content_digest": "sha256:9ed5c70aacb89af5852318706d94f936386a693ef3a6937c292f8febeef36fc9"
+      "estimated_words": 3777,
+      "content_digest": "sha256:00e91556a030d692c36b6a8bfaa0a4786b45d8cd8db612f5e2db6265b9d75bb5"
     },
     {
       "id": "framework.collaboration.task-decomposition-md",
@@ -70,8 +70,8 @@
       "owner_refs": [
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 2885,
-      "content_digest": "sha256:78f9299ea6f5cd08d532a42f816014c8c96a1acddd802c9f188dd6d84c2e7382"
+      "estimated_words": 3174,
+      "content_digest": "sha256:44a66a7f7b5fade968899e86f7f1fcdac07e09f7c7f9e0dd507a470f682342ab"
     },
     {
       "id": "framework.collaboration.team-collaboration-md",

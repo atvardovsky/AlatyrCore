@@ -1,114 +1,76 @@
 # Documentation Sync Flow
 
-## Purpose
-
-Keep target code comments, generated reference documentation, project docs,
-diagrams, prompts, gates, skills, bridge files, and assistant workflows
-synchronized after relevant changes. When the optional `code-documentation`
-module is enabled, select project-area comment styles and generators from
-accepted target profiles rather than applying one convention repository-wide.
+Keep project support synchronized with changed facts, using coherent indexed
+topics under
+`.ai/framework/support-information.md#topic-layout-and-legacy-refactoring`.
+Never impose one convention repository-wide.
 
 ## Routing Modes
 
-- `inventory`: identify documentation areas, profiles, owners, generators,
-  outputs, and gaps without changing files
-- `propose`: inspect a bounded source set and prepare an evidence-backed
-  comment-style and generator profile for target acceptance
-- `review`: inspect an existing profile, comments, generated output, freshness,
-  ambiguity, and direct-edit drift
-- `document`: add or update structured comments under one accepted profile
-- `synchronize`: update derived documentation and companion surfaces after a
-  changed fact
-- `generate`: run the selected target generator and validate its output policy
+- `inventory`: locate areas, canonical owners, profiles, generators and gaps
+- `propose`: recommend evidence-backed comment/generator profiles
+- `review`: check profiles, comments, output, freshness and ambiguity
+- `document`: update comments under an accepted profile
+- `synchronize`: update required companion surfaces
+- `generate`: run the accepted generator within its output policy
+- `refactor-proposal`: assess legacy support and propose a bounded migration
+- `refactor`: apply the specifically approved migration
 
-Route clear requests automatically. The user does not need to name a mode.
+Route clear requests automatically; users need not name modes.
 
 ## Allowed Actions
 
-- `read-only`: inventory, explain, compare, or propose; do not edit source,
-  profile, configuration, generated output, CI, or publication surfaces
-- `docs-only`: update project-owned documentation or proposed profile records;
-  do not mass-edit source comments or mark a profile accepted
-- `code-and-tests`: update source comments and run accepted local generation or
-  validation within the selected profile; do not install dependencies, change
-  CI, or publish externally
-- `full-with-approval`: perform specifically approved dependency, CI,
-  publication, permission, broad migration, or accepted-profile changes
+- `read-only`: inspect, explain or propose; no file, CI or publication changes
+- `docs-only`: edit authorized project docs or proposed profiles; no mass source
+  edits or profile acceptance
+- `code-and-tests`: edit authorized comments and run accepted local generators;
+  no dependency installation, CI change or publication
+- `full-with-approval`: only specifically approved protected changes
+
+These modes never supply approval. Generic update/sync authorization does not
+authorize legacy restructuring or accepted-profile changes.
 
 ## Steps
 
-1. Classify the request mode, changed facts, allowed actions, source scope, and
-   project area.
-2. Apply the Semantic Change Decision Gate from
-   `.ai/assistant/gates/checklist.md` and
-   `.ai/framework/logical-integrity.md`.
-3. Resolve changed fact IDs and canonical owners. When the optional
-   `consistency-map` module is enabled, follow applicable `documents`,
-   `visualizes`, `generates`, `verifies`, and dependent-contract edges.
-4. For code comments or generated reference documentation, check that
-   `code-documentation` is enabled; load `.ai/project/documentation/catalog.json` and
-   `.ai/project/documentation/profiles.json`.
-5. Select accepted profile candidates by path/source-set, language, framework,
-   specificity, and explicit priority. Stop automatic generation on an equal
-   conflict. If no accepted profile applies, route to `propose` under
-   `read-only`.
-6. For `propose`, inspect existing comments, compilers, linters, generators,
-   documentation sites, scripts, CI, IDE support, canonical specifications,
-   source owners, recurring findings, and maintenance constraints. Prefer an
-   existing convention; otherwise compare language-appropriate options using
-   common criteria.
-7. Record proposed syntax and project-area content separately. Frontend,
-   backend, shared-library, and infrastructure profiles may require different
-   semantic sections even when they share a language.
-8. Before changing comments, require an accepted, unambiguous profile. Apply
-   its required symbol set, semantic content, avoid rules,
-   uncertainty policy, and source-of-truth boundary.
-9. Never edit a configured generated output directly. Run the target-recorded
-   generator only when allowed actions permit.
-10. Enforce the selected output policy:
-    - `ci-artifact`: generation succeeds without requiring committed output
-    - `committed-generated`: regeneration leaves no unexplained generated diff
-    - `local-only`: output remains local under target retention policy
-    - `external-publish`: target approval and publication boundary are present
-    - `unresolved`: do not claim generation readiness
-11. Update other companion docs, tests, diagrams, prompts, gates, skills,
-    bridge files, or checker rules when selected relationships require them.
-12. Apply `.ai/assistant/gates/contract-artifacts.md` when documentation sync
-    changes API, schema, event, generated-reference, fixture, persistence, or
-    public-interface artifacts.
-13. Apply `.ai/assistant/gates/visual-validation.md` when documentation sync
-    changes diagram output, rendered visual artifacts, UI/visual explanatory
-    surfaces, or accessibility-relevant examples.
-14. Run target comment lint, generation, link, example, build, visual, or
-    manual review recorded by the selected profile.
-15. Report selected and skipped relationships, selected profile and state,
-    comments changed, symbols skipped, generated output, direct-edit result,
-    contract artifact result, visual validation result, validation, skipped
-    checks, approvals, Project Contour Sync Decision, and residual risk.
-
-## Rejection Criteria
-
-Reject or revise work that:
-
-- imposes one style on unrelated source areas without target evidence
-- selects a generator before checking existing project tooling
-- uses a proposed, unknown, deprecated, contradicted, or ambiguous profile for
-  broad source edits
-- edits generated output directly
-- invents accepted business, architecture, security, data, API, or operational
-  intent from implementation comments
-- adds comments that only repeat code syntax, identifiers, or types
-- installs dependencies, changes CI, publishes, or broadens permissions without
-  required approval
-- claims semantic correctness because documentation generation succeeded
+1. Classify mode, changed facts, current authorization, scope and project area.
+   Apply the Semantic Change Decision Gate in
+   `.ai/assistant/gates/checklist.md` and `.ai/framework/logical-integrity.md`.
+2. Resolve canonical owners and dependencies. Follow applicable `documents`,
+   `visualizes`, `generates`, `verifies` and dependent-contract edges when
+   `consistency-map` is enabled; otherwise review companion surfaces manually.
+3. For legacy refactoring, follow the owning topic-layout contract: bind the
+   proposal to sources, review semantic boundaries, pilot, obtain explicit
+   current-scope approval, preserve authority/conflicts/provenance, update
+   references and indexes, verify and retain rollback. Assessment never applies.
+4. For comments/generated references, require enabled `code-documentation`;
+   select from `.ai/project/documentation/catalog.json` and `profiles.json`
+   by source-set/path, language, framework, specificity and priority. Stop on
+   equal conflicts; missing accepted profiles route to read-only `propose`.
+5. Inspect existing comments, compilers, linters, generators, sites, scripts,
+   CI, IDE support, specifications, owners, recurring findings and maintenance
+   constraints. Prefer existing conventions; compare language-appropriate
+   alternatives before proposing syntax and semantic content separately.
+   Frontend, backend, shared-library, and infrastructure profiles may differ.
+6. Edit comments only under an accepted unambiguous profile, retaining required
+   symbols/sections, content focus, avoid rules, uncertainty and source-of-truth
+   boundaries. Do not repeat syntax/types or infer accepted intent from code.
+7. Never edit a configured generated output directly. Run only authorized
+   target-recorded generators. Enforce `ci-artifact` success,
+   `committed-generated` freshness without unexplained diff, `local-only`
+   retention, or separately approved `external-publish`; `unresolved` blocks
+   generation readiness.
+8. Synchronize required docs, tests, diagrams, prompts, gates, skills, bridges
+   and checker rules. Apply `.ai/assistant/gates/contract-artifacts.md` for affected contracts
+   and `.ai/assistant/gates/visual-validation.md` for rendered/UI/accessibility surfaces.
+9. Run recorded target lint, generation, links, examples, builds, visual checks
+   or manual review. Report selected/skipped relationships, profile/state,
+   changed/skipped symbols, output/direct-edit findings, artifact/visual
+   results, validation/skips, approvals, Project Contour Sync Decision and risk.
+   Generation success does not prove semantic correctness.
 
 ## Target Sources
 
-- `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
-- `{TARGET_PUBLIC_DOCS}`
-- `{TARGET_BLUEPRINT_OR_EQUIVALENT}`
-- `{TARGET_TEST_STRATEGY}`
+- `{TARGET_PROJECT_SOURCE_OF_TRUTH}`, `{TARGET_PUBLIC_DOCS}`
+- `{TARGET_BLUEPRINT_OR_EQUIVALENT}`, `{TARGET_TEST_STRATEGY}`
 - `{TARGET_DIAGRAM_POLICY}`
-- `.ai/project/documentation/catalog.json` and
-  `.ai/project/documentation/profiles.json` when `code-documentation` is enabled
-- `.ai/project/consistency-map.json` when the optional module is enabled
+- Selected enabled documentation profiles and consistency map only

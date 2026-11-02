@@ -30,8 +30,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 507,
-      "content_digest": "sha256:1fcbc700cb10598e7e45821260f42222bdff25fdf5a84919817642893d612787"
+      "estimated_words": 532,
+      "content_digest": "sha256:171863c1f80daf64c97ad554207f46a79624adc34a28b7446d39d65d3a9c2abf"
     },
     {
       "id": "assistant.content.gates-checklist-md",

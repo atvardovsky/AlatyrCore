@@ -72,13 +72,21 @@ def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def source_json(text: str) -> dict[str, Any]:
+def source_json(text: str, *, lossless_numbers: bool = False) -> dict[str, Any]:
     def invalid_constant(value: str) -> None:
         raise ValueError(f"invalid source JSON constant: {value}")
     def finite_float(value: str) -> float:
         number = float(value)
         if not math.isfinite(number):
             raise ValueError("source JSON number is not finite")
+        if lossless_numbers:
+            from decimal import Decimal, InvalidOperation
+            try:
+                exact = Decimal(value) == Decimal(str(number))
+            except InvalidOperation as exc:
+                raise ValueError("JSON number exceeds exact decimal representation; read the full source") from exc
+            if not exact:
+                raise ValueError("JSON number cannot be delivered without precision loss; read the full source")
         return number
     try:
         data = json.loads(text, object_pairs_hook=unique_object, parse_constant=invalid_constant, parse_float=finite_float)

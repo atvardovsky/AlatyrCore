@@ -63,6 +63,9 @@ forwards this operation to the selected source. See the
 [adoption and provider guide](../docs/assistant-lifecycle-hooks.md) for exact
 event mappings, trust review, cancellation, fallback and evidence limits.
 
+`bind --completion-only` reviews closed-task evidence without reopening execution.
+Its consistency result is not canonical acceptance or live-runtime readiness.
+
 ## External Case Identity Audit
 
 For external project reviews, follow the source
@@ -134,6 +137,48 @@ Both context and support-impact plans can deliver selected, digest-bound
 [reviewed warnings](../framework/consistency-model.md#drift-and-staleness).
 
 ## Worker Context Preparation
+
+### Parent-Scoped Communication
+
+The optional execution-tree `communication` section is specified by
+[delegation](../framework/subagent-delegation.md#parent-scoped-communication)
+and its existing [schema](../schemas/alatyr-delegation-execution-tree.schema.json).
+It is current coordination data, not canonical project knowledge or a second
+progress registry. No channel is created automatically. A primary coordinator
+may initialize the optional section in its existing ignored ledger only with
+current runtime-write authorization. Retain the session UUID, a fresh tree UUID,
+generation and snapshot hash independently; never adopt incoming identity as proof.
+
+Use the canonical tool checkout, replacing the illustrative target/ledger and
+uppercase binding values with actual retained values:
+
+```sh
+python3 tools/alatyr.py worker-communication --target /path/to/target-repo identity
+python3 tools/alatyr.py worker-communication --target /path/to/target-repo inspect --tree runtime/tree.json --session-uid SESSION_UUID --tree-uid TREE_UUID --parent-node PARENT_ID --participant-node WORKER_ID --expected-generation 1 --expected-sha256 SNAPSHOT_SHA256
+python3 tools/alatyr.py worker-communication --target /path/to/target-repo publish --tree runtime/tree.json --session-uid SESSION_UUID --tree-uid TREE_UUID --parent-node ROOT_ID --participant-node ROOT_ID --expected-generation 1 --expected-sha256 SNAPSHOT_SHA256 --candidate runtime/candidate.json --write
+```
+
+On Windows use `python` with the same arguments. `identity` reports local
+repository/worktree hashes, not session authentication. Inspection requires
+the exact current ledger digest and generation. It emits only addressed updates
+and direct-child status, verifies selected literal source hashes, refuses a
+complete serialized view above 32 KiB, and grants no execution or acceptance.
+Unique source hydration is limited to 8 MiB per verification pass. Publication
+checks all prospective recipient outputs, including the final snapshot hash.
+Its identity-only current-state preflight allows explicit repair of stale
+sources or an oversized old view; it never repairs malformed identity or
+terminal state. Self-bindings to the mutable ledger are rejected.
+Unrelated groups' source contents are not opened. Freeze delivered views through
+normal worker-context preparation so cumulative context limits still apply.
+
+Publication requires primary-coordinator identity, an ignored ledger, an unchanged
+snapshot and a candidate advancing exactly one generation. Only communication
+may change; node progress, scope, permissions and evidence stay with their owners.
+Terminal channels/primaries reject late updates. Writes use cooperative locking
+and atomic replacement; unrelated writers are not controlled. No network call,
+worker launch, timer, shared inbox or automatic notification is provided. Use
+verified native transport or checkpoint/re-dispatch; do not claim receipt merely
+because a snapshot was published. Runtime views are not project knowledge.
 
 With `--compact` or `--metrics`, `prepare-worker-result` writes `handoff.json` with measured
 artifact references, canonical result identity and incomplete candidate node
@@ -585,6 +630,8 @@ The stable command set is:
 - `change-cost`: read-only support/product file and line-change cost report
 - `support-costs`: read-only standing support-surface footprint report for a
   scaffold profile or installed target adapter
+- `support-json`: bounded source-bound JSON navigation and saved-view consistency;
+  no source mutation or adapter acceptance
 - `impact`: bounded changed-path/fact traversal through accepted target
   relationships; includes an impact-plan digest, but machine routing does not
   replace invariant reasoning
@@ -1974,12 +2021,80 @@ For scaffold profiles, the report projects the generated
 `.ai/support-state.json` for that profile instead of charging the complete
 source template inventory to every installation.
 
+Use `--target <repo> --layout-review` for proposal-only topic-layout assessment
+of the largest non-excluded project Markdown documents. Repeat `--layout-path`
+for exact canonical docs outside `.ai/` or a different bounded selection.
+The report binds current content hashes and includes index/common-text costs;
+dependency completeness, latency and billing remain unmeasured. Default reports
+do not run this assessment. The
+[topic-layout contract](../framework/support-information.md#topic-layout-and-legacy-refactoring)
+requires separate approval before any migration.
+
 ```sh
 python3 tools/alatyr.py support-costs
 python3 tools/alatyr.py support-costs --profile standard --format text
 python3 tools/alatyr.py support-costs --target /path/to/target-repo --format text
+python3 tools/alatyr.py support-costs --target /path/to/target-repo --layout-review --layout-path docs/architecture.md
 python3 tools/check_support_costs.py
 ```
+
+### Structured Support Views
+
+Use `support-json` for one explicitly selected JSON object, including reports
+outside `.ai/`. It does not split, rewrite or migrate files. Without `--select`,
+it returns root field shapes, collection counts and a layout recommendation;
+repeat exact JSON Pointers for needed values. Empty pointer selects the whole
+object. Existing schema-supported indexes remain the route to shards; the tool
+does not open referenced files or infer semantic independence from size.
+
+```sh
+python3 tools/alatyr.py support-json --target /path/to/target-repo --path .ai/support-state.json --select /groups
+python3 tools/alatyr.py support-json --target /path/to/target-repo --path tmp/validation.json > tmp/validation-view.json
+python3 tools/alatyr.py support-json --target /path/to/target-repo --path tmp/validation.json --check tmp/validation-view.json
+```
+
+The redirection in the second example writes in the shell's current directory;
+run it from the target repository, or use that target's absolute output path.
+Use `python` and the same arguments on Windows; no shell-specific syntax is
+needed unless saving output. The checker never writes.
+
+Views bind the exact source bytes, selectors and complete UTF-8 output size.
+Defaults: 8 MiB source ceiling, 32 user selectors, 64 root fields/container
+levels and 32 KiB
+delivery; `--max-output-bytes` can explicitly select up to 256 KiB. Invalid
+JSON, duplicate keys, numbers that cannot round-trip without precision loss,
+missing pointers, stale/tampered views and overflow fail
+without truncation. Overlapping selections are delivered once. Compare
+`delivery.bytes` with `source.bytes`, including envelope cost; reductions can
+be negative and are not token or latency savings.
+
+Schema-3 target-validation reports retain all findings and health, acceptance,
+scope and evidence limits. Schema-3 source-check reports retain completion,
+acceptance and scope plus every row not explicitly successful; successful
+per-check details remain in the bound source, with the total count disclosed.
+Unsupported versions of these reports are refused. Other JSON formats retain
+explicit root diagnostic/status fields, but their semantics are not inferred.
+Views are navigation, never accepted evidence or complete task context.
+
+`--check` reconstructs the saved view from the specified current source and
+compares all fields, including values, budget, layout and non-authority markers.
+It proves view correspondence only. For schema, shard hash/count, registry,
+reference and source/projection consistency, run the existing full
+`validate-adapter` acceptance path with its current-change bindings; individual
+`render-package-index` / `archive-approvals` checks are not final acceptance.
+
+Existing artifacts follow the
+[approved migration contract](../framework/support-information.md#topic-layout-and-legacy-refactoring).
+Before physical segmentation, record current source/schema hashes, owners,
+generator boundaries, old-to-new paths and stable IDs, ordered collections,
+reference/relationship mappings, unresolved conflicts and rollback. Pilot one
+area after explicit approval; regenerate through existing owners, validate
+identity-bound content and reference equivalence, then run full aggregate
+validation. A failure restores affected routes/catalogs/generated state
+together. Do not silently retarget historical evidence or saved views; their
+old bindings must become stale. Small configs and individual records stay
+whole; machine inventories prefer bounded views. No new task-time scan or
+bootstrap dependency is introduced by this optional source tool.
 
 `report_support_delta.py` compares the recorded support state with current
 support files and, when a Git base is supplied, separates changed support paths

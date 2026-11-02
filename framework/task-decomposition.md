@@ -66,6 +66,35 @@ For a small request, the decomposition result can be one task with one profile,
 one local surface or direct neighbor set, and compact final evidence. Do not
 create heavy operation packets when the one-task plan is enough.
 
+### Contract-Bound Work Parts
+
+For behavior-changing module/interface work, classify `contract-sensitive-multipart`
+and populate optional `contract_work` in the existing model, reusing task IDs.
+Before implementation, bind each part's target-relative contracts/SHA-256, level,
+executor/reason and distinct required positive/negative obligations. Review owner
+responsibility, inputs/outputs/units, dependencies, state/effects, errors and
+applicable deadline, ordering, retry, recovery and capacity contracts. Reference
+them; do not copy them into packets. Missing/conflicting contracts require owner
+decisions, never acceptance inferred from code.
+
+Keep integration/end-to-end obligations separate. Use independent expected
+results, actual internal boundaries and evidence that injected faults were reached.
+Check coherent slices and the final frozen-result matrix. Component passes do
+not discharge original outcomes; logical clocks do not prove real-clock load.
+Declarations are not run evidence.
+
+Current validation deduplicates bounded contract reads; overflow requires
+decomposition, not omitted owners. Frozen history keeps historical bindings
+unless selected for new completion. Small tasks need neither this field nor
+additional bootstrap.
+
+Workers reference existing receipt/tree paths and nodes, not containing-record
+hashes. Primary convergence binds the completed model's operation/base/strategy/
+digest; original worker input-context hashes remain immutable. This avoids hash
+cycles. Canonical evidence validation checks scope, artifacts and assigned
+obligations, not authenticated provider provenance or semantic correctness.
+Use one operation-wide record; splitting records cannot reset cumulative delegation budgets.
+
 ## Analysis Strategy Contract
 
 ### Active Task Selection
@@ -334,6 +363,16 @@ Quality gate: recheck newest user authorization immediately before action.
 
 Choose the least costly executor that can satisfy the subtask's implementation
 level and validation without increasing total coordination cost.
+
+Honor explicit delegation preferences before applying cost fallback. A target
+or current request's `require-supported` requires a worker for each represented
+eligible L1-L4 part; unavailable capability blocks that part and requests direction,
+not silent primary substitution. `forbid`, authorization and safety still win;
+conflicting preferences require reconciliation. Keep independent authorized work
+moving. L5 convergence remains primary-owned with existing bounded sidecars.
+Reuse bounded workers in dependency-ordered waves without increasing budgets.
+`auto` retains cost-aware local execution; declarations never prove dispatch.
+Do not collapse distinct delegable parts or relabel levels to evade required delegation.
 
 Primary execution is preferred when:
 

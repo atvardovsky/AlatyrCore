@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "worker-communication",
+      "script": "inspect_worker_communication.py",
+      "purpose": "inspect a snapshot-bound direct-parent worker communication view",
+      "write_scope": "target-ignored-runtime-with-explicit-write"
+    },
+    {
       "name": "lifecycle-checkpoint",
       "script": "run_lifecycle_checkpoint.py",
       "purpose": "deliver opt-in session lifecycle checkpoints without granting authority or running work",
@@ -268,6 +274,12 @@
       "script": "report_context_costs.py",
       "purpose": "measure static target context routing cost",
       "write_scope": "explicit-report-output-only"
+    },
+    {
+      "name": "support-json",
+      "script": "support_json.py",
+      "purpose": "inspect bounded JSON support views or check their source consistency",
+      "write_scope": "none"
     },
     {
       "name": "support-costs",

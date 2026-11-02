@@ -285,6 +285,12 @@ and do not claim a cache hit, token saving, or smaller model context.
 
 ## Subagent Delegation
 
+For contract-sensitive multi-part work, use
+[contract-bound parts](framework/task-decomposition.md#contract-bound-work-parts)
+in the existing model. Honor required/forbidden delegation before cost fallback;
+verify existing receipt/tree evidence rather than trusting executor labels.
+Completion-only lifecycle bindings review closed evidence without reopening work.
+
 Optional [lifecycle hook delivery](docs/assistant-lifecycle-hooks.md) stays
 separate from assistant instruction loading and delegation. Keep it disabled
 until target approval; native configuration, trust and observed interception
@@ -328,6 +334,10 @@ primary review, semantic-overlap reconciliation, and primary convergence. Only
 accepted coordinator summaries enter routine primary context; descendant raw
 results remain referenced for conflict or audit expansion. A provider-native
 worker summary is input evidence, not operation completion.
+
+Ongoing updates follow [parent-scoped communication](framework/subagent-delegation.md#parent-scoped-communication).
+Keep session/tree/group identities distinct. Use verified native transport or
+checkpoint/re-dispatch; no universal live messaging or hard isolation is implied.
 
 Known model names do not prove selection support. Require a target-verified
 role/model binding and current client evidence. If workers, model override,

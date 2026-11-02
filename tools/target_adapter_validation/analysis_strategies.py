@@ -373,6 +373,30 @@ def validate_selected_problem_model(
         validator.error("ANALYSIS_PROBLEM_MODEL_INVALID", failure, relpath)
     if model_failures:
         return None
+    if "contract_work" in model and (not frozen or current_task and require_completion):
+        from contract_work import work_failures, verify_work_artifacts, verify_work_delegation
+        policy_path = ".ai/assistant/delegation-policy.json"
+        policy = (validator.load_json_object(validator.target_path(policy_path), "DELEGATION_POLICY")
+                  if validator.is_target_file(policy_path) else None)
+        for failure in work_failures(model, completion=require_completion, policy=policy, policy_checked=True):
+            validator.error("CONTRACT_WORK_INVALID", failure, relpath)
+        if not frozen or current_task and require_completion:
+            def read_work_artifact(path: str, limit: int) -> bytes:
+                result = validator.context.read_bytes_result(validator.target_path(path), max_bytes=limit)
+                if result.value is None:
+                    raise ValueError(result.error or "missing contract-work artifact")
+                return result.value
+            for failure in verify_work_artifacts(model, read_work_artifact):
+                validator.error("CONTRACT_WORK_ARTIFACT", failure, relpath)
+            def read_delegation_artifact(path: Path, limit: int) -> bytes:
+                result = validator.context.read_bytes_result(path, max_bytes=limit)
+                if result.value is None:
+                    raise ValueError(result.error or "missing delegation artifact")
+                return result.value
+            for failure in verify_work_delegation(model, model_sha256=model_read.digest,
+                    policy=policy, target=validator.target, read=read_delegation_artifact,
+                    completion=require_completion):
+                validator.error("CONTRACT_WORK_DELEGATION", failure, relpath)
     if archived and not historical_witness:
         from analysis_evidence import active_retention_failures
         for failure in active_retention_failures(model, validator.git.is_ignored):

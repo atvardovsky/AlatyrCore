@@ -204,6 +204,39 @@ not force the optional module into every target.
 
 ## Installation And Update
 
+### Topic Layout And Legacy Refactoring
+
+Organize project support as canonical topics behind existing recursive indexes,
+including docs outside `.ai/`. Split by responsibility, not headings or size;
+keep cohesive docs, configs and individual records whole. Indexes route, not
+duplicate facts. Preserve constraints and dependency closure; batch selected
+reads without growing bootstrap.
+
+For JSON collections, reuse schema-supported indexes/shards and stable IDs.
+Keep machine inventories authoritative; deliver bounded source/hash-bound
+views, not wholesale context. Report views retain status, coverage, acceptance
+limits and blocking diagnostics, or refuse overflow; never silently truncate.
+Views neither replace evidence nor establish acceptance. Other formats use
+their native parsers, not regex splitting.
+
+At installation, update or recheck, propose legacy refactoring only for measured
+bulk, repetition or unclear ownership/routing. Bind source/schema hashes,
+owners, generated boundaries, proposed paths, ID/reference mappings,
+relationship impact, conflicts, validation and rollback. Generic update/sync
+does not authorize restructuring; require concrete current-scope approval and
+fresh bindings. Pilot one area; preserve authority, provenance and historical
+identity. Never hand-edit generated outputs.
+
+Synchronize references, registries, routes and catalogs before retiring paths;
+retain redirects, not duplicate owners. Verify schema compatibility, unique
+IDs, shard hashes/counts, identity-bound source/projection equivalence, ordered
+collections and mapped reference/dependency reachability
+and full aggregate validation. A view check proves selected content identity
+only. Compare equivalent tasks with whole-file and existing extraction,
+including index/common/dependency costs. Smaller artifacts prove no latency,
+billing or quality benefit. Unaffected routes remain usable; assessment never
+authorizes migration.
+
 During installation or update:
 
 1. Adapt support collections and exclusions from target evidence.

@@ -285,6 +285,11 @@ the target, refreshing supporting indexes, and final validation. The assistant
 reports acceptance or the exact blocker and next action; an assessment alone
 is not a completed upgrade.
 
+Project documentation can use focused topics behind small indexes, including
+existing docs outside `.ai/`. Alatyr can propose a bounded refactor for older,
+heavy support structures; it does not reorganize them merely because you
+requested an update. See [topic-sized support](framework/support-information.md#topic-layout-and-legacy-refactoring).
+
 Working in several local sessions? Local session presence lets participating
 assistants see each other's reported tasks and maintain short entries while
 working. New accepted installations enable it by default; coordination becomes
@@ -292,6 +297,11 @@ active when multiple independent sessions report work. Existing opt-outs are
 preserved. Linked worktrees share the registry, and each session removes its
 own entry when finished. It is not a scheduler or an exclusive work lock.
 See [session presence](framework/session-continuity.md#concurrent-session-presence).
+
+Session working state stays separate. Optional worker communication shares
+review-required updates only within a parent group, with source/snapshot checks
+and explicit sibling relays. It is not shared authority or automatic messaging.
+See [worker communication](framework/subagent-delegation.md#parent-scoped-communication).
 
 Linked worktrees can share an explicitly configured local tooling locator and
 carry reviewed active-task evidence. Optional publisher handoffs and build-capacity
@@ -315,10 +325,14 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.118`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.122`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.
+
+For changes spanning modules, agents can bind work to existing contracts and
+separate component tests from integrated outcomes. Optional completion checkpoints
+review that evidence without treating a progress report as proof of completion.
 
 Important limits:
 

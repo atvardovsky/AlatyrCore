@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import errno
 import hashlib
 import json
 import os
 import shutil
 import stat
+from contextlib import contextmanager
 from functools import lru_cache
 from pathlib import Path
 
@@ -129,12 +131,61 @@ def _valid_artifact(path: Path, profile: str) -> bool:
     )
 
 
+@lru_cache(maxsize=1)
+def _windows_file_api():
+    import ctypes
+    from ctypes import wintypes
+
+    api = ctypes.WinDLL("kernel32", use_last_error=True)
+    api.CreateFileW.argtypes = [
+        wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID,
+        wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE,
+    ]
+    api.CreateFileW.restype = wintypes.HANDLE
+    api.CloseHandle.argtypes = [wintypes.HANDLE]
+    api.CloseHandle.restype = wintypes.BOOL
+    return api
+
+
+@contextmanager
+def _windows_new_file(destination: str | Path):
+    import ctypes
+    import msvcrt
+
+    api = _windows_file_api()
+    handle = api.CreateFileW(
+        os.fspath(destination), 0x40000000, 0, None,  # GENERIC_WRITE, no sharing
+        1, 0x80 | 0x00200000, None,  # CREATE_NEW, NORMAL | OPEN_REPARSE_POINT
+    )
+    if handle == ctypes.c_void_p(-1).value:
+        code = ctypes.get_last_error()
+        if code in (80, 183):
+            raise FileExistsError(errno.EEXIST, "scaffold destination already exists", os.fspath(destination))
+        raise ctypes.WinError(code)
+    try:
+        fd = msvcrt.open_osfhandle(
+            handle, getattr(os, "O_BINARY", 0) | getattr(os, "O_NOINHERIT", 0)
+        )
+    except BaseException:
+        if not api.CloseHandle(handle):
+            raise ctypes.WinError(ctypes.get_last_error())
+        raise
+    try:
+        # The descriptor owns the handle; the stream never closes it implicitly.
+        with os.fdopen(fd, "wb", closefd=False) as outgoing:
+            yield outgoing
+    finally:
+        os.close(fd)
+
+
 def _copy_new_file(source: str | Path, destination: str | Path) -> str:
     if not stat.S_ISREG(os.stat(source).st_mode):
         raise shutil.SpecialFileError(f"scaffold source is not a regular file: {source}")
     # Preflight cannot exclude a peer arriving before this individual write.
-    with open(source, "rb") as incoming, open(destination, "xb") as outgoing:
-        shutil.copyfileobj(incoming, outgoing)
+    with open(source, "rb") as incoming:
+        new_file = _windows_new_file(destination) if os.name == "nt" else open(destination, "xb")
+        with new_file as outgoing:
+            shutil.copyfileobj(incoming, outgoing)
     shutil.copystat(source, destination)
     return os.fspath(destination)
 

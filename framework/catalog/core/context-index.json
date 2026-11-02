@@ -138,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3516,
-      "content_digest": "sha256:f26e7c21bf0cf1ca888e80d883ce869ac7beb03c3d8057dba71b4b763e5625eb"
+      "estimated_words": 3530,
+      "content_digest": "sha256:419fb8ec9e6b109b07b62803d3b93581b9d6a749461f3426ffee3c9ec057bbc8"
     },
     {
       "id": "framework.core.context-router-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:08212bd40ad8917a9e4ed71cc7a804a789cf205bf99d076f3cc7d042361d5077"
+      "content_digest": "sha256:4d1cfeabf680c2e1238203217ea866665a6942727db9c8f764c0bfc3bb6e57ee"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

@@ -50,8 +50,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 663,
-      "content_digest": "sha256:030050e85583be62dcb0bf81fbbf99b188172e713b84e6254f9667ad15fbc4ac"
+      "estimated_words": 673,
+      "content_digest": "sha256:03d263fabc1b968e7dd3910e6e61c7305be440097c2d52f8d0bbffcd22932041"
     },
     {
       "id": "project.content.development-evidence-json",

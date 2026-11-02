@@ -121,6 +121,12 @@ an explicit final disposition.
 
 ## Planning Rule
 
+For contract-sensitive multi-part behavior changes, adapt the existing problem
+model's optional `contract_work` using target-owned contracts and acceptance
+obligations. Follow [contract-bound parts](framework/task-decomposition.md#contract-bound-work-parts)
+and preserve explicit delegation preferences; installation/update does not
+invent evidence, require workers for all tasks, or enable lifecycle hooks.
+
 Prepare an installation plan using
 `installer/installation-plan-core-template.md`. Load only the selected sections
 of `installer/installation-plan-template.md` when enabled optional capabilities
@@ -329,6 +335,10 @@ In a typical target repository:
    distinct context. Propose zero or more evidence-bound modes after
    inspection, but keep them proposed until a separate user decision accepts
    them. Installation approval is not mode acceptance.
+   Apply `framework/support-information.md#topic-layout-and-legacy-refactoring`
+   to produced project docs and evidence-backed legacy refactor proposals.
+   Existing canonical docs may stay outside `.ai/`; installation approval does
+   not authorize an unrelated documentation restructuring.
 7. Create `kernel` surfaces: `.ai/assistant/contour.md`, hash-bound bootstrap,
    compact router, recursive framework/project/assistant `context-index.json`
    trees, projected codebook, context-packet template, continuity policy/
@@ -547,6 +557,12 @@ integration, commit, publication or live effects. Native definitions require
 verified surface support and remain thin bindings to target policy, role,
 packet, machine result, envelope/checkpoint, tree and validation. Fall back
 from unavailable models; never report an unobserved model as used.
+
+For ongoing exchange, preserve independent-session boundaries and follow
+[parent-scoped communication](framework/subagent-delegation.md#parent-scoped-communication).
+Update the worker flow/prompt during controlled migration. Do not create or
+enable runtime channels automatically, copy live state between sessions, or
+claim native messaging support without current capability evidence.
 
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
 equivalent target-language requests route to `diagram-discussion`. Installation

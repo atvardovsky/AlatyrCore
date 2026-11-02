@@ -21,6 +21,11 @@ mandatory, exhaustive overflow blocks, compact views retain diagnostic actions,
 and unobserved delivery/cost remains unknown. Preserve default routes when the
 feature is unused or unavailable.
 
+Assess legacy documentation under
+`.ai/framework/support-information.md#topic-layout-and-legacy-refactoring`.
+Propose bounded restructuring when evidence warrants it; an Alatyr update
+does not authorize that migration. Preserve unaffected valid routes.
+
 ## Target Sources
 
 - Framework baseline/source: `{ALATYR_CORE_SOURCE_OR_BASELINE}`

@@ -121,6 +121,18 @@ single-path test is not evidence for another writer's behavior. The replacement
 copier also rejects nonregular sources before opening their streams; a FIFO
 regression preserves the old copier's failure instead of introducing a hang.
 
+Windows CI exposed a further portability assumption: its runtime's `xb` open
+did not reject late dangling links. Windows materialization now uses
+[CreateFileW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew)
+with `CREATE_NEW` and `FILE_FLAG_OPEN_REPARSE_POINT`, not a separate existence
+check followed by a potentially link-following open. The native handle moves
+to a binary non-inheritable descriptor; one explicit owner closes it on success,
+copy/flush failure, or stream-construction failure. Pre-transfer failure closes
+the native handle instead. POSIX creation and normal target validation are
+unchanged. Keep the same real collision matrix in Windows/macOS CI; local
+POSIX success does not establish Windows filesystem semantics. Portable API
+tests supplement, but do not replace, those native runs.
+
 ### Field Attribution Still Required
 
 Retain the first failed report, command and timing before an explicit replay.

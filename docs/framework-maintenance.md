@@ -5,7 +5,7 @@ See [source optimization](source-optimization-workflow.md) for refresh and timin
 Use this guide when changing Alatyr Core itself.
 
 For context-delivery or agent-workflow changes, select the
-[development context contract](source-optimization-workflow.md#development-context-contract).
+[development context contract](source-optimization/development-context-contract.md).
 Keep it conditional; routine tasks do not load the whole architecture guide.
 
 Support authoring regressions should exercise real Git source advancement,
@@ -88,6 +88,23 @@ Run this public-path regression on portable hosts as well as Linux. Isolated
 module agreement is not a substitute for this cross-module proof.
 
 ## Change Categories
+
+Worker-communication changes must exercise real scoped reads and competing
+publication processes through the public CLI: foreign session/tree/worktree,
+nested membership, sender/recipient scope, source/snapshot drift, malformed
+types, byte/count boundaries, terminal updates and exact compare-and-swap.
+Optional communication must also fail through canonical execution-tree
+validation, while unchanged legacy trees retain their no-channel path. Native
+delivery, authentication and semantic correctness remain separate evidence.
+
+Contract-work regressions must use the registered active-task route with real
+contract bytes and existing delegation evidence tiers. Cover malformed fields,
+missing/wrong model bindings, positive/negative versus wider obligation reuse,
+forbid/required precedence, blocked parts, byte limits and deduplicated reads.
+Lifecycle tests retain the no-model fast path and exercise terminal-only binding,
+current result freshness and request/interruption revocation during slow checks.
+Recorded consistency and fixture passes do not establish actual worker provenance,
+semantic acceptance, live readiness or measured real-team improvement.
 
 - Framework rule change: update `framework/`, installer docs, target
   templates, README, and changelog when affected.

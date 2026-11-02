@@ -15,7 +15,8 @@ their behavior. Canonical rules remain in `.ai/framework/task-state-delivery.md`
    keeps its ordinary lightweight path. At a new request/resume, review the task
    and newest authorized phases. Resume never clears interruption/end boundaries. Capture
    current context including the lifecycle policy, canonical active-task index,
-   selected model/projection and applicable owners. Policy edits require renewed
+   selected model/projection, descriptor and applicable result/contract/evidence
+   files. A bind diagnostic names missing/changed selected inputs. Policy edits require renewed
    review and capture. Explicitly bind the current request via the portable
    delegate's `lifecycle-checkpoint` operation. The binding grants no authority.
 5. Before mutation, reconcile changed/expired selected context and check current
@@ -24,6 +25,11 @@ their behavior. Canonical rules remain in `.ai/framework/task-state-delivery.md`
 6. Before completion, inspect unresolved original outcomes and independent ready
    duties. Bounded reminders do not execute work or replace canonical acceptance.
    A blocker, pause, interruption, completed scope or missing authority wins.
+   For closed-task review, capture the actual closure, retained model and archived
+   projection, then bind with `--completion-only`. This cannot permit pre-action
+   execution. `completion-evidence-consistent` means canonical selected records
+   agree, not task acceptance or current runtime readiness. Empty ready lists,
+   provisional evidence and component passes do not establish completion.
 7. Report configured/adopted/exercised/intercepted states separately. Keep native
    errors, missing coverage and procedural checks visible. Never infer success
    from a configuration file or validator result alone.

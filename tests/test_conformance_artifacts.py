@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import ctypes
 import os
 import shutil
 import sys
 import tempfile
 import unittest
+from contextlib import ExitStack
 from pathlib import Path
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import MagicMock, Mock, patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,6 +24,103 @@ from conformance_artifacts import (  # noqa: E402
     publish_support_profile,
 )
 from target_adapter_validation.context import ValidationContext  # noqa: E402
+import conformance_artifacts as artifacts  # noqa: E402
+
+
+class WindowsNewFileTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.api = SimpleNamespace(CreateFileW=Mock(return_value=0x100000001), CloseHandle=Mock(return_value=1))
+        self.crt = SimpleNamespace(open_osfhandle=Mock(return_value=37))
+        self.stream = MagicMock()
+        self.stream.__enter__.return_value = self.stream
+        self.stream.__exit__.return_value = False
+        self.api_loader = artifacts._windows_file_api
+        stack = ExitStack()
+        self.addCleanup(stack.close)
+        stack.enter_context(patch.object(artifacts, "_windows_file_api", return_value=self.api))
+        stack.enter_context(patch.dict(sys.modules, {"msvcrt": self.crt}))
+        self.fdopen = stack.enter_context(patch("conformance_artifacts.os.fdopen", return_value=self.stream))
+        self.close = stack.enter_context(patch("conformance_artifacts.os.close"))
+        self.last_error = stack.enter_context(patch.object(ctypes, "get_last_error", return_value=5, create=True))
+        self.win_error = stack.enter_context(
+            patch.object(ctypes, "WinError", return_value=PermissionError("native creation failed"), create=True)
+        )
+
+    def test_api_declares_pointer_sized_handles(self) -> None:
+        from ctypes import wintypes
+        self.api_loader.cache_clear()
+        self.addCleanup(self.api_loader.cache_clear)
+        with patch.object(ctypes, "WinDLL", return_value=self.api, create=True) as load:
+            self.assertIs(self.api_loader(), self.api)
+            self.assertIs(self.api_loader(), self.api)
+        load.assert_called_once_with("kernel32", use_last_error=True)
+        self.assertIs(self.api.CreateFileW.restype, wintypes.HANDLE)
+        self.assertEqual(self.api.CloseHandle.argtypes, [wintypes.HANDLE])
+
+    def test_creation_uses_no_follow_and_transfers_handle_once(self) -> None:
+        with artifacts._windows_new_file("target.bin") as stream:
+            self.assertIs(stream, self.stream)
+        self.api.CreateFileW.assert_called_once_with("target.bin", 0x40000000, 0, None, 1, 0x00200080, None)
+        self.crt.open_osfhandle.assert_called_once_with(
+            0x100000001, getattr(os, "O_BINARY", 0) | getattr(os, "O_NOINHERIT", 0)
+        )
+        self.fdopen.assert_called_once_with(37, "wb", closefd=False)
+        self.close.assert_called_once_with(37)
+        self.api.CloseHandle.assert_not_called()
+
+    def test_native_creation_errors_never_transfer_or_close_invalid_handles(self) -> None:
+        self.api.CreateFileW.return_value = ctypes.c_void_p(-1).value
+        for code, expected in ((80, FileExistsError), (183, FileExistsError), (5, PermissionError)):
+            with self.subTest(code=code):
+                self.last_error.return_value = code
+                with self.assertRaises(expected):
+                    with artifacts._windows_new_file("target.bin"):
+                        self.fail("failed creation must not yield a stream")
+        self.crt.open_osfhandle.assert_not_called()
+        self.close.assert_not_called()
+        self.api.CloseHandle.assert_not_called()
+
+    def test_transfer_failure_closes_native_handle(self) -> None:
+        for error in (OSError("transfer failed"), KeyboardInterrupt()):
+            with self.subTest(error=type(error).__name__):
+                self.api.CloseHandle.reset_mock()
+                self.crt.open_osfhandle.side_effect = error
+                with self.assertRaises(type(error)):
+                    with artifacts._windows_new_file("target.bin"):
+                        self.fail("failed transfer must not yield a stream")
+                self.api.CloseHandle.assert_called_once_with(0x100000001)
+        self.close.assert_not_called()
+        self.fdopen.assert_not_called()
+
+    def test_native_cleanup_failure_is_not_suppressed(self) -> None:
+        self.crt.open_osfhandle.side_effect = OSError("transfer failed")
+        self.api.CloseHandle.return_value = 0
+        with self.assertRaisesRegex(PermissionError, "native creation failed"):
+            with artifacts._windows_new_file("target.bin"):
+                self.fail("failed cleanup must not yield a stream")
+        self.win_error.assert_called_once_with(5)
+        self.close.assert_not_called()
+
+    def test_stream_creation_failure_closes_descriptor(self) -> None:
+        self.fdopen.side_effect = OSError("stream failed")
+        with self.assertRaisesRegex(OSError, "stream failed"):
+            with artifacts._windows_new_file("target.bin"):
+                self.fail("failed stream creation must not yield")
+        self.close.assert_called_once_with(37)
+        self.api.CloseHandle.assert_not_called()
+
+    def test_body_and_flush_failures_close_descriptor(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "copy failed"):
+            with artifacts._windows_new_file("target.bin"):
+                raise RuntimeError("copy failed")
+        self.close.assert_called_once_with(37)
+        self.close.reset_mock()
+        self.stream.__exit__.side_effect = OSError("flush failed")
+        with self.assertRaisesRegex(OSError, "flush failed"):
+            with artifacts._windows_new_file("target.bin"):
+                pass
+        self.close.assert_called_once_with(37)
+        self.api.CloseHandle.assert_not_called()
 
 
 class ConformanceArtifactTests(unittest.TestCase):
