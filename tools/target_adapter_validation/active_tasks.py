@@ -20,7 +20,8 @@ from target_adapter_validation.context import TargetFileState
 from target_adapter_validation.consistency_map import parse_registry_fact_entries
 from target_validation_support import is_target_relative_path
 from task_evidence_contract import task_projection_mismatches, task_schema, task_model_header_failures, task_predecessor_failures
-from architecture_review import review_failures, BoundedReviewDigests
+from architecture_review import review_failures, BoundedReviewDigests, review_routes
+from target_adapter_validation.model_evidence import bound_object as _bound_object, retained_model_pair
 
 INDEX_PATH = ".ai/assistant/active-tasks.json"
 MAX_TASKS = 128
@@ -46,25 +47,6 @@ def _schema_valid(validator: Any, value: Any, name: str, source: str) -> bool:
     return not errors
 
 
-def _bound_object(validator: Any, binding: Any, label: str, *, details: dict[str, Any] | None = None) -> dict[str, Any] | None:
-    if not isinstance(binding, dict) or set(binding) != {"path", "sha256"}:
-        validator.error("ACTIVE_TASK_BINDING", f"{label} requires path and SHA-256", INDEX_PATH, details=details)
-        return None
-    path, digest = binding["path"], binding["sha256"]
-    if not is_resolved_string(path) or "\\" in path or not is_target_relative_path(path) or not _target_file(validator, path):
-        validator.error("ACTIVE_TASK_BINDING", f"{label} path is unavailable or unsafe: {path!r}", INDEX_PATH, details=details)
-        return None
-    artifact = validator.target_path(path)
-    if artifact.is_symlink():
-        validator.error("ACTIVE_TASK_BINDING", f"{label} must be a bounded regular file", path, details=details)
-        return None
-    content = validator.context.read_bytes_result(artifact, max_bytes=MAX_ARTIFACT_BYTES)
-    if content.value is None or digest != hashlib.sha256(content.value).hexdigest():
-        validator.error("ACTIVE_TASK_DIGEST", f"{label} SHA-256 does not match its artifact", path, details=details)
-        return None
-    return validator.load_json_object(artifact, "ACTIVE_TASK_ARTIFACT")
-
-
 def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = None, *, require_runtime: bool = False) -> tuple[Any, Any, Path | None]:
     """Retained witnesses preserve exact bindings, not current-task authority."""
     binding = task.get("problem_model")
@@ -74,27 +56,9 @@ def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = No
     witness = task.get("analysis_handoff") if active else closure.get("analysis_witness") if isinstance(closure, dict) else None
     if witness is None:
         return _bound_object(validator, binding, "problem model"), binding, None
-    if not isinstance(witness, dict) or set(witness) != {"model", "projection", "retention_review"} or not is_resolved_string(witness.get("retention_review")):
-        validator.error("ACTIVE_TASK_WITNESS", "durable evidence requires explicit bindings and retention review", INDEX_PATH)
-        return None, None, None
     task_id = task["task_id"]
     selected_runtime = require_runtime or getattr(validator, "current_task_id", None) == task_id
-    if re.fullmatch(r"[A-Za-z0-9._-]+", task_id) is None or task_id in (".", ".."):
-        validator.error("ACTIVE_TASK_WITNESS", "retained task identities must be safe path tokens", INDEX_PATH)
-        return None, None, None
-    prefix = f".ai/assistant/task-evidence/{task_id}/"
-    for name in ("model", "projection"):
-        item = witness[name]
-        if not isinstance(item, dict) or not isinstance(item.get("path"), str) or not item["path"].startswith(prefix) or validator.git.is_ignored(item["path"]) is not False:
-            validator.error("ACTIVE_TASK_WITNESS", "durable witness must be retainable below .ai/assistant/task-evidence/", INDEX_PATH)
-            return None, None, None
-    if not isinstance(binding, dict) or witness["model"].get("sha256") != binding.get("sha256"):
-        validator.error("ACTIVE_TASK_WITNESS", "durable model must preserve the registered runtime model digest", INDEX_PATH)
-        return None, None, None
-    retained_details = {name: {"task_id": task_id, "evidence_binding": witness[name], "action": "recover-exact-evidence"}
-                        for name in ("model", "projection")}
-    model = _bound_object(validator, witness["model"], "durable problem model", details=retained_details["model"])
-    projection = _bound_object(validator, witness["projection"], "durable active projection", details=retained_details["projection"])
+    model, projection = retained_model_pair(validator, binding, witness, task_id)
     if model is None or projection is None:
         return None, None, None
     if active and isinstance(binding, dict):
@@ -397,17 +361,7 @@ def _validate_selected_architecture_review(validator: Any, closure: dict[str, An
     by_id: dict[str, list[dict[str, Any]]] = {}
     for item in items:
         by_id.setdefault(item["id"], []).append(item)
-    owners = {_normalized_path(path) for path in closure["canonical_owners"]}
-    facts = set(closure["changed_fact_ids"])
-    related = set()
-    for item in items:
-        review = item.get("source_review")
-        if not isinstance(review, dict):
-            continue
-        paths = {_normalized_path(binding["path"]) for binding in review.get("inputs", []) if isinstance(binding, dict) and isinstance(binding.get("path"), str)} if isinstance(review.get("inputs"), list) else set()
-        reviewed_facts = {fact for fact in review.get("changed_fact_ids", []) if isinstance(fact, str)} if isinstance(review.get("changed_fact_ids"), list) else set()
-        if owners & paths or facts & reviewed_facts:
-            related.add(item["id"])
+    related = set(review_routes(items, closure["canonical_owners"], closure["changed_fact_ids"]))
     selected = set(disposition["item_ids"])
     if related - selected or disposition["state"] == "not-required" and selected:
         validator.error("TASK_ARCHITECTURE_REVIEW", "related architecture items require an explicit selected review", source)
@@ -426,7 +380,7 @@ def _validate_selected_architecture_review(validator: Any, closure: dict[str, An
             validator.error("TASK_ARCHITECTURE_REVIEW", f"{item_id} requires revalidation: {failures}", source)
 
 
-def validate_active_tasks(validator: Any) -> None:
+def validate_active_tasks(validator: Any, *, initializing: bool = False) -> None:
     """Select registered work without walking ignored runtime or archive folders."""
     try:
         index_read = validator.context.read_bytes_result(validator.target_path(INDEX_PATH), max_bytes=MAX_ARTIFACT_BYTES)
@@ -562,6 +516,6 @@ def validate_active_tasks(validator: Any) -> None:
                 validate_task_closure(validator, closure, task)
         elif task.get("completion_evidence") is not None:
             validator.error("ACTIVE_TASK_ENTRY", "active work cannot claim a closed-task receipt", INDEX_PATH)
-        elif task_id == selected_task and validator.validation_phase == "acceptance":
+        elif task_id == selected_task and validator.validation_phase == "acceptance" and not initializing:
             validator.error("ACTIVE_TASK_NOT_CLOSED", "selected current-task acceptance requires a closure receipt", INDEX_PATH)
     validator.info("ACTIVE_TASK_COVERAGE", f"checked {len(tasks)} registered current/recent tasks; unregistered history and runtime files were not scanned", INDEX_PATH)

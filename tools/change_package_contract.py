@@ -185,6 +185,23 @@ def package_index_projection_mismatches(
     )
 
 
+def retained_incident_shape_failures(value: Any) -> tuple[str, ...]:
+    """Shared syntax only; canonical task evidence checks bytes and authority."""
+    if not isinstance(value, dict) or set(value) != {"task_id", "model", "projection", "retention_review"}:
+        return ("retained_evidence requires an exact task/model/projection/review binding",)
+    if (not isinstance(value["task_id"], str) or re.fullmatch(r"[A-Za-z0-9._-]+", value["task_id"]) is None
+            or value["task_id"] in (".", "..") or not isinstance(value["retention_review"], str)
+            or not value["retention_review"].strip()):
+        return ("retained_evidence requires a safe task ID and concrete retention review",)
+    for key in ("model", "projection"):
+        binding = value[key]
+        if (not isinstance(binding, dict) or set(binding) != {"path", "sha256"}
+                or not isinstance(binding["path"], str) or not isinstance(binding["sha256"], str)
+                or re.fullmatch(r"[a-f0-9]{64}", binding["sha256"]) is None):
+            return ("retained_evidence requires exact path/SHA-256 pairs",)
+    return ()
+
+
 def incident_continuity_failures(record: dict[str, Any]) -> tuple[str, ...]:
     """Validate the deterministic incident-lineage portion of an active package."""
 
@@ -192,6 +209,8 @@ def incident_continuity_failures(record: dict[str, Any]) -> tuple[str, ...]:
     if not isinstance(incident, dict):
         return ("active change package requires incident_continuity",)
     failures: list[str] = []
+    if "retained_evidence" in incident:
+        failures.extend(retained_incident_shape_failures(incident["retained_evidence"]))
     required_fields = {
         "mode",
         "family_id",
@@ -211,9 +230,9 @@ def incident_continuity_failures(record: dict[str, Any]) -> tuple[str, ...]:
     trigger = incident.get("trigger")
     iteration = incident.get("corrective_iteration")
     predecessors = incident.get("predecessors")
-    if mode not in {"none", "new", "continuation", "systemic-repair"}:
+    if not isinstance(mode, str) or mode not in {"none", "new", "continuation", "systemic-repair"}:
         failures.append(f"unsupported incident mode: {mode!r}")
-    if trigger not in {
+    if not isinstance(trigger, str) or trigger not in {
         "none",
         "reported-defect",
         "escaped-defect",
@@ -237,7 +256,7 @@ def incident_continuity_failures(record: dict[str, Any]) -> tuple[str, ...]:
             failures.append("incident package requires a stable family_id")
         if trigger == "none":
             failures.append("incident package requires a concrete trigger")
-    if mode in {"continuation", "systemic-repair"}:
+    if isinstance(mode, str) and mode in {"continuation", "systemic-repair"}:
         if not isinstance(iteration, int) or isinstance(iteration, bool) or iteration < 1:
             failures.append("continued incident package requires corrective_iteration >= 1")
         if not predecessors:
@@ -259,12 +278,12 @@ def incident_continuity_failures(record: dict[str, Any]) -> tuple[str, ...]:
     else:
         state = gate.get("state")
         evidence = gate.get("evidence_refs")
-        if state not in {"none", "open", "resolved"}:
+        if not isinstance(state, str) or state not in {"none", "open", "resolved"}:
             failures.append(f"unsupported latest failed gate state: {state!r}")
         elif state == "none" and (gate.get("id") != "none" or evidence):
             failures.append("failed gate state none cannot carry identity or evidence")
         elif state in {"open", "resolved"} and (
-            gate.get("id") in {None, "", "none"}
+            not isinstance(gate.get("id"), str) or gate.get("id") in {"", "none"}
             or not isinstance(evidence, list)
             or not evidence
         ):
@@ -272,7 +291,7 @@ def incident_continuity_failures(record: dict[str, Any]) -> tuple[str, ...]:
     if (
         mode == "systemic-repair"
         or trigger
-        in {"escaped-defect", "failed-required-gate", "recurring-correction"}
+        in ("escaped-defect", "failed-required-gate", "recurring-correction")
     ) and incident.get("lifecycle_model_required") is not True:
         failures.append("systemic or escaped failure requires lifecycle_model_required=true")
     return tuple(failures)

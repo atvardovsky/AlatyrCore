@@ -65,7 +65,7 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
            for name in ("selection_contract", "timing_qualification")) and not context.is_target_file(guidance):
         context.error("TDD_EXECUTION_CONTRACT", "adopted selection/timing controls require their conditional framework guidance", guidance)
     for command in commands.values():
-        for path in command["execution"]["configuration_paths"]:
+        for path in [*command["execution"]["configuration_paths"], *command["execution"].get("harness_inputs", [])]:
             if not context.is_target_file(path):
                 context.error("TDD_COMMAND_CONFIGURATION_MISSING", "declared test command configuration is missing", path)
     inventory = None
@@ -134,9 +134,11 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
                 matches = context.content_digest(target_path) == digest
             if not matches:
                 context.error("TDD_EXECUTION_EVIDENCE_STALE", f"missing, escaped or changed evidence input: {input_path}", path)
-        if any(command["execution"].get(name) == "required" for name in ("selection_contract", "timing_qualification")) and record["counts"]["executed"] > 0:
+        controlled = ("harness_inputs" in command["execution"] or any(command["execution"].get(name) == "required" for name in ("selection_contract", "timing_qualification", "behavioral_accounting")))
+        supplied = any(name in record for name in ("selection_evidence", "qualification_window", "harness_identity", "case_accounting"))
+        if controlled and (record["counts"]["executed"] > 0 or supplied):
             from testing_controls import selected_control_failures
-            for failure in selected_control_failures(context.filesystem, record, command["execution"]):
+            for failure in selected_control_failures(context.filesystem, record, command["execution"], policy_path=owner_path):
                 context.error("TDD_EXECUTION_EVIDENCE", failure, path)
     if contract.view.finalize():
         context.error("TDD_EXECUTION_SCHEMA", "testing schema changed during validation; rerun", source)

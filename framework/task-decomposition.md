@@ -66,6 +66,11 @@ For a small request, the decomposition result can be one task with one profile,
 one local surface or direct neighbor set, and compact final evidence. Do not
 create heavy operation packets when the one-task plan is enough.
 
+At large-task initialization, inspect task/model/package bindings, approval
+metadata, checkout orientation and whole-owner/fact review routes before heavy
+execution. Repeat only after prerequisite changes. Readiness grants no
+execution/diff authorization or acceptance; small tasks need no additional pass.
+
 ### Contract-Bound Work Parts
 
 For behavior-changing module/interface work, classify `contract-sensitive-multipart`

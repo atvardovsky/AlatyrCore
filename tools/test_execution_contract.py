@@ -70,7 +70,7 @@ class TestExecutionContract:
             raise ValueError(result.error)
         self.schema = result.value
         self._repair_schema = None
-        self._legacy_schema = None
+        self._legacy_schemas = {}
         try:
             Draft202012Validator.check_schema(self.schema)
         except SchemaError as exc:
@@ -90,14 +90,14 @@ class TestExecutionContract:
             owner = self.repair_schema() if definition in {"repair_policy", "repair_evidence"} else self.schema
             version = (value.get("schema_version") if definition == "evidence" else
                        value.get("execution_contract", {}).get("schema_version") if isinstance(value.get("execution_contract"), dict) else None) if isinstance(value, dict) else None
-            if definition in {"policy", "evidence"} and type(version) is int and version == 2:
-                if self._legacy_schema is None:
-                    read = self.view.read_json_result(SCHEMA.with_name("test-execution-contract-v2.schema.json"))
+            if definition in {"policy", "evidence"} and type(version) is int and version in (2, 3):
+                if version not in self._legacy_schemas:
+                    read = self.view.read_json_result(SCHEMA.with_name(f"test-execution-contract-v{version}.schema.json"))
                     if read.error:
                         return ["legacy execution schema is unavailable: " + read.error]
                     Draft202012Validator.check_schema(read.value)
-                    self._legacy_schema = read.value
-                owner = self._legacy_schema
+                    self._legacy_schemas[version] = read.value
+                owner = self._legacy_schemas[version]
         except (OSError, ValueError, SchemaError) as exc:
             return [f"repair schema is unavailable or invalid: {exc}"]
         schema = {"$ref": f"#/$defs/{definition}", "$defs": owner["$defs"]}
@@ -110,7 +110,7 @@ class TestExecutionContract:
         if isinstance(value, dict):
             repair = definition in {"repair_evidence", "repair_policy"}
             version = value.get("schema_version") if definition == "evidence" or repair else value.get("execution_contract", {}).get("schema_version") if isinstance(value.get("execution_contract"), dict) else None
-            versions = (1, 2) if repair else (2, 3)
+            versions = (1, 2) if repair else (2, 3, 4)
             if type(version) is not int or version not in versions:
                 failures.append(f"execution/evidence schema_version must be an integer in {versions}")
             if definition == "evidence" and isinstance(value.get("counts"), dict):
@@ -131,6 +131,8 @@ class TestExecutionContract:
         contract = policy["execution_contract"]
         from testing_controls import policy_control_failures
         failures.extend(policy_control_failures(policy))
+        if failures:
+            return failures
         ids = [command["id"] for command in policy["commands"]]
         if len(ids) != len(set(ids)):
             failures.append("command IDs must be unique")
@@ -157,6 +159,7 @@ class TestExecutionContract:
             if not resource_errors:
                 failures.extend(f"{command['id']}: {failure}" for failure in effect_resource_failures(execution["effects"], execution["resources"]))
             paths.extend(execution["configuration_paths"])
+            paths.extend(execution.get("harness_inputs", []))
             if execution["kind"] == "automated-test" and not execution["suite_patterns"]:
                 failures.append(f"{command['id']}: automated tests need target-owned suite patterns")
             for pattern in execution["suite_patterns"]:

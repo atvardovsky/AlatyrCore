@@ -270,8 +270,22 @@ mapping yields declared ready/blocked/waiting obligations, never authority or
 accepted proof. Default health loads no extra task view. An unknown task is an
 explicit selection error; no selector is converted into a filesystem path.
 The installed delegate supports `doctor --current-task TASK-ID` too.
-Its status/doctor routes produce text; `--json` belongs to the source entry
-point shown above. Selected incident preflight distinguishes policy-free core
+Its status/doctor routes produce text; `--json` belongs to the source helper.
+Before heavy execution on a registered task, the source helper can inspect
+prerequisites without requiring task closure:
+`python3 tools/alatyr.py doctor --target /path/to/project --initialization --current-task TASK-ID --json`.
+Select current-operation approvals/packages with repeatable `--approval-record`
+and `--change-package`; `--historical-evidence-index` preserves reviewed legacy
+evidence rules. This checks task bindings, approval metadata/hashes and package
+evidence, not the actual authorized diff or all adapter acceptance gates.
+Run at initialization or after prerequisite changes, not before every command.
+These flags belong to the source helper, not the installed delegate.
+Its architecture view preserves fact-OR-whole-owner routing, explains matches,
+and groups shared stale inputs without waiving any required item review.
+Health output reports dirty/detached/tracking orientation from the existing local
+Git snapshot. It never fetches, switches branches or selects checkout authority;
+tracking may be stale until an authorized fetch. No automatic repair occurs.
+Selected incident preflight distinguishes policy-free core
 work from a retained requirement lacking valid current policy. The latter
 routes to target-owner history review, never automatic removal or enablement;
 see [core repair recovery](../docs/core-repair-workflow.md#mistaken-reserved-id-capture).

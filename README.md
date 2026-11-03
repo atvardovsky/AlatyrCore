@@ -247,6 +247,8 @@ For recurring defects, an optional repair review helps distinguish a test that
 ran from one that exercised the intended scenario. A faithful failing test can
 guide a repair; component success or a faster benchmark does not establish that
 the original incident is fixed. See [repair evidence](framework/test-first-development.md#incident-repair-review).
+Optional harness identity and behavioral/setup accounting expose reused inputs
+and misleading totals; they do not prove test quality.
 Ordinary repairs need not enable that policy; follow the
 [core-only workflow](docs/core-repair-workflow.md) for evidence and finalization.
 
@@ -330,7 +332,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.123`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.124`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

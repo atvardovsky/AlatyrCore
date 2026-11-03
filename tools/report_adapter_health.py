@@ -81,6 +81,10 @@ def health_payload(
     include_incident_frontier: bool = False,
     current_task_id: str | None = None,
     include_work_overview: bool = False,
+    initialization_task: str | None = None,
+    approval_records: list[Path] | None = None,
+    change_packages: list[Path] | None = None,
+    historical_evidence_index: Path | None = None,
 ) -> dict[str, Any]:
     phase = "migration-staging" if allow_placeholders else validation_phase
     config, config_findings = load_validator_config(target, config_path)
@@ -88,9 +92,9 @@ def health_payload(
         target,
         framework_source=framework_source,
         diff_ref=None,
-        approval_records=[],
-        enforce_approval_scope=False,
-        change_packages=[],
+        approval_records=approval_records or [],
+        enforce_approval_scope=initialization_task is not None,
+        change_packages=change_packages or [],
         enforce_change_package=False,
         migration_diff=None,
         allow_placeholders=allow_placeholders,
@@ -98,11 +102,18 @@ def health_payload(
         config=config,
         initial_findings=config_findings,
         validation_phase=phase,
-        approval_archive_mode="changed",
+        approval_archive_mode="full" if initialization_task is not None else "changed",
+        historical_evidence_index=historical_evidence_index,
     )
-    findings = validator.run()
+    readiness = None
+    if initialization_task is not None:
+        from initialization_readiness import initialization_readiness
+        readiness = initialization_readiness(validator, initialization_task)
+        findings = validator.findings
+    else:
+        findings = validator.run()
     task_view = None
-    if current_task_id is not None:
+    if current_task_id is not None and initialization_task is None:
         from current_task_view import current_task_view
         task_view = current_task_view(validator, current_task_id)
         if task_view["state"] == "unknown":
@@ -115,6 +126,7 @@ def health_payload(
         installation_state=validator.installation_state,
         phase_telemetry=validator.phase_telemetry,
         approval_archive_summary=validator.approval_archive_summary,
+        validation_scope="changed" if initialization_task is not None else "full",
     )
     advisory = build_capability_advisory(
         target=target,
@@ -122,6 +134,13 @@ def health_payload(
         required_capabilities=required_capabilities,
     )
     payload["capability_advisory"] = advisory
+    payload["checkout_context"] = validator.git.checkout_context()
+    if readiness is not None:
+        payload["initialization_readiness"] = readiness
+        payload["exit_code"] = max(payload["exit_code"], int(readiness["state"] == "blocked"))
+        if payload["exit_code"]:
+            readiness["state"] = "blocked"
+        payload["placeholder_validation"]["acceptance_eligible"] = False
     payload["repair_plan"] = repair_plan(validator.context, payload.get("findings", []))
     payload["tooling_comparison"] = tooling_comparison(validator.context, Path(__file__).resolve().parents[1])
     if include_work_overview:
@@ -217,6 +236,16 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         "Automatic repair performed: false",
     ]
     comparison = payload.get("tooling_comparison")
+    readiness = payload.get("initialization_readiness")
+    if isinstance(readiness, dict):
+        lines.append("Initialization readiness: " + readiness["state"] + "; not authorization or acceptance")
+        architecture = readiness["architecture"]
+        lines.append("Related architecture reviews: " + str(len(architecture.get("routes", {}))) + "; distinct stale input groups: " + str(len(architecture.get("input_groups", []))))
+    checkout = payload.get("checkout_context")
+    if isinstance(checkout, dict):
+        lines.append("Checkout: " + str(checkout["root"]) + " (" + str(checkout["worktree"]) + ")")
+        tracking = checkout["tracking"]
+        lines.append("Tracking: " + str(tracking["ref"]) + "; ahead=" + str(tracking["ahead"]) + "; behind=" + str(tracking["behind"]) + " (local refs only; not authority)")
     if isinstance(comparison, dict):
         lines.append("Tooling baseline: " + comparison["state"])
         lines.append("Producer versions: " + json.dumps(comparison["producer_versions"], sort_keys=True))
@@ -348,6 +377,10 @@ def main() -> int:
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--incident-frontier", action="store_true", help="Include an advisory bounded task-header view; does not narrow validation.")
     parser.add_argument("--current-task", help="Exact registered task ID for bound disposition and control adoption; never acceptance.")
+    parser.add_argument("--initialization", action="store_true", help="Inspect registered prerequisites before large-task execution; requires --current-task and never grants acceptance.")
+    parser.add_argument("--approval-record", type=Path, action="append", default=[])
+    parser.add_argument("--change-package", type=Path, action="append", default=[])
+    parser.add_argument("--historical-evidence-index", type=Path)
     parser.add_argument("--work-overview", action="store_true", help="Show bounded independent task/team owner views, not liveness or acceptance.")
     parser.add_argument(
         "--mode",
@@ -356,6 +389,10 @@ def main() -> int:
         help="status emits compact health only; doctor includes repair routes and findings.",
     )
     args = parser.parse_args()
+    if args.initialization and (not args.current_task or args.allow_placeholders or args.validation_phase != "acceptance"):
+        parser.error("--initialization requires --current-task and resolved acceptance-mode inputs")
+    if not args.initialization and (args.approval_record or args.change_package):
+        parser.error("explicit approval/package selections require --initialization")
 
     payload = health_payload(
         target=args.target,
@@ -369,6 +406,10 @@ def main() -> int:
         include_incident_frontier=args.incident_frontier,
         current_task_id=args.current_task,
         include_work_overview=args.work_overview,
+        initialization_task=args.current_task if args.initialization else None,
+        approval_records=args.approval_record,
+        change_packages=args.change_package,
+        historical_evidence_index=args.historical_evidence_index,
     )
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))

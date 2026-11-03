@@ -72,6 +72,9 @@ class GitRepositorySnapshot:
     head_revision: str | None
     branch_name: str | None
     worktree_status: bytes
+    upstream_ref: str | None = None
+    ahead: int | None = None
+    behind: int | None = None
 
 
 @dataclass(frozen=True)
@@ -708,6 +711,7 @@ class GitEvidenceView:
         self.initial_status = (
             initial_snapshot.worktree_status if initial_snapshot is not None else None
         )
+        self.initial_tracking = (initial_snapshot.upstream_ref, initial_snapshot.ahead, initial_snapshot.behind) if initial_snapshot is not None else (None, None, None)
         self.initial_state = (
             GitEvidenceState.STABLE
             if self.initial_head is not None
@@ -742,6 +746,8 @@ class GitEvidenceView:
         head_revision: str | None = None
         branch_name: str | None = None
         status_records: list[bytes] = []
+        upstream_ref = None
+        ahead = behind = None
         for record in result.stdout.split(b"\0"):
             if record.startswith(b"# branch.oid "):
                 value = record[len(b"# branch.oid ") :]
@@ -754,6 +760,12 @@ class GitEvidenceView:
                     if value == b"(detached)"
                     else value.decode("utf-8", errors="surrogateescape")
                 )
+            elif record.startswith(b"# branch.upstream "):
+                upstream_ref = record[len(b"# branch.upstream "):].decode("utf-8", errors="surrogateescape")
+            elif record.startswith(b"# branch.ab "):
+                match = re.fullmatch(rb"# branch\.ab \+(\d{1,20}) -(\d{1,20})", record)
+                if match:
+                    ahead, behind = map(int, match.groups())
             elif record and not record.startswith(b"# "):
                 status_records.append(record)
         worktree_status = b"\0".join(status_records)
@@ -763,6 +775,7 @@ class GitEvidenceView:
             head_revision=head_revision,
             branch_name=branch_name,
             worktree_status=worktree_status,
+            upstream_ref=upstream_ref, ahead=ahead, behind=behind,
         )
 
     def _cached(self, key: tuple[Any, ...], loader: Any) -> Any:
@@ -784,6 +797,17 @@ class GitEvidenceView:
         if self.initial_state is GitEvidenceState.UNAVAILABLE:
             return "unavailable"
         return "dirty" if self.initial_status else "clean"
+
+    def checkout_context(self) -> dict[str, Any]:
+        """Reuse the initial Git observation; never fetch or choose a checkout."""
+        upstream, ahead, behind = self.initial_tracking
+        return {"state": "observed" if self.initial_state is GitEvidenceState.STABLE else "unavailable",
+                "root": str(self.target), "branch": self.initial_branch, "revision": self.initial_head,
+                "worktree": self.worktree_state(),
+                "tracking": {"ref": upstream, "ahead": ahead, "behind": behind, "basis": "local-ref-snapshot-not-fetched"},
+                "review_required": self.worktree_state() != "clean" or self.initial_branch == "detached HEAD" or behind is not None and behind > 0,
+                "authoritative_checkout_selected": False, "automatic_checkout": False, "network_access": False,
+                "authority": "none"}
 
     def resolve_object(self, ref: str, object_kind: str = "commit") -> str | None:
         return self._cached(

@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.124 - 2026-11-03
+
+- Resolve explicitly bound historical incident models through the same retained
+  witness checks used by task evidence. Selected work still requires runtime
+  models; conflicts, substitution and implicit recovery remain rejected.
+- Add conditional task-initialization readiness through canonical prerequisite
+  checks and shared input-stability finalization, without final acceptance or
+  action authorization. Expose advisory local checkout/tracking orientation
+  using the existing Git snapshot without network or branch changes.
+- Reuse fact-OR-whole-owner architecture selection for early review routing and
+  shared stale-input groups without reducing the required review set.
+- Add opt-in execution-contract schema-4 harness input identity and separate
+  behavioral/supporting case accounting, integrated into registered validation.
+  Preserve schema-2/3 compatibility without claiming new controls were adopted.
+- Advance adapter schema to 101 and templates to 119. No default bootstrap
+  expansion, new runner, policy auto-enablement or measured cost claim.
+
 ## 0.1.0-alpha.123 - 2026-11-03
 
 - Bind selected checkpoint/context artifacts inside the existing problem model;

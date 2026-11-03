@@ -107,6 +107,15 @@ corrective iteration. A failed required gate remains open in the problem model
 until evidence resolves it; a prior local green result is not reusable proof
 after a later failure invalidates its assumption.
 
+An unrelated package explicitly classified `historical-record` may bind
+`incident_continuity.retained_evidence`: `task_id`, exact `model` and `projection`
+path/SHA-256 pairs, and a resolved `retention_review`. Reuse the task-retention
+contract: retainable files below `.ai/assistant/task-evidence/<task_id>/`, the
+original model digest, matching task identity and canonical projection checks.
+No filename search, silent restoration or authority promotion is permitted.
+Explicitly selected package/model/task work still requires its runtime model;
+conflicting runtime bytes are an error even when a retained copy exists.
+
 An escaped defect, failed required gate, recurring correction, or systemic
 repair requires a whole-lifecycle model. It names states, transitions, owners,
 producer, orchestrator, persistence, and consumer boundaries, conservation

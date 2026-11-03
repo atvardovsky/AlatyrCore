@@ -42,7 +42,8 @@ class HostedFixtureIsolationTests(unittest.TestCase):
             if name == "Run filesystem and session regressions":
                 self.assertEqual(modules[-1], "tests.test_conformance_artifacts")
                 reviewed_modules = modules[:-1]
-                additions = {"tests.test_dispatch_observation", "tests.test_default_validation_route", "tests.test_repair_qualification"}
+                additions = {"tests.test_dispatch_observation", "tests.test_default_validation_route", "tests.test_repair_qualification",
+                             "tests.test_incident_retained_evidence", "tests.test_initialization_readiness", "tests.test_harness_contract"}
                 self.assertTrue(additions <= set(reviewed_modules))
                 self.assertEqual(len(reviewed_modules), count + len(additions))
                 reviewed_modules = [module for module in reviewed_modules if module not in additions]

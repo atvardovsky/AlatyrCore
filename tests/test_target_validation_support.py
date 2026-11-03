@@ -49,6 +49,42 @@ def write_json(path: Path, value: object) -> None:
 
 
 class GitChangeSetTests(unittest.TestCase):
+    def test_checkout_orientation_reuses_snapshot_and_never_fetches_or_selects(self):
+        import target_validation_support as support
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory).resolve()
+            run_git(target, "init", "-q")
+            run_git(target, "config", "user.name", "Fixture")
+            run_git(target, "config", "user.email", "fixture@example.invalid")
+            (target / "source.txt").write_bytes(b"source")
+            base = commit(target, "base")
+            branch = run_git(target, "branch", "--show-current")
+            run_git(target, "branch", "tracking")
+            run_git(target, "config", f"branch.{branch}.remote", ".")
+            run_git(target, "config", f"branch.{branch}.merge", "refs/heads/tracking")
+            (target / "source.txt").write_bytes(b"next")
+            commit(target, "ahead")
+            with patch.object(support, "_git_bytes", wraps=support._git_bytes) as query:
+                view = GitEvidenceView(target)
+                count = query.call_count
+                result = view.checkout_context()
+                self.assertEqual(query.call_count, count)
+                self.assertEqual(result["tracking"]["ahead"], 1)
+                self.assertEqual(result["tracking"]["behind"], 0)
+                self.assertFalse(result["authority"] != "none")
+                self.assertFalse(result["automatic_checkout"])
+                self.assertFalse(result["network_access"])
+            run_git(target, "checkout", "--detach", "-q", base)
+            self.assertTrue(GitEvidenceView(target).checkout_context()["review_required"])
+            (target / "dirty.txt").write_bytes(b"dirty")
+            self.assertEqual(GitEvidenceView(target).checkout_context()["worktree"], "dirty")
+            run_git(target, "switch", "-q", branch)
+            run_git(target, "branch", "-f", "tracking", branch)
+            run_git(target, "reset", "--soft", base)
+            result = GitEvidenceView(target).checkout_context()
+            self.assertEqual(result["tracking"]["behind"], 1)
+            self.assertTrue(result["review_required"])
+
     def test_literal_file_metadata_avoids_blob_reads_and_is_reused(self):
         import target_validation_support as support
         with tempfile.TemporaryDirectory() as directory:

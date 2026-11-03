@@ -20,8 +20,18 @@ def policy_control_failures(policy: dict) -> list[str]:
             value = execution.get(name, "not-required")
             if not isinstance(value, str) or value not in {"required", "not-required"}:
                 failures.append(f"{command['id']}: invalid {name}")
-            elif value == "required" and policy["execution_contract"]["schema_version"] != 3:
-                failures.append(f"{command['id']}: required {name} needs execution contract version 3")
+            elif value == "required" and policy["execution_contract"]["schema_version"] not in (3, 4):
+                failures.append(f"{command['id']}: required {name} needs execution contract version 3 or 4")
+        adopted = "harness_inputs" in execution or "behavioral_accounting" in execution
+        if adopted and policy["execution_contract"]["schema_version"] != 4:
+            failures.append(f"{command['id']}: harness/accounting controls require execution contract version 4")
+        elif adopted:
+            if "harness_inputs" in execution:
+                from test_harness_contract import input_paths
+                try:
+                    input_paths(execution)
+                except ValueError as exc:
+                    failures.append(f"{command['id']}: {exc}")
         if execution.get("timing_qualification") == "required" and not any(row.get("access") == "exclusive" for row in execution["resources"]):
             failures.append(f"{command['id']}: timing qualification needs an enclosing exclusive resource claim")
     return failures
@@ -87,8 +97,8 @@ def record_control_failures(record: dict, command: dict, contract: dict) -> list
     for name, field in (("selection_contract", "selection_evidence"), ("timing_qualification", "qualification_window")):
         required = command["execution"].get(name) == "required"
         supplied = record.get(field)
-        if required and (contract["schema_version"] != 3 or record["schema_version"] != 3):
-            failures.append(f"{name} requires policy and evidence execution contract version 3")
+        if required and (contract["schema_version"] not in (3, 4) or record["schema_version"] not in (3, 4)):
+            failures.append(f"{name} requires policy and evidence execution contract version 3 or 4")
         if required and record["counts"]["executed"] > 0 and supplied is None:
             failures.append(f"required {field} is missing")
         if not required and supplied is not None:
@@ -98,10 +108,18 @@ def record_control_failures(record: dict, command: dict, contract: dict) -> list
         request = binding.get("request")
         if not isinstance(request, dict) or not isinstance(request.get("path"), str) or not is_target_relative_path(request["path"]) or record["input_sha256"].get(request["path"]) != request.get("sha256"):
             failures.append("selection request must bind a contained current input hash")
+    for field, adopted in (("harness_identity", "harness_inputs" in command["execution"]),
+                           ("case_accounting", command["execution"].get("behavioral_accounting") == "required")):
+        if adopted and (contract["schema_version"] != 4 or record["schema_version"] != 4):
+            failures.append(field + " requires policy and evidence execution contract version 4")
+        if adopted and record["counts"]["executed"] > 0 and field not in record:
+            failures.append("required " + field + " is missing")
+        if not adopted and field in record:
+            failures.append(field + " cannot establish an unadopted command control")
     return failures
 
 
-def selected_control_failures(view: Any, record: dict, execution: dict) -> list[str]:
+def selected_control_failures(view: Any, record: dict, execution: dict, *, policy_path: str = ".ai/project/testing/test-first-policy.json") -> list[str]:
     """Read the actual bound result once for all adopted observation controls."""
     from test_selection import read_selection_json, selected_execution_failures
     from repair_qualification import pointer_value
@@ -120,6 +138,9 @@ def selected_control_failures(view: Any, record: dict, execution: dict) -> list[
             else:
                 observed = pointer_value(artifact, binding["observations_pointer"])
                 failures.extend(qualification_failures({**record, "qualification_window": observed}))
+        if "harness_inputs" in execution or execution.get("behavioral_accounting") == "required":
+            from test_harness_contract import observation_failures
+            failures.extend(observation_failures(view, record, execution, artifact, policy_path))
         return failures
     except (ValueError, UnicodeError, RecursionError) as exc:
         return [str(exc)]

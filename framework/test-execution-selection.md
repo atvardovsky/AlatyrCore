@@ -7,11 +7,41 @@ Resource semantics remain owned by [testing guidance](testing-guidance.md).
 
 ## Target Adoption
 
-Execution schema 3 allows each canonical command to set `selection_contract`
+Execution schemas 3 and 4 allow each canonical command to set `selection_contract`
 or `timing_qualification` to `required` or `not-required`. Omission means not
-adopted. Required controls need schema-3 policy and evidence; frozen schema-2
+adopted. Required controls need schema-3/4 policy and evidence; frozen schema-2
 records remain historical/legacy evidence, never proof of new controls.
 Targets decide whether to adopt. Never mutate their policy automatically.
+
+## Harness And Case Accounting
+
+Schema 4 optionally adds `execution.harness_inputs`: 1..64 unique exact
+target-relative material input files, such as CSS, virtual runner configuration
+or fixture generators. Include configuration paths in the identity too. The
+union is bounded to 256 files, 1 MiB per file and 8 MiB total. Missing, escaped,
+oversized or stale inputs fail closed; decompose rather than truncate.
+
+Executed evidence binds `harness_identity: {sha256, observations_pointer}` into
+the existing hash-bound JSON result artifact. The shared digest is SHA-256 of
+compact ASCII JSON `["alatyr-harness-inputs-v1", current_policy_sha256,
+command_id, sorted_path_digest_pairs]`. Bind every material file in
+`input_sha256`; validation rechecks actual bytes and the canonical policy.
+Use distinct identities for materially different harness inputs. This detects
+input reuse, not whether an external runner actually evicted its caches; it is
+not a complete cache key, execution proof or substitute for a layout precondition.
+
+Optional `execution.behavioral_accounting: required` binds executed evidence's
+`case_accounting: {observations_pointer}` to exactly two result partitions:
+`behavioral` and `supporting`. Each has nonnegative integer `discovered`,
+`executed`, `passed`, `failed`, `skipped`, and optional `not_run` (default zero).
+Each partition conserves cases and their sums equal the unchanged aggregate
+evidence counters. Supporting means setup, harness checks or no-op scaffolding;
+those cases alone cannot establish a focused/suite/full behavioral claim.
+Project owners classify cases; Core cannot infer whether an assertion is useful.
+Do not relabel cases to manufacture a passing behavioral count.
+
+Both controls require schema-4 policy and evidence. Older records do not prove
+them; no historical rewrite, automatic enablement or extra bootstrap is needed.
 
 ## Selection
 

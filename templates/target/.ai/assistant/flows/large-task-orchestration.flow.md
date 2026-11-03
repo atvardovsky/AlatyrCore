@@ -69,6 +69,10 @@ does not persist packets. Only the outer coordinator owns finalization.
    guidance identities and each bundle digest's algorithm and schema version.
    Reuse the outer coordinator's operation and package IDs; an already
    initialized package is referenced, not initialized again.
+   Before heavy checks, apply the canonical
+   initialization prerequisite contract in `.ai/framework/task-decomposition.md`
+   through available tooling or explicit manual evidence; readiness grants no
+   authorization or acceptance.
 
 #### Workstreams
 

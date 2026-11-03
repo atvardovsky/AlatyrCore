@@ -1157,6 +1157,27 @@ class Validator:
             )
         return self.findings
 
+    def finalize_inputs(self) -> None:
+        """Share input-stability enforcement across acceptance and readiness."""
+        for mutation in self.schema_context.finalize():
+            details = mutation.diagnostics(self.schema_context.target)
+            self.error("VALIDATOR_SCHEMA_MUTATED",
+                       "validator schema changed during validation; discard these findings and rerun; " + mutation.summary(details),
+                       "schemas/" + mutation.path.name, details=details)
+        self.target_mutations = self.context.finalize()
+        for mutation in self.target_mutations:
+            details = mutation.diagnostics(self.context.target)
+            self.error("TARGET_INPUT_MUTATED",
+                       "target input changed during validation; discard these findings and rerun; " + mutation.summary(details),
+                       self.rel(mutation.path), details=details)
+        state = self.git.stability()
+        if state is GitEvidenceState.MUTATED:
+            self.error("TARGET_GIT_STATE_MUTATED", "Git HEAD, branch, or worktree state changed during validation; discard these findings and rerun")
+        elif state is GitEvidenceState.UNAVAILABLE and (self.diff_ref or self.validation_scope == "changed") and not any(
+            row.code in {"CHANGED_VALIDATION_DIFF_UNAVAILABLE", "DIFF_SCOPE_UNAVAILABLE"} for row in self.findings
+        ):
+            self.warn("DIFF_SCOPE_UNAVAILABLE", "Git evidence is required for the selected diff scope but is unavailable")
+
     def validation_phases(
         self,
         manifest: ManifestData | None,
@@ -1201,48 +1222,7 @@ class Validator:
                 self.check_project_knowledge(manifest)
 
         def finalize_inputs() -> None:
-            for mutation in self.schema_context.finalize():
-                details = mutation.diagnostics(self.schema_context.target)
-                self.error(
-                    "VALIDATOR_SCHEMA_MUTATED",
-                    "validator schema changed during validation; discard these findings and rerun; "
-                    + mutation.summary(details),
-                    "schemas/" + mutation.path.name,
-                    details=details,
-                )
-            self.target_mutations = self.context.finalize()
-            for mutation in self.target_mutations:
-                details = mutation.diagnostics(self.context.target)
-                self.error(
-                    "TARGET_INPUT_MUTATED",
-                    "target input changed during validation; discard these findings and rerun; "
-                    + mutation.summary(details),
-                    self.rel(mutation.path),
-                    details=details,
-                )
-            git_state = self.git.stability()
-            if git_state is GitEvidenceState.MUTATED:
-                self.error(
-                    "TARGET_GIT_STATE_MUTATED",
-                    "Git HEAD, branch, or worktree state changed during validation; "
-                    "discard these findings and rerun",
-                )
-            elif (
-                git_state is GitEvidenceState.UNAVAILABLE
-                and (self.diff_ref or self.validation_scope == "changed")
-                and not any(
-                    finding.code
-                    in {
-                        "CHANGED_VALIDATION_DIFF_UNAVAILABLE",
-                        "DIFF_SCOPE_UNAVAILABLE",
-                    }
-                    for finding in self.findings
-                )
-            ):
-                self.warn(
-                    "DIFF_SCOPE_UNAVAILABLE",
-                    "Git evidence is required for the selected diff scope but is unavailable",
-                )
+            self.finalize_inputs()
             self.info(
                 "EVIDENCE_SCOPE_CURRENT_STATE",
                 "validator findings describe current structural state; historical actions "
@@ -6096,7 +6076,10 @@ class Validator:
                 source,
             )
             return
-        model_path = self.target_path(model_relpath)
+        from target_adapter_validation.model_evidence import incident_model_location
+        model_path, archived_projection = incident_model_location(self, data, source, model_binding)
+        if model_path is None:
+            return
         if not self.is_target_file(model_path):
             self.error(
                 "PACKAGE_INCIDENT_MODEL_MISSING",
@@ -6126,6 +6109,8 @@ class Validator:
             schema,
             projection_schema=projection_schema,
             require_completion=status == "validated",
+            archived_projection=archived_projection,
+            original_source_path=model_relpath,
         )
         if not isinstance(model, dict):
             return

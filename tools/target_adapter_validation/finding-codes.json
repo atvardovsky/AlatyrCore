@@ -33,6 +33,7 @@
     "tools/target_adapter_validation/historical_evidence.py",
     "tools/target_adapter_validation/installation_state.py",
     "tools/target_adapter_validation/manifest_paths.py",
+    "tools/target_adapter_validation/model_evidence.py",
     "tools/target_adapter_validation/module_profile.py",
     "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/project_knowledge.py",
@@ -213,7 +214,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 114
+      "code_count": 115
     },
     {
       "id": "PLACEHOLDERS",
@@ -315,7 +316,7 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/active_tasks.py"
+        "tools/target_adapter_validation/model_evidence.py"
       ]
     },
     {
@@ -324,7 +325,7 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/active_tasks.py"
+        "tools/target_adapter_validation/model_evidence.py"
       ]
     },
     {
@@ -342,7 +343,8 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/active_tasks.py"
+        "tools/target_adapter_validation/active_tasks.py",
+        "tools/target_adapter_validation/model_evidence.py"
       ]
     },
     {
@@ -369,7 +371,7 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/active_tasks.py"
+        "tools/target_adapter_validation/model_evidence.py"
       ]
     },
     {
@@ -522,7 +524,8 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/active_tasks.py"
+        "tools/target_adapter_validation/active_tasks.py",
+        "tools/target_adapter_validation/model_evidence.py"
       ]
     },
     {
@@ -9464,6 +9467,7 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/model_evidence.py",
         "tools/validate_target_adapter.py"
       ]
     },
@@ -9564,6 +9568,16 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_RETAINED",
+      "levels": [
+        "error",
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/model_evidence.py"
       ]
     },
     {

@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1757
+Catalog entries: 1758
 
 ## Families
 
@@ -53,7 +53,7 @@ Catalog entries: 1757
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 114 codes.
+- `PACKAGE`: 115 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -81,19 +81,19 @@ Catalog entries: 1757
 ## Codes
 
 - `ACTIVE_TASK_ARTIFACT_INVALID_JSON`
-  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+  Level: error. Source: `tools/target_adapter_validation/model_evidence.py`.
 - `ACTIVE_TASK_ARTIFACT_INVALID_SHAPE`
-  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+  Level: error. Source: `tools/target_adapter_validation/model_evidence.py`.
 - `ACTIVE_TASK_BASELINE_UNAVAILABLE`
   Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_BINDING`
-  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`, `tools/target_adapter_validation/model_evidence.py`.
 - `ACTIVE_TASK_CLASS`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_COVERAGE`
   Level: info. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_DIGEST`
-  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+  Level: error. Source: `tools/target_adapter_validation/model_evidence.py`.
 - `ACTIVE_TASK_DUPLICATE`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_ENTRY`
@@ -127,7 +127,7 @@ Catalog entries: 1757
 - `ACTIVE_TASK_UNREGISTERED`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `ACTIVE_TASK_WITNESS`
-  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`, `tools/target_adapter_validation/model_evidence.py`.
 - `ACTIVE_TASK_WITNESS_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `AGENT_BROAD_PRELOAD`
@@ -2109,7 +2109,7 @@ Catalog entries: 1757
 - `PACKAGE_INCIDENT_CONTINUITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_MODEL_DIGEST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/model_evidence.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_MODEL_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_MODEL_MISSING`
@@ -2132,6 +2132,8 @@ Catalog entries: 1757
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_PREDECESSOR_RECORD`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_RETAINED`
+  Level: error, info. Source: `tools/target_adapter_validation/model_evidence.py`.
 - `PACKAGE_INDEX_ACTIVE_SHARDED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_DUPLICATE`
