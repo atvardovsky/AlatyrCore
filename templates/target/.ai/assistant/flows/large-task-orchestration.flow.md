@@ -115,6 +115,10 @@ does not persist packets. Only the outer coordinator owns finalization.
 
 ### Verify
 
+At material phase changes, refresh the registered model/projection/header and
+any adopted `analysis_evidence.selected_context` bindings. Load their references
+instead of treating a growing findings report as another current-task registry.
+
 Do not authorize repairs or finalization here; return to authorized Apply and
 refresh affected evidence when a required check fails.
 

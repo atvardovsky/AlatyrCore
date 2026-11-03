@@ -134,6 +134,14 @@
       "properties": {
         "route": {"type": "string", "minLength": 1},
         "dispatch_backend": {"type": "string", "minLength": 1},
+        "assignment_protocol": {
+          "type": "object", "additionalProperties": false, "required": ["operation_roles", "evidence_ref"],
+          "properties": {
+            "operation_roles": {"type": "object", "minProperties": 1, "maxProperties": 16,
+              "additionalProperties": {"enum": ["start", "resume", "message", "status"]}},
+            "evidence_ref": {"type": "string", "minLength": 1}
+          }
+        },
         "external_dispatcher": {"type": "string", "minLength": 1},
         "client_product": {"type": "string", "minLength": 1},
         "runtime_variant": {"type": "string", "minLength": 1},

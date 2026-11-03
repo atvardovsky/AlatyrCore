@@ -11,6 +11,7 @@
     "result", "primary_convergence"
   ],
   "properties": {
+    "dispatch": {"type": "object"},
     "schema_version": {"enum": [1, 2]},
     "receipt_kind": {"const": "alatyr-single-depth1-read-only-delegation"},
     "operation_id": {"type": "string", "minLength": 1},

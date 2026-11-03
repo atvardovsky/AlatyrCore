@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2820,
-      "content_digest": "sha256:6cfcffc1a5952f835d7b9e8576fec91ff3239f30b58dc49f3d289f62e8a89023"
+      "estimated_words": 2846,
+      "content_digest": "sha256:96b32cc93490e9f35647975fd4321b42b679ec6c51771ad013304f675fb51f53"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -362,8 +362,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1041,
-      "content_digest": "sha256:b7d23d17eeaed33509a3313de9f600c90c1cea4ff7cc228d858472b3ddeef770"
+      "estimated_words": 1068,
+      "content_digest": "sha256:4e7ca5781a2134c64c4b9c772f0410a3eaa4b44ab9672b787753ff6932503081"
     },
     {
       "id": "assistant.content.flows-lifecycle-checkpoints-flow-md",
@@ -618,8 +618,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 1358,
-      "content_digest": "sha256:10ca76446552a08e9b6f39504bfe1cea5b61b55dde1fe3d22bfd1a4524a96094"
+      "estimated_words": 1377,
+      "content_digest": "sha256:6cf95821dbd50be66f46a5d034ca6b40c0448deb223c6d7f7b193a85db8b7e7b"
     },
     {
       "id": "assistant.content.flows-support-generation-flow-md",

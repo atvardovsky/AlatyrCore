@@ -294,12 +294,23 @@ def validate_artifact(
     return artifact
 
 
-def load_json_object(path: Path, label: str) -> dict[str, Any]:
+def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON member")
+        result[key] = value
+    return result
+
+
+def load_json_object(path: Path, label: str, *, expected_sha256: str | None = None) -> dict[str, Any]:
     try:
         payload = _read_evidence(path, MAX_JSON_BYTES)
         if len(payload) > MAX_JSON_BYTES:
             raise ValueError(f"JSON input exceeds {MAX_JSON_BYTES} bytes")
-        return _object(json.loads(payload.decode("utf-8")), label)
+        if expected_sha256 is not None and hashlib.sha256(payload).hexdigest() != expected_sha256:
+            raise ValueError("JSON evidence digest differs from its binding")
+        return _object(json.loads(payload.decode("utf-8"), object_pairs_hook=_unique_json_object), label)
     except (OSError, UnicodeError, ValueError, RecursionError) as exc:
         raise DelegationEvidenceError(f"cannot load {label}: {path}: {str(exc)[:240]}") from exc
 
@@ -639,7 +650,7 @@ def validate_single_read_only_receipt(
             "current_user_authorization", "analysis_strategy_id",
             "problem_model_sha256", "policy_sha256", "capability_sha256",
             "worker_context_mode", "packet", "result", "primary_convergence",
-        },
+        } | ({"dispatch"} if "dispatch" in receipt else set()),
         "single delegation receipt",
     )
     if receipt.get("schema_version") != 2 or receipt.get("receipt_kind") != (
@@ -699,6 +710,14 @@ def validate_single_read_only_receipt(
     obligations = set(_strings(packet.get("proof_obligation_ids"), "single delegation obligations"))
 
     result = _object(receipt.get("result"), "single delegation receipt.result")
+    from dispatch_observation import NO_DISPATCH, dispatch_failures
+    failures = dispatch_failures(receipt.get("dispatch", NO_DISPATCH), operation_id=receipt["operation_id"],
+        packet_id=packet["packet_id"], node_id=packet["node_id"], attempt=packet["attempt"],
+        state="DONE" if result.get("status") == "succeeded" else "FAILED",
+        required=policy.get("dispatch_verification") == "required",
+        protocol=delegation.get("assignment_protocol"))
+    if failures:
+        raise DelegationEvidenceError("; ".join(failures))
     _exact(
         result,
         {
@@ -830,6 +849,8 @@ def _validate_policy_limits(
 ) -> tuple[int, set[str], dict[str, int]]:
     """Resolve every portable execution limit shared by both evidence tiers."""
 
+    if "dispatch_verification" in policy:
+        _enum(policy["dispatch_verification"], {"required", "procedural"}, "delegation policy.dispatch_verification")
     tree_policy = _object(policy.get("tree_policy"), "delegation policy.tree_policy")
     compaction = _object(
         policy.get("context_compaction"), "delegation policy.context_compaction"
@@ -946,7 +967,7 @@ def _validate_nodes(
     coverage_keys: set[str] = set()
     for raw in raw_nodes:
         node = _object(raw, "execution node")
-        _exact(node, NODE_FIELDS, "execution node")
+        _exact(node, NODE_FIELDS | ({"dispatch"} if "dispatch" in node else set()), "execution node")
         node_id = _string(node.get("node_id"), "execution node.node_id")
         if node_id in nodes:
             raise DelegationEvidenceError(f"duplicate execution node: {node_id}")
@@ -1325,6 +1346,34 @@ def _validate_result_artifacts(
     return result_words, primary_summary_words, result_by_id
 
 
+def _validate_tree_dispatches(tree: dict, nodes: dict, policy: dict, artifact_root: Path) -> None:
+    if policy.get("dispatch_verification") != "required" and not any("dispatch" in node for node in nodes.values()):
+        return
+    from dispatch_observation import NO_DISPATCH, dispatch_failures
+    assignments: set[str] = set()
+    protocol = None
+    if policy.get("dispatch_verification") == "required" or any("dispatch" in node for node in nodes.values()):
+        capability = load_json_object(_contained_file(artifact_root, tree["capability_evidence"], "dispatch capability"),
+            "dispatch capability", expected_sha256=tree["capability_evidence_sha256"])
+        delegation = capability.get("subagent_delegation")
+        protocol = delegation.get("assignment_protocol") if isinstance(delegation, dict) else None
+    for node in nodes.values():
+        if node["depth"] == 0:
+            if "dispatch" in node:
+                raise DelegationEvidenceError("root node cannot claim worker dispatch")
+            continue
+        failures = dispatch_failures(node.get("dispatch", NO_DISPATCH), operation_id=tree["operation_id"],
+            packet_id=node["packet_id"], node_id=node["node_id"], attempt=node["attempt"],
+            state=node["status"], required=policy.get("dispatch_verification") == "required", protocol=protocol)
+        if failures:
+            raise DelegationEvidenceError("; ".join(failures))
+        if "dispatch" in node:
+            assignment = node["dispatch"]["assignment_id"]
+            if assignment in assignments:
+                raise DelegationEvidenceError("dispatch assignment_id is reused across workers")
+            assignments.add(assignment)
+
+
 def validate_execution_tree(
     tree: dict[str, Any],
     policy: dict[str, Any],
@@ -1345,6 +1394,7 @@ def validate_execution_tree(
         hard_depth=hard_depth,
         allowed_stop_reasons=allowed_stop_reasons,
     )
+    _validate_tree_dispatches(tree, nodes, policy, artifact_root)
     for node in nodes.values():
         if node["depth"] == 0:
             continue

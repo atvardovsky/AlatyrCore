@@ -33,6 +33,13 @@ initial state and a falsifying observation, not only green component totals.
 Without that tooling, inspect the bound model/closure manually and report
 machine verification as unperformed; no portable runtime command is required.
 
+Bind optional checkpoints in `analysis_evidence.selected_context`: at most 16
+exact `{path, sha256}` rows. Publish model/projection/header together. Selected
+health exposes references, not content; stale bytes clear advice. Hashes prove
+neither meaning, execution nor authority. Reconcile at phase boundaries, preserving
+failures; no second registry, newest-file selection or narrative preload. Handoff
+retention remains explicitly reviewed, never automatic private publication.
+
 ## Declared Readiness
 
 Schema-6 models may explicitly adopt `execution_dependencies`: one

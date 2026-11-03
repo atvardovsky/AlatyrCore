@@ -355,20 +355,18 @@ cannot acknowledge instruction delivery for peers.
     health, current-change validation, and complete archive audit according to
     their separate contracts. A changed-scope or partial archive run cannot
     become installation/update acceptance evidence.
-    Require structured canonical-delegate metadata and portable fail-closed
-    source resolution; reject committed workstation-specific source paths.
-    Verify the command as a direct invocation of the installed delegate, bind
-    each entry point to its required delegate operation and allowlisted
-    arguments, and verify that the installed delegate remains semantically
-    equivalent to the shipped portable implementation. A path mention plus
-    matching metadata is not operation evidence. Validate argument syntax with
-    the shipped delegate parser rather than a parallel parser. Complete only
-    required bindings absent from a command prefix, never malformed bindings
-    already present. Require exact long-option spelling by disabling
-    abbreviations on the root parser and every subparser. Retain differential
-    parser-parity regressions for executable syntax plus independent
-    adversarial regressions for stricter contract cardinality and authorization
-    invariants.
+    Require structured canonical-delegate metadata and fail-closed source
+    resolution; reject committed workstation-specific paths. Verify direct
+    installed-delegate invocation, required operation, allowlisted arguments and
+    installed/shipped semantic equivalence. Path mentions and matching metadata
+    alone are not operation evidence. Reuse the shipped parser; complete only
+    genuinely absent required prefix bindings, never repair malformed arguments.
+    Disable long-option abbreviations on the root parser and every subparser.
+    Keep differential parser tests and independent adversarial cardinality and
+    authorization regressions.
+    Check default-route operability separately; apply adopted
+    [execution evidence](repair-qualification.md#default-validation-route) without
+    executing target commands during inspection.
     Synchronize manifest-owned current-baseline claims, transactionally
     regenerate approval/package indexes and recursive context indexes, then
     generate support state last and run canonical validation. Historical

@@ -62,6 +62,20 @@ class AnalysisEvidenceIntegrationTests(ActiveTaskFixture):
         self.assertEqual(self.failures(self.model), [])
         self.assertEqual(self.errors(self.check()), set())
 
+    def test_selected_context_boundaries_and_conflicting_duplicate_paths(self):
+        for count in (15, 16, 17):
+            model = copy.deepcopy(self.model)
+            model["analysis_evidence"]["selected_context"] = [
+                {"path": f"checkpoints/phase-{index}.json", "sha256": "a" * 64} for index in range(count)]
+            self.assertEqual(not self.failures(model), count <= 16)
+        model = copy.deepcopy(self.model)
+        model["analysis_evidence"]["selected_context"] = [
+            {"path": "checkpoints/current.json", "sha256": digest * 64} for digest in ("a", "b")]
+        self.assertTrue(any("unique exact" in failure for failure in self.failures(model)))
+        for bad in (None, {}, True, 3, "checkpoint", [None], [{"path": "missing"}]):
+            model["analysis_evidence"]["selected_context"] = bad
+            self.assertTrue(self.failures(model))
+
     def test_stale_input_or_result_fails_registered_validation(self):
         for path in ("design.md", self.artifact):
             target = self.target / path

@@ -6,6 +6,22 @@ for schema-2 adoption, authoring, validation, or a named evidence conflict.
 This is not another policy, incident registry, runtime-observation module, or
 authorization source. Targets retain their own commands and domain meanings.
 
+## Default Validation Route
+
+Conditional execution-record detail delegated by lifecycle; adoption remains
+target-owned. Optional validation-contract `default_route` binds command ID,
+canonical typed argv, reviewed inputs and an execution-record path. Reuse
+test-execution evidence: observed argv/cwd, task/class, installed identity,
+override disposition, integer exit and timezone-bound window. Bind current
+inputs/configuration/owners without evidence hash cycles. Capture runs through
+separately authorized execution, never structural inspection. Adopted routes
+require task ID/class in `verify-upgrade`; absent adoption is unverified.
+Undeclared dependencies, hidden wrappers and operator authenticity remain
+reviewed, not machine-proven. This control neither enables repair review nor
+turns local success into canonical acceptance.
+
+## Repair Qualification
+
 Schema 2 keeps `diagnostic`, `qualified-repair`, and `acceptance` stages in the
 same record. The target policy owns assertion IDs, command applicability,
 fixture boundary, expected finite scalar, non-root JSON artifact pointer, and
@@ -16,6 +32,12 @@ missing/unresolved observations and coercive Boolean/number matches. Required
 diagnostic observations include an actual control/experiment distinction.
 Assertions address actual child scenario, branch, topology, ownership, resource
 and prerequisite evidence where relevant; requested flags alone are not proof.
+Optional `qualification.producer_coverage` compares reviewed source-bound
+inventories with actual run sequences: event multiplicities, declared partial
+order, capacity and truncation. Bind inventory owners through run input hashes.
+Reduced fixtures or pass totals cannot establish coverage; undeclared concurrent
+orders remain valid. Checks establish declared coverage, not domain completeness.
+Absent controls load no additional records.
 Captured same-task schema-2 assertions and measurement requirements cannot be
 removed, rewritten or downgraded to schema 1 to obtain acceptance. Reassess
 changed intent through target-owned policy/incident decisions, not a silent

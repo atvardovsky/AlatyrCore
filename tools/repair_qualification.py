@@ -83,6 +83,9 @@ def policy_qualification_failures(qualification: dict, commands: dict, acceptanc
     for value in [*ids, *(item["id"] for item in metrics)]:
         if not scalar(value):
             failures.append("qualification and performance IDs must be resolved")
+    if "producer_coverage" in qualification:
+        from producer_coverage import policy_producer_failures
+        failures.extend(policy_producer_failures(qualification["producer_coverage"], commands, acceptance_ids))
     return failures
 
 
@@ -149,6 +152,16 @@ def qualification_failures(record: dict, review: dict, runs: dict, artifacts: di
             for item in assertions.values():
                 if item["stage"] == "acceptance" and runs.get(ref) is not None and runs[ref]["command_id"] in item["command_ids"] and (item["id"], ref) not in valid:
                     failures.append(f"acceptance {ref} lacks qualified observation {item['id']}")
+    for entry in review["qualification"].get("producer_coverage", []):
+        from producer_coverage import observed_coverage_failures
+        expected_purpose = "diagnostic" if entry["stage"] == "diagnosis" else "acceptance"
+        selected = [ref for ref, attempt in attempts.items() if ref in current_refs
+                    and attempt["purpose"] == expected_purpose
+                    and runs.get(ref, {}).get("command_id") in entry["command_ids"]]
+        if not selected and (qualified and entry["stage"] == "diagnosis" or completion):
+            failures.append(f"producer coverage {entry['id']} lacks a selected current run")
+        for ref in selected:
+            failures.extend(observed_coverage_failures(entry, runs[ref], artifacts.get(ref), pointer_value))
     return failures
 
 

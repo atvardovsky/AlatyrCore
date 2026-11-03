@@ -42,6 +42,15 @@ def observed():
             "control": {"mechanism": "serialized-substitute"}}
 
 
+def producer_contract(digest="a" * 64):
+    return {"id": "startup-population", "stage": "diagnosis", "command_ids": ["unit"],
+            "inventory_source": {"path": "design.md", "sha256": digest},
+            "event_ids": ["phase-" + str(index) for index in range(16)], "max_capacity": 24,
+            "events_pointer": "/startup/events", "capacity_pointer": "/startup/capacity",
+            "truncated_pointer": "/startup/truncated",
+            "precedence": [{"before": "phase-0", "after": "phase-15"}]}
+
+
 class RepairQualificationTests(unittest.TestCase):
     def setUp(self):
         fixture = incident_fixtures.RepairReviewTests()
@@ -57,6 +66,66 @@ class RepairQualificationTests(unittest.TestCase):
     def test_valid_qualification_and_legacy_contract(self):
         self.assertEqual(self.failures(), [])
         self.assertEqual(evidence_failures(review_record(), repair_policy(), self.runs, self.schema, completion=True), [])
+
+    def adopt_producer(self):
+        entry = producer_contract()
+        self.policy["qualification"]["producer_coverage"] = [entry]
+        self.runs["diagnostic.json"]["input_sha256"]["design.md"] = entry["inventory_source"]["sha256"]
+        self.artifacts["diagnostic.json"]["startup"] = {"events": list(entry["event_ids"]), "capacity": 24, "truncated": False}
+        return entry, self.artifacts["diagnostic.json"]["startup"]
+
+    def test_producer_coverage_rejects_green_six_event_fixture_for_sixteen_event_source(self):
+        entry, actual = self.adopt_producer()
+        self.assertEqual(self.failures(), [])
+        actual["events"] = entry["event_ids"][:6]
+        self.assertTrue(any("multiplicities" in failure for failure in self.failures()))
+
+    def test_producer_capacity_and_truncation_boundaries(self):
+        entry, actual = self.adopt_producer()
+        for capacity in (15, 16, 17, 24, 25, True, None, {}, []):
+            actual["capacity"] = capacity
+            failures = self.failures()
+            self.assertEqual(not failures, type(capacity) is int and 16 <= capacity <= 24, (capacity, failures))
+        actual["capacity"] = 24
+        for bad in (True, None, 0, "false", {}, []):
+            actual["truncated"] = bad
+            self.assertTrue(self.failures())
+
+    def test_producer_multiplicity_partial_order_and_malformed_observations(self):
+        entry, actual = self.adopt_producer()
+        entry["event_ids"][2] = entry["event_ids"][1]
+        actual["events"] = list(entry["event_ids"])
+        self.assertEqual(self.failures(), [])
+        actual["events"][3:5] = reversed(actual["events"][3:5])
+        self.assertEqual(self.failures(), [])
+        actual["events"][0], actual["events"][-1] = actual["events"][-1], actual["events"][0]
+        self.assertTrue(any("precedence" in failure for failure in self.failures()))
+        for bad in (None, {}, True, 3, "events", [{}], [None], ["event"] * 257):
+            actual["events"] = bad
+            self.assertTrue(self.failures())
+        actual["events"] = list(entry["event_ids"])
+        self.runs["diagnostic.json"]["input_sha256"].pop("design.md")
+        self.assertTrue(any("inventory" in failure for failure in self.failures()))
+
+    def test_producer_policy_rejects_malformed_owners_commands_and_cycles(self):
+        entry, _ = self.adopt_producer()
+        import tests.test_test_execution_contract as execution
+        policy = execution.policy()
+        policy["commands"][0]["execution"]["proof_boundary"] = "end-to-end"
+        policy["repair_review"] = self.policy
+        contract = TestExecutionContract()
+        self.assertEqual(contract.policy_failures(policy), [])
+        for key in entry:
+            for bad in (None, {}, True, 3, []):
+                value = copy.deepcopy(policy)
+                value["repair_review"]["qualification"]["producer_coverage"][0][key] = bad
+                if bad == entry[key] and type(bad) is type(entry[key]):
+                    continue
+                if key == "precedence" and bad == []:
+                    continue
+                self.assertTrue(contract.policy_failures(value), (key, bad))
+        entry["precedence"] = [{"before": "phase-0", "after": "phase-15"}, {"before": "phase-15", "after": "phase-0"}]
+        self.assertTrue(any("cycle" in failure for failure in contract.policy_failures(policy)))
 
     def test_wrong_actual_branch_and_topology_cannot_qualify(self):
         for key, value in (("variant", "after-client"), ("mechanism", "serialized-substitute")):
@@ -293,6 +362,36 @@ class RegisteredQualificationTests(incident_fixtures.task_fixtures.ActiveTaskFix
             findings = self.check()
             with self.subTest(variant=variant):
                 self.assertEqual("TDD_EXECUTION_EVIDENCE" in self.errors(findings), variant != "expiry-in-transit", [item.message for item in findings.findings])
+
+    def test_registered_route_checks_real_producer_population_and_stale_owner(self):
+        self.configure()
+        entry = producer_contract(hashlib.sha256((self.target / "design.md").read_bytes()).hexdigest())
+        self.policy["repair_review"]["qualification"]["producer_coverage"] = [entry]
+        self.run["input_sha256"]["design.md"] = entry["inventory_source"]["sha256"]
+        for events in (entry["event_ids"], entry["event_ids"][:6]):
+            artifact = observed()
+            artifact["startup"] = {"events": events, "capacity": 24, "truncated": False}
+            self.write_artifact(artifact)
+            checked = self.check()
+            self.assertEqual("TDD_EXECUTION_EVIDENCE" in self.errors(checked), len(events) != 16,
+                             [finding.message for finding in checked.findings])
+        (self.target / "design.md").write_text("changed producer inventory owner\n")
+        self.assertIn("TDD_EXECUTION_EVIDENCE_STALE", self.errors(self.check()))
+
+    def test_captured_producer_coverage_cannot_be_removed_for_same_task(self):
+        self.configure()
+        entry = producer_contract(hashlib.sha256((self.target / "design.md").read_bytes()).hexdigest())
+        self.policy["repair_review"]["qualification"]["producer_coverage"] = [entry]
+        self.run["input_sha256"]["design.md"] = entry["inventory_source"]["sha256"]
+        artifact = observed()
+        artifact["startup"] = {"events": entry["event_ids"], "capacity": 24, "truncated": False}
+        self.write_artifact(artifact)
+        from check_change_packages import git
+        git(self.target, "add", ".")
+        git(self.target, "commit", "-qm", "capture producer coverage")
+        self.policy["repair_review"]["qualification"].pop("producer_coverage")
+        self.save()
+        self.assertIn("TDD_EXECUTION_CONTRACT", self.errors(self.check()))
 
     def test_current_task_view_reuses_registered_repair_result_not_copied_claim(self):
         from current_task_view import current_task_view

@@ -130,6 +130,9 @@ Resolve tooling, recorded installed baseline and proposed candidate separately.
 Use the framework-upgrade profile's `validation_entrypoints`: inspection resolves
 `adapter-health`, completion resolves `current-change` with current bindings.
 Local checker commands remain supplemental, not substitute completion evidence.
+Review adopted default-route, producer-coverage and assignment-protocol evidence;
+preserve decisions. Bind checkpoints through the registered model, not narrative
+history. Never manufacture observations or automatically enable upgrade controls.
 
 Applying modes:
 

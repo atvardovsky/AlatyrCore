@@ -519,6 +519,9 @@ Final evidence must say:
   primary workflows, validation entry points, canonical owners, and known gaps
 - consistency-map module enabled, deferred, disabled, or blocked with reason
 - support-information policy adapted and support state generated last
+- optional workflow evidence decisions reviewed: selected-context bindings,
+  producer coverage, worker assignment protocol and default-route execution;
+  adopted controls exercised without substituting local success for acceptance
 - target validation contract distinguishes adapter health, current-change
   validation, and complete archive audit; every command declares canonical,
   target-equivalent, structural-only, or manual coverage

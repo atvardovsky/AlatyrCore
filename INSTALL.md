@@ -388,6 +388,12 @@ In a typical target repository:
    `alatyr/framework-source`; fail closed and keep workstation paths uncommitted.
    Record `framework.source_commit` from Git evidence, distinguish tooling from
    candidates, and bind typed upgrade routes per [lifecycle](framework/lifecycle.md).
+   Review the ordinary default validation invocation separately: propose
+   `default_route` evidence only when its canonical execution policy and reviewed
+   input inventory exist. Preserve absent adoption as unverified, never replace
+   the default with a passing corrective override. For worker use, verify actual
+   assignment/start/resume semantics and propose required dispatch evidence only
+   with a verified selected-client protocol. No new control is silently enabled.
    Apply continuity's new-worktree prerequisite, reviewed-handoff and exact-recovery
    rules before continuation; missing evidence stays blocked.
    Adapt `.ai/project/support-policy.json` from target evidence. Rebuild the

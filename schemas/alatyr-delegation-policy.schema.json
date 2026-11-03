@@ -16,6 +16,7 @@
     "privacy_and_retention", "validation", "review_triggers"
   ],
   "properties": {
+    "dispatch_verification": {"anyOf": [{"enum": ["required", "procedural"]}, {"$ref": "#/definitions/placeholder"}]},
     "schema_version": {"const": 7},
     "policy_kind": {"const": "target-subagent-delegation-policy"},
     "state": {"type": "string", "minLength": 1},

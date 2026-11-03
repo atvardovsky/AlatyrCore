@@ -49,6 +49,9 @@ policy, owners, or validation.
 Use the target validation contract to distinguish adapter health, current-change
 validation and full archive audit. A structural pass is not canonical acceptance;
 report installation state, support freshness and change coverage separately.
+Keep adopted default-route execution separate from adapter health: an
+override-assisted pass does not prove the ordinary invocation works. Verify
+selected-client assignment behavior; messages do not necessarily start turns.
 
 Resolve the portable delegate's source through an explicit path, `ALATYR_CORE`
 or ignored local configuration; never commit workstation-specific paths.

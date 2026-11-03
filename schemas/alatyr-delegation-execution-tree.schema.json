@@ -192,6 +192,7 @@
       ],
       "properties": {
         "node_id": {"type": "string", "minLength": 1},
+        "dispatch": {"type": "object"},
         "parent_node_id": {"type": ["string", "null"], "minLength": 1},
         "packet_id": {"type": ["string", "null"], "minLength": 1},
         "parent_packet_id": {"type": ["string", "null"], "minLength": 1},

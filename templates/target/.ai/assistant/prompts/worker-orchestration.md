@@ -30,9 +30,10 @@ load the full flow only for communication, ambiguity, conflict or repair.
    raw-result, and accepted-summary word ceilings and their 12-times character
    ceilings for either evidence tier;
    missing, unresolved, or exceeded limits fail closed.
-7. Dispatch through the verified native or approved external backend. A
+7. Use verified assignment operations; require acknowledgement or bound completion,
+   not messaging. A
    frozen payload measures visible prompt, bootstrap, metadata and content;
-   keep stable guidance/sources before variable packet/task data;
+   keep stable sources before task data;
    reserve sibling/expansion capacity and recheck before expansion. Missing
    context returns to the primary, not guesses. Native cutoffs remain unverified. A
    provider-specific worker definition is a thin binding to these

@@ -155,9 +155,9 @@ def validate_task_repair_review(validator: Any, task: dict[str, Any], model: dic
         elif review["schema_version"] != 2:
             validator.error("TDD_EXECUTION_CONTRACT", "captured same-task schema-2 qualification cannot be downgraded to schema 1", POLICY)
         else:
-            for group in ("assertions", "performance"):
-                current = {item["id"]: item for item in review["qualification"][group]}
-                for item in prior_review["qualification"][group]:
+            for group in ("assertions", "performance", "producer_coverage"):
+                current = {item["id"]: item for item in review["qualification"].get(group, [])}
+                for item in prior_review["qualification"].get(group, []):
                     if json.dumps(current.get(item["id"]), sort_keys=True, allow_nan=False) != json.dumps(item, sort_keys=True, allow_nan=False):
                         validator.error("TDD_EXECUTION_CONTRACT", f"captured same-task qualification {group} cannot be removed or rewritten into successful acceptance", POLICY)
     if len(obligations) != 1 or obligations[0].get("required") is not True:

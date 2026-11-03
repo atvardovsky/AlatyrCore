@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.123 - 2026-11-03
+
+- Bind selected checkpoint/context artifacts inside the existing problem model;
+  reuse canonical freshness, atomic publication and bounded current-task views.
+  Keep history lazy, preserve failed duties and invalidate advice on changes.
+- Distinguish native assignment/start/resume from messaging. Add optional
+  assignment-protocol and dispatch observations with shared receipt/tree checks,
+  immediate terminal-result support and no automatic uncertain-write retries.
+- Add optional source-bound producer coverage to repair qualification: exact
+  event multiplicities, declared partial order, capacity and truncation. Preserve
+  captured controls and keep component evidence separate from original outcomes.
+- Verify adopted default validation routes using existing execution evidence and
+  the registered validation path, without executing arbitrary target commands.
+  Separate default-route operability, installed/tooling identity and canonical
+  acceptance; absent adoption is explicitly unverified.
+- Advance framework to alpha.123, adapter schema to 100 and templates to 118.
+  Existing evidence without new fields retains its prior proof limits. Controls
+  remain conditional and target-adopted; no new bootstrap file, daemon, provider
+  call, automatic policy enablement or claimed token/billing improvement.
+
 - Clarify selected-task recovery for retained repair obligations without valid
   current policy, preserving all acceptance and historical requirements. Core
   incidents without captured requirements no longer suggest optional adoption

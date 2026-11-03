@@ -40,6 +40,9 @@ def evidence_failures(model: dict, *, completion: bool = False) -> list[str]:
     if block is None:
         return ["hypothesis-driven analysis requires operational analysis_evidence"] if model["primary_strategy_id"] == "hypothesis-driven" and model["schema_version"] >= 7 else []
     failures: list[str] = []
+    selected = block.get("selected_context", [])
+    if len({row["path"] for row in selected}) != len(selected):
+        failures.append("selected context requires unique exact artifact paths")
     hypotheses = {row["id"]: row for row in model["hypotheses"]}
     obligations = {row["id"]: row for row in model["proof_obligations"]}
     unknowns = {row["id"] for row in model["unknowns"]}
@@ -158,7 +161,7 @@ def evidence_failures(model: dict, *, completion: bool = False) -> list[str]:
 
 def artifact_bindings(model: dict) -> list[tuple[str, str]]:
     block = model.get("analysis_evidence", {})
-    result = []
+    result = [(row["path"], row["sha256"]) for row in block.get("selected_context", [])]
     for probe in block.get("probes", []):
         if probe["result"] is not None:
             result.extend(probe["result"]["input_sha256"].items())
@@ -238,7 +241,8 @@ def revision_failures(previous: dict, current: dict) -> list[str]:
 
 def active_evidence(model: dict) -> dict:
     block = model["analysis_evidence"]
-    return {"probes": [{"obligation_id": row["obligation_id"], "unknown_ids": row["unknown_ids"],
+    return {**({"selected_context": block["selected_context"]} if "selected_context" in block else {}),
+            "probes": [{"obligation_id": row["obligation_id"], "unknown_ids": row["unknown_ids"],
                         "method": row["method"], "action_kind": row["action_kind"],
                         "estimated_tool_calls": row["estimated_tool_calls"],
                         "predictions": row["predictions"], "result": row["result"]} for row in block["probes"]],

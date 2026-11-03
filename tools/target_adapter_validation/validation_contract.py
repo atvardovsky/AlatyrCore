@@ -329,6 +329,11 @@ def validate_validation_contract(sink: FindingSink, manifest: Any) -> None:
         return
 
     schema_version = contract["schema_version"]
+    if "default_route" in contract:
+        from default_validation_route import validate_default_route
+        from test_execution_contract import has_placeholders
+        if not sink.allow_placeholders or not has_placeholders(contract["default_route"]):
+            validate_default_route(sink, contract["default_route"], manifest)
     validate_profile_validation_routes(sink, manifest, contract)
     entrypoints = contract["entrypoints"]
     canonical_coverage = any(

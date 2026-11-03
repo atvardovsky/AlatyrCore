@@ -70,6 +70,10 @@ Enforce every policy freshness, timestamp and session-binding constraint.
 Preflight proves neither client probing, dispatch nor result delivery, and
 cannot establish completion; use the execution-tree ledger and primary
 convergence instead.
+Verify that a new assignment starts/resumes a turn, rather than only delivering
+a message. Record observed task/worker/attempt identity and check live status or
+the correctly bound immediate result. Use the canonical optional assignment
+protocol and dispatch observation without claiming provider authentication.
 
 Before dispatch, `prepare-worker-context` freezes the actual prompt, visible
 bootstrap, packet and bounded files. Supply every other allocated worker's

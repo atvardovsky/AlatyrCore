@@ -307,6 +307,15 @@ Do not infer capability parity between assistant products. The same strategy
 applies through the shared packet and convergence contract, while execution
 mechanics remain target-verified for each surface.
 
+Verify start/resume versus messaging through selected capability
+`assignment_protocol.operation_roles` and `evidence_ref`, without provider-parity
+assumptions. Require acknowledgement or bound completion, not queued messages;
+immediate completion need not expose RUNNING. Reconcile uncertain writers before
+retry. Adopted `dispatch_verification: required` checks receipt/node `dispatch`
+identity, attempt, operation/state/time and event reference, rejecting message-only
+or reused assignments. Default `procedural` retains primary checks. Observations
+grant neither authentication, native interception nor authority.
+
 ## Delegation Packet
 
 Every dispatched task uses a bounded target packet that records:

@@ -127,6 +127,9 @@ verified and the work requires the governed tree tier.
 
 ## Packet And Dispatch
 
+Apply the canonical assignment protocol and adopted receipt/node observation:
+messages do not establish execution; reconcile uncertain writers before retry.
+
 1. Create one packet per delegate by instantiating
    `.ai/assistant/templates/subagent-task-packet.md` into a target-approved
    operation evidence path or inline completion evidence.

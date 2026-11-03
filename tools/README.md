@@ -2447,6 +2447,29 @@ neither command applies or repairs an update. Verification requires
 `--diff-ref` for the pre-update Git base and at least one `--approval-record`
 for the current update scope; repeat the approval option when needed.
 
+Targets may explicitly adopt `default_route` in validation-contract schema 2:
+`command_id`, exact `argv` array, reviewed `input_paths` and `execution_record`.
+The record uses the existing canonical test-execution policy/format; its bound
+command must declare matching typed `argv` as its executable form. Its observed
+JSON result contains `argv`, `cwd: "."`, `task_id`, `task_class`,
+`framework_version`, `framework_source_commit`, `injected_overrides: false`,
+integer `exit_code: 0` and `run_window` with timezone-aware `started_at` and
+`finished_at`. Capture it through separately authorized actual execution.
+Include command configuration, policy, manifest and validation-contract bytes in
+current inputs, but not the record/result themselves. With adoption,
+`verify-upgrade` also requires `--task-id` and `--task-class`. General health or
+an override-assisted command cannot replace this evidence. Without adoption,
+operability is explicitly unverified; no target command is executed by inspection.
+
+For current checkpoint delivery, use optional
+`analysis_evidence.selected_context` in the existing problem model, then publish
+model/projection/index together and select `doctor --current-task ID`. The view
+returns references, not raw checkpoint/history content. See the canonical
+[task-state owner](../framework/task-state-delivery.md#current-disposition),
+[assignment protocol](../framework/subagent-delegation.md#capability-negotiation)
+and [producer qualification](../framework/repair-qualification.md) for adoption
+and proof limits. No new always-loaded record is required.
+
 Assessment optionally accepts `--baseline-validation-report <report.json>`.
 Its impact report includes an exact multiset finding reconciliation: inherited,
 introduced and no-longer-observed occurrences only when complete report counts,

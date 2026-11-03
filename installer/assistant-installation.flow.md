@@ -392,6 +392,10 @@ Classify every proposed target file:
     `.ai/local/framework-source` or Git-common `alatyr/framework-source`; fail closed.
     Apply continuity's worktree prerequisites and reviewed exact handoff recovery;
     never auto-retire missing evidence.
+    Review optional current-context bindings, producer-coverage qualification,
+    assignment-protocol evidence and default-route execution with their canonical
+    owners. Preserve explicit adoption decisions. Exercise adopted controls on
+    their public paths; structural checks never execute target commands.
     Route enabled team operations and matched state-changing work through the
     lazy `.ai/assistant/team/context-overlay.json`. Read the compact active-work
     index first; do not put full team state in bootstrap.

@@ -151,6 +151,13 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
                 raise ValueError(raw.error or "missing analysis artifact")
             return raw.value
         failures = verify_artifacts(model, read_artifact)
+        selected = model["analysis_evidence"].get("selected_context")
+        if selected is not None:
+            result["selected_context"] = {
+                "state": "stale-or-unavailable" if failures else "current-content-not-execution-proof",
+                "bindings": selected, "content_loaded_into_view": False,
+                "authority": "none", "acceptance_granted": False,
+            }
         if failures:
             readiness = {**readiness, "state": "blocked-by-stale-evidence", "ready": [],
                          "failures": [*readiness["failures"], *failures]}

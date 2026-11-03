@@ -251,6 +251,8 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         runtime = current.get("runtime_readiness")
         if isinstance(runtime, dict):
             lines.append("Selected runtime: " + runtime["state"] + " (not execution permission)")
+        if "selected_context" in current:
+            lines.append("Selected context: " + current["selected_context"]["state"] + " (bound references only)")
         if "delivery" in current:
             lines.append("Recorded delivery: " + json.dumps(current["delivery"], sort_keys=True))
         outcome = current.get("incident_outcome")

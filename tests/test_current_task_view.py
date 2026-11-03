@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
 import json
 import subprocess
@@ -83,6 +84,36 @@ class ReadinessTests(unittest.TestCase):
 
 
 class CurrentTaskTests(ActiveTaskFixture):
+    def test_selected_checkpoint_binding_invalidates_focus_without_history_scan(self):
+        path = ".ai/.runtime/selected-checkpoint.json"
+        artifact = self.target / path
+        artifact.parent.mkdir(parents=True, exist_ok=True)
+        artifact.write_text('{"phase":"diagnose"}\n')
+        for review in self.model["review_results"]:
+            review["status"] = "pending"
+        self.model["original_case"] = {"source_ref": "reported-original-case", "actor": "fixture caller",
+            "input": "original input", "expected_outcome": "original flow succeeds",
+            "status": "still-failing", "evidence_refs": [], "supersession": None}
+        self.model["analysis_evidence"] = {"schema_version": 1, "probes": [],
+            "updates": [], "review_challenges": [],
+            "selected_context": [{"path": path, "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest()}]}
+        self.write_model(); self.write_index()
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "bound-recorded-disposition", value)
+        self.assertEqual(value["selected_context"]["state"], "current-content-not-execution-proof")
+        self.assertFalse(value["selected_context"]["content_loaded_into_view"])
+        (self.target / "unrelated-history.md").write_text("unrelated historical content")
+        self.assertEqual(current_task_view(changed_index_validator(self.target), "fixture-task")["selected_context"]["state"],
+                         "current-content-not-execution-proof")
+        artifact.write_text('{"phase":"contradictory-result"}\n')
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["selected_context"]["state"], "stale-or-unavailable")
+        self.assertEqual(value["execution_focus"]["state"], "blocked-by-stale-evidence")
+        self.assertIsNone(value["execution_focus"]["next_action"])
+        self.assertEqual(value["incident_outcome"]["state"], "original-case-unresolved")
+        self.assertFalse(value["acceptance_granted"])
+        self.assertIn("ANALYSIS_EVIDENCE_ARTIFACT", self.errors(self.check()))
+
     def test_selected_current_disposition_uses_bound_model_without_historical_scan(self):
         checked = changed_index_validator(self.target)
         value = current_task_view(checked, "fixture-task")

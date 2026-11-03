@@ -73,8 +73,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 453,
-      "content_digest": "sha256:67b493c5b1b4c9b8f541723dd84316be717d72c37bdc85934eecdc7c617cc61c"
+      "estimated_words": 601,
+      "content_digest": "sha256:b1b1e8f833213ef667c999d1096986a8988dafdbea05bdc023d22101b2440d87"
     },
     {
       "id": "framework.support.runtime-observation-md",
@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 940,
-      "content_digest": "sha256:4e8106244367e6994a4f8e8ae8c019e17af0e22884041b87dee47884a701537c"
+      "estimated_words": 995,
+      "content_digest": "sha256:d7200321d881d4ff0fbad8bd7c01d441e054f2d77cc5108a33ef4c0581397999"
     },
     {
       "id": "framework.support.test-execution-selection-md",

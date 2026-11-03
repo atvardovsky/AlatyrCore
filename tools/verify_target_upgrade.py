@@ -15,10 +15,14 @@ from task_acceptance_binding import add_task_arguments, task_arguments
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def acceptance_failures(payload: dict[str, Any], *, task_id: str | None = None, task_class: str | None = None, require_task_acceptance: bool = False) -> list[str]:
+def acceptance_failures(payload: dict[str, Any], *, task_id: str | None = None, task_class: str | None = None, require_task_acceptance: bool = False, default_route_required: bool = False) -> list[str]:
     """Return contract failures that prevent a completed-update claim."""
 
     failures: list[str] = []
+    findings = payload.get("findings")
+    if default_route_required and (not isinstance(findings, list) or not any(
+            isinstance(row, dict) and row.get("code") == "DEFAULT_ROUTE_VERIFIED" for row in findings)):
+        failures.append("adopted default validation route lacks current execution verification")
     if require_task_acceptance:
         task = payload.get("task_acceptance")
         if not task_id or not task_class or not isinstance(task, dict) or task.get("state") != "accepted" or task.get("task_id") != task_id or task.get("task_class") != task_class:
@@ -146,6 +150,21 @@ def main() -> int:
     if not migration_diff.is_file():
         print(f"Migration diff does not exist: {migration_diff}", file=sys.stderr)
         return 2
+    default_route_required = False
+    local_contract = target / ".ai/assistant/validation-contract.json"
+    try:
+        if local_contract.is_symlink() or local_contract.stat().st_size > 128 * 1024:
+            raise ValueError("validation contract must be a bounded regular file")
+        declaration = json.loads(local_contract.read_text(encoding="utf-8"))
+        if not isinstance(declaration, dict):
+            raise ValueError("validation contract must be an object")
+        default_route_required = "default_route" in declaration
+    except (OSError, UnicodeError, ValueError) as exc:
+        print(f"Upgrade validation contract is unavailable: {exc}", file=sys.stderr)
+        return 2
+    if default_route_required and not (args.task_id and args.task_class):
+        print("Adopted default-route verification requires --task-id and --task-class", file=sys.stderr)
+        return 2
     if output.exists() and not args.overwrite:
         print(f"Verification output already exists: {output}; pass --overwrite", file=sys.stderr)
         return 2
@@ -202,7 +221,8 @@ def main() -> int:
         print(f"Upgrade verification report is invalid: {exc}", file=sys.stderr)
         return 1
 
-    failures = acceptance_failures(payload, task_id=args.task_id, task_class=args.task_class, require_task_acceptance=args.require_task_acceptance)
+    failures = acceptance_failures(payload, task_id=args.task_id, task_class=args.task_class, require_task_acceptance=args.require_task_acceptance,
+                                   default_route_required=default_route_required)
     if result.returncode != 0 and not failures:
         failures.append(f"validator exited with status {result.returncode}")
     if failures:
@@ -218,6 +238,7 @@ def main() -> int:
         f"{evidence['observed_branch']}@{evidence['observed_revision']}"
     )
     print(f"Verification evidence: {output}")
+    print("Default validation route: " + ("record-verified" if default_route_required else "not adopted; operability not verified"))
     return 0
 
 
