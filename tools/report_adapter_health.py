@@ -280,6 +280,8 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         if isinstance(preflight, dict):
             lines.append("Related repair preflight: " + preflight["state"])
             lines.append("Next incident action: " + preflight["next_action"])
+            if preflight.get("recovery_guidance"):
+                lines.append("Captured requirement recovery: " + preflight["recovery_guidance"])
     overview = payload.get("work_overview")
     if isinstance(overview, dict):
         lines.append("Active analysis tasks: " + str(overview["analysis_tasks"]["active_count"]))

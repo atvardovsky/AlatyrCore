@@ -18,6 +18,8 @@ class CoreRepairWorkflowTests(unittest.TestCase):
         self.assertEqual(result["accepted"]["task_acceptance"]["state"], "accepted")
         self.assertEqual(result["stale_result"]["task_acceptance"]["state"], "blocked")
         self.assertTrue(any(row["level"] == "error" for row in result["stale_result"]["findings"]))
+        self.assertEqual(result["protocol"], {"status": "bound-recorded-disposition", "doctor": "bound-recorded-disposition",
+            "delegate_status": "text-output-verified", "unsupported_delegate_json": "rejected-use-source-json-route"})
 
 
 if __name__ == "__main__":

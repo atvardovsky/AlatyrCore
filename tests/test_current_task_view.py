@@ -211,6 +211,86 @@ class CurrentTaskTests(ActiveTaskFixture):
         self.assertEqual(value["incident_controls"]["adoption"], "not-adopted")
         self.assertTrue(value["incident_controls"]["installed_templates"]["2"])
 
+    def prepare_incident(self, *, reserved=False):
+        from tests.test_behavior_acceptance import original_case
+        self.model["incident"].update(mode="new", family_id="fixture-incident", trigger="reported-defect")
+        self.model["original_case"] = original_case()
+        self.task["incident_family_id"] = "fixture-incident"
+        if reserved:
+            self.model["proof_obligations"].append(dict(self.model["proof_obligations"][0], id="repair-evidence-review"))
+            self.task["repair_review_required"] = True
+        self.write_model(); self.write_index()
+
+    def test_core_incident_does_not_require_optional_control_adoption(self):
+        self.prepare_incident()
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["incident_controls"]["adoption"], "not-adopted")
+        self.assertEqual(value["repair_preflight"]["next_action"], "continue-core-repair-with-generic-obligations")
+        self.assertFalse(value["repair_preflight"]["captured_requirement"])
+
+    def test_unreadable_policy_is_not_reported_as_unadopted(self):
+        self.prepare_incident()
+        path = self.target / ".ai/project/testing/test-first-policy.json"
+        path.mkdir(parents=True)
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["incident_controls"]["adoption"], "unknown")
+        self.assertEqual(value["repair_preflight"]["next_action"], "resolve-canonical-repair-control-policy")
+        self.assertFalse(value["acceptance_granted"])
+
+    def test_captured_requirement_without_policy_has_read_only_owner_recovery_guidance(self):
+        self.prepare_incident(reserved=True)
+        before = {path: path.read_bytes() for path in (self.model_path, self.target / ".ai/assistant/active-tasks.json")}
+        command = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "doctor", "--target", str(self.target),
+                   "--current-task", "fixture-task", "--json"]
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        preflight = payload["current_task"]["repair_preflight"]
+        self.assertEqual(preflight["state"], "captured-requirement-needs-review")
+        self.assertEqual(preflight["next_action"], "review-captured-repair-policy-and-history")
+        self.assertTrue(preflight["captured_requirement"])
+        self.assertFalse(preflight["automatic_rewrite"])
+        self.assertFalse(preflight["historical_applicability_verified"])
+        self.assertIn("not proof of mistaken capture", preflight["recovery_guidance"])
+        self.assertTrue(any(row["code"] == "TDD_EXECUTION_CONTRACT" for row in payload["findings"]))
+        from report_adapter_health import render_text
+        self.assertIn(preflight["recovery_guidance"], render_text(payload))
+        self.assertEqual({path: path.read_bytes() for path in before}, before)
+        self.assertFalse((self.target / ".ai/project/testing/test-first-policy.json").exists())
+
+    def test_captured_requirement_does_not_hide_invalid_or_deferred_policy(self):
+        from tests.test_test_execution_contract import policy
+        from tests.test_incident_quality import repair_policy
+        self.prepare_incident(reserved=True)
+        value = policy()
+        value["commands"][0]["execution"]["proof_boundary"] = "end-to-end"
+        value["repair_review"] = repair_policy()
+        path = self.target / ".ai/project/testing/test-first-policy.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        for state in ("enabled", "deferred", "disabled", {}, [], None, True, 1, "invalid"):
+            proposed = copy.deepcopy(value)
+            proposed["repair_review"]["state"] = state
+            if state in ("deferred", "disabled"):
+                proposed["repair_review"]["records"] = []
+            path.write_text(json.dumps(proposed), encoding="utf-8")
+            with self.subTest(state=state):
+                result = current_task_view(changed_index_validator(self.target), "fixture-task")
+                expected = "review-before-related-repair" if state == "enabled" else "captured-requirement-needs-review"
+                self.assertEqual(result["repair_preflight"]["state"], expected)
+                self.assertFalse(result["acceptance_granted"])
+
+    def test_retained_header_without_marker_cannot_produce_core_only_guidance(self):
+        self.prepare_incident()
+        path = self.target / ".ai/assistant/active-tasks.json"
+        index = json.loads(path.read_text(encoding="utf-8"))
+        index["tasks"][0]["repair_review_required"] = True
+        path.write_text(json.dumps(index), encoding="utf-8")
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown")
+        self.assertTrue(value["diagnostics"])
+        self.assertNotIn("repair_preflight", value)
+        self.assertFalse(value["acceptance_granted"])
+
     def test_repair_preflight_preserves_explicit_deferred_or_disabled_decisions(self):
         from tests.test_test_execution_contract import RegisteredTestingExecutionTests
         helper = RegisteredTestingExecutionTests()

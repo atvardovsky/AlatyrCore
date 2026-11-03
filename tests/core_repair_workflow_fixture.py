@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -15,8 +16,16 @@ from check_lifecycle_conformance import (approval_record, make_validator, mark_f
     refresh_context_and_bootstrap, resolve_adapter, run_git, transition_installation_state)
 from scaffold_target_structure import plan as scaffold_plan
 from tests.active_task_fixture import ActiveTaskFixture
-from tests.test_behavior_acceptance import original_case
 from target_adapter_validation.harness_scenarios.analysis_strategies import _model
+
+
+def documented_doctor_arguments(document: str, target: Path) -> list[str]:
+    prefix = "python3 tools/alatyr.py doctor "
+    examples = [line for line in document.splitlines() if line.startswith(prefix)]
+    if len(examples) != 1:
+        raise ValueError("core walkthrough must retain one complete source doctor example")
+    replacements = {"/path/to/project": str(target), "REPAIR-1": "fixture-task"}
+    return [replacements.get(token, token) for token in shlex.split(examples[0])[2:]]
 
 
 def run_core_repair_workflow(target: Path) -> dict:
@@ -75,8 +84,10 @@ def run_core_repair_workflow(target: Path) -> dict:
     fixture.target, fixture.base, fixture.result = target, base, base
     fixture.model, fixture.model_path = _model(), target / ".ai/.runtime/problem-models/fixture-problem.json"
     fixture.model["incident"].update(mode="new", family_id="workflow-incident", trigger="reported-defect")
-    fixture.model["original_case"] = dict(original_case(), status="verified-fixed",
-        source_ref="evidence/workflow/diagnostic.txt.snapshot", evidence_refs=["evidence/workflow/validation.txt.snapshot"])
+    fixture.model["original_case"] = {"actor": "synthetic workflow caller", "input": "Read workflow-product.txt",
+        "expected_outcome": "The synthetic workflow product returns repaired", "status": "verified-fixed",
+        "source_ref": "evidence/workflow/diagnostic.txt.snapshot", "evidence_refs": ["evidence/workflow/validation.txt.snapshot"],
+        "supersession": None}
     fixture.model["repository_binding"].update(branch=run_git(target, "branch", "--show-current"), base_revision=base)
     fixture.model["changed_facts"][0].update(owner_ref="README.md", statement="Synthetic workflow product returns its repaired value")
     fixture.model["invariants"][0]["owner_ref"] = "README.md"
@@ -123,11 +134,34 @@ def run_core_repair_workflow(target: Path) -> dict:
         "--task-id", "fixture-task", "--task-class", "standard-task", "--require-task-acceptance", "--json")
     if final["task_acceptance"]["state"] != "accepted":
         raise AssertionError(final)
+    # Probe only after projection reconciliation; stale health must not pass.
+    protocol = {}
+    for operation in ("status", "doctor"):
+        if operation == "doctor":
+            arguments = documented_doctor_arguments((ROOT / "docs/core-repair-workflow.md").read_text(encoding="utf-8"), target)
+        else:
+            arguments = [operation, "--target", target, "--framework-source", ROOT, "--current-task", "fixture-task", "--json"]
+        value = run(*arguments)
+        if value["target"] != str(target) or value["current_task"]["incident_outcome"]["original_case"]["expected_outcome"] != fixture.model["original_case"]["expected_outcome"]:
+            raise AssertionError("documented protocol lost its target or original-case identity")
+        if value["current_task"]["repair_preflight"]["next_action"] != "continue-core-repair-with-generic-obligations":
+            raise AssertionError("core repair guidance unexpectedly requires optional policy adoption")
+        protocol[operation] = value["current_task"]["state"]
+    delegate = [sys.executable, str(target / ".ai/assistant/tools/alatyr_delegate.py"), "status",
+                "--target", str(target), "--framework-source", str(ROOT), "--current-task", "fixture-task"]
+    delegated = subprocess.run(delegate, cwd=target, capture_output=True, text=True, timeout=120)
+    if delegated.returncode or "Alatyr adapter health:" not in delegated.stdout:
+        raise AssertionError(delegated.stdout + delegated.stderr)
+    unsupported = subprocess.run([*delegate, "--json"], cwd=target, capture_output=True, text=True, timeout=120)
+    if unsupported.returncode != 2 or "unrecognized arguments: --json" not in unsupported.stderr:
+        raise AssertionError("operator protocol no longer matches the installed delegate parser")
+    protocol["delegate_status"] = "text-output-verified"
+    protocol["unsupported_delegate_json"] = "rejected-use-source-json-route"
     product.write_text("regressed\n", encoding="utf-8")
     blocked = run("validate-adapter", "--target", target, "--framework-source", ROOT,
         "--validation-phase", "acceptance", "--validation-scope", "full", "--diff-ref", base,
         "--approval-record", approval_path, "--enforce-approval-scope", "--task-id", "fixture-task",
         "--task-class", "standard-task", "--require-task-acceptance", "--json", expected=1)
     product.write_text("repaired\n", encoding="utf-8")
-    return {"publication": publication, "accepted": final, "stale_result": blocked,
+    return {"publication": publication, "accepted": final, "stale_result": blocked, "protocol": protocol,
             "optional_policy_created": (target / ".ai/project/testing/test-first-policy.json").exists()}

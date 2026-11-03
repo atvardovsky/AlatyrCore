@@ -103,6 +103,24 @@ class MalformedContextPlanningTests(unittest.TestCase):
                 self.assert_api_and_cli_blocked(artifact, expected_field)
         write_json(self.target / artifact, original)
 
+    def test_missing_operation_routing_has_actionable_prerequisites_without_writes(self):
+        self.assertEqual(plan_target_context(self.request())["status"], "ready")
+        for artifact, field in ((PROFILE, "operation_candidates"), (ROUTER, "operation_routing")):
+            original = self.load(artifact)
+            proposed = dict(original)
+            proposed.pop(field)
+            write_json(self.target / artifact, proposed)
+            with self.subTest(artifact=artifact):
+                self.assert_api_and_cli_blocked(artifact, field)
+                plan = plan_target_context(self.request())
+                self.assertEqual(plan["errors"][0]["code"], "ADAPTER_FIELD_INVALID")
+                guidance = " ".join(plan["required_actions"])
+                self.assertIn("operation index/catalog", guidance)
+                self.assertIn("valid core installation alone", guidance)
+                self.assertIn("no capability is enabled automatically", guidance)
+            write_json(self.target / artifact, original)
+        self.assertEqual(plan_target_context(self.request())["status"], "ready")
+
     def check_shapes(self, artifact: str, keys: tuple, values: tuple) -> None:
         original = (self.target / artifact).read_bytes()
         field = ""

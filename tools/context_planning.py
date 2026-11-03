@@ -99,13 +99,17 @@ def _canonical_digest(value: Any) -> str:
 
 
 def _field_error(artifact: str, field: str, expected: str, value: Any) -> ContextPlanningError:
+    actions = ["repair the reported field before planning context"]
+    if field == "operation_candidates" or field.startswith("operation_routing"):
+        actions.append("Resolve the selected profile's operation_candidates and the router's operation_routing against the installed operation index/catalog; a valid core installation alone does not establish this planning prerequisite.")
+        actions.append("Verify the exact selected context-plan request before relying on it. Configuration changes require target-owner authorization; no capability is enabled automatically.")
     return ContextPlanningError(
         "INVALID_CONTEXT_PLAN_REQUEST" if artifact == "request" else "ADAPTER_FIELD_INVALID",
         f"{artifact}:{field} must be {expected}; got {type(value).__name__}",
         status="invalid-request" if artifact == "request" else "blocked",
         details={"artifact": artifact, "field": field, "expected": expected,
                  "actual_type": type(value).__name__},
-        actions=("repair the reported field before planning context",),
+        actions=actions,
     )
 
 

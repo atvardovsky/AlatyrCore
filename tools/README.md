@@ -270,6 +270,11 @@ mapping yields declared ready/blocked/waiting obligations, never authority or
 accepted proof. Default health loads no extra task view. An unknown task is an
 explicit selection error; no selector is converted into a filesystem path.
 The installed delegate supports `doctor --current-task TASK-ID` too.
+Its status/doctor routes produce text; `--json` belongs to the source entry
+point shown above. Selected incident preflight distinguishes policy-free core
+work from a retained requirement lacking valid current policy. The latter
+routes to target-owner history review, never automatic removal or enablement;
+see [core repair recovery](../docs/core-repair-workflow.md#mistaken-reserved-id-capture).
 When `analysis_evidence` is present, this view also returns digest-bound
 next-action advice from the same dependency graph. Unknown costs remain unknown;
 advice neither verifies observations nor authorizes a probe. Current publication
@@ -2629,6 +2634,14 @@ use `check_effectiveness_benchmark.py --run-contract <run-contract.json>
 accessing the organizer manifest or sibling runs. This editable subject copy
 is not authority: the organizer rechecks against its original manifest and
 independent review remains required. No agent or product command is executed.
+
+Before freezing a trial, exercise each exact helper invocation against its
+configured isolated target. Verify parser flags, selected-task identity and
+required operation/profile routing, not only `--help` or catalog membership.
+Use the source status/doctor entry point for JSON. Preserve failed preflight
+and raw subject reports separately from reviewer transcriptions; invalid setup
+is not a product defect or a completed behavioral trial. Keep default product
+tests after evidence packaging. No new agent cohort is implied by source checks.
 
 `check_engineering_evidence.py` is a source self-check: no arguments run its
 public fixtures; `--help` only prints usage and unknown arguments fail before

@@ -65,6 +65,14 @@ make the current task pass. Use the selected read-only view to locate blockers:
 python3 tools/alatyr.py doctor --target /path/to/project --current-task REPAIR-1 --json
 ```
 
+This source command supports JSON. The installed delegate supports
+`doctor --current-task REPAIR-1` with text output, not `--json`. Verify the exact
+entry point and arguments; help or a valid core installation alone does not
+establish an optional context-planning route. Planning additionally requires a
+resolved profile's `operation_candidates`, router `operation_routing`, and its
+operation index/catalog. Do not enable capabilities implicitly to satisfy a
+benchmark protocol.
+
 Adapt `.ai/assistant/templates/task-closure.json`, retain its task/operation,
 changed-fact and lineage bindings, and register the closed task with exact
 closure/model hashes. Keep implementation, finalization and publication states
@@ -107,11 +115,24 @@ and report the task blocked. A target owner may explicitly adopt a valid repair
 policy and provide the required evidence; generic repair authorization does not
 authorize that policy change. No automatic waiver or force-reset is provided.
 
+Select the task with the complete source doctor command in section 3, replacing
+`REPAIR-1` with its registered task ID.
+`repair_preflight.state: captured-requirement-needs-review` identifies a current
+obligation/policy mismatch, not proof that historical capture was mistaken.
+Follow its owner-review guidance; retain the model, header and failed reports.
+An absent, unreadable, invalid or deferred current policy is not authority to
+remove a genuine historical requirement. A core incident without a captured
+requirement can continue with generic obligations; optional-policy adoption is
+not a prerequisite.
+
 ## Executable Coverage
 
 `tests/test_core_repair_workflow.py` exercises a synthetic core installation,
 real failed/repaired input, public publication/finalization/validation commands,
 retained witnesses and current-change approval scope without enabling optional
-review. A stale result must block. Fixture approvals are synthetic test data,
+review. Exact source JSON and installed-delegate text invocations are exercised;
+the unsupported delegate JSON flag is a negative protocol control. A separate
+configured context fixture must exercise the exact planning route before a
+trial is frozen. A stale result must block. Fixture approvals are synthetic test data,
 not reusable user grants. These checks do not establish real-world cognitive,
 latency, token-cost or domain-correctness improvements.

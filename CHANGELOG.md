@@ -2,7 +2,15 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Clarify selected-task recovery for retained repair obligations without valid
+  current policy, preserving all acceptance and historical requirements. Core
+  incidents without captured requirements no longer suggest optional adoption
+  as a prerequisite; absent and invalid policy remain distinct.
+- Add context-planning prerequisite guidance and exercise exact source JSON,
+  installed-delegate text, and configured planning invocations in regressions.
+  These source diagnostics and test-harness follow-ups do not change portable
+  rules, adapter schemas, templates, bootstrap, or release versions. No agent
+  cohort or comparative performance/cost improvement is claimed.
 
 ## 0.1.0-alpha.122 - 2026-11-02
 

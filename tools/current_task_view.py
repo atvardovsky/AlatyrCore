@@ -7,6 +7,7 @@ from typing import Any
 from task_evidence_contract import task_model_header_failures, task_predecessor_failures
 from task_readiness import execution_readiness
 from target_adapter_validation.active_tasks import _bound_object, _schema_valid, _task_model_evidence
+from target_adapter_validation.context import TargetFileState
 
 INDEX = ".ai/assistant/active-tasks.json"
 POLICY = ".ai/project/testing/test-first-policy.json"
@@ -186,6 +187,8 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     controls = {"policy": {"path": POLICY, "sha256": policy_raw.digest}, "adoption": "unknown",
                 "installed_templates": {}, "available_in_source": "unknown",
                 "exercised": "not-verified", "automatic_enablement": False}
+    if policy_raw.status.state == TargetFileState.MISSING:
+        controls["adoption"] = "not-adopted"
     if isinstance(policy, dict):
         from test_execution_contract import TestExecutionContract
         if not TestExecutionContract().policy_failures(policy):
@@ -202,22 +205,35 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     result["incident_controls"] = controls
     incident = model["incident"]
     original = model.get("original_case")
-    if incident["mode"] != "none" or isinstance(original, dict) and original.get("status") in {"unverified", "still-failing"}:
+    reserved = [row for row in model["proof_obligations"] if row["id"] == "repair-evidence-review"]
+    captured = task.get("repair_review_required") is True or bool(reserved)
+    capture_mismatch = captured and (controls["adoption"] != "enabled" or len(reserved) != 1 or reserved[0]["required"] is not True)
+    if captured or incident["mode"] != "none" or isinstance(original, dict) and original.get("status") in {"unverified", "still-failing"}:
         result["repair_preflight"] = {
-            "state": "review-before-related-repair",
+            "state": "captured-requirement-needs-review" if capture_mismatch else "review-before-related-repair",
             "original_input": original.get("input") if isinstance(original, dict) else None,
             "expected_outcome": original.get("expected_outcome") if isinstance(original, dict) else None,
             "latest_failed_gate": incident["latest_failed_gate"],
             "control_adoption": controls["adoption"],
-            "next_action": {"enabled": "review-bound-diagnostic-and-original-case",
+            "captured_requirement": captured,
+            "automatic_rewrite": False,
+            "historical_applicability_verified": False,
+            "next_action": "review-captured-repair-policy-and-history" if capture_mismatch else {"enabled": "review-bound-diagnostic-and-original-case",
                             "disabled": "respect-recorded-repair-control-decision",
                             "deferred": "respect-recorded-repair-control-decision",
-                            "not-adopted": "request-explicit-repair-control-adoption-decision"}.get(controls["adoption"], "resolve-canonical-repair-control-policy"),
+                            "not-adopted": "continue-core-repair-with-generic-obligations"}.get(controls["adoption"], "resolve-canonical-repair-control-policy"),
             "authorization_granted": False, "unrelated_work_blocked": False,
             "retention_review": "Before retaining an experimental production change, record its incident-level effect and retention or reversion reason in the existing repair review; a component pass alone is not recovery.",
             "escalation": "If related repairs do not resolve the original outcome, reassess the mechanism and owner boundaries before another local patch; preserve the failed case and frozen matrix.",
-            "limitation": "Review the faithful initial state and discriminating observation before another related patch. Optional controls require target approval; this view neither qualifies repair nor grants execution permission.",
+            "limitation": "Review the faithful initial state and discriminating observation before another related patch. Current-state guidance never clears historical duties. Optional controls require target approval; this view neither qualifies repair nor grants execution permission.",
         }
+        if capture_mismatch:
+            result["repair_preflight"]["recovery_guidance"] = (
+                "Current policy/obligation mismatch is not proof of mistaken capture. Have the target owner inspect "
+                "the original model, captured policy and authorization; preserve the obligation, header and failed evidence. "
+                "Do not reset, rename or bypass it with a successor. Policy adoption needs a separate explicit decision; "
+                "without an authorized resolution, report this task blocked. See docs/core-repair-workflow.md#mistaken-reserved-id-capture "
+                "in the compatible source checkout.")
     if view.finalize():
         return {"state": "unknown", "task_id": task_id, "authority": "none",
                 "acceptance_granted": False, "historical_narratives_loaded": False,

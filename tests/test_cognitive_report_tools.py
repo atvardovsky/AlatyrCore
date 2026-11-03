@@ -16,6 +16,19 @@ from prepare_effectiveness_benchmark import MODES, render_prompt
 
 
 class CognitiveReportToolTests(unittest.TestCase):
+    def test_documented_doctor_arguments_are_not_repaired_before_parser_validation(self):
+        from tests.core_repair_workflow_fixture import documented_doctor_arguments
+        document = (ROOT / "docs/core-repair-workflow.md").read_text(encoding="utf-8")
+        for old, new in (("--target /path/to/project ", ""), ("--json", "--json-invalid"),
+                         ("--current-task REPAIR-1", "--current-task")):
+            with self.subTest(mutation=old):
+                arguments = documented_doctor_arguments(document.replace(old, new), ROOT)
+                result = subprocess.run([sys.executable, "-B", str(ROOT / "tools/alatyr.py"), *arguments],
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        with self.assertRaises(ValueError):
+            documented_doctor_arguments("# No runnable doctor example", ROOT)
+
     def test_help_and_invalid_arguments_do_not_run_checks_or_fixtures(self):
         for args, code in ((["--help"], 0), (["-h"], 0), (["--unknown"], 2)):
             with self.subTest(args=args), patch.object(engineering, "require_text", side_effect=AssertionError("check ran")), \
