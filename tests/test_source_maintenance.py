@@ -6,7 +6,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from pathlib import Path
+from itertools import product
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -21,29 +22,29 @@ class SourceMaintenanceTests(unittest.TestCase):
     def test_checker_claims_keep_diagnostics_and_read_each_surface_once(self):
         from types import SimpleNamespace
         from validate_target_adapter import Validator
-        for exists in (True, False):
-            for placeholders in (True, False):
-                paths = [Path(".ai/assistant/contour.md"), Path(".ai/framework/contour.md")]
-                texts = {paths[0]: "Alatyr checker missing; check-alatyr.sh", paths[1]: "ignored"}
-                checker = Path("scripts/check-alatyr.sh")
-                texts[checker] = "MANIFEST"
-                reads, rows = [], []
-                def read(path):
-                    reads.append(path)
-                    return texts[path]
-                sink = SimpleNamespace(scan_live_text_files=lambda: paths, rel=str, read_text=read,
-                    allow_placeholders=placeholders,
-                    config=SimpleNamespace(checker_coverage=lambda: {"manifest": "manifest", "router": "router"}))
-                for level in ("info", "warn", "error"):
-                    setattr(sink, level, lambda *args, level=level: rows.append((level, *args)))
-                Validator.check_checker_claims(sink, [checker] if exists else [], [])
-                self.assertEqual(reads, [paths[0], checker] if exists else [paths[0]])
-                codes = [row[1] for row in rows]
-                self.assertIn("TARGET_CHECKER_FOUND" if exists else "TARGET_CHECKER_MISSING", codes)
-                if exists:
-                    self.assertEqual(codes.count("TARGET_CHECKER_COVERAGE_GAP"), 1)
-                else:
-                    self.assertIn("STALE_CHECKER_REFERENCE", codes)
+        for path_type, exists, placeholders in product((PurePosixPath, PureWindowsPath), (True, False), (True, False)):
+            paths = [path_type(".ai/assistant/contour.md"), path_type(".ai/framework/contour.md")]
+            texts = {paths[0]: "Alatyr checker missing; check-alatyr.sh", paths[1]: "ignored"}
+            checker = path_type("scripts/check-alatyr.sh")
+            texts[checker] = "MANIFEST"
+            reads, rows = [], []
+            def read(path):
+                reads.append(path)
+                return texts[path]
+            # Match Validator.rel rather than the host-dependent str(Path).
+            sink = SimpleNamespace(scan_live_text_files=lambda: paths, rel=lambda path: path.as_posix(), read_text=read,
+                allow_placeholders=placeholders,
+                config=SimpleNamespace(checker_coverage=lambda: {"manifest": "manifest", "router": "router"}))
+            for level in ("info", "warn", "error"):
+                setattr(sink, level, lambda *args, level=level: rows.append((level, *args)))
+            Validator.check_checker_claims(sink, [checker] if exists else [], [])
+            self.assertEqual(reads, [paths[0], checker] if exists else [paths[0]], path_type)
+            codes = [row[1] for row in rows]
+            self.assertIn("TARGET_CHECKER_FOUND" if exists else "TARGET_CHECKER_MISSING", codes)
+            if exists:
+                self.assertEqual(codes.count("TARGET_CHECKER_COVERAGE_GAP"), 1)
+            else:
+                self.assertIn("STALE_CHECKER_REFERENCE", codes)
 
     def test_impact_rejects_unsafe_paths_and_groups_shared_review_once(self):
         for paths in (["../secret"], ["/absolute"], ["tools//x.py"], ["C:\\x.py"], [None], "tools/x.py"):

@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fix the checker-claim test host to preserve `Validator.rel` POSIX semantics;
+  exercise POSIX and Windows path objects on every host. Production validation
+  and installed contracts are unchanged.
 
 ## 0.1.0-alpha.125 - 2026-11-04
 
