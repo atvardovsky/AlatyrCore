@@ -4,6 +4,9 @@ See [source optimization](source-optimization-workflow.md) for refresh and timin
 
 Use this guide when changing Alatyr Core itself.
 
+For cross-module refactors, select [source change management](source-optimization/source-management.md)
+for derived impact groups, acceptance-impact review and architecture checks.
+
 For context-delivery or agent-workflow changes, select the
 [development context contract](source-optimization/development-context-contract.md).
 Keep it conditional; routine tasks do not load the whole architecture guide.
@@ -50,7 +53,8 @@ closed witnesses and below/at/above focus limits. Compare default routes and sou
 read counts; structural replays are not live-agent concentration measurements.
 The full unit suite reserves its existing four-worker ceiling to avoid locking
 in a smaller grant while other checks fill the schedule. Capacity still clamps
-to the host/check budget; coverage and the 300-second deadline are unchanged.
+to the host/check budget. `tools/check_manifest.json` owns the execution timeout;
+duration hints influence scheduling only, not the deadline or coverage.
 
 For current-change contract revisions, test the smallest accepted installation
 with optional modules absent, then enable each affected module and prove its

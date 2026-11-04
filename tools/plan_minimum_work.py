@@ -1240,6 +1240,10 @@ def render_summary(plan: dict[str, Any]) -> str:
         f"Selected checks: {check_plan['selected_check_count']}",
         f"Reusable checks: {reuse['reusable_check_count']}",
     ]
+    if "source_change_impact" in plan:
+        impact = plan["source_change_impact"]
+        lines.append(f"Impact review groups: {len(impact['review_groups'])}; unmapped semantic paths: {len(impact['unmapped_semantic_paths'])}")
+        lines.append("Impact candidates are advisory; use JSON output for exact bindings.")
     if plan["selection"].get("escalated_from_micro"):
         lines.append("Micro escalation: yes")
         for reason in plan["selection"].get("micro_escalation_reasons", []):
@@ -1322,6 +1326,7 @@ def main() -> int:
     )
     parser.add_argument("--from-ref", help="Baseline substituted into change checks.")
     parser.add_argument("--reuse-report", type=Path)
+    parser.add_argument("--impact", action="store_true", help="Join source capability/contract owners, companion review candidates and validation; advisory, not automatic edits.")
     presentation = parser.add_mutually_exclusive_group()
     presentation.add_argument("--summary", action="store_true")
     presentation.add_argument("--compact", action="store_true", help="Agent-facing view; not acceptance evidence.")
@@ -1367,6 +1372,9 @@ def main() -> int:
             task_worker_packets=task_worker_packets,
             context_selectors=context_selectors,
         )
+        if args.impact:
+            from source_change_impact import source_change_impact
+            plan["source_change_impact"] = source_change_impact(ROOT, plan["changed_paths"], load_manifest())
     except (
         OSError,
         ValueError,
@@ -1379,7 +1387,10 @@ def main() -> int:
     if args.summary:
         print(render_summary(plan), end="")
     else:
-        print(json.dumps(compact_plan(plan) if args.compact else plan, indent=2, sort_keys=True) + "\n", end="")
+        view = compact_plan(plan) if args.compact else plan
+        if args.impact:
+            view["source_change_impact"] = plan["source_change_impact"]
+        print(json.dumps(view, indent=2, sort_keys=True) + "\n", end="")
     return 0
 
 

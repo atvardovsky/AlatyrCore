@@ -10,6 +10,9 @@ import sys
 from pathlib import Path
 from typing import Any, Iterable
 
+from source_architecture import architecture_failures, branch_points, entrypoint_failures
+from local_python_import_graph import LocalPythonImportGraph
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWLIST = ROOT / "tools" / "tool_complexity_allowlist.json"
@@ -50,6 +53,8 @@ def load_allowlist() -> tuple[int, dict[tuple[str, str], dict[str, Any]]]:
         "debt_owner",
         "review_by_version",
         "known_large_functions",
+        "dependency_cycles",
+        "legacy_any_entrypoints",
     }
     unknown = sorted(set(data) - expected_fields)
     missing = sorted(expected_fields - set(data))
@@ -64,6 +69,10 @@ def load_allowlist() -> tuple[int, dict[tuple[str, str], dict[str, Any]]]:
     entries = data.get("known_large_functions")
     if not isinstance(entries, list):
         raise ValueError("known_large_functions must be a list")
+    legacy = data.get("legacy_any_entrypoints")
+    if (not isinstance(legacy, list) or any(not isinstance(p, str) or not p for p in legacy)
+            or len(legacy) != len(set(legacy))):
+        raise ValueError("legacy_any_entrypoints must be unique explicit names")
     maximum_entries = data.get("max_known_large_functions")
     if (
         not isinstance(maximum_entries, int)
@@ -165,20 +174,27 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
+    policy = json.loads(ALLOWLIST.read_text(encoding="utf-8"))
+    graph = LocalPythonImportGraph(ROOT)
+    failures.extend(architecture_failures(ROOT, graph=graph, allowed_cycles=policy["dependency_cycles"]))
+    from target_adapter_validation.modules import MODULE_IMPLEMENTATIONS
+    failures.extend(entrypoint_failures(MODULE_IMPLEMENTATIONS, policy["legacy_any_entrypoints"]))
+
     observed_allowlist: set[tuple[str, str]] = set()
     largest: list[tuple[int, str, str]] = []
+    hotspots: list[tuple[int, str, str]] = []
     for path in python_paths():
         relpath = path.relative_to(ROOT).as_posix()
-        try:
-            tree = ast.parse(path.read_text(encoding="utf-8"), filename=relpath)
-        except SyntaxError as exc:
-            failures.append(f"{relpath} cannot be parsed: {exc}")
+        tree = graph.syntax_tree(path)
+        if tree is None:
+            failures.append(f"{relpath} cannot be parsed")
             continue
         for qualname, node in iter_functions(tree):
             if not hasattr(node, "end_lineno"):
                 continue
             lines = int(node.end_lineno) - int(node.lineno) + 1
             largest.append((lines, relpath, qualname))
+            hotspots.append((branch_points(node), relpath, qualname))
             key = (relpath, qualname)
             allowed = allowlist.get(key)
             if lines <= threshold:
@@ -214,6 +230,8 @@ def main() -> int:
         f"{len(allowlist)} known large functions are no-growth capped; "
         f"largest={largest[0][1]}:{largest[0][2]}:{largest[0][0]} lines"
     )
+    print("REVIEW: branch-count screening (not a correctness or cognitive score): "
+          + "; ".join(f"{p}:{name}={count}" for count, p, name in sorted(hotspots, reverse=True)[:5]))
     return 0
 
 

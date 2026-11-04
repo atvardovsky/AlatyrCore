@@ -206,6 +206,22 @@ def render(catalog: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def input_coverage_failures(catalog: dict[str, Any], check: dict[str, Any]) -> list[str]:
+    """Keep catalog referents in both freshness and focused-routing coverage."""
+    from source_check_manifest import matches, routes
+    failures = []
+    for contract in catalog.get("contracts", {}).values():
+        for artifact in contract.get("artifacts", {}).values():
+            for field in ("schema", "template"):
+                path = artifact.get(field)
+                if isinstance(path, str):
+                    if not matches(check, path):
+                        failures.append(f"compatibility artifact lacks declared input coverage: {path}")
+                    if not routes(check, path):
+                        failures.append(f"compatibility artifact lacks routing coverage: {path}")
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="fail when output is stale")
@@ -214,6 +230,10 @@ def main() -> int:
     try:
         catalog = load_contract_compatibility()
         failures = validate(catalog)
+        if not failures:
+            from source_check_manifest import load_manifest
+            check = next(item for item in load_manifest() if item["id"] == "target-contract-compatibility")
+            failures.extend(input_coverage_failures(catalog, check))
     except (OSError, ValueError, json.JSONDecodeError, yaml.YAMLError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1

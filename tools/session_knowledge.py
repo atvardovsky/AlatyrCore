@@ -114,6 +114,7 @@ def knowledge_projection(path: str, plan: dict) -> tuple[dict, list[dict], dict[
         expected = sources.get("knowledge_inputs")
         if not isinstance(expected, dict) or not 1 <= len(expected) <= 256:
             raise ValueError(f"{path} requires bounded knowledge input bindings")
+        expected = dict(expected)
         for relpath, value in expected.items():
             source_path(relpath)
             if not _digest(value):
@@ -146,7 +147,41 @@ def knowledge_projection(path: str, plan: dict) -> tuple[dict, list[dict], dict[
                           "source_paths": sorted(paths), "review_expires_on": row.get("review_expires_on"),
                           "unverified_trigger_kinds": row.get("unverified_trigger_kinds"),
                           "authority_state": row.get("authority_state"), "freshness_state": row.get("freshness_state")})
+    if "phase_context" in plan or request.get("overlay_phases"):
+        sources = plan.get("routing_sources")
+        phase_inputs = sources.get("phase_inputs") if isinstance(sources, dict) else None
+        if not isinstance(phase_inputs, dict) or not 1 <= len(phase_inputs) <= 8:
+            raise ValueError(f"{path} requires bounded phase routing bindings")
+        for relpath, value in phase_inputs.items():
+            source_path(relpath)
+            if not _digest(value) or relpath in expected and expected[relpath] != value:
+                raise ValueError(f"{path} has invalid or conflicting phase routing bindings")
+            routing.add(relpath)
+            expected[relpath] = value
     return {"path": path, "routing_paths": sorted(routing)}, items, expected
+
+
+def _validate_phase_bindings(path, plan, request, selected, load, read):
+    if "phase_context" not in plan and not request.get("overlay_phases"):
+        return
+    sources = plan.get("routing_sources")
+    if not isinstance(sources, dict):
+        raise ValueError(f"{path} requires phase routing metadata")
+    from task_phase_context import select_phase_context
+    observed = {}
+    def phase_load(relpath):
+        relpath = source_path(relpath)
+        raw = read(relpath)
+        observed[relpath] = "sha256:" + hashlib.sha256(raw).hexdigest()
+        return load(relpath)
+    def select(relpath):
+        if source_path(relpath) not in selected:
+            raise ValueError(f"{path} omits required phase context")
+    actual = select_phase_context(request.get("overlay_phases", ()), request.get("phase_instances", ()),
+        request.get("worker_role"), load(".ai/assistant/context-router.json"), phase_load, select)
+    if (plan.get("phase_context") != actual
+            or sources.get("phase_inputs") != observed):
+        raise ValueError(f"{path} has stale or incomplete phase routing bindings")
 
 
 def bind_plans(paths: list[str], load: Callable[[str], dict], read: Callable[[str], bytes]) -> dict:
@@ -159,6 +194,7 @@ def bind_plans(paths: list[str], load: Callable[[str], dict], read: Callable[[st
         path = source_path(path)
         plan = load(path)
         request, selected, expected_items = plan_projection(path, plan)
+        _validate_phase_bindings(path, plan, request, expected_items, load, read)
         for item in selected:
             selected_path = source_path(item.get("path"))
             raw = read(selected_path)

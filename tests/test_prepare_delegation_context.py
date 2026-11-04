@@ -10,12 +10,56 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from prepare_delegation_context import prepare, measurement, validate_preflight
+from prepare_delegation_context import prepare, measurement, validate_preflight, source_worker_bootstrap
 from prepare_delegation_result import prepare as prepare_result
 from source_worker_contract import load_source_worker_policy, make_builtin_packet
 
 
 class WorkerContextTests(unittest.TestCase):
+    def test_generated_source_view_cannot_overwrite_a_host_artifact_label(self):
+        packet = self.root / "packet.json"
+        packet.write_text(json.dumps(make_builtin_packet(self.policy, "framework-rules")), encoding="utf-8")
+        host = self.root / "source-worker-policy-view"
+        host.write_text("actual supplied host context", encoding="utf-8")
+        prompt = self.root / "prompt.txt"
+        prompt.write_text("Inspect the selected source without edits.", encoding="utf-8")
+        command = [sys.executable, "-B", str(ROOT / "tools/prepare_delegation_context.py"),
+            "--packet", str(packet), "--prompt", str(prompt), "--bootstrap", "source-worker-policy-view",
+            "--output-dir", str(self.root / "bundle")]
+        legacy = subprocess.run(command, cwd=self.root, capture_output=True, text=True)
+        self.assertEqual(legacy.returncode, 0, legacy.stderr)
+        collision = subprocess.run(command + ["--source-worker-bootstrap"], cwd=self.root, capture_output=True, text=True)
+        self.assertEqual(collision.returncode, 2)
+        self.assertIn("label conflicts", collision.stderr)
+        command[command.index("source-worker-policy-view")] = str(host)
+        safe = subprocess.run(command + ["--source-worker-bootstrap"], cwd=self.root, capture_output=True, text=True)
+        self.assertEqual(safe.returncode, 0, safe.stderr)
+        self.assertGreater(json.loads(safe.stdout)["preflight"]["context"]["word_count"],
+                           json.loads(legacy.stdout)["preflight"]["context"]["word_count"])
+
+    def test_public_source_worker_view_cannot_replace_actual_host_bootstrap(self):
+        packet = self.root / "packet.json"
+        packet.write_text(json.dumps(self.packet), encoding="utf-8")
+        result = subprocess.run([sys.executable, "-B", str(ROOT / "tools/prepare_delegation_context.py"),
+            "--packet", str(packet), "--source-worker-bootstrap", "--output-dir", str(self.root / "bundle")],
+            capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("actual host bootstrap", result.stderr)
+        self.assertFalse((self.root / "bundle").exists())
+
+    def test_source_worker_view_retains_policy_binding_and_budget_validation(self):
+        data = source_worker_bootstrap(self.packet, self.policy, root=self.root)
+        value = json.loads(data)
+        self.assertEqual(value["allowed_actions"], ["inspect"])
+        self.assertEqual(value["tree_policy"], self.policy["tree_policy"])
+        self.assertEqual(value["result_policy"], self.policy["context_compaction"])
+        record, content = self.bundle(bootstrap={"host": b"actual host", "worker": data})
+        self.assertIn(b"actual host", content)
+        self.assertEqual(record["context"], measurement(content))
+        self.policy["tree_policy"]["max_context_words_total"] = None
+        with self.assertRaises(ValueError):
+            source_worker_bootstrap(self.packet, self.policy, root=self.root)
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)

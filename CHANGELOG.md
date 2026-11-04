@@ -4,6 +4,25 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.125 - 2026-11-04
+
+- Add explicit phase/role context selection: resumed tasks retain current
+  instances instead of blank creation templates, with selected role delivery,
+  machine-input freshness and unchanged canonical budgets/owner closure.
+- Consolidate profile explanations around their descriptors; provide an optional
+  measured source-worker bootstrap without hiding host-preloaded context.
+- Derive repeated check triggers, cover all compatibility artifacts, short-circuit
+  known full-test fallbacks and reuse checker text analysis. Preserve complete
+  source snapshots while reducing traversal metadata work.
+- Bind changed validator/helper bytes into unit-result reuse inputs, with
+  per-input invalidation regressions; cached results never replace acceptance.
+- Add opt-in grouped source impact review, exact static-cycle/foundation ratchets,
+  registered signature/dispatch closure and a responsibility-based Debug privacy
+  extraction. Document semantic acceptance review for validator-only changes.
+- Advance adapter schema to 102 for phase evidence and stricter registry closure,
+  templates to 120. No new default bootstrap files or rule IDs. Migrate selected
+  overlays atomically; old requests retain their conservative route.
+
 ## 0.1.0-alpha.124 - 2026-11-03
 
 - Resolve explicitly bound historical incident models through the same retained

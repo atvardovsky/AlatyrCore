@@ -21,6 +21,7 @@ class LocalPythonImportGraph:
         self.modules = self._module_paths()
         self._path_modules = {path: name for name, path in self.modules.items()}
         self._scans: dict[Path, ImportScan] = {}
+        self._trees: dict[Path, ast.Module | None] = {}
         self._transitive_dependencies: dict[Path, frozenset[Path]] = {}
         self._reverse_dependencies: dict[Path, set[Path]] | None = None
 
@@ -49,16 +50,22 @@ class LocalPythonImportGraph:
             base.extend(module.split("."))
         return ".".join(base)
 
+    def syntax_tree(self, path: Path) -> ast.Module | None:
+        path = path.resolve()
+        if path not in self._trees:
+            try:
+                self._trees[path] = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            except (OSError, SyntaxError, UnicodeError):
+                self._trees[path] = None
+        return self._trees[path]
+
     def scan(self, path: Path) -> ImportScan:
         resolved_path = path.resolve()
         cached = self._scans.get(resolved_path)
         if cached is not None:
             return cached
-        try:
-            tree = ast.parse(
-                resolved_path.read_text(encoding="utf-8"), filename=str(resolved_path)
-            )
-        except (OSError, SyntaxError, UnicodeError):
+        tree = self.syntax_tree(resolved_path)
+        if tree is None:
             result = ImportScan(frozenset(), False)
             self._scans[resolved_path] = result
             return result
@@ -73,6 +80,13 @@ class LocalPythonImportGraph:
             )
         dependencies: set[Path] = set()
         complete = True
+        importlib_names = {"importlib"}
+        import_functions = {"__import__"}
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                importlib_names.update(alias.asname or alias.name for alias in node.names if alias.name == "importlib")
+            elif isinstance(node, ast.ImportFrom) and node.module == "importlib":
+                import_functions.update(alias.asname or alias.name for alias in node.names if alias.name == "import_module")
         for node in ast.walk(tree):
             names: list[str] = []
             if isinstance(node, ast.Import):
@@ -82,7 +96,7 @@ class LocalPythonImportGraph:
                 if base is None:
                     complete = False
                     continue
-                if base:
+                if base and not (resolved_path.name == "__init__.py" and base == current_module):
                     names.append(base)
                 names.extend(
                     f"{base}.{alias.name}" if base else alias.name
@@ -91,12 +105,12 @@ class LocalPythonImportGraph:
                 )
             elif isinstance(node, ast.Call):
                 dynamic = (
-                    isinstance(node.func, ast.Name) and node.func.id == "__import__"
+                    isinstance(node.func, ast.Name) and node.func.id in import_functions
                 ) or (
                     isinstance(node.func, ast.Attribute)
                     and node.func.attr == "import_module"
                     and isinstance(node.func.value, ast.Name)
-                    and node.func.value.id == "importlib"
+                    and node.func.value.id in importlib_names
                 )
                 if dynamic:
                     if (
@@ -106,9 +120,22 @@ class LocalPythonImportGraph:
                     ):
                         complete = False
                         continue
-                    names.append(node.args[0].value)
+                    name = node.args[0].value
+                    if name.startswith("."):
+                        package = next((keyword.value for keyword in node.keywords if keyword.arg == "package"),
+                                       node.args[1] if len(node.args) > 1 else None)
+                        if not isinstance(package, ast.Constant) or not isinstance(package.value, str) or not package.value:
+                            complete = False
+                            continue
+                        from importlib.util import resolve_name
+                        try:
+                            name = resolve_name(name, package.value)
+                        except (ImportError, ValueError):
+                            complete = False
+                            continue
+                    names.append(name)
             for name in names:
-                candidate = self.modules.get(name)
+                candidate = self.modules.get(name) or self.modules.get(name.removeprefix("tools."))
                 if candidate is not None:
                     dependencies.add(candidate)
         result = ImportScan(frozenset(dependencies), complete)

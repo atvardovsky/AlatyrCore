@@ -78,7 +78,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 245,
-      "content_digest": "sha256:1cc1e5618bf0404677a8c26a05b95a4753c7948e4f42acc99822bf91466db9b3"
+      "content_digest": "sha256:25c854dc28ac2f24d02673724d2c8294aa671ace438a1dfd97c408190362570e"
     },
     {
       "id": "assistant.content.context-task-scales-delegation-preflight-json",
@@ -145,8 +145,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 217,
-      "content_digest": "sha256:ecc065bdfea38ea4daaa36aab856d09f27ab1d64f3cf353d6e1bce53d7e8bba0"
+      "estimated_words": 243,
+      "content_digest": "sha256:767cf0b95a30795e35bb4b3e4240ad17c1c3d02e12505d3ab8cc2db9e9fcf1ad"
     },
     {
       "id": "assistant.content.context-task-scales-protected-or-sensitive-json",

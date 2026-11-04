@@ -15,6 +15,18 @@
     ".ai/assistant/flows/large-task-orchestration.flow.md",
     ".ai/assistant/templates/large-task-operation-packet.md"
   ],
+  "phase_context": {
+    "create": {
+      "required_context": [".ai/assistant/gates/final-evidence.md", ".ai/framework/large-task-orchestration.md", ".ai/assistant/flows/large-task-orchestration.flow.md", ".ai/assistant/templates/large-task-operation-packet.md"],
+      "requires_instance": false,
+      "requires_role": false
+    },
+    "resume": {
+      "required_context": [".ai/assistant/gates/final-evidence.md", ".ai/framework/large-task-orchestration.md", ".ai/assistant/flows/large-task-orchestration.flow.md"],
+      "requires_instance": true,
+      "requires_role": false
+    }
+  },
   "expand_when": [
     "workstream dependency changes",
     "checkpoint evidence is stale",

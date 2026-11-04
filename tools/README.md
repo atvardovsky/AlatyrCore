@@ -28,6 +28,23 @@ Omit `--compact` for the full machine receipt. This reduces presentation, not
 the planner's validation work. A full check profile does not by itself require
 large-task orchestration for a narrow docs/tool task; real boundaries still do.
 
+Add `--impact` for an advisory join of existing capabilities, contracts, companion
+review groups and checks (at most 128 changed paths; decompose larger views).
+Unknown relationships remain explicit. See [source change management](../docs/source-optimization/source-management.md).
+Source manifest `derive_trigger_paths` removes repeated input lists without
+changing dependency-trigger modes. Architecture checks ratchet exact static
+cycle exceptions and validate registered entrypoint signatures; neither is a
+semantic or runtime-correctness proof.
+
+`context-plan --overlay-phase large-or-resumable:resume --phase-instance PATH`
+selects retained current task evidence instead of a blank creation template.
+For dispatch add `--overlay-phase delegated-execution:dispatch --worker-role ID`.
+Instances must be indexed, selected target paths. The role catalog is a freshness
+input; only the selected enabled role prompt is delivered. Other phases are
+`large-or-resumable:create` and delegated `planning`/`convergence`.
+Omitting selectors retains the prior route. Canonical owners and all budgets
+remain enforced. These flags neither dispatch workers nor grant authority.
+
 For architecture context, `context-plan` accepts `--architecture-mode inventory`,
 `explain`, `discuss`, `compare`, `review`, or `document` with
 `--operation architecture-assistance`. Omission keeps the conservative mode union.

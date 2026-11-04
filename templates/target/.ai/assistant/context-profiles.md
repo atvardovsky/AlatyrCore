@@ -425,297 +425,106 @@ approval boundaries. Load `.ai/framework/consistency-model.md` only when
 relationship semantics are disputed, adapter repair is required, or registry
 and map evidence conflict. Record selected and skipped edges with reasons.
 
+## Profile Explanations
+
+Canonical rules: `.ai/framework/rule-registry.json`; navigation:
+`.ai/framework/context-index.json`.
+
+The selected profile descriptor owns operations, required and conditional context,
+expansion, approvals, validation and evidence. These explanations add no bootstrap
+requirements. Use installed, enabled capabilities only. Resolve missing or
+conflicting evidence instead of loading every profile. Preserve the target
+bindings below and reconcile them with the descriptor.
+
+For changed facts, re-derive invariants, reconcile related review items and
+synchronize code, tests, documentation and diagrams. Record the Project Contour
+Sync Decision, applicable approval-scope and logical integrity results through
+the selected task-scale gate. Report validation, skipped checks and residual risk.
+Load support-information policy for selected support-impact contracts or disputed
+state, ownership, relationship-candidate or generation semantics.
+
 ## Profile: `docs-local`
 
-Use when: local wording, README, or non-semantic documentation changes do not
-alter accepted project behavior.
-
-Operation candidates: `documentation-sync`, `drift-review`,
-`logical-integrity-review`, `support-generation` when enabled.
-
-Load `.ai/framework/support-information.md` only when support diff, generation
-ownership, or relationship-candidate semantics are disputed.
-
-Load `.ai/framework/runtime-observation.md` only when runtime behavior is part
-of acceptance, a runtime contradiction is a recurrence signal, or the enabled
-runtime-observation gate is selected. Load the compact record and policy first;
-raw logs remain conditional on failure, contradiction, unknown events,
-dispute, or explicit review.
-
-Required context:
-
-- `.ai/framework/context-discovery.md`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/documentation.md`
-- `.ai/assistant/gates/final-evidence.md`
-- `{TARGET_DOC_SOURCE_OF_TRUTH}`
-
-For a diagram request or diagram-relevant change, load
-`.ai/framework/diagram-guidance.md` through the selected diagram flow rather
-than for every documentation task.
-
-Approval gates: only if docs change accepted behavior, security posture,
-public contract, or approval rules.
-
-Validation/evidence: report changed docs, owner file, skipped checks, and why
-no logical integrity expansion was needed.
+[Descriptor](context/profiles/docs-local.json). Non-behavioral documentation.
+Owner: `{TARGET_DOC_SOURCE_OF_TRUTH}`. Report changed docs, ownership and why
+semantic expansion was unnecessary. Escalate for accepted behavior, security,
+public contracts or approvals. Diagram guidance comes through the selected flow.
+For runtime acceptance, recurrence contradictions or a selected observation gate,
+inspect compact evidence first. Full runtime guidance and raw logs remain
+conditional on a boundary, failure, contradiction, unknown event, dispute or
+explicit review.
 
 ## Profile: `code-local`
 
-Use when: implementation, tests, review comments, or defect fixes change
-without changing accepted behavior, architecture, data model, external
-contract, security posture, or AI infrastructure.
-
-Operation candidates: `logical-integrity-review`, `drift-review`,
-`product-change`, `test-first-change`, `support-generation` when enabled.
-
-Load `.ai/framework/support-information.md` only for support-state, bounded
-impact, candidate, or generation-contract ambiguity.
-
-Required context:
-
-- `.ai/framework/change-risk-model.md`
-- `.ai/framework/logical-integrity.md`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/code-and-tests.md`
-- `.ai/assistant/gates/final-evidence.md`
-- `{TARGET_CODE_SOURCE_OF_TRUTH}`
-
-Load general testing guidance only when test selection, isolation, or boundary
-validation is unfamiliar or disputed. Add semantic-integrity or security-
-approval gate fragments only when the repair reaches those boundaries.
-
-Approval gates: only if the task crosses a protected category.
-
-Validation/evidence: run or report `{TARGET_CODE_VALIDATION}`, re-derive
-invariants, reconcile related review items, and record the Project Contour Sync
-Decision with checked owners and evidence.
+[Descriptor](context/profiles/code-local.json). Implementation, tests or repairs
+without changed accepted behavior, architecture, data models, external contracts,
+security posture or AI infrastructure. Owner: `{TARGET_CODE_SOURCE_OF_TRUTH}`.
+Validation: `{TARGET_CODE_VALIDATION}`. Reconcile validation with the descriptor.
+Load general testing guidance for unfamiliar or disputed selection, isolation or
+boundary validation. Integrity and security context remain boundary-specific;
+protected changes retain approval.
 
 ## Profile: `business-change`
 
-Use when: accepted behavior, domain rules, product policy, workflows, or public
-contract change.
-
-Operation candidates: `architecture-assistance`, `product-change`,
-`create-project-blueprint`, `logical-integrity-review`, `test-first-change`
-when enabled.
-
-Required context:
-
-- `.ai/framework/context-discovery.md`
-- `.ai/framework/change-risk-model.md`
-- `.ai/framework/source-of-truth-registry.md`
-- `.ai/framework/logical-integrity.md`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/semantic-integrity.md`
-- `.ai/assistant/gates/final-evidence.md`
-- `{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}`
-
-Load blueprint, approval, testing, product-flow, security gate, or complete
-checklist context only when the accepted decision enters that stage or crosses
-that boundary.
-
-Approval gates: explicit programmer approval before changing accepted business
-behavior.
-
-Validation/evidence: changed fact, owning blueprint or source of truth,
-re-derived invariants, review-item reconciliation, implementation/test/doc
-sync, diagram sync if applicable, machine-readable approval-scope result, and
-Project Contour Sync Decision, and final logical integrity result.
+[Descriptor](context/profiles/business-change.json). Accepted behavior, business
+rules, product policy, workflows or public contracts.
+Owner: `{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}`. Explicit programmer
+approval precedes business-behavior changes. Identify the changed fact and owner;
+expand blueprint, testing, approval, product-flow, security or checklist guidance
+at the applicable stage.
 
 ## Profile: `architecture-change`
 
-Use when: modules, dependencies, boundaries, runtime topology, public APIs, or
-cross-component contracts change.
-
-Operation candidates: `product-change`, `create-project-blueprint`,
-`logical-integrity-review`, `test-first-change` when enabled.
-
-Required context:
-
-- `.ai/framework/context-discovery.md`
-- `.ai/framework/change-risk-model.md`
-- `.ai/framework/source-of-truth-registry.md`
-- `.ai/framework/logical-integrity.md`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/semantic-integrity.md`
-- `.ai/assistant/gates/final-evidence.md`
-- `{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}`
-
-Load blueprint, approval, security, testing, product-flow, security gate, or
-complete checklist context only when the accepted decision enters that stage
-or crosses that boundary.
-
-Load `.ai/framework/diagram-guidance.md` when diagram discussion or a
-diagram-relevant architecture change is selected.
-
-Approval gates: explicit programmer approval for architecture changes and new
-production dependencies or services.
-
-Validation/evidence: architecture owner update, affected areas, re-derived
-invariants, review-item reconciliation, validation, diagrams or why none
-changed, Project Contour Sync Decision, machine-readable approval-scope result,
-and residual risk.
+[Descriptor](context/profiles/architecture-change.json). Modules, dependencies,
+boundaries, topology, APIs or cross-component contracts.
+Owner: `{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}`. Architecture changes and new
+production dependencies/services require explicit programmer approval. Update
+the owner and affected areas. Load stage-specific guidance, including diagrams
+when relevant; report diagram updates or why none were needed.
 
 ## Profile: `data-change`
 
-Use when: schema, persistence, migrations, data contracts, retention,
-backfills, imports, exports, or data ownership change.
-
-Operation candidates: `product-change`, `logical-integrity-review`,
-`drift-review`, `test-first-change` when enabled.
-
-Required context:
-
-- `.ai/framework/context-discovery.md`
-- `.ai/framework/change-risk-model.md`
-- `.ai/framework/source-of-truth-registry.md`
-- `.ai/framework/logical-integrity.md`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/semantic-integrity.md`
-- `.ai/assistant/gates/code-and-tests.md`
-- `.ai/assistant/gates/final-evidence.md`
-- `{TARGET_DATA_SOURCE_OF_TRUTH}`
-
-Load context-discovery, security, testing, security-approval, or complete-
-checklist context only when source selection, migration, privacy, destructive,
-live, or audit boundaries require it.
-
-Approval gates: explicit approval for destructive, data-loss, live-service,
-privacy, or migration-risk changes.
-
-Validation/evidence: canonical data owner, derived surfaces, migration or
-rollback notes where applicable, scope/identity/persistence invariants,
-observable external failure distinctions, Project Contour Sync Decision,
-validation, and unresolved risk.
+[Descriptor](context/profiles/data-change.json). Schema, persistence, migration,
+data contracts, retention, backfills, imports/exports or ownership.
+Owner: `{TARGET_DATA_SOURCE_OF_TRUTH}`. Destructive, data-loss, live-service,
+privacy and migration-risk changes require approval. Review ownership, derived
+surfaces, scope/identity/persistence invariants, observable external failures and
+migration/rollback notes. Expand other guidance only for the boundary reached.
 
 ## Profile: `security-sensitive`
 
-Use when: secrets, credentials, permissions, authentication, authorization,
-network access, external services, destructive actions, spend, production, or
-third-party trust boundaries are involved.
-
-Operation candidates: `product-change`, `logical-integrity-review`,
-`skill-adaptation`, `test-first-change` when enabled.
-
-Required context:
-
-- `.ai/framework/security-safety-guidance.md`
-- `.ai/framework/logical-integrity.md`
-- `.ai/framework/approval-records.md`
-- `.ai/assistant/policies/prompt-injection.md`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/semantic-integrity.md`
-- `.ai/assistant/gates/security-approval.md`
-- `.ai/assistant/gates/final-evidence.md`
-- `{TARGET_SECURITY_SOURCE_OF_TRUTH}`
-
-Load the full change-risk owner only when classification or escalation
-semantics are disputed; the routed security gate carries the routine compact
-obligation.
-
-Approval gates: explicit approval before protected changes; use approval
-records when scope or plan evidence matters.
-
-Validation/evidence: security owner evidence, actions avoided, approvals,
-Project Contour Sync Decision, validation, skipped checks, and residual risk.
+[Descriptor](context/profiles/security-sensitive.json). Credentials, permissions,
+authentication/authorization, networks, external services, destructive actions,
+spend, production or third-party trust.
+Owner: `{TARGET_SECURITY_SOURCE_OF_TRUTH}`. Approve protected changes and bind
+scope/plan evidence when applicable. Report ownership, approvals and actions
+avoided. Use the compact gate; load full risk guidance for classification disputes
+or escalation.
 
 ## Profile: `ai-infrastructure`
 
-Use when: inventorying or recommending additions and existing-item
-improvements, or adding, importing, adapting, replacing, or reviewing prompts,
-skills, assistant rules, wrappers, bridge files, MCP/tool configs, checkers,
-gates, flows, templates, or other AI infrastructure.
+[Descriptor](context/profiles/ai-infrastructure.json). Inventory, recommendation,
+improvement, adaptation or review of skills, prompts, rules, wrappers, bridges,
+MCP/tools, checkers, gates, flows, templates or extensions. Select one route/item
+through `.ai/assistant/ai-infrastructure-router.json`.
 
-Operation candidates: `ai-infrastructure-inventory`,
-`ai-infrastructure-recommendation`, `skill-adaptation`,
-`extension-management`.
-
-Required context:
-
-- `.ai/framework/ai-infrastructure-routing.md`
-- `.ai/assistant/ai-infrastructure-router.json`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/final-evidence.md`
-
-Select one AI infrastructure route and item ID before loading additional
-skill, prompt, gate, checker, tool/MCP, bridge, source-access,
-prompt-injection, approval, permission, validation, or output-contract context.
-Load `.ai/assistant/gates/security-approval.md` for source import, permission
-change, live/destructive capability, credential access, protected integration,
-or weakened governance; read-only inventory and recommendation do not load it.
-For `recommend`, load only the bounded project area, its owner, relevant
-inventory/items, `.ai/project/development-evidence.json`, and
-`.ai/framework/ai-infrastructure-recommendations.md`. Inspect only evidence
-referenced by selected patterns. Project facts justify the need;
-recommendation and item mechanics remain assistant-contour owned.
-For `extension-management`, start from the compact extension catalog and load
-only one selected lock/manifest/binding set. Package review, compatibility,
-ownership, update, and removal follow `.ai/framework/extensions.md`.
-
-Approval gates: explicit approval before importing third-party infrastructure
-into canonical target files or changing tool permissions.
-
-Validation/evidence: selected route; inventory; project-contour basis,
-existing-item comparison, quality/context/maintenance cost and acceptance
-criteria for recommendation; or provenance, normalized target surfaces,
-compatibility review, and approval evidence for adaptation.
+Use bounded project evidence, owners, relevant inventory and selected patterns.
+Recommendations record need, existing-item comparison, quality/context/maintenance
+cost and acceptance criteria. Adaptation records provenance, normalized surfaces,
+compatibility and approval. Extensions select one catalog/lock/manifest/binding
+set. Security context applies to imports, permission changes, live/destructive
+capability, credentials, protected integration or weakened governance, not routine
+read-only inventory. Third-party canonical imports and tool-permission changes
+require explicit approval.
 
 ## Profile: `framework-upgrade`
 
-Use when: installing Alatyr, updating Alatyr Core, rechecking the adapter,
-reviewing maturity, or repairing drift after framework changes.
-
-Operation candidates: `adapter-health`, `recheck-after-framework-update`,
-`recheck-after-installation`, `adapter-maturity-review`,
-`support-generation`, and `extension-management` when the corresponding
-optional module or installed extension compatibility is in scope.
-
-Load `.ai/framework/support-information.md` when the migration impact selects
-support policy, state, relationship, or generation contracts.
-
-Required context:
-
-- `.ai/assistant/context/migration-routing.json`
-- `{TARGET_UPGRADE_IMPACT_REPORT}`
-- `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/final-evidence.md`
-
-Generate or review the migration assessment before loading lifecycle, rule,
-flow, or note files. Then load only canonical framework sources and target
-adapter surfaces named by `upgrade-impact.json`, changed rule IDs, affected
-categories/profiles, template changes, bridge capability changes, enabled
-modules, or local-deviation conflicts. Record intentionally omitted candidate
-context in the context receipt.
-
-Candidate framework context, loaded only when selected by migration impact:
-
-- `.ai/framework/README.md`
-- `.ai/framework/adapter-maturity.md`
-- `.ai/framework/bridge-capability-matrix.md`
-- `.ai/framework/blueprint-driven-change.md`
-- `.ai/framework/context-profiles.md`
-- `.ai/framework/context-router.md`
-- `.ai/framework/contour.md`
-- `.ai/framework/effectiveness-metrics.md`
-- `.ai/framework/guarantees.md`
-- `.ai/framework/installed-operations.md`
-- `.ai/framework/lifecycle.md`
-- `.ai/framework/migration-diff.md`
-- `.ai/framework/module-profile.md`
-- `.ai/framework/operation-help.md`
-- `.ai/framework/portability.md`
-- `.ai/framework/project-adapter-contract.md`
-- `.ai/framework/prompt-injection.md`
-- `.ai/framework/rule-ownership.md`
-- `.ai/framework/rule-registry.json`
-- `.ai/framework/rule-registry.md`
-- `.ai/framework/scaffolding.md`
-- `.ai/framework/skill-adaptation.md`
-
-Approval gates: approval before overwriting existing instructions, changing
-protected adapter behavior, or adopting third-party assistant infrastructure.
-
-Validation/evidence: adapter version/schema state, changed framework baseline,
-affected target files, gaps, local deviations, validation, and migration
-actions.
+[Descriptor](context/profiles/framework-upgrade.json). Installation, update,
+recheck, maturity or drift repair. Evidence: `{TARGET_UPGRADE_IMPACT_REPORT}`.
+Start with `.ai/assistant/context/migration-routing.json` and the assessment.
+Select owners and surfaces through `upgrade-impact.json`, changed rules,
+affected categories/profiles, templates, bridges, enabled modules or deviation
+conflicts. Record omitted candidates with reasons; never preload the candidate
+corpus. Approve instruction overwrites, protected changes and imported assistant
+infrastructure. Report versions, baseline, affected files, gaps, deviations,
+validation and migration actions.

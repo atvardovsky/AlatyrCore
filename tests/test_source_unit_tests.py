@@ -28,6 +28,20 @@ from check_source_unit_tests import (  # noqa: E402
 
 
 class SourceUnitTestSelectionTests(unittest.TestCase):
+    def test_full_fallback_never_constructs_import_graph(self):
+        cases = [
+            ["tools/check_all.py", "tools/local_python_import_graph.py"],
+            ["tools/unknown-policy.json", "tools/local_python_import_graph.py"],
+            ["tests/missing.py", "tools/local_python_import_graph.py"],
+        ]
+        for paths in cases:
+            for order in permutations(paths):
+                with self.subTest(paths=order), patch(
+                    "check_source_unit_tests.LocalPythonImportGraph",
+                    side_effect=AssertionError("predetermined full fallback must not scan"),
+                ):
+                    self.assertIsNone(focused_test_paths(list(order)))
+
     def test_explicit_modules_reject_invalid_missing_and_duplicate_requests(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

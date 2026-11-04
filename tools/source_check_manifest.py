@@ -52,6 +52,7 @@ CHECK_FIELDS = DEFAULT_FIELDS | {
     "micro_trigger_paths",
     "owned_paths",
     "requires_release_evidence",
+    "derive_trigger_paths",
 }
 
 
@@ -171,9 +172,23 @@ def load_manifest(
             "observed_inventory_paths",
             check.get("observed_inventory_paths"),
         )
-        trigger_paths = validate_path_list(
-            check_id, "trigger_paths", check.get("trigger_paths")
-        )
+        derive_triggers = check.get("derive_trigger_paths", False)
+        if type(derive_triggers) is not bool:
+            raise ValueError(f"{check_id}.derive_trigger_paths must be Boolean")
+        if derive_triggers:
+            extras = check.get("trigger_paths", [])
+            if extras:
+                extras = validate_path_list(check_id, "trigger_paths", extras)
+            elif not isinstance(extras, list):
+                raise ValueError(f"{check_id}.trigger_paths must be a list")
+            trigger_paths = list(dict.fromkeys([
+                *contract_inputs, *implementation_paths, *observed_inputs, *extras,
+            ]))
+        else:
+            trigger_paths = validate_path_list(
+                check_id, "trigger_paths", check.get("trigger_paths")
+            )
+        check["trigger_paths"] = trigger_paths
         dependencies = check.get("depends_on")
         artifact_dependencies = check.get("artifact_dependencies", [])
         dependency_trigger_mode = check.get(

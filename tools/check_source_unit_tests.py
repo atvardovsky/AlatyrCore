@@ -163,16 +163,19 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
         if relpath.endswith(".py"):
             requires_full = True
 
+    if requires_full:
+        return None
+
     if changed_tools:
         graph = LocalPythonImportGraph(root)
         if any(not graph.scan(path).complete for path in graph.modules.values()):
-            requires_full = True
+            return None
         impacted = graph.reverse_dependents(changed_tools)
         uncovered_tools = changed_tools - directly_covered_tools
         for test_path in _all_test_paths(root):
             scan = graph.scan(test_path)
             if not scan.complete:
-                requires_full = True
+                return None
             elif scan.dependencies & impacted:
                 selected.add(test_path)
                 if uncovered_tools:

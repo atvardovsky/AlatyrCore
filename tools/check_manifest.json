@@ -18,7 +18,7 @@
       "profiles": ["quick", "fast", "full"],
       "contract_inputs": ["framework/**"],
       "implementation_paths": ["tools/check_framework_metadata.py"],
-      "trigger_paths": ["framework/**", "tools/check_framework_metadata.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "installer-discovery-contract",
@@ -27,20 +27,20 @@
       "resource_class": "light",
       "contract_inputs": ["INSTALL.md", "framework/capabilities.json", "installer/assistant-installation.flow.md", "installer/discovery-contract.json", "installer/installation-plan-template.md", "installer/readiness-checklist.md", "schemas/alatyr-target-discovery-report.schema.json", "templates/target/.ai/assistant/discovery-report.json", "tools/tool_commands.json"],
       "implementation_paths": ["tools/check_installer_discovery_contract.py", "tools/installer_stage_model.py", "tools/inspect_target_discovery.py"],
-      "trigger_paths": ["INSTALL.md", "framework/capabilities.json", "installer/assistant-installation.flow.md", "installer/discovery-contract.json", "installer/installation-plan-template.md", "installer/readiness-checklist.md", "schemas/alatyr-target-discovery-report.schema.json", "templates/target/.ai/assistant/discovery-report.json", "tools/check_installer_discovery_contract.py", "tools/installer_stage_model.py", "tools/inspect_target_discovery.py", "tools/tool_commands.json"]
+      "derive_trigger_paths": true
     },
     {
       "id": "approval-template",
       "command": ["tools/check_approval_template.py"],
       "contract_inputs": ["framework/approval-records.md", "templates/target/.ai/assistant/approvals/**"],
       "implementation_paths": ["tools/check_approval_template.py"],
-      "trigger_paths": ["framework/approval-records.md", "templates/target/.ai/assistant/approvals/**", "tools/check_approval_template.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "action-authorization",
       "command": ["tools/check_action_authorization.py"],
       "profiles": ["fast", "full", "platform"],
-      "trigger_paths": ["conformance/authorization-intent-scenarios.json", "framework/action-authorization.md", "installer/installation-plan-template.md", "installer/installed-operation-request-template.md", "installer/readiness-checklist.md", "templates/target/.ai/assistant/contour.md", "templates/target/.ai/assistant/flows/operation-routing.flow.md", "templates/target/.ai/assistant/gates/**", "templates/target/.ai/assistant/maturity-profile.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/policies/action-authorization.json", "templates/target/.ai/assistant/templates/installation-note.md", "templates/target/.ai/assistant/templates/operation-request.md", "templates/target/.ai/assistant/templates/post-install-message.md", "templates/target/.ai/assistant/templates/post-update-message.md", "templates/target/.ai/assistant/templates/pre-change-preview.md", "templates/target/AGENTS.md", "templates/target/AI_ASSISTANTS.md", "tools/check_action_authorization.py"],
+      "derive_trigger_paths": true,
       "contract_inputs": ["conformance/authorization-intent-scenarios.json", "framework/action-authorization.md", "installer/installation-plan-template.md", "installer/installed-operation-request-template.md", "installer/readiness-checklist.md", "templates/target/.ai/assistant/contour.md", "templates/target/.ai/assistant/flows/operation-routing.flow.md", "templates/target/.ai/assistant/gates/**", "templates/target/.ai/assistant/maturity-profile.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/policies/action-authorization.json", "templates/target/.ai/assistant/templates/installation-note.md", "templates/target/.ai/assistant/templates/operation-request.md", "templates/target/.ai/assistant/templates/post-install-message.md", "templates/target/.ai/assistant/templates/post-update-message.md", "templates/target/.ai/assistant/templates/pre-change-preview.md", "templates/target/AGENTS.md", "templates/target/AI_ASSISTANTS.md"],
       "implementation_paths": ["tools/check_action_authorization.py"]
     },
@@ -49,35 +49,35 @@
       "command": ["tools/check_architecture_knowledge.py"],
       "contract_inputs": ["framework/architecture-knowledge.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/context/intents/architecture-request.json", "templates/target/.ai/assistant/flows/architecture-assistance.flow.md", "templates/target/.ai/assistant/gates/checklist.md", "templates/target/.ai/assistant/help*.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "templates/target/.ai/assistant/templates/architecture-*.md", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/project/architecture/**"],
       "implementation_paths": ["tools/check_architecture_knowledge.py", "tools/architecture_context.py"],
-      "trigger_paths": ["framework/architecture-knowledge.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/context/intents/architecture-request.json", "templates/target/.ai/assistant/flows/architecture-assistance.flow.md", "templates/target/.ai/assistant/gates/checklist.md", "templates/target/.ai/assistant/help*.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "templates/target/.ai/assistant/templates/architecture-*.md", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/project/architecture/**", "tools/check_architecture_knowledge.py", "tools/architecture_context.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "ai-infrastructure-inventory",
       "command": ["tools/check_ai_infrastructure_inventory.py"],
       "contract_inputs": ["framework/ai-infrastructure-routing.md", "templates/target/.ai/assistant/**"],
       "implementation_paths": ["tools/check_ai_infrastructure_inventory.py"],
-      "trigger_paths": ["framework/ai-infrastructure-routing.md", "templates/target/.ai/assistant/**", "tools/check_ai_infrastructure_inventory.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "ai-infrastructure-recommendations",
       "command": ["tools/check_ai_infrastructure_recommendations.py"],
       "contract_inputs": ["framework/ai-infrastructure-routing.md", "templates/target/.ai/assistant/**"],
       "implementation_paths": ["tools/check_ai_infrastructure_recommendations.py"],
-      "trigger_paths": ["framework/ai-infrastructure-routing.md", "templates/target/.ai/assistant/**", "tools/check_ai_infrastructure_recommendations.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "ai-infrastructure-router",
       "command": ["tools/check_ai_infrastructure_router.py"],
       "contract_inputs": ["framework/ai-infrastructure-routing.md", "templates/target/.ai/assistant/ai-infrastructure-router.json"],
       "implementation_paths": ["tools/check_ai_infrastructure_router.py"],
-      "trigger_paths": ["framework/ai-infrastructure-routing.md", "templates/target/.ai/assistant/ai-infrastructure-router.json", "tools/check_ai_infrastructure_router.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "assistant-surface-conformance",
       "command": ["tools/check_assistant_surface_conformance.py"],
       "contract_inputs": ["AI_ASSISTANTS.md", "docs/assistant-compatibility.md", "templates/target/**"],
       "implementation_paths": ["tools/check_assistant_surface_conformance.py", "tools/prepare_conformance_run.py"],
-      "trigger_paths": ["AI_ASSISTANTS.md", "docs/assistant-compatibility.md", "templates/target/**", "tools/check_assistant_surface_conformance.py", "tools/prepare_conformance_run.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "assistant-capability-contract",
@@ -85,14 +85,14 @@
       "command": ["tools/check_assistant_capability_contract.py"],
       "contract_inputs": ["conformance/runs/assistant-surfaces.json", "schemas/alatyr-assistant-surface-capability.schema.json", "templates/target/.ai/assistant/assistant-capabilities/**"],
       "implementation_paths": ["tools/assistant_capability_projection.py", "tools/check_assistant_capability_contract.py", "tools/target_adapter_validation/assistant_capabilities.py"],
-      "trigger_paths": ["conformance/runs/assistant-surfaces.json", "schemas/alatyr-assistant-surface-capability.schema.json", "templates/target/.ai/assistant/assistant-capabilities/**", "tools/assistant_capability_projection.py", "tools/check_assistant_capability_contract.py", "tools/target_adapter_validation/assistant_capabilities.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "bridge-capability-matrix",
       "command": ["tools/check_bridge_capability_matrix.py"],
       "contract_inputs": ["framework/bridge-capability-matrix.md", "templates/target/.ai/assistant/bridge-capability-matrix.md"],
       "implementation_paths": ["tools/check_bridge_capability_matrix.py"],
-      "trigger_paths": ["framework/bridge-capability-matrix.md", "templates/target/.ai/assistant/bridge-capability-matrix.md", "tools/check_bridge_capability_matrix.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "session-continuity",
@@ -111,7 +111,7 @@
       "command": ["tools/check_assistant_surface_audits.py"],
       "contract_inputs": ["conformance/assistant-surface-integration-audits.json", "conformance/executors/executor-capabilities.json", "conformance/runs/assistant-surfaces.json", "templates/target/AGENTS.md", "templates/target/.ai/assistant/assistant-capabilities.json", "templates/target/.ai/assistant/assistant-capabilities/**", "templates/target/.ai/assistant/bridge-capability-matrix.md"],
       "implementation_paths": ["tools/assistant_capability_projection.py", "tools/check_assistant_surface_audits.py", "tools/target_adapter_validation/assistant_capabilities.py"],
-      "trigger_paths": ["conformance/assistant-surface-integration-audits.json", "conformance/executors/executor-capabilities.json", "conformance/runs/assistant-surfaces.json", "templates/target/AGENTS.md", "templates/target/.ai/assistant/assistant-capabilities.json", "templates/target/.ai/assistant/assistant-capabilities/**", "templates/target/.ai/assistant/bridge-capability-matrix.md", "tools/assistant_capability_projection.py", "tools/check_assistant_surface_audits.py", "tools/target_adapter_validation/assistant_capabilities.py"],
+      "derive_trigger_paths": true,
       "depends_on": ["assistant-capability-contract", "bridge-capability-matrix", "session-continuity"]
     },
     {
@@ -120,14 +120,14 @@
       "command": ["tools/check_change_packages.py"],
       "contract_inputs": ["framework/change-packages.md", "templates/target/.ai/assistant/change-packages/**"],
       "implementation_paths": ["tools/change_package_contract.py", "tools/check_change_packages.py", "tools/render_change_package_index.py", "tools/finalize_target_support.py", "tools/validate_target_adapter.py", "tools/target_support_outputs.py", "tools/support_write_transaction.py", "tools/local_file_lock.py", "tools/task_acceptance_binding.py"],
-      "trigger_paths": ["framework/change-packages.md", "templates/target/.ai/assistant/change-packages/**", "tools/change_package_contract.py", "tools/check_change_packages.py", "tools/render_change_package_index.py", "tools/finalize_target_support.py", "tools/validate_target_adapter.py", "tools/target_support_outputs.py", "tools/support_write_transaction.py", "tools/local_file_lock.py", "tools/task_acceptance_binding.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "engineering-evidence",
       "dependency_trigger_mode": "direct",
       "command": ["tools/check_engineering_evidence.py"],
       "profiles": ["fast", "full"],
-      "trigger_paths": ["conformance/engineering-evidence-scenarios.json", "framework/engineering-evidence.md", "schemas/alatyr-engineering-evidence.schema.json", "templates/target/.ai/assistant/**/*engineering-evidence*", "templates/target/.ai/project/engineering-evidence/**", "tools/check_engineering_evidence.py", "tools/target_adapter_validation/engineering_evidence.py", "tools/validate_target_adapter.py"],
+      "derive_trigger_paths": true,
       "contract_inputs": ["conformance/engineering-evidence-scenarios.json", "framework/engineering-evidence.md", "schemas/alatyr-engineering-evidence.schema.json", "templates/target/.ai/assistant/**/*engineering-evidence*", "templates/target/.ai/project/engineering-evidence/**"],
       "implementation_paths": ["tools/check_engineering_evidence.py", "tools/target_adapter_validation/engineering_evidence.py", "tools/validate_target_adapter.py"]
     },
@@ -135,7 +135,7 @@
       "id": "project-knowledge",
       "command": ["tools/check_project_knowledge.py"],
       "profiles": ["fast", "full"],
-      "trigger_paths": ["conformance/benchmarks/project-knowledge-reuse-report-template.json", "conformance/project-knowledge-*.json", "framework/project-knowledge.md", "schemas/alatyr-project-knowledge-*.schema.json", "templates/target/.ai/assistant/**/*project-knowledge*", "templates/target/.ai/project/knowledge/**", "tests/test_project_knowledge.py", "tests/test_project_knowledge_suggestions.py", "tools/check_project_knowledge.py", "tools/project_knowledge.py", "tools/suggest_project_knowledge.py", "tools/change_package_contract.py", "tools/validate_target_adapter.py"],
+      "derive_trigger_paths": true,
       "contract_inputs": ["conformance/benchmarks/project-knowledge-reuse-report-template.json", "conformance/project-knowledge-*.json", "framework/project-knowledge.md", "schemas/alatyr-project-knowledge-*.schema.json", "templates/target/.ai/assistant/**/*project-knowledge*", "templates/target/.ai/project/knowledge/**", "tests/test_project_knowledge.py", "tests/test_project_knowledge_suggestions.py"],
       "implementation_paths": ["tools/check_project_knowledge.py", "tools/project_knowledge.py", "tools/suggest_project_knowledge.py", "tools/change_package_contract.py", "tools/validate_target_adapter.py"]
     },
@@ -145,7 +145,7 @@
       "command": ["tools/check_debug_mode.py"],
       "duration_hint_seconds": 15,
       "profiles": ["fast", "full"],
-      "trigger_paths": ["conformance/debug-mode-scenarios.json", "framework/debug-mode.md", "schemas/alatyr-debug-session.schema.json", "templates/target/.ai/assistant/**/*debug*", "templates/target/.ai/project/debug/**", "tools/check_debug_mode.py", "tools/target_adapter_validation/debug_mode.py", "tools/validate_target_adapter.py"],
+      "derive_trigger_paths": true,
       "contract_inputs": ["conformance/debug-mode-scenarios.json", "framework/debug-mode.md", "schemas/alatyr-debug-session.schema.json", "templates/target/.ai/assistant/**/*debug*", "templates/target/.ai/project/debug/**"],
       "implementation_paths": ["tools/check_debug_mode.py", "tools/target_adapter_validation/debug_mode.py", "tools/validate_target_adapter.py"]
     },
@@ -154,42 +154,42 @@
       "command": ["tools/check_code_documentation.py"],
       "contract_inputs": ["framework/code-documentation.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/context/intents/code-documentation.json", "templates/target/.ai/assistant/flows/documentation-sync.flow.md", "templates/target/.ai/assistant/gates/checklist.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "templates/target/.ai/assistant/skills/code-documentation/**", "templates/target/.ai/assistant/templates/code-documentation-*.md", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/project/documentation/**"],
       "implementation_paths": ["tools/check_code_documentation.py"],
-      "trigger_paths": ["framework/code-documentation.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/context/intents/code-documentation.json", "templates/target/.ai/assistant/flows/documentation-sync.flow.md", "templates/target/.ai/assistant/gates/checklist.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "templates/target/.ai/assistant/skills/code-documentation/**", "templates/target/.ai/assistant/templates/code-documentation-*.md", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/project/documentation/**", "tools/check_code_documentation.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "project-vocabulary",
       "command": ["tools/check_project_vocabulary.py"],
       "contract_inputs": ["INSTALL.md", "conformance/runs/assistant-surfaces.json", "framework/lifecycle.md", "framework/project-vocabulary.md", "installer/assistant-installation.flow.md", "installer/installation-plan-template.md", "installer/readiness-checklist.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/bridge-capability-matrix.md", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/context/intents/vocabulary-request.json", "templates/target/.ai/assistant/flows/adapter-recheck.flow.md", "templates/target/.ai/assistant/flows/project-vocabulary.flow.md", "templates/target/.ai/assistant/gates/checklist.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "templates/target/.ai/assistant/skills/project-vocabulary/**", "templates/target/.ai/assistant/templates/post-*.md", "templates/target/.ai/assistant/templates/vocabulary-*.md", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/project/vocabulary/**"],
       "implementation_paths": ["tools/check_project_vocabulary.py"],
-      "trigger_paths": ["INSTALL.md", "conformance/runs/assistant-surfaces.json", "framework/lifecycle.md", "framework/project-vocabulary.md", "installer/assistant-installation.flow.md", "installer/installation-plan-template.md", "installer/readiness-checklist.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/bridge-capability-matrix.md", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/context/intents/vocabulary-request.json", "templates/target/.ai/assistant/flows/adapter-recheck.flow.md", "templates/target/.ai/assistant/flows/project-vocabulary.flow.md", "templates/target/.ai/assistant/gates/checklist.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "templates/target/.ai/assistant/skills/project-vocabulary/**", "templates/target/.ai/assistant/templates/post-*.md", "templates/target/.ai/assistant/templates/vocabulary-*.md", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/project/vocabulary/**", "tools/check_project_vocabulary.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "test-first-development",
       "command": ["tools/check_test_first_development.py"],
       "contract_inputs": ["schemas/test-execution-contract.schema.json", "INSTALL.md", "conformance/runs/assistant-surfaces.json", "framework/lifecycle.md", "framework/test-first-development.md", "framework/repair-qualification.md", "framework/testing-guidance.md", "installer/assistant-installation.flow.md", "installer/installation-plan-template.md", "installer/readiness-checklist.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/bridge-capability-matrix.md", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/context/intents/test-first-request.json", "templates/target/.ai/assistant/flows/adapter-recheck.flow.md", "templates/target/.ai/assistant/flows/test-first-*.flow.md", "templates/target/.ai/assistant/gates/test-first-development.md", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "templates/target/.ai/assistant/skills/test-first-development/**", "templates/target/.ai/assistant/templates/post-*.md", "templates/target/.ai/assistant/templates/test-first-*.md", "templates/target/.ai/assistant/templates/test-execution-evidence.json", "templates/target/.ai/project/testing/**", "schemas/repair-review.schema.json", "templates/target/.ai/assistant/templates/repair-review.json", "templates/target/.ai/assistant/templates/repair-qualification.json", "schemas/test-execution-contract-v2.schema.json", "schemas/test-execution-contract-v3.schema.json", "framework/test-execution-selection.md"],
-      "implementation_paths": ["tools/check_test_first_development.py","tools/test_execution_contract.py","tools/resource_access.py","tools/plan_test_resources.py","tools/repair_review.py","tools/repair_qualification.py","tools/target_adapter_validation/repair_review.py","tools/testing_controls.py", "tools/test_harness_contract.py","tools/test_selection.py","tools/plan_test_selection.py","tools/producer_coverage.py"],
-      "trigger_paths": ["schemas/test-execution-contract.schema.json","INSTALL.md","conformance/runs/assistant-surfaces.json","framework/lifecycle.md","framework/test-first-development.md","framework/repair-qualification.md","framework/testing-guidance.md","installer/assistant-installation.flow.md","installer/installation-plan-template.md","installer/readiness-checklist.md","templates/target/.ai/alatyr.yaml","templates/target/.ai/assistant/bridge-capability-matrix.md","templates/target/.ai/assistant/context-router.json","templates/target/.ai/assistant/context/intents/test-first-request.json","templates/target/.ai/assistant/flows/adapter-recheck.flow.md","templates/target/.ai/assistant/flows/test-first-*.flow.md","templates/target/.ai/assistant/gates/test-first-development.md","templates/target/.ai/assistant/module-profile.md","templates/target/.ai/assistant/operation-catalog.json","templates/target/.ai/assistant/skills/test-first-development/**","templates/target/.ai/assistant/templates/post-*.md","templates/target/.ai/assistant/templates/test-first-*.md","templates/target/.ai/assistant/templates/test-execution-evidence.json","templates/target/.ai/project/testing/**","tools/check_test_first_development.py","tools/test_execution_contract.py","tools/resource_access.py","tools/plan_test_resources.py","schemas/repair-review.schema.json","templates/target/.ai/assistant/templates/repair-review.json","templates/target/.ai/assistant/templates/repair-qualification.json","tools/repair_review.py","tools/repair_qualification.py","tools/target_adapter_validation/repair_review.py","schemas/test-execution-contract-v2.schema.json", "schemas/test-execution-contract-v3.schema.json","framework/test-execution-selection.md","tools/testing_controls.py", "tools/test_harness_contract.py","tools/test_selection.py","tools/plan_test_selection.py","tools/producer_coverage.py"]
+      "implementation_paths": ["tools/check_test_first_development.py", "tools/test_execution_contract.py", "tools/resource_access.py", "tools/plan_test_resources.py", "tools/repair_review.py", "tools/repair_qualification.py", "tools/target_adapter_validation/repair_review.py", "tools/testing_controls.py", "tools/test_harness_contract.py", "tools/test_selection.py", "tools/plan_test_selection.py", "tools/producer_coverage.py"],
+      "derive_trigger_paths": true
     },
     {
       "id": "extensions",
       "command": ["tools/check_extensions.py"],
       "contract_inputs": ["framework/extensions.md", "templates/extension/**", "templates/target/.ai/assistant/extensions/**", "tools/target_adapter_validation/extensions.py", "tools/target_adapter_validation/harness_scenarios/extensions.py", "tools/target_adapter_validation/harness_scenarios/workspace_modes.py", "tools/validate_target_adapter.py"],
       "implementation_paths": ["tools/check_extensions.py", "tools/validate_extension_package.py"],
-      "trigger_paths": ["framework/extensions.md", "templates/extension/**", "templates/target/.ai/assistant/extensions/**", "tools/check_extensions.py", "tools/target_adapter_validation/extensions.py", "tools/target_adapter_validation/harness_scenarios/extensions.py", "tools/target_adapter_validation/harness_scenarios/workspace_modes.py", "tools/validate_target_adapter.py", "tools/validate_extension_package.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "dependency-knowledge",
       "command": ["tools/check_dependency_knowledge.py"],
       "contract_inputs": ["framework/dependency-knowledge.md", "schemas/alatyr-dependency-knowledge.schema.json", "templates/dependency-knowledge/**", "templates/target/.ai/assistant/**/*dependency-knowledge*", "templates/target/.ai/project/dependencies/**"],
       "implementation_paths": ["tools/check_dependency_knowledge.py", "tools/validate_dependency_knowledge_export.py"],
-      "trigger_paths": ["framework/dependency-knowledge.md", "schemas/alatyr-dependency-knowledge.schema.json", "templates/dependency-knowledge/**", "templates/target/.ai/assistant/**/*dependency-knowledge*", "templates/target/.ai/project/dependencies/**", "tools/check_dependency_knowledge.py", "tools/validate_dependency_knowledge_export.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "workspace-modes",
       "command": ["tools/check_workspace_modes.py"],
       "contract_inputs": ["framework/workspace-modes.md", "templates/target/.ai/assistant/**/*workspace-mode*", "templates/target/.ai/project/workspace-modes/**"],
       "implementation_paths": ["tools/check_workspace_modes.py", "tools/validate_target_adapter.py"],
-      "trigger_paths": ["framework/workspace-modes.md", "templates/target/.ai/assistant/**/*workspace-mode*", "templates/target/.ai/project/workspace-modes/**", "tools/check_workspace_modes.py", "tools/validate_target_adapter.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "assistant-capability-index",
@@ -197,7 +197,7 @@
       "command": ["tools/render_assistant_capability_index.py"],
       "contract_inputs": ["conformance/runs/assistant-surfaces.json", "templates/target/.ai/assistant/assistant-capabilities/*.json", "templates/target/.ai/assistant/assistant-capabilities.json"],
       "implementation_paths": ["tools/assistant_capability_projection.py", "tools/render_assistant_capability_index.py", "tools/target_adapter_validation/assistant_capabilities.py"],
-      "trigger_paths": ["conformance/runs/assistant-surfaces.json", "templates/target/.ai/assistant/assistant-capabilities/*.json", "templates/target/.ai/assistant/assistant-capabilities.json", "tools/assistant_capability_projection.py", "tools/render_assistant_capability_index.py", "tools/target_adapter_validation/assistant_capabilities.py"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -205,7 +205,7 @@
       "command": ["tools/check_captured_effectiveness_results.py"],
       "contract_inputs": ["conformance/benchmarks/results/**"],
       "implementation_paths": ["tools/check_captured_effectiveness_results.py", "tools/check_effectiveness_benchmark.py", "tools/evidence_contract.py"],
-      "trigger_paths": ["conformance/benchmarks/results/**", "tools/check_captured_effectiveness_results.py", "tools/check_effectiveness_benchmark.py", "tools/evidence_contract.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "evidence-status",
@@ -214,7 +214,7 @@
       "depends_on": ["conformance-reports", "captured-effectiveness-results"],
       "contract_inputs": ["ADAPTER_SCHEMA_VERSION", "AGENTS.md", "AI_ASSISTANTS.md", "INSTALL.md", "TEMPLATE_VERSION", "VERSION", "conformance/benchmarks/**", "conformance/assistant-surface-integration-audits.json", "conformance/evidence-status.json", "conformance/executors/executor-capabilities.json", "conformance/fixtures/**", "conformance/golden/shared-expectations.json", "conformance/operations/request-routing-protocol-expectations.json", "conformance/runs/assistant-run-report-template.json", "conformance/runs/assistant-results/**", "conformance/runs/assistant-surfaces.json", "framework/**", "installer/**", "schemas/**", "templates/target/**", "tools/bootstrap_index.py", "tools/capability_catalog.py", "tools/check_captured_effectiveness_results.py", "tools/check_assistant_capability_contract.py", "tools/check_assistant_surface_audits.py", "tools/check_conformance_matrix.py", "tools/check_conformance_reports.py", "tools/check_effectiveness_benchmark.py", "tools/check_session_continuity.py", "tools/conformance_execution/**", "tools/context_receipt.py", "tools/framework_packaging.py", "tools/materialize_conformance_fixtures.py", "tools/prepare_conformance_matrix.py", "tools/prepare_conformance_run.py", "tools/prepare_effectiveness_benchmark.py", "tools/run_codex_conformance.py", "tools/run_codex_effectiveness_benchmark.py", "tools/scaffold_profiles.json", "tools/scaffold_projection.py", "tools/scaffold_state.py", "tools/scaffold_target_structure.py", "tools/summarize_conformance_reports.py", "tools/summarize_effectiveness_benchmark.py", "tools/summarize_effectiveness_reports.py", "tools/target_adapter_validation/framework_baseline.py", "tools/target_adapter_validation/session_continuity.py", "tools/target_validation_support.py", "tools/render_rule_registry_docs.py"],
       "implementation_paths": ["tools/evidence_contract.py", "tools/render_evidence_status.py"],
-      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "AGENTS.md", "AI_ASSISTANTS.md", "INSTALL.md", "TEMPLATE_VERSION", "VERSION", "conformance/benchmarks/**", "conformance/assistant-surface-integration-audits.json", "conformance/evidence-status.json", "conformance/executors/executor-capabilities.json", "conformance/fixtures/**", "conformance/golden/shared-expectations.json", "conformance/operations/request-routing-protocol-expectations.json", "conformance/runs/assistant-run-report-template.json", "conformance/runs/assistant-results/**", "conformance/runs/assistant-surfaces.json", "framework/**", "installer/**", "schemas/**", "templates/target/**", "tools/bootstrap_index.py", "tools/capability_catalog.py", "tools/check_captured_effectiveness_results.py", "tools/check_assistant_capability_contract.py", "tools/check_assistant_surface_audits.py", "tools/check_conformance_matrix.py", "tools/check_conformance_reports.py", "tools/check_effectiveness_benchmark.py", "tools/check_session_continuity.py", "tools/conformance_execution/**", "tools/context_receipt.py", "tools/evidence_contract.py", "tools/framework_packaging.py", "tools/materialize_conformance_fixtures.py", "tools/prepare_conformance_matrix.py", "tools/prepare_conformance_run.py", "tools/prepare_effectiveness_benchmark.py", "tools/render_evidence_status.py", "tools/run_codex_conformance.py", "tools/run_codex_effectiveness_benchmark.py", "tools/scaffold_profiles.json", "tools/scaffold_projection.py", "tools/scaffold_state.py", "tools/scaffold_target_structure.py", "tools/summarize_conformance_reports.py", "tools/summarize_effectiveness_benchmark.py", "tools/summarize_effectiveness_reports.py", "tools/target_adapter_validation/framework_baseline.py", "tools/target_adapter_validation/session_continuity.py", "tools/target_validation_support.py", "tools/render_rule_registry_docs.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "context-router",
@@ -231,7 +231,7 @@
       "depends_on": ["context-router", "subagent-delegation"],
       "contract_inputs": ["framework/task-decomposition.md", "framework/subagent-delegation.md", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/task-decomposition.md", "templates/target/.ai/assistant/templates/operation-request.md", "templates/target/.ai/assistant/templates/operation-completion-evidence.json", "templates/target/.ai/assistant/flows/operation-routing.flow.md", "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md", "templates/target/.ai/assistant/flows/subagent-delegation.flow.md", "templates/target/.ai/assistant/delegation-policy.json", "templates/target/.ai/assistant/workers/**"],
       "implementation_paths": ["tools/check_task_decomposition.py", "tools/target_adapter_validation/task_decomposition.py"],
-      "trigger_paths": ["framework/task-decomposition.md", "framework/subagent-delegation.md", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/task-decomposition.md", "templates/target/.ai/assistant/templates/operation-request.md", "templates/target/.ai/assistant/templates/operation-completion-evidence.json", "templates/target/.ai/assistant/flows/operation-routing.flow.md", "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md", "templates/target/.ai/assistant/flows/subagent-delegation.flow.md", "templates/target/.ai/assistant/delegation-policy.json", "templates/target/.ai/assistant/workers/**", "tools/check_task_decomposition.py", "tools/target_adapter_validation/task_decomposition.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "analysis-strategies",
@@ -240,7 +240,7 @@
       "depends_on": ["task-decomposition"],
       "contract_inputs": ["framework/task-decomposition.md", "schemas/alatyr-adapter.schema.json", "schemas/alatyr-delegation-branch-checkpoint.schema.json", "schemas/alatyr-delegation-branch-envelope.schema.json", "schemas/alatyr-delegation-execution-tree.schema.json", "schemas/alatyr-delegation-policy.schema.json", "schemas/alatyr-problem-model-active-projection.schema.json", "schemas/alatyr-problem-model.schema.json", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/analysis-strategies/**", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/gates/analysis-strategy.md", "templates/target/.ai/assistant/gates/index.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/problem-model-active-projection.json", "templates/target/.ai/assistant/templates/problem-model.json", "templates/target/.ai/assistant/templates/operation-completion-evidence.json", "schemas/alatyr-problem-model-v6.schema.json", "schemas/alatyr-problem-model-active-projection-v4.schema.json", "tests/test_analysis_evidence.py"],
       "implementation_paths": ["tools/task_readiness.py", "tools/analysis_strategy_contract.py", "tools/check_analysis_strategies.py", "tools/scaffold_profiles.json", "tools/target_adapter_validation/analysis_strategies.py", "tools/target_adapter_validation/harness_scenarios/analysis_strategies.py", "tools/validate_target_adapter.py", "tools/behavior_acceptance.py", "tools/publish_active_task.py", "tools/task_evidence_contract.py", "tools/repair_classification.py", "tools/repair_history.py", "schemas/alatyr-problem-model-v5.schema.json", "tools/analysis_evidence.py", "tools/archive_task_evidence.py", "tools/execution_focus.py"],
-      "trigger_paths": ["tools/task_readiness.py", "framework/task-decomposition.md", "schemas/alatyr-adapter.schema.json", "schemas/alatyr-delegation-branch-checkpoint.schema.json", "schemas/alatyr-delegation-branch-envelope.schema.json", "schemas/alatyr-delegation-execution-tree.schema.json", "schemas/alatyr-delegation-policy.schema.json", "schemas/alatyr-problem-model-active-projection.schema.json", "schemas/alatyr-problem-model.schema.json", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/analysis-strategies/**", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/gates/analysis-strategy.md", "templates/target/.ai/assistant/gates/index.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/problem-model-active-projection.json", "templates/target/.ai/assistant/templates/problem-model.json", "templates/target/.ai/assistant/templates/operation-completion-evidence.json", "tools/analysis_strategy_contract.py", "tools/check_analysis_strategies.py", "tools/scaffold_profiles.json", "tools/target_adapter_validation/analysis_strategies.py", "tools/target_adapter_validation/harness_scenarios/analysis_strategies.py", "tools/validate_target_adapter.py", "tools/behavior_acceptance.py", "tools/publish_active_task.py", "tools/task_evidence_contract.py", "tools/repair_classification.py", "tools/repair_history.py", "schemas/alatyr-problem-model-v5.schema.json", "tools/analysis_evidence.py", "tools/archive_task_evidence.py", "schemas/alatyr-problem-model-v6.schema.json", "schemas/alatyr-problem-model-active-projection-v4.schema.json", "tests/test_analysis_evidence.py", "tools/execution_focus.py"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -259,7 +259,7 @@
       "depends_on": ["context-router", "context-catalogs"],
       "contract_inputs": ["templates/target/.ai/README.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/bootstrap-index.json", "templates/target/.ai/assistant/bootstrap-integrity.json", "templates/target/.ai/assistant/entry-packet.json", "templates/target/.ai/assistant/context*/**", "templates/target/.ai/assistant/gates/**", "templates/target/.ai/assistant/operation*.json", "templates/target/.ai/assistant/policies/action-authorization.json", "templates/target/.ai/assistant/policies/session-continuity.json", "templates/target/.ai/project/support-policy.json", "templates/target/AGENTS.md"],
       "implementation_paths": ["tools/agent_entry_packet.py", "tools/bootstrap_index.py", "tools/check_bootstrap_routing.py", "tools/context_catalog.py", "tools/render_target_entry_packet.py", "tools/render_target_bootstrap_index.py", "tools/scaffold*.py", "tools/target_tool_compat.py"],
-      "trigger_paths": ["templates/target/.ai/README.md", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/bootstrap-index.json", "templates/target/.ai/assistant/bootstrap-integrity.json", "templates/target/.ai/assistant/entry-packet.json", "templates/target/.ai/assistant/context*/**", "templates/target/.ai/assistant/gates/**", "templates/target/.ai/assistant/operation*.json", "templates/target/.ai/assistant/policies/action-authorization.json", "templates/target/.ai/assistant/policies/session-continuity.json", "templates/target/.ai/project/support-policy.json", "templates/target/AGENTS.md", "tools/agent_entry_packet.py", "tools/bootstrap_index.py", "tools/check_bootstrap_routing.py", "tools/context_catalog.py", "tools/render_target_entry_packet.py", "tools/render_target_bootstrap_index.py", "tools/scaffold*.py", "tools/target_tool_compat.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "agent-entry-packet",
@@ -268,7 +268,7 @@
       "depends_on": ["bootstrap-routing", "scaffold-profiles"],
       "contract_inputs": ["templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/entry-packet.json", "templates/target/.ai/assistant/gates/index.json", "templates/target/.ai/assistant/operation*.json", "templates/target/.ai/assistant/policies/action-authorization.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/policies/session-continuity.json", "templates/target/.ai/project/support-policy.json"],
       "implementation_paths": ["tools/agent_entry_packet.py", "tools/check_agent_entry_packet.py", "tools/render_target_entry_packet.py", "tools/scaffold*.py", "tools/task_classification_contract.py", "tools/target_tool_compat.py"],
-      "trigger_paths": ["templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/assistant/entry-packet.json", "templates/target/.ai/assistant/gates/index.json", "templates/target/.ai/assistant/operation*.json", "templates/target/.ai/assistant/policies/action-authorization.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/policies/session-continuity.json", "templates/target/.ai/project/support-policy.json", "tools/agent_entry_packet.py", "tools/check_agent_entry_packet.py", "tools/render_target_entry_packet.py", "tools/scaffold*.py", "tools/task_classification_contract.py", "tools/target_tool_compat.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "context-costs",
@@ -277,7 +277,7 @@
       "depends_on": ["context-router"],
       "contract_inputs": ["conformance/golden/context-cost-baseline.json", "framework/context-*.md", "templates/target/.ai/assistant/analysis-strategies/**", "templates/target/.ai/assistant/context*/**", "templates/target/.ai/assistant/assistant-capabilities/*.json"],
       "implementation_paths": ["tools/context_catalog.py", "tools/*context_costs.py", "tools/check_context_costs.py", "tools/report_context_costs.py"],
-      "trigger_paths": ["conformance/golden/context-cost-baseline.json", "framework/context-*.md", "templates/target/.ai/assistant/analysis-strategies/**", "templates/target/.ai/assistant/context*/**", "templates/target/.ai/assistant/assistant-capabilities/*.json", "tools/context_catalog.py", "tools/*context_costs.py", "tools/check_context_costs.py", "tools/report_context_costs.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "support-costs",
@@ -286,7 +286,7 @@
       "depends_on": ["scaffold-profiles", "framework-packs"],
       "contract_inputs": ["framework/capabilities.json", "framework/framework-packs.json", "templates/target/**", "tools/scaffold_profiles.json"],
       "implementation_paths": ["tools/check_support_costs.py", "tools/report_support_costs.py", "tools/support_topic_layout.py"],
-      "trigger_paths": ["framework/capabilities.json", "framework/framework-packs.json", "templates/target/**", "tools/check_support_costs.py", "tools/report_support_costs.py", "tools/support_topic_layout.py", "tools/scaffold_profiles.json"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -295,14 +295,14 @@
       "command": ["tools/check_discussion_diagrams.py"],
       "contract_inputs": ["framework/diagram*.md", "templates/target/.ai/assistant/**/*diagram*"],
       "implementation_paths": ["tools/assistant_capability_projection.py", "tools/check_discussion_diagrams.py", "tools/target_adapter_validation/assistant_capabilities.py", "tools/target_adapter_validation/diagrams.py"],
-      "trigger_paths": ["framework/diagram*.md", "templates/target/.ai/assistant/**/*diagram*", "tools/assistant_capability_projection.py", "tools/check_discussion_diagrams.py", "tools/target_adapter_validation/assistant_capabilities.py", "tools/target_adapter_validation/diagrams.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "prepare-diagram-conformance",
       "command": ["tools/prepare_diagram_conformance_run.py", "--check"],
       "contract_inputs": ["conformance/operations/diagram-discussion.json", "conformance/runs/assistant-surfaces.json"],
       "implementation_paths": ["tools/prepare_diagram_conformance_run.py"],
-      "trigger_paths": ["conformance/operations/diagram-discussion.json", "conformance/runs/assistant-surfaces.json", "tools/prepare_diagram_conformance_run.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "diagram-conformance-results",
@@ -310,14 +310,14 @@
       "depends_on": ["prepare-diagram-conformance"],
       "contract_inputs": ["conformance/operations/diagram-discussion-result-template.json", "conformance/runs/assistant-surfaces.json", "conformance/runs/diagram-results/**"],
       "implementation_paths": ["tools/check_diagram_conformance_results.py"],
-      "trigger_paths": ["conformance/operations/diagram-discussion-result-template.json", "conformance/runs/assistant-surfaces.json", "conformance/runs/diagram-results/**", "tools/check_diagram_conformance_results.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "consistency-map",
       "command": ["tools/check_consistency_map.py"],
       "contract_inputs": ["framework/logical-integrity.md", "schemas/alatyr-consistency-map*.json", "schemas/alatyr-relationship-candidates.schema.json", "templates/target/.ai/project/consistency-map.json", "templates/target/.ai/project/consistency/**", "templates/target/.ai/assistant/consistency-reverse-index.json", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/alatyr.yaml"],
       "implementation_paths": ["tools/check_consistency_map.py", "tools/impact_graph.py", "tools/render_consistency_reverse_index.py", "tools/registry_ownership.py", "tools/relationship_candidates.py", "tools/reviewed_warnings.py"],
-      "trigger_paths": ["framework/logical-integrity.md", "schemas/alatyr-consistency-map*.json", "schemas/alatyr-relationship-candidates.schema.json", "templates/target/.ai/project/consistency-map.json", "templates/target/.ai/project/consistency/**", "templates/target/.ai/assistant/consistency-reverse-index.json", "templates/target/.ai/assistant/context-router.json", "templates/target/.ai/project/source-of-truth-registry.md", "templates/target/.ai/alatyr.yaml", "tools/check_consistency_map.py", "tools/impact_graph.py", "tools/render_consistency_reverse_index.py", "tools/registry_ownership.py", "tools/relationship_candidates.py", "tools/reviewed_warnings.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "cross-platform-tools",
@@ -326,23 +326,23 @@
       "child_capacity_max": 4,
       "profiles": ["full", "platform"],
       "contract_inputs": [".gitattributes", ".github/workflows/**", "INSTALL.md", "constraints-ci.txt", "requirements*.txt", "tools/README.md", "tools/runtime-compatibility.json", "tools/tool_commands.json"],
-      "implementation_paths": ["tools/support_json.py","tools/alatyr.*","tools/report_approval_scope.py","tools/report_change_cost.py","tools/check_all.py","tools/parallel_execution.py","tools/run_focused_source_checks.py","tools/plan_minimum_work.py","tools/context_planning.py","tools/plan_target_context.py","tools/source_check_cache.py","tools/source_check_reuse.py","tools/check_cross_platform_tools.py","tools/summarize_source_check_report.py","tools/clean_local_artifacts.py","tools/plan_target_upgrade.py","tools/report_adapter_health.py", "tools/initialization_readiness.py","tools/render_change_package_index.py","tools/finalize_target_support.py","tools/delegation_evidence.py","tools/documented_command_contract.py","tools/validate_delegation_execution_tree.py","tools/verify_target_upgrade.py","tools/archive_task_evidence.py","tools/plan_test_resources.py","tools/task_acceptance_binding.py","tools/local_file_lock.py","tools/support_write_transaction.py","tools/target_support_outputs.py","tools/cooperation_preflight.py","tools/worker_handoff.py","tools/prepare_delegation_result.py","tools/resource_access.py","tools/manage_session_presence.py","tools/session_presence_store.py","tools/collaboration_observations.py","tools/restore_active_task.py","tools/worktree_readiness.py","tools/worker_communication.py","tools/inspect_worker_communication.py","tools/default_validation_route.py","tools/dispatch_observation.py"],
-      "trigger_paths": ["tools/support_json.py",".gitattributes",".github/workflows/**","INSTALL.md","constraints-ci.txt","requirements*.txt","tools/README.md","tools/alatyr.*","tools/report_approval_scope.py","tools/report_change_cost.py","tools/check_all.py","tools/parallel_execution.py","tools/run_focused_source_checks.py","tools/plan_minimum_work.py","tools/context_planning.py","tools/plan_target_context.py","tools/source_check_cache.py","tools/source_check_reuse.py","tools/check_cross_platform_tools.py","tools/summarize_source_check_report.py","tools/clean_local_artifacts.py","tools/plan_target_upgrade.py","tools/report_adapter_health.py", "tools/initialization_readiness.py","tools/render_change_package_index.py","tools/finalize_target_support.py","tools/delegation_evidence.py","tools/documented_command_contract.py","tools/validate_delegation_execution_tree.py","tools/verify_target_upgrade.py","tools/runtime-compatibility.json","tools/tool_commands.json","tools/archive_task_evidence.py","tools/plan_test_resources.py","tools/task_acceptance_binding.py","tools/local_file_lock.py","tools/support_write_transaction.py","tools/target_support_outputs.py","tools/cooperation_preflight.py","tools/worker_handoff.py","tools/prepare_delegation_result.py","tools/resource_access.py","tools/manage_session_presence.py","tools/session_presence_store.py","tools/collaboration_observations.py","tools/restore_active_task.py","tools/worktree_readiness.py","tools/worker_communication.py","tools/inspect_worker_communication.py","tools/default_validation_route.py","tools/dispatch_observation.py"]
+      "implementation_paths": ["tools/support_json.py", "tools/alatyr.*", "tools/report_approval_scope.py", "tools/report_change_cost.py", "tools/check_all.py", "tools/parallel_execution.py", "tools/run_focused_source_checks.py", "tools/plan_minimum_work.py", "tools/context_planning.py", "tools/plan_target_context.py", "tools/source_check_cache.py", "tools/source_check_reuse.py", "tools/check_cross_platform_tools.py", "tools/summarize_source_check_report.py", "tools/clean_local_artifacts.py", "tools/plan_target_upgrade.py", "tools/report_adapter_health.py", "tools/initialization_readiness.py", "tools/render_change_package_index.py", "tools/finalize_target_support.py", "tools/delegation_evidence.py", "tools/documented_command_contract.py", "tools/validate_delegation_execution_tree.py", "tools/verify_target_upgrade.py", "tools/archive_task_evidence.py", "tools/plan_test_resources.py", "tools/task_acceptance_binding.py", "tools/local_file_lock.py", "tools/support_write_transaction.py", "tools/target_support_outputs.py", "tools/cooperation_preflight.py", "tools/worker_handoff.py", "tools/prepare_delegation_result.py", "tools/resource_access.py", "tools/manage_session_presence.py", "tools/session_presence_store.py", "tools/collaboration_observations.py", "tools/restore_active_task.py", "tools/worktree_readiness.py", "tools/worker_communication.py", "tools/inspect_worker_communication.py", "tools/default_validation_route.py", "tools/dispatch_observation.py"],
+      "derive_trigger_paths": true
     },
     {
       "id": "large-task-orchestration",
       "command": ["tools/check_large_task_orchestration.py"],
       "contract_inputs": ["framework/large-task-orchestration.md", "schemas/alatyr-context-receipt.schema.json", "templates/target/.ai/assistant/context/task-scales/**", "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md", "templates/target/.ai/assistant/templates/large-task-operation-packet.md"],
       "implementation_paths": ["tools/context_receipt.py", "tools/check_large_task_orchestration.py"],
-      "trigger_paths": ["framework/large-task-orchestration.md", "schemas/alatyr-context-receipt.schema.json", "templates/target/.ai/assistant/context/task-scales/**", "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md", "templates/target/.ai/assistant/templates/large-task-operation-packet.md", "tools/context_receipt.py", "tools/check_large_task_orchestration.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "subagent-delegation",
       "dependency_trigger_mode": "direct",
       "command": ["tools/check_subagent_delegation.py"],
       "contract_inputs": ["conformance/operations/worker-delegation.json", "framework/bridge-capability-matrix.md", "framework/large-task-orchestration.md", "framework/subagent-delegation.md", "framework/task-decomposition.md", "schemas/alatyr-delegation-branch-checkpoint.schema.json", "schemas/alatyr-delegation-branch-envelope.schema.json", "schemas/alatyr-delegation-execution-tree.schema.json", "schemas/alatyr-delegation-policy.schema.json", "schemas/alatyr-single-read-only-delegation-receipt.schema.json", "schemas/alatyr-worker-result.schema.json", "templates/target/.ai/assistant/assistant-capabilities.json", "templates/target/.ai/assistant/assistant-capabilities/**", "templates/target/.ai/assistant/bridge-capability-matrix.md", "templates/target/.ai/assistant/context/task-scales/delegated-execution.json", "templates/target/.ai/assistant/context/task-scales/delegation-preflight.json", "templates/target/.ai/assistant/delegation-policy.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/task-decomposition.md", "templates/target/.ai/assistant/flows/subagent-delegation.flow.md", "templates/target/.ai/assistant/prompts/worker-orchestration.md", "templates/target/.ai/assistant/templates/native-worker-binding.md", "templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json", "templates/target/.ai/assistant/templates/delegation-branch-envelope.json", "templates/target/.ai/assistant/templates/delegation-execution-tree.json", "templates/target/.ai/assistant/templates/subagent-task-packet.md", "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json", "templates/target/.ai/assistant/templates/worker-execution-plan.md", "templates/target/.ai/assistant/templates/worker-result.json", "templates/target/.ai/assistant/templates/worker-result.md", "templates/target/.ai/assistant/workers/**", "tools/source_worker_policy.json"],
-      "implementation_paths": ["tools/assistant_capability_projection.py","tools/delegation_evidence.py","tools/check_subagent_delegation.py","tools/source_worker_contract.py","tools/target_adapter_validation/assistant_capabilities.py","tools/target_adapter_validation/subagent_delegation.py","tools/validate_delegation_execution_tree.py","tools/prepare_delegation_context.py","tools/prepare_delegation_result.py","tools/worker_handoff.py","tools/worker_communication.py","tools/inspect_worker_communication.py","tools/dispatch_observation.py"],
-      "trigger_paths": ["conformance/operations/worker-delegation.json","framework/bridge-capability-matrix.md","framework/large-task-orchestration.md","framework/subagent-delegation.md","framework/task-decomposition.md","schemas/alatyr-delegation-branch-checkpoint.schema.json","schemas/alatyr-delegation-branch-envelope.schema.json","schemas/alatyr-delegation-execution-tree.schema.json","schemas/alatyr-delegation-policy.schema.json","schemas/alatyr-single-read-only-delegation-receipt.schema.json","schemas/alatyr-worker-result.schema.json","templates/target/.ai/assistant/assistant-capabilities.json","templates/target/.ai/assistant/assistant-capabilities/**","templates/target/.ai/assistant/bridge-capability-matrix.md","templates/target/.ai/assistant/context/task-scales/delegated-execution.json","templates/target/.ai/assistant/context/task-scales/delegation-preflight.json","templates/target/.ai/assistant/delegation-policy.json","templates/target/.ai/assistant/task-decomposition.json","templates/target/.ai/assistant/templates/task-decomposition.md","templates/target/.ai/assistant/flows/subagent-delegation.flow.md","templates/target/.ai/assistant/prompts/worker-orchestration.md","templates/target/.ai/assistant/templates/native-worker-binding.md","templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json","templates/target/.ai/assistant/templates/delegation-branch-envelope.json","templates/target/.ai/assistant/templates/delegation-execution-tree.json","templates/target/.ai/assistant/templates/subagent-task-packet.md","templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json","templates/target/.ai/assistant/templates/worker-execution-plan.md","templates/target/.ai/assistant/templates/worker-result.json","templates/target/.ai/assistant/templates/worker-result.md","templates/target/.ai/assistant/workers/**","tools/assistant_capability_projection.py","tools/source_worker_contract.py","tools/source_worker_policy.json","tools/delegation_evidence.py","tools/check_subagent_delegation.py","tools/target_adapter_validation/assistant_capabilities.py","tools/target_adapter_validation/subagent_delegation.py","tools/validate_delegation_execution_tree.py","tools/prepare_delegation_context.py","tools/prepare_delegation_result.py","tools/worker_handoff.py","tools/worker_communication.py","tools/inspect_worker_communication.py","tools/dispatch_observation.py"]
+      "implementation_paths": ["tools/assistant_capability_projection.py", "tools/delegation_evidence.py", "tools/check_subagent_delegation.py", "tools/source_worker_contract.py", "tools/target_adapter_validation/assistant_capabilities.py", "tools/target_adapter_validation/subagent_delegation.py", "tools/validate_delegation_execution_tree.py", "tools/prepare_delegation_context.py", "tools/prepare_delegation_result.py", "tools/worker_handoff.py", "tools/worker_communication.py", "tools/inspect_worker_communication.py", "tools/dispatch_observation.py"],
+      "derive_trigger_paths": true
     },
     {
       "id": "manifest-contract",
@@ -350,7 +350,7 @@
       "profiles": ["fast", "full", "platform"],
       "contract_inputs": ["schemas/alatyr-adapter.schema.json", "schemas/alatyr-installation-state.schema.json", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/installation-state.json"],
       "implementation_paths": ["tools/check_manifest_contract.py", "tools/scaffold_state.py", "tools/target_validation_support.py"],
-      "trigger_paths": ["schemas/alatyr-adapter.schema.json", "schemas/alatyr-installation-state.schema.json", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/installation-state.json", "tools/check_manifest_contract.py", "tools/scaffold_state.py", "tools/target_validation_support.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "markdown-links",
@@ -359,21 +359,21 @@
       "micro_trigger_paths": ["docs/human/**"],
       "contract_inputs": ["**/*.md"],
       "implementation_paths": ["tools/check_markdown_links.py"],
-      "trigger_paths": ["**/*.md", "tools/check_markdown_links.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "maturity-profile",
       "command": ["tools/check_maturity_profile.py"],
       "contract_inputs": ["templates/target/.ai/assistant/maturity-profile.md"],
       "implementation_paths": ["tools/check_maturity_profile.py"],
-      "trigger_paths": ["templates/target/.ai/assistant/maturity-profile.md", "tools/check_maturity_profile.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "module-profile",
       "command": ["tools/check_module_profile.py"],
       "contract_inputs": ["framework/capabilities.json", "framework/module-profile.md", "templates/target/.ai/assistant/module-profile.md"],
       "implementation_paths": ["tools/check_module_profile.py"],
-      "trigger_paths": ["framework/capabilities.json", "framework/module-profile.md", "templates/target/.ai/assistant/module-profile.md", "tools/check_module_profile.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "capability-graph",
@@ -382,7 +382,7 @@
       "depends_on": ["framework-packs", "module-profile", "check-manifest"],
       "contract_inputs": ["framework/capabilities.json", "framework/framework-packs.json", "schemas/alatyr-capabilities.schema.json", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "tools/check_manifest.json"],
       "implementation_paths": ["tools/capability_catalog.py", "tools/check_all.py", "tools/check_capability_graph.py", "tools/framework_packaging.py"],
-      "trigger_paths": ["framework/capabilities.json", "framework/framework-packs.json", "schemas/alatyr-capabilities.schema.json", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/operation-catalog.json", "tools/capability_catalog.py", "tools/check_all.py", "tools/check_capability_graph.py", "tools/check_manifest.json", "tools/framework_packaging.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "framework-packs",
@@ -391,28 +391,28 @@
       "depends_on": ["framework-metadata", "rule-registry-docs"],
       "contract_inputs": ["framework/capabilities.json", "framework/framework-packs.json"],
       "implementation_paths": ["tools/check_framework_metadata.py", "tools/check_framework_packs.py", "tools/framework_packaging.py", "tools/scaffold_target_structure.py"],
-      "trigger_paths": ["framework/capabilities.json", "framework/framework-packs.json", "tools/check_framework_metadata.py", "tools/check_framework_packs.py", "tools/framework_packaging.py", "tools/scaffold_target_structure.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "migration-diff-report",
       "command": ["tools/check_migration_diff_report.py"],
       "contract_inputs": ["framework/migration-diff.md"],
       "implementation_paths": ["tools/check_migration_diff_report.py", "tools/plan_target_upgrade.py", "tools/report_migration_diff.py"],
-      "trigger_paths": ["framework/migration-diff.md", "tools/check_migration_diff_report.py", "tools/plan_target_upgrade.py", "tools/report_migration_diff.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "operation-contracts",
       "command": ["tools/check_operation_contracts.py"],
       "contract_inputs": ["framework/installed-operations.md", "installer/installed-operation-request-template.md", "templates/target/.ai/assistant/help*.md", "templates/target/.ai/assistant/templates/operation-request.md", "templates/target/.ai/assistant/flows/**"],
       "implementation_paths": ["tools/check_operation_contracts.py"],
-      "trigger_paths": ["framework/installed-operations.md", "installer/installed-operation-request-template.md", "templates/target/.ai/assistant/help*.md", "templates/target/.ai/assistant/templates/operation-request.md", "templates/target/.ai/assistant/flows/**", "tools/check_operation_contracts.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "operation-catalog",
       "command": ["tools/check_operation_catalog.py"],
       "contract_inputs": ["conformance/authorization-intent-scenarios.json", "conformance/operations/request-routing-protocol-expectations.json", "templates/target/.ai/assistant/operation-catalog.json"],
       "implementation_paths": ["tools/check_operation_catalog.py"],
-      "trigger_paths": ["conformance/authorization-intent-scenarios.json", "conformance/operations/request-routing-protocol-expectations.json", "templates/target/.ai/assistant/operation-catalog.json", "tools/check_operation_catalog.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "operation-index",
@@ -420,7 +420,7 @@
       "depends_on": ["operation-catalog"],
       "contract_inputs": ["templates/target/.ai/assistant/operation-*.json"],
       "implementation_paths": ["tools/render_operation_index.py", "tools/scaffold_projection.py"],
-      "trigger_paths": ["templates/target/.ai/assistant/operation-*.json", "tools/render_operation_index.py", "tools/scaffold_projection.py"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -428,21 +428,21 @@
       "command": ["tools/check_operation_help.py"],
       "contract_inputs": ["framework/operation-help.md", "templates/target/.ai/assistant/help*.md"],
       "implementation_paths": ["tools/check_operation_help.py"],
-      "trigger_paths": ["framework/operation-help.md", "templates/target/.ai/assistant/help*.md", "tools/check_operation_help.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "output-contracts",
       "command": ["tools/check_output_contracts.py"],
       "contract_inputs": ["templates/target/.ai/assistant/templates/adapter-output-contracts.md", "templates/target/.ai/assistant/templates/operation-completion-evidence.json", "templates/target/.ai/assistant/templates/post-install-message.md", "templates/target/.ai/assistant/templates/post-update-message.md", "templates/target/.ai/assistant/gates/final-evidence.md", "templates/target/.ai/assistant/gates/code-and-tests.md", "framework/testing-guidance.md"],
       "implementation_paths": ["tools/check_output_contracts.py"],
-      "trigger_paths": ["templates/target/.ai/assistant/templates/adapter-output-contracts.md", "templates/target/.ai/assistant/templates/operation-completion-evidence.json", "templates/target/.ai/assistant/templates/post-install-message.md", "templates/target/.ai/assistant/templates/post-update-message.md", "templates/target/.ai/assistant/gates/final-evidence.md", "templates/target/.ai/assistant/gates/code-and-tests.md", "framework/testing-guidance.md", "tools/check_output_contracts.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "release-migration-template",
       "command": ["tools/check_release_migration_template.py"],
       "contract_inputs": ["docs/release-migration-report-template.md"],
       "implementation_paths": ["tools/check_release_migration_template.py"],
-      "trigger_paths": ["docs/release-migration-report-template.md", "tools/check_release_migration_template.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "rule-registry-docs",
@@ -450,7 +450,7 @@
       "profiles": ["fast", "full"],
       "contract_inputs": ["framework/rule-ownership.md", "framework/rule-registry.json", "framework/rule-registry.md"],
       "implementation_paths": ["tools/render_rule_registry_docs.py"],
-      "trigger_paths": ["framework/rule-ownership.md", "framework/rule-registry.json", "framework/rule-registry.md", "tools/render_rule_registry_docs.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "rule-ownership",
@@ -459,7 +459,7 @@
       "depends_on": ["framework-metadata", "rule-registry-docs"],
       "contract_inputs": ["framework/rule-*"],
       "implementation_paths": ["tools/check_rule_ownership.py"],
-      "trigger_paths": ["framework/rule-*", "tools/check_rule_ownership.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "scaffold-profiles",
@@ -468,14 +468,14 @@
       "depends_on": ["context-router", "manifest-contract"],
       "contract_inputs": ["templates/target/**", "tools/scaffold_profiles.json"],
       "implementation_paths": ["tools/assistant_capability_projection.py", "tools/capability_catalog.py", "tools/check_scaffold_profiles.py", "tools/composition_model.py", "tools/framework_packaging.py", "tools/scaffold*.py", "tools/scaffold_target_structure.py"],
-      "trigger_paths": ["templates/target/**", "tools/assistant_capability_projection.py", "tools/capability_catalog.py", "tools/check_scaffold_profiles.py", "tools/composition_model.py", "tools/framework_packaging.py", "tools/scaffold*.py", "tools/scaffold_profiles.json", "tools/scaffold_target_structure.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "source-of-truth-registry",
       "command": ["tools/check_source_of_truth_registry.py"],
       "contract_inputs": ["framework/source-of-truth-registry.md", "templates/target/.ai/project/source-of-truth-registry.md"],
       "implementation_paths": ["tools/check_source_of_truth_registry.py", "tools/target_adapter_validation/project_support_documentation.py"],
-      "trigger_paths": ["framework/source-of-truth-registry.md", "templates/target/.ai/project/source-of-truth-registry.md", "tools/check_source_of_truth_registry.py", "tools/target_adapter_validation/project_support_documentation.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "support-information",
@@ -490,9 +490,9 @@
       "dependency_trigger_mode": "direct",
       "command": ["tools/render_target_contract_compatibility.py", "--check"],
       "profiles": ["fast", "full", "platform"],
-      "contract_inputs": ["docs/target-adapter-contract-compatibility.md", "schemas/alatyr-adapter.schema.json", "schemas/alatyr-delegation-branch-checkpoint.schema.json", "schemas/alatyr-delegation-branch-envelope.schema.json", "schemas/alatyr-delegation-execution-tree.schema.json", "schemas/alatyr-delegation-policy.schema.json", "schemas/alatyr-debug-session.schema.json", "schemas/alatyr-engineering-evidence.schema.json", "schemas/alatyr-project-knowledge-index.schema.json", "schemas/alatyr-project-knowledge-promotion.schema.json", "schemas/alatyr-project-knowledge-shard.schema.json", "schemas/alatyr-problem-model-active-projection.schema.json", "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-session-continuity-packet.schema.json", "schemas/alatyr-single-read-only-delegation-receipt.schema.json", "schemas/alatyr-worker-result.schema.json", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/templates/debug-session-record.json", "templates/target/.ai/assistant/delegation-policy.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json", "templates/target/.ai/assistant/templates/delegation-branch-envelope.json", "templates/target/.ai/assistant/templates/delegation-execution-tree.json", "templates/target/.ai/assistant/templates/engineering-evidence-record.json", "templates/target/.ai/assistant/templates/project-knowledge-promotion.json", "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json", "templates/target/.ai/assistant/templates/problem-model-active-projection.json", "templates/target/.ai/assistant/templates/session-continuity-packet.json", "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json", "templates/target/.ai/assistant/templates/worker-result.json", "templates/target/.ai/project/debug/index.json", "templates/target/.ai/project/engineering-evidence/index.json", "templates/target/.ai/project/knowledge/index.json", "tools/target-adapter-contract-compatibility.json"],
-      "implementation_paths": ["tools/render_target_contract_compatibility.py", "tools/target_adapter_validation/contract_compatibility.py", "tools/yaml_support.py"],
-      "trigger_paths": ["docs/target-adapter-contract-compatibility.md", "schemas/alatyr-adapter.schema.json", "schemas/alatyr-delegation-branch-checkpoint.schema.json", "schemas/alatyr-delegation-branch-envelope.schema.json", "schemas/alatyr-delegation-execution-tree.schema.json", "schemas/alatyr-delegation-policy.schema.json", "schemas/alatyr-debug-session.schema.json", "schemas/alatyr-engineering-evidence.schema.json", "schemas/alatyr-project-knowledge-index.schema.json", "schemas/alatyr-project-knowledge-promotion.schema.json", "schemas/alatyr-project-knowledge-shard.schema.json", "schemas/alatyr-problem-model-active-projection.schema.json", "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-session-continuity-packet.schema.json", "schemas/alatyr-single-read-only-delegation-receipt.schema.json", "schemas/alatyr-worker-result.schema.json", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/templates/debug-session-record.json", "templates/target/.ai/assistant/delegation-policy.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json", "templates/target/.ai/assistant/templates/delegation-branch-envelope.json", "templates/target/.ai/assistant/templates/delegation-execution-tree.json", "templates/target/.ai/assistant/templates/engineering-evidence-record.json", "templates/target/.ai/assistant/templates/project-knowledge-promotion.json", "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json", "templates/target/.ai/assistant/templates/problem-model-active-projection.json", "templates/target/.ai/assistant/templates/session-continuity-packet.json", "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json", "templates/target/.ai/assistant/templates/worker-result.json", "templates/target/.ai/project/debug/index.json", "templates/target/.ai/project/engineering-evidence/index.json", "templates/target/.ai/project/knowledge/index.json", "tools/render_target_contract_compatibility.py", "tools/target-adapter-contract-compatibility.json", "tools/target_adapter_validation/contract_compatibility.py", "tools/yaml_support.py"],
+      "contract_inputs": ["docs/target-adapter-contract-compatibility.md", "schemas/alatyr-active-task-index.schema.json", "schemas/alatyr-adapter.schema.json", "schemas/alatyr-debug-session.schema.json", "schemas/alatyr-delegation-branch-checkpoint.schema.json", "schemas/alatyr-delegation-branch-envelope.schema.json", "schemas/alatyr-delegation-execution-tree.schema.json", "schemas/alatyr-delegation-policy.schema.json", "schemas/alatyr-engineering-evidence.schema.json", "schemas/alatyr-problem-model-active-projection.schema.json", "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-project-knowledge-index.schema.json", "schemas/alatyr-project-knowledge-promotion.schema.json", "schemas/alatyr-project-knowledge-shard.schema.json", "schemas/alatyr-publication-receipt.schema.json", "schemas/alatyr-session-continuity-packet.schema.json", "schemas/alatyr-single-read-only-delegation-receipt.schema.json", "schemas/alatyr-task-closure.schema.json", "schemas/alatyr-worker-result.schema.json", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/active-tasks.json", "templates/target/.ai/assistant/delegation-policy.json", "templates/target/.ai/assistant/task-decomposition.json", "templates/target/.ai/assistant/templates/debug-session-record.json", "templates/target/.ai/assistant/templates/delegation-branch-checkpoint.json", "templates/target/.ai/assistant/templates/delegation-branch-envelope.json", "templates/target/.ai/assistant/templates/delegation-execution-tree.json", "templates/target/.ai/assistant/templates/engineering-evidence-record.json", "templates/target/.ai/assistant/templates/problem-model-active-projection.json", "templates/target/.ai/assistant/templates/problem-model.json", "templates/target/.ai/assistant/templates/project-knowledge-promotion.json", "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json", "templates/target/.ai/assistant/templates/session-continuity-packet.json", "templates/target/.ai/assistant/templates/single-read-only-delegation-receipt.json", "templates/target/.ai/assistant/templates/task-closure.json", "templates/target/.ai/assistant/templates/worker-result.json", "templates/target/.ai/project/debug/index.json", "templates/target/.ai/project/engineering-evidence/index.json", "templates/target/.ai/project/knowledge/index.json", "tools/target-adapter-contract-compatibility.json"],
+      "implementation_paths": ["tools/render_target_contract_compatibility.py", "tools/target_adapter_validation/contract_compatibility.py", "tools/yaml_support.py", "tools/source_check_manifest.py"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -502,17 +502,17 @@
       "depends_on": ["target-contract-compatibility"],
       "contract_inputs": ["docs/target-adapter-validator-findings.md"],
       "implementation_paths": ["tools/render_target_validator_findings.py", "tools/target_adapter_validation/**", "tools/validate_target_adapter.py"],
-      "trigger_paths": ["docs/target-adapter-validator-findings.md", "tools/render_target_validator_findings.py", "tools/target_adapter_validation/**", "tools/validate_target_adapter.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "target-adapter-validator",
       "dependency_trigger_mode": "none",
       "command": ["tools/check_target_adapter_validator.py"],
       "duration_hint_seconds": 11,
-      "trigger_paths": ["templates/target/**","templates/target/.ai/alatyr.yaml","templates/target/.ai/assistant/approvals/**","templates/target/.ai/assistant/bootstrap-index.json","templates/target/.ai/assistant/context*/**","templates/target/.ai/assistant/gates/**","templates/target/.ai/assistant/module-profile.md","templates/target/.ai/assistant/team/**","schemas/alatyr-relationship-candidates.schema.json","schemas/alatyr-target-discovery-report.schema.json","schemas/test-execution-contract.schema.json","tools/test_execution_contract.py","tools/report_approval_scope.py","tools/check_target_adapter_validator.py","tools/context_catalog.py","tools/framework_packaging.py","tools/scaffold_state.py","tools/task_classification_contract.py","tools/target_adapter_validation/**","tools/validate_target_adapter.py","tools/analysis_strategy_contract.py","schemas/alatyr-problem-model-active-projection.schema.json","schemas/alatyr-problem-model.schema.json","schemas/alatyr-session-continuity-packet.schema.json","tools/behavior_acceptance.py","tools/resource_access.py","schemas/alatyr-problem-model-v4.schema.json","schemas/alatyr-problem-model-active-projection-v3.schema.json","tools/task_acceptance_binding.py","tools/framework_source_binding.py","tools/validation_route_contract.py","tools/registry_ownership.py","tools/relationship_candidates.py","tools/reviewed_warnings.py","tools/repair_classification.py","tools/repair_history.py","schemas/alatyr-problem-model-v5.schema.json","schemas/test-execution-contract-v2.schema.json", "schemas/test-execution-contract-v3.schema.json","framework/test-execution-selection.md","tools/testing_controls.py", "tools/test_harness_contract.py","tools/test_selection.py","schemas/alatyr-active-task-index.schema.json","tools/default_validation_route.py","tools/producer_coverage.py","tools/dispatch_observation.py"],
+      "trigger_paths": ["templates/target/**", "templates/target/.ai/alatyr.yaml", "templates/target/.ai/assistant/approvals/**", "templates/target/.ai/assistant/bootstrap-index.json", "templates/target/.ai/assistant/context*/**", "templates/target/.ai/assistant/gates/**", "templates/target/.ai/assistant/module-profile.md", "templates/target/.ai/assistant/team/**", "schemas/alatyr-relationship-candidates.schema.json", "schemas/alatyr-target-discovery-report.schema.json", "schemas/test-execution-contract.schema.json", "tools/test_execution_contract.py", "tools/report_approval_scope.py", "tools/check_target_adapter_validator.py", "tools/context_catalog.py", "tools/framework_packaging.py", "tools/scaffold_state.py", "tools/task_classification_contract.py", "tools/target_adapter_validation/**", "tools/validate_target_adapter.py", "tools/analysis_strategy_contract.py", "schemas/alatyr-problem-model-active-projection.schema.json", "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-session-continuity-packet.schema.json", "tools/behavior_acceptance.py", "tools/resource_access.py", "schemas/alatyr-problem-model-v4.schema.json", "schemas/alatyr-problem-model-active-projection-v3.schema.json", "tools/task_acceptance_binding.py", "tools/framework_source_binding.py", "tools/validation_route_contract.py", "tools/registry_ownership.py", "tools/relationship_candidates.py", "tools/reviewed_warnings.py", "tools/repair_classification.py", "tools/repair_history.py", "schemas/alatyr-problem-model-v5.schema.json", "schemas/test-execution-contract-v2.schema.json", "schemas/test-execution-contract-v3.schema.json", "framework/test-execution-selection.md", "tools/testing_controls.py", "tools/test_harness_contract.py", "tools/test_selection.py", "schemas/alatyr-active-task-index.schema.json", "tools/default_validation_route.py", "tools/producer_coverage.py", "tools/dispatch_observation.py"],
       "depends_on": ["target-validator-findings", "context-catalogs"],
       "contract_inputs": ["templates/target/**", "schemas/test-execution-contract.schema.json", "schemas/alatyr-relationship-candidates.schema.json", "schemas/alatyr-target-discovery-report.schema.json", "schemas/alatyr-problem-model-active-projection.schema.json", "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-session-continuity-packet.schema.json", "schemas/alatyr-problem-model-v4.schema.json", "schemas/alatyr-problem-model-active-projection-v3.schema.json", "schemas/test-execution-contract-v2.schema.json", "schemas/test-execution-contract-v3.schema.json", "framework/test-execution-selection.md", "schemas/alatyr-active-task-index.schema.json"],
-      "implementation_paths": ["tools/check_target_adapter_validator.py","tools/test_execution_contract.py","tools/report_approval_scope.py","tools/context_catalog.py","tools/analysis_strategy_contract.py","tools/framework_packaging.py","tools/scaffold_state.py","tools/task_classification_contract.py","tools/target_adapter_validation/**","tools/validate_target_adapter.py","tools/behavior_acceptance.py","tools/resource_access.py","tools/task_acceptance_binding.py","tools/framework_source_binding.py","tools/validation_route_contract.py","tools/registry_ownership.py","tools/relationship_candidates.py","tools/reviewed_warnings.py","tools/repair_classification.py","tools/repair_history.py","schemas/alatyr-problem-model-v5.schema.json","tools/testing_controls.py", "tools/test_harness_contract.py","tools/test_selection.py","tools/task_evidence_contract.py","tools/default_validation_route.py","tools/producer_coverage.py","tools/dispatch_observation.py"],
+      "implementation_paths": ["tools/check_target_adapter_validator.py", "tools/test_execution_contract.py", "tools/report_approval_scope.py", "tools/context_catalog.py", "tools/analysis_strategy_contract.py", "tools/framework_packaging.py", "tools/scaffold_state.py", "tools/task_classification_contract.py", "tools/target_adapter_validation/**", "tools/validate_target_adapter.py", "tools/behavior_acceptance.py", "tools/resource_access.py", "tools/task_acceptance_binding.py", "tools/framework_source_binding.py", "tools/validation_route_contract.py", "tools/registry_ownership.py", "tools/relationship_candidates.py", "tools/reviewed_warnings.py", "tools/repair_classification.py", "tools/repair_history.py", "schemas/alatyr-problem-model-v5.schema.json", "tools/testing_controls.py", "tools/test_harness_contract.py", "tools/test_selection.py", "tools/task_evidence_contract.py", "tools/default_validation_route.py", "tools/producer_coverage.py", "tools/dispatch_observation.py"],
       "resource_class": "heavy",
       "timeout_seconds": 300
     },
@@ -521,7 +521,7 @@
       "command": ["tools/check_team_collaboration.py"],
       "contract_inputs": ["framework/team-collaboration.md", "templates/target/.ai/assistant/team/**"],
       "implementation_paths": ["tools/check_team_collaboration.py"],
-      "trigger_paths": ["framework/team-collaboration.md", "templates/target/.ai/assistant/team/**", "tools/check_team_collaboration.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "team-collaboration-scenarios",
@@ -530,7 +530,7 @@
       "depends_on": ["team-collaboration"],
       "contract_inputs": ["templates/target/.ai/assistant/team/**"],
       "implementation_paths": ["tools/check_team_collaboration_scenarios.py", "tools/target_adapter_validation/team_collaboration.py", "tools/validate_target_adapter.py"],
-      "trigger_paths": ["templates/target/.ai/assistant/team/**", "tools/check_team_collaboration_scenarios.py", "tools/target_adapter_validation/team_collaboration.py", "tools/validate_target_adapter.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "versioning",
@@ -538,7 +538,7 @@
       "profiles": ["fast", "full", "release"],
       "contract_inputs": ["ADAPTER_SCHEMA_VERSION", "CHANGELOG.md", "README.md", "TEMPLATE_VERSION", "VERSION", "docs/human/faq.md", "docs/release-process.md", "docs/releases/**"],
       "implementation_paths": ["tools/check_versioning.py"],
-      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "CHANGELOG.md", "README.md", "TEMPLATE_VERSION", "VERSION", "docs/human/faq.md", "docs/release-process.md", "docs/releases/**", "tools/check_versioning.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "bridge-templates",
@@ -546,35 +546,35 @@
       "depends_on": ["render-bridge-templates"],
       "contract_inputs": ["templates/target/.cursor*/**", "templates/target/.github/**", "templates/target/AI_ASSISTANTS.md", "templates/target/.ai/assistant/bridge-capability-matrix.md", "tools/bridge_template_manifest.json"],
       "implementation_paths": ["tools/check_bridge_templates.py", "tools/render_bridge_templates.py"],
-      "trigger_paths": ["templates/target/.cursor*/**", "templates/target/.github/**", "templates/target/AI_ASSISTANTS.md", "templates/target/.ai/assistant/bridge-capability-matrix.md", "tools/bridge_template_manifest.json", "tools/check_bridge_templates.py", "tools/render_bridge_templates.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "render-bridge-templates",
       "command": ["tools/render_bridge_templates.py"],
       "contract_inputs": ["templates/target/.cursor*/**", "templates/target/AI_ASSISTANTS.md", "tools/bridge_template_manifest.json"],
       "implementation_paths": ["tools/render_bridge_templates.py"],
-      "trigger_paths": ["templates/target/.cursor*/**", "templates/target/AI_ASSISTANTS.md", "tools/bridge_template_manifest.json", "tools/render_bridge_templates.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "conformance-fixtures",
       "command": ["tools/check_conformance_fixtures.py"],
       "contract_inputs": ["conformance/fixtures/**"],
       "implementation_paths": ["tools/check_conformance_fixtures.py"],
-      "trigger_paths": ["conformance/fixtures/**", "tools/check_conformance_fixtures.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "conformance-reports",
       "command": ["tools/check_conformance_reports.py"],
       "contract_inputs": ["conformance/**"],
       "implementation_paths": ["tools/check_conformance_reports.py", "tools/conformance_execution/**", "tools/prepare_conformance_run.py", "tools/run_codex_conformance.py"],
-      "trigger_paths": ["conformance/**", "tools/check_conformance_reports.py", "tools/conformance_execution/**", "tools/prepare_conformance_run.py", "tools/run_codex_conformance.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "conformance-matrix",
       "command": ["tools/check_conformance_matrix.py"],
       "contract_inputs": ["conformance/**"],
       "implementation_paths": ["tools/check_conformance_matrix.py", "tools/check_conformance_reports.py", "tools/conformance_execution/**", "tools/materialize_conformance_fixtures.py", "tools/prepare_conformance_matrix.py"],
-      "trigger_paths": ["conformance/**", "tools/check_conformance_matrix.py", "tools/check_conformance_reports.py", "tools/conformance_execution/**", "tools/materialize_conformance_fixtures.py", "tools/prepare_conformance_matrix.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "conformance-summary",
@@ -582,14 +582,14 @@
       "depends_on": ["conformance-matrix"],
       "contract_inputs": ["conformance/**"],
       "implementation_paths": ["tools/check_conformance_reports.py", "tools/check_conformance_summary.py", "tools/summarize_conformance_reports.py"],
-      "trigger_paths": ["conformance/**", "tools/check_conformance_reports.py", "tools/check_conformance_summary.py", "tools/summarize_conformance_reports.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "effectiveness-benchmark",
       "command": ["tools/check_effectiveness_benchmark.py"],
       "contract_inputs": ["conformance/benchmarks/**", "framework/effectiveness-metrics.md", "framework/guarantees.md", "schemas/alatyr-adapter-maintenance-evidence.schema.json", "schemas/alatyr-delayed-outcome-evidence.schema.json", "templates/target/.ai/assistant/templates/adapter-maintenance-evidence.json", "templates/target/.ai/assistant/templates/delayed-outcome-evidence.json", "templates/target/.ai/assistant/templates/effectiveness-report.md"],
       "implementation_paths": ["tools/check_effectiveness_benchmark.py", "tools/conformance_execution/**", "tools/context_receipt.py", "tools/prepare_effectiveness_benchmark.py", "tools/run_codex_effectiveness_benchmark.py", "tools/summarize_effectiveness_reports.py"],
-      "trigger_paths": ["conformance/benchmarks/**", "framework/effectiveness-metrics.md", "framework/guarantees.md", "schemas/alatyr-adapter-maintenance-evidence.schema.json", "schemas/alatyr-delayed-outcome-evidence.schema.json", "templates/target/.ai/assistant/templates/adapter-maintenance-evidence.json", "templates/target/.ai/assistant/templates/delayed-outcome-evidence.json", "templates/target/.ai/assistant/templates/effectiveness-report.md", "tools/check_effectiveness_benchmark.py", "tools/conformance_execution/**", "tools/context_receipt.py", "tools/prepare_effectiveness_benchmark.py", "tools/run_codex_effectiveness_benchmark.py", "tools/summarize_effectiveness_reports.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "summarize-effectiveness-benchmark",
@@ -597,7 +597,7 @@
       "depends_on": ["effectiveness-benchmark"],
       "contract_inputs": ["conformance/benchmarks/**"],
       "implementation_paths": ["tools/check_effectiveness_benchmark.py", "tools/context_receipt.py", "tools/prepare_effectiveness_benchmark.py", "tools/summarize_effectiveness_benchmark.py"],
-      "trigger_paths": ["conformance/benchmarks/**", "tools/check_effectiveness_benchmark.py", "tools/context_receipt.py", "tools/prepare_effectiveness_benchmark.py", "tools/summarize_effectiveness_benchmark.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "conformance-scaffold",
@@ -611,7 +611,7 @@
       "produces_run_artifacts": true,
       "contract_inputs": ["conformance/fixtures/**", "templates/target/**"],
       "implementation_paths": ["tools/capability_catalog.py", "tools/conformance_artifacts.py", "tools/parallel_execution.py", "tools/run_conformance_scaffold.py", "tools/scaffold*.py", "tools/scaffold_target_structure.py", "tools/validate_target_adapter.py"],
-      "trigger_paths": ["conformance/fixtures/**", "templates/target/**", "tools/capability_catalog.py", "tools/conformance_artifacts.py", "tools/parallel_execution.py", "tools/run_conformance_scaffold.py", "tools/scaffold*.py", "tools/scaffold_target_structure.py", "tools/validate_target_adapter.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "lifecycle-conformance",
@@ -626,7 +626,7 @@
       "artifact_dependencies": ["conformance-scaffold"],
       "contract_inputs": ["conformance/golden/lifecycle/**", "framework/**", "templates/target/**"],
       "implementation_paths": ["tools/agent_entry_packet.py", "tools/analysis_strategy_contract.py", "tools/bootstrap_index.py", "tools/conformance_artifacts.py", "tools/context_catalog.py", "tools/context_planning.py", "tools/check_lifecycle_conformance.py", "tools/inspect_session_context.py", "tools/inspect_target_discovery.py", "tools/parallel_execution.py", "tools/plan_target_upgrade.py", "tools/render_context_catalogs.py", "tools/render_installed_context_catalogs.py", "tools/render_semantic_codebook.py", "tools/scaffold*.py", "tools/scaffold_target_structure.py", "tools/support_state.py", "tools/target_adapter_validation/context.py", "tools/target_adapter_validation/context_catalogs.py", "tools/target_adapter_validation/framework_baseline.py", "tools/target_adapter_validation/router_costs.py", "tools/verify_target_upgrade.py", "tools/target_adapter_validation/support_state.py", "tools/validate_target_adapter.py", "tools/yaml_support.py"],
-      "trigger_paths": ["conformance/golden/lifecycle/**", "framework/**", "templates/target/**", "tools/agent_entry_packet.py", "tools/analysis_strategy_contract.py", "tools/bootstrap_index.py", "tools/conformance_artifacts.py", "tools/context_catalog.py", "tools/context_planning.py", "tools/check_lifecycle_conformance.py", "tools/inspect_session_context.py", "tools/inspect_target_discovery.py", "tools/parallel_execution.py", "tools/plan_target_upgrade.py", "tools/render_context_catalogs.py", "tools/render_installed_context_catalogs.py", "tools/render_semantic_codebook.py", "tools/scaffold*.py", "tools/scaffold_target_structure.py", "tools/support_state.py", "tools/target_adapter_validation/context.py", "tools/target_adapter_validation/context_catalogs.py", "tools/target_adapter_validation/framework_baseline.py", "tools/target_adapter_validation/router_costs.py", "tools/verify_target_upgrade.py", "tools/target_adapter_validation/support_state.py", "tools/validate_target_adapter.py", "tools/yaml_support.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "lifecycle-platform-smoke",
@@ -638,14 +638,14 @@
       "depends_on": ["capability-graph", "scaffold-profiles", "target-adapter-validator"],
       "contract_inputs": ["conformance/golden/lifecycle/**", "framework/**", "templates/target/**"],
       "implementation_paths": ["tools/agent_entry_packet.py", "tools/analysis_strategy_contract.py", "tools/bootstrap_index.py", "tools/conformance_artifacts.py", "tools/context_catalog.py", "tools/context_planning.py", "tools/check_lifecycle_conformance.py", "tools/inspect_session_context.py", "tools/inspect_target_discovery.py", "tools/parallel_execution.py", "tools/plan_target_upgrade.py", "tools/render_context_catalogs.py", "tools/render_installed_context_catalogs.py", "tools/render_semantic_codebook.py", "tools/scaffold*.py", "tools/scaffold_target_structure.py", "tools/support_state.py", "tools/target_adapter_validation/context.py", "tools/target_adapter_validation/context_catalogs.py", "tools/target_adapter_validation/framework_baseline.py", "tools/target_adapter_validation/router_costs.py", "tools/verify_target_upgrade.py", "tools/target_adapter_validation/support_state.py", "tools/validate_target_adapter.py", "tools/yaml_support.py"],
-      "trigger_paths": ["conformance/golden/lifecycle/**", "framework/**", "templates/target/**", "tools/agent_entry_packet.py", "tools/analysis_strategy_contract.py", "tools/bootstrap_index.py", "tools/conformance_artifacts.py", "tools/context_catalog.py", "tools/context_planning.py", "tools/check_lifecycle_conformance.py", "tools/inspect_session_context.py", "tools/inspect_target_discovery.py", "tools/parallel_execution.py", "tools/plan_target_upgrade.py", "tools/render_context_catalogs.py", "tools/render_installed_context_catalogs.py", "tools/render_semantic_codebook.py", "tools/scaffold*.py", "tools/scaffold_target_structure.py", "tools/support_state.py", "tools/target_adapter_validation/context.py", "tools/target_adapter_validation/context_catalogs.py", "tools/target_adapter_validation/framework_baseline.py", "tools/target_adapter_validation/router_costs.py", "tools/verify_target_upgrade.py", "tools/target_adapter_validation/support_state.py", "tools/validate_target_adapter.py", "tools/yaml_support.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "effectiveness-summary-sample",
       "command": ["tools/summarize_effectiveness_reports.py", "--input", "conformance/golden/effectiveness-sample.json"],
       "contract_inputs": ["conformance/golden/effectiveness-sample.json"],
       "implementation_paths": ["tools/context_receipt.py", "tools/summarize_effectiveness_reports.py"],
-      "trigger_paths": ["conformance/golden/effectiveness-sample.json", "tools/context_receipt.py", "tools/summarize_effectiveness_reports.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "source-context-routing",
@@ -653,7 +653,7 @@
       "profiles": ["quick", "fast", "full"],
       "contract_inputs": ["AGENTS.md", "AI_ASSISTANTS.md", "INSTALL.md", "README.md", "docs/source-worker-strategy.md", "framework/context-index.json", "framework/file-inventory.json", "framework/semantics/**", "installer/**", "tools/source_context_router.json", "tools/source-context/**", "tools/source_worker_policy.json"],
       "implementation_paths": ["tools/check_all.py", "tools/parallel_execution.py", "tools/check_source_context_routing.py", "tools/context_catalog.py", "tools/path_spec.py", "tools/plan_minimum_work.py", "tools/source_context_selection.py", "tools/render_framework_file_inventory.py", "tools/source_check_manifest.py", "tools/source_worker_contract.py", "tools/task_classification_contract.py"],
-      "trigger_paths": ["AGENTS.md", "AI_ASSISTANTS.md", "INSTALL.md", "README.md", "docs/source-worker-strategy.md", "framework/context-index.json", "framework/file-inventory.json", "framework/semantics/**", "installer/**", "tools/check_all.py", "tools/parallel_execution.py", "tools/check_source_context_routing.py", "tools/context_catalog.py", "tools/path_spec.py", "tools/plan_minimum_work.py", "tools/source_context_selection.py", "tools/source-context/**", "tools/render_framework_file_inventory.py", "tools/source_check_manifest.py", "tools/source_worker_contract.py", "tools/task_classification_contract.py", "tools/source_context_router.json", "tools/source_worker_policy.json"]
+      "derive_trigger_paths": true
     },
     {
       "id": "framework-file-inventory",
@@ -661,7 +661,7 @@
       "profiles": ["fast", "full"],
       "contract_inputs": ["ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION", "VERSION", "framework/**"],
       "implementation_paths": ["tools/render_framework_file_inventory.py"],
-      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION", "VERSION", "framework/**", "tools/render_framework_file_inventory.py"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -673,7 +673,7 @@
       "observed_inputs": ["tools/check_*.py", "tools/tool_commands.json"],
       "observed_inventory_paths": ["**"],
       "implementation_paths": ["tools/check_all.py", "tools/check_check_manifest.py", "tools/compare_source_check_reports.py", "tools/evidence_contract.py", "tools/local_python_import_graph.py", "tools/plan_minimum_work.py", "tools/source_check_reuse.py", "tools/source_check_manifest.py"],
-      "trigger_paths": ["tools/check_all.py", "tools/check_check_manifest.py", "tools/compare_source_check_reports.py", "tools/evidence_contract.py", "tools/local_python_import_graph.py", "tools/plan_minimum_work.py", "tools/source_check_reuse.py", "tools/source_check_manifest.py", "tools/check_manifest.json", "tools/check_*.py", "tools/tool_commands.json"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -682,7 +682,7 @@
       "profiles": ["quick", "fast", "full"],
       "contract_inputs": ["tools/tool_complexity_allowlist.json"],
       "implementation_paths": ["tools/check_tool_complexity.py", "tools/*.py", "tools/**/*.py"],
-      "trigger_paths": ["tools/check_tool_complexity.py", "tools/*.py", "tools/**/*.py", "tools/tool_complexity_allowlist.json"],
+      "derive_trigger_paths": true,
       "resource_class": "light"
     },
     {
@@ -692,8 +692,9 @@
       "micro_trigger_paths": ["tests/**"],
       "always_for_changed": false,
       "contract_inputs": ["tests/**", "tools/source_context_router.json", "tools/source_worker_policy.json", "schemas/test-execution-contract.schema.json", "schemas/test-execution-contract-v2.schema.json", "schemas/test-execution-contract-v3.schema.json", "schemas/alatyr-problem-model*.schema.json", "schemas/alatyr-project-knowledge-*.schema.json", ".github/workflows/cross-platform-source-checks.yml", "schemas/alatyr-active-task-index.schema.json"],
-      "implementation_paths": ["tools/target_adapter_validation/historical_evidence.py", "tools/target_adapter_validation/current_change.py", "tools/audit_external_case_identity.py", "tools/current_task_view.py", "tools/task_readiness.py", "tools/check_all.py", "tools/parallel_execution.py", "tools/repository_inventory.py", "tools/report_approval_scope.py", "tools/run_focused_source_checks.py", "tools/plan_minimum_work.py", "tools/context_planning.py", "tools/plan_target_context.py", "tools/source_check_cache.py", "tools/check_source_unit_tests.py", "tools/source_test_timing.py", "tools/evidence_contract.py", "tools/local_python_import_graph.py", "tools/report_adapter_health.py", "tools/initialization_readiness.py", "tools/source_state.py", "tools/source_check_reuse.py", "tools/source_check_manifest.py", "tools/source_worker_contract.py", "tools/task_classification_contract.py", "tools/target_adapter_validation/action_modes.py", "tools/target_adapter_validation/diagrams.py", "tools/target_adapter_validation/files.py", "tools/target_adapter_validation/manifest_paths.py", "tools/target_adapter_validation/module_profile.py", "tools/target_adapter_validation/harness_scenarios/session_continuity.py", "tools/target_adapter_validation/session_continuity.py", "tools/target_adapter_validation/subagent_delegation.py", "tools/target_adapter_validation/values.py", "tools/target_adapter_validation/workspace_modes.py", "tools/target_tool_compat.py", "tools/archive_task_evidence.py", "tools/behavior_acceptance.py", "tools/local_file_lock.py", "tools/plan_test_resources.py", "tools/resource_access.py", "tools/support_write_transaction.py", "tools/target_support_outputs.py", "tools/task_acceptance_binding.py", "tools/adapter_health_views.py", "tools/publication_preflight.py", "tools/plan_test_selection.py", "tools/test_selection.py", "tools/testing_controls.py", "tools/test_harness_contract.py", "tools/cooperation_preflight.py", "tools/analysis_evidence.py", "tools/analysis_strategy_contract.py", "tools/knowledge_context.py", "tools/project_knowledge.py", "tools/repair_classification.py", "tools/target_adapter_validation/analysis_strategies.py", "tools/target_adapter_validation/harness_scenarios/analysis_strategies.py", "tools/publish_active_task.py", "tools/execution_focus.py", "tools/collaboration_observations.py", "tools/restore_active_task.py", "tools/worktree_readiness.py", "tools/task_evidence_contract.py"],
-      "trigger_paths": ["tools/target_adapter_validation/historical_evidence.py", "tools/target_adapter_validation/current_change.py", "tools/audit_external_case_identity.py", "tools/current_task_view.py", "tools/task_readiness.py", "tests/**", "tools/**", "tools/source_context_router.json", "tools/source_worker_policy.json", "tools/check_all.py", "tools/parallel_execution.py", "tools/repository_inventory.py", "tools/report_approval_scope.py", "tools/run_focused_source_checks.py", "tools/plan_minimum_work.py", "tools/context_planning.py", "tools/plan_target_context.py", "tools/source_check_cache.py", "tools/check_source_unit_tests.py", "tools/evidence_contract.py", "tools/source_test_timing.py", "tools/local_python_import_graph.py", "tools/report_adapter_health.py", "tools/initialization_readiness.py", "tools/source_state.py", "tools/source_check_reuse.py", "tools/source_check_manifest.py", "tools/source_worker_contract.py", "tools/task_classification_contract.py", "tools/target_adapter_validation/action_modes.py", "tools/target_adapter_validation/diagrams.py", "tools/target_adapter_validation/files.py", "tools/target_adapter_validation/manifest_paths.py", "tools/target_adapter_validation/module_profile.py", "tools/target_adapter_validation/harness_scenarios/session_continuity.py", "tools/target_adapter_validation/session_continuity.py", "tools/target_adapter_validation/subagent_delegation.py", "tools/target_adapter_validation/values.py", "tools/target_adapter_validation/workspace_modes.py", "tools/target_tool_compat.py", "tools/archive_task_evidence.py", "tools/behavior_acceptance.py", "tools/local_file_lock.py", "tools/plan_test_resources.py", "tools/resource_access.py", "tools/support_write_transaction.py", "tools/target_support_outputs.py", "tools/task_acceptance_binding.py", "schemas/test-execution-contract.schema.json", "schemas/test-execution-contract-v2.schema.json", "schemas/test-execution-contract-v3.schema.json", "tools/adapter_health_views.py", "tools/publication_preflight.py", "tools/plan_test_selection.py", "tools/test_selection.py", "tools/testing_controls.py", "tools/test_harness_contract.py", "tools/cooperation_preflight.py", "schemas/alatyr-problem-model*.schema.json", "schemas/alatyr-project-knowledge-*.schema.json", "tools/analysis_evidence.py", "tools/analysis_strategy_contract.py", "tools/knowledge_context.py", "tools/project_knowledge.py", "tools/repair_classification.py", "tools/target_adapter_validation/analysis_strategies.py", "tools/target_adapter_validation/harness_scenarios/analysis_strategies.py", "tools/publish_active_task.py", ".github/workflows/cross-platform-source-checks.yml", "tools/execution_focus.py", "tools/collaboration_observations.py", "tools/restore_active_task.py", "tools/worktree_readiness.py", "schemas/alatyr-active-task-index.schema.json", "tools/task_evidence_contract.py"],
+      "implementation_paths": ["tools/target_adapter_validation/historical_evidence.py", "tools/target_adapter_validation/current_change.py", "tools/audit_external_case_identity.py", "tools/current_task_view.py", "tools/task_readiness.py", "tools/check_all.py", "tools/parallel_execution.py", "tools/repository_inventory.py", "tools/report_approval_scope.py", "tools/run_focused_source_checks.py", "tools/plan_minimum_work.py", "tools/context_planning.py", "tools/plan_target_context.py", "tools/source_check_cache.py", "tools/check_source_unit_tests.py", "tools/source_test_timing.py", "tools/evidence_contract.py", "tools/local_python_import_graph.py", "tools/report_adapter_health.py", "tools/initialization_readiness.py", "tools/source_state.py", "tools/source_check_reuse.py", "tools/source_check_manifest.py", "tools/source_worker_contract.py", "tools/task_classification_contract.py", "tools/target_adapter_validation/action_modes.py", "tools/target_adapter_validation/diagrams.py", "tools/target_adapter_validation/files.py", "tools/target_adapter_validation/manifest_paths.py", "tools/target_adapter_validation/module_profile.py", "tools/target_adapter_validation/harness_scenarios/session_continuity.py", "tools/target_adapter_validation/session_continuity.py", "tools/target_adapter_validation/subagent_delegation.py", "tools/target_adapter_validation/values.py", "tools/target_adapter_validation/workspace_modes.py", "tools/target_tool_compat.py", "tools/archive_task_evidence.py", "tools/behavior_acceptance.py", "tools/local_file_lock.py", "tools/plan_test_resources.py", "tools/resource_access.py", "tools/support_write_transaction.py", "tools/target_support_outputs.py", "tools/task_acceptance_binding.py", "tools/adapter_health_views.py", "tools/publication_preflight.py", "tools/plan_test_selection.py", "tools/test_selection.py", "tools/testing_controls.py", "tools/test_harness_contract.py", "tools/cooperation_preflight.py", "tools/analysis_evidence.py", "tools/analysis_strategy_contract.py", "tools/knowledge_context.py", "tools/project_knowledge.py", "tools/repair_classification.py", "tools/target_adapter_validation/analysis_strategies.py", "tools/target_adapter_validation/harness_scenarios/analysis_strategies.py", "tools/publish_active_task.py", "tools/execution_focus.py", "tools/collaboration_observations.py", "tools/restore_active_task.py", "tools/worktree_readiness.py", "tools/task_evidence_contract.py", "tools/source_architecture.py", "tools/source_change_impact.py", "tools/task_phase_context.py", "tools/check_tool_complexity.py", "tools/framework_consistency/target_templates.py", "tools/prepare_delegation_context.py", "tools/refresh_source_projections.py", "tools/render_target_contract_compatibility.py", "tools/session_knowledge.py", "tools/target_adapter_validation/debug_mode.py", "tools/target_adapter_validation/modules.py", "tools/validate_target_adapter.py"],
+      "derive_trigger_paths": true,
+      "trigger_paths": ["tools/**"],
       "resource_class": "heavy",
       "child_capacity_max": 4,
       "scheduler_slots": 4,
@@ -704,7 +705,7 @@
       "id": "framework-consistency",
       "command": ["tools/check_framework_consistency.py"],
       "profiles": ["fast", "full"],
-      "trigger_paths": ["AGENTS.md", "AI_ASSISTANTS.md", "INSTALL.md", "README.md", "conformance/**", "docs/**", "framework/**", "installer/**", "templates/target/**", "tools/**"],
+      "derive_trigger_paths": true,
       "always_for_changed": true,
       "depends_on": ["framework-metadata", "rule-ownership", "source-context-routing", "framework-file-inventory"],
       "contract_inputs": ["AGENTS.md", "AI_ASSISTANTS.md", "INSTALL.md", "README.md", "conformance/**", "docs/**", "framework/**", "installer/**", "templates/target/**"],
@@ -719,7 +720,7 @@
       "excluded_profiles": ["release"],
       "contract_inputs": ["ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION", "VERSION", "framework/**", "schemas/**", "templates/target/**"],
       "implementation_paths": ["tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"],
-      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION", "VERSION", "framework/**", "schemas/**", "templates/target/**", "tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"]
+      "derive_trigger_paths": true
     },
     {
       "id": "release-drift-release",
@@ -729,7 +730,7 @@
       "depends_on": ["versioning", "migration-diff-report", "release-migration-template"],
       "contract_inputs": ["ADAPTER_SCHEMA_VERSION", "CHANGELOG.md", "TEMPLATE_VERSION", "VERSION", "docs/releases/**", "framework/**", "schemas/**", "templates/target/**"],
       "implementation_paths": ["tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"],
-      "trigger_paths": ["ADAPTER_SCHEMA_VERSION", "CHANGELOG.md", "TEMPLATE_VERSION", "VERSION", "docs/releases/**", "framework/**", "schemas/**", "templates/target/**", "tools/check_release_drift.py", "tools/context_input_snapshot.py", "tools/record_release_checkpoint.py", "tools/report_migration_diff.py"]
+      "derive_trigger_paths": true
     }
   ]
 }

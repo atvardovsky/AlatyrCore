@@ -60,6 +60,9 @@ class ContextPlanRequest:
     previous_plan: str | None = None
     delivery_observation: str | None = None
     knowledge_request: str | None = None
+    overlay_phases: tuple[str, ...] = ()
+    phase_instances: tuple[str, ...] = ()
+    worker_role: str | None = None
 
 
 class ContextPlanningError(ValueError):
@@ -1269,6 +1272,27 @@ def _add_knowledge_view(request, plan, knowledge, knowledge_digests, content_pac
         plan["delivery_budget"].update(question_words=question_words, question_characters=question_characters)
 
 
+def _select_operation_context(request, target, router, operation, operation_id, catalogs, selected, reasons):
+    flow = operation.get("flow")
+    if not isinstance(flow, str):
+        raise ContextPlanningError("OPERATION_FLOW_INVALID", f"operation has no flow: {operation_id}",
+                                   upgrade_required=True)
+    _select_path(flow, "operation-flow", catalogs, selected, reasons)
+    bindings: dict[str, str] = {}
+    evidence = []
+    if request.overlay_phases or request.phase_instances or request.worker_role is not None:
+        from task_phase_context import select_phase_context
+        try:
+            evidence = select_phase_context(request.overlay_phases, request.phase_instances, request.worker_role,
+                router, lambda path: _load_json(target, path, "phase context", digest_evidence=bindings),
+                lambda path: _select_profile_required_path(target, path, catalogs, selected, reasons))
+        except ContextPlanningError:
+            raise
+        except ValueError as exc:
+            raise ContextPlanningError("TASK_PHASE_CONTEXT_INVALID", str(exc), status="invalid-request") from exc
+    return evidence, bindings
+
+
 def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     target = request.target.resolve()
     if not target.is_dir():
@@ -1327,13 +1351,8 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         _select_profile_required_path(
             target, relpath, catalogs, selected, reasons
         )
-    flow = operation.get("flow")
-    if not isinstance(flow, str):
-        raise ContextPlanningError(
-            "OPERATION_FLOW_INVALID", f"operation has no flow: {operation_id}",
-            upgrade_required=True,
-        )
-    _select_path(flow, "operation-flow", catalogs, selected, reasons)
+    phase_evidence, phase_bindings = _select_operation_context(
+        request, target, router, operation, operation_id, catalogs, selected, reasons)
     if request.architecture_mode is not None and operation_id != "architecture-assistance":
         raise ContextPlanningError("ARCHITECTURE_MODE_OPERATION", "architecture mode requires architecture-assistance", status="invalid-request")
     if operation_id == "architecture-assistance":
@@ -1521,6 +1540,10 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             "semantic correctness, model delivery, comprehension, or compliance"
         ),
     }
+    if phase_evidence:
+        plan["request"].update(overlay_phases=list(request.overlay_phases), phase_instances=list(request.phase_instances), worker_role=request.worker_role)
+        plan["phase_context"] = phase_evidence
+        plan["routing_sources"]["phase_inputs"] = phase_bindings
     if impact["used"]:
         plan["task_contract"] = {
             "record_kind": "derived-task-contract-view", "authority": "none",
@@ -1607,6 +1630,9 @@ def _error_plan(request: ContextPlanRequest, error: ContextPlanningError) -> dic
         "context_packet": None,
     }
     result["request"] = {key: _request_echo(value) for key, value in result["request"].items()}
+    if request.overlay_phases or request.phase_instances or request.worker_role is not None:
+        result["request"].update(overlay_phases=_request_echo(request.overlay_phases),
+            phase_instances=_request_echo(request.phase_instances), worker_role=_request_echo(request.worker_role))
     for key in ("working_set_request", "previous_plan", "delivery_observation", "knowledge_request"):
         value = getattr(request, key)
         if value is not None:
@@ -1620,11 +1646,11 @@ def _validate_request(request: ContextPlanRequest) -> None:
         raise _field_error("request", "target", "a pathlib Path", request.target)
     for field in ("profile", "operation"):
         _text(getattr(request, field), "request", field)
-    for field in ("assistant_surface", "architecture_mode", "working_set_request", "previous_plan", "delivery_observation", "knowledge_request"):
+    for field in ("assistant_surface", "architecture_mode", "working_set_request", "previous_plan", "delivery_observation", "knowledge_request", "worker_role"):
         value = getattr(request, field)
         if value is not None:
             _text(value, "request", field)
-    for field in ("changed_paths", "fact_ids", "change_kinds"):
+    for field in ("changed_paths", "fact_ids", "change_kinds", "overlay_phases", "phase_instances"):
         values = getattr(request, field)
         if not isinstance(values, (tuple, list)):
             raise _field_error("request", field, "a list or tuple of strings", values)

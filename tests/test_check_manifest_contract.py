@@ -35,6 +35,30 @@ def manifest_entry(**overrides: object) -> dict[str, object]:
 
 
 class CheckManifestContractTests(unittest.TestCase):
+    def test_all_derived_routes_match_materialized_explicit_declarations(self):
+        from source_check_manifest import matches, routes, micro_routes
+        current = load_source_check_manifest()
+        raw = json.loads((ROOT / "tools/check_manifest.json").read_text())
+        by_id = {row["id"]: row for row in current}
+        for entry in raw["checks"]:
+            if entry.pop("derive_trigger_paths", False):
+                entry["trigger_paths"] = by_id[entry["id"]]["trigger_paths"]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.json"
+            path.write_text(json.dumps(raw), encoding="utf-8")
+            expanded = load_source_check_manifest(path)
+        paths = ["tools/context_planning.py", "tests/test_source_maintenance.py",
+                 "schemas/alatyr-task-closure.schema.json", "framework/context-router.md",
+                 "templates/target/.ai/assistant/context-profiles.md", "unknown/file.md", "README.md", "VERSION"]
+        for before, after in zip(current, expanded):
+            self.assertEqual(before["id"], after["id"])
+            self.assertEqual({k: v for k, v in before.items() if k != "derive_trigger_paths"},
+                             {k: v for k, v in after.items() if k != "derive_trigger_paths"})
+            for path in paths:
+                for predicate in (matches, routes, micro_routes):
+                    self.assertEqual(predicate(before, path), predicate(after, path),
+                                     (before["id"], path, predicate.__name__))
+
     def test_release_evidence_deferral_is_explicit_typed_and_release_scoped(self):
         for value in (None, 1, 0, "true", {}, []):
             with self.subTest(value=value), self.assertRaisesRegex(ValueError, "requires_release_evidence"):
@@ -67,7 +91,13 @@ class CheckManifestContractTests(unittest.TestCase):
         paths = ["tools/analysis_evidence.py", "tools/analysis_strategy_contract.py", "tools/knowledge_context.py",
                  "tools/project_knowledge.py", "tools/repair_classification.py",
                  "tools/target_adapter_validation/analysis_strategies.py", "tools/publish_active_task.py",
-                 "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-project-knowledge-index.schema.json"]
+                 "schemas/alatyr-problem-model.schema.json", "schemas/alatyr-project-knowledge-index.schema.json",
+                 "tools/check_tool_complexity.py", "tools/framework_consistency/target_templates.py",
+                 "tools/prepare_delegation_context.py", "tools/refresh_source_projections.py",
+                 "tools/render_target_contract_compatibility.py", "tools/session_knowledge.py",
+                 "tools/target_adapter_validation/debug_mode.py", "tools/target_adapter_validation/modules.py",
+                 "tools/validate_target_adapter.py", "tools/source_architecture.py",
+                 "tools/source_change_impact.py", "tools/task_phase_context.py"]
         snapshot = {path: SourceEntry(kind="file", mode=0o644, digest="a" * 64) for path in paths}
         original = check_input_fingerprint(check, snapshot)
         self.assertTrue(set(paths) <= {row["path"] for row in original["entries"]})
@@ -184,6 +214,17 @@ class CheckManifestContractTests(unittest.TestCase):
     def test_rejects_trigger_omitting_a_declared_input(self) -> None:
         with self.assertRaisesRegex(ValueError, "trigger_paths must include"):
             self.load(manifest_entry(trigger_paths=["tools/check_all.py"]))
+
+    def test_derived_triggers_preserve_explicit_routes_and_extras(self) -> None:
+        explicit = manifest_entry()
+        derived = {**explicit, "derive_trigger_paths": True, "trigger_paths": ["docs/extra.md"]}
+        old, new = self.load(explicit)[0], self.load(derived)[0]
+        self.assertEqual(set(new["trigger_paths"]), set(old["trigger_paths"]) | {"docs/extra.md"})
+        for value in (None, 1, "true", [], {}):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "must be Boolean"):
+                self.load({**explicit, "derive_trigger_paths": value})
+        with self.assertRaises(ValueError):
+            self.load({**explicit, "derive_trigger_paths": True, "trigger_paths": {}})
 
     def test_rejects_unsafe_input_declaration(self) -> None:
         with self.assertRaisesRegex(ValueError, "contract_inputs is invalid"):

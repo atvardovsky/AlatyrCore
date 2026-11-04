@@ -34,6 +34,16 @@ contracts or issue lineage become known.
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
 
+Explicit phase selection may narrow a scale overlay through its indexed
+`phase_context`: large/resumable `create` versus `resume`, and delegated
+`planning`, `dispatch` or `convergence`. Resume, dispatch and convergence require
+explicit current instance paths; dispatch also selects one enabled role. Deliver
+that role's prompt and resolved ceilings, not unrelated role prompts. Bind the
+descriptor and machine-read role catalog to freshness even when the catalog is
+not delivered as model context. Base profile, canonical-owner closure and all
+word/character/file budgets remain mandatory. These are delivery phases, not
+authorization. Without selectors preserve the conservative overlay route.
+
 The bootstrap projects manifest, project map, router, semantic preload and
 routing roots. Its lazy integrity sidecar owns generation provenance, source
 hashes and the complete rule selector. Validate it deterministically outside

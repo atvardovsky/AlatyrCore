@@ -30,7 +30,7 @@ class HostedFixtureIsolationTests(unittest.TestCase):
         workflow = safe_load((ROOT / ".github/workflows/cross-platform-source-checks.yml").read_text())
         steps = workflow["jobs"]["portable-source-checks"]["steps"]
         expected = {
-            "Run portable support authoring regressions": (32, "19fda75427046a126feff993c29db5ebf350c4f37ccb7ec622f4a4a5b0b378e1"),
+            "Run portable support authoring regressions": (34, "d408c59f0a387c9bae3990cdce81e366579ff691d27041b89a2a6658f7e85b91"),
             "Run filesystem and session regressions": (11, "50fdbe8bfe21c53acb64758b57cabaeb3ae865c7e349c68206655c1536cfe33c"),
         }
         for name, (count, digest) in expected.items():

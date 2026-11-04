@@ -4486,6 +4486,7 @@ class Validator:
             for path in self.scan_live_text_files()
             if not self.rel(path).startswith(".ai/framework/")
         ]
+        referenced = False
         for path in adapter_text_files:
             text = self.read_text(path)
             if checker_exists and CHECKER_MISSING_RE.search(text):
@@ -4494,12 +4495,8 @@ class Validator:
                     "adapter claims checker is missing even though checker evidence exists",
                     self.rel(path),
                 )
-
-        referenced = [
-            self.rel(path)
-            for path in adapter_text_files
-            if CHECKER_REFERENCE_RE.search(self.read_text(path))
-        ]
+            elif not checker_exists and CHECKER_REFERENCE_RE.search(text):
+                referenced = True
         if referenced and not checker_exists:
             report = self.warn if self.allow_placeholders else self.error
             report(
@@ -4519,10 +4516,10 @@ class Validator:
             "target-local checker evidence found: "
             + ", ".join([self.rel(path) for path in checker_files] + checker_commands),
         )
-        checker_text = "\n".join(self.read_text(path) for path in checker_files)
+        checker_text = "\n".join(self.read_text(path) for path in checker_files).lower()
         coverage_terms = self.config.checker_coverage()
         for term, label in coverage_terms.items():
-            if term not in checker_text.lower():
+            if term not in checker_text:
                 self.warn(
                     "TARGET_CHECKER_COVERAGE_GAP",
                     f"target-local checker may be missing {label}",

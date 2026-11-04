@@ -76,13 +76,19 @@ def ordered_stages(stages: tuple[Stage, ...]) -> list[Stage]:
 
 def _files(root: Path) -> dict[str, bytes]:
     result = {}
-    for path in root.rglob("*"):
-        if "__pycache__" in path.parts:
-            continue
-        if path.is_symlink():
-            raise ValueError("source refresh refuses symbolic links")
-        if path.is_file():
-            result[path.relative_to(root).as_posix()] = path.read_bytes()
+    def visit(directory: Path) -> None:
+        with os.scandir(directory) as entries:
+            for entry in entries:
+                if entry.name == "__pycache__":
+                    continue
+                if entry.is_symlink():
+                    raise ValueError("source refresh refuses symbolic links")
+                path = Path(entry.path)
+                if entry.is_dir(follow_symlinks=False):
+                    visit(path)
+                elif entry.is_file(follow_symlinks=False):
+                    result[path.relative_to(root).as_posix()] = path.read_bytes()
+    visit(root)
     return result
 
 

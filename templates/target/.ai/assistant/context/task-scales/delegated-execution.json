@@ -16,10 +16,27 @@
     ".ai/assistant/prompts/worker-orchestration.md",
     ".ai/assistant/assistant-capabilities.json"
   ],
+  "phase_context": {
+    "planning": {
+      "required_context": [".ai/assistant/gates/final-evidence.md", ".ai/assistant/task-decomposition.json", ".ai/assistant/delegation-policy.json", ".ai/assistant/workers/role-catalog.json", ".ai/assistant/prompts/worker-orchestration.md", ".ai/assistant/assistant-capabilities.json"],
+      "requires_instance": false,
+      "requires_role": false
+    },
+    "dispatch": {
+      "required_context": [".ai/assistant/gates/final-evidence.md", ".ai/assistant/delegation-policy.json"],
+      "requires_instance": true,
+      "requires_role": true
+    },
+    "convergence": {
+      "required_context": [".ai/assistant/gates/final-evidence.md", ".ai/assistant/delegation-policy.json"],
+      "requires_instance": true,
+      "requires_role": false
+    }
+  },
   "conditional_context": [
     {
       "path": ".ai/framework/subagent-delegation.md",
-      "when": "portable delegation semantics are ambiguous under repair or in conflict"
+      "when": "portable semantics need repair or conflict review"
     },
     {
       "path": ".ai/assistant/templates/worker-execution-plan.md",
@@ -43,10 +60,7 @@
     }
   ],
   "expand_when": [
-    "planning needs the selected assistant capability record and worker execution plan",
-    "dispatch needs only the instantiated packet selected role and referenced context packet",
     "recursive dispatch needs the branch envelope template and verified nested capability",
-    "convergence needs only accepted summaries branch checkpoints and selected raw evidence",
     "subagent delegation flow semantics are ambiguous or under repair",
     "selected assistant capability record is required",
     "parent large-task operation packet exists",

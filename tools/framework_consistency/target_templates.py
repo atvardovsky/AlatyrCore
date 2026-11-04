@@ -60,13 +60,19 @@ def check_target_operation_surfaces(context: CheckContext) -> list[str]:
                 "templates/target/.ai/assistant/context-profiles.md missing "
                 f"profile {profile_name}"
             )
-    for relpath in context.framework_files:
-        target_path = f".ai/{relpath}"
-        if target_path not in target_context_profiles:
+        descriptor = f"context/profiles/{profile_name}.json"
+        if f"]({descriptor})" not in target_context_profiles:
             failures.append(
-                "templates/target/.ai/assistant/context-profiles.md does not "
-                f"route {target_path}"
+                f"context-profiles.md must link the canonical descriptor for {profile_name}"
             )
+        try:
+            data = json.loads(context.read_text("templates/target/.ai/assistant/" + descriptor))
+            if not isinstance(data, dict) or data.get("profile") != profile_name:
+                failures.append(f"context profile descriptor identity differs: {profile_name}")
+        except (OSError, ValueError) as exc:
+            failures.append(f"context profile descriptor is unavailable: {profile_name}: {type(exc).__name__}")
+    # Descriptor/catalog checks own route closure; the human guide must not
+    # duplicate their full framework-path union to pass this integration check.
     if ".ai/assistant/context-router.json" not in target_context_profiles:
         failures.append(
             "templates/target/.ai/assistant/context-profiles.md missing "

@@ -255,6 +255,22 @@ def registry_contract_errors() -> list[str]:
         f"capability check cannot be both modular and compatibility: {check_id}"
         for check_id in sorted(modular_checks & compatibility_checks)
     )
+    errors.extend(
+        f"compatibility capability check has no dispatcher: {check_id}"
+        for check_id in sorted(compatibility_checks - set(COMPATIBILITY_DISPATCH))
+    )
+    errors.extend(
+        f"compatibility dispatcher has no route: {check_id}"
+        for check_id in sorted(set(COMPATIBILITY_DISPATCH) - compatibility_checks)
+    )
+    for check_id, implementation in MODULE_IMPLEMENTATIONS.items():
+        if getattr(implementation, "check_id", None) != check_id:
+            errors.append(f"module implementation identity differs from its key: {check_id}")
+        if not callable(getattr(implementation, "validate", None)):
+            errors.append(f"module implementation has no callable validator: {check_id}")
+    for check_id, dispatcher in COMPATIBILITY_DISPATCH.items():
+        if not callable(dispatcher):
+            errors.append(f"compatibility dispatcher is not callable: {check_id}")
     return errors
 
 

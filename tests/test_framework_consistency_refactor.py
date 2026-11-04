@@ -35,6 +35,20 @@ GROUPS = (
 
 
 class FrameworkConsistencyRefactorTests(unittest.TestCase):
+    def test_human_profiles_route_to_descriptors_instead_of_repeating_policy(self):
+        from framework_consistency.target_templates import check_target_operation_surfaces
+        context = CheckContext(ROOT, tuple("framework/" + p.name for p in (ROOT / "framework").glob("*.md")), (), ())
+        original = context.read_text
+        guide = original("templates/target/.ai/assistant/context-profiles.md")
+        self.assertNotIn(".ai/framework/adapter-maturity.md", guide)
+        self.assertEqual(check_target_operation_surfaces(context), [])
+        for replacement in ("context/profiles/not-a-profile.json", "https://example.invalid/profile.json"):
+            def read(path):
+                text = original(path)
+                return text.replace("context/profiles/code-local.json", replacement) if path.endswith("context-profiles.md") else text
+            with patch.object(CheckContext, "read_text", lambda _, path: read(path)):
+                self.assertTrue(any("canonical descriptor for code-local" in f for f in check_target_operation_surfaces(context)))
+
     def test_success_output_and_exit_semantics_are_stable(self) -> None:
         stdout = io.StringIO()
         stderr = io.StringIO()

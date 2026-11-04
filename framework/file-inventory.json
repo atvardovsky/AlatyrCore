@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 101,
+  "adapter_schema_version": 102,
   "files": [
     {
       "path": "framework/README.md",
@@ -84,7 +84,7 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "1d7434afdeceaab4e2d35e8a3639eef712ec41842ebb920340c838535e0d0967"
+      "sha256": "946baeb55da4853c4cd70fd2af463e90f125054fe1dcc5a5a83b7a02affbff53"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "5c907708e43eb05437c2691a25b6ea30f0def0f37449b93d3bb174dbdad31e14"
+      "sha256": "3b201de5e846faf563ea4c30236fdd5a7df48296a09971ebc7e439f36205a755"
     },
     {
       "path": "framework/context-profiles.md",
@@ -152,7 +152,7 @@
     {
       "path": "framework/context-router.md",
       "rule_ids": [],
-      "sha256": "eb28de3423a924cec1b7c8c0f67055173c7f2ce7ac886863cfc4eda50189f354"
+      "sha256": "74b86bbcbb7fbaa261050137222c2bdf0b969612c7e4f95c375f06dd4c9ae145"
     },
     {
       "path": "framework/contour.md",
@@ -446,8 +446,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.124",
+  "framework_version": "0.1.0-alpha.125",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 119
+  "template_version": 120
 }

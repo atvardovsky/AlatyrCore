@@ -84,6 +84,8 @@ claim a native cutoff. `prepare-worker-result --context-preflight` checks the
 observed context against that allocation. Drafts remain review-required; neither
 helper dispatches, verifies provider provenance, or accepts obligations.
 
+Conditional bootstrap optimization: [source management](source-optimization/source-management.md).
+
 Schema-6 packets must satisfy every field in the loaded policy's
 `worker_packet_contract`; keep source workers inspect-only with no write scope.
 Policy validation measures required file content and rejects oversized initial

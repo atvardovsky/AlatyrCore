@@ -33,6 +33,9 @@ def main() -> int:
     parser.add_argument("--max-characters", type=int)
     parser.add_argument("--document-warnings", action="store_true", help="Explicitly review stale-document warnings for selected context; no changed-fact claim.")
     parser.add_argument("--knowledge-request", help="Target-relative bounded initial/refined query naming registered knowledge shards; no default knowledge scan.")
+    parser.add_argument("--overlay-phase", action="append", default=[], metavar="OVERLAY:PHASE")
+    parser.add_argument("--phase-instance", action="append", default=[], help="Exact indexed current operation/checkpoint/evidence path; no directory search.")
+    parser.add_argument("--worker-role", help="One enabled role for delegated-execution:dispatch; not execution authority.")
     parser.add_argument("--working-set-request", help="Optional target-relative coverage/phase request; required context cannot be pruned.")
     parser.add_argument("--previous-plan", help="Explicit previous full plan, absolute or target-relative; navigation delta only.")
     parser.add_argument("--delivery-observation", help="Explicit packet-bound context receipt; no provider or acceptance claim is inferred.")
@@ -56,6 +59,9 @@ def main() -> int:
         previous_plan=args.previous_plan,
         delivery_observation=args.delivery_observation,
         knowledge_request=args.knowledge_request,
+        overlay_phases=tuple(args.overlay_phase),
+        phase_instances=tuple(args.phase_instance),
+        worker_role=args.worker_role,
     )
     result = plan_target_context(request)
     if args.output and _inside_target(args.output, args.target):

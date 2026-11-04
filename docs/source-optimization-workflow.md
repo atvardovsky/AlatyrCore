@@ -9,6 +9,11 @@ remain with the owners linked by each topic.
 
 Read [Development Context Contract](source-optimization/development-context-contract.md) when changing context delivery or agent workflows.
 
+## Source Change Management
+
+Read [Source Change Management](source-optimization/source-management.md) for
+cross-module impact, contract review, architecture ratchets and measured increments.
+
 ## Projection Refresh
 
 Read [Projection Refresh](source-optimization/projection-refresh.md) when refreshing generated source projections.

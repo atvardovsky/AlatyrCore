@@ -15,6 +15,7 @@ from target_adapter_validation.modules import (  # noqa: E402
     CapabilityRoute,
     CapabilityRouteKind,
     MODULE_IMPLEMENTATIONS,
+    COMPATIBILITY_DISPATCH,
     dispatch_capability_checks,
     registry_contract_errors,
 )
@@ -48,6 +49,24 @@ class RecordingModule:
 
 
 class ValidatorModuleDispatchTests(unittest.TestCase):
+    def test_registry_rejects_missing_extra_and_noncallable_dispatchers(self):
+        cases = [{}, {**COMPATIBILITY_DISPATCH, "unknown": lambda *_: None},
+                 {"check_debug_mode": None}]
+        for value in cases:
+            with self.subTest(value=value), patch.dict(COMPATIBILITY_DISPATCH, value, clear=True):
+                self.assertTrue(registry_contract_errors())
+                with self.assertRaises(RuntimeError):
+                    dispatch_capability_checks(RecordingValidator([]), ["debug-mode"], {})
+
+    def test_registry_rejects_implementation_identity_and_missing_callable(self):
+        from types import SimpleNamespace
+        for value in (SimpleNamespace(check_id="wrong", validate=lambda *_: None),
+                      SimpleNamespace(check_id="check_ai_infrastructure_router", validate=None)):
+            with self.subTest(value=value), patch.dict(
+                MODULE_IMPLEMENTATIONS, {"check_ai_infrastructure_router": value}
+            ):
+                self.assertTrue(registry_contract_errors())
+
     def test_disabled_capabilities_run_no_optional_checks(self) -> None:
         calls: list[tuple[str, object | None]] = []
         validator = RecordingValidator(calls)

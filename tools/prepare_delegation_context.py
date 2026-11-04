@@ -38,6 +38,20 @@ def measurement(data: bytes) -> dict:
     return {"sha256": digest(data), "word_count": len(text.split()), "character_count": len(text)}
 
 
+def source_worker_bootstrap(packet: dict, policy: dict, *, root: Path = ROOT) -> bytes:
+    """Project coordinator-owned constraints; never erase actual host context."""
+    validate_worker_packet(packet, policy["worker_packet_contract"], root=root)
+    _, _, limits = _validate_policy_limits(policy)
+    value = {"view_kind": "source-inspect-only-worker-bootstrap", "policy_sha256": canonical_digest(policy),
+        "packet_sha256": canonical_digest(packet), "allowed_actions": ["inspect"], "write_scope": "none",
+        "child_dispatch_mode": packet["child_dispatch_mode"],
+        "limits": limits, "tree_policy": policy["tree_policy"], "result_policy": policy["context_compaction"],
+        "primary_owns": ["authorization", "decisions", "integration", "validation", "publication"],
+        "on_missing_context": "Return needs-expansion with exact references; never browse or infer authority.",
+        "claim_boundary": "Selected constraints only; host-visible bootstrap still counts and is not removed by this view."}
+    return json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
 def read_artifact(path: Path) -> bytes:
     if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_ARTIFACT_BYTES:
         raise ValueError(f"context artifact must be a bounded regular file: {path}")
@@ -161,6 +175,7 @@ def main() -> int:
     parser.add_argument("--packet", type=Path, required=True)
     parser.add_argument("--prompt", type=Path)
     parser.add_argument("--bootstrap", type=Path, action="append", default=[])
+    parser.add_argument("--source-worker-bootstrap", action="store_true", help="Include a compact policy-bound inspect-only view; also supply every actual host-visible bootstrap artifact.")
     parser.add_argument("--expand", action="append", default=[], help="Exact packet-declared conditional source path.")
     parser.add_argument("--other-context", type=Path, action="append", default=[], help="Actual context artifact for every other allocated worker.")
     parser.add_argument("--max-context-words", type=int)
@@ -174,9 +189,18 @@ def main() -> int:
         policy = load_source_worker_policy(ROOT / "tools/source_worker_policy.json", root=ROOT)
         packet = json.loads(read_artifact(args.packet))
         previous = (json.loads(read_artifact(args.previous / "preflight.json")), read_artifact(args.previous / "context.txt")) if args.previous else None
+        bootstrap = {str(path): read_artifact(path) for path in args.bootstrap}
+        if args.source_worker_bootstrap:
+            if not args.bootstrap:
+                raise ValueError("source worker view requires actual host bootstrap inputs")
+            if "source-worker-policy-view" in bootstrap:
+                raise ValueError("host bootstrap label conflicts with the generated source worker view")
+            if previous is not None:
+                raise ValueError("expansion must retain its existing frozen bootstrap")
+            bootstrap["source-worker-policy-view"] = source_worker_bootstrap(packet, policy)
         record, content = prepare(packet, policy, root=ROOT,
             prompt=read_artifact(args.prompt) if args.prompt else None,
-            bootstrap={str(path): read_artifact(path) for path in args.bootstrap}, expansions=args.expand,
+            bootstrap=bootstrap, expansions=args.expand,
             other_contexts=[read_artifact(path) for path in args.other_context],
             max_context_words=args.max_context_words, previous=previous)
         if args.write:

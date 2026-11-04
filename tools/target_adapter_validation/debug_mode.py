@@ -219,6 +219,67 @@ def reconcile_debug_git_state(
         )
 
 
+def _validate_record_privacy(self: DomainValidationHost, record: dict[str, Any], record_ref: str) -> None:
+    forbidden_keys = {
+        "raw_chat",
+        "raw_conversation",
+        "raw_ai_conversation",
+        "raw_human_conversation",
+        "chat_transcript",
+        "conversation_transcript",
+        "chain_of_thought",
+        "reasoning_trace",
+        "prompt_text",
+        "session_history",
+        "complete_diff",
+        "full_diff",
+        "credentials",
+        "secrets",
+        "personal_data",
+        "verbose_logs",
+        "speculative_reasoning",
+    }
+
+    def find_forbidden(value: Any, prefix: str = "") -> list[str]:
+        found: list[str] = []
+        if isinstance(value, dict):
+            for key, child in value.items():
+                path = f"{prefix}.{key}" if prefix else str(key)
+                if key.casefold() in forbidden_keys:
+                    found.append(path)
+                found.extend(find_forbidden(child, path))
+        elif isinstance(value, list):
+            for item_index, child in enumerate(value):
+                found.extend(find_forbidden(child, f"{prefix}[{item_index}]"))
+        return found
+
+    forbidden = find_forbidden(record)
+    if forbidden:
+        self.error(
+            "DEBUG_MODE_PROHIBITED_CONTENT_FIELD",
+            f"record contains prohibited raw-content fields: {forbidden}",
+            record_ref,
+        )
+
+    privacy = record.get("privacy")
+    if isinstance(privacy, dict):
+        for field in [
+            "raw_ai_conversation_stored",
+            "raw_human_conversation_stored",
+            "chain_of_thought_stored",
+            "prompts_stored",
+            "secrets_stored",
+            "credentials_stored",
+            "unrelated_personal_data_stored",
+            "unrelated_session_history_stored",
+            "unused_speculation_stored",
+            "complete_diffs_stored",
+            "verbose_logs_stored",
+        ]:
+            if privacy.get(field) is not False:
+                self.error("DEBUG_MODE_PRIVACY", f"privacy.{field} must be false", record_ref)
+
+
 def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | None) -> None:
     index_relpath = ".ai/project/debug/index.json"
     expected_manifest = {
@@ -655,64 +716,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                 record_ref,
             )
 
-        forbidden_keys = {
-            "raw_chat",
-            "raw_conversation",
-            "raw_ai_conversation",
-            "raw_human_conversation",
-            "chat_transcript",
-            "conversation_transcript",
-            "chain_of_thought",
-            "reasoning_trace",
-            "prompt_text",
-            "session_history",
-            "complete_diff",
-            "full_diff",
-            "credentials",
-            "secrets",
-            "personal_data",
-            "verbose_logs",
-            "speculative_reasoning",
-        }
-
-        def find_forbidden(value: Any, prefix: str = "") -> list[str]:
-            found: list[str] = []
-            if isinstance(value, dict):
-                for key, child in value.items():
-                    path = f"{prefix}.{key}" if prefix else str(key)
-                    if key.casefold() in forbidden_keys:
-                        found.append(path)
-                    found.extend(find_forbidden(child, path))
-            elif isinstance(value, list):
-                for item_index, child in enumerate(value):
-                    found.extend(find_forbidden(child, f"{prefix}[{item_index}]"))
-            return found
-
-        forbidden = find_forbidden(record)
-        if forbidden:
-            self.error(
-                "DEBUG_MODE_PROHIBITED_CONTENT_FIELD",
-                f"record contains prohibited raw-content fields: {forbidden}",
-                record_ref,
-            )
-
-        privacy = record.get("privacy")
-        if isinstance(privacy, dict):
-            for field in [
-                "raw_ai_conversation_stored",
-                "raw_human_conversation_stored",
-                "chain_of_thought_stored",
-                "prompts_stored",
-                "secrets_stored",
-                "credentials_stored",
-                "unrelated_personal_data_stored",
-                "unrelated_session_history_stored",
-                "unused_speculation_stored",
-                "complete_diffs_stored",
-                "verbose_logs_stored",
-            ]:
-                if privacy.get(field) is not False:
-                    self.error("DEBUG_MODE_PRIVACY", f"privacy.{field} must be false", record_ref)
+        _validate_record_privacy(self, record, record_ref)
 
         task = record.get("task") if isinstance(record.get("task"), dict) else {}
         task_references = task.get("references") if isinstance(task.get("references"), list) else []
