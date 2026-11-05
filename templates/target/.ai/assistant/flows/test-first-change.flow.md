@@ -35,6 +35,8 @@ fact, defect, invariant, contract, or refactor.
    request against captured discovery before execution; a missing filename or
    unmatched case must not silently become a smaller successful request.
 6. Record observable acceptance examples, negative paths, and boundaries.
+   Apply `.ai/framework/logical-integrity.md#consumer-grounded-proof` to the
+   requested surfaces, actual consumer contracts and assertion sensitivity.
    For uncertain/recurring defects, apply the incident review in the canonical
    test policy: qualify the original reproducer, competing causes, falsifier,
    actual fixture boundaries and expected whole-incident effect before repair.
@@ -78,6 +80,8 @@ fact, defect, invariant, contract, or refactor.
 11. Run broader target validation selected by changed-fact risk and boundary
     crossings. Do not invent commands or call live services without policy and
     approval.
+    Apply `.ai/framework/testing-guidance.md#independent-failure-collection`
+    without bypassing setup, serial/resource dependencies or cleanup.
     After a failed incident acceptance, stop dependent patch stacking and obtain
     discriminating evidence before another related attempt. Preserve the failed
     run and classify its cause without waiving it. Check the smallest faithful
@@ -104,6 +108,9 @@ fact, defect, invariant, contract, or refactor.
     Keep authored, discovered, executed, passed, skipped and blocked separate.
     Metadata/case-ID checks and mocked browser tests prove only their boundary;
     an exit code alone or an all-skipped run cannot establish behavioral proof.
+    Review only task-relevant reusable lessons through the existing knowledge
+    route. Preserve proposed/unresolved states until owner review; empty indexes
+    are valid and repetition alone cannot establish accepted guidance.
 
 ## Exception Path
 

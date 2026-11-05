@@ -1290,8 +1290,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 148,
-      "content_digest": "sha256:6295c7ce7c90644f27c0fc9a7c4ad88bbc05f70ab5d138dd48cd1176b910337f"
+      "estimated_words": 171,
+      "content_digest": "sha256:42efdcd15f8d3f8737f7aea8a78b9c2a064b3b7c3a5f0fc3627f98f8c4d9f67e"
     },
     {
       "id": "assistant.content.templates-visual-validation-review-md",

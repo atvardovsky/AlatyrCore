@@ -70,13 +70,14 @@ def accounting_failures(value: Any, record: dict) -> list[str]:
 def observation_failures(view: Any, record: dict, execution: dict, artifact: Any, policy_path: str) -> list[str]:
     failures = []
     try:
-        if "harness_inputs" in execution:
+        executed = record["counts"]["executed"] > 0
+        if "harness_inputs" in execution and (executed or "harness_identity" in record):
             binding = record["harness_identity"]
             expected = harness_digest(view, record, execution, policy_path)
             observed = pointer_value(artifact, binding["observations_pointer"])
             if observed != expected or binding["sha256"] != expected:
                 failures.append("observed harness identity differs from current material inputs")
-        if execution.get("behavioral_accounting") == "required":
+        if execution.get("behavioral_accounting") == "required" and (executed or "case_accounting" in record):
             binding = record["case_accounting"]
             failures.extend(accounting_failures(pointer_value(artifact, binding["observations_pointer"]), record))
     except (KeyError, ValueError, UnicodeError, RecursionError) as exc:

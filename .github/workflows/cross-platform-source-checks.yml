@@ -146,6 +146,7 @@ jobs:
           tests.test_incident_retained_evidence
           tests.test_initialization_readiness
           tests.test_harness_contract
+          tests.test_validation_context
           tests.test_worker_communication
           tests.test_conformance_artifacts
       - name: Summarize source-check diagnostics

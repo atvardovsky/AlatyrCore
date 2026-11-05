@@ -17,6 +17,7 @@ from publish_active_task import prepare as publish, INDEX
 from restore_active_task import prepare as restore
 from support_write_transaction import SupportTransaction
 from worktree_readiness import readiness
+from target_adapter_validation.context import TargetRepositoryView
 from tests.test_target_delegate import delegate
 
 
@@ -398,6 +399,57 @@ class WorktreeContinuityTests(ActiveTaskFixture):
         self.write_index()
         with self.assertRaisesRegex(ValueError, "registered runtime digest"):
             restore(self.target, "fixture-task")
+
+    def test_selected_legacy_repair_capture_is_blocked_before_implementation(self):
+        # Model a previously retained obligation; current publication already
+        # rejects this capture when the optional policy was not enabled.
+        self.model['proof_obligations'].append({'id': 'repair-evidence-review', 'required': True})
+        self.write_model(); self.write_index()
+        command = [sys.executable, '-B', str(ROOT / 'tools/alatyr.py'), 'worktree-preflight',
+                   '--target', str(self.target), '--framework-source', str(ROOT),
+                   '--task-id', 'fixture-task', '--require-ready']
+        policy_path = self.target / '.ai/project/testing/test-first-policy.json'
+        policy_path.parent.mkdir(parents=True, exist_ok=True)
+        for content in ('{}', '{"repair_review":{"state":"disabled"}}',
+                        '{"repair_review":{"state":"deferred"}}', '{bad-json'):
+            policy_path.write_text(content, encoding='utf-8')
+            with self.subTest(policy=content):
+                checked = readiness(self.target, ROOT, 'fixture-task')
+                findings = [row for row in checked['issues'] if row['code'] == 'WORKTREE_OPTIONAL_PREREQUISITE']
+                self.assertTrue(findings, checked)
+                self.assertEqual(checked['state'], 'blocked')
+                self.assertIn('preserve captured obligations', findings[0]['next_action'])
+                # Unselected tasks do not activate another task's optional gate.
+                self.assertNotIn('WORKTREE_OPTIONAL_PREREQUISITE', {row['code'] for row in readiness(self.target, ROOT)['issues']})
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn('Traceback', result.stderr)
+        self.assertIn('WORKTREE_OPTIONAL_PREREQUISITE', {row['code'] for row in json.loads(result.stdout)['issues']})
+
+    def test_ordinary_selected_task_does_not_load_optional_testing_policy(self):
+        checked = readiness(self.target, ROOT, 'fixture-task')
+        self.assertNotIn('WORKTREE_OPTIONAL_PREREQUISITE', {row['code'] for row in checked['issues']})
+        from worktree_readiness import repair_prerequisites
+        view = TargetRepositoryView(self.target)
+        with patch.object(view, 'read_json_result', side_effect=AssertionError('unadopted policy loaded')):
+            self.assertEqual(repair_prerequisites(view, self.model), [])
+
+    def test_selected_valid_repair_policy_uses_canonical_owner_and_preserves_capture(self):
+        from tests.test_publish_active_task import PublishActiveTaskTests
+        PublishActiveTaskTests.repair_draft(self)
+        path, policy = PublishActiveTaskTests.adopted_policy(self)
+        self.write_model(); self.write_index()
+        checked = readiness(self.target, ROOT, 'fixture-task')
+        self.assertNotIn('WORKTREE_OPTIONAL_PREREQUISITE', {row['code'] for row in checked['issues']}, checked)
+        policy['execution_contract']['canonical_policy'] = 'testing-policy.json'
+        path.write_text(json.dumps(policy), encoding='utf-8')
+        owner = self.target / 'testing-policy.json'
+        owner.write_text(json.dumps(policy), encoding='utf-8')
+        self.assertNotIn('WORKTREE_OPTIONAL_PREREQUISITE', {row['code'] for row in readiness(self.target, ROOT, 'fixture-task')['issues']})
+        policy['owner'] = 'different owner'
+        owner.write_text(json.dumps(policy), encoding='utf-8')
+        self.assertIn('WORKTREE_OPTIONAL_PREREQUISITE', {row['code'] for row in readiness(self.target, ROOT, 'fixture-task')['issues']})
+        self.assertTrue(any(row['id'] == 'repair-evidence-review' for row in json.loads(self.model_path.read_text())['proof_obligations']))
 
     def test_unknown_retention_review_cannot_authorize_restoration(self):
         self.retained()

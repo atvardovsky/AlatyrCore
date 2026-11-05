@@ -410,6 +410,94 @@ class ValidationContextTests(unittest.TestCase):
                 ["LOCAL_PATH_LEAKAGE", "LOCAL_PATH_LEAKAGE"],
             )
 
+    def test_structured_local_path_scalars_preserve_semantics(self):
+        from target_adapter_validation.local_paths import scan_local_paths
+        cases = [
+            ('.json', json.dumps({'code': 'if x:\n    pass'}), 0),
+            ('.json', json.dumps({'code': 'x:\nvalue', 'path': 'C:\\Users\\Example\\file'}), 1),
+            ('.json', r'{"path":"\/home\/example\/file"}', 1),
+            ('.json', r'{"path":"\u002fhome\u002fexample\u002ffile"}', 1),
+            ('.json', r'{"same":"/home/example/one","same":"C:\\Users\\Example\\two"}', 2),
+            ('.json', json.dumps({'/home/example/key': ['ok', '/Users/example/value']}), 2),
+            ('.yaml', 'code: "if x:\\n    pass"\n', 0),
+            ('.yaml', 'path: "C:\\\\Users\\\\Example\\\\file"\n', 1),
+            ('.yml', 'same: /home/example/one\nsame: /Users/example/two\n', 2),
+            ('.yaml', '---\npath: /home/example/one\n---\npath: /Users/example/two\n', 2),
+            ('.yaml', 'code: |\n  if x:\n      pass\n# /home/example/comment\n', 1),
+            ('.md', 'Windows C:\\Users\\Example\\file', 1),
+        ]
+        for suffix, text, count in cases:
+            with self.subTest(suffix=suffix, text=text):
+                scan = scan_local_paths(text, suffix, '/not-a-local-root')
+                self.assertEqual(scan.failures, [])
+                self.assertEqual(len(scan.matches), count, scan)
+
+    def test_structured_path_limits_and_malformed_input_fail_closed(self):
+        from target_adapter_validation import local_paths
+        for suffix, text in [('.json', '{"path":"C:\\\\Users\\\\Example\\\\file",'),
+                             ('.yaml', 'paths: [unterminated'), ('.yaml', 'cycle: &cycle [*cycle]')]:
+            with self.subTest(suffix=suffix, text=text):
+                self.assertTrue(local_paths.scan_local_paths(text, suffix, '').failures)
+        for limit in (9, 10, 11):
+            with patch.object(local_paths, 'MAX_SCAN_BYTES', 10):
+                scan = local_paths.scan_local_paths('x' * limit, '.md', '')
+                self.assertEqual(bool(scan.failures), limit > 10)
+        for limit, data, ceiling in [('MAX_SCAN_NODES', '[null,null]', 3),
+                                      ('MAX_SCAN_DEPTH', '[[null]]', 2),
+                                      ('MAX_SCAN_MATCHES', '["/home/a/b","/home/c/d"]', 2)]:
+            for bound in (ceiling - 1, ceiling, ceiling + 1):
+                with self.subTest(limit=limit, bound=bound), patch.object(local_paths, limit, bound):
+                    scan = local_paths.scan_local_paths(data, '.json', '')
+                    self.assertEqual(bool(scan.failures), bound < ceiling)
+
+    def test_structured_scan_adversarial_tokens_and_diagnostic_locations(self):
+        from target_adapter_validation import local_paths
+        self.assertEqual(list(local_paths._json_fragments(r'\"' * 4000)), [])
+        self.assertTrue(local_paths.scan_local_paths(r'\"' * 4000, '.json', '').failures)
+        for text in ('path: "prefix\\n/home/example/repo"\n',
+                     'path: >\n  prefix\n  /home/example/repo\n'):
+            scan = local_paths.scan_local_paths(text, '.yaml', '')
+            self.assertEqual(scan.failures, [])
+            self.assertIsNone(scan.matches[0].line)
+            self.assertEqual(scan.matches[0].scalar_start_line, 1)
+        scan = local_paths.scan_local_paths('{"p":"/home/a/b","p":"/home/a/b"}', '.json', '')
+        self.assertNotEqual(scan.matches[0].member_path, scan.matches[1].member_path)
+        documents = '\n---\n'.join('path: /home/example/file' for _ in range(100))
+        scan = local_paths.scan_local_paths(documents, '.yaml', '')
+        self.assertEqual(scan.failures, [])
+        self.assertEqual(len(scan.matches), 100)
+        with patch.object(local_paths, 'MAX_SCAN_NODES', 3), patch.object(local_paths, 'safe_compose_all', side_effect=AssertionError('allocated oversized graph')):
+            self.assertTrue(local_paths.scan_local_paths('[0,1,2]', '.yaml', '').failures)
+        with patch.object(local_paths, 'safe_compose_all', side_effect=MemoryError('bounded allocation failed')):
+            self.assertTrue(local_paths.scan_local_paths('[]', '.yaml', '').failures)
+        with patch.object(local_paths, '_json_scalars', side_effect=MemoryError('allocation failed')), patch.object(local_paths, '_scan_scalar', side_effect=AssertionError('retried allocation after exhaustion')):
+            self.assertTrue(local_paths.scan_local_paths('[]', '.json', '').failures)
+        with patch.object(local_paths, '_scan_scalar', side_effect=MemoryError('fallback allocation failed')):
+            self.assertTrue(local_paths.scan_local_paths('{bad', '.json', '').failures)
+        # Stop at the node boundary without queuing every sibling/pointer first.
+        scan = local_paths.PathScan()
+        with patch.object(local_paths, 'MAX_SCAN_NODES', 5), patch.object(local_paths, '_pointer', wraps=local_paths._pointer) as pointer:
+            with self.assertRaisesRegex(ValueError, 'node/depth'):
+                local_paths._json_scalars(scan, [None] * 10000, '')
+            self.assertLessEqual(pointer.call_count, 5)
+
+    def test_public_validator_decodes_json_paths_without_code_false_positive(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            path = target / '.ai/project/paths.json'
+            path.parent.mkdir(parents=True)
+            command = [sys.executable, '-B', str(ROOT / 'tools/validate_target_adapter.py'),
+                       '--target', str(target), '--json']
+            for content, expected in [(json.dumps({'code': 'if x:\n    pass'}), False),
+                                      (json.dumps({'path': 'C:\\Users\\Example\\file'}), True),
+                                      (r'{"path":"/home/\ud800"}', True)]:
+                path.write_text(content, encoding='utf-8')
+                result = subprocess.run(command, capture_output=True, text=True)
+                self.assertNotIn('Traceback', result.stderr)
+                report = json.loads(result.stdout)
+                findings = report['findings']
+                self.assertEqual(any(row['code'] == 'LOCAL_PATH_LEAKAGE' for row in findings), expected)
+
     def test_cached_content_is_stable_without_reopening_the_file(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory).resolve()

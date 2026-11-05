@@ -62,8 +62,8 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
     commands = {command["id"]: command for command in policy["commands"]}
     guidance = ".ai/framework/test-execution-selection.md"
     if any(command["execution"].get(name) == "required" for command in commands.values()
-           for name in ("selection_contract", "timing_qualification")) and not context.is_target_file(guidance):
-        context.error("TDD_EXECUTION_CONTRACT", "adopted selection/timing controls require their conditional framework guidance", guidance)
+           for name in ("selection_contract", "timing_qualification", "source_stability")) and not context.is_target_file(guidance):
+        context.error("TDD_EXECUTION_CONTRACT", "adopted selection/timing/stability controls require their conditional framework guidance", guidance)
     for command in commands.values():
         for path in [*command["execution"]["configuration_paths"], *command["execution"].get("harness_inputs", [])]:
             if not context.is_target_file(path):
@@ -134,8 +134,8 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
                 matches = context.content_digest(target_path) == digest
             if not matches:
                 context.error("TDD_EXECUTION_EVIDENCE_STALE", f"missing, escaped or changed evidence input: {input_path}", path)
-        controlled = ("harness_inputs" in command["execution"] or any(command["execution"].get(name) == "required" for name in ("selection_contract", "timing_qualification", "behavioral_accounting")))
-        supplied = any(name in record for name in ("selection_evidence", "qualification_window", "harness_identity", "case_accounting"))
+        controlled = ("harness_inputs" in command["execution"] or any(command["execution"].get(name) == "required" for name in ("selection_contract", "timing_qualification", "behavioral_accounting", "source_stability")))
+        supplied = any(record.get(name) is not None for name in ("selection_evidence", "qualification_window", "harness_identity", "case_accounting", "input_stability"))
         if controlled and (record["counts"]["executed"] > 0 or supplied):
             from testing_controls import selected_control_failures
             for failure in selected_control_failures(context.filesystem, record, command["execution"], policy_path=owner_path):

@@ -41,7 +41,8 @@
         "selection_contract": {"enum": ["required", "not-required"]},
         "timing_qualification": {"enum": ["required", "not-required"]},
         "harness_inputs": {"type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}},
-        "behavioral_accounting": {"enum": ["required", "not-required"]}
+        "behavioral_accounting": {"enum": ["required", "not-required"]},
+        "source_stability": {"enum": ["required", "not-required"]}
       }
     },
     "policy": {
@@ -92,6 +93,9 @@
           "sha256": {"$ref": "#/$defs/digest"}, "observations_pointer": {"type": "string", "minLength": 2, "pattern": "^/"}
         }},
         "case_accounting": {"type": "object", "additionalProperties": false, "required": ["observations_pointer"], "properties": {
+          "observations_pointer": {"type": "string", "minLength": 2, "pattern": "^/"}
+        }},
+        "input_stability": {"type": "object", "additionalProperties": false, "required": ["observations_pointer"], "properties": {
           "observations_pointer": {"type": "string", "minLength": 2, "pattern": "^/"}
         }},
         "qualification_window": {"oneOf": [{"type": "null"}, {"type": "object", "additionalProperties": false, "required": ["observations_pointer"], "properties": {

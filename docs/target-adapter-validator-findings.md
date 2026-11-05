@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1759
+Catalog entries: 1760
 
 ## Families
 
@@ -48,7 +48,7 @@ Catalog entries: 1759
 - `HISTORICAL`: 4 codes.
 - `INSTALLATION`: 8 codes.
 - `LIFECYCLE`: 2 codes.
-- `LOCAL`: 1 codes.
+- `LOCAL`: 2 codes.
 - `MANIFEST`: 12 codes.
 - `MIGRATION`: 8 codes.
 - `MODULE`: 12 codes.
@@ -1891,6 +1891,8 @@ Catalog entries: 1759
 - `LIFECYCLE_HOOK_POLICY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `LOCAL_PATH_LEAKAGE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `LOCAL_PATH_SCAN_INCOMPLETE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MANIFEST_CONTEXT_BUDGET`
   Level: error. Source: `tools/validate_target_adapter.py`.

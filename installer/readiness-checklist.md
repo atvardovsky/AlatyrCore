@@ -350,6 +350,9 @@ Collect target-specific facts before writing project docs:
 - optional incident repair review has an explicit target decision, full-flow
   command owners and task-bound evidence; captured obligations, failed attempts,
   historical evidence and explicit opt-outs survive installation/update
+- incident guidance agrees with adoption: unconfigured/disabled/deferred policy
+  does not create reserved obligations; incompatible existing captures are
+  diagnosed before further implementation and retained for owner reconciliation
 - adopted execution-contract-3 selection/timing controls have conditional
   guidance, exact identity conservation and actual artifact-bound observations;
   legacy version-2 records remain historical, not newly qualified evidence

@@ -172,6 +172,17 @@ When those facts are missing, the assistant should propose adapter
 documentation or ask for direction instead of inventing project-specific
 commands.
 
+## Independent Failure Collection
+
+When several authorized checks are independently runnable, collect their results
+after a test failure instead of stopping at the first failing suite. Preserve
+failed prerequisites, serial/shared-resource dependencies and owned cleanup;
+an unavailable prerequisite blocks its dependents, not unrelated checks.
+Keep failed, blocked, interrupted and not-run results distinct. The aggregate
+remains unsuccessful until required checks pass. Retain the initial failure
+matrix and rerun affected checks before final broader validation. Adapt existing
+target runners; do not introduce a universal runner or widen execution approval.
+
 ## Completion Evidence
 
 Testing evidence is scoped evidence. Passing tests prove only the observable

@@ -43,6 +43,31 @@ Do not relabel cases to manufacture a passing behavioral count.
 Both controls require schema-4 policy and evidence. Older records do not prove
 them; no historical rewrite, automatic enablement or extra bootstrap is needed.
 
+## Source Stability
+
+Schema 4 optionally adds `execution.source_stability: required`, with explicit
+`harness_inputs` covering the material source, fixture and build inputs. Omission
+or `not-required` does not adopt this control. Installing newer templates never
+changes a target decision.
+
+Capture those inputs, configuration and selected test files immediately before
+and after the authorized run. Existing executed evidence binds
+`input_stability: {observations_pointer}` into its digest-bound JSON result.
+That object contains exactly `before` and `after` maps of exact paths to SHA-256;
+both maps must cover the complete selected union, agree with each other and
+match current bytes and the record's `input_sha256`. Reuse the harness limits.
+Missing, changed or malformed observations invalidate this proof even if the
+test process passed. Unexecuted work remains unexecuted.
+
+The optional read-only `test-input-state` source helper captures this bounded
+scope or compares it with a retained UTF-8 JSON capture using `--before`.
+The authorized target runner retains/embeds its output; the helper writes no
+files and starts no tests. It grants neither permission nor acceptance.
+Coordinate relevant edits while a run uses those inputs; unrelated scopes can
+continue. Matching endpoint snapshots do not prove OS isolation, instrumentation
+honesty, completeness of declared dependencies, or absence of a change reverted
+between observations. Never claim they do.
+
 ## Selection
 
 The target runner normalizes a complete user request into a bounded

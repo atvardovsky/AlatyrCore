@@ -23,6 +23,14 @@ def policy_control_failures(policy: dict) -> list[str]:
             elif value == "required" and policy["execution_contract"]["schema_version"] not in (3, 4):
                 failures.append(f"{command['id']}: required {name} needs execution contract version 3 or 4")
         adopted = "harness_inputs" in execution or "behavioral_accounting" in execution
+        if "source_stability" in execution:
+            state = execution["source_stability"]
+            if not isinstance(state, str) or state not in {"required", "not-required"}:
+                failures.append(f"{command['id']}: invalid source_stability")
+            if policy["execution_contract"]["schema_version"] != 4:
+                failures.append(f"{command['id']}: source stability requires execution contract version 4")
+            if state == "required" and "harness_inputs" not in execution:
+                failures.append(f"{command['id']}: source stability requires explicit material harness_inputs")
         if adopted and policy["execution_contract"]["schema_version"] != 4:
             failures.append(f"{command['id']}: harness/accounting controls require execution contract version 4")
         elif adopted:
@@ -109,7 +117,8 @@ def record_control_failures(record: dict, command: dict, contract: dict) -> list
         if not isinstance(request, dict) or not isinstance(request.get("path"), str) or not is_target_relative_path(request["path"]) or record["input_sha256"].get(request["path"]) != request.get("sha256"):
             failures.append("selection request must bind a contained current input hash")
     for field, adopted in (("harness_identity", "harness_inputs" in command["execution"]),
-                           ("case_accounting", command["execution"].get("behavioral_accounting") == "required")):
+                           ("case_accounting", command["execution"].get("behavioral_accounting") == "required"),
+                           ("input_stability", command["execution"].get("source_stability") == "required")):
         if adopted and (contract["schema_version"] != 4 or record["schema_version"] != 4):
             failures.append(field + " requires policy and evidence execution contract version 4")
         if adopted and record["counts"]["executed"] > 0 and field not in record:
@@ -129,9 +138,10 @@ def selected_control_failures(view: Any, record: dict, execution: dict, *, polic
             raise ValueError("adopted execution controls require the actual result artifact")
         artifact = read_selection_json(view, reference["path"], reference["sha256"])
         failures = []
-        if execution.get("selection_contract") == "required":
+        executed = record["counts"]["executed"] > 0
+        if execution.get("selection_contract") == "required" and (executed or record.get("selection_evidence") is not None):
             failures.extend(selected_execution_failures(view, record, artifact=artifact))
-        if execution.get("timing_qualification") == "required":
+        if execution.get("timing_qualification") == "required" and (executed or record.get("qualification_window") is not None):
             binding = record.get("qualification_window")
             if binding is None:
                 failures.append("required qualification_window is missing")
@@ -141,6 +151,14 @@ def selected_control_failures(view: Any, record: dict, execution: dict, *, polic
         if "harness_inputs" in execution or execution.get("behavioral_accounting") == "required":
             from test_harness_contract import observation_failures
             failures.extend(observation_failures(view, record, execution, artifact, policy_path))
+        if execution.get("source_stability") == "required":
+            from test_input_state import stability_failures
+            binding = record.get("input_stability")
+            if binding is not None:
+                observed = pointer_value(artifact, binding["observations_pointer"])
+                failures.extend(stability_failures(view, record, execution, observed))
+            elif record["counts"]["executed"] > 0:
+                failures.append("required input_stability is missing")
         return failures
     except (ValueError, UnicodeError, RecursionError) as exc:
         return [str(exc)]

@@ -40,6 +40,7 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "test-input-state",
     "code-relationships",
     "project-understanding",
     "worker-communication",

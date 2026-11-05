@@ -4,6 +4,29 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.127 - 2026-11-05
+
+- Ground semantic proof in actual request surfaces, consumers, contracts,
+  negative assertions and enforcing mechanisms. Reuse existing obligations;
+  identifiers, mocks and hashes do not establish domain correctness.
+- Reconcile optional repair-review adoption before capture and selected-task
+  worktree readiness. Preserve legacy captured obligations for owner review;
+  core-only work never implicitly enables an optional gate.
+- Add opt-in schema-4 source-stability observations to the existing registered
+  test-evidence path, plus a bounded, read-only `test-input-state` helper.
+  Before/after hashes detect declared input drift, not execution or isolation.
+- Decode JSON/YAML scalar paths before leakage checks, preserve duplicate keys
+  and YAML comments, and report incomplete structured coverage explicitly.
+  Keep plaintext scanning and per-match allowlists; do not exempt escaped code.
+- Bind shared YAML and new helper bytes into source-check result reuse, with
+  per-helper invalidation regressions. Cold acceptance remains mandatory.
+- Retain independent-suite failures without skipping unrelated authorized
+  suites, prerequisite/resource guards or cleanup. Route reusable lessons
+  through existing reviewed knowledge rather than automatic promotion.
+- Advance adapter schema to 104 and templates to 122. Execution schema remains
+  4 with optional fields; no automatic adoption, new default bootstrap,
+  dependency, service or claim of measured speed/token/billing savings.
+
 ## 0.1.0-alpha.126 - 2026-11-05
 
 - Distinguish knowledge intake and known gaps from reviewed-route adoption;

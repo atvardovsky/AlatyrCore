@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "test-input-state",
+      "script": "inspect_test_input_state.py",
+      "purpose": "capture or compare adopted material test inputs without running tests or writing files",
+      "write_scope": "none"
+    },
+    {
       "name": "code-relationships",
       "script": "inspect_code_relationships.py",
       "purpose": "inspect selected Python code bindings and non-authoritative dependency review hints",

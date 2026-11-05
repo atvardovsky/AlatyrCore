@@ -99,6 +99,9 @@ from target_adapter_validation.context_catalogs import (
 )
 from target_adapter_validation.baseline_claims import validate_baseline_claims
 from target_adapter_validation.validation_contract import validate_validation_contract
+from target_adapter_validation.local_paths import (
+    LOCAL_PATH_RE, UNIX_LOCAL_PATH_RE, WINDOWS_LOCAL_PATH_RE, scan_local_paths,
+)
 from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
@@ -649,16 +652,6 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
 }
 
 PLACEHOLDER_RE = re.compile(r"\{[A-Z0-9_][A-Z0-9_ -]*\}")
-UNIX_LOCAL_PATH_RE = re.compile(
-    r"(?<![A-Za-z0-9_])/(?:home|Users|tmp|var/folders|private/tmp)/[^\s)`>\"']+"
-)
-WINDOWS_LOCAL_PATH_RE = re.compile(
-    r"\b[A-Za-z]:\\(?:Users|Temp|tmp|Projects|projects|[^\\\s`\"']+)"
-    r"(?:\\[^\s`\"']+)*"
-)
-LOCAL_PATH_RE = re.compile(
-    f"(?:{UNIX_LOCAL_PATH_RE.pattern})|(?:{WINDOWS_LOCAL_PATH_RE.pattern})"
-)
 CHECKER_MISSING_RE = re.compile(
     r"no.{0,180}(?:local\s+)?alatyr\s+checker\s+(?:was\s+)?found|"
     r"(?:no|without)\s+(?:local\s+)?(?:alatyr\s+|adapter\s+)?checker"
@@ -4382,18 +4375,17 @@ class Validator:
         target_string = str(self.target)
         for path in scan_paths:
             text = self.read_text(path)
-            for line_number, line in enumerate(text.splitlines(), start=1):
-                raw_matches = [match.group(0) for match in LOCAL_PATH_RE.finditer(line)]
-                if target_string and target_string in line:
-                    raw_matches.append(target_string)
-                for value in raw_matches:
-                    if any(allowed in value for allowed in self.allow_local_paths):
-                        continue
-                    self.error(
-                        "LOCAL_PATH_LEAKAGE",
-                        f"hard-coded local path found: {value}",
-                        f"{self.rel(path)}:{line_number}",
-                    )
+            scan = scan_local_paths(text, path.suffix, target_string)
+            for failure in scan.failures:
+                self.error("LOCAL_PATH_SCAN_INCOMPLETE", failure, self.rel(path))
+            for match in scan.matches:
+                if any(allowed and allowed in match.value for allowed in self.allow_local_paths):
+                    continue
+                location = self.rel(path) + (f":{match.line}" if match.line is not None else "")
+                printable = match.value.encode("utf-8", errors="backslashreplace").decode("utf-8")
+                self.error("LOCAL_PATH_LEAKAGE", f"hard-coded local path found: {printable}", location,
+                           details={"pointer": match.pointer, "kind": match.kind,
+                                    "member_path": list(match.member_path), "scalar_start_line": match.scalar_start_line})
 
     def scan_text_files(self) -> list[Path]:
         if self._scan_text_files_cache is not None:

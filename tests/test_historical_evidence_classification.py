@@ -348,7 +348,12 @@ class HistoricalEvidenceClassificationTests(unittest.TestCase):
         payload = json.loads(result.stdout)
         self.assertNotIn("Traceback", result.stderr)
         self.assertIn("HISTORICAL_PLAN_RETAINED", {f["code"] for f in payload["findings"]})
-        self.assertFalse(any(f["level"] == "error" and f.get("path") == RECORD for f in payload["findings"]))
+        self.assertFalse(any(f["level"] == "error" and f["code"].startswith("APPROVAL_RECORD_")
+                             and f.get("path") == RECORD for f in payload["findings"]))
+        # Archival classification never exempts leaked paths; decoded JSON
+        # diagnostics have pointers instead of fabricated physical line suffixes.
+        self.assertTrue(any(f["code"] == "LOCAL_PATH_LEAKAGE" and f.get("path") == RECORD
+                            for f in payload["findings"]))
         self.assertFalse(any(f["code"] == "PACKAGE_ACTIVE_PLAN_UNINDEXED" and f.get("path") == PLAN for f in payload["findings"]))
         # Selecting that same incomplete approval as current remains blocking.
         result = subprocess.run([*command, "--approval-record", RECORD], capture_output=True, text=True)

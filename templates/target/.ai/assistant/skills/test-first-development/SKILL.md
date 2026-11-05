@@ -25,6 +25,9 @@ Use this skill only after the target has adapted it and enabled the
 
 1. Load the accepted target policy and selected trigger only.
 2. Name the changed fact and choose the smallest proving target test level.
+   For user-visible or cross-boundary behavior, apply
+   `.ai/framework/logical-integrity.md#consumer-grounded-proof`; reuse existing
+   task evidence rather than creating a second requirements record.
 3. Follow `.ai/assistant/flows/test-first-change.flow.md`; do not maintain a
    separate RED/GREEN sequence here. Target execution timing and current-scope
    authorization apply before every command, including baseline and coverage.

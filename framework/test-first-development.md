@@ -233,6 +233,10 @@ semantically correct.
 
 ## Incident Repair Review
 
+Apply [consumer-grounded proof](logical-integrity.md#consumer-grounded-proof)
+before accepting a reproducer or coverage claim. Tests must challenge the real
+consumer and requested surfaces, not only their author's fixtures.
+
 For uncertain or repeated defects, qualify the original reproducer before a
 repair: competing causes, a falsifying observation, expected incident-level
 effect, and the smallest faithful check. Review actual entry/producer/consumer

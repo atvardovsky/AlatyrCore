@@ -460,6 +460,16 @@ requested identities cannot become successful focused evidence. Timing
 qualification uses observed comparable windows and canonical resource
 conflicts, not process exit or a receipt's completeness assertion.
 
+Schema 4 also permits opt-in material source stability. After the target owner
+adopts `source_stability: required` and exact `harness_inputs`, use
+`test-input-state --target <repo> --command <id> --test-file tests/example.py`
+before the authorized run. The target runner retains that JSON as UTF-8; repeat
+with `--before before.json` after the run and embed its `observation` in the
+hash-bound result artifact. No tests or writes are performed by this helper.
+Exit 0 means captured/unchanged, 1 means changed, and 2 means unavailable.
+See the [canonical control](../framework/test-execution-selection.md#source-stability)
+for complete input/hash coverage, bounds and endpoint-observation limitations.
+
 `publication-preflight --target <repo> --source-ref <full-commit-id>
 --candidate-ref <full-commit-id> --path src --path config` compares explicit
 required Git files/subtrees before publication. Include unchanged dependencies;

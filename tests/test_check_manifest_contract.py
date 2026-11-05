@@ -97,7 +97,9 @@ class CheckManifestContractTests(unittest.TestCase):
                  "tools/render_target_contract_compatibility.py", "tools/session_knowledge.py",
                  "tools/target_adapter_validation/debug_mode.py", "tools/target_adapter_validation/modules.py",
                  "tools/validate_target_adapter.py", "tools/source_architecture.py",
-                 "tools/source_change_impact.py", "tools/task_phase_context.py"]
+                 "tools/source_change_impact.py", "tools/task_phase_context.py",
+                 "tools/yaml_support.py", "tools/test_input_state.py",
+                 "tools/inspect_test_input_state.py", "tools/target_adapter_validation/local_paths.py"]
         snapshot = {path: SourceEntry(kind="file", mode=0o644, digest="a" * 64) for path in paths}
         original = check_input_fingerprint(check, snapshot)
         self.assertTrue(set(paths) <= {row["path"] for row in original["entries"]})

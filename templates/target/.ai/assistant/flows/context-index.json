@@ -784,8 +784,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 886,
-      "content_digest": "sha256:55891f14200dba43a660f6355561bb414511156f49e3759bdaf5896c2608207d"
+      "estimated_words": 934,
+      "content_digest": "sha256:85e20c7771d362569d7b8d4c52ac66383ce120f17c04536ef8c6d0854bc4356d"
     },
     {
       "id": "assistant.content.flows-test-first-configuration-flow-md",

@@ -17,6 +17,10 @@ Changed fact or defect: `{CHANGED_FACT_DEFECT_INVARIANT_OR_CONTRACT}`
 Canonical owner: `{TARGET_FACT_OWNER}`
 Test level: `{TARGET_TEST_LEVEL_ID}`
 Acceptance examples: `{OBSERVABLE_EXAMPLES_AND_BOUNDARIES}`
+Requested surfaces/outcome coverage: `{ACCEPTED_SURFACES_MAPPED_TO_EVIDENCE_AND_OPEN_GAPS}`
+Actual entry/consumer contract and mocked edges: `{SOURCE_REFERENCES_AND_UNOBSERVED_BOUNDARIES}`
+Assertion counterexample: `{NEAR_MISS_THAT_MUST_FAIL_INCLUDING_ACTUAL_METHOD_RESOURCE_WHEN_RELEVANT}`
+Enforced documentation claims: `{ACTUAL_ENFORCER_AND_COUNTEREXAMPLE_OR_NOT_APPLICABLE_WITH_REASON}`
 Canonical testing policy/matrix: `{TARGET_OWNERS_NOT_DERIVED_MIRRORS}`
 Execution timing and authorization source: `{CURRENT_SCOPE_EVIDENCE_OR_PENDING}`
 Availability/prerequisites: `{AVAILABLE_UNAVAILABLE_OR_UNKNOWN_AND_REASON}`
@@ -26,6 +30,7 @@ Proof boundary: `{STATIC_UNIT_MOCKED_REAL_PERSISTENCE_BROWSER_OR_END_TO_END}`
 Selected/executed/excluded files and reasons: `{ACTUAL_SELECTION}`
 Discovered/executed/passed/failed/skipped/not-run counts: `{MEASURED_COUNTS_NOT_CASE_ID_MATCHES}`
 Current machine record, when used: `{PATH_BOUND_IN_POLICY_EXECUTION_CONTRACT_OR_NONE}`
+Input-stability evidence, when adopted: `{BOUND_BEFORE_AFTER_OBSERVATIONS_OR_NOT_ADOPTED}`
 
 ## RED
 

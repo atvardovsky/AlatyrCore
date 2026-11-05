@@ -20,3 +20,8 @@ def safe_compose(stream: Any) -> yaml.Node | None:
     """Compose safe YAML nodes while retaining source marks for diagnostics."""
 
     return yaml.compose(stream, Loader=SAFE_LOADER)
+
+
+def safe_compose_all(stream: Any):
+    """Compose every YAML document lazily without constructing tagged objects."""
+    return yaml.compose_all(stream, Loader=SAFE_LOADER)

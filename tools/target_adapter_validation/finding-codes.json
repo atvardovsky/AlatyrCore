@@ -33,6 +33,7 @@
     "tools/target_adapter_validation/framework_baseline.py",
     "tools/target_adapter_validation/historical_evidence.py",
     "tools/target_adapter_validation/installation_state.py",
+    "tools/target_adapter_validation/local_paths.py",
     "tools/target_adapter_validation/manifest_paths.py",
     "tools/target_adapter_validation/model_evidence.py",
     "tools/target_adapter_validation/module_profile.py",
@@ -195,7 +196,7 @@
     },
     {
       "id": "LOCAL",
-      "code_count": 1
+      "code_count": 2
     },
     {
       "id": "MANIFEST",
@@ -8469,6 +8470,15 @@
     },
     {
       "code": "LOCAL_PATH_LEAKAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "LOCAL_PATH_SCAN_INCOMPLETE",
       "levels": [
         "error"
       ],

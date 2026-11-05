@@ -164,6 +164,24 @@ changed fact and contract, identify shared invariants and boundaries, and run
 one combined impact review over the proposed repair set. A local edit that
 satisfies one comment but leaves the shared invariant false must be revised.
 
+## Consumer-Grounded Proof
+
+For changed user-visible or cross-boundary behavior, map the accepted outcomes
+to every requested surface in existing task evidence before choosing tests.
+Trace the actual entry, authorization/proxy, consumer contract and observable
+effect. Name mocked or unobserved edges. Missing surfaces remain open; a smaller
+implementation is not an approved exclusion.
+
+Check fixtures against the real consumer schema and version/lifecycle rules.
+For no-write claims, observe the actual method/resource and relevant state;
+challenge the assertion with a write to that resource. For asynchronous UI,
+cover pending work, mode changes, cancellation, failure and state retention.
+Documentation claiming enforced protection must identify its actual enforcing
+mechanism and a counterexample, not merely another agreeing document.
+
+Reuse proof obligations, counterexamples and target checks. Review cannot infer
+domain truth from identifiers or hashes, and this rule never authorizes tests.
+
 ## Alternative Path Parity
 
 Treat a fast, compact, cached, selective, incremental, or fallback path as a

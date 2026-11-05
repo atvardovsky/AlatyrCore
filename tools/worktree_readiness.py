@@ -23,6 +23,34 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = ".ai/assistant/active-tasks.json"
 
 
+def repair_prerequisites(view: TargetRepositoryView, model: dict) -> list[str]:
+    from test_execution_contract import REPAIR_OBLIGATION, REPAIR_POLICY, repair_review_capture_failures, policy_projection_failures
+    obligations = model.get("proof_obligations")
+    if not isinstance(obligations, list) or any(not isinstance(row, dict) for row in obligations):
+        return ["selected model proof obligations are malformed"]
+    if not any(row.get("id") == REPAIR_OBLIGATION for row in obligations):
+        return []
+    if not isinstance(model.get("incident"), dict):
+        return ["captured repair review requires a valid incident identity"]
+    bounded = view.read_bytes_result(view.target / REPAIR_POLICY, max_bytes=512 * 1024)
+    if bounded.value is None:
+        return ["repair-review policy is missing, escaped or oversized"]
+    policy = view.read_json_result(view.target / REPAIR_POLICY)
+    failures = repair_review_capture_failures(model, None if policy.error else policy.value)
+    if failures:
+        return failures
+    owner = policy.value["execution_contract"]["canonical_policy"]
+    if owner != REPAIR_POLICY:
+        bounded = view.read_bytes_result(view.target / owner, max_bytes=512 * 1024)
+        if bounded.value is None:
+            return ["repair-review canonical policy is missing, escaped or oversized"]
+        canonical = view.read_json_result(view.target / owner)
+        if canonical.error:
+            return ["repair-review canonical policy is unavailable"]
+        return policy_projection_failures(policy.value, canonical.value)
+    return []
+
+
 def bound_bytes(view: TargetRepositoryView, binding: dict, *, limit: int = MAX_PROBLEM_MODEL_FILE_BYTES) -> tuple[bytes | None, str]:
     path = binding.get("path")
     if not isinstance(path, str) or not is_target_relative_path(path):
@@ -117,6 +145,12 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
                 continue
             try:
                 model = json.loads(raw_model)
+                if task_id == task["task_id"] and isinstance(model, dict):
+                    for failure in repair_prerequisites(view, model):
+                        issues.append({"code": "WORKTREE_OPTIONAL_PREREQUISITE", "task_id": task_id,
+                                       "path": ".ai/project/testing/test-first-policy.json",
+                                       "reason": failure,
+                                       "next_action": "reconcile policy adoption with the owner before implementation; preserve captured obligations and evidence"})
                 route = model.get("active_projection") if isinstance(model, dict) else None
                 relative = route.get("path") if isinstance(route, dict) else None
                 if not isinstance(relative, str) or not is_target_relative_path(relative):
@@ -136,6 +170,9 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
                         raise ValueError("active projection source binding differs")
             except (OSError, ValueError, UnicodeError, RecursionError) as exc:
                 issues.append({"code": "WORKTREE_TASK_PROJECTION", "task_id": task["task_id"], "path": binding["path"], "next_action": str(exc)})
+    if view.finalize():
+        issues.append({"code": "WORKTREE_INPUT_MUTATED", "path": ".ai/",
+                       "next_action": "recheck changed prerequisite inputs before continuing"})
     return {"schema_version": 1, "report_kind": "alatyr-worktree-readiness",
             "state": "ready-for-context-review" if not issues else "blocked",
             "source": str(source_path) if source_path is not None else None,
