@@ -335,49 +335,63 @@ class ValidationContextTests(unittest.TestCase):
 
     def test_validator_finalizes_relevant_target_input_observations(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            target = Path(directory)
-            manifest = target / ".ai/alatyr.yaml"
-            manifest.parent.mkdir(parents=True)
-            manifest.write_text("schema_version: 44\n", encoding="utf-8")
-            validator = Validator(
-                target,
-                framework_source=None,
-                diff_ref=None,
-                approval_records=[],
-                enforce_approval_scope=False,
-                change_packages=[],
-                enforce_change_package=False,
-                migration_diff=None,
-                allow_placeholders=True,
-                allow_local_paths=[],
-                config=AdapterValidatorConfig(),
+            self.assert_validator_finalizes_observations(Path(directory))
+
+    def test_validator_finalizes_observations_through_root_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            actual, alias = root / 'actual', root / 'alias'
+            actual.mkdir()
+            try:
+                alias.symlink_to(actual, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest('Directory symlinks are unavailable on this host')
+            self.assert_validator_finalizes_observations(alias)
+
+    def assert_validator_finalizes_observations(self, target):
+        manifest = target / ".ai/alatyr.yaml"
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text("schema_version: 44\n", encoding="utf-8")
+        validator = Validator(
+            target,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[],
+            enforce_change_package=False,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+
+        def mutate_last_observed_input() -> None:
+            manifest.write_text("schema_version: 45\n", encoding="utf-8")
+
+        with patch.object(
+            validator,
+            "check_migration_diff_evidence",
+            side_effect=mutate_last_observed_input,
+        ):
+            validator.run()
+
+        self.assertEqual(len(validator.target_mutations), 1)
+        self.assertEqual(validator.target_mutations[0].path, manifest.resolve())
+        self.assertTrue(validator.target_mutations[0].content_changed)
+        self.assertTrue(
+            any(
+                finding.code == "TARGET_INPUT_MUTATED"
+                and finding.level == "error"
+                and finding.path == ".ai/alatyr.yaml"
+                for finding in validator.findings
             )
-
-            def mutate_last_observed_input() -> None:
-                manifest.write_text("schema_version: 45\n", encoding="utf-8")
-
-            with patch.object(
-                validator,
-                "check_migration_diff_evidence",
-                side_effect=mutate_last_observed_input,
-            ):
-                validator.run()
-
-            self.assertEqual(len(validator.target_mutations), 1)
-            self.assertEqual(validator.target_mutations[0].path, manifest)
-            self.assertTrue(validator.target_mutations[0].content_changed)
-            self.assertTrue(
-                any(
-                    finding.code == "TARGET_INPUT_MUTATED"
-                    and finding.level == "error"
-                    and finding.path == ".ai/alatyr.yaml"
-                    for finding in validator.findings
-                )
-            )
-            finding = next(f for f in validator.findings if f.code == "TARGET_INPUT_MUTATED")
-            self.assertEqual(finding.to_json()["details"]["content"]["comparison"], "changed")
-            self.assertIn("changed metadata:", finding.render())
-            self.assertNotIn(str(target), json.dumps(finding.to_json()))
+        )
+        finding = next(f for f in validator.findings if f.code == "TARGET_INPUT_MUTATED")
+        self.assertEqual(finding.to_json()["details"]["content"]["comparison"], "changed")
+        self.assertIn("changed metadata:", finding.render())
+        self.assertNotIn(str(target), json.dumps(finding.to_json()))
+        self.assertNotIn(str(target.resolve()), json.dumps(finding.to_json()))
 
     def test_combined_local_path_scan_preserves_unix_and_windows_findings(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
