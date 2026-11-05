@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bind knowledge-test fixtures to actual disk bytes, cover LF/CRLF evidence
+  explicitly and run the fast code/knowledge tests before heavy portable jobs.
+  Preserve exact-byte production freshness checks.
 - Add opt-in, read-only Python code relationship evidence through existing
   consistency-map bindings and accepted-edge semantics. Keep unexpected
   imports as review hints; report missing symbols and ambiguous ownership.

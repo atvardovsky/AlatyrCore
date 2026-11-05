@@ -43,8 +43,7 @@ class HostedFixtureIsolationTests(unittest.TestCase):
                 self.assertEqual(modules[-1], "tests.test_conformance_artifacts")
                 reviewed_modules = modules[:-1]
                 additions = {"tests.test_dispatch_observation", "tests.test_default_validation_route", "tests.test_repair_qualification",
-                             "tests.test_incident_retained_evidence", "tests.test_initialization_readiness", "tests.test_harness_contract",
-                             "tests.test_code_relationships", "tests.test_project_understanding"}
+                             "tests.test_incident_retained_evidence", "tests.test_initialization_readiness", "tests.test_harness_contract"}
                 self.assertTrue(additions <= set(reviewed_modules))
                 self.assertEqual(len(reviewed_modules), count + len(additions))
                 reviewed_modules = [module for module in reviewed_modules if module not in additions]
@@ -52,6 +51,11 @@ class HostedFixtureIsolationTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256("\0".join(reviewed_modules).encode()).hexdigest(), digest)
             self.assertEqual(len(explicit_test_modules(modules)), len(modules))
             self.assertEqual(step["env"]["ALATYR_CHILD_CAPACITY"], "2")
+        fast = next(row for row in steps if row.get("name") == "Run code and knowledge evidence regressions")
+        self.assertEqual(shlex.split(fast["run"]), ["python", "-B", "tools/check_source_unit_tests.py", "--test-module",
+                         "tests.test_code_relationships", "tests.test_project_understanding"])
+        self.assertEqual(fast["env"]["ALATYR_CHILD_CAPACITY"], "2")
+        self.assertLess(steps.index(fast), next(i for i, row in enumerate(steps) if row.get("name") == "Run portable source checks"))
         setup = next(row for row in steps if row.get("name") == "Set up Python")
         self.assertEqual(setup["with"]["cache"], "${{ runner.os != 'Windows' && 'pip' || '' }}")
         self.assertNotIn("continue-on-error", setup)

@@ -27,7 +27,7 @@ class ProjectUnderstandingTests(unittest.TestCase):
         self.target = self.root / "target"
         self.target.mkdir()
         (self.target / "README.md").write_text("# Example\n", encoding="utf-8")
-        self.source = {"path": "README.md", "sha256": hashlib.sha256(b"# Example\n").hexdigest()}
+        self.source = self.binding("README.md")
         request = understanding_request()
         self.data = {"schema_version": 1, "report_kind": "project-understanding-result",
                      "scenario_sha256": request["scenario_sha256"], "assistant_surface": "manual-review",
@@ -37,6 +37,9 @@ class ProjectUnderstandingTests(unittest.TestCase):
                                   "knowledge_state": "observed", "sources": [self.source], "limitations": []}
                                  for question in request["questions"]]}
         self.path = self.root / "result.json"
+
+    def binding(self, path):
+        return {"path": path, "sha256": hashlib.sha256((self.target / path).read_bytes()).hexdigest()}
 
     def save(self):
         self.path.write_text(json.dumps(self.data), encoding="utf-8")
@@ -102,7 +105,7 @@ class ProjectUnderstandingTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.check()
         (self.target / "decision.md").write_text("Accepted decision\n", encoding="utf-8")
-        second = {"path": "decision.md", "sha256": hashlib.sha256(b"Accepted decision\n").hexdigest()}
+        second = self.binding("decision.md")
         self.data["exposed_context"].append(second)
         self.data["answers"][0]["sources"].append(second)
         self.check()
@@ -166,6 +169,18 @@ class ProjectUnderstandingTests(unittest.TestCase):
         result = self.cli()
         self.assertEqual(1, result.returncode)
         self.assertIn("source is stale", json.loads(result.stdout)["findings"][0]["message"])
+
+    def test_lf_and_crlf_sources_bind_actual_bytes_without_normalizing_drift(self):
+        for content in (b"# Example\n", b"# Example\r\n"):
+            with self.subTest(content=content):
+                (self.target / "README.md").write_bytes(content)
+                self.source.update(self.binding("README.md"))
+                result = self.cli()
+                self.assertEqual(0, result.returncode, result.stderr)
+                self.assertEqual(self.source["sha256"], json.loads(result.stdout)["input_bindings"][0]["sha256"])
+        # A line-ending change is still a real exact-byte evidence change.
+        (self.target / "README.md").write_bytes(b"# Example\n")
+        self.assertEqual(1, self.cli().returncode)
 
 
 if __name__ == "__main__":
