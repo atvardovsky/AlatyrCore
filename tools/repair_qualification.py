@@ -7,11 +7,27 @@ import re
 from fractions import Fraction
 from statistics import median
 from typing import Any
+from datetime import datetime, timezone
 
 from path_spec import logical_path
 from target_validation_support import is_unresolved_value, is_placeholder
 
 MISSING = object()
+
+
+def run_window(run: dict[str, Any]) -> tuple[datetime, datetime] | None:
+    value = run.get("run_window")
+    if not isinstance(value, dict) or set(value) != {"started_at", "finished_at"}:
+        return None
+    try:
+        if not all(isinstance(item, str) and len(item) <= 64 for item in value.values()):
+            return None
+        start, end = (datetime.fromisoformat(value[key].replace("Z", "+00:00")) for key in ("started_at", "finished_at"))
+        if start.tzinfo is None or end.tzinfo is None or end < start:
+            return None
+        return start.astimezone(timezone.utc), end.astimezone(timezone.utc)
+    except (ValueError, TypeError, OverflowError):
+        return None
 
 
 def finite_number(value: Any) -> bool:
@@ -181,7 +197,6 @@ def comparison_failures(record: dict, review: dict, runs: dict, artifacts: dict,
         if baseline_ref == candidate_ref or baseline is None or candidate is None or candidate_ref not in current_refs:
             failures.append(f"performance {metric_id} requires a bound baseline and distinct current candidate")
             continue
-        from repair_review import run_window
         windows = run_window(baseline), run_window(candidate)
         if any(window is None for window in windows) or windows[0] == windows[1] or windows[0][1] > windows[1][0]:
             failures.append(f"performance {metric_id} requires distinct ordered baseline/candidate execution windows")

@@ -366,15 +366,12 @@ overlays. Each overlay names its trigger, required context, and expansion
 conditions. Compose one base task profile with only the overlays that own the
 changed facts.
 
-After profile and area selection for a non-trivial task, apply the compact
-project-knowledge preflight. Read the root routing index, then only shard
-descriptors matching the profile plus at least one area, subsystem,
-architecture item, dependency, fact, contract, path, symbol, or issue signal.
-Perform an initial route before broad
-orientation and one refined route after concrete changed facts or source
-surfaces become known. Load only bounded accepted-current entries and their
-canonical owners; stale items are warnings, contradictions are blockers, and
-unrelated knowledge remains lazy.
+When project knowledge is installed, after profile and area selection for a
+non-trivial task, load the selected
+[project-knowledge delivery contract](project-knowledge.md#two-stage-delivery)
+and apply its initial/refined routing, owner verification and warning/blocker
+rules. This context policy owns activation and packet budgets; the knowledge
+owner defines eligibility and delivery semantics. Keep unrelated knowledge lazy.
 
 ## Consistency Relationship Routing
 

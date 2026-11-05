@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1758
+Catalog entries: 1759
 
 ## Families
 
@@ -51,7 +51,7 @@ Catalog entries: 1758
 - `LOCAL`: 1 codes.
 - `MANIFEST`: 12 codes.
 - `MIGRATION`: 8 codes.
-- `MODULE`: 11 codes.
+- `MODULE`: 12 codes.
 - `OPERATION`: 35 codes.
 - `PACKAGE`: 115 codes.
 - `PLACEHOLDERS`: 1 codes.
@@ -1940,6 +1940,8 @@ Catalog entries: 1758
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MODULE_PROFILE_ENABLED_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_PROFILE_PROJECTION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `MODULE_PROFILE_STAGED_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MODULE_PROFILE_STAGED_MISSING`
@@ -2135,57 +2137,57 @@ Catalog entries: 1758
 - `PACKAGE_INCIDENT_RETAINED`
   Level: error, info. Source: `tools/target_adapter_validation/model_evidence.py`.
 - `PACKAGE_INDEX_ACTIVE_SHARDED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_JSON`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_PROJECTION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_RECORDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_RECORD_LOAD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_RECORD_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_RECORD_ROOT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_REQUIRED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_ROOT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_COUNT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_DIGEST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_IDENTITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_LOAD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_RECORDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INVALID_JSON`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INVALID_ROOT`

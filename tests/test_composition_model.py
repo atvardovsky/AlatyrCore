@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import sys
 import unittest
+import copy
+from dataclasses import asdict
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -20,6 +23,69 @@ from projection_graph import (  # noqa: E402
     validate_projection_graph,
 )
 class CompositionModelTests(unittest.TestCase):
+    def resolve_with_manifest(self, manifest, requests):
+        import composition_model as model
+        original = model._object
+        def selected(path):
+            return manifest if path == model.PROFILE_MANIFEST else original(path)
+        model._profile_paths.cache_clear()
+        model.resolve_composition.cache_clear()
+        try:
+            with patch.object(model, "_object", side_effect=selected):
+                return [asdict(model.resolve_composition(request)) for request in requests]
+        finally:
+            model._profile_paths.cache_clear()
+            model.resolve_composition.cache_clear()
+
+    def test_inventory_references_preserve_legacy_composition_without_activation(self):
+        import composition_model as model
+        manifest = copy.deepcopy(model.load_profile_manifest())
+        legacy = copy.deepcopy(manifest)
+        legacy["schema_version"] = 2
+        standard = legacy["profiles"]["standard"]
+        standard.pop("template_file_capabilities")
+        standard["template_files"] = [
+            ".ai/assistant/flows/adapter-recheck.flow.md", ".ai/assistant/flows/adapter-health.flow.md",
+            ".ai/assistant/flows/blueprint-driven-change.flow.md", ".ai/assistant/flows/operation-routing.flow.md",
+            ".ai/assistant/flows/project-blueprint-creation.flow.md", ".ai/assistant/gates/contract-artifacts.md",
+            ".ai/assistant/gates/visual-validation.md", ".ai/assistant/help-reference.md",
+            ".ai/assistant/operation-index.json", ".ai/assistant/operation-catalog.json",
+            ".ai/assistant/templates/migration-note.md", ".ai/assistant/templates/pre-change-preview.md",
+            ".ai/assistant/templates/contract-artifact-review.md", ".ai/assistant/templates/post-install-message.md",
+            ".ai/assistant/templates/post-update-message.md", ".ai/assistant/templates/visual-validation-review.md",
+            "AI_ASSISTANTS.md",
+        ]
+        requests = [CompositionRequest(profile, requested_capabilities=capabilities,
+                    requested_assistant_surfaces=assistants, projection_purpose=purpose)
+                    for profile in ("kernel", "core", "standard", "full")
+                    for purpose in ("target", "conformance")
+                    for capabilities in [(), *((module_id,) for module_id in sorted(model.load_modules()))]
+                    for assistants in ((), ("openai-codex",), ("claude",))]
+        self.assertEqual(self.resolve_with_manifest(manifest, requests), self.resolve_with_manifest(legacy, requests))
+        for profile in ("kernel", "core", "standard", "full"):
+            resolved = model.resolve_composition(CompositionRequest(profile))
+            self.assertEqual(resolved.enabled_capabilities, ())
+            self.assertEqual(resolved.staged_capabilities, ())
+            self.assertEqual(resolved.required_check_ids, ())
+
+    def test_inventory_references_reject_unknown_duplicate_or_malformed_values(self):
+        import composition_model as model
+        original = copy.deepcopy(model.load_profile_manifest())
+        for value in (None, True, "installed-operations", [{}], [[]], [None], ["missing"], ["blueprint-change", "blueprint-change"]):
+            manifest = copy.deepcopy(original)
+            manifest["profiles"]["standard"]["template_file_capabilities"] = value
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self.resolve_with_manifest(manifest, [CompositionRequest("standard")])
+        legacy = copy.deepcopy(original)
+        legacy["schema_version"] = 2
+        with self.assertRaisesRegex(ValueError, "template_file_capabilities"):
+            self.resolve_with_manifest(legacy, [CompositionRequest("standard")])
+        for value in (None, True, {}, [None], [[]]):
+            modules = copy.deepcopy(model.load_modules())
+            modules["blueprint-change"]["target_files"] = value
+            with self.subTest(inventory=value), patch.object(model, "load_modules", return_value=modules), self.assertRaises(ValueError):
+                self.resolve_with_manifest(original, [CompositionRequest("standard")])
+
     def test_profile_resolution_is_monotonic_and_pack_matched(self) -> None:
         resolved = {
             profile: resolve_composition(CompositionRequest(profile))

@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.126 - 2026-11-05
+
+- Distinguish knowledge intake and known gaps from reviewed-route adoption;
+  retain all promotion, coverage, authority and freshness validation.
+- Reuse direct capability inventories in source profile schema 3 without
+  changing resolved installations, activation, pack selection or path origins.
+  Keep legacy literal profiles readable and the offline kernel unchanged.
+- Project opted-in module activation summaries and active states from the
+  manifest during transactional support finalization. Preserve target-owned
+  rationale, inactive dispositions and unmarked legacy profiles; never infer
+  disablement or acceptance from generated state.
+- Extract package-index traversal behind stable public validator callbacks,
+  preserving changed-record routing through unchanged shards, shared snapshots,
+  diagnostic order and full validation. Malformed index statuses remain
+  diagnostics instead of interrupting traversal.
+- Remove the three source dependency cycles through shared delegation structure,
+  lifecycle-policy and repair-window owners, retaining compatibility exports.
+  Give knowledge delivery one normative owner rather than repeated prose.
+- Advance adapter schema to 103 and templates to 121. Existing targets may
+  retain manual module-state synchronization; adopt projections only through
+  reviewed adapter changes. No new default bootstrap, dependency, service,
+  provider call, mandatory database or measured cost-saving claim.
+
 - Bind knowledge-test fixtures to actual disk bytes, cover LF/CRLF evidence
   explicitly and run the fast code/knowledge tests before heavy portable jobs.
   Preserve exact-byte production freshness checks.

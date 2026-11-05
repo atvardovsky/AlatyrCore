@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "profiles": {
     "kernel": {
       "description": "Minimal adapter, bootstrap, routing, ownership, integrity, authorization, and final-evidence surfaces for low-cost installs.",
@@ -105,22 +105,16 @@
     "standard": {
       "description": "Core plus common blueprint, recheck, help, and lifecycle operation surfaces.",
       "extends": "core",
+      "template_file_capabilities": [
+        "blueprint-change",
+        "installed-operations",
+        "migration-diff"
+      ],
       "template_files": [
         ".ai/assistant/flows/adapter-recheck.flow.md",
-        ".ai/assistant/flows/adapter-health.flow.md",
-        ".ai/assistant/flows/blueprint-driven-change.flow.md",
-        ".ai/assistant/flows/operation-routing.flow.md",
-        ".ai/assistant/flows/project-blueprint-creation.flow.md",
         ".ai/assistant/gates/contract-artifacts.md",
         ".ai/assistant/gates/visual-validation.md",
-        ".ai/assistant/help-reference.md",
-        ".ai/assistant/operation-index.json",
-        ".ai/assistant/operation-catalog.json",
-        ".ai/assistant/templates/migration-note.md",
-        ".ai/assistant/templates/pre-change-preview.md",
         ".ai/assistant/templates/contract-artifact-review.md",
-        ".ai/assistant/templates/post-install-message.md",
-        ".ai/assistant/templates/post-update-message.md",
         ".ai/assistant/templates/visual-validation-review.md",
         "AI_ASSISTANTS.md"
       ]

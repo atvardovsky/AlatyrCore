@@ -13,13 +13,20 @@ Manifest source: `.ai/alatyr.yaml`
 Capability catalog source: `.ai/framework/capabilities.json`
 Human profile source: `.ai/assistant/module-profile.md`
 Selected support profile: `{TARGET_SUPPORT_PROFILE}`
+<!-- alatyr:module-state:start -->
 Selected modules from manifest: `{TARGET_SELECTED_MODULE_IDS_OR_NONE}`
 Staged modules from manifest: `{TARGET_STAGED_MODULE_IDS_OR_NONE}`
 Enabled modules from manifest: `{TARGET_ENABLED_MODULE_IDS_OR_NONE}`
+<!-- alatyr:module-state:end -->
 Manifest/profile agreement: `{MATCH_DRIFT_OR_UNKNOWN_WITH_EVIDENCE}`
 Required surfaces checked: `{YES_NO_OR_UNKNOWN_WITH_REASON}`
 Unknown or stale module evidence: `{NONE_OR_MODULE_IDS_AND_REASON}`
 Last module-state validation: `{VALIDATION_COMMAND_OR_MANUAL_REVIEW}`
+
+The manifest owns activation. Finalization refreshes the marked summary and
+staged/enabled module states; authored rationale and inactive dispositions remain
+project-owned. Removing activation requires an explicit inactive disposition,
+not inferred disablement. Legacy unmarked profiles remain manually maintained.
 
 ## Shared Capability Surfaces
 

@@ -13,6 +13,11 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterator
 
 from path_spec import logical_path
+from delegation_structure import (
+    DelegationEvidenceError, EDGE_KINDS, MAX_JSON_BYTES,
+    object_value as _object, exact_fields as _exact, string_value as _string,
+    matches_surface as _matches_surface, validate_topology as _validate_topology,
+)
 
 
 TREE_FIELDS = {
@@ -62,7 +67,6 @@ RESULT_STATUS_BY_NODE = {
     "DONE": "succeeded", "FAILED": "failed", "CANCELLED": "cancelled",
     "REJECTED": "rejected",
 }
-EDGE_KINDS = {"primary-approved-dispatch", "primary-envelope-dispatch"}
 SHA256_LENGTH = 64
 PORTABLE_MAX_DEPTH = 2
 PORTABLE_MAX_DELEGATES = 8
@@ -72,7 +76,6 @@ PORTABLE_MAX_RESULT_WORDS = 12000
 PORTABLE_MAX_PRIMARY_SUMMARY_WORDS = 4000
 PORTABLE_MAX_RETRIES = 2
 CHARACTERS_PER_WORD_LIMIT = 12
-MAX_JSON_BYTES = 4 * 1024 * 1024
 _ARTIFACT_READER: ContextVar[Callable[[Path, int], bytes] | None] = ContextVar("delegation-artifact-reader", default=None)
 PRIMARY_ANALYSIS_STRATEGIES = {
     "direct-local",
@@ -82,10 +85,6 @@ PRIMARY_ANALYSIS_STRATEGIES = {
     "evidence-synthesis",
     "exploratory-design",
 }
-
-
-class DelegationEvidenceError(ValueError):
-    """Raised when delegation evidence violates its portable contract."""
 
 
 @contextmanager
@@ -104,27 +103,6 @@ def _read_evidence(path: Path, limit: int) -> bytes:
         return reader(path, limit)
     with path.open("rb") as stream:
         return stream.read(limit + 1)
-
-
-def _object(value: Any, label: str) -> dict[str, Any]:
-    if not isinstance(value, dict):
-        raise DelegationEvidenceError(f"{label} must be an object")
-    return value
-
-
-def _exact(value: dict[str, Any], fields: set[str], label: str) -> None:
-    missing = sorted(fields - set(value))
-    extra = sorted(set(value) - fields)
-    if missing or extra:
-        raise DelegationEvidenceError(
-            f"{label} fields differ: missing={missing}, unexpected={extra}"
-        )
-
-
-def _string(value: Any, label: str) -> str:
-    if not isinstance(value, str) or not value.strip():
-        raise DelegationEvidenceError(f"{label} must be a non-empty string")
-    return value
 
 
 def _strings(value: Any, label: str) -> list[str]:
@@ -206,15 +184,6 @@ def _json_sha256(value: Any) -> str:
     except (ValueError, UnicodeError, RecursionError) as exc:
         raise DelegationEvidenceError("canonical evidence must be bounded finite UTF-8 JSON") from exc
     return hashlib.sha256(encoded).hexdigest()
-
-
-def _matches_surface(surface: str, selectors: list[str]) -> bool:
-    """Match one normalized target-relative surface against envelope selectors."""
-    try:
-        logical_path(surface)
-    except ValueError:
-        return False
-    return any(fnmatchcase(surface, selector) for selector in selectors)
 
 
 def _selector_within(selector: str, parents: list[str]) -> bool:
@@ -1190,80 +1159,6 @@ def _validate_header_and_budget(
             "primary summary budget exceeds the aggregate result budget"
         )
     return recorded_at, capability_digest, hard_depth, allowed_stops, budget
-
-
-def _validate_topology(
-    tree: dict[str, Any],
-    nodes: dict[str, dict[str, Any]],
-    budget: dict[str, Any],
-) -> tuple[dict[str, Any], dict[str, list[dict[str, Any]]]]:
-    root = nodes.get(tree["root_node_id"])
-    if root is None or root.get("depth") != 0:
-        raise DelegationEvidenceError("execution tree root is invalid")
-    children: dict[str, list[dict[str, Any]]] = {}
-    for node in nodes.values():
-        if node["depth"] == 0:
-            continue
-        parent = nodes.get(node.get("parent_node_id"))
-        if parent is None or node["depth"] != parent["depth"] + 1:
-            raise DelegationEvidenceError(
-                f"execution node {node['node_id']} has invalid parent"
-            )
-        if node.get("parent_packet_id") != parent.get("packet_id"):
-            raise DelegationEvidenceError(
-                f"execution node {node['node_id']} packet parent is invalid"
-            )
-        children.setdefault(parent["node_id"], []).append(node)
-    for parent_id, child_nodes in children.items():
-        if len(child_nodes) > budget["max_children_per_parent"]:
-            raise DelegationEvidenceError(
-                f"execution node {parent_id} exceeds child budget"
-            )
-
-    branch_fields = {
-        "branch_envelope", "branch_envelope_sha256",
-        "branch_checkpoint", "branch_checkpoint_sha256",
-    }
-    for node in nodes.values():
-        recursive_coordinator = node["depth"] == 1 and bool(
-            children.get(node["node_id"])
-        )
-        populated = {field for field in branch_fields if node.get(field) is not None}
-        if recursive_coordinator and populated != branch_fields:
-            raise DelegationEvidenceError(
-                f"recursive coordinator {node['node_id']} has incomplete branch evidence"
-            )
-        if not recursive_coordinator and populated:
-            raise DelegationEvidenceError(
-                f"execution node {node['node_id']} carries inapplicable branch evidence"
-            )
-
-    edge_rows = tree.get("edges")
-    if not isinstance(edge_rows, list) or len(edge_rows) != len(nodes) - 1:
-        raise DelegationEvidenceError("execution tree must contain one edge per worker")
-    edge_pairs: set[tuple[str, str]] = set()
-    for edge in edge_rows:
-        edge = _object(edge, "execution edge")
-        _exact(edge, {"parent_node_id", "child_node_id", "edge_kind"}, "execution edge")
-        pair = (_string(edge.get("parent_node_id"), "execution edge.parent_node_id"),
-                _string(edge.get("child_node_id"), "execution edge.child_node_id"))
-        if pair in edge_pairs or pair[1] not in nodes or pair[0] not in nodes:
-            raise DelegationEvidenceError("execution edge is duplicate or unresolved")
-        if nodes[pair[1]].get("parent_node_id") != pair[0] or not isinstance(edge.get("edge_kind"), str) or edge.get("edge_kind") not in EDGE_KINDS:
-            raise DelegationEvidenceError("execution edge disagrees with topology")
-        if nodes[pair[1]]["depth"] == 2 and edge.get("edge_kind") != "primary-envelope-dispatch":
-            raise DelegationEvidenceError("depth-2 dispatch requires a branch envelope")
-        if nodes[pair[1]]["depth"] == 1 and edge.get("edge_kind") != "primary-approved-dispatch":
-            raise DelegationEvidenceError("depth-1 dispatch requires primary approval")
-        edge_pairs.add(pair)
-    expected_edge_pairs = {
-        (node["parent_node_id"], node["node_id"])
-        for node in nodes.values()
-        if node["depth"] > 0
-    }
-    if edge_pairs != expected_edge_pairs:
-        raise DelegationEvidenceError("execution edges do not cover the node topology")
-    return root, children
 
 
 def _validate_worker_context(node: dict[str, Any], artifact_root: Path) -> dict[str, Any]:

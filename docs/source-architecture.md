@@ -7,21 +7,14 @@ rule registry.
 
 ## Chosen Model
 
-AlatyrCore should be maintained as a contracted modular monolith with
-capability modules and a validation pipeline.
+Maintain a contracted modular monolith: one versioned package, capability
+modules and an ordered validation pipeline. Framework, templates, schemas,
+tools and conformance evidence move together. Give each capability one contract
+owner, bounded surfaces and focused checks. Share pure primitives; keep CLI I/O,
+reporting and exit behavior thin.
 
-The repository remains one versioned source package because the framework,
-templates, schemas, tools, and conformance evidence must move together. Inside
-that package, every capability should have a clear contract owner, a bounded
-support surface, and focused validation. Shared code should expose pure,
-reusable primitives first; command-line wrappers should stay thin and handle
-I/O, reporting, and process exit behavior.
-
-This model fits AlatyrCore better than splitting into services or independent
-packages. The product value depends on repository-owned knowledge and checked
-consistency between many text, schema, template, and tool surfaces. A single
-repository keeps that consistency visible while modular boundaries keep routine
-changes cheap.
+Keep boundaries inside the repository. Services or independent packages would
+complicate cross-surface consistency without a demonstrated deployment need.
 
 ## Source Boundaries
 
@@ -62,6 +55,11 @@ paths retain origin evidence. Existing catalogs remain canonical; the
 composition object is a derived read model and must not become a competing
 source of truth.
 
+Schema-3 `template_file_capabilities` reuse direct inventories, never activation,
+dependency closure, pack escalation or capability origins. Preserve legacy
+literal profiles, independent mandatory expectations and complete composition
+parity. Offline resources remain unchanged.
+
 Prefer a functional-core and imperative-shell shape for Python tools. Parsing,
 classification, matching, and validation helpers should be pure functions or
 small data classes. CLI entry points should collect input, call those helpers,
@@ -77,18 +75,14 @@ context hints, heavy checks, and optional hash-bound reuse candidates before
 implementation starts. It is a routing surface only; it does not approve edits,
 commit, publish, or replace semantic review.
 
-Keep user intent, source task profile, task scale, validation profile, and
-executor selection as separate decisions. Changed-path automation can reduce
-validation cost after scope is known, but it cannot infer that an explicit
-repository audit is a small task merely because no files have changed.
+Keep user intent, source profile, task scale, validation and executor separate.
+Changed-path automation selects checks after scope is known; it cannot downgrade
+an explicit repository audit because the worktree is clean.
 
-Use source worker decomposition as a strategy boundary. Reusable workstreams
-remain provider-neutral and read-only; the active assistant verifies runtime
-capability. Explicit repository audits should dispatch at least two independent
-eligible workstreams when capability is verified, unless the primary assistant
-records a concrete skip reason. Architecture decisions, conflict resolution,
-logical integrity, integration, final validation, and state-changing phases
-remain primary-owned.
+Source workers remain provider-neutral and read-only. Explicit audits dispatch
+at least two independent eligible workstreams when runtime capability is
+verified, or record a concrete skip reason. The primary owns architecture,
+conflicts, logical integrity, integration, final validation and state changes.
 
 Use a strategy boundary for provider-specific or capability-specific behavior.
 Assistant surfaces, operating systems, optional modules, and target profiles
@@ -132,14 +126,11 @@ manifests, and narrow trigger paths so agents and checks load only what the
 task actually needs. Context-affecting changes follow the conditional
 [development context contract](#development-context-contract).
 
-Source profile conditionals are typed route declarations, not prose hints.
-Each declaration has a stable ID, a bounded resolver, a concrete path or
-indexed query, and an explicit load condition. Minimum-work plans resolve only
-selectors supported by current evidence, record selected and omitted routes,
-and retain fail-closed canonical-owner fallback when an owner selector is not
-available. Profile budgets cover the complete resolved packet in files, words,
-and characters while preserving declared reserve capacity; initial bootstrap
-limits remain an additional, narrower guard.
+Source-profile conditionals declare stable IDs, bounded resolvers, paths or
+indexed queries, and load conditions. Resolve only evidence-supported selectors;
+retain selected/omitted reasons and fail-closed owner fallback. Budgets cover the
+full packet in files, words and characters, preserving reserves; bootstrap
+limits apply separately.
 
 The machine router generates `tools/source-context/index.json` and per-profile
 descriptors. Agents load this compact entry and one descriptor; canonical router
@@ -212,6 +203,13 @@ valid only when the focused route proves that the changed files are covered by
 the owning checks.
 
 ## Current Refactoring Priorities
+
+- Package-index traversal retains shared snapshots, Git evidence, findings and
+  overridable public delegates. Shared delegation/lifecycle/repair primitives
+  remain below orchestrators; no cycle exceptions remain.
+- Derive opted-in activation from the manifest; preserve target rationale,
+  inactive dispositions, legacy profiles and rollback. Resource removal or
+  always-loaded context requires separate offline and enforcement parity.
 
 - Keep the extracted team collaboration, architecture knowledge, code
   documentation, project vocabulary, test-first development, extension,

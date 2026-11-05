@@ -198,7 +198,7 @@ Classify every proposed target file:
    selection, or pack selection as installation or module enablement. Source
    scaffolding omits vendor-native bridges by default. Pass one
    `--assistant-surface` selection per reviewed target client; the selection
-   enables only its capability dependency closure and may raise the matched
+   stages only its capability dependency closure and may raise the matched
    framework pack. Do not select every registered surface merely because its
    template exists.
 3. Select and fill only the `installer/readiness-checklist.md` sections required
@@ -673,6 +673,10 @@ accepted or ready. Before reporting installation or update completion:
    module-profile block in `enabled` or `required` state.
    Synchronize `modules.staged` with `staged` profile blocks, and resolve every
    staged item before acceptance.
+   For marked profiles, use the finalizer's module-state projection rather than
+   hand-copying activation lists. Preserve target-owned rationale and explicit
+   inactive dispositions. Adopt markers in legacy profiles only within approved
+   adapter scope; an unmarked file remains manually synchronized.
 4. Synchronize machine policy indexes and their human README projections.
    Synchronize current framework, adapter-schema, template, and source-commit
    claims with the manifest while preserving explicitly historical claims.

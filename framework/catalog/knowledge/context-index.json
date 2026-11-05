@@ -139,8 +139,8 @@
       "owner_refs": [
         "ALATYR-KNOWLEDGE-001"
       ],
-      "estimated_words": 2154,
-      "content_digest": "sha256:6d3542cb876855dea56f1c3dbdad786b5d7a22ec759af84cfdd8c5584fc06ffd"
+      "estimated_words": 2182,
+      "content_digest": "sha256:9eba71fe75f9418bf5bc4a84e081c2c0b77eb59a6722158bc75a30b7ac2f4100"
     },
     {
       "id": "framework.knowledge.project-vocabulary-md",

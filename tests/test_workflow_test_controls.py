@@ -51,9 +51,12 @@ class HostedFixtureIsolationTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256("\0".join(reviewed_modules).encode()).hexdigest(), digest)
             self.assertEqual(len(explicit_test_modules(modules)), len(modules))
             self.assertEqual(step["env"]["ALATYR_CHILD_CAPACITY"], "2")
-        fast = next(row for row in steps if row.get("name") == "Run code and knowledge evidence regressions")
+        fast = next(row for row in steps if row.get("name") == "Run bounded source contract regressions")
         self.assertEqual(shlex.split(fast["run"]), ["python", "-B", "tools/check_source_unit_tests.py", "--test-module",
-                         "tests.test_code_relationships", "tests.test_project_understanding"])
+                         "tests.test_code_relationships", "tests.test_project_understanding",
+                         "tests.test_composition_model", "tests.test_project_knowledge",
+                         "tests.test_target_adapter_module_profile", "tests.test_field_adapter_sync",
+                         "tests.test_tool_complexity", "tests.test_finalize_target_support"])
         self.assertEqual(fast["env"]["ALATYR_CHILD_CAPACITY"], "2")
         self.assertLess(steps.index(fast), next(i for i, row in enumerate(steps) if row.get("name") == "Run portable source checks"))
         setup = next(row for row in steps if row.get("name") == "Set up Python")

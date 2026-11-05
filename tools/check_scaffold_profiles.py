@@ -161,8 +161,8 @@ def main() -> int:
     failures: list[str] = []
     try:
         manifest = json.loads(PROFILE_MANIFEST.read_text(encoding="utf-8"))
-        if manifest.get("schema_version") != 2:
-            failures.append("scaffold profile schema_version must be 2")
+        if manifest.get("schema_version") != 3:
+            failures.append("source scaffold profile schema_version must be 3")
         names = profile_names()
         if names != EXPECTED_PROFILES:
             failures.append(f"scaffold profiles must be {EXPECTED_PROFILES}, got {names}")

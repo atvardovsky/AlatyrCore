@@ -373,7 +373,10 @@ def project_module_profile(text: str, selected_modules: set[str]) -> str:
         rendered, count = pattern.subn(r"\1`staged`", rendered, count=1)
         if count != 1:
             raise ValueError(f"cannot project staged module {module_id} into module profile")
-    return rendered
+    from target_adapter_validation.module_profile import project_manifest_state
+    return project_manifest_state(rendered, {
+        "selected": sorted(selected_modules), "staged": sorted(selected_modules), "enabled": [],
+    })
 
 
 def load_object(path: Path) -> dict[str, Any]:

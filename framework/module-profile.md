@@ -38,6 +38,15 @@ module kind, rule IDs, and deterministic check IDs. Human module profiles
 explain target state and evidence; they must not redefine that closure
 independently.
 
+The target manifest owns machine activation lists. A human module profile may
+opt into a marked, deterministic projection of selected, staged and enabled
+lists and their active module states. Render only those fields; retain authored
+rationale, ownership, evidence and inactive dispositions. Never infer disablement
+from a removed activation entry. Unmarked legacy profiles retain explicit manual
+synchronization until the target approves projection adoption. Validation checks
+the projection without repairing it; rendering does not enable a capability or
+establish that its evidence passed.
+
 Module kind keeps the catalog from mixing user-facing product support with
 internal support plumbing:
 

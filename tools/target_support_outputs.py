@@ -5,7 +5,15 @@ from __future__ import annotations
 from pathlib import Path
 
 
-def step_outputs(step_id: str, target: Path) -> dict[Path, bytes | None]:
+def step_outputs(step_id: str, target: Path, *, input_bindings: dict[Path, bytes] | None = None) -> dict[Path, bytes | None]:
+    if step_id == "module-profile":
+        from target_adapter_validation.module_profile import state_projection
+        planned = state_projection(target, migration_staging=True)
+        if planned is None:
+            return {}
+        if input_bindings is not None:
+            input_bindings.update(planned.inputs)
+        return {planned.path: planned.desired}
     if step_id == "consistency-reverse-index":
         from impact_graph import build_reverse_index, load_impact_graph, render_json
         graph = load_impact_graph(target)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 import unittest
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -131,6 +132,65 @@ class ProjectKnowledgeSelectionTests(unittest.TestCase):
         )
         self.assertEqual(selected["constraints"][0]["guidance_kind"], "reviewed-knowledge")
         self.assertEqual(selected["constraints"][0]["precedence_kind"], "base-rule")
+
+
+class KnowledgeAdoptionTests(unittest.TestCase):
+    def fixture(self, target):
+        from check_project_knowledge import fixture
+        return fixture(target)
+
+    def findings(self, target, index):
+        from check_project_knowledge import write_json
+        from project_knowledge import validate_project_knowledge
+        write_json(target / ".ai/project/knowledge/index.json", index)
+        return [row for row in validate_project_knowledge(target, ROOT / "schemas") if row.level == "error"]
+
+    def test_intake_and_known_gaps_do_not_require_reviewed_routes(self):
+        from check_project_knowledge import write_json
+        for retained in ("known-gap", "rejected-intake", "empty-shard"):
+            with self.subTest(retained=retained), tempfile.TemporaryDirectory() as directory:
+                target = Path(directory)
+                index, shard, promotion = self.fixture(target)
+                self.assertEqual(self.findings(target, index), [])
+                index["promotion_records"] = []
+                index["shards"] = []
+                index["coverage"] = {"areas": [], "fact_types": []}
+                index["adoption"] = {"state": "enabled-empty", "reuse_evidence": []}
+                if retained == "known-gap":
+                    index["coverage"]["areas"] = [{"subject": "hydration", "status": "known-gap", "guidance_ids": [], "evidence": "Owner review", "gap": "Accepted guidance is not yet established"}]
+                elif retained == "rejected-intake":
+                    promotion["human_review"]["disposition"] = "rejected"
+                    promotion["human_review"]["route_entry_ids"] = []
+                    path = ".ai/project/knowledge/promotions/PROMO-RESULT-TRANSFORM-001.json"
+                    write_json(target / path, promotion)
+                    index["promotion_records"] = [{"promotion_id": promotion["promotion_id"], "status": "rejected", "path": path}]
+                else:
+                    shard["entries"] = []
+                    path = ".ai/project/knowledge/routes/hydration.json"
+                    write_json(target / path, shard)
+                    index["shards"] = [{key: value for key, value in shard.items() if key not in {"schema_version", "shard_kind", "entries"}}]
+                    index["shards"][0]["path"] = path
+                self.assertEqual(self.findings(target, index), [])
+
+    def test_empty_label_cannot_hide_reviewed_routes_or_claim_reuse(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            index, _, _ = self.fixture(target)
+            index["adoption"] = {"state": "enabled-empty", "reuse_evidence": []}
+            self.assertIn("PROJECT_KNOWLEDGE_ADOPTION_STATE", {row.code for row in self.findings(target, index)})
+            index["promotion_records"], index["shards"] = [], []
+            index["coverage"] = {"areas": [], "fact_types": []}
+            index["adoption"]["reuse_evidence"] = ["operation:later-task"]
+            self.assertIn("PROJECT_KNOWLEDGE_ADOPTION_STATE", {row.code for row in self.findings(target, index)})
+
+    def test_retained_coverage_is_still_validated_independently(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            index, _, _ = self.fixture(target)
+            index["promotion_records"], index["shards"] = [], []
+            index["adoption"] = {"state": "enabled-empty", "reuse_evidence": []}
+            failures = self.findings(target, index)
+            self.assertIn("PROJECT_GUIDANCE_COVERAGE_REFERENCE", {row.code for row in failures})
 
 
 if __name__ == "__main__":

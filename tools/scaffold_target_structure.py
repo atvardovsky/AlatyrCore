@@ -72,6 +72,7 @@ from composition_model import (
     CompositionRequest,
     ResolvedComposition,
     resolve_composition,
+    load_profile_manifest as _load_profile_manifest,
 )
 from projection_graph import (
     MARKDOWN_PROJECTION_PATHS,
@@ -94,10 +95,7 @@ PROJECTED_MARKDOWN_TARGET_PATHS = {Path(path) for path in MARKDOWN_PROJECTION_PA
 
 
 def load_profile_manifest() -> dict[str, Any]:
-    data = json.loads(PROFILE_MANIFEST.read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
-        raise ValueError("scaffold profile manifest must be a JSON object")
-    return data
+    return _load_profile_manifest()
 
 
 def profile_names() -> list[str]:

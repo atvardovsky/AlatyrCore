@@ -20,6 +20,7 @@ from target_adapter_validation.current_change import change_packages_enabled, en
 TOOLS = Path(__file__).resolve().parent
 SOURCE_ROOT = TOOLS.parent
 FIXED_GENERATED_PATHS = {
+    Path(".ai/assistant/module-profile.md"),
     Path(".ai/assistant/approvals/archive-index.json"),
     Path(".ai/assistant/change-packages/index.json"),
     Path(".ai/assistant/entry-packet.json"),
@@ -70,6 +71,8 @@ def build_steps(
     steps = [
         _tool_step("approval-archive", "render_approval_archive_index.py", target, *mode, *staging),
     ]
+    if (target / ".ai/assistant/module-profile.md").is_file():
+        steps.append(_tool_step("module-profile", "render_module_profile.py", target, *mode, *staging))
     if (target / ".ai/project/consistency-map.json").is_file() and "consistency-map" in enabled_capabilities(target):
         from impact_graph import load_impact_graph
         graph = load_impact_graph(target)
@@ -178,7 +181,7 @@ def execute_steps(
 ) -> tuple[int, str | None]:
     for step in steps:
         result = runner(
-            [sys.executable, str(TOOLS / step.script), *step.arguments],
+            [sys.executable, "-B", str(TOOLS / step.script), *step.arguments],
             check=False,
             text=True,
         )
@@ -201,8 +204,11 @@ def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subproces
                     if result:
                         return result, failed, transaction.rollback()
                 else:
-                    outputs = step_outputs(step.step_id, target)
-                    transaction.apply(outputs, expected_inputs={path: expected.get(path) for path in outputs})
+                    bindings = {}
+                    outputs = step_outputs(step.step_id, target, input_bindings=bindings) if step.step_id == "module-profile" else step_outputs(step.step_id, target)
+                    inputs = {path: expected.get(path) for path in outputs}
+                    inputs.update({path: content for path, content in bindings.items() if path not in outputs})
+                    transaction.apply(outputs, expected_inputs=inputs)
                     expected.update(outputs)
         except Exception as exc:
             print(f"FAIL: {failed_step}: {type(exc).__name__}: {exc}", file=sys.stderr)

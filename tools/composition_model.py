@@ -121,9 +121,8 @@ def _inheritance_chain(
 def _profile_paths(
     profile: str, projection_purpose: str
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
-    profiles = _object(PROFILE_MANIFEST).get("profiles")
-    if not isinstance(profiles, dict):
-        raise ValueError("scaffold profile manifest must define profiles")
+    manifest = load_profile_manifest()
+    profiles = manifest["profiles"]
     chain = _inheritance_chain(profiles, profile, label="scaffold profile")
     paths: set[str] = set()
     for name in chain:
@@ -132,6 +131,24 @@ def _profile_paths(
         if not isinstance(values, list) or not all(isinstance(item, str) for item in values):
             raise ValueError(f"invalid template_files for scaffold profile: {name}")
         paths.update(values)
+        references = entry.get("template_file_capabilities", [])
+        if (
+            not isinstance(references, list)
+            or any(not isinstance(item, str) or not item for item in references)
+            or len(references) != len(set(references))
+            or references and manifest["schema_version"] != 3
+        ):
+            raise ValueError(f"invalid template_file_capabilities for scaffold profile: {name}")
+        if references:
+            modules = load_modules()
+            for module_id in references:
+                if module_id not in modules:
+                    raise ValueError(f"unknown profile inventory capability: {module_id}")
+                inventory = modules[module_id].get("target_files")
+                if not isinstance(inventory, list) or any(not isinstance(path, str) or not path for path in inventory):
+                    raise ValueError(f"invalid profile capability inventory: {module_id}")
+                # Inventory reuse is not module selection or dependency activation.
+                paths.update(inventory)
         include_remaining = entry.get("include_remaining_template_files") is True
         conformance_remaining = (
             entry.get("conformance_include_remaining_template_files") is True
@@ -145,6 +162,16 @@ def _profile_paths(
                 if path.is_file()
             )
     return chain, tuple(sorted(paths))
+
+
+def load_profile_manifest() -> dict[str, Any]:
+    """Read source profile declarations; legacy literal inventories remain valid."""
+    manifest = _object(PROFILE_MANIFEST)
+    if type(manifest.get("schema_version")) is not int or manifest["schema_version"] not in {2, 3}:
+        raise ValueError("scaffold profile manifest requires schema 2 or 3")
+    if not isinstance(manifest.get("profiles"), dict):
+        raise ValueError("scaffold profile manifest must define profiles")
+    return manifest
 
 
 def _assistant_selection(

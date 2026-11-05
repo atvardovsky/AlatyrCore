@@ -6,6 +6,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,6 +72,42 @@ class SemanticSchemaTests(unittest.TestCase):
 
 
 class ResidualRiskProjectionTests(unittest.TestCase):
+    def test_malformed_index_statuses_produce_findings_not_tracebacks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            path, _record = valid_package_fixture(target)
+            index_path = target / ".ai/assistant/change-packages/index.json"
+            index = json.loads(index_path.read_text())
+            for value in ({}, [], None, True, 1, "unknown"):
+                with self.subTest(status=value):
+                    entry = dict(index["records"][0], status=value)
+                    validator = changed_index_validator(target)
+                    validator.check_change_package_index_entries([entry], source="index.json",
+                        changed_paths=set(), source_changed=False, seen=set())
+                    self.assertIn("PACKAGE_INDEX_STATUS", {row.code for row in validator.findings})
+            validator = changed_index_validator(target)
+            self.assertEqual(validator.check_change_package_index_entries([{"record": {}}], source="index.json",
+                changed_paths={path.relative_to(target).as_posix()}, source_changed=False,
+                seen=set(), record_filter={path.relative_to(target).as_posix()}), set())
+
+    def test_public_index_entry_callback_and_findings_order_survive_extraction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            _, _record = valid_package_fixture(target)
+            validator = changed_index_validator(target)
+            original = validator.check_change_package_index_entries
+            with patch.object(validator, "check_change_package_index_entries", wraps=original) as selected:
+                validator.check_change_package_index()
+            self.assertEqual(selected.call_count, 1)
+            validator = changed_index_validator(target)
+            validator.check_change_package_index_entries([None, {"package_id": "same", "status": "unknown"}, {"package_id": "same", "status": "unknown"}],
+                source="index.json", changed_paths=None, source_changed=True, seen=set())
+            codes = [row.code for row in validator.findings]
+            self.assertEqual(codes[0], "PACKAGE_INDEX_ENTRY")
+            self.assertEqual(codes[-1], "PACKAGE_INDEX_DUPLICATE")
+            self.assertEqual(codes.count("PACKAGE_INDEX_STATUS"), 2)
+            self.assertTrue(all(row.path == "index.json" for row in validator.findings))
+
     def test_risk_projection_is_bounded_and_exactly_bound(self):
         record = {"validation": {"residual_risks": ["large risk " * 10000]}}
         projection = package_index_projection(record)

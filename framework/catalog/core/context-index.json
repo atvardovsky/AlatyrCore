@@ -138,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3530,
-      "content_digest": "sha256:419fb8ec9e6b109b07b62803d3b93581b9d6a749461f3426ffee3c9ec057bbc8"
+      "estimated_words": 3497,
+      "content_digest": "sha256:58fccbe621f4e19d04b768ae21721131ff76ade42888fd29880f015f6d531d20"
     },
     {
       "id": "framework.core.context-router-md",
@@ -249,8 +249,8 @@
       "owner_refs": [
         "ALATYR-MODULE-001"
       ],
-      "estimated_words": 2387,
-      "content_digest": "sha256:9765abae505ff59b65f91a4651ef887784864a3bfdb2dc543c69b7b852e2e96a"
+      "estimated_words": 2468,
+      "content_digest": "sha256:d503c9915c437c8ff744fb06557644105673215635eb6b7311b0ff317087fa3d"
     },
     {
       "id": "framework.core.operation-help-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:06098530f33f815fe7617750e25d563ed13118462826c6bd2317fa65a4f250b3"
+      "content_digest": "sha256:9ba45fd39a8d625ca9560261a3c42a0e938d2ebd17f7a0f9e24ec161db19b617"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

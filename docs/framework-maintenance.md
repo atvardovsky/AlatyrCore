@@ -131,6 +131,10 @@ semantic acceptance, live readiness or measured real-team improvement.
 - Module-profile contract change: update `framework/`,
   `templates/target/.ai/assistant/module-profile.md`, installer docs,
   manifest template, checker rules, README, and changelog when affected.
+  Marked activation summaries are deterministic manifest projections refreshed
+  by support finalization; authored rationale and explicit inactive dispositions
+  are not regenerated. Test legacy no-marker preservation, concurrent writes,
+  malformed bindings and registered validation as well as the pure renderer.
 - Source-of-truth registry, task-specific maturity, bridge capability,
   provider context-caching capability, or migration-note contract change:
   update `framework/`, `installer/`,

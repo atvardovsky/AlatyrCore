@@ -1799,7 +1799,10 @@ repeatable `--enable-module` capability IDs with dependency closure. Selected
 optional capabilities are written as `staged`, not `enabled`; target fact
 resolution and capability validation own the later activation transition.
 Profile, capability, framework-pack, and assistant-surface choices are
-resolved once through an immutable composition read model. A typed acyclic
+resolved once through an immutable composition read model. Source profile
+schema 3 reuses direct capability file inventories without enabling modules or
+expanding their dependency closure; legacy schema-2 inventories remain readable.
+A typed acyclic
 projection graph checks output ownership and dependencies and supplies the
 deterministic topological write order; path-specific renderers remain the
 content owners. A
@@ -1903,6 +1906,15 @@ shape, target-relative scope, result declarations, and verifiable plan hashes.
 It does not apply those records to the current diff. Only records selected with
 `--approval-record` can participate in current-operation scope and patch-hash
 validation.
+
+Marked module profiles derive their selected/staged/enabled summaries and active
+states from the manifest during `finalize-support`. Project-owned rationale and
+inactive dispositions are preserved; removed activation cannot infer disablement.
+Unmarked legacy profiles remain manually maintained until reviewed adoption.
+For a focused read-only check, run
+`python3 tools/render_module_profile.py --target /path/to/target-repo`.
+Add `--write` only for approved projection updates; the renderer refuses stale
+output preimages and does not authorize activation or replace acceptance.
 
 For preserved legacy debt, explicitly pass `--historical-evidence-index
 .ai/assistant/historical-evidence-index.json` to `validate-adapter` or

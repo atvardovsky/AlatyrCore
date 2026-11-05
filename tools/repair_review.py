@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
-from datetime import datetime, timezone
+from repair_qualification import run_window
 
 from jsonschema import Draft202012Validator
 from target_validation_support import is_target_relative_path, is_unresolved_value, is_placeholder
@@ -46,21 +46,6 @@ def policy_failures(review: Any, policy: dict[str, Any], schema: dict[str, Any])
         from repair_qualification import policy_qualification_failures
         failures.extend(policy_qualification_failures(review["qualification"], commands, set(review["acceptance_command_ids"])))
     return failures
-
-
-def run_window(run: dict[str, Any]) -> tuple[datetime, datetime] | None:
-    value = run.get("run_window")
-    if not isinstance(value, dict) or set(value) != {"started_at", "finished_at"}:
-        return None
-    try:
-        if not all(isinstance(item, str) and len(item) <= 64 for item in value.values()):
-            return None
-        start, end = (datetime.fromisoformat(value[key].replace("Z", "+00:00")) for key in ("started_at", "finished_at"))
-        if start.tzinfo is None or end.tzinfo is None or end < start:
-            return None
-        return start.astimezone(timezone.utc), end.astimezone(timezone.utc)
-    except (ValueError, TypeError, OverflowError):
-        return None
 
 
 def controlled_contrast(before: dict[str, Any], after: dict[str, Any], metadata_paths: set[str]) -> bool:

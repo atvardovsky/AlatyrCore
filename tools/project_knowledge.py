@@ -526,19 +526,13 @@ def validate_project_knowledge(
         adoption_state = adoption.get("state")
         reuse_evidence = adoption.get("reuse_evidence", [])
         has_projection = bool(entries)
-        has_registry_state = bool(
-            index.get("promotion_records")
-            or index.get("shards")
-            or index.get("coverage", {}).get("areas")
-            or index.get("coverage", {}).get("fact_types")
-        )
         if adoption_state == "enabled-empty":
-            if has_projection or has_registry_state or reuse_evidence:
+            if has_projection or reuse_evidence:
                 findings.append(
                     KnowledgeFinding(
                         "error",
                         "PROJECT_KNOWLEDGE_ADOPTION_STATE",
-                        "enabled-empty requires no promotions, shards, coverage, route entries, or reuse evidence",
+                        "enabled-empty requires no reviewed route entries or reuse evidence; intake and known gaps do not establish adoption",
                         index_relpath,
                     )
                 )

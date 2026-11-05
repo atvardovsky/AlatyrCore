@@ -332,8 +332,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1691,
-      "content_digest": "sha256:1dc696400e4fb7ebf2ac49d4eb594c3af3bc1eed1e3a664d2e09900a84941328"
+      "estimated_words": 1733,
+      "content_digest": "sha256:cce18d5b8ed861167777a092547a16afad470a9f8af099fbd10924e7012d9f0e"
     },
     {
       "id": "assistant.content.operation-catalog-json",

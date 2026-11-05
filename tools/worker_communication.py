@@ -11,7 +11,7 @@ from typing import Any
 import jsonschema
 
 from context_input_snapshot import read_regular_context_bytes
-from delegation_evidence import MAX_JSON_BYTES
+from delegation_structure import MAX_JSON_BYTES, matches_surface, validate_topology
 from path_spec import logical_path
 from source_context_selection import contained_source_path
 
@@ -73,11 +73,10 @@ def validate_communication(tree: dict, nodes: dict[str, dict], *, read_source=No
             if update["kind"] == "finding" and not update["source_refs"]:
                 raise ValueError("worker findings require source-bound evidence")
             # A parent may relay only sources permitted for each recipient.
-            from delegation_evidence import _matches_surface
             for recipient in recipients | {sender}:
                 node = nodes[recipient]
                 if node["depth"] > 0 and any(
-                    not _matches_surface(path, node["surface_refs"])
+                    not matches_surface(path, node["surface_refs"])
                     for path in update["source_refs"]
                 ):
                     raise ValueError("worker communication source escapes recipient scope")
@@ -135,11 +134,10 @@ def select_group(tree: dict, *, session_uid: str, tree_uid: str, repository_id: 
                  expected_generation: int) -> tuple[dict, dict]:
     """Validate routing independently of old source freshness or output size."""
     _validate(tree)
-    from delegation_evidence import _validate_topology
     nodes = {row["node_id"]: row for row in tree["nodes"]}
     if len(nodes) != len(tree["nodes"]):
         raise ValueError("worker communication tree has duplicate nodes")
-    _validate_topology(tree, nodes, tree["aggregate_budget"])
+    validate_topology(tree, nodes, tree["aggregate_budget"])
     validate_communication(tree, nodes)
     channel = tree.get("communication")
     if channel is None:

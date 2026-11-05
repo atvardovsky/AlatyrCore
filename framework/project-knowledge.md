@@ -262,8 +262,9 @@ Coverage supports discovery, not authority.
 
 The routing index records one machine-checkable adoption state:
 
-- `enabled-empty`: the module is installed but has no promotions, coverage, or
-  route entries; installation remains valid, but reuse is not demonstrated
+- `enabled-empty`: the module has no reviewed route entries or reuse evidence;
+  intake records, empty shards and known-gap coverage may exist, but do not
+  establish adoption or accepted guidance
 - `populated`: at least one reviewed route entry exists, but no later-task reuse
   evidence is claimed
 - `reuse-observed`: reviewed route entries exist and the index names explicit
@@ -272,6 +273,8 @@ The routing index records one machine-checkable adoption state:
 An empty module cannot block adapter acceptance, imply absent knowledge or prove
 Project Development Model impact. `reuse-observed` requires recorded later-task
 delivery, not merely installed entries.
+Promotion, coverage, authority and freshness checks apply independently of the
+adoption label; retaining intake records cannot make an invalid record valid.
 
 ## Cost And Evidence
 
