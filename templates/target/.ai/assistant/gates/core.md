@@ -5,6 +5,8 @@ Canonical owners: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 only for ambiguity, adapter repair, or a boundary named by another gate.
 
 - Select the smallest profiles, overlays, and areas covering the request.
+- Apply source-linked request reconciliation before continuing/answering;
+  small tasks inline, material work through existing proofs.
 - Record every applicable risk class and one ordered severity: `low`,
   `moderate`, `high`, or `protected`. A protected framework or target trigger
   cannot be downgraded.

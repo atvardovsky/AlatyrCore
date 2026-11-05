@@ -48,7 +48,8 @@ def object_at(target: Path, relative: str, limit: int = MAX_INPUT_BYTES) -> tupl
     return raw, json_object(raw, relative)
 
 
-def selected_task(target: Path, task_id: str) -> dict:
+def selected_task(target: Path, task_id: str, *, request_review: bool = False,
+                  require_completion: bool = False) -> dict:
     # Only the selected canonical view is evaluated, not Validator.run().
     from current_task_view import current_task_view
     from validate_target_adapter import Validator, load_validator_config
@@ -62,6 +63,13 @@ def selected_task(target: Path, task_id: str) -> dict:
     if result["state"] == "bound-recorded-disposition":
         paths = {".ai/assistant/active-tasks.json", result["model"]["path"]}
         loaded = validator.context.read_json_result(validator.target_path(result["model"]["path"])).value
+        if request_review:
+            result["request_model"] = loaded
+            result["request_contexts"] = (validator.context, validator.schema_context)
+        if require_completion and result["task_state"] == "active":
+            from target_adapter_validation.analysis_strategies import load_problem_model_schema, validate_selected_problem_model
+            validate_selected_problem_model(validator, validator.target_path(result["model"]["path"]),
+                load_problem_model_schema(validator.schema_context), require_completion=True, current_task=True)
         if result["task_state"] == "active" and isinstance(loaded, dict) and isinstance(loaded.get("active_projection"), dict):
             paths.add(loaded["active_projection"]["path"])
         if result["task_state"] == "closed":
@@ -135,9 +143,16 @@ def validate_state(state: dict, session_id: str) -> None:
     binding = state.get("binding")
     if binding is not None:
         required = {"baseline", "baseline_sha256", "task_id", "expires_at", "policy_sha256"}
-        if (not isinstance(binding, dict) or set(binding) - {"completion_only"} != required
+        if (not isinstance(binding, dict) or set(binding) - {"completion_only", "request_brief"} != required
                 or "completion_only" in binding and type(binding["completion_only"]) is not bool):
             raise ValueError("invalid reviewed lifecycle binding")
+        if "request_brief" in binding:
+            value = binding["request_brief"]
+            if not isinstance(value, dict) or set(value) != {"path", "sha256"}:
+                raise ValueError("invalid lifecycle request brief binding")
+            relative_path(value["path"])
+            if not isinstance(value["sha256"], str) or len(value["sha256"]) != 64 or any(char not in "0123456789abcdef" for char in value["sha256"]):
+                raise ValueError("invalid request brief SHA-256")
         for field in ("baseline", "baseline_sha256", "task_id", "policy_sha256"):
             identifier(binding.get(field), "binding." + field)
         if type(binding.get("expires_at")) not in (int, float) or not 0 < binding["expires_at"] <= MAX_TIMESTAMP:
@@ -165,8 +180,74 @@ def session_status(target: Path, session_id: str) -> dict:
         "request_id": state["request_id"], "reminders": state["reminders"]}
 
 
+def request_artifact(target: Path, path: str) -> tuple[bytes, dict]:
+    from request_brief import MAX_BRIEF_BYTES, parse_brief
+    path = relative_path(path)
+    raw = read_output(target, target / path, max_bytes=MAX_BRIEF_BYTES)
+    if raw is None:
+        raise ValueError("missing request brief: " + path)
+    return raw, parse_brief(raw)
+
+
+def review_request(target: Path, brief_path: str, action: object, *,
+                   request_id: str | None = None, task_id: str | None = None,
+                   expected_sha256: str | None = None, native_guard: dict | None = None,
+                   native_payload: dict | None = None, retained: dict | None = None,
+                   policy_sha256: str | None = None) -> dict:
+    from request_brief import MAX_BRIEF_BYTES, action_failures, native_file_action_failures, parse_action
+    raw, brief = request_artifact(target, brief_path)
+    selected_action = parse_action(action)
+    if expected_sha256 is not None and digest(raw) != expected_sha256:
+        raise ValueError("bound request brief changed; reconcile the newest request")
+    selected_id = task_id if task_id is not None else brief["task_id"]
+    selected = selected_task(target, selected_id, request_review=True,
+                             require_completion=selected_action["kind"] == "complete")
+    failures = action_failures(brief, selected_action, selected["request_model"],
+        request_id=request_id if request_id is not None else brief["request_id"], task_id=selected_id)
+    if selected["task_state"] == "closed" and selected_action["kind"] == "work":
+        failures.append("closed task cannot reopen execution through request review")
+    if retained is not None and not task_context_matches(retained, selected, policy_sha256):
+        failures.append("selected completion/request inputs are missing or changed in retained context; recapture exact selected evidence")
+    if native_guard is not None:
+        failures.extend(native_file_action_failures(target, native_guard, native_payload or {}, selected_action))
+    else:
+        for path in selected_action["paths"]:
+            safe_output(target, target / path)
+    if read_output(target, target / relative_path(brief_path), max_bytes=MAX_BRIEF_BYTES) != raw:
+        raise ValueError("request brief changed during review")
+    for context in selected["request_contexts"]:
+        if context.finalize():
+            raise ValueError("selected request inputs changed during review")
+    result = decision("request-review-required" if failures else "request-consistent",
+        "; ".join(failures[:8]) if failures else "Declared request, selected model and action agree; newest intent and approval still require review.", block=bool(failures))
+    result.update(request_id=brief["request_id"], task_id=selected_id, failures=failures,
+        request_brief={"path": brief_path, "sha256": digest(raw)},
+        request_provenance="declarative-unverified", execution_interception="not-performed")
+    return result
+
+
+def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, retained: dict) -> dict | None:
+    path = bind.get("request_brief")
+    prior = state.get("binding")
+    required = policy.get("request_guard", {}).get("required", False) or isinstance(prior, dict) and "request_brief" in prior
+    if path is None:
+        if required:
+            raise ValueError("request guard requires an explicit request brief; rebind cannot drop it")
+        return None
+    raw, brief = request_artifact(target, path)
+    action = {"request_id": state["request_id"], "task_id": bind["task_id"], "kind": "answer",
+              "phase": "inspect", "outcome_ids": [row["id"] for row in brief["outcomes"]], "paths": [], "effects": []}
+    review = review_request(target, path, action, request_id=state["request_id"], task_id=bind["task_id"])
+    if review["checkpoint_required"]:
+        raise ValueError(review["reason"])
+    expected = {row["path"]: row["sha256"] for row in validate_baseline(retained.get("baseline", retained))["inputs"]}
+    if expected.get(path) != "sha256:" + digest(raw) or review["request_brief"]["sha256"] != digest(raw):
+        raise ValueError("reviewed baseline must retain the exact request brief")
+    return review["request_brief"]
+
+
 def handle(target: Path, provider: str, event: str, payload: dict, *,
-           bind: dict | None = None, now: float | None = None) -> dict:
+           bind: dict | None = None, now: float | None = None, procedural: bool = False) -> dict:
     raw_policy, policy = load_policy(target)
     if policy is None or not policy["enabled"]:
         return decision("disabled", "No lifecycle hooks adopted; perform ordinary procedural checkpoints.")
@@ -240,17 +321,22 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
                 raise ValueError("reviewed baseline must include current canonical task index, selected model and projection, and lifecycle policy; capture changed/missing selected inputs: " + ", ".join(missing[:12]))
             if read_output(target, target / bind["baseline"], max_bytes=128 * 1024) != baseline_raw:
                 raise ValueError("reviewed baseline changed during binding")
+            request_brief = bind_request_brief(target, bind, state, policy, retained)
             state.update(status="bound", binding={"baseline": bind["baseline"],
                 "baseline_sha256": digest(baseline_raw), "task_id": bind["task_id"],
                 "expires_at": (time.time() if now is None else now) + policy["binding_ttl_seconds"], "policy_sha256": digest(raw_policy),
                 "completion_only": completion_only})
+            if request_brief is not None:
+                state["binding"]["request_brief"] = request_brief
             result = decision("bound", "Review recorded; phases, permissions and acceptance remain separately owned.")
         elif event in {"after-change", "compact"}:
             if state["status"] not in {"interrupted", "ended"}:
                 state["status"] = "review-required"
             result = decision(state["status"], "Reconcile affected owners, documentation and evidence before the next mutation.")
         elif state["status"] != "bound":
-            if state["binding"] is None and state["status"] not in {"interrupted", "ended"}:
+            if policy.get("request_guard", {}).get("required", False) and state["status"] not in {"interrupted", "ended"}:
+                result = decision("request-review-required", "Adopted request guard requires a current reviewed brief; inspect only.", block=True)
+            elif state["binding"] is None and state["status"] not in {"interrupted", "ended"}:
                 result = decision("inactive", "No registered task selected for hook delivery. Use ordinary task-scale context and authorization checks; small tasks need no model.")
             else:
                 result = decision(state["status"], "A current reviewed task/context binding is required; inspect only.", block=True)
@@ -263,6 +349,16 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
                 baseline_raw, retained = object_at(target, binding["baseline"], 128 * 1024)
                 if digest(baseline_raw) != binding["baseline_sha256"]:
                     result = decision("review-required", "Selected context changed or expired; use session-continuity.", block=True)
+                elif "request_brief" in binding and event in {"before-action", "completion"}:
+                    brief = binding["request_brief"]
+                    result = review_request(target, brief["path"], payload.get("alatyr_action"),
+                        request_id=state["request_id"], task_id=binding["task_id"], expected_sha256=brief["sha256"],
+                        native_guard=policy.get("request_guard", {"required": False, "file_tools": []}) if provider != "procedural" and not procedural and event == "before-action" else None,
+                        native_payload=payload, retained=retained, policy_sha256=digest(raw_policy))
+                    if binding.get("completion_only") and event == "before-action":
+                        result = decision("completion-only", "Terminal review cannot reopen execution.", block=True)
+                    elif event == "completion" and payload["alatyr_action"]["kind"] == "work":
+                        result = decision("request-review-required", "Completion callback requires answer or complete review.", block=True)
                 elif event == "before-action":
                     result = (decision("completion-only", "Terminal review binding cannot reopen execution; select a current active scope before mutation.", block=True)
                               if binding.get("completion_only") else
@@ -281,7 +377,7 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
                             result = decision("completion-evidence-consistent",
                                 "Selected closure and completed-model evidence are consistent. This checkpoint grants neither canonical acceptance, publication, nor current runtime readiness.")
                         result["completion_review"] = view.get("completion_review", "closure-required")
-        active = policy["mode"] == "checkpoint" and policy["native_evidence"]["state"] == "observed"
+        active = not procedural and policy["mode"] == "checkpoint" and policy["native_evidence"]["state"] == "observed"
         reminder = (event == "completion" and active and result["status"] == "unfinished"
             and state["status"] == "bound" and state["reminders"] < policy["max_reminders"]
             and payload.get("stop_hook_active") is not True)
@@ -294,7 +390,7 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
         encoded = (json.dumps(state, sort_keys=True) + "\n").encode()
         replace_output(target, state_path, raw_state, encoded)
         # One canonical comparison, after task evaluation and durable state writes.
-        if state["status"] == "bound" and result["status"] in {"bound", "current-context", "unfinished", "handoff-review", "handoff-required", "completion-only", "completion-evidence-consistent"}:
+        if state["status"] == "bound" and result["status"] in {"bound", "current-context", "unfinished", "handoff-review", "handoff-required", "completion-only", "completion-evidence-consistent", "request-consistent"}:
             context = check_retained_context(target, target / state["binding"]["baseline"])
             final_baseline, _ = object_at(target, state["binding"]["baseline"], 128 * 1024)
             if context["status"] != "current" or digest(final_baseline) != state["binding"]["baseline_sha256"]:

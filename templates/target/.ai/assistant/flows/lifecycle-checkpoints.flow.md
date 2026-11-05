@@ -19,6 +19,8 @@ their behavior. Canonical rules remain in `.ai/framework/task-state-delivery.md`
    files. A bind diagnostic names missing/changed selected inputs. Policy edits require renewed
    review and capture. Explicitly bind the current request via the portable
    delegate's `lifecycle-checkpoint` operation. The binding grants no authority.
+   Adopted request guards require the brief in that baseline and
+   `bind --request-brief <path>`; reconcile new request/resume IDs explicitly.
 5. Before mutation, reconcile changed/expired selected context and check current
    approval, scope and permissions. After changes, review documentation and
    companion surfaces before rebinding. Use selective mutating-tool hooks only.
@@ -33,6 +35,10 @@ their behavior. Canonical rules remain in `.ai/framework/task-state-delivery.md`
 7. Report configured/adopted/exercised/intercepted states separately. Keep native
    errors, missing coverage and procedural checks visible. Never infer success
    from a configuration file or validator result alone.
+
+`lifecycle-checkpoint review --request-brief <path>` checks stdin action JSON
+without writes/adoption. See the operator guide for actual-action mappings,
+partial-answer/completion distinctions and client-verification limits.
 
 Runtime session state stays ignored under `.ai/.runtime/lifecycle-hooks/` and
 contains no conversation, approval record or duplicate project task inventory.

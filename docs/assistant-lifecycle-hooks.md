@@ -37,7 +37,7 @@ required event is missing or behavior is uncertain, retain procedural checks.
 ## Session Protocol
 
 Delivery is task-bound: project adoption does not require registered models for
-small settled work. Only an explicitly reviewed binding activates task checks.
+small settled work by default. Only an explicitly reviewed binding activates task checks.
 New requests deactivate the prior task binding; ordinary lightweight context and
 authorization rules still apply. Resume retains pending task review and cannot
 clear an interruption or reopen an ended scope without a new request.
@@ -81,8 +81,9 @@ or arbitrary shell commands as if their action phase could be inferred safely.
 
 - A request or session start invalidates the old binding. Synthetic follow-ups
   also require review; they never grant authority or automatically rebind.
-- Pre-action compares selected context only. The primary still checks the
-  current action phase, protected approval and scope before any mutation.
+- Legacy pre-action compares selected context only. An explicitly adopted
+  request guard also compares the request/action contract described below.
+  The primary still checks actual human authorization and protected approval.
 - Post-change/compaction requires selective owner, documentation and evidence
   reconciliation. It cannot undo actions or certify documentation completeness.
 - Completion reads the existing selected task view, not the full validator.
@@ -96,6 +97,69 @@ State is one bounded ignored record plus lock/revocation marker per session unde
 `.ai/.runtime/lifecycle-hooks/`. It contains no transcript, commands, domain task
 status or approvals. Normal checkpoints do not append history or scan the source
 tree. Remove obsolete session artifacts only through an authorized local cleanup.
+
+## Request-Bound Review
+
+Every assistant follows [request reconciliation](../framework/action-authorization.md#request-reconciliation).
+Small tasks keep it inline. Material tasks may place the
+[brief template](../templates/target/.ai/assistant/templates/request-brief.json)
+in existing task evidence or ignored runtime storage. Keep the source request
+reference distinct from its lifecycle nonce. Copy no secrets or full transcript.
+Bind the exact model objective, every requested outcome and its existing required
+proof IDs; each outcome names a plausible substitute that must fail. Constraints,
+exclusions and requested order remain human/agent review text, not parsed rules.
+
+The parser caps briefs at 16 KiB, 1200 words and 32 rows per collection. Paths
+are normalized, literal and target-relative; `{path, recursive}` admits that
+exact path and, only when recursive is true, its descendants. No glob or prefix
+approximation is used. Effect identities are exact reviewed labels, such as a
+selected publication destination; they are not executable commands or approval.
+
+The read-only review works without hook adoption and consumes action JSON on
+stdin. Replace the illustrative IDs and paths with current bindings:
+
+```sh
+python3 tools/alatyr.py lifecycle-checkpoint --target /path/to/target review --request-brief .ai/.runtime/current-request.json < /private/path/action.json
+```
+
+```json
+{"request_id":"REQUEST","task_id":"TASK","kind":"work","phase":"modify","outcome_ids":["OUTCOME"],"paths":["src/example.py"],"effects":[]}
+```
+
+`kind` is `work`, `answer` or `complete`. Answers use `inspect` and can report
+partial findings; `complete` also runs canonical selected-model completion
+validation and requires all mapped outcome proofs to be passed, not waived.
+`request-consistent` verifies declared relationships, not real user understanding,
+evidence truth, task acceptance or permission. A caller can still supply the wrong
+request; native provenance and independent source-first review remain necessary.
+
+For adopted hooks, preserve disabled state unless the owner explicitly enables
+the guard. Set `request_guard.required` to true only after review, retain the
+brief in the selected context baseline, and add `--request-brief <path>` to
+`bind`. Missing, stale or dropped briefs fail review. Request/resume invalidation
+requires explicit reconciliation with the newest request, not silent renewal.
+`required: true` is a stricter opt-in lane: selected mutation callbacks block
+while no model-backed brief is bound. Scope native hook matchers accordingly;
+ordinary small requests keep inline/procedural review unless the owner explicitly
+chooses this additional registration cost. Never enable it merely during upgrade.
+
+Native pre-action review additionally requires `alatyr_action` containing the
+same action shape. Configure `request_guard.file_tools` only for verified
+single-file mutators, for example `[{"tool_name":"Write","path_field":"file_path"}]`.
+This exact shape reads `tool_name` and `tool_input.file_path` from the real event;
+the declared phase/path must agree with that input. Other payload dialects need
+a separately reviewed adapter. Path fields are `path`, `file_path` or `filename`;
+other admitted input keys are `content`, `old_string`, `new_string`, `replace_all`.
+Extra command/rename/multi-file fields are rejected. Shell/interpreter, multi-file patch and unknown
+tools cannot gain coverage by supplying a harmless declaration. The mapping is
+an operator's tool-semantics assertion; wire tests do not authenticate it.
+
+Native completion supplies an explicit `answer` or `complete` action. Missing
+or invalid input is a diagnostic, not an automatic retry or permission to claim
+success. Request failures do not consume completion reminders or restart work.
+Only an exercised checkpoint configuration can deny selected native mutations;
+observe mode stays non-blocking. Retain procedural checks where callbacks cannot
+observe the actual request, action or completion claim.
 
 ## Provider Routes
 
@@ -147,6 +211,10 @@ nonzero. An invalid native-output invocation has no trustworthy
 action classification and returns a neutral diagnostic, not an interception
 claim; verify callback arguments before activation. None of these transport
 statuses establishes acceptance.
+
+Recognized non-event commands (`review`, `bind`, `status`, `checkpoint`) retain
+ordinary parser errors; an invalid `--native-output` flag cannot convert them
+into successful neutral callback transport.
 
 Measure callback I/O, wall time, context delivered and billing separately.
 Deterministic tests establish protocol consistency, not improved engineering

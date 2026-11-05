@@ -12,7 +12,7 @@ from pathlib import Path
 
 from inspect_session_context import Once, json_object
 from lifecycle_checkpoints import (EVENTS, MAX_INPUT_BYTES, NATIVE_EVENTS, PROVIDERS,
-    decision, handle, identifier, load_policy, session_status)
+    decision, handle, identifier, load_policy, review_request, session_status)
 
 
 def normalize(provider: str, native_event: str, payload: dict) -> tuple[str, dict]:
@@ -80,6 +80,10 @@ def build_parser() -> argparse.ArgumentParser:
     for field in ("session-id", "request-id", "baseline", "task-id"):
         bind.add_argument("--" + field, required=True, action=Once)
     bind.add_argument("--completion-only", action="store_true", help="Review terminal evidence without reopening execution.")
+    bind.add_argument("--request-brief", action=Once, help="Retained request brief, included in the reviewed context baseline.")
+    review = actions.add_parser("review", allow_abbrev=False)
+    review.add_argument("--request-brief", required=True, action=Once,
+        help="Read-only declared request/action check; bounded action JSON on stdin, no hook adoption required.")
     status = actions.add_parser("status", allow_abbrev=False)
     status.add_argument("--session-id", required=True, action=Once)
     return parser
@@ -87,11 +91,16 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     native_requested = "--native-output" in sys.argv[1:]
+    partial = argparse.Namespace()
+    parser_errors = io.StringIO()
     try:
-        with contextlib.redirect_stderr(io.StringIO()) if native_requested else contextlib.nullcontext():
-            args = build_parser().parse_args()
+        with contextlib.redirect_stderr(parser_errors) if native_requested else contextlib.nullcontext():
+            args = build_parser().parse_args(namespace=partial)
     except SystemExit as exc:
-        if not native_requested or exc.code != 2:
+        ordinary = getattr(partial, "action", None) in {"bind", "review", "status", "checkpoint"}
+        if not native_requested or exc.code != 2 or ordinary:
+            if native_requested and ordinary:
+                print(parser_errors.getvalue(), file=sys.stderr, end="")
             raise
         print(json.dumps(decision("unavailable", "Invalid lifecycle callback invocation; review configuration and use procedural checks.", block=True)), file=sys.stderr)
         print("{}")
@@ -102,16 +111,22 @@ def main() -> int:
         if args.action == "status":
             result = session_status(target, args.session_id)
         elif args.action == "bind":
+            binding = {"request_id": args.request_id, "baseline": args.baseline, "task_id": args.task_id,
+                       "completion_only": args.completion_only}
+            if args.request_brief is not None:
+                binding["request_brief"] = args.request_brief
             result = handle(target, args.provider, "before-action", {"session_id": args.session_id},
-                bind={"request_id": args.request_id, "baseline": args.baseline, "task_id": args.task_id,
-                      "completion_only": args.completion_only})
+                bind=binding)
         else:
             raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
             if len(raw) > MAX_INPUT_BYTES:
                 raise ValueError("lifecycle event exceeds 64 KiB")
             payload = json_object(raw, "native lifecycle event")
-            event, payload = normalize("procedural" if args.action == "checkpoint" else args.provider, args.event, payload)
-            result = handle(target, args.provider, event, payload)
+            if args.action == "review":
+                result = review_request(target, args.request_brief, payload)
+            else:
+                event, payload = normalize("procedural" if args.action == "checkpoint" else args.provider, args.event, payload)
+                result = handle(target, args.provider, event, payload, procedural=args.action == "checkpoint")
         if getattr(args, "native_output", False):
             print(json.dumps(result, sort_keys=True), file=sys.stderr)
             print(json.dumps(native_output(args.provider, args.event, result), sort_keys=True))

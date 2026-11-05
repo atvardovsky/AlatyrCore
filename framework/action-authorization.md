@@ -11,14 +11,10 @@ alatyr_doc:
 ---
 # Action Authorization
 
-This document defines how an assistant determines whether the current user
-request permits inspection, repository mutation, Git history mutation,
-publication, or live external action.
-
-Action authorization is not the same as operation routing, allowed actions,
-protected-change approval, tool permission, task assignment, or project
-decision authority. Each is an independent boundary and all applicable
-boundaries must pass.
+Determine which phases the current user request authorizes. Operation routing,
+allowed actions, protected-change approval, tool permissions, task assignment
+and project decision authority remain independent; all applicable boundaries
+must pass.
 
 ## Current Logical Scope
 
@@ -74,6 +70,21 @@ as `implement, commit, and push`. Do not ask again for a phase already stated
 unambiguously unless scope or risk changed. Ask before the first unauthorized
 phase.
 
+## Request Reconciliation
+
+Every request retains source, outcomes, constraints, exclusions, order, scope,
+phases and completion evidence. Small tasks normally stay inline; material briefs reuse
+task evidence/proofs and optional `request-brief.json`.
+
+Before continuing, acting, integrating workers or answering, compare newest
+request, brief and task, including inspection. Each action serves an outcome.
+Redirection/interruption invalidates affected selections; preserve duties without
+resuming superseded work or fabricating a human request.
+
+Interpretation is not authority. No easier-outcome or plan-defined substitution;
+material compromises need owner decisions. Hashes/checks prove neither intent,
+complete capture nor permission. Native guards need exercised actual-action coverage.
+
 ## Intent Classification
 
 Use the newest user instruction and its current scope. Do not rely on isolated
@@ -109,19 +120,14 @@ the smallest confirmation.
 
 ## Own Presence Housekeeping
 
-An accepted user-owned presence policy may explicitly permit bounded
-`own_entry_housekeeping`. This narrowly covers registering, refreshing, and
-removing the acting participant's own local presence entry through the
-canonical helper, including during inspect-only work. It is not a `modify`
-grant, authorization for other ignored files, or permission to write another
-participant's entry. It does not cover continuity packets, project content,
-Git index/history/refs, publication, or external actions.
-
-An explicit no-writes instruction, read-only worker envelope, host restriction,
-or disabled policy takes precedence. Without this recorded allowance, the
-current request must authorize local metadata mutation. A scaffold is not an
-accepted allowance; installation/update must preserve existing choices and
-record acceptance of new defaults. Helper flags do not prove chat authority.
+An accepted user-owned policy may allow `own_entry_housekeeping`: register,
+refresh/remove only one's own local entry through the canonical helper, even
+during inspection. This grants no `modify`, other ignored-file/participant
+writes, continuity packets, project changes, Git index/history/refs, publication
+or external actions. Explicit no-writes, worker/host restrictions and disabled
+policies win. Without that allowance require current metadata-mutation authorization.
+Scaffolding is not acceptance; installation/update preserves choices and records
+new-default acceptance. Flags do not prove chat authority.
 
 ## Independent Boundaries
 

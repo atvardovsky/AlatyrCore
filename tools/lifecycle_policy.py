@@ -36,8 +36,14 @@ def policy_failures(policy: object, *, now: float | None = None) -> list[str]:
         return ["lifecycle policy must be an object"]
     required = {"schema_version", "enabled", "provider", "mode", "binding_ttl_seconds", "max_reminders", "native_evidence"}
     failures = []
-    if set(policy) != required or type(policy.get("schema_version")) is not int or policy["schema_version"] != 1:
+    if set(policy) - {"request_guard"} != required or type(policy.get("schema_version")) is not int or policy["schema_version"] != 1:
         failures.append("lifecycle policy requires exact schema-1 fields")
+    if "request_guard" in policy:
+        from request_brief import guard_policy
+        try:
+            guard_policy(policy["request_guard"])
+        except ValueError as exc:
+            failures.append(str(exc))
     if type(policy.get("enabled")) is not bool:
         failures.append("lifecycle enabled must be Boolean")
     for field, allowed in (("provider", PROVIDERS), ("mode", {"observe", "checkpoint"})):

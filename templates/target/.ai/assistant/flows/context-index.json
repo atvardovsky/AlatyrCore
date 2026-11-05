@@ -384,8 +384,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 321,
-      "content_digest": "sha256:30491d187cd444dbe328e6d02fdd735d2e2f62195866dd793186b8501c0eafaa"
+      "estimated_words": 361,
+      "content_digest": "sha256:dc7082c5491e54fe986574d57293aa49807b5ccab4ff751ef509c4eda8818246"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",

@@ -127,6 +127,12 @@ obligations. Follow [contract-bound parts](framework/task-decomposition.md#contr
 and preserve explicit delegation preferences; installation/update does not
 invent evidence, require workers for all tasks, or enable lifecycle hooks.
 
+Deliver the authorization owner's source-linked request brief through the
+existing task flow: small tasks inline, material outcomes mapped to existing
+proof obligations. Preserve exclusions, requested order and rejected substitutes.
+Updates must preserve disabled lifecycle hooks and request-guard choices;
+the new template is not adoption or renewed user authority.
+
 Prepare an installation plan using
 `installer/installation-plan-core-template.md`. Load only the selected sections
 of `installer/installation-plan-template.md` when enabled optional capabilities

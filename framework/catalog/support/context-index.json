@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 995,
-      "content_digest": "sha256:d7200321d881d4ff0fbad8bd7c01d441e054f2d77cc5108a33ef4c0581397999"
+      "estimated_words": 878,
+      "content_digest": "sha256:72851893847721c5c13434c132230ca511557a37f02964d5e60d5b71fd52ddeb"
     },
     {
       "id": "framework.support.test-execution-selection-md",

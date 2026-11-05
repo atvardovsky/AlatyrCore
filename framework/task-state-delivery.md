@@ -53,57 +53,51 @@ The active projection preserves adopted mappings within existing byte/word limit
 
 ## Execution Focus
 
-For a selected active task, derive orientation from its validated model and
-existing readiness/advice, not another mutable status file. Bind the task ID,
-model digest, objective, scope references, unresolved duties and proposed probe
-to the same snapshot. A proposal names its obligation, uncertainty, method and
-completion condition; it is not an executable command or authorization.
+Derive selected-task orientation from validated model/readiness/advice, not
+another status file. One snapshot binds task ID, model digest, objective, scope,
+unresolved duties and proposed probe. Proposals name obligation, uncertainty,
+method and completion condition; they are not commands or authorization.
 
-Keep ready suggestions separate from blocked, waiting and dependency-unconfigured
-probes. Unknown mappings do not require adoption and never establish readiness.
-Stale selected artifacts clear actionable readiness and advice together, while
-retaining unresolved duties. A bounded focus overflow returns references and no
-action, not truncated constraints presented as sufficient context. Closed task
-views remain historical and propose no active work.
+Separate ready, blocked, waiting and dependency-unconfigured probes. Unknown
+mappings neither require adoption nor establish readiness. Staleness clears
+readiness/advice, retaining duties. Overflow returns references without actions
+or truncated constraints. Closed tasks remain historical, with no active work.
 
-Re-anchor at changed requirements, material contradictory evidence, scope
-expansion, failed gates, repeated unresolved repairs, worker convergence and
-continuity boundaries. Review the newest intent, selected owner/projection and
-affected obligations before the next state change. Existing pending revisions,
+Re-anchor for changed requirements, contradictory evidence, scope expansion,
+failed gates, recurring repairs, worker convergence and continuity boundaries.
+Before continuing/answering, review newest intent, owner/projection and affected
+obligations through the authorization owner's request brief. Pending revisions,
 invariant conflicts, failed gates, inconclusive probes and original-case status
-are signals, not a new incident detector or global freeze on independent work.
-An unchanged failed attempt needs a new discriminating question, input or
-explicit retry rationale; a command-count timer is not evidence of drift.
-The proposal's probe digest and prior-result digest locate the exact question
-and observation for primary selection/retry review; they do not record that
-the review occurred. A question-bound context route selects that same explicit
-obligation, never silently the first recommendation.
+are review signals, not incident detection or global freezes. Unchanged failed
+attempts need a discriminating question/input or explicit retry rationale;
+command counts prove no drift. Probe/prior-result digests locate the reviewed
+question/observation, not proof of review. Question-bound routing selects that
+explicit obligation, never silently the first recommendation.
 
-Use verified host hooks or a controlled executor for pre-action checks when
-available; otherwise perform the same checkpoint procedurally and report that
-execution was not intercepted. No universal hook, conversational-intent parser,
-context eviction or permission grant is implied. Do not reload the full corpus,
-repeat a growing summary, or add focus to routine bootstrap. Evaluate actual
-agent behavior using the [drift comparison protocol](effectiveness-metrics.md#execution-drift-evaluation),
-separately from deterministic record and projection tests.
+Use verified hooks/controlled executors for pre-action checks; otherwise check
+procedurally and report no interception. No universal hook, intent parser,
+context eviction or permission is implied. Do not preload the corpus, growing
+summaries or routine-bootstrap focus. Evaluate behavior with the
+[drift protocol](effectiveness-metrics.md#execution-drift-evaluation), separately
+from record/projection tests.
 
-Opt-in lifecycle delivery reuses these owners. New requests invalidate reviewed
-bindings; synthetic continuations grant no authority. Bound reminders, retain
-interruption revocations against delayed callbacks, and never automatically
-reopen closed scopes. Installation/update preserves native definitions, trust
-and disabled state. Separate configuration, exercised interception and
-procedural fallback.
+Opt-in lifecycle delivery reuses these owners. Requests revoke bindings;
+synthetic continuation grants no authority. Bound reminders, preserve
+interruption against delayed callbacks, never reopen closed scopes. Preserve
+native definitions/trust/disabled state on installation/update; distinguish
+configuration, exercised interception and procedural fallback.
 
-Checkpoint validity, permission to end a response, and completed-task acceptance
-are separate. An empty ready list requires handoff review, not a success claim.
-Terminal review reuses canonical selected-model completion and closure checks,
-including current result bindings, original outcomes, obligations and reviews.
-Capture the actual closure and authoritative archived projection with the
-selected context. Explicit completion-only binding may inspect a closed scope;
-it must deny execution and cannot reopen that scope. A consistent terminal
-record still grants no acceptance, publication or live-runtime readiness.
-New requests/end events revoke pending continuation before waiting on a slow
-checkpoint lock; interruption and freshness checks still win at delivery.
+Optional request guards follow request reconciliation and the lifecycle flow;
+partial answers remain distinct from canonical completion.
+
+Checkpoint validity, response termination and task acceptance are separate.
+Empty readiness requires handoff review, not success. Terminal review reuses
+canonical completion/closure checks: current result bindings, original outcomes,
+obligations and reviews. Retain actual closure and authoritative archived
+projection in selected context. Completion-only binding may inspect closed work,
+never execute/reopen it or grant acceptance, publication or runtime readiness.
+Requests/end revoke pending continuation before waiting on slow checkpoint locks;
+interruption/freshness still win at delivery.
 
 ## Selected Document Warnings
 

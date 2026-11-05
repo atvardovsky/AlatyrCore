@@ -832,8 +832,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 212,
-      "content_digest": "sha256:1e0fb2c0e5f0ef188f7dd9850895371f99437a442a3fe8933673c5daac4e5a60"
+      "estimated_words": 220,
+      "content_digest": "sha256:8150fefd768b43772b8ae6ea5dfa9795e0091138c8088271e9bf9e7a17118db9"
     },
     {
       "id": "assistant.content.templates-problem-model-active-projection-json",
@@ -973,6 +973,27 @@
       ],
       "estimated_words": 107,
       "content_digest": "sha256:2e2cd51486954c1d74aff4895a632146dc94c990f1a000a060c63020e58f1f90"
+    },
+    {
+      "id": "assistant.content.templates-request-brief-json",
+      "kind": "content",
+      "path": "templates/request-brief.json",
+      "summary": "Request Brief",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "request",
+          "brief"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 39,
+      "content_digest": "sha256:142b8cf2d6d72df9ac58ea97243f86f0458ef3fc0c48fbb7b44b05c843ee0596"
     },
     {
       "id": "assistant.content.templates-runtime-observation-record-json",

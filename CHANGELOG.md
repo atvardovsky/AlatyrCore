@@ -4,6 +4,25 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.128 - 2026-11-05
+
+- Reconcile every request against its source-linked outcomes, exclusions,
+  execution order and authorized scope before continuing or answering. Keep
+  small tasks inline and reuse existing material-task proof obligations.
+- Challenge plausible substitute implementations and prove a representative
+  real slice before broad uncertain or repeatedly rejected work. Owner rejection
+  reopens affected outcome claims without rewriting historical test evidence.
+- Add bounded request briefs and a read-only lifecycle `review` path. Optional
+  reviewed binding preserves brief digests; request/task/objective, required
+  proof links, phases, literal paths and effect identities must agree.
+- Opt-in request guards reject missing bindings and compare explicitly mapped
+  native file edits with their actual input. Unknown tools do not inherit
+  coverage. Preserve disabled/observe behavior, interruptions and finite retries.
+- Keep ordinary lifecycle command argument errors nonzero instead of inheriting
+  neutral native-callback error transport from an invalid flag.
+- Advance adapter schema to 105 and templates to 123; no problem-model shape
+  migration, automatic hook adoption, new service or universal enforcement claim.
+
 ## 0.1.0-alpha.127 - 2026-11-05
 
 - Ground semantic proof in actual request surfaces, consumers, contracts,

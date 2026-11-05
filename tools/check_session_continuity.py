@@ -21,6 +21,7 @@ CONTINUITY_FILES = {
     FLOW_PATH,
     ".ai/assistant/gates/session-continuity.md",
     ".ai/assistant/templates/session-continuity-packet.json",
+    ".ai/assistant/templates/request-brief.json",
 }
 
 
@@ -138,6 +139,12 @@ def main() -> int:
             raise ValueError("lifecycle-hook template is missing")
         if hooks.get("enabled") is not False or hooks.get("mode") != "observe" or hooks.get("max_reminders") != 0:
             failures.append("lifecycle-hook template must remain disabled, observe-only and without reminders")
+        if hooks.get("request_guard", {}).get("required") is not False or hooks.get("request_guard", {}).get("file_tools") != []:
+            failures.append("request guard must not be adopted or map tools in the source template")
+        from request_brief import parse_brief
+        import re
+        brief = (TARGET / ".ai/assistant/templates/request-brief.json").read_text(encoding="utf-8")
+        parse_brief(re.sub(r"\{[A-Z_]+\}", "example", brief).encode("utf-8"))
         compaction = generic.get("context_compaction")
         if not isinstance(compaction, dict) or compaction.get(
             "fallback"

@@ -130,6 +130,12 @@ event mappings, trust review, cancellation, fallback and evidence limits.
 `bind --completion-only` reviews closed-task evidence without reopening execution.
 Its consistency result is not canonical acceptance or live-runtime readiness.
 
+`review --request-brief <path>` checks bounded action JSON from stdin without
+writes or hook adoption. `bind --request-brief <path>` retains the same brief in
+the reviewed context; optional `request_guard` adoption prevents silent omission.
+See the guide's [request contract](../docs/assistant-lifecycle-hooks.md#request-bound-review)
+for exact fields, native file-tool matching, failure semantics and limits.
+
 ## External Case Identity Audit
 
 For external project reviews, follow the source

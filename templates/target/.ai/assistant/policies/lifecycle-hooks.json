@@ -5,6 +5,7 @@
   "mode": "observe",
   "binding_ttl_seconds": 900,
   "max_reminders": 0,
+  "request_guard": {"required": false, "file_tools": []},
   "native_evidence": {
     "state": "unverified",
     "client_version": null,

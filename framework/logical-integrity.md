@@ -172,6 +172,13 @@ Trace the actual entry, authorization/proxy, consumer contract and observable
 effect. Name mocked or unobserved edges. Missing surfaces remain open; a smaller
 implementation is not an approved exclusion.
 
+Before planning, identify a plausible substitute that passes implementation-shaped
+tests but violates the request. Reviewers receive the original source/reference.
+For uncertain, costly or repeatedly rejected work, prove one real slice before
+replication. Material mismatches need owner decisions, not weaker criteria;
+matching approved work needs no redundant approval. Owner rejection reopens
+affected outcomes; prior tests remain historical evidence.
+
 Check fixtures against the real consumer schema and version/lifecycle rules.
 For no-write claims, observe the actual method/resource and relevant state;
 challenge the assertion with a write to that resource. For asynchronous UI,
@@ -198,25 +205,17 @@ refinement of the canonical path. Before accepting it:
 An optimized path may reduce loaded context, evidence shape, or execution
 cost. It must not weaken an inherited invariant.
 
-When a later failure contradicts an earlier local result, reopen the affected
-proof obligation and retain the counterexample. Do not create a fresh isolated
-problem statement merely because the next symptom appears in another file or
-layer. Trace the producer, orchestration, persistence, consumer, and
-observability path needed to explain every terminal outcome. This escalation
-expands only the incident model and named boundaries; it does not authorize a
-whole-repository context load.
+Contradictory later failures reopen affected obligations and retain
+counterexamples, not isolated new problems for another file/layer. Trace producer,
+orchestration, persistence, consumer and observability through every terminal
+outcome. Expand only the incident model/named boundaries, never the whole corpus.
 
-When no consistency map is enabled, invariant re-derivation remains mandatory.
-Use canonical owners, data and identity scope, architecture boundaries,
-callers, persistence behavior, and tests to construct a compact manual impact
-closure. Record missing relationship knowledge as residual risk instead of
-claiming that the optional map was unnecessary.
-
-When a target consistency map exists, replace broad surface comparison with a
-bounded impact closure: start from changed fact IDs, select applicable
-relationship edges, traverse dependent contracts only when they can propagate
-the change, and record skipped or missing edges. The map routes review; the
-human source-of-truth registry still owns ownership decisions.
+Without an enabled consistency map, re-derive invariants and a bounded manual
+impact closure from owners, data/identity scope, architecture, callers,
+persistence and tests. Missing relationships remain residual risk, not proof
+that a map was unnecessary. With a map, start from changed facts, follow only
+propagating contract edges and record missing/skipped edges. Routing does not
+replace the human registry's ownership decisions.
 
 Start that closure from the target support diff and reverse relationship index
 when they are current. Treat hashes as change-location evidence only. Re-derive

@@ -107,6 +107,8 @@ policy wording.
 
 ## Operating Rules
 
+- Reconcile the newest request before continuing or answering
+  (`ALATYR-AUTHORIZATION-001`); small tasks keep a source-linked brief inline.
 - Keep Alatyr Core assistant-neutral and Markdown-first.
 - Optimized alternate paths must share canonical invariant resolvers and pass
   differential below/at/above-boundary tests; representation may shrink,

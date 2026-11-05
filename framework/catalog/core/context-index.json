@@ -32,8 +32,8 @@
       "owner_refs": [
         "ALATYR-AUTHORIZATION-001"
       ],
-      "estimated_words": 1329,
-      "content_digest": "sha256:cfd650403604f959f23ad519417043240258471bfe9f2de49dab6e977691e25b"
+      "estimated_words": 1349,
+      "content_digest": "sha256:66049657777ad178283039fefef13054d9cfde3018205a34aecfad0c7418f864"
     },
     {
       "id": "framework.core.approval-records-md",
@@ -228,8 +228,8 @@
       "owner_refs": [
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 2125,
-      "content_digest": "sha256:108cfb1ab0480376be63962e8943c4a95f23303409ea4afdb2e8b106d91f4fa1"
+      "estimated_words": 2109,
+      "content_digest": "sha256:33c747a332ed2a106f9f2a4450e2e70e03c97fcddfb66f090553a8302fdae536"
     },
     {
       "id": "framework.core.module-profile-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:f77a7ed3cf40c0c436fd92def0bbba81a47edac3d46a79f5239c465d89cf5865"
+      "content_digest": "sha256:006063e7eb02305fc5b5fddce092bc871a69b2d200e19568cf1e9794bb247670"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

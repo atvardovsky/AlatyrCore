@@ -79,8 +79,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 27,
-      "content_digest": "sha256:df96d97a60ca0c5bfcabb3890d0e2ac1e229751dc10134e105673257df2213a0"
+      "estimated_words": 32,
+      "content_digest": "sha256:35fc090b7ae7418646566344978036f8d57ac67b404b12a6a5a6f5075ad64eec"
     },
     {
       "id": "assistant.content.policies-prompt-injection-md",

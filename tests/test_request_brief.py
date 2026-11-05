@@ -1,0 +1,400 @@
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+import subprocess
+import sys
+import time
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+
+import lifecycle_checkpoints as hooks
+import request_brief as contract
+from inspect_session_context import TARGET_ANCHORS, capture
+from tests.active_task_fixture import ActiveTaskFixture
+from tests.test_target_validator_installation_state import write_accepted_record, write_state
+
+
+def brief_fixture(objective="requested outcome", proof_id="proof"):
+    return {"schema_version": 1, "record_kind": "alatyr-request-brief", "request_id": "request-1",
+        "task_id": "fixture-task", "source_ref": "owner-message:current", "objective": objective,
+        "outcomes": [{"id": "same-view", "statement": "Use one presentation with editable fields",
+                      "rejection_case": "Shared buttons around different presentations", "proof_obligation_ids": [proof_id]}],
+        "constraints": ["Preserve permissions"], "non_goals": ["Do not replace the requested presentation"],
+        "requested_order": ["UI before tests"], "authorized_phases": ["inspect", "modify"],
+        "write_scope": [{"path": "src", "recursive": True}], "effect_scope": []}
+
+
+def action_fixture(**changes):
+    return {"request_id": "request-1", "task_id": "fixture-task", "kind": "work", "phase": "modify",
+            "outcome_ids": ["same-view"], "paths": ["src/example.txt"], "effects": [], **changes}
+
+
+class RequestContractTests(unittest.TestCase):
+    def setUp(self):
+        self.brief = brief_fixture()
+        self.model = {"objective": "requested outcome", "proof_obligations": [{"id": "proof", "required": True, "status": "open"}]}
+
+    def parse(self, value=None):
+        return contract.parse_brief(json.dumps(self.brief if value is None else value).encode())
+
+    def failures(self, action=None):
+        return contract.action_failures(self.parse(), contract.parse_action(action_fixture() if action is None else action),
+            self.model, request_id="request-1", task_id="fixture-task")
+
+    def test_valid_request_and_phase_ceiling(self):
+        self.assertEqual(self.failures(), [])
+        for phase in ("commit", "publish", "live-external"):
+            with self.subTest(phase=phase):
+                self.assertTrue(any("phase" in item for item in self.failures(action_fixture(phase=phase, effects=["origin/main"]))))
+
+    def test_source_policy_phase_names_match_canonical_registry(self):
+        from check_action_authorization import PHASES
+        self.assertEqual(set(PHASES), contract.PHASES)
+
+    def test_ordinary_cli_cannot_masquerade_as_a_neutral_native_callback(self):
+        prefix = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "lifecycle-checkpoint", "--target", str(ROOT)]
+        cases = [["review", "--request-brief", "missing.json"], ["status", "--session-id", "s"],
+                 ["checkpoint", "--event", "before-action"],
+                 ["bind", "--session-id", "s", "--request-id", "r", "--baseline", "b", "--task-id", "t"]]
+        for arguments in cases:
+            with self.subTest(action=arguments[0]):
+                result = subprocess.run(prefix + arguments + ["--native-output"], capture_output=True, text=True)
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertIn("unrecognized arguments: --native-output", result.stderr)
+        native = subprocess.run(prefix + ["event", "--event", "Stop", "--native-output", "--invalid"], capture_output=True, text=True)
+        self.assertEqual(native.returncode, 0)
+        self.assertEqual(json.loads(native.stdout), {})
+
+    def test_scope_components_and_all_paths_are_checked(self):
+        self.brief["write_scope"] = [{"path": "src/a", "recursive": True}]
+        self.assertEqual(self.failures(action_fixture(paths=["src/a/file.py"])), [])
+        self.assertTrue(self.failures(action_fixture(paths=["src/ab/file.py"])))
+        self.assertTrue(self.failures(action_fixture(paths=["src/a/file.py", "src/elsewhere.py"])))
+        self.brief["write_scope"][0]["recursive"] = False
+        self.assertTrue(self.failures(action_fixture(paths=["src/a/file.py"])))
+
+    def test_redirect_and_substituted_model_do_not_pass(self):
+        for changed in ({"request_id": "previous"}, {"task_id": "unrelated"}, {"outcome_ids": ["invented"]}):
+            with self.subTest(changed=changed):
+                self.assertTrue(self.failures(action_fixture(**changed)))
+        self.model["objective"] = "easier substitute"
+        self.assertTrue(any("objective" in item for item in self.failures()))
+
+    def test_completion_needs_every_original_outcome_not_a_ready_list(self):
+        complete = action_fixture(kind="complete", phase="inspect", paths=[])
+        for status in ("open", "blocked", "failed", "waived"):
+            self.model["proof_obligations"][0]["status"] = status
+            self.assertTrue(self.failures(complete), status)
+        self.model["proof_obligations"][0]["status"] = "passed"
+        self.assertEqual(self.failures(complete), [])
+        self.brief["outcomes"].append({**self.brief["outcomes"][0], "id": "second", "proof_obligation_ids": ["missing"]})
+        self.assertTrue(self.failures(complete))
+
+    def test_original_outcome_oracle_rejects_a_self_confirming_substitute(self):
+        original = {"read_body": "content-view", "edit_body": "content-view", "shared_controls": True}
+        substitute = {"read_body": "content-view", "edit_body": "different-form", "shared_controls": True}
+        complete = action_fixture(kind="complete", phase="inspect", paths=[])
+        for observed, expected in ((original, []), (substitute, ["unverified"])):
+            # The independent fixture oracle represents the original requirement;
+            # implementation-shaped tests check only the common controls.
+            self.assertTrue(observed["shared_controls"])
+            accepted = observed["read_body"] == observed["edit_body"]
+            self.model["proof_obligations"][0]["status"] = "passed" if accepted else "failed"
+            failures = self.failures(complete)
+            self.assertEqual(bool(failures), bool(expected))
+            if expected: self.assertTrue(any(expected[0] in item for item in failures))
+
+    def test_deep_json_and_windows_aliases_fail_with_diagnostics(self):
+        with self.assertRaises(ValueError):
+            contract.parse_brief(b"[" * 1100 + b"0" + b"]" * 1100)
+        for path in ("src/.. /outside.txt", "src/NUL", "src/con.txt", "src/file.txt:secret", "src/file.", "src/COM\u00b9.txt"):
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                contract.request_path(path)
+        guard = {"required": True, "file_tools": [{"tool_name": "Write", "path_field": "file_path"}]}
+        with patch("support_write_transaction.safe_output", side_effect=RuntimeError("symlink loop")):
+            self.assertTrue(contract.native_file_action_failures(ROOT, guard,
+                {"tool_name": "Write", "tool_input": {"file_path": "src/example.txt"}}, action_fixture()))
+
+    def test_missing_and_optional_proofs_cannot_cover_required_outcomes(self):
+        self.model["proof_obligations"][0]["required"] = False
+        self.assertTrue(self.failures())
+        self.model["proof_obligations"] = []
+        self.assertTrue(self.failures())
+
+    def test_malformed_fields_are_diagnostics_not_unhashable_crashes(self):
+        invalid = (None, True, 1, {}, [])
+        for field in ("request_id", "task_id", "source_ref", "objective", "authorized_phases", "write_scope", "outcomes", "constraints", "non_goals", "requested_order", "effect_scope"):
+            for value in invalid:
+                if value == [] and field in {"constraints", "non_goals", "requested_order", "effect_scope"}:
+                    continue
+                mutated = copy.deepcopy(self.brief); mutated[field] = value
+                with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                    self.parse(mutated)
+        for field in ("request_id", "task_id", "phase", "kind", "outcome_ids", "paths", "effects"):
+            for value in invalid:
+                if value == [] and field in {"paths", "effects"}:
+                    continue
+                with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                    contract.parse_action(action_fixture(**{field: value}))
+
+    def test_unknown_fields_duplicates_placeholders_and_bad_paths_fail(self):
+        for field, value in (("extra", True), ("objective", "{UNRESOLVED}"), ("authorized_phases", ["inspect", "inspect"])):
+            mutated = copy.deepcopy(self.brief); mutated[field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError): self.parse(mutated)
+        for path in ("../outside", "/absolute", "C:/absolute", "src//file", "src/./file", "src\\file", "src/*"):
+            mutated = copy.deepcopy(self.brief); mutated["write_scope"][0]["path"] = path
+            with self.subTest(path=path), self.assertRaises(ValueError): self.parse(mutated)
+        raw = json.dumps(self.brief).replace('"schema_version": 1', '"schema_version": 1, "schema_version": 1')
+        with self.assertRaises(ValueError): contract.parse_brief(raw.encode())
+        self.brief["objective"] = 'Preserve the JSON shape {"id": "value"}'
+        self.assertEqual(self.parse()["objective"], self.brief["objective"])
+
+    def test_byte_word_and_count_limits_include_exact_boundary(self):
+        raw = json.dumps(self.brief).encode()
+        with patch.object(contract, "MAX_BRIEF_BYTES", len(raw)):
+            self.assertEqual(contract.parse_brief(raw), self.brief)
+            with self.assertRaises(ValueError): contract.parse_brief(raw + b" ")
+        from analysis_strategy_contract import structured_word_count
+        count = structured_word_count(self.brief)
+        with patch.object(contract, "MAX_BRIEF_WORDS", count):
+            self.parse()
+            mutated = copy.deepcopy(self.brief); mutated["objective"] += " extra"
+            with self.assertRaises(ValueError): self.parse(mutated)
+        self.brief["constraints"] = [f"constraint-{i}" for i in range(contract.MAX_ROWS)]
+        self.parse()
+        self.brief["constraints"].append("too-many")
+        with self.assertRaises(ValueError): self.parse()
+
+    def test_guard_policy_rejects_malformed_optional_adoption(self):
+        good = {"required": True, "file_tools": [{"tool_name": "Write", "path_field": "file_path"}]}
+        self.assertEqual(contract.guard_policy(good), good)
+        for value in (None, {}, {**good, "required": 1}, {**good, "file_tools": {}},
+                      {**good, "file_tools": good["file_tools"] * 2}):
+            with self.subTest(value=value), self.assertRaises(ValueError): contract.guard_policy(value)
+        unsafe = {"required": True, "file_tools": [{"tool_name": "shell", "path_field": "file_path"}]}
+        self.assertTrue(contract.native_file_action_failures(ROOT, unsafe,
+            {"tool_name": "shell", "tool_input": {"file_path": "src/example.txt", "command": "arbitrary side effects"}}, action_fixture()))
+
+
+class RequestLifecycleTests(ActiveTaskFixture):
+    def setUp(self):
+        super().setUp()
+        for name in TARGET_ANCHORS:
+            path = self.target / name
+            if not path.exists():
+                path.parent.mkdir(parents=True, exist_ok=True); path.write_text("{}\n", encoding="utf-8")
+        write_state(self.target, "accepted"); write_accepted_record(self.target)
+        self.policy = json.loads((ROOT / "templates/target" / hooks.POLICY).read_bytes())
+        self.policy.update(enabled=True, provider="procedural")
+        self.policy["request_guard"] = {"required": True, "file_tools": [{"tool_name": "Write", "path_field": "file_path"}]}
+        self.write_policy()
+        self.brief_path = ".ai/.runtime/request-brief.json"
+        self.baseline = ".ai/.runtime/request-context.json"
+        self.request = self.event("request")
+        self.brief = brief_fixture(self.model["objective"], self.model["proof_obligations"][0]["id"])
+        self.brief["request_id"] = self.request["request_id"]
+        self.write_brief(); self.refresh_baseline()
+
+    def write_policy(self):
+        path = self.target / hooks.POLICY; path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(self.policy), encoding="utf-8")
+
+    def write_brief(self):
+        (self.target / self.brief_path).write_text(json.dumps(self.brief), encoding="utf-8")
+
+    def refresh_baseline(self):
+        paths = [hooks.POLICY, ".ai/assistant/active-tasks.json", self.model_path.relative_to(self.target).as_posix(),
+                 self.model["active_projection"]["path"], self.brief_path, "design.md"]
+        (self.target / self.baseline).write_text(json.dumps(capture(self.target, paths)[0]), encoding="utf-8")
+
+    def event(self, name, **payload):
+        return hooks.handle(self.target, self.policy["provider"], name, {"session_id": "request-fixture", **payload})
+
+    def action(self, **changes):
+        return action_fixture(request_id=self.request["request_id"], **changes)
+
+    def bind_request(self, **changes):
+        return hooks.handle(self.target, self.policy["provider"], "before-action", {"session_id": "request-fixture"},
+            bind={"request_id": self.request["request_id"], "baseline": self.baseline, "task_id": "fixture-task", "request_brief": self.brief_path, **changes})
+
+    def test_public_cli_checks_the_request_without_adopting_hooks_or_writing(self):
+        self.policy["enabled"] = False; self.write_policy()
+        before = {p.relative_to(self.target): hashlib.sha256(p.read_bytes()).hexdigest() for p in self.target.rglob("*") if p.is_file() and ".git" not in p.parts}
+        command = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "lifecycle-checkpoint", "--target", str(self.target), "review", "--request-brief", self.brief_path]
+        for action, expected in ((self.action(), 0), (self.action(phase="publish", effects=["origin/main"]), 1)):
+            result = subprocess.run(command, input=json.dumps(action), capture_output=True, text=True)
+            self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+            self.assertFalse(json.loads(result.stdout)["authorization_granted"])
+        after = {p.relative_to(self.target): hashlib.sha256(p.read_bytes()).hexdigest() for p in self.target.rglob("*") if p.is_file() and ".git" not in p.parts}
+        self.assertEqual(before, after)
+
+    def test_installed_delegate_uses_the_same_review_parser_and_result(self):
+        command = [sys.executable, "-B", str(ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py"),
+                   "lifecycle-checkpoint", "--target", str(self.target), "--framework-source", str(ROOT),
+                   "review", "--request-brief", self.brief_path]
+        for action, expected in ((self.action(), 0), (self.action(task_id="old-task"), 1)):
+            result = subprocess.run(command, input=json.dumps(action), capture_output=True, text=True)
+            self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+            self.assertFalse(json.loads(result.stdout)["authorization_granted"])
+
+    def test_required_brief_cannot_be_omitted_or_skipped_by_an_unbound_session(self):
+        with self.assertRaisesRegex(ValueError, "explicit request brief"):
+            self.bind_request(request_brief=None)
+        self.assertTrue(self.event("before-action")["checkpoint_required"])
+        self.assertEqual(self.bind_request()["status"], "bound")
+        self.policy["request_guard"]["required"] = False; self.write_policy(); self.refresh_baseline()
+        with self.assertRaisesRegex(ValueError, "cannot drop"):
+            self.bind_request(request_brief=None)
+
+    def test_binding_requires_exact_brief_in_selected_context(self):
+        baseline = json.loads((self.target / self.baseline).read_bytes())
+        baseline["inputs"] = [row for row in baseline["inputs"] if row["path"] != self.brief_path]
+        # Re-capture without the brief to keep the baseline internally canonical.
+        paths = [row["path"] for row in baseline["inputs"]]
+        (self.target / self.baseline).write_text(json.dumps(capture(self.target, paths)[0]), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "exact request brief"):
+            self.bind_request()
+
+    def test_request_replacement_resume_and_interrupt_do_not_resume_old_work(self):
+        self.bind_request()
+        replacement = self.event("request")
+        self.assertNotEqual(replacement["request_id"], self.request["request_id"])
+        self.assertTrue(self.event("before-action", alatyr_action=self.action())["checkpoint_required"])
+        self.request = replacement
+        with self.assertRaisesRegex(ValueError, "identity"):
+            self.bind_request()
+        self.brief["request_id"] = replacement["request_id"]; self.write_brief(); self.refresh_baseline(); self.bind_request()
+        self.event("resume")
+        self.assertTrue(self.event("before-action", alatyr_action=self.action())["checkpoint_required"])
+        self.event("interrupt")
+        self.assertEqual(self.event("before-action")["status"], "interrupted")
+
+    def test_unknown_missing_and_changed_action_or_brief_never_pass(self):
+        self.bind_request()
+        with self.assertRaises(ValueError): self.event("before-action")
+        self.assertTrue(self.event("before-action", alatyr_action=self.action(outcome_ids=["unrelated"]))["checkpoint_required"])
+        (self.target / self.brief_path).write_bytes((self.target / self.brief_path).read_bytes() + b" ")
+        with self.assertRaisesRegex(ValueError, "brief changed"):
+            self.event("before-action", alatyr_action=self.action())
+
+    def test_partial_answer_and_completion_are_not_conflated(self):
+        self.model["proof_obligations"][0]["status"] = "open"; self.write_model(); self.write_index(); self.refresh_baseline()
+        self.bind_request()
+        answer = self.action(kind="answer", phase="inspect", paths=[])
+        self.assertEqual(self.event("completion", alatyr_action=answer)["status"], "request-consistent")
+        with self.assertRaisesRegex(ValueError, "required proof obligations"):
+            self.event("completion", alatyr_action={**answer, "kind": "complete"})
+        self.assertFalse(self.event("completion", alatyr_action=answer)["acceptance_granted"])
+
+    def test_native_mutator_path_cannot_be_overridden_by_declared_action(self):
+        for provider in sorted(hooks.NATIVE_EVENTS):
+            with self.subTest(provider=provider):
+                self.policy["provider"] = provider; self.write_policy(); self.refresh_baseline(); self.bind_request()
+                valid = self.event("before-action", alatyr_action=self.action(), tool_name="Write", tool_input={"file_path": "src/example.txt"})
+                self.assertEqual(valid["status"], "request-consistent", valid)
+                wrong = self.event("before-action", alatyr_action=self.action(), tool_name="Write", tool_input={"file_path": "outside.txt"})
+                self.assertTrue(wrong["checkpoint_required"])
+                unknown = self.event("before-action", alatyr_action=self.action(), tool_name="shell", tool_input={"command": "anything"})
+                self.assertTrue(unknown["checkpoint_required"])
+                self.assertFalse(wrong["emit_native_block"])
+
+    def test_verified_checkpoint_can_deny_without_enabling_observe_interception(self):
+        from datetime import datetime, timezone
+        self.policy.update(provider="codex", mode="checkpoint")
+        self.policy["native_evidence"] = {"state": "observed", "client_version": "synthetic-fixture",
+            "source": "wire fixture, not actual host evidence", "verified_at": datetime.fromtimestamp(time.time()-10, timezone.utc).isoformat(),
+            "expires_at": datetime.fromtimestamp(time.time()+600, timezone.utc).isoformat()}
+        self.write_policy(); self.refresh_baseline(); self.bind_request()
+        result = self.event("before-action", alatyr_action=self.action(), tool_name="shell", tool_input={})
+        self.assertTrue(result["emit_native_block"])
+        from run_lifecycle_checkpoint import native_output
+        self.assertEqual(native_output("codex", "PreToolUse", result)["hookSpecificOutput"]["permissionDecision"], "deny")
+        self.assertFalse(result["native_interception_verified"])
+
+    def test_disabled_route_does_not_load_briefs_or_models(self):
+        self.policy["enabled"] = False; self.write_policy()
+        with patch.object(hooks, "review_request", side_effect=AssertionError("guard read on disabled route")), \
+                patch.object(hooks, "selected_task", side_effect=AssertionError("task read on disabled route")):
+            self.assertEqual(self.event("before-action")["status"], "disabled")
+
+    def test_standalone_review_rechecks_selected_model_after_its_last_brief_read(self):
+        real = hooks.read_output
+        reads = 0
+        def changed(target, path, **kwargs):
+            nonlocal reads
+            raw = real(target, path, **kwargs)
+            if path == self.target / self.brief_path:
+                reads += 1
+                if reads == 2:
+                    self.model["objective"] = "unrelated replacement"
+                    self.model_path.write_text(json.dumps(self.model), encoding="utf-8")
+            return raw
+        with patch.object(hooks, "read_output", side_effect=changed), self.assertRaisesRegex(ValueError, "selected request inputs changed"):
+            hooks.review_request(self.target, self.brief_path, self.action())
+
+    def test_completion_cannot_drop_newly_selected_proof_inputs_from_baseline(self):
+        self.bind_request()
+        extra = self.target / "completion-proof.txt"; extra.write_bytes(b"proof\n")
+        real = hooks.selected_task
+        def selected(*args, **kwargs):
+            view = real(*args, **kwargs)
+            if kwargs.get("require_completion"):
+                view["checkpoint_inputs"]["completion-proof.txt"] = hashlib.sha256(extra.read_bytes()).hexdigest()
+            return view
+        with patch.object(hooks, "selected_task", side_effect=selected):
+            result = self.event("completion", alatyr_action=self.action(kind="complete", phase="inspect", paths=[]))
+        self.assertEqual(result["status"], "request-review-required", result)
+        self.assertIn("retained context", result["reason"])
+
+    def test_procedural_delivery_under_native_policy_needs_no_native_tool_fields(self):
+        self.policy["provider"] = "codex"; self.write_policy(); self.refresh_baseline(); self.bind_request()
+        command = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "lifecycle-checkpoint", "--target", str(self.target),
+                   "--provider", "codex", "checkpoint", "--event", "before-action"]
+        result = subprocess.run(command, input=json.dumps({"session_id": "request-fixture", "alatyr_action": self.action()}),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        output = json.loads(result.stdout)
+        self.assertEqual(output["status"], "request-consistent")
+        self.assertFalse(output["emit_native_block"])
+
+    def test_closed_task_cannot_be_reopened_by_standalone_review(self):
+        self.close()
+        result = hooks.review_request(self.target, self.brief_path, self.action())
+        self.assertTrue(result["checkpoint_required"], result)
+        self.assertIn("closed task", result["reason"])
+
+    def test_symlink_escape_and_missing_adopted_brief_fail_without_writes(self):
+        self.bind_request()
+        (self.target / self.brief_path).unlink()
+        with self.assertRaisesRegex(ValueError, "missing request brief"):
+            self.event("before-action", alatyr_action=self.action())
+        self.write_brief()
+        link = self.target / "src/escape"
+        try:
+            link.symlink_to(self.target.parent, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest("symlinks are unavailable on this host")
+        with self.assertRaises(ValueError):
+            hooks.review_request(self.target, self.brief_path, self.action(paths=["src/escape/other.txt"]))
+
+    def test_interruption_during_guard_review_wins_at_delivery(self):
+        self.bind_request()
+        real = hooks.review_request
+        def interrupted(*args, **kwargs):
+            self.event("interrupt")
+            return real(*args, **kwargs)
+        with patch.object(hooks, "review_request", side_effect=interrupted):
+            result = self.event("before-action", alatyr_action=self.action())
+        self.assertEqual(result["status"], "interrupted", result)
+        self.assertFalse(result["authorization_granted"])
+
+
+if __name__ == "__main__":
+    unittest.main()

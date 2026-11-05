@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1304,
-      "content_digest": "sha256:67cfd99ee19c88b01e51d8b37d9aa03d0d661aadedc6e6145574d61e8ad12cfb"
+      "content_digest": "sha256:ce284b88a44df7d91d4778ca78ac2edf798c34be2db5aa901523eafba42ab457"
     },
     {
       "id": "assistant.section.gates",
@@ -568,7 +568,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 825,
-      "content_digest": "sha256:b222ba4b9eb4aac794dddc24618204a35b481bb8edc1bca87514e3d0ec1a6f9a"
+      "content_digest": "sha256:9566a9e074aa7aef947a7e77d2c25c3fb3deb756090efabb552ed987cbedec16"
     },
     {
       "id": "assistant.section.policies",
@@ -583,7 +583,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 222,
-      "content_digest": "sha256:7bdc472a0f2f2da0016af63c6aa204eed695f5b7470311d6a49d794ac8bdf986"
+      "content_digest": "sha256:7a41f406cebe7119f138d9dae57f000c83193eafff2edb768900460b4da471a7"
     },
     {
       "id": "assistant.section.prompts",
@@ -642,8 +642,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 2246,
-      "content_digest": "sha256:6822be38374af53e1e855aeb7d705217dc87d5c9224dcf7787d76ba7562a2ada"
+      "estimated_words": 2278,
+      "content_digest": "sha256:886e03eb914c810a0756dc42f4668b192c6259a2cdd0aa5b9d57ba6ffd016178"
     },
     {
       "id": "assistant.section.tools",

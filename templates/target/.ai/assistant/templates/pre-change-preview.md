@@ -13,6 +13,7 @@ authorize the next state-changing phase.
 
 - Operation ID: `{OPERATION_ID}`
 - Goal: `{GOAL}`
+- Rejected substitute and first representative proof: `{COUNTEREXAMPLE_AND_PROOF_OR_NOT_REQUIRED_REASON}`
 - Selected context profile and overlays: `{PROFILE_AND_OVERLAYS}`
 - Changed facts or suspected facts: `{CHANGED_FACT_IDS_AND_SUMMARIES}`
 - Canonical owners: `{SOURCE_OF_TRUTH_OWNERS}`

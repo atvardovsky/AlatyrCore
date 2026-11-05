@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-request-brief",
+  "request_id": "{REQUEST_ID}",
+  "task_id": "{TASK_ID}",
+  "source_ref": "{SOURCE_REQUEST_REF}",
+  "objective": "{OBJECTIVE}",
+  "outcomes": [
+    {
+      "id": "{OUTCOME_ID}",
+      "statement": "{ORIGINAL_REQUESTED_OUTCOME}",
+      "rejection_case": "{PLAUSIBLE_SUBSTITUTE_THAT_MUST_NOT_PASS}",
+      "proof_obligation_ids": ["{EXISTING_REQUIRED_PROOF_ID}"]
+    }
+  ],
+  "constraints": [],
+  "non_goals": [],
+  "requested_order": [],
+  "authorized_phases": ["inspect"],
+  "write_scope": [],
+  "effect_scope": []
+}
