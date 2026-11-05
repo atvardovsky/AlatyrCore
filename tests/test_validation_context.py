@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import subprocess
@@ -242,21 +243,23 @@ class ValidationContextTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory).resolve()
             path = target / "example.json"
-            path.write_text('{"value": "before"}\n', encoding="utf-8")
-            context = ValidationContext(target)
+            for ending in (b'\n', b'\r\n'):
+                with self.subTest(ending=ending):
+                    raw = b'{"value": "before"}' + ending
+                    path.write_bytes(raw)
+                    context = ValidationContext(target)
+                    byte_result = context.read_bytes_result(path)
+                    text_result = context.read_text_result(path)
+                    json_result = context.read_json_result(path)
+                    path.write_bytes(b'{"value": "after"}' + ending)
 
-            byte_result = context.read_bytes_result(path)
-            text_result = context.read_text_result(path)
-            json_result = context.read_json_result(path)
-            path.write_text('{"value": "after"}\n', encoding="utf-8")
-
-            self.assertEqual(byte_result.value, b'{"value": "before"}\n')
-            self.assertEqual(text_result.value, '{"value": "before"}\n')
-            self.assertEqual(json_result.value, {"value": "before"})
-            self.assertEqual(context.read_bytes(path), byte_result.value)
-            self.assertEqual(context.read_text(path), text_result.value)
-            self.assertEqual(context.content_digest(path), byte_result.digest)
-            self.assertEqual(byte_result.status.state, TargetFileState.FILE)
+                    self.assertEqual(byte_result.value, raw)
+                    self.assertEqual(text_result.value, raw.decode('utf-8'))
+                    self.assertEqual(json_result.value, {"value": "before"})
+                    self.assertEqual(context.read_bytes(path), byte_result.value)
+                    self.assertEqual(context.read_text(path), text_result.value)
+                    self.assertEqual(context.content_digest(path), hashlib.sha256(raw).hexdigest())
+                    self.assertEqual(byte_result.status.state, TargetFileState.FILE)
 
     def test_typed_results_distinguish_missing_invalid_text_and_invalid_json(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -282,11 +285,11 @@ class ValidationContextTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory).resolve()
             path = target / "example.txt"
-            path.write_text("before\n", encoding="utf-8")
+            path.write_bytes(b"before\n")
             context = ValidationContext(target)
 
             self.assertEqual(context.read_text(path), "before\n")
-            path.write_text("after\n", encoding="utf-8")
+            path.write_bytes(b"after\n")
             mutations = context.finalize()
 
             self.assertEqual(len(mutations), 1)
@@ -578,7 +581,7 @@ class ValidationContextTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
             source = target / "source.txt"
-            source.write_text("inside\n", encoding="utf-8")
+            source.write_bytes(b"inside\n")
             link = target / "linked.txt"
             try:
                 link.symlink_to(source)
@@ -593,7 +596,7 @@ class ValidationContextTests(unittest.TestCase):
             target = parent / "target"
             target.mkdir()
             inside = target / "inside.txt"
-            inside.write_text("inside\n", encoding="utf-8")
+            inside.write_bytes(b"inside\n")
             outside = parent / "outside.txt"
             outside.write_text("outside\n", encoding="utf-8")
             link = target / "linked.txt"
