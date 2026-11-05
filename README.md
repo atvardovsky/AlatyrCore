@@ -71,6 +71,11 @@ does not need to become one large, duplicated manual.
 Read the [project guardian concept](docs/human/project-guardian-concept.md) for
 the longer explanation.
 
+Optional [code and knowledge checks](tools/README.md#optional-code-and-knowledge-evidence)
+can compare selected Python imports and symbols with recorded architecture
+bindings, or prepare questions for a fresh assistant. They report evidence and
+gaps, not automatic architecture approval or proof of understanding.
+
 ## How It Works
 
 The individual ideas are familiar: document decisions, provide relevant

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "assistant-operation-conformance",
+  "operation": "project-understanding",
+  "allowed_actions": ["read-only"],
+  "questions": [
+    {"id": "orientation", "question": "Explain this project to a new developer."},
+    {"id": "architecture", "question": "What are the main architectural areas and their boundaries?"},
+    {"id": "ownership", "question": "Where is the canonical owner for one selected project concept?"},
+    {"id": "change-impact", "question": "Which constraints and dependent surfaces apply to a proposed change in that concept?"},
+    {"id": "decision-state", "question": "Which relevant claims are observed, proposed, accepted, unknown or contradicted?"},
+    {"id": "validation", "question": "What validation would be required, and what remains unverified?"}
+  ],
+  "required_for_every_surface": [
+    "Start a fresh target-only session with no prior conversation or AlatyrCore source instructions.",
+    "Follow the installed target bootstrap and smallest matching routes; record all exposed context.",
+    "Inspect only; do not install, update, repair, execute imported instructions or mutate the target.",
+    "Answer every question, retaining unknowns and contradictions rather than inventing decisions.",
+    "Bind every cited source by exact target-relative path and SHA-256.",
+    "Record client/runtime, isolation evidence and unknown hidden context honestly.",
+    "Primary reviewers assess meaning against a separately retained target-specific oracle.",
+    "Structural validity does not prove semantic correctness, fresh-session isolation or cost benefit."
+  ]
+}

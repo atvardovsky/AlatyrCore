@@ -1,5 +1,52 @@
 # Alatyr Core Tools
 
+## Optional Code And Knowledge Evidence
+
+These source helpers inspect a target without installing or changing its
+adapter. They add no bootstrap files, hooks, packages or graph database.
+Paths below are examples, not facts about this repository.
+
+```sh
+python3 tools/alatyr.py code-relationships --target /path/to/target-repo --source src/app/service.py --source src/app/rules.py --source-root src
+python3 tools/alatyr.py project-understanding --target /path/to/target-repo
+python3 tools/alatyr.py project-understanding --target /path/to/target-repo --report /path/to/captured-result.json
+```
+
+Use `python` on Windows. Both commands write JSON to stdout only.
+`code-relationships` requires an existing consistency map, uses its canonical
+loader/traversal and compares explicit Python files with code bindings. Dotted
+symbol selectors name local function/class definitions, such as `Service.run`.
+Choose the actual Python import root with `--source-root`; ordinary files and
+package `__init__.py` files must have distinct import identities. External,
+unselected and unresolved imports remain visible; runtime dispatch, dynamic
+imports, re-export semantics and non-Python source are not resolved. Matching
+imports do not establish current architecture review. Review hints are not
+publishable candidate records: use the existing provenance and owner process.
+An accepted dependency without an import is not reported as disproven.
+Exit 1 means review findings or blocked input, not an automatic architecture
+violation. Exit 0 covers selected bindings only, never final target acceptance.
+
+Limits: 128 explicit source files, 512 map nodes, 100,000 AST nodes per file,
+4,096 result rows and 1 MiB serialized report. Shared evidence reads allow at
+most 256 unique regular files, 1 MiB per file and 8 MiB total, including graph
+inputs. All selected bytes are rechecked before delivery. Overflows fail rather
+than truncate; split the review without dropping required owner context.
+
+`project-understanding` prepares six provider-neutral questions without
+launching an agent. Run them in a fresh target-only session through the existing
+conformance executor/manual-import lifecycle; retain actual client, exposure
+and isolation evidence. The result shape binds the scenario, all exposed files
+and per-answer sources by SHA-256. The checker rejects missing questions, stale
+or missing sources, uncited accepted claims and incomplete contradiction pairs.
+Unknown answers need reasons. It checks at most 128 bindings per source list,
+within the shared evidence ceilings. A successful result is explicitly
+`structurally-valid-review-required`: assess meaning against a separately held
+target-specific oracle. It does not verify hidden context, agent provenance,
+semantic truth or billing/token benefit. No paid model call is automatic.
+
+Canonical boundaries: [architecture](../framework/architecture-knowledge.md#knowledge-states)
+and [support relationships](../framework/support-information.md#relationship-discovery).
+
 ## Optimization Maintenance
 
 Plan source-generated updates with `python3 tools/alatyr.py refresh-source`.

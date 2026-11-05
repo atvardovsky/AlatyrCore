@@ -8,6 +8,17 @@ Operation-level fixtures under `conformance/operations` prepare equivalent
 runtime requests for supported assistant surfaces after an adapter is already
 installed. They are separate from installation-shape fixtures.
 
+The optional `project-understanding` scenario asks six cold-start questions
+about orientation, architecture, ownership, change impact, decision states and
+validation. Prepare or check captured answers with
+[`alatyr.py project-understanding`](../tools/README.md#optional-code-and-knowledge-evidence).
+Reuse the existing executor lifecycle or manual import on every surface. Do not
+use an installation-shape pass as proof that a new agent understood the project.
+Keep the target-specific answer oracle separate from the agent's visible
+context. Structural result checks bind sources and retain unknowns; the primary
+reviewer still assesses unsupported conclusions, hidden contradictions,
+observed-versus-accepted claims, isolation limits and task-specific correctness.
+
 Fixtures are not production adapters. They are deterministic evidence for how
 Alatyr Core should behave when a target repository has common shapes such as a
 CLI, backend API, frontend, monorepo, or pre-existing AI instructions.

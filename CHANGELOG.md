@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Add opt-in, read-only Python code relationship evidence through existing
+  consistency-map bindings and accepted-edge semantics. Keep unexpected
+  imports as review hints; report missing symbols and ambiguous ownership.
+- Add provider-neutral cold-start project-understanding questions and a
+  source-bound captured-answer checker. Structural validity still requires
+  separate semantic and fresh-session review.
+- Share bounded regular-file evidence and final freshness verification across
+  both helpers. Existing planner, bootstrap, installed schemas and templates
+  remain unchanged; no framework version or target migration is required.
+  No hooks, packages, database or paid executor is enabled.
 - Fix the checker-claim test host to preserve `Validator.rel` POSIX semantics;
   exercise POSIX and Windows path objects on every host. Production validation
   and installed contracts are unchanged.

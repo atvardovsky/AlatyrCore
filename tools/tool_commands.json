@@ -2,6 +2,18 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "code-relationships",
+      "script": "inspect_code_relationships.py",
+      "purpose": "inspect selected Python code bindings and non-authoritative dependency review hints",
+      "write_scope": "none"
+    },
+    {
+      "name": "project-understanding",
+      "script": "inspect_project_understanding.py",
+      "purpose": "prepare provider-neutral cold-start questions or check source-bound answers",
+      "write_scope": "none"
+    },
+    {
       "name": "worker-communication",
       "script": "inspect_worker_communication.py",
       "purpose": "inspect a snapshot-bound direct-parent worker communication view",

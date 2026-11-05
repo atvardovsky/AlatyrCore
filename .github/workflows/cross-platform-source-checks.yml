@@ -138,6 +138,8 @@ jobs:
           tests.test_initialization_readiness
           tests.test_harness_contract
           tests.test_worker_communication
+          tests.test_code_relationships
+          tests.test_project_understanding
           tests.test_conformance_artifacts
       - name: Summarize source-check diagnostics
         if: always()

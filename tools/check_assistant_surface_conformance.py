@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from prepare_conformance_run import prepare_run
+from project_understanding import understanding_request
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +30,9 @@ def load(path: Path) -> dict[str, Any]:
 def main() -> int:
     failures: list[str] = []
     try:
+        request = understanding_request()
+        if len(request["questions"]) != 6 or request["status"] != "prepared-not-executed":
+            failures.append("project-understanding must prepare six questions without execution")
         surface_data = load(SURFACES)
         bridge_data = load(BRIDGES)
     except (OSError, json.JSONDecodeError, ValueError) as exc:
