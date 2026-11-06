@@ -129,6 +129,17 @@ class TestExecutionContract:
             except (OSError, ValueError, SchemaError) as exc:
                 return [f"repair schema is unavailable or invalid: {exc}"]
         contract = policy["execution_contract"]
+        historical = contract.get("historical_evidence_records", [])
+        if "historical_evidence_records" in contract and contract["schema_version"] != 4:
+            return ["historical evidence selection requires execution schema 4; old records need no rewrite"]
+        historical_paths = [row["path"] for row in historical]
+        if len(historical_paths) != len(set(historical_paths)) or set(historical_paths) & set(contract["evidence_records"]):
+            failures.append("historical evidence paths must be unique and disjoint from selected current evidence")
+        for path in historical_paths:
+            try:
+                logical_path(path)
+            except ValueError as exc:
+                failures.append(f"historical evidence requires exact normalized paths: {exc}")
         from testing_controls import policy_control_failures
         failures.extend(policy_control_failures(policy))
         if failures:
@@ -138,7 +149,7 @@ class TestExecutionContract:
             failures.append("command IDs must be unique")
         if contract["canonical_coverage_matrix"] is None and not contract["coverage_not_applicable_reason"]:
             failures.append("non-applicable coverage matrix requires a concrete reason")
-        paths = [contract["canonical_policy"], *contract["evidence_records"]]
+        paths = [contract["canonical_policy"], *contract["evidence_records"], *historical_paths]
         additional = contract.get("additional_evidence_templates", [])
         paths.extend(additional)
         if set(additional) & set(SURFACES):

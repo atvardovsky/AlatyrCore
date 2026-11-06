@@ -70,6 +70,12 @@ def validate_testing_execution(context: CapabilityValidationContext, policy: dic
                 context.error("TDD_COMMAND_CONFIGURATION_MISSING", "declared test command configuration is missing", path)
     inventory = None
     evidence_paths = set(execution["evidence_records"])
+    for historical in execution.get("historical_evidence_records", []):
+        path = historical["path"]
+        if context.content_digest(context.target_path(path)) != historical["sha256"]:
+            context.error("TDD_HISTORICAL_EVIDENCE_CHANGED", "retained historical evidence is missing, escaped or changed; preserve its original bytes", path)
+        else:
+            context.info("TDD_HISTORICAL_EVIDENCE_RETAINED", "digest-bound historical record; not current-source validation or completion evidence", path)
     review = policy.get("repair_review")
     if isinstance(review, dict) and review.get("state") == "enabled":
         evidence_paths.update(item["path"] for item in review["records"])

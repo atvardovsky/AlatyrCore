@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import lifecycle_checkpoints as hooks
 import request_brief as contract
+import delivery_control as delivery
 from inspect_session_context import TARGET_ANCHORS, capture
 from tests.active_task_fixture import ActiveTaskFixture
 from tests.test_target_validator_installation_state import write_accepted_record, write_state
@@ -33,6 +34,133 @@ def brief_fixture(objective="requested outcome", proof_id="proof"):
 def action_fixture(**changes):
     return {"request_id": "request-1", "task_id": "fixture-task", "kind": "work", "phase": "modify",
             "outcome_ids": ["same-view"], "paths": ["src/example.txt"], "effects": [], **changes}
+
+
+def delivery_fixture(brief):
+    brief.update(schema_version=2, delivery_control={"pilot_outcome_ids": ["same-view"],
+        "validation_history": ".ai/.runtime/validation-history.json", "max_expensive_runs": 2,
+        "max_validation_seconds": 100})
+    return {"schema_version": 1, "request_id": brief["request_id"], "task_id": brief["task_id"], "attempts": []}
+
+
+def validation_fixture(**changes):
+    return {"command_id": "selected-browser", "scope": "focused", "estimated_seconds": 10,
+            "diagnosis_proof_id": None, "independent_review_proof_id": None, **changes}
+
+
+def attempt_fixture(index=1, **changes):
+    return {"evidence_ref": f"attempt-{index}.json", "result": "failed", "scope": "focused",
+            "duration_seconds": 10, "expected_red_proof_id": None, **changes}
+
+
+class DeliveryControlTests(unittest.TestCase):
+    def setUp(self):
+        self.brief = brief_fixture()
+        self.history = delivery_fixture(self.brief)
+        self.model = {"proof_obligations": [{"id": key, "required": True, "status": "passed",
+                    "evidence_refs": ["attempt-1.json", "attempt-2.json", "attempt-3.json"]}
+                    for key in ("proof", "diagnosis", "review", "red")]}
+
+    def failures(self, **changes):
+        brief = contract.parse_brief(json.dumps(self.brief).encode())
+        action = contract.parse_action(action_fixture(phase="inspect", paths=[],
+                                      validation=validation_fixture(**changes)))
+        history = delivery.parse_history(json.dumps(self.history).encode(), brief)
+        return delivery.delivery_failures(brief, action, self.model, history)
+
+    def test_null_controls_are_explicitly_unadopted_not_an_implicit_budget(self):
+        self.brief["delivery_control"] = None
+        self.assertIsNone(contract.parse_brief(json.dumps(self.brief).encode())["delivery_control"])
+        for value in ({}, [], True, 1, "disabled"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                contract.parse_brief(json.dumps({**self.brief, "delivery_control": value}).encode())
+
+    def test_pilot_must_pass_before_expansion_or_broad_validation(self):
+        self.model["proof_obligations"][0]["status"] = "open"
+        self.assertEqual(self.failures(), [])
+        self.assertTrue(any("representative" in x for x in self.failures(scope="broad")))
+        self.brief["outcomes"].append({**self.brief["outcomes"][0], "id": "second"})
+        action = contract.parse_action(action_fixture(outcome_ids=["second"]))
+        self.assertTrue(delivery.delivery_failures(self.brief, action, self.model, self.history))
+        self.model["proof_obligations"][0]["status"] = "passed"
+        self.assertEqual(delivery.delivery_failures(self.brief, action, self.model, self.history), [])
+
+    def test_cumulative_failure_escalation_and_distinct_failure_linked_proofs(self):
+        self.history["attempts"] = [attempt_fixture()]
+        self.assertTrue(any("diagnosis" in x for x in self.failures()))
+        self.assertEqual(self.failures(diagnosis_proof_id="diagnosis"), [])
+        self.assertTrue(self.failures(diagnosis_proof_id="proof"))
+        self.history["attempts"].append(attempt_fixture(2, result="interrupted"))
+        self.assertTrue(self.failures(diagnosis_proof_id="diagnosis"))
+        self.assertTrue(self.failures(diagnosis_proof_id="diagnosis", independent_review_proof_id="diagnosis"))
+        self.assertEqual(self.failures(diagnosis_proof_id="diagnosis", independent_review_proof_id="review"), [])
+        self.model["proof_obligations"][2]["evidence_refs"] = ["old-failure.json"]
+        self.assertTrue(self.failures(diagnosis_proof_id="diagnosis", independent_review_proof_id="review"))
+        self.model["proof_obligations"][2]["evidence_refs"].append("attempt-2.json")
+        self.history["attempts"].append(attempt_fixture(3))
+        self.assertTrue(any("three" in x for x in self.failures(scope="broad", diagnosis_proof_id="diagnosis", independent_review_proof_id="review")))
+        self.history["attempts"].append(attempt_fixture(4, result="passed"))
+        self.assertTrue(any("three" in x for x in self.failures(scope="broad", diagnosis_proof_id="diagnosis", independent_review_proof_id="review")))
+        for proof in self.model["proof_obligations"][1:3]: proof["evidence_refs"].extend(["attempt-3.json", "attempt-4.json"])
+        self.assertEqual(self.failures(scope="broad", diagnosis_proof_id="diagnosis", independent_review_proof_id="review"), [])
+        self.history["attempts"][-1]["scope"] = "broad"
+        self.assertTrue(any("three" in x for x in self.failures(scope="broad", diagnosis_proof_id="diagnosis", independent_review_proof_id="review")))
+
+    def test_budgets_below_at_and_above_including_failed_and_interrupted_runs(self):
+        self.history["attempts"] = [attempt_fixture(result="passed", scope="broad", duration_seconds=90)]
+        self.assertEqual(self.failures(scope="broad", estimated_seconds=9), [])
+        self.assertEqual(self.failures(scope="broad", estimated_seconds=10), [])
+        self.assertTrue(any("max_validation_seconds" in x for x in self.failures(estimated_seconds=11)))
+        self.brief["delivery_control"]["max_expensive_runs"] = 1
+        self.assertTrue(any("max_expensive_runs" in x for x in self.failures(scope="broad")))
+        self.assertEqual(self.failures(), [])
+        self.history["attempts"][0]["result"] = "interrupted"
+        self.assertTrue(any("max_validation_seconds" in x for x in self.failures(estimated_seconds=11)))
+
+    def test_expected_red_requires_a_linked_required_passed_proof(self):
+        self.history["attempts"] = [attempt_fixture(result="expected-red")]
+        self.assertTrue(any("expected RED" in x for x in self.failures()))
+        self.history["attempts"][0]["expected_red_proof_id"] = "red"
+        self.assertEqual(self.failures(), [])
+        self.model["proof_obligations"][-1]["required"] = False
+        self.assertTrue(self.failures())
+
+    def test_completion_cannot_hide_a_failed_or_interrupted_last_attempt(self):
+        for result in delivery.RESULTS:
+            self.history["attempts"] = [attempt_fixture(result=result, expected_red_proof_id="red" if result == "expected-red" else None)]
+            action = action_fixture(kind="complete", phase="inspect", paths=[])
+            failures = delivery.delivery_failures(self.brief, action, self.model, self.history)
+            self.assertEqual(bool(failures), result != "passed")
+
+    def test_malformed_types_unknown_fields_and_history_boundaries(self):
+        for key in self.brief["delivery_control"]:
+            for value in (None, {}, [], True, -1, 1.5, "unknown"):
+                changed = copy.deepcopy(self.brief); changed["delivery_control"][key] = value
+                with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                    contract.parse_brief(json.dumps(changed).encode())
+        for key in validation_fixture():
+            for value in ({}, [], True, 1.5):
+                with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                    delivery.parse_validation(validation_fixture(**{key: value}))
+        for key in attempt_fixture():
+            for value in ({}, [], True, 1.5):
+                changed = copy.deepcopy(self.history); changed["attempts"] = [attempt_fixture(**{key: value})]
+                with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                    delivery.parse_history(json.dumps(changed).encode(), self.brief)
+        self.history["attempts"] = [attempt_fixture(i, result="passed", duration_seconds=0) for i in range(32)]
+        delivery.parse_history(json.dumps(self.history).encode(), self.brief)
+        self.assertTrue(any("history is full" in x for x in self.failures()))
+        self.history["attempts"].append(attempt_fixture(33))
+        with self.assertRaises(ValueError): delivery.parse_history(json.dumps(self.history).encode(), self.brief)
+
+    def test_history_identity_duplicates_and_exact_byte_bound(self):
+        raw = json.dumps(self.history).encode()
+        with patch.object(delivery, "MAX_HISTORY_BYTES", len(raw)):
+            delivery.parse_history(raw, self.brief)
+            with self.assertRaises(ValueError): delivery.parse_history(raw+b" ", self.brief)
+        for changes in ({"request_id": "other"}, {"task_id": {}}, {"attempts": [attempt_fixture(), attempt_fixture()]}, {"extra": True}):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                delivery.parse_history(json.dumps({**self.history, **changes}).encode(), self.brief)
 
 
 class RequestContractTests(unittest.TestCase):
@@ -234,6 +362,61 @@ class RequestLifecycleTests(ActiveTaskFixture):
             self.assertFalse(json.loads(result.stdout)["authorization_granted"])
         after = {p.relative_to(self.target): hashlib.sha256(p.read_bytes()).hexdigest() for p in self.target.rglob("*") if p.is_file() and ".git" not in p.parts}
         self.assertEqual(before, after)
+
+    def test_delivery_control_through_public_cli_and_installed_delegate(self):
+        history = delivery_fixture(self.brief)
+        history["attempts"] = [attempt_fixture()]
+        (self.target/self.brief["delivery_control"]["validation_history"]).write_text(json.dumps(history), encoding="utf-8")
+        self.write_brief()
+        action = self.action(phase="inspect", paths=[], validation=validation_fixture())
+        for prefix in ([sys.executable, "-B", str(ROOT/"tools/alatyr.py")],
+                       [sys.executable, "-B", str(ROOT/"templates/target/.ai/assistant/tools/alatyr_delegate.py")]):
+            args = prefix + ["lifecycle-checkpoint", "--target", str(self.target)]
+            if "alatyr_delegate.py" in prefix[-1]: args += ["--framework-source", str(ROOT)]
+            result = subprocess.run(args+["review", "--request-brief", self.brief_path], input=json.dumps(action), capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1, result.stdout+result.stderr)
+            self.assertIn("diagnosis", json.loads(result.stdout)["reason"])
+        history["attempts"] = []
+        (self.target/self.brief["delivery_control"]["validation_history"]).write_text(json.dumps(history), encoding="utf-8")
+        self.assertEqual(hooks.review_request(self.target, self.brief_path, action)["status"], "request-consistent")
+
+    def test_public_delivery_budget_boundaries_missing_history_and_null_control(self):
+        history = delivery_fixture(self.brief)
+        history["attempts"] = [attempt_fixture(result="passed", duration_seconds=90)]
+        path = self.target/self.brief["delivery_control"]["validation_history"]
+        path.write_text(json.dumps(history), encoding="utf-8"); self.write_brief()
+        command = [sys.executable, "-B", str(ROOT/"tools/alatyr.py"), "lifecycle-checkpoint", "--target", str(self.target),
+                   "review", "--request-brief", self.brief_path]
+        for seconds, expected in ((9, 0), (10, 0), (11, 1)):
+            action = self.action(phase="inspect", paths=[], validation=validation_fixture(estimated_seconds=seconds))
+            result = subprocess.run(command, input=json.dumps(action), capture_output=True, text=True)
+            self.assertEqual(result.returncode, expected, result.stdout+result.stderr)
+            self.assertFalse(json.loads(result.stdout)["authorization_granted"])
+        path.unlink()
+        result = subprocess.run(command, input=json.dumps(action), capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2, result.stdout+result.stderr)
+        self.assertIn("validation history", json.loads(result.stdout)["reason"])
+        self.brief["delivery_control"] = None; self.write_brief()
+        self.assertTrue(hooks.review_request(self.target, self.brief_path, action)["checkpoint_required"])
+        self.assertEqual(hooks.review_request(self.target, self.brief_path, self.action())["status"], "request-consistent")
+
+    def test_delivery_history_must_be_retained_and_changes_invalidate_binding(self):
+        history = delivery_fixture(self.brief)
+        path = self.target/self.brief["delivery_control"]["validation_history"]
+        path.write_text(json.dumps(history), encoding="utf-8"); self.write_brief(); self.refresh_baseline()
+        with self.assertRaisesRegex(ValueError, "exact validation history"): self.bind_request()
+        baseline = capture(self.target, [hooks.POLICY, ".ai/assistant/active-tasks.json", self.model_path.relative_to(self.target).as_posix(),
+            self.model["active_projection"]["path"], self.brief_path, "design.md", path.relative_to(self.target).as_posix()])[0]
+        (self.target/self.baseline).write_text(json.dumps(baseline), encoding="utf-8")
+        self.bind_request()
+        original = copy.deepcopy(self.brief)
+        self.brief["delivery_control"] = None; self.write_brief()
+        with self.assertRaisesRegex(ValueError, "brief changed"):
+            self.event("before-action", alatyr_action=self.action())
+        self.brief = original; self.write_brief()
+        history["attempts"].append(attempt_fixture())
+        path.write_text(json.dumps(history), encoding="utf-8")
+        self.assertTrue(self.event("before-action", alatyr_action=self.action())["checkpoint_required"])
 
     def test_installed_delegate_uses_the_same_review_parser_and_result(self):
         command = [sys.executable, "-B", str(ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py"),

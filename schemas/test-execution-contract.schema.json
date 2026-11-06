@@ -18,6 +18,10 @@
         "red_requirement": {"enum": ["required-before-implementation", "when-authorized", "not-required"]},
         "review_authority": {"$ref": "#/$defs/text"},
         "evidence_records": {"$ref": "#/$defs/texts"},
+        "historical_evidence_records": {"type": "array", "maxItems": 64, "items": {
+          "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+          "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/digest"}}
+        }},
         "additional_evidence_templates": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}}
       }
     },

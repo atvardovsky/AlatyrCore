@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "alatyr-request-brief",
   "request_id": "{REQUEST_ID}",
   "task_id": "{TASK_ID}",
@@ -18,5 +18,6 @@
   "requested_order": [],
   "authorized_phases": ["inspect"],
   "write_scope": [],
-  "effect_scope": []
+  "effect_scope": [],
+  "delivery_control": null
 }

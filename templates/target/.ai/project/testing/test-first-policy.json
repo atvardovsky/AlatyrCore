@@ -16,6 +16,7 @@
     "red_requirement": "{REQUIRED_BEFORE_IMPLEMENTATION_WHEN_AUTHORIZED_OR_NOT_REQUIRED}",
     "review_authority": "{TARGET_TEST_EXECUTION_AUTHORITY}",
     "evidence_records": [],
+    "historical_evidence_records": [],
     "additional_evidence_templates": []
   },
   "repair_review": {

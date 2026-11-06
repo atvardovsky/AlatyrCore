@@ -992,8 +992,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 39,
-      "content_digest": "sha256:142b8cf2d6d72df9ac58ea97243f86f0458ef3fc0c48fbb7b44b05c843ee0596"
+      "estimated_words": 41,
+      "content_digest": "sha256:4cfdaab4a2f2d35bce1a6d2472b1b9aca8c40398b17d49ff94ea14235a1fae12"
     },
     {
       "id": "assistant.content.templates-runtime-observation-record-json",

@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1760
+Catalog entries: 1762
 
 ## Families
 
@@ -69,7 +69,7 @@ Catalog entries: 1760
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
 - `TASK`: 57 codes.
-- `TDD`: 68 codes.
+- `TDD`: 70 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
 - `VALIDATION`: 22 codes.
@@ -3044,6 +3044,10 @@ Catalog entries: 1760
   Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_EXECUTION_UNROUTED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
+- `TDD_HISTORICAL_EVIDENCE_CHANGED`
+  Level: error. Source: `tools/target_adapter_validation/testing_execution.py`.
+- `TDD_HISTORICAL_EVIDENCE_RETAINED`
+  Level: info. Source: `tools/target_adapter_validation/testing_execution.py`.
 - `TDD_INTENT_MODULE_BOUNDARY`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_INTENT_UNROUTED`

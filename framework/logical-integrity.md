@@ -179,6 +179,8 @@ replication. Material mismatches need owner decisions, not weaker criteria;
 matching approved work needs no redundant approval. Owner rejection reopens
 affected outcomes; prior tests remain historical evidence.
 
+For visual work, inspect actual content, not just wrapper geometry or controls.
+
 Check fixtures against the real consumer schema and version/lifecycle rules.
 For no-write claims, observe the actual method/resource and relevant state;
 challenge the assertion with a write to that resource. For asynchronous UI,

@@ -265,6 +265,10 @@ They define policy-owned JSON observations, diagnostic control contrasts and
 optional comparable measurements. Known-failing diagnostics may qualify repair,
 not acceptance or execution authority. Schema 1 does not load that detail.
 
+Costly or repeatedly rejected work may select
+[bounded delivery review](test-execution-selection.md#bounded-delivery-review);
+retain target timing and historical-evidence boundaries.
+
 Each attempt binds its run bytes, observed timezone-bound `run_window`,
 expected/observed effect and distinguishes production,
 fixture, test-author, environment and unverified failure. After failed acceptance,

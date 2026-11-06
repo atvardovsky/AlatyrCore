@@ -167,6 +167,16 @@ validation and requires all mapped outcome proofs to be passed, not waived.
 evidence truth, task acceptance or permission. A caller can still supply the wrong
 request; native provenance and independent source-first review remain necessary.
 
+Schema 2 adds nullable `delivery_control`; schema 1 is unchanged. For uncertain
+multipart or costly repeated work, the conditional
+[bounded delivery contract](../framework/test-execution-selection.md#bounded-delivery-review)
+defines pilot proofs, a retained bounded attempt history and pre-run budget/failure
+review. Select it only when needed. The same `review` entry point and installed
+delegate check an action's optional `validation` object. Bind its history alongside
+the brief; changed history requires reconciliation before another bound action.
+Tests are not executed or authorized by that check. Report undeclared-run,
+duration-estimation and native shell-interception limitations explicitly.
+
 For request guards, preserve disabled state unless the owner explicitly enables
 the guard. Set `request_guard.required` to true only after review, retain the
 brief in the selected context baseline, and add `--request-brief <path>` to

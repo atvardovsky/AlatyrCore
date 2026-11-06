@@ -37,6 +37,10 @@ fact, defect, invariant, contract, or refactor.
 6. Record observable acceptance examples, negative paths, and boundaries.
    Apply `.ai/framework/logical-integrity.md#consumer-grounded-proof` to the
    requested surfaces, actual consumer contracts and assertion sensitivity.
+   For uncertain or repeatedly rejected work, prove a small real slice before
+   expansion. For costly retries, conditionally select bounded delivery review
+   in `.ai/framework/test-execution-selection.md`; reuse the request checkpoint
+   rather than another plan, and preserve the target's timing/RED policy.
    For uncertain/recurring defects, apply the incident review in the canonical
    test policy: qualify the original reproducer, competing causes, falsifier,
    actual fixture boundaries and expected whole-incident effect before repair.

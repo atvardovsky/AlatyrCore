@@ -44,6 +44,9 @@ Canonical rules remain in `.ai/framework/task-state-delivery.md`,
 `lifecycle-checkpoint review --request-brief <path>` checks stdin action JSON
 without writes/adoption. See the operator guide for actual-action mappings,
 partial-answer/completion distinctions and client-verification limits.
+Optional schema-2 delivery controls use
+`.ai/framework/test-execution-selection.md#bounded-delivery-review`; retain the
+selected validation history in the baseline, without enabling controls on update.
 
 Runtime session state stays ignored under `.ai/.runtime/lifecycle-hooks/` and
 contains no conversation, approval record or duplicate project task inventory.

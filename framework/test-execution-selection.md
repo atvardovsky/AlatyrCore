@@ -13,6 +13,68 @@ adopted. Required controls need schema-3/4 policy and evidence; frozen schema-2
 records remain historical/legacy evidence, never proof of new controls.
 Targets decide whether to adopt. Never mutate their policy automatically.
 
+## Bounded Delivery Review
+
+For uncertain, costly or repeatedly rejected work, use the existing request
+checkpoint with a schema-2 request brief. `delivery_control: null` retains the
+ordinary path; schema 1 stays readable. An adopted object names original
+`pilot_outcome_ids`, an exact `validation_history` path, `max_expensive_runs`
+(1..32) and `max_validation_seconds` (1..86400). No new bootstrap, runner or
+automatic adoption is implied. Keep outcomes small enough to demonstrate a
+real representative slice; do not bundle an entire subsystem into its pilot.
+
+Pilot proofs must be required and passed before modifying non-pilot outcomes
+or starting broad validation. Derive the oracle from the source request and a
+rejected substitute, not the implementation. For visual work inspect actual
+content and relevant states, not just wrapper geometry or matching controls.
+Source review, browser results and human acceptance remain different evidence.
+
+The history is bounded JSON: `schema_version: 1`, exact `request_id`, `task_id`
+and at most 32 ordered `attempts`. Each attempt records `evidence_ref`, exact
+`result` (`passed`, `failed`, `interrupted`, `expected-red`), `scope` (`focused`
+or `broad`), nonnegative integer `duration_seconds`, and nullable
+`expected_red_proof_id`. Expected RED needs a passed required proof referencing
+that attempt; syntax, fixture and infrastructure failures are not expected RED.
+Retain every attempt for this change, including interrupted runs. Do not reset
+history, budgets or incident identity to evade reassessment. Overflow stops
+execution for reviewed decomposition, never silent truncation.
+
+Before each test invocation, pass a work/inspect action with `validation`:
+`command_id`, `scope`, positive integer `estimated_seconds`, and nullable
+`diagnosis_proof_id` and `independent_review_proof_id`. One unexpected failure
+requires a passed required diagnosis proof linked to the latest failure. Two
+require a distinct passed required independent-review proof too. Three stop
+broad execution until a later passed focused diagnostic is linked by both proofs.
+Focused diagnostics still require review and remaining budget.
+The estimate plus all recorded duration must fit the time budget; every prior
+broad attempt counts against the expensive-run budget, regardless of result.
+After correction, rerun affected cases and dependencies, not a matrix merely
+to obtain one prettier green report. Completion cannot hide a non-passing last
+attempt. Preserve canonical required coverage and timing; budgets waive no gate.
+
+Read-only `lifecycle-checkpoint review` evaluates these declared relationships.
+Retain the brief and history in the lifecycle context baseline; changes require
+reconciliation and a fresh binding. The helper does not run tests, authenticate
+reviewers, measure duration, infer arbitrary shell commands or discover omitted
+runs. Record actual receipts and independently review history completeness,
+causality, estimates and original-request fidelity. A procedural success is not
+native interception, execution permission or semantic acceptance.
+
+## Current And Historical Evidence
+
+Schema 4 optionally selects `historical_evidence_records` as at most 64 exact
+`{path, sha256}` bindings, unique and disjoint from current `evidence_records`.
+The validator verifies retained bytes, not compatibility with today's policy,
+source, commands or suite inventory. History supplies no current acceptance.
+Existing current evidence still receives every freshness and behavior check.
+Missing or changed history remains a finding; do not rehash it to erase a failure.
+
+At task transition or update, review the selected task, original run and retained
+repair obligations before proposing a move from current to history. Preserve
+failures and their original policy/results. Never automatically archive active
+or unresolved obligations, disable a gate, rewrite old evidence or migrate a
+schema-2/3 policy merely to make validation green. Target owners approve adoption.
+
 ## Harness And Case Accounting
 
 Schema 4 optionally adds `execution.harness_inputs`: 1..64 unique exact

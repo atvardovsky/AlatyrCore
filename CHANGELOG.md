@@ -4,6 +4,22 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.130 - 2026-11-06
+
+- Add conditional schema-2 request delivery controls through the existing
+  checkpoint: representative-outcome proofs before expansion, cumulative
+  validation budgets and failure-linked diagnosis/independent-review duties.
+- Keep bounded attempt history source-bound across lifecycle binding; reject
+  missing/changed history, malformed inputs, unexplained retries and unsupported
+  completion. Preserve schema-1 and null-control lightweight paths.
+- Add explicit schema-4 historical test-evidence bindings, disjoint from current
+  records. Verify original bytes without falsely requiring historical runs to
+  match today's source; retain all current-evidence freshness checks.
+- Strengthen visual acceptance guidance and selective retry delivery without
+  strict-TDD conversion, automatic policy adoption, archival or native interception.
+- Advance adapter schema to 107 and templates to 125. No new bootstrap, service,
+  dependency, test runner or measured performance/token/cost benefit is claimed.
+
 ## 0.1.0-alpha.129 - 2026-11-06
 
 - Default new installations to enabled procedural/observe lifecycle delivery,

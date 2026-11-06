@@ -204,6 +204,21 @@ def review_request(target: Path, brief_path: str, action: object, *,
                              require_completion=selected_action["kind"] == "complete")
     failures = action_failures(brief, selected_action, selected["request_model"],
         request_id=request_id if request_id is not None else brief["request_id"], task_id=selected_id)
+    delivery_inputs = {}
+    control = brief.get("delivery_control")
+    if control is not None:
+        from delivery_control import MAX_HISTORY_BYTES, delivery_failures, parse_history
+        history_path = control["validation_history"]
+        context = selected["request_contexts"][0]
+        history_read = context.read_bytes_result(target / history_path, max_bytes=MAX_HISTORY_BYTES)
+        if history_read.value is None:
+            raise ValueError("missing or unreadable validation history: " + history_path)
+        history = parse_history(history_read.value, brief)
+        delivery_inputs[history_path] = digest(history_read.value)
+        selected["checkpoint_inputs"].update(delivery_inputs)
+        failures.extend(delivery_failures(brief, selected_action, selected["request_model"], history))
+    elif "validation" in selected_action:
+        failures.append("validation preflight requires an adopted delivery_control")
     if selected["task_state"] == "closed" and selected_action["kind"] == "work":
         failures.append("closed task cannot reopen execution through request review")
     if retained is not None and not task_context_matches(retained, selected, policy_sha256):
@@ -223,6 +238,8 @@ def review_request(target: Path, brief_path: str, action: object, *,
     result.update(request_id=brief["request_id"], task_id=selected_id, failures=failures,
         request_brief={"path": brief_path, "sha256": digest(raw)},
         request_provenance="declarative-unverified", execution_interception="not-performed")
+    if delivery_inputs:
+        result["delivery_inputs"] = delivery_inputs
     return result
 
 
@@ -243,6 +260,8 @@ def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, reta
     expected = {row["path"]: row["sha256"] for row in validate_baseline(retained.get("baseline", retained))["inputs"]}
     if expected.get(path) != "sha256:" + digest(raw) or review["request_brief"]["sha256"] != digest(raw):
         raise ValueError("reviewed baseline must retain the exact request brief")
+    if any(expected.get(name) != "sha256:" + sha for name, sha in review.get("delivery_inputs", {}).items()):
+        raise ValueError("reviewed baseline must retain the exact validation history")
     return review["request_brief"]
 
 

@@ -320,6 +320,45 @@ class RegisteredTestingExecutionTests(unittest.TestCase):
             self.write(root,'tests/a.py','changed test')
             self.assertIn('TDD_EXECUTION_EVIDENCE_STALE', [x.code for x in self.findings(root)])
 
+    def test_explicit_history_keeps_original_bytes_without_current_source_claims(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve(); p, r = self.fixture(root)
+            p['execution_contract'].update(schema_version=4, evidence_records=[],
+                historical_evidence_records=[{'path': 'current.json', 'sha256': hashlib.sha256((root/'current.json').read_bytes()).hexdigest()}])
+            self.write(root, '.ai/project/testing/test-first-policy.json', p)
+            self.write(root, 'tests/a.py', 'later implementation')
+            errors = [x for x in self.findings(root) if x.level == 'error']
+            self.assertEqual(errors, [])
+            self.assertIn('TDD_HISTORICAL_EVIDENCE_RETAINED', [x.code for x in self.findings(root)])
+            self.write(root, 'current.json', {**r, 'state': 'failed'})
+            self.assertIn('TDD_HISTORICAL_EVIDENCE_CHANGED', [x.code for x in self.findings(root)])
+            (root/'current.json').unlink()
+            self.assertIn('TDD_HISTORICAL_EVIDENCE_CHANGED', [x.code for x in self.findings(root)])
+
+    def test_history_does_not_silence_current_stale_evidence_or_allow_overlap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve(); p, _ = self.fixture(root)
+            self.write(root, 'old.json', {'retained': 'opaque historical evidence'})
+            p['execution_contract'].update(schema_version=4,
+                historical_evidence_records=[{'path': 'old.json', 'sha256': hashlib.sha256((root/'old.json').read_bytes()).hexdigest()}])
+            self.write(root, '.ai/project/testing/test-first-policy.json', p)
+            self.assertIn('TDD_EXECUTION_EVIDENCE_STALE', [x.code for x in self.findings(root)])
+            p['execution_contract']['historical_evidence_records'][0]['path'] = 'current.json'
+            self.assertTrue(any('disjoint' in x for x in TestExecutionContract().policy_failures(p)))
+
+    def test_historical_selection_rejects_malformed_alias_duplicate_and_legacy_inputs(self):
+        contract = TestExecutionContract()
+        p = policy(); p['execution_contract']['schema_version'] = 4
+        entry = {'path': 'old.json', 'sha256': 'a'*64}
+        for value in (None, {}, True, [None], [{'path': {}, 'sha256': []}], [entry, entry],
+                      [{**entry, 'path': '../outside.json'}], [{**entry, 'path': './old.json'}],
+                      [{**entry, 'path': 'folder/../old.json'}], [{**entry, 'sha256': 'unknown'}]):
+            changed = copy.deepcopy(p); changed['execution_contract']['historical_evidence_records'] = value
+            with self.subTest(value=value): self.assertTrue(contract.policy_failures(changed))
+        for version in (2, 3):
+            p['execution_contract'].update(schema_version=version, historical_evidence_records=[])
+            self.assertTrue(contract.policy_failures(p))
+
     def test_legacy_policy_warns_without_inventing_readiness(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory); p,_=self.fixture(root); p.pop('execution_contract')

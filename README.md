@@ -93,6 +93,10 @@ task.
 For business changes, the assistant must distinguish approved requirements from
 its own inferences. A repair retains the original reported case, so passing
 tests or a healthy adapter cannot by themselves mean the user's problem is fixed.
+For costly or repeatedly rejected work, optional
+[bounded delivery review](docs/assistant-lifecycle-hooks.md#request-bound-review)
+checks a representative outcome before expansion and requires deeper review
+after failed validation. Historical test reports remain distinct from current proof.
 
 For uncertain causes, [evidence-guided analysis](framework/task-decomposition.md#evidence-guided-analysis)
 connects hypotheses to predictions, small discriminating checks and their result
@@ -344,7 +348,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.129`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.130`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

@@ -2,52 +2,15 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
-from inspect_session_context import json_object, relative_path
+from inspect_session_context import json_object
+from request_values import MAX_ROWS, WINDOWS_DEVICES, fields, request_path, strings, text
 
 
 MAX_BRIEF_BYTES = 16384
 MAX_BRIEF_WORDS = 1200
-MAX_ROWS = 32
 PHASES = frozenset({"inspect", "modify", "commit", "publish", "live-external"})
-WINDOWS_DEVICES = frozenset({"con", "prn", "aux", "nul", "conin$", "conout$",
-                            *[f"{prefix}{number}" for prefix in ("com", "lpt") for number in range(1, 10)]})
-
-
-def text(value: object, label: str, limit: int = 1024) -> str:
-    if (not isinstance(value, str) or not value.strip() or len(value) > limit
-            or any(ord(char) < 32 for char in value)
-            or value.casefold() in {"unknown", "none", "unresolved"}
-            or re.search(r"\{[A-Z][A-Z0-9_]*\}", value)):
-        raise ValueError(f"{label} requires bounded resolved text")
-    return value
-
-
-def strings(value: object, label: str, *, minimum: int = 0) -> list[str]:
-    if not isinstance(value, list) or not minimum <= len(value) <= MAX_ROWS:
-        raise ValueError(f"{label} requires {minimum}..{MAX_ROWS} entries")
-    result = [text(item, label) for item in value]
-    if len(set(result)) != len(result):
-        raise ValueError(f"{label} cannot contain duplicates")
-    return result
-
-
-def fields(value: object, required: set[str], label: str) -> dict:
-    if not isinstance(value, dict) or set(value) != required:
-        raise ValueError(f"{label} requires exact fields: {', '.join(sorted(required))}")
-    return value
-
-
-def request_path(value: object) -> str:
-    path = relative_path(text(value, "request path"))
-    for part in path.split("/"):
-        device = part.split(".")[0].rstrip(" ").casefold().translate(str.maketrans({"\u00b9": "1", "\u00b2": "2", "\u00b3": "3"}))
-        if (part.endswith((" ", ".")) or any(char in part for char in '*?[]:<>|"')
-                or device in WINDOWS_DEVICES):
-            raise ValueError("request paths must be portable literal paths without device, alias or stream names")
-    return path
 
 
 def parse_brief(raw: bytes) -> dict:
@@ -57,13 +20,16 @@ def parse_brief(raw: bytes) -> dict:
         document = json_object(raw, "request brief")
     except RecursionError as exc:
         raise ValueError("request brief nesting exceeds parser limits") from exc
-    brief = fields(document, {
+    required = {
         "schema_version", "record_kind", "request_id", "task_id", "source_ref",
         "objective", "outcomes", "constraints", "non_goals", "requested_order",
         "authorized_phases", "write_scope", "effect_scope",
-    }, "request brief")
-    if type(brief["schema_version"]) is not int or brief["schema_version"] != 1 or brief["record_kind"] != "alatyr-request-brief":
-        raise ValueError("request brief requires schema 1 and alatyr-request-brief kind")
+    }
+    if document.get("schema_version") == 2:
+        required.add("delivery_control")
+    brief = fields(document, required, "request brief")
+    if type(brief["schema_version"]) is not int or brief["schema_version"] not in (1, 2) or brief["record_kind"] != "alatyr-request-brief":
+        raise ValueError("request brief requires schema 1 or 2 and alatyr-request-brief kind")
     for key in ("request_id", "task_id", "source_ref", "objective"):
         text(brief[key], "request brief." + key)
     phases = strings(brief["authorized_phases"], "authorized_phases", minimum=1)
@@ -98,6 +64,9 @@ def parse_brief(raw: bytes) -> dict:
             raise ValueError("outcomes contains duplicate IDs")
         ids.add(row["id"])
         strings(row["proof_obligation_ids"], "proof_obligation_ids", minimum=1)
+    if brief.get("delivery_control") is not None:
+        from delivery_control import parse_control
+        parse_control(brief["delivery_control"], ids)
     from analysis_strategy_contract import structured_word_count
     if structured_word_count(brief) > MAX_BRIEF_WORDS:
         raise ValueError(f"request brief exceeds {MAX_BRIEF_WORDS} words")
@@ -122,7 +91,10 @@ def guard_policy(value: object) -> dict:
 
 
 def parse_action(value: object) -> dict:
-    action = fields(value, {"request_id", "task_id", "kind", "phase", "outcome_ids", "paths", "effects"}, "request action")
+    required = {"request_id", "task_id", "kind", "phase", "outcome_ids", "paths", "effects"}
+    if isinstance(value, dict) and "validation" in value:
+        required.add("validation")
+    action = fields(value, required, "request action")
     for key in ("request_id", "task_id"):
         text(action[key], "action." + key)
     if not isinstance(action["kind"], str) or action["kind"] not in {"work", "answer", "complete"}:
@@ -142,6 +114,11 @@ def parse_action(value: object) -> dict:
         raise ValueError("inspection/file modification cannot contain Git/publication/live effects")
     if action["phase"] in {"commit", "publish", "live-external"} and not action["effects"]:
         raise ValueError("Git/publication/live phases require explicit effect identities")
+    if "validation" in action:
+        from delivery_control import parse_validation
+        parse_validation(action["validation"])
+        if action["kind"] != "work" or action["phase"] != "inspect" or action["paths"] or action["effects"]:
+            raise ValueError("validation review requires an inspect work action without file or external mutations")
     return action
 
 
@@ -201,6 +178,6 @@ def native_file_action_failures(target: Path, guard: dict, payload: dict, action
         safe_output(target, target / value)
     except (OSError, ValueError, RuntimeError):
         return ["native file-tool path is not a safe target-relative file"]
-    if action["kind"] != "work" or action["phase"] != "modify" or action["paths"] != [value] or action["effects"]:
+    if "validation" in action or action["kind"] != "work" or action["phase"] != "modify" or action["paths"] != [value] or action["effects"]:
         return ["declared action differs from the actual mapped file-tool input"]
     return []

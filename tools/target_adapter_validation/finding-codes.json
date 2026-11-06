@@ -280,7 +280,7 @@
     },
     {
       "id": "TDD",
-      "code_count": 68
+      "code_count": 70
     },
     {
       "id": "TEAM",
@@ -13700,6 +13700,24 @@
       ],
       "sources": [
         "tools/target_adapter_validation/test_first_development.py"
+      ]
+    },
+    {
+      "code": "TDD_HISTORICAL_EVIDENCE_CHANGED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
+      ]
+    },
+    {
+      "code": "TDD_HISTORICAL_EVIDENCE_RETAINED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/testing_execution.py"
       ]
     },
     {
