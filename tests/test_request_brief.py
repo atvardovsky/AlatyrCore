@@ -363,6 +363,103 @@ class RequestLifecycleTests(ActiveTaskFixture):
         after = {p.relative_to(self.target): hashlib.sha256(p.read_bytes()).hexdigest() for p in self.target.rglob("*") if p.is_file() and ".git" not in p.parts}
         self.assertEqual(before, after)
 
+    def adopt_focus(self):
+        self.brief.update(schema_version=3, delivery_control=None, focus_control="dependency-readiness")
+        self.model["execution_dependencies"] = [{"obligation_id": row["id"], "requires": []}
+                                                 for row in self.model["proof_obligations"]]
+        self.model["proof_obligations"][0]["status"] = "open"
+        self.write_model(); self.write_index(); self.write_brief(); self.refresh_baseline()
+        return self.action(brief_sha256=hashlib.sha256((self.target/self.brief_path).read_bytes()).hexdigest(),
+                           obligation_ids=[self.model["proof_obligations"][0]["id"]])
+
+    def test_focus_public_cli_and_delegate_reject_stale_worker_bindings(self):
+        action = self.adopt_focus()
+        for entry in (ROOT/"tools/alatyr.py", ROOT/"templates/target/.ai/assistant/tools/alatyr_delegate.py"):
+            command = [sys.executable, "-B", str(entry), "lifecycle-checkpoint", "--target", str(self.target)]
+            if entry.name == "alatyr_delegate.py": command += ["--framework-source", str(ROOT)]
+            command += ["review", "--request-brief", self.brief_path]
+            for changed, expected in ((action, 0), ({**action, "brief_sha256": "0"*64}, 1),
+                                      ({**action, "brief_sha256": []}, 2),
+                                      ({key: value for key, value in action.items() if key != "obligation_ids"}, 1)):
+                result = subprocess.run(command, input=json.dumps(changed), capture_output=True, text=True)
+                self.assertEqual(result.returncode, expected, result.stdout+result.stderr)
+                report = json.loads(result.stdout)
+                self.assertFalse(report["authorization_granted"])
+                self.assertFalse(report["acceptance_granted"])
+                if expected != 2:
+                    self.assertEqual(report["focus_control"], "dependency-readiness")
+
+    def test_focus_initial_binding_resume_and_worker_integration_preserve_original_digest(self):
+        action = self.adopt_focus()
+        self.assertEqual(self.bind_request()["status"], "bound")
+        self.assertEqual(self.event("before-action", alatyr_action=action)["status"], "request-consistent")
+        self.event("resume")
+        self.assertTrue(self.event("before-action", alatyr_action=action)["checkpoint_required"])
+        replacement = self.event("request")
+        self.request = replacement
+        self.brief["request_id"] = replacement["request_id"]
+        self.brief["constraints"].append("Keep the clarified request boundary")
+        self.write_brief(); self.refresh_baseline(); self.bind_request()
+        old_worker = {**action, "request_id": replacement["request_id"]}
+        self.assertTrue(self.event("before-action", alatyr_action=old_worker)["checkpoint_required"])
+        # New work is constructed after source reconciliation; never retag the worker's old result.
+        new_work = self.action(obligation_ids=[self.model["proof_obligations"][0]["id"]],
+            brief_sha256=hashlib.sha256((self.target/self.brief_path).read_bytes()).hexdigest())
+        self.assertEqual(self.event("before-action", alatyr_action=new_work)["status"], "request-consistent")
+
+    def test_focus_raw_byte_changes_and_control_downgrade_invalidate_bound_actions(self):
+        action = self.adopt_focus(); self.bind_request()
+        path = self.target/self.brief_path
+        original = path.read_bytes()
+        path.write_bytes(original+b"\n")
+        self.assertTrue(hooks.review_request(self.target, self.brief_path, action)["checkpoint_required"])
+        with self.assertRaisesRegex(ValueError, "brief changed"):
+            self.event("before-action", alatyr_action=action)
+        self.brief["focus_control"] = None; self.write_brief()
+        with self.assertRaisesRegex(ValueError, "brief changed"):
+            self.event("before-action", alatyr_action=action)
+
+    def test_focus_and_delivery_controls_both_enforce_their_own_constraints(self):
+        self.adopt_focus()
+        history = delivery_fixture(self.brief)
+        self.brief["schema_version"] = 3
+        path = self.target/self.brief["delivery_control"]["validation_history"]
+        path.write_text(json.dumps(history), encoding="utf-8"); self.write_brief()
+        action = self.action(phase="inspect", paths=[], validation=validation_fixture(),
+            obligation_ids=[self.model["proof_obligations"][0]["id"]],
+            brief_sha256=hashlib.sha256((self.target/self.brief_path).read_bytes()).hexdigest())
+        self.assertEqual(hooks.review_request(self.target, self.brief_path, action)["status"], "request-consistent")
+        history["attempts"] = [attempt_fixture()]
+        path.write_text(json.dumps(history), encoding="utf-8")
+        self.assertIn("diagnosis", hooks.review_request(self.target, self.brief_path, action)["reason"])
+        history["attempts"] = []; path.write_text(json.dumps(history), encoding="utf-8")
+        self.assertIn("brief digest", hooks.review_request(self.target, self.brief_path,
+            {**action, "brief_sha256": "0"*64})["reason"])
+
+    def test_frozen_worker_artifacts_preserve_binding_until_primary_review(self):
+        from prepare_delegation_context import prepare as prepare_context
+        from prepare_delegation_result import prepare as prepare_result
+        from source_worker_contract import load_source_worker_policy, make_builtin_packet
+        action = self.adopt_focus()
+        action.update(phase="inspect", paths=[])
+        policy = load_source_worker_policy(ROOT/"tools/source_worker_policy.json", root=ROOT)
+        packet = make_builtin_packet(policy, "framework-rules")
+        packet.update(bounded_context=["framework/action-authorization.md"], conditional_context=[])
+        original = json.dumps(action).encode()
+        preflight, context = prepare_context(packet, policy, root=ROOT, prompt=original,
+            bootstrap={"fixture-host": b"Inspect only the supplied context"}, expansions=[], other_contexts=[])
+        event = {"schema_version": 1, "event_kind": "worker-result-received", "backend_kind": "native-worker",
+                 "worker_id": "fixture-worker", "packet_id": "fixture-packet", "base_revision": self.result}
+        contents = {"context": context, "raw": original, "summary": b"Review the original request"}
+        result = prepare_result(packet, event, contents, policy, preflight)
+        self.assertEqual(result["status"], "requires-review")
+        returned = json.loads(contents["raw"])
+        self.assertEqual(hooks.review_request(self.target, self.brief_path, returned)["status"], "request-consistent")
+        self.brief["constraints"].append("New clarification under the same task identity")
+        self.write_brief()
+        self.assertIn("brief digest", hooks.review_request(self.target, self.brief_path, returned)["reason"])
+        self.assertEqual(contents["raw"], original)
+
     def test_delivery_control_through_public_cli_and_installed_delegate(self):
         history = delivery_fixture(self.brief)
         history["attempts"] = [attempt_fixture()]

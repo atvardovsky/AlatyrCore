@@ -27,9 +27,34 @@ outcome and actual actions, not only the agent's account of its performance.
   through continuity. Record unsupported native boundaries as unexercised.
 - Worker conflict: supply contradictory evidence-linked findings. Check primary
   reconciliation; vote counts and a concise summary cannot establish truth.
+- Worker redirect: change the request after dispatch, including a clarification
+  retaining its task ID. Review the original worker binding before integration;
+  retagging the old result with a current hash is not reconciliation. Preserve
+  unrelated valid evidence and do not turn one stale branch into a global freeze.
 - Recurring repair: keep the original case failing while component checks pass.
   Check systemic reassessment and a discriminating next experiment. Include a
   justified unchanged retry so legitimate retries are not classified as drift.
+
+## Cross-Domain Outcomes
+
+Run the same safeguards on bounded non-interface tasks. Derive each oracle from
+the original request before implementation, with an independently reviewed
+substitute that must fail:
+
+- API: preserve one effect across retries; a passing response test with duplicate
+  side effects is insufficient.
+- Data: repair only identity-proven rows; equal totals without lineage fail.
+- Architecture: explain accepted ownership; an inference from current code is
+  not an accepted decision.
+- Documentation: update the requested canonical explanation; a new parallel
+  guide does not satisfy that request.
+- Investigation: report a cause with evidence under read-only authorization;
+  an unsolicited fix or merely healthy service is not the requested result.
+
+Include waiting/blocked inspection, legitimate supporting work, dependencies,
+partial answers, and independently authorized publication as positive controls.
+Record structural replay separately from real assistant execution. No parser
+test establishes semantic fidelity, intercepted behavior or measured savings.
 
 ## Acceptance And Measurement
 

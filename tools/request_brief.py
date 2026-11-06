@@ -25,11 +25,13 @@ def parse_brief(raw: bytes) -> dict:
         "objective", "outcomes", "constraints", "non_goals", "requested_order",
         "authorized_phases", "write_scope", "effect_scope",
     }
-    if document.get("schema_version") == 2:
+    if document.get("schema_version") in (2, 3):
         required.add("delivery_control")
+    if document.get("schema_version") == 3:
+        required.add("focus_control")
     brief = fields(document, required, "request brief")
-    if type(brief["schema_version"]) is not int or brief["schema_version"] not in (1, 2) or brief["record_kind"] != "alatyr-request-brief":
-        raise ValueError("request brief requires schema 1 or 2 and alatyr-request-brief kind")
+    if type(brief["schema_version"]) is not int or brief["schema_version"] not in (1, 2, 3) or brief["record_kind"] != "alatyr-request-brief":
+        raise ValueError("request brief requires schema 1, 2 or 3 and alatyr-request-brief kind")
     for key in ("request_id", "task_id", "source_ref", "objective"):
         text(brief[key], "request brief." + key)
     phases = strings(brief["authorized_phases"], "authorized_phases", minimum=1)
@@ -67,6 +69,8 @@ def parse_brief(raw: bytes) -> dict:
     if brief.get("delivery_control") is not None:
         from delivery_control import parse_control
         parse_control(brief["delivery_control"], ids)
+    from request_focus import parse_focus_control
+    parse_focus_control(brief.get("focus_control"))
     from analysis_strategy_contract import structured_word_count
     if structured_word_count(brief) > MAX_BRIEF_WORDS:
         raise ValueError(f"request brief exceeds {MAX_BRIEF_WORDS} words")
@@ -92,11 +96,13 @@ def guard_policy(value: object) -> dict:
 
 def parse_action(value: object) -> dict:
     required = {"request_id", "task_id", "kind", "phase", "outcome_ids", "paths", "effects"}
-    if isinstance(value, dict) and "validation" in value:
-        required.add("validation")
+    if isinstance(value, dict):
+        required.update(set(value) & {"validation", "brief_sha256", "obligation_ids"})
     action = fields(value, required, "request action")
     for key in ("request_id", "task_id"):
         text(action[key], "action." + key)
+    from request_focus import parse_focus_action
+    parse_focus_action(action)
     if not isinstance(action["kind"], str) or action["kind"] not in {"work", "answer", "complete"}:
         raise ValueError("action.kind must be work, answer or complete")
     if not isinstance(action["phase"], str) or action["phase"] not in PHASES:

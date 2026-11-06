@@ -72,14 +72,19 @@ phase.
 
 ## Request Reconciliation
 
-Every request retains source, outcomes, constraints, exclusions, order, scope,
-phases and completion evidence. Small tasks normally stay inline; material briefs reuse
-task evidence/proofs and optional `request-brief.json`.
+Retain each request's source, outcomes, constraints, exclusions, order, scope,
+phases and completion evidence. Keep current obligation, next step and done
+condition inline for small tasks; otherwise reuse task evidence/projections or
+`request-brief.json`.
 
 Before continuing, acting, integrating workers or answering, compare newest
 request, brief and task, including inspection. Each action serves an outcome.
-Redirection/interruption invalidates affected selections; preserve duties without
-resuming superseded work or fabricating a human request.
+Redirection/interruption invalidates affected selections; preserve duties, never
+superseded work or fabricated requests.
+
+Supporting work must serve the request; unrelated improvements wait. Optional
+[request-bound work](task-state-delivery.md#request-bound-work) checks declarations,
+not relevance or authority.
 
 Interpretation is not authority. No easier-outcome or plan-defined substitution;
 material compromises need owner decisions. Hashes/checks prove neither intent,

@@ -4,6 +4,20 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.131 - 2026-11-07
+
+- Clarify general request fidelity across investigation, code, data, architecture,
+  documentation and operations, retaining lightweight inline small-task review.
+- Add opt-in schema-3 request focus through the existing lifecycle review: exact
+  brief digests, selected proof/prerequisite closure and canonical dependency
+  readiness before modifying/live work. Keep inspection and Git authorization
+  separate; preserve schemas 1/2 and null-control paths.
+- Preserve original worker bindings at convergence and continuity boundaries;
+  extend cross-domain drift evaluation without claiming native interception,
+  authenticated dispatch, semantic understanding or measured savings.
+- Advance adapter schema to 108 and templates to 126. No new bootstrap, task
+  registry, runner, service, provider dependency or automatic target adoption.
+
 ## 0.1.0-alpha.130 - 2026-11-06
 
 - Add conditional schema-2 request delivery controls through the existing

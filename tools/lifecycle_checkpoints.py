@@ -204,6 +204,8 @@ def review_request(target: Path, brief_path: str, action: object, *,
                              require_completion=selected_action["kind"] == "complete")
     failures = action_failures(brief, selected_action, selected["request_model"],
         request_id=request_id if request_id is not None else brief["request_id"], task_id=selected_id)
+    from request_focus import focus_failures
+    failures.extend(focus_failures(brief, selected_action, selected["request_model"], digest(raw)))
     delivery_inputs = {}
     control = brief.get("delivery_control")
     if control is not None:
@@ -237,6 +239,7 @@ def review_request(target: Path, brief_path: str, action: object, *,
         "; ".join(failures[:8]) if failures else "Declared request, selected model and action agree; newest intent and approval still require review.", block=bool(failures))
     result.update(request_id=brief["request_id"], task_id=selected_id, failures=failures,
         request_brief={"path": brief_path, "sha256": digest(raw)},
+        focus_control=brief.get("focus_control"),
         request_provenance="declarative-unverified", execution_interception="not-performed")
     if delivery_inputs:
         result["delivery_inputs"] = delivery_inputs
@@ -253,7 +256,8 @@ def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, reta
         return None
     raw, brief = request_artifact(target, path)
     action = {"request_id": state["request_id"], "task_id": bind["task_id"], "kind": "answer",
-              "phase": "inspect", "outcome_ids": [row["id"] for row in brief["outcomes"]], "paths": [], "effects": []}
+              "phase": "inspect", "outcome_ids": [row["id"] for row in brief["outcomes"]], "paths": [], "effects": [],
+              "brief_sha256": digest(raw)}
     review = review_request(target, path, action, request_id=state["request_id"], task_id=bind["task_id"])
     if review["checkpoint_required"]:
         raise ValueError(review["reason"])

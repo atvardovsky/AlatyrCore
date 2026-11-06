@@ -177,6 +177,12 @@ the brief; changed history requires reconciliation before another bound action.
 Tests are not executed or authorized by that check. Report undeclared-run,
 duration-estimation and native shell-interception limitations explicitly.
 
+Schema-3 `focus_control` independently adopts
+[request-bound work](../framework/task-state-delivery.md#request-bound-work).
+Use the same `review` at dispatch/convergence, retaining original `brief_sha256`
+and work `obligation_ids`. Current hashes cannot prove source-first reconciliation.
+Legacy/null paths remain unchanged; delivery controls and TDD are independent.
+
 For request guards, preserve disabled state unless the owner explicitly enables
 the guard. Set `request_guard.required` to true only after review, retain the
 brief in the selected context baseline, and add `--request-brief <path>` to

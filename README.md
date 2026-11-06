@@ -317,8 +317,8 @@ own entry when finished. It is not a scheduler or an exclusive work lock.
 See [session presence](framework/session-continuity.md#concurrent-session-presence).
 
 To limit task drift, assistants retain the requested outcome, exclusions and
-action boundaries before continuing or answering. Optional request checks can
-detect inconsistent task/action records; they cannot guarantee understanding or
+action boundaries for all work, not only interfaces or testing. Optional request
+checks bind work to the reviewed request and declared prerequisites; they cannot guarantee understanding or
 obedience. See [request-bound review](docs/assistant-lifecycle-hooks.md#request-bound-review).
 
 Session working state stays separate. Optional worker communication shares
@@ -348,7 +348,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.130`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.131`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

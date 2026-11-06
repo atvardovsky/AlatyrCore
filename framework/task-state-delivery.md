@@ -93,6 +93,26 @@ configuration, exercised interception and procedural fallback.
 Optional request guards follow request reconciliation and the lifecycle flow;
 partial answers remain distinct from canonical completion.
 
+## Request-Bound Work
+
+Schema-3 briefs add nullable `focus_control`: null preserves ordinary behavior;
+`dependency-readiness` adopts existing model `execution_dependencies`. Schemas
+1/2 remain readable; no automatic adoption, TDD conversion or extra bootstrap.
+
+Adopted actions carry `brief_sha256`, lowercase SHA-256 of exact reviewed bytes.
+Work names 1..32 unique `obligation_ids` from selected outcomes' proof roots or
+transitive prerequisites, never unrelated branches or reversed edges.
+Modify/live-external work requires canonical declared readiness. Inspection may
+examine blocked/waiting duties. Commit/publish keep separate authority, without
+requiring already-passed proofs to become ready again. Completion requires every
+original outcome's proofs passed, not waived; readiness grants no permission.
+
+Bind before dispatch; preserve worker-original request/task IDs and brief digest
+at convergence. Never retag stale results. Reconcile affected work after changed
+intent/context, preserving unaffected evidence. Shared review checks declared
+bindings, not dispatch authenticity or semantic relevance. Source-first review
+and drift evaluation remain necessary.
+
 Checkpoint validity, response termination and task acceptance are separate.
 Empty readiness requires handoff review, not success. Terminal review reuses
 canonical completion/closure checks: current result bindings, original outcomes,

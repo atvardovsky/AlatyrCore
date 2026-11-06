@@ -20,9 +20,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.130",
-    "adapter_schema_version": "107",
-    "template_version": "125"
+    "framework_version": "0.1.0-alpha.131",
+    "adapter_schema_version": "108",
+    "template_version": "126"
   },
   "derived_from": {
     "manifest": {
@@ -43,7 +43,7 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "2a5b12172a3dfd58396a420a222679a78d01f5a996a51e9c2ae5a4674d5571d6"
+      "sha256": "294780871763e96159ac6e9d2507062be2610e490acaf27ba560bdec85761867"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
@@ -51,11 +51,11 @@
     },
     "assistant_context_root": {
       "path": ".ai/assistant/context-index.json",
-      "sha256": "26829373ad2f8c80fea9f07cde1e4110fc8233f86da36a73f052f1378a62071a"
+      "sha256": "51d166207c1755743db34be56090ffbf565062410d48e09f4937e880597b6eca"
     },
     "framework_context_root": {
       "path": ".ai/framework/context-index.json",
-      "sha256": "cb0228eb0c042f8c5f159b5e3ab18c8a2c44eeb0b7ad078aa01758853a9fb08d"
+      "sha256": "16ba552c2e632f6aa45bee3b1ce0bb725c211ba71c1cecbb690237e63e7e611b"
     },
     "project_context_root": {
       "path": ".ai/project/context-index.json",

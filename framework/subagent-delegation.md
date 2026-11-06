@@ -480,6 +480,10 @@ After a delegate returns, the primary assistant must:
 9. Report delegated and locally completed work without overstating model,
    quality, latency, or cost evidence.
 
+At dispatch/convergence, reconcile newest intent, not only the packet goal.
+Preserve worker-original [request-bound work](task-state-delivery.md#request-bound-work)
+bindings; review changed context, never retag stale results. Retain unaffected evidence.
+
 A delegate result is evidence for primary review, not operation completion.
 
 Provider-native nested delegation never grants autonomous recursion. A target

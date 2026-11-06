@@ -47,6 +47,7 @@ partial-answer/completion distinctions and client-verification limits.
 Optional schema-2 delivery controls use
 `.ai/framework/test-execution-selection.md#bounded-delivery-review`; retain the
 selected validation history in the baseline, without enabling controls on update.
+Opt-in schema-3 focus: `.ai/framework/task-state-delivery.md#request-bound-work`.
 
 Runtime session state stays ignored under `.ai/.runtime/lifecycle-hooks/` and
 contains no conversation, approval record or duplicate project task inventory.
