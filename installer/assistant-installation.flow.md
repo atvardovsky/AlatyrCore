@@ -244,13 +244,14 @@ Classify every proposed target file:
    preserve bounded context routing when caching is unavailable or unverified.
    A selected but untested surface remains unknown; client permissions or
    auto-approval never grant Alatyr action authorization.
-   Keep optional lifecycle hooks disabled on install/update unless separately
-   approved; follow the lifecycle-checkpoints flow, preserving native definitions,
-   trust and procedural fallback.
+   Follow the lifecycle flow before projection: `setup-plan` with new/update
+   identity, enabled procedural/observe for new installs, approved local native
+   setup only, unverified evidence and zero reminders. Updates preserve settings,
+   absence, definitions and trust. Policy alone proves no installed callbacks.
    Preserve target delegation preferences. For adopted contract-sensitive work,
    route to `framework/task-decomposition.md#contract-bound-work-parts`; do not
    invent task parts, contracts, run evidence or worker provenance during update.
-   Keep `contract_work` absent for small tasks. Existing hooks remain opt-in;
+   Keep `contract_work` absent for small tasks. Blocking hooks require exercised adoption;
    completion-only review never reopens execution.
 11. Create or adapt target `.ai/README.md`.
 12. Copy or adapt the selected portable framework pack into target

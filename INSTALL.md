@@ -121,17 +121,15 @@ an explicit final disposition.
 
 ## Planning Rule
 
-For contract-sensitive multi-part behavior changes, adapt the existing problem
-model's optional `contract_work` using target-owned contracts and acceptance
-obligations. Follow [contract-bound parts](framework/task-decomposition.md#contract-bound-work-parts)
-and preserve explicit delegation preferences; installation/update does not
-invent evidence, require workers for all tasks, or enable lifecycle hooks.
+For contract-sensitive multipart changes, map existing optional `contract_work`
+to target contracts/acceptance. Follow [contract-bound parts](framework/task-decomposition.md#contract-bound-work-parts)
+and delegation preferences. Installation/update invents no evidence and requires
+no workers.
 
-Deliver the authorization owner's source-linked request brief through the
-existing task flow: small tasks inline, material outcomes mapped to existing
-proof obligations. Preserve exclusions, requested order and rejected substitutes.
-Updates must preserve disabled lifecycle hooks and request-guard choices;
-the new template is not adoption or renewed user authority.
+Retain source-linked outcomes, exclusions, order and rejected substitutes: small
+tasks inline; material tasks link existing proofs. Updates retain hook/guard
+settings, native definitions, trust and absence. Fresh defaults grant no adoption
+or authority.
 
 Prepare an installation plan using
 `installer/installation-plan-core-template.md`. Load only the selected sections
@@ -553,8 +551,10 @@ evidence, a canonical owner, rejection, or a blocker. Related implementation
 starts a separately authorized continuation rather than extending a completed
 analysis record.
 
-Optional [lifecycle hooks](docs/assistant-lifecycle-hooks.md) require separate
-adoption; preserve definitions, trust and disabled state during updates.
+New installs use enabled procedural/observe [lifecycle delivery](docs/assistant-lifecycle-hooks.md).
+Before projection, use its read-only `setup-plan` for approved local setup:
+unverified evidence, zero reminders, native trust and procedural fallback.
+Retain update settings/absence; policy demonstrates no interception.
 
 When delegation is enabled, keep the critical path primary-owned and dispatch
 bounded independent sidecars under target policy. Record per-surface freshness,

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "enabled": false,
+  "enabled": true,
   "provider": "procedural",
   "mode": "observe",
   "binding_ttl_seconds": 900,

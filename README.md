@@ -243,8 +243,10 @@ modules cover areas such as architecture knowledge, vocabulary, code-reference
 documentation, test-first development, diagrams, team coordination, and
 adapted AI infrastructure.
 
-Optional [lifecycle checkpoints](docs/assistant-lifecycle-hooks.md) can deliver
-selected context and unfinished-task reminders through reviewed assistant hooks.
+[Lifecycle checkpoints](docs/assistant-lifecycle-hooks.md) default to non-blocking
+observe delivery in new installations. Supported project-local native hooks are
+part of approved setup; other clients retain procedural checks. Existing choices
+and opt-outs survive updates. Blocking and automatic reminders are not defaults.
 They remain disabled by default and do not grant permission, prove completion,
 or replace project validation; unverified clients use procedural checks.
 
@@ -342,7 +344,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.128`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.129`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

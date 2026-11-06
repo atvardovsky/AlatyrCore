@@ -1,13 +1,17 @@
-# Optional Lifecycle Checkpoints
+# Lifecycle Checkpoints
 
-Load only when the project explicitly adopts lifecycle hooks or needs to review
-their behavior. Canonical rules remain in `.ai/framework/task-state-delivery.md`,
+Load for installation hook setup or selected delivery/review, not every task.
+Canonical rules remain in `.ai/framework/task-state-delivery.md`,
 `.ai/framework/action-authorization.md` and `.ai/framework/session-continuity.md`.
 
-1. Inspect the current client, existing hook definitions, trust policy and source
-   locator. Ask for adoption approval; preserve disabled/absent policy by default.
-2. Review `.ai/assistant/policies/lifecycle-hooks.json`. Begin observe-only and
-   unverified. Never auto-trust, install a plugin or change global client settings.
+1. Inspect the exact client/runtime, existing policy/definitions, trust and source
+   locator. Before projection, run `lifecycle-checkpoint setup-plan` with explicit
+   new/update identity. Existing settings, including disabled or absent update
+   policy, remain unchanged without a separately scoped adoption decision.
+2. New installs default to enabled procedural/observe delivery, unverified and
+   reminder-free. Include supported project-local native setup in installation
+   approval; only then select its provider. Policy/argv alone proves no callbacks.
+   Never auto-trust, install plugins or change global settings.
 3. Exercise harmless native event/denial/cancellation/timeout fixtures before
    recording exact client evidence. Unknown coverage means procedural fallback,
    not an enforcement claim. Recheck after client or definition changes.
@@ -25,7 +29,8 @@ their behavior. Canonical rules remain in `.ai/framework/task-state-delivery.md`
    approval, scope and permissions. After changes, review documentation and
    companion surfaces before rebinding. Use selective mutating-tool hooks only.
 6. Before completion, inspect unresolved original outcomes and independent ready
-   duties. Bounded reminders do not execute work or replace canonical acceptance.
+   duties. Reminders remain zero by default and require separate adoption.
+   They never execute work or replace canonical acceptance.
    A blocker, pause, interruption, completed scope or missing authority wins.
    For closed-task review, capture the actual closure, retained model and archived
    projection, then bind with `--completion-only`. This cannot permit pre-action

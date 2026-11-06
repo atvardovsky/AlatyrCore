@@ -63,6 +63,8 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Core session-continuity surfaces and ignored runtime storage:
 - Presence: existing setting, acceptance of new defaults/own-entry allowance,
   Git/worktree sharing, helper availability, opt-out, and limitations:
+- Lifecycle setup: new/update identity, retained policy/absence, selected client,
+  approved local config scope, planned argv and unverified/procedural fallback:
 
 ## Validation And Evidence
 
@@ -84,6 +86,8 @@ justifies expansion. Scaffolding does not enable an optional capability.
 - Post-install or post-update assistant handoff, including exact next action
   for non-accepted outcomes and no generic second recheck for accepted updates:
 - Skipped checks and residual risks:
+- Native callbacks: configured/exercised/intercepted evidence or explicit gap;
+  no automatic blocking, reminders, trust or continuation from a setup plan:
 
 ## Approval Disposition
 

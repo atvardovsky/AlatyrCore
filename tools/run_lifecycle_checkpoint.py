@@ -86,6 +86,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Read-only declared request/action check; bounded action JSON on stdin, no hook adoption required.")
     status = actions.add_parser("status", allow_abbrev=False)
     status.add_argument("--session-id", required=True, action=Once)
+    setup = actions.add_parser("setup-plan", allow_abbrev=False)
+    setup.add_argument("--installation-kind", choices=("new", "update"), required=True, action=Once)
+    setup.add_argument("--native-setup-approved", action="store_true")
+    setup.add_argument("--client-version", action=Once)
+    setup.add_argument("--config-path", action=Once, help="Exact approved project-local client configuration, never global settings.")
+    setup.add_argument("--interpreter", choices=("python", "python3", "py"), default="python", action=Once)
     return parser
 
 
@@ -97,7 +103,7 @@ def main() -> int:
         with contextlib.redirect_stderr(parser_errors) if native_requested else contextlib.nullcontext():
             args = build_parser().parse_args(namespace=partial)
     except SystemExit as exc:
-        ordinary = getattr(partial, "action", None) in {"bind", "review", "status", "checkpoint"}
+        ordinary = getattr(partial, "action", None) in {"bind", "review", "status", "checkpoint", "setup-plan"}
         if not native_requested or exc.code != 2 or ordinary:
             if native_requested and ordinary:
                 print(parser_errors.getvalue(), file=sys.stderr, end="")
@@ -108,7 +114,12 @@ def main() -> int:
     target = None
     try:
         target = args.target.resolve(strict=True)
-        if args.action == "status":
+        if args.action == "setup-plan":
+            from lifecycle_setup import setup_plan
+            result = setup_plan(target, args.provider, args.installation_kind,
+                native_setup_approved=args.native_setup_approved, client_version=args.client_version,
+                config_path=args.config_path, interpreter=args.interpreter)
+        elif args.action == "status":
             result = session_status(target, args.session_id)
         elif args.action == "bind":
             binding = {"request_id": args.request_id, "baseline": args.baseline, "task_id": args.task_id,

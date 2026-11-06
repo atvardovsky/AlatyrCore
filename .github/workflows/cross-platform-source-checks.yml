@@ -138,6 +138,7 @@ jobs:
           tests.test_worktree_continuity
           tests.test_collaboration_observations
           tests.test_lifecycle_checkpoints
+          tests.test_lifecycle_setup
           tests.test_request_brief
           tests.test_contract_work
           tests.test_contract_work_delegation

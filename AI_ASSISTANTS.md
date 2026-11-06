@@ -294,10 +294,11 @@ in the existing model. Honor required/forbidden delegation before cost fallback;
 verify existing receipt/tree evidence rather than trusting executor labels.
 Completion-only lifecycle bindings review closed evidence without reopening work.
 
-Optional [lifecycle hook delivery](docs/assistant-lifecycle-hooks.md) stays
-separate from assistant instruction loading and delegation. Keep it disabled
-until target approval; native configuration, trust and observed interception
-are distinct. Unknown clients retain procedural checkpoints.
+[Lifecycle delivery](docs/assistant-lifecycle-hooks.md) stays separate from
+instruction loading and delegation. New installs default to procedural/observe;
+supported native setup belongs in approved project-local installation scope.
+Updates retain settings and absence. Configuration, trust and observed
+interception remain distinct; unknown clients keep procedural checkpoints.
 
 When the target enables `subagent-delegation`, the primary assistant may keep
 its immediate critical-path action and dispatch independent, locally

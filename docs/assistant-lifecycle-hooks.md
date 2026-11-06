@@ -1,4 +1,4 @@
-# Optional Assistant Lifecycle Checkpoints
+# Assistant Lifecycle Checkpoints
 
 Closed-task evidence may be rebound with `lifecycle-checkpoint ... bind
 --completion-only` after capturing the actual closure and archived projection.
@@ -6,7 +6,7 @@ It cannot reopen execution. The terminal consistency status reuses canonical
 model/closure checks and is not full adapter acceptance or runtime readiness.
 See the [installed flow](../templates/target/.ai/assistant/flows/lifecycle-checkpoints.flow.md).
 
-This is an opt-in delivery mechanism for the existing
+This delivers the existing
 [task-state](../framework/task-state-delivery.md),
 [authorization](../framework/action-authorization.md) and
 [continuity](../framework/session-continuity.md) rules, not a new task registry,
@@ -14,13 +14,21 @@ executor, security boundary or source of approval.
 
 ## Adoption
 
-Keep `.ai/assistant/policies/lifecycle-hooks.json` absent or disabled unless the
-target owner approves adoption. Installation and upgrade must preserve existing
-hook definitions and trust decisions. Neither operation enables hooks, installs
-plugins, changes global configuration or trusts a new definition automatically.
+New installations include an enabled procedural/observe policy by default,
+with zero reminders and unverified native evidence. Include project-local native
+setup in the installation plan for an explicitly supported selected client route;
+apply it only inside approved installation scope. A policy alone installs no
+callbacks. Without approved/supported native setup, use procedural checks.
+Scaffolding is not adoption, trust or proof that a client loaded callbacks.
+
+Updates preserve all existing policy values, native definitions, trust decisions
+and explicit opt-outs. An absent policy during update stays absent; applying
+fresh-install defaults needs an explicit adoption decision. Invalid or expired
+existing policy/evidence is reported, not replaced or renewed silently. Never
+install plugins, alter global settings or bypass native trust prompts.
 
 Start with `mode: observe`, `native_evidence.state: unverified` and zero automatic
-reminders. The template is deliberately disabled. The strict policy input is
+reminders. The strict policy input is
 limited to 64 KiB; CLI and target validation share its strict loader. An optional configuration
 records one exact client route, binding lifetime and reminder ceiling. Observed
 native evidence needs a concrete client version/source, aware observation/expiry
@@ -33,6 +41,32 @@ request invalidation, explicit denied mutation, stale selected input, completion
 reminder, interruption and callback error/timeout. Test which events actually
 fire and how failures are handled. Do not bypass native trust prompts. If any
 required event is missing or behavior is uncertain, retain procedural checks.
+
+## Setup Plan
+
+Before projecting a new policy, run the read-only planner. Use `python` on
+Windows and select the interpreter actually available in the target:
+
+```sh
+python3 tools/alatyr.py lifecycle-checkpoint --target /path/to/target setup-plan --installation-kind new
+python3 tools/alatyr.py lifecycle-checkpoint --target /path/to/target --provider codex setup-plan --installation-kind new --native-setup-approved --client-version CLIENT_VERSION --config-path .client/hooks.json --interpreter python3
+python3 tools/alatyr.py lifecycle-checkpoint --target /path/to/target setup-plan --installation-kind update
+```
+
+`CLIENT_VERSION` and `.client/hooks.json` are illustrative, not known target
+facts. Resolve the exact client/runtime route and its project-local config path
+from target evidence. The approval flag records the caller's assertion that
+this setup is in the current approved plan; it is not authenticated approval.
+Do not infer native capability from a model vendor or generic assistant name.
+
+The result preserves existing policies byte-for-byte, proposes observe-only
+native event argv only for explicitly approved setup, and lists events still
+requiring procedural delivery. Unknown variants select `--provider procedural`.
+It does not write configuration, execute argv or mark callbacks installed,
+trusted, loaded, exercised or intercepted. Merge approved native definitions
+without replacing unrelated entries; use selective mutating-tool matchers.
+Verify delegate location, Git-root working directory and native host error
+semantics. No universal client-config renderer or installer is implied.
 
 ## Session Protocol
 
@@ -133,7 +167,7 @@ validation and requires all mapped outcome proofs to be passed, not waived.
 evidence truth, task acceptance or permission. A caller can still supply the wrong
 request; native provenance and independent source-first review remain necessary.
 
-For adopted hooks, preserve disabled state unless the owner explicitly enables
+For request guards, preserve disabled state unless the owner explicitly enables
 the guard. Set `request_guard.required` to true only after review, retain the
 brief in the selected context baseline, and add `--request-brief <path>` to
 `bind`. Missing, stale or dropped briefs fail review. Request/resume invalidation
@@ -212,7 +246,7 @@ action classification and returns a neutral diagnostic, not an interception
 claim; verify callback arguments before activation. None of these transport
 statuses establishes acceptance.
 
-Recognized non-event commands (`review`, `bind`, `status`, `checkpoint`) retain
+Recognized non-event commands (`review`, `bind`, `status`, `checkpoint`, `setup-plan`) retain
 ordinary parser errors; an invalid `--native-output` flag cannot convert them
 into successful neutral callback transport.
 

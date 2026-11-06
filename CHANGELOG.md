@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.129 - 2026-11-06
+
+- Default new installations to enabled procedural/observe lifecycle delivery,
+  unverified native evidence and zero reminders. Include supported project-local
+  native setup in approved installation scope; policy alone installs no callbacks.
+- Add read-only `lifecycle-checkpoint setup-plan` with explicit new/update
+  identity, canonical event argv, selected-client approval inputs and honest
+  unverified/fallback dispositions. It never installs, trusts or executes hooks.
+- Preserve existing policies byte-for-byte, including opt-outs and custom
+  settings. An absent policy during update stays absent without an explicit
+  adoption decision; malformed/expired evidence is not silently repaired.
+- Retain lightweight unbound task behavior, current-request/context/completion
+  checks and opt-in blocking/request guards. No automatic continuation, new
+  dependency, global configuration change or raised context budget.
+- Advance adapter schema to 106 and templates to 124. Existing policy schema 1
+  remains readable; native client interception still requires real host testing.
+
 ## 0.1.0-alpha.128 - 2026-11-05
 
 - Reconcile every request against its source-linked outcomes, exclusions,

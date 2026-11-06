@@ -81,10 +81,13 @@ summaries or routine-bootstrap focus. Evaluate behavior with the
 [drift protocol](effectiveness-metrics.md#execution-drift-evaluation), separately
 from record/projection tests.
 
-Opt-in lifecycle delivery reuses these owners. Requests revoke bindings;
+New installs default to non-blocking procedural/observe lifecycle delivery;
+native setup belongs to approved project-local installation scope. Updates
+preserve settings and absent policy; unverified clients use procedural checks.
+Delivery reuses these owners. Requests revoke bindings;
 synthetic continuation grants no authority. Bound reminders, preserve
 interruption against delayed callbacks, never reopen closed scopes. Preserve
-native definitions/trust/disabled state on installation/update; distinguish
+native definitions/trust/opt-outs; distinguish
 configuration, exercised interception and procedural fallback.
 
 Optional request guards follow request reconciliation and the lifecycle flow;

@@ -199,6 +199,20 @@ class LifecycleTests(ActiveTaskFixture):
         self.assertEqual(result["status"], "disabled")
         self.assertFalse((self.target / hooks.RUNTIME).exists())
 
+    def test_fresh_default_is_nonblocking_without_registering_small_tasks(self):
+        self.policy = json.loads((ROOT / "templates/target" / hooks.POLICY).read_bytes())
+        self.write_policy()
+        with patch.object(hooks, "selected_task", side_effect=AssertionError("unselected default task read")), \
+                patch.object(hooks, "check_retained_context", side_effect=AssertionError("unbound default context read")):
+            for event in ("request", "before-action", "completion"):
+                result = self.event(event)
+                self.assertFalse(result["emit_native_block"])
+                self.assertFalse(result["authorization_granted"])
+                self.assertFalse(result["acceptance_granted"])
+            self.assertEqual(result["status"], "inactive")
+        state = hooks.session_status(self.target, "fixture-session")
+        self.assertEqual(state["reminders"], 0)
+
     def test_real_bind_and_selected_readiness_do_not_grant_authority_or_acceptance(self):
         self.assertEqual(self.bind_session()["status"], "bound")
         self.assertEqual(self.event("before-action")["status"], "current-context")

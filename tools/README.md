@@ -118,14 +118,21 @@ unrelated current measurements remain usable.
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
 
-## Optional Lifecycle Delivery
+## Lifecycle Delivery
 
 `lifecycle-checkpoint` provides bounded event, status and reviewed-bind operations
-for an explicitly adopted target policy. It writes only ignored session state,
+for a target policy. Fresh installs default to enabled procedural/observe;
+updates retain existing choices and absence. It writes only ignored session state,
 never executes project work and grants no authority. The installed delegate
 forwards this operation to the selected source. See the
 [adoption and provider guide](../docs/assistant-lifecycle-hooks.md) for exact
 event mappings, trust review, cancellation, fallback and evidence limits.
+
+`setup-plan --installation-kind new|update` is read-only, needs no stdin and
+never installs callbacks. For approved project-local native setup, select an
+exact `--provider`, then supply `--native-setup-approved --client-version VALUE
+--config-path PATH`. It proposes canonical event argv without granting approval
+or promoting unverified native evidence. Existing policy bytes are preserved.
 
 `bind --completion-only` reviews closed-task evidence without reopening execution.
 Its consistency result is not canonical acceptance or live-runtime readiness.

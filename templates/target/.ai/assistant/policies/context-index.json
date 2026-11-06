@@ -80,7 +80,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 32,
-      "content_digest": "sha256:35fc090b7ae7418646566344978036f8d57ac67b404b12a6a5a6f5075ad64eec"
+      "content_digest": "sha256:531290e43b5cbcd1ba7702a788c3d7b05e44f2a76ffa7a0a8d1245a555081374"
     },
     {
       "id": "assistant.content.policies-prompt-injection-md",

@@ -137,8 +137,8 @@ def main() -> int:
         _, hooks = load_hook_policy(TARGET)
         if hooks is None:
             raise ValueError("lifecycle-hook template is missing")
-        if hooks.get("enabled") is not False or hooks.get("mode") != "observe" or hooks.get("max_reminders") != 0:
-            failures.append("lifecycle-hook template must remain disabled, observe-only and without reminders")
+        if hooks.get("enabled") is not True or hooks.get("provider") != "procedural" or hooks.get("mode") != "observe" or hooks.get("max_reminders") != 0:
+            failures.append("new-install lifecycle template must be enabled, procedural, observe-only and without reminders")
         if hooks.get("request_guard", {}).get("required") is not False or hooks.get("request_guard", {}).get("file_tools") != []:
             failures.append("request guard must not be adopted or map tools in the source template")
         from request_brief import parse_brief
