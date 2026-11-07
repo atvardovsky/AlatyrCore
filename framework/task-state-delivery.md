@@ -40,6 +40,16 @@ neither meaning, execution nor authority. Reconcile at phase boundaries, preserv
 failures; no second registry, newest-file selection or narrative preload. Handoff
 retention remains explicitly reviewed, never automatic private publication.
 
+An explicitly adopted schema-2 task index may retain reviewed
+`historical-evidence-missing` tasks. Validate the exact original registration,
+owner approval, bounded search, dependencies and unresolved outcomes; never
+invent missing models, silently reopen/delete that lineage or accept it as a
+completed predecessor. Recovered/conflicting bytes require reconciliation.
+These tasks have no execution focus, current-work acceptance or resumable
+readiness. Schema-1 active/closed behavior stays unchanged; the optional route
+does not authorize restoration or a new action. See the source contract in
+`docs/historical-task-loss.md` when compatible tooling is available.
+
 ## Declared Readiness
 
 Schema-6 models may explicitly adopt `execution_dependencies`: one

@@ -73,6 +73,21 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
         result["diagnostics"].extend(lineage_failures[:8])
         return result
     task = matches[0]
+    if task["state"] == "historical-evidence-missing":
+        from historical_task_evidence import validate_loss_disposition
+        loss = validate_loss_disposition(validator, task, index["tasks"])
+        if loss is None:
+            result["diagnostics"].append("historical evidence-loss disposition is invalid or stale")
+            return result
+        if view.finalize():
+            result["diagnostics"].append("historical evidence inputs changed during inspection")
+            return result
+        result.update(state="historical-evidence-missing", task_state=task["state"],
+                      model=task["problem_model"], disposition_source=task["evidence_loss_disposition"],
+                      resumable=False, missing_obligations="unknown-not-discharged",
+                      unresolved_outcomes=loss["unresolved_outcomes"],
+                      runtime_readiness={"state": "not-resumable", "authorization_granted": False, "acceptance_granted": False})
+        return result
     closure = None
     if task["state"] == "closed":
         closure = _bound_object(validator, task["completion_evidence"], "selected task closure")

@@ -4,6 +4,20 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.132 - 2026-11-07
+
+- Restore opt-in schema-2 reviewed historical task-loss compatibility with exact
+  original registration and owner/search/dependency witnesses. Missing history
+  stays unresolved, non-executable and cannot satisfy current acceptance.
+- Add explicit source-bound team registry freshness, preserving legacy revision
+  checks while avoiding staleness from unrelated commits. Changed sources,
+  unsafe paths, symlinks and invalid ancestor bindings still fail closed.
+- Fix single-job source-test discovery to use package-qualified module names.
+- Advance adapter schema to 109 and templates to 127. Existing target choices,
+  approvals and current execution/freshness checks are not weakened or adopted
+  automatically. This is an unpublished local source-development checkpoint;
+  no release tag, source-main merge or push is implied.
+
 ## 0.1.0-alpha.131 - 2026-11-07
 
 - Clarify general request fidelity across investigation, code, data, architecture,

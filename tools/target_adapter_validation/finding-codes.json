@@ -183,6 +183,10 @@
       "code_count": 1
     },
     {
+      "id": "HEAD",
+      "code_count": 1
+    },
+    {
       "id": "HISTORICAL",
       "code_count": 4
     },
@@ -216,7 +220,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 115
+      "code_count": 116
     },
     {
       "id": "PLACEHOLDERS",
@@ -276,7 +280,7 @@
     },
     {
       "id": "TASK",
-      "code_count": 57
+      "code_count": 60
     },
     {
       "id": "TDD",
@@ -8343,6 +8347,15 @@
       ]
     },
     {
+      "code": "HEAD",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
       "code": "HISTORICAL_EVIDENCE_INVALID",
       "levels": [
         "error"
@@ -9474,6 +9487,15 @@
     },
     {
       "code": "PACKAGE_INCIDENT_CONTINUITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INCIDENT_EVIDENCE_LOSS",
       "levels": [
         "error"
       ],
@@ -13358,6 +13380,33 @@
       "code": "TASK_EVIDENCE_LINEAGE",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS_REOPEN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS_SELECTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOST",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/target_adapter_validation/active_tasks.py"

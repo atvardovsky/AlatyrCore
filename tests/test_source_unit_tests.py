@@ -200,11 +200,24 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
     def test_serial_discovery_has_repository_root_for_shared_fixtures(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            with patch.object(unittest.defaultTestLoader, "discover", side_effect=lambda *a, **k: unittest.TestSuite() if str(root) in sys.path else self.fail("root missing")):
+            with patch("check_source_unit_tests._all_test_paths", return_value=[]):
                 try:
                     load_suite(None, root=root)
+                    self.assertIn(str(root), sys.path)
                 finally:
                     sys.path.remove(str(root))
+
+    def test_serial_discovery_uses_package_names_to_avoid_tool_collisions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = [root / "tests" / "test_harness_contract.py"]
+            with patch("check_source_unit_tests._all_test_paths", return_value=paths), patch.object(unittest.defaultTestLoader, "loadTestsFromName", return_value=unittest.TestSuite()) as load:
+                try:
+                    load_suite(None, root=root)
+                    load.assert_called_once_with("tests.test_harness_contract")
+                finally:
+                    sys.path.remove(str(root))
+
     def test_docs_only_change_selects_no_unit_tests(self) -> None:
         self.assertEqual(focused_test_paths(["README.md"], root=ROOT), [])
 

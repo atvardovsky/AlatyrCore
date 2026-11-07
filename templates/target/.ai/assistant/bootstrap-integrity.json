@@ -20,9 +20,9 @@
     "target_dirty_path_count": 0,
     "target_dirty_paths_truncated": false,
     "target_dirty_paths_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "framework_version": "0.1.0-alpha.131",
-    "adapter_schema_version": "108",
-    "template_version": "126"
+    "framework_version": "0.1.0-alpha.132",
+    "adapter_schema_version": "109",
+    "template_version": "127"
   },
   "derived_from": {
     "manifest": {
@@ -55,7 +55,7 @@
     },
     "framework_context_root": {
       "path": ".ai/framework/context-index.json",
-      "sha256": "16ba552c2e632f6aa45bee3b1ce0bb725c211ba71c1cecbb690237e63e7e611b"
+      "sha256": "b54e4a7cfe7663d218445a952c99660ab16fe16bc10d932f6eba65d34aa7a87c"
     },
     "project_context_root": {
       "path": ".ai/project/context-index.json",

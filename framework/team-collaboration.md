@@ -118,6 +118,22 @@ repository storage, prefer one record per task plus a compact active-work index,
 not a monolithic task array. Registry metadata records locations, projections,
 backend state and revision.
 
+Schema-2 registries may explicitly add an `evidence_binding` object with
+`schema_version: 1` and `inputs`, a non-empty list of `{path, sha256}` records.
+The existing `evidence_revision` must name an exact available ancestor commit
+of HEAD. Inputs must cover the registered team policy, operating model, backend
+contract, active-work index, task-record template and all discovered task records;
+include additional canonical source files used to derive the registry.
+Each lowercase SHA-256 must match its regular file at that reviewed commit,
+HEAD and the current worktree. Paths must be unique canonical target-relative
+files, with no symlink components, Git metadata or registry self-reference.
+The target must be the Git worktree root. The binding admits at most 128 files,
+1 MiB per file and 8 MiB total per source snapshot. Unavailable evidence,
+invalid ancestry or malformed bindings fail closed; changed sources remain
+stale. Unrelated descendant commits do not make unchanged bound sources stale.
+Without this opt-in, the existing revision-versus-HEAD freshness check remains.
+This is source freshness only, not task compatibility, authority or acceptance.
+
 Reserve `context-index.json` for catalog-owned navigation, never tasks. Other
 task JSON must validate regardless of declared kind; keep task directories.
 

@@ -14,7 +14,7 @@ from pathlib import Path
 from adapter_health_views import tooling_comparison
 from target_adapter_validation.context import TargetRepositoryView
 from task_evidence_contract import task_schema
-from target_validation_support import is_target_relative_path
+from target_validation_support import GitEvidenceView, is_target_relative_path
 from yaml_support import safe_load
 from yaml import YAMLError
 from analysis_strategy_contract import MAX_PROBLEM_MODEL_FILE_BYTES, MAX_ACTIVE_PROJECTION_FILE_BYTES
@@ -114,6 +114,20 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
             issues.append({"code": "WORKTREE_TASK_UNREGISTERED", "path": INDEX, "task_id": task_id, "next_action": "register the selected task explicitly"})
         for task in tasks:
             binding = task["problem_model"]
+            if task["state"] == "historical-evidence-missing":
+                from historical_task_evidence import load_loss_disposition
+                try:
+                    loss = load_loss_disposition(view, GitEvidenceView(target), task, tasks)
+                    bindings.append({"task_id": task["task_id"], "path": binding["path"],
+                                     "state": "historical-evidence-missing", "resumable": False,
+                                     "unresolved_outcomes": loss["unresolved_outcomes"]})
+                    if task_id == task["task_id"]:
+                        issues.append({"code": "WORKTREE_TASK_EVIDENCE_LOST", "task_id": task_id, "path": INDEX,
+                                       "next_action": "not resumable; recover and review original evidence or authorize a new independent task"})
+                except (OSError, ValueError, TypeError, KeyError, UnicodeError, RecursionError) as exc:
+                    issues.append({"code": "WORKTREE_TASK_EVIDENCE_LOSS_INVALID", "task_id": task["task_id"],
+                                   "path": INDEX, "next_action": str(exc)})
+                continue
             if task["state"] != "active" or binding is None:
                 continue
             current, runtime_state = bound_bytes(view, binding)

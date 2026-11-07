@@ -194,7 +194,9 @@ def load_suite(paths: list[Path] | None, *, root: Path = ROOT) -> unittest.TestS
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
     if paths is None:
-        return loader.discover(str(root / "tests"), pattern="test_*.py")
+        # Namespace-package tests must use the same qualified names as shards;
+        # directory discovery can collide with identically named tool modules.
+        paths = _all_test_paths(root)
     suite = unittest.TestSuite()
     for path in paths:
         suite.addTests(loader.loadTestsFromName(_test_module_name(path, root=root)))
