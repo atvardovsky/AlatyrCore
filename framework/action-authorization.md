@@ -72,7 +72,7 @@ phase.
 
 ## Request Reconciliation
 
-Retain each request's source, outcomes, constraints, exclusions, order, scope,
+Retain source, all requested outcomes, constraints, exclusions, order, scope,
 phases and completion evidence. Keep current obligation, next step and done
 condition inline for small tasks; otherwise reuse task evidence/projections or
 `request-brief.json`.
@@ -82,7 +82,8 @@ request, brief and task, including inspection. Each action serves an outcome.
 Redirection/interruption invalidates affected selections; preserve duties, never
 superseded work or fabricated requests.
 
-Supporting work must serve the request; unrelated improvements wait. Optional
+Supporting work never replaces requested outcomes; unfinished duties survive
+subtask publication. Unrelated improvements wait. Optional
 [request-bound work](task-state-delivery.md#request-bound-work) checks declarations,
 not relevance or authority.
 

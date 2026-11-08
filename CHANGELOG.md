@@ -4,6 +4,21 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.133 - 2026-11-08
+
+- Carry canonical artifact freshness into ordinary lifecycle request review;
+  expose evidence readiness independently from declaration consistency, reject
+  affected state changes, and preserve read-only recovery and independent work.
+- Derive whole-request progress on every selected review. Partial completion
+  callbacks retain unfinished outcomes instead of hiding them behind supporting
+  delivery, without extending reminder limits or granting continuation authority.
+- Reuse the existing artifact read/byte budget and prerequisite resolver; retain
+  canonical completion checks, optional adoption and lightweight unbound tasks.
+- Add installed-delegate mutation regressions and a nine-area preparation-only
+  delivery scenario. Record/projection tests do not prove universal agent compliance.
+- Advance adapter schema to 110 and templates to 128; problem-model schema 7
+  and request-brief schemas 1/2/3 remain readable. No new bootstrap or service.
+
 ## 0.1.0-alpha.132 - 2026-11-08
 
 - Share selected incident predecessor checks across full validation, current-task

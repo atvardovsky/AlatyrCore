@@ -74,6 +74,11 @@ command counts prove no drift. Probe/prior-result digests locate the reviewed
 question/observation, not proof of review. Question-bound routing selects that
 explicit obligation, never silently the first recommendation.
 
+Preserve every requested outcome across supporting scopes, workers and publication.
+Preparation is not delivery. A local blocker stops only dependent work. Partial
+handoffs name remaining outcomes and blockers/next actions, never replacing the
+parent request or requiring already-granted approval again.
+
 Use verified hooks/controlled executors for pre-action checks; otherwise check
 procedurally and report no interception. No universal hook, intent parser,
 context eviction or permission is implied. Do not preload the corpus, growing
@@ -112,6 +117,19 @@ at convergence. Never retag stale results. Reconcile affected work after changed
 intent/context, preserving unaffected evidence. Shared review checks declared
 bindings, not dispatch authenticity or semantic relevance. Source-first review
 and drift evaluation remain necessary.
+
+Ordinary review separates evidence readiness from declaration consistency using
+canonical artifact verification. Shared/unscoped staleness, incomplete verification
+or diagnostic overflow require task review. Scoped failures gate affected
+proof/prerequisite closures and direct writes across modify/commit/publish/live
+actions. Preserve read-only recovery and explicitly independent work; absent
+dependency mappings prove no independence. Completion retains canonical checks.
+Missing optional capture remains unverified.
+
+Review progress covers every brief outcome, not just action IDs. Completion
+callbacks retain partial outcomes as unfinished/handoff review within existing
+reminder limits. Declarations prove neither source coverage nor dependency
+necessity; challenge both before capture/revision.
 
 Checkpoint validity, response termination and task acceptance are separate.
 Empty readiness requires handoff review, not success. Terminal review reuses

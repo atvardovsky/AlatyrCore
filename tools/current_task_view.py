@@ -153,13 +153,17 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
         result["execution_readiness"] = readiness
     advice = None
     if closure is None and "analysis_evidence" in model:
-        from analysis_evidence import next_action_advice, verify_artifacts
+        from analysis_evidence import evidence_readiness, next_action_advice, verify_artifacts
+        identities = {}
         def read_artifact(path: str, limit: int) -> bytes:
             raw = view.read_bytes_result(validator.target_path(path), max_bytes=limit)
             if raw.value is None:
                 raise ValueError(raw.error or "missing analysis artifact")
+            identities[path] = raw.status.resolved_path.relative_to(view.target).as_posix()
             return raw.value
-        failures = verify_artifacts(model, read_artifact)
+        issues = []
+        failures = verify_artifacts(model, read_artifact, issues=issues)
+        result["evidence_readiness"] = evidence_readiness(model, issues, identities)
         selected = model["analysis_evidence"].get("selected_context")
         if selected is not None:
             result["selected_context"] = {

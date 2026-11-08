@@ -32,8 +32,8 @@
       "owner_refs": [
         "ALATYR-AUTHORIZATION-001"
       ],
-      "estimated_words": 1369,
-      "content_digest": "sha256:c9282e5bf9db5d94c8bc4abeacefb6554e256ac52f22eb9afd813089c11bd770"
+      "estimated_words": 1374,
+      "content_digest": "sha256:14222a63067769fc4ffe1f57bfa879733046488d733ec5c23f9e6b71fec442e0"
     },
     {
       "id": "framework.core.approval-records-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:0600d96b3ba4a007bc82b597c2718559b959dde6f64a9ccc52af89707b03837e"
+      "content_digest": "sha256:7887001476d3f98a32648e42d5635b75f9389f3196a0ee32bbc36bcfbefc80dc"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

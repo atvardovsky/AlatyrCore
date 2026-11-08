@@ -163,9 +163,21 @@ python3 tools/alatyr.py lifecycle-checkpoint --target /path/to/target review --r
 `kind` is `work`, `answer` or `complete`. Answers use `inspect` and can report
 partial findings; `complete` also runs canonical selected-model completion
 validation and requires all mapped outcome proofs to be passed, not waived.
-`request-consistent` verifies declared relationships, not real user understanding,
-evidence truth, task acceptance or permission. A caller can still supply the wrong
-request; native provenance and independent source-first review remain necessary.
+`request-consistent` verifies declared relationships, not task acceptance or
+permission. `evidence_readiness` separately exposes current/stale/unadopted
+bindings and bounded diagnostics. Affected state changes require reconciliation;
+read-only recovery and proven-independent branches remain available. Missing or
+budget-incomplete verification cannot establish independence. The existing
+dependency map must establish an independent branch; absence is unknown. The
+artifact reader/byte limits apply; review does not rerun validation or probes.
+
+`request_progress` covers every captured outcome, with remaining IDs and declared
+ready obligations. A partial answer at a completion callback returns `unfinished`
+or `handoff-review`, retaining existing finite reminder/interrupt boundaries.
+Publishing a supporting scope does not complete the parent request. Keep the full
+inventory when decomposing; challenge necessity of supporting dependencies.
+Checks cannot infer omitted outcomes, semantic relevance or real user intent;
+source-first review and exercised native coverage remain necessary.
 
 Schema 2 adds nullable `delivery_control`; schema 1 is unchanged. For uncertain
 multipart or costly repeated work, the conditional

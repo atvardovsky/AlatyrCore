@@ -142,6 +142,8 @@ writes or hook adoption. `bind --request-brief <path>` retains the same brief in
 the reviewed context; optional `request_guard` adoption prevents silent omission.
 See the guide's [request contract](../docs/assistant-lifecycle-hooks.md#request-bound-review)
 for exact fields, native file-tool matching, failure semantics and limits.
+Separate evidence readiness and whole-request progress remain visible even for
+partial answers; declaration consistency is not completion or fresh evidence.
 
 ## External Case Identity Audit
 

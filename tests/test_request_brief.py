@@ -568,10 +568,37 @@ class RequestLifecycleTests(ActiveTaskFixture):
         self.model["proof_obligations"][0]["status"] = "open"; self.write_model(); self.write_index(); self.refresh_baseline()
         self.bind_request()
         answer = self.action(kind="answer", phase="inspect", paths=[])
-        self.assertEqual(self.event("completion", alatyr_action=answer)["status"], "request-consistent")
+        partial = self.event("completion", alatyr_action=answer)
+        self.assertEqual(partial["status"], "handoff-review")
+        self.assertEqual(partial["request_progress"]["remaining_outcome_ids"], ["same-view"])
+        self.assertFalse(partial["request_progress"]["completion_established"])
         with self.assertRaisesRegex(ValueError, "required proof obligations"):
             self.event("completion", alatyr_action={**answer, "kind": "complete"})
         self.assertFalse(self.event("completion", alatyr_action=answer)["acceptance_granted"])
+
+    def test_supporting_delivery_cannot_hide_nine_remaining_areas_at_stop(self):
+        # One completed preparation scope is not the whole approved request.
+        for index in range(9):
+            proof = copy.deepcopy(self.model["proof_obligations"][0])
+            proof.update(id=f"area-{index}", status="blocked" if index == 0 else "open", evidence_refs=[])
+            self.model["proof_obligations"].append(proof)
+            self.brief["outcomes"].append({"id": f"area-{index}", "statement": "Deliver the requested area",
+                "rejection_case": "Preparation alone", "proof_obligation_ids": [proof["id"]]})
+        self.model["execution_dependencies"] = [{"obligation_id": row["id"], "requires": []}
+                                                 for row in self.model["proof_obligations"]]
+        self.write_model(); self.write_index(); self.write_brief(); self.refresh_baseline()
+        self.bind_request()
+        answer = self.action(kind="answer", phase="inspect", paths=[])
+        for _ in range(2):
+            value = self.event("completion", alatyr_action=answer)
+            self.assertEqual(value["status"], "unfinished", value)
+            self.assertEqual(len(value["request_progress"]["remaining_outcome_ids"]), 9)
+            self.assertEqual(len(value["request_progress"]["ready_outcome_ids"]), 8)
+            self.assertFalse(value["emit_native_block"])
+            self.assertFalse(value["authorization_granted"])
+            self.assertFalse(value["acceptance_granted"])
+        self.event("interrupt")
+        self.assertEqual(self.event("completion", alatyr_action=answer)["status"], "interrupted")
 
     def test_native_mutator_path_cannot_be_overridden_by_declared_action(self):
         for provider in sorted(hooks.NATIVE_EVENTS):

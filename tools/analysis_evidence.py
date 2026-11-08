@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import PurePath
 from typing import Any, Callable
 
 from target_validation_support import is_target_relative_path
@@ -186,9 +187,58 @@ def active_retention_failures(model: dict, is_ignored: Callable[[str], bool | No
             if is_ignored(path) is not False]
 
 
-def verify_artifacts(model: dict, read: Callable[[str, int], bytes], *, historical_outcomes: bool = False) -> list[str]:
+def artifact_obligations(model: dict, path: str, identities: dict[str, str]) -> set[str] | None:
+    """Declared impact only; an unscoped/shared context input affects the task."""
+    block = model.get("analysis_evidence", {})
+    identity = PurePath(identities.get(path, path))
+    def matches(value: str) -> bool:
+        return PurePath(identities.get(value, value)) == identity
+    if any(matches(row["path"]) for row in block.get("selected_context", [])):
+        return None
+    affected = {row["id"] for row in model["proof_obligations"] if any(matches(ref) for ref in row["evidence_refs"])}
+    for probe in block.get("probes", []):
+        result = probe["result"]
+        if result and (any(matches(ref) for ref in result["input_sha256"]) or any(matches(row["path"]) for row in result["artifacts"])):
+            affected.add(probe["obligation_id"])
+    for challenge in block.get("review_challenges", []):
+        if any(matches(row["path"]) for row in challenge["artifacts"]):
+            affected.update(challenge["proof_obligation_ids"])
+    for update in block.get("updates", []):
+        if any(matches(row["path"]) for row in update["artifacts"]):
+            return None
+    for case in block.get("outcome_checks", []):
+        observation = case["observation"]
+        if (matches(case["oracle"]["path"]) or observation and
+                (any(matches(ref) for ref in observation["input_sha256"]) or any(matches(row["path"]) for row in observation["artifacts"]))):
+            affected.update(case["proof_obligation_ids"])
+    return affected or None
+
+
+def evidence_readiness(model: dict, issues: list[dict], identities: dict[str, str] | None = None) -> dict:
+    identities = identities or {}
+    affected = set()
+    global_review = len(issues) > 8
+    for issue in issues if not global_review else []:
+        scope = artifact_obligations(model, issue["path"], identities) if issue["path"] is not None else None
+        if scope is None:
+            global_review = True
+        else:
+            affected.update(scope)
+    return {"state": "stale-or-unavailable" if issues else "current-content-not-execution-proof",
+            "affected_obligation_ids": sorted(affected), "global_review_required": global_review,
+            "diagnostics": [{**issue, "identity": identities.get(issue["path"], issue["path"])} for issue in issues[:8]],
+            "failure_count": len(issues),
+            "authority": "none", "authorization_granted": False, "acceptance_granted": False}
+
+
+def verify_artifacts(model: dict, read: Callable[[str, int], bytes], *, historical_outcomes: bool = False,
+                     issues: list[dict] | None = None) -> list[str]:
     """Cap accepted payload and each read allocation; readers may probe one byte."""
     failures = []
+    def fail(message: str, path: str | None = None) -> None:
+        failures.append(message)
+        if issues is not None:
+            issues.append({"path": path, "message": message})
     measured: dict[str, str] = {}
     total = 0
     bindings = artifact_bindings(model)
@@ -197,25 +247,26 @@ def verify_artifacts(model: dict, read: Callable[[str, int], bytes], *, historic
         bindings = retained_bindings(model)
     for path, expected in bindings:
         if not is_target_relative_path(path) or "\\" in path:
-            failures.append(f"analysis evidence has unsafe artifact path: {path}")
+            fail(f"analysis evidence has unsafe artifact path: {path}")
             continue
         if path not in measured:
             limit = min(MAX_ARTIFACT_BYTES, MAX_EVIDENCE_BYTES - total)
             try:
                 raw = read(path, limit)
             except (OSError, ValueError) as exc:
-                failures.append(f"analysis evidence artifact {path}: {exc}")
+                fail(f"analysis evidence artifact {path}: {exc}")
                 break
             if len(raw) > limit:
-                failures.append("analysis evidence exceeds artifact verification byte budget")
+                fail("analysis evidence exceeds artifact verification byte budget")
                 break
             total += len(raw)
             measured[path] = hashlib.sha256(raw).hexdigest()
             if "outcome_checks" in model.get("analysis_evidence", {}):
                 from outcome_evidence import supersession_artifact_failures
-                failures.extend(supersession_artifact_failures(model, path, raw))
+                for failure in supersession_artifact_failures(model, path, raw):
+                    fail(failure)
         if measured[path] != expected:
-            failures.append(f"analysis evidence artifact digest changed: {path}")
+            fail(f"analysis evidence artifact digest changed: {path}", path)
     return failures
 
 

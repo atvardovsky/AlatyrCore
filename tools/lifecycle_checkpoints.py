@@ -204,8 +204,12 @@ def review_request(target: Path, brief_path: str, action: object, *,
                              require_completion=selected_action["kind"] == "complete")
     failures = action_failures(brief, selected_action, selected["request_model"],
         request_id=request_id if request_id is not None else brief["request_id"], task_id=selected_id)
-    from request_focus import focus_failures
+    from request_focus import evidence_action_review, focus_failures, request_progress
     failures.extend(focus_failures(brief, selected_action, selected["request_model"], digest(raw)))
+    health, evidence_failures = evidence_action_review(brief, selected_action, selected["request_model"],
+        selected.get("evidence_readiness", {"state": "not-adopted"}))
+    failures.extend(evidence_failures)
+    progress = request_progress(brief, selected["request_model"], health)
     delivery_inputs = {}
     control = brief.get("delivery_control")
     if control is not None:
@@ -239,8 +243,10 @@ def review_request(target: Path, brief_path: str, action: object, *,
         "; ".join(failures[:8]) if failures else "Declared request, selected model and action agree; newest intent and approval still require review.", block=bool(failures))
     result.update(request_id=brief["request_id"], task_id=selected_id, failures=failures,
         request_brief={"path": brief_path, "sha256": digest(raw)},
-        focus_control=brief.get("focus_control"),
+        focus_control=brief.get("focus_control"), evidence_readiness=health, request_progress=progress,
         request_provenance="declarative-unverified", execution_interception="not-performed")
+    if health["state"] == "stale-or-unavailable":
+        result["reason"] += " Evidence is stale or unavailable; inspect evidence_readiness before relying on this action or answer."
     if delivery_inputs:
         result["delivery_inputs"] = delivery_inputs
     return result
@@ -382,6 +388,13 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
                         result = decision("completion-only", "Terminal review cannot reopen execution.", block=True)
                     elif event == "completion" and payload["alatyr_action"]["kind"] == "work":
                         result = decision("request-review-required", "Completion callback requires answer or complete review.", block=True)
+                    elif (event == "completion" and not result["checkpoint_required"]
+                          and payload["alatyr_action"]["kind"] == "answer"
+                          and result["request_progress"]["remaining_outcome_ids"]):
+                        ready = bool(result["request_progress"]["ready_outcome_ids"])
+                        result.update(decision("unfinished" if ready else "handoff-review",
+                            f"Partial answer only: {len(result['request_progress']['remaining_outcome_ids'])} original outcomes remain. Review independent work and current authorization; supporting delivery is not task completion.",
+                            block=ready))
                 elif event == "before-action":
                     result = (decision("completion-only", "Terminal review binding cannot reopen execution; select a current active scope before mutation.", block=True)
                               if binding.get("completion_only") else

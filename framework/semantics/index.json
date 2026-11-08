@@ -114,7 +114,7 @@
         "alatyr:bounded-context-expansion@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:current-scope-authorization@1": "sha256:c9282e5bf9db5d94c8bc4abeacefb6554e256ac52f22eb9afd813089c11bd770",
+        "alatyr:current-scope-authorization@1": "sha256:14222a63067769fc4ffe1f57bfa879733046488d733ec5c23f9e6b71fec442e0",
         "alatyr:canonical-owner@1": "sha256:a8c506ba16553ef9f2861d9aeb17e23a6519ce46065b8d8be5de5442f86c4340",
         "alatyr:risk-by-fact@1": "sha256:f72a84e252abedc5d1797a7034556a2713cb1a8fb3ec8b609fbb6e0e573cd1db",
         "alatyr:protected-change@1": "sha256:5432862d1a7bfc34914162ddae212cc2ec7eed15f62897a3dce691c17501b389",

@@ -27,7 +27,9 @@ Canonical rules remain in `.ai/framework/task-state-delivery.md`,
    `bind --request-brief <path>`; reconcile new request/resume IDs explicitly.
 5. Before mutation, reconcile changed/expired selected context and check current
    approval, scope and permissions. After changes, review documentation and
-   companion surfaces before rebinding. Use selective mutating-tool hooks only.
+   companion surfaces before rebinding. Review exposes separate evidence health;
+   reconcile affected stale bindings, preserving read-only recovery and independent
+   work. Use selective mutating-tool hooks only.
 6. Before completion, inspect unresolved original outcomes and independent ready
    duties. Reminders remain zero by default and require separate adoption.
    They never execute work or replace canonical acceptance.
@@ -37,6 +39,8 @@ Canonical rules remain in `.ai/framework/task-state-delivery.md`,
    execution. `completion-evidence-consistent` means canonical selected records
    agree, not task acceptance or current runtime readiness. Empty ready lists,
    provisional evidence and component passes do not establish completion.
+   Preserve the full request inventory across supporting scopes/publication.
+   Partial answers retain every remaining outcome; preparation is not delivery.
 7. Report configured/adopted/exercised/intercepted states separately. Keep native
    errors, missing coverage and procedural checks visible. Never infer success
    from a configuration file or validator result alone.

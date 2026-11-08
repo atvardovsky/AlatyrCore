@@ -117,6 +117,8 @@ not replace that question with another recommendation or load all task history.
 For longer work, [execution focus](framework/task-state-delivery.md#execution-focus)
 helps the assistant revisit the current goal, unresolved checks and next useful
 action when evidence or scope changes, without loading the whole project again.
+Request review keeps unfinished outcomes visible across supporting work and
+reports stale evidence separately; finishing preparation does not finish the task.
 
 Current checkpoints can be bound to that task view, while older reports stay
 reference material. Optional checks distinguish a worker assignment from a
@@ -352,7 +354,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.132`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.133`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.
