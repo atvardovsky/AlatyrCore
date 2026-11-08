@@ -58,7 +58,28 @@ def check(check_id: str, *dependencies: str) -> dict[str, Any]:
     }
 
 
+def recorded_process_state(pid: int) -> str | None:
+    try:
+        raw = Path(f"/proc/{pid}/stat").read_text()
+    except (FileNotFoundError, ProcessLookupError):
+        return None
+    return raw.rsplit(")", 1)[1].split()[0]
+
+
 class CheckGraphTests(unittest.TestCase):
+    def test_process_probe_handles_disappearance_but_not_unknown_read_errors(self) -> None:
+        from unittest.mock import patch
+        for error in (FileNotFoundError(), ProcessLookupError()):
+            with self.subTest(error=type(error).__name__), patch.object(Path, "read_text", side_effect=error):
+                self.assertIsNone(recorded_process_state(123))
+        for error in (PermissionError(), OSError("unexpected I/O failure")):
+            with self.subTest(error=type(error).__name__), patch.object(Path, "read_text", side_effect=error):
+                with self.assertRaises(type(error)):
+                    recorded_process_state(123)
+        for state in ("R", "S", "T", "Z", "X"):
+            with self.subTest(state=state), patch.object(Path, "read_text", return_value=f"123 (test (child)) {state} 1 2"):
+                self.assertEqual(recorded_process_state(123), state)
+
     def test_source_stage_defers_only_explicit_release_checks(self) -> None:
         ordinary = {**check("ordinary"), "profiles": ["full"], "platforms": ["all"]}
         change = {**check("change"), "profiles": ["full", "change"], "platforms": ["all"]}
@@ -204,9 +225,8 @@ class CheckGraphTests(unittest.TestCase):
                         pid = int(path.read_text())
                         deadline = time.monotonic() + 1
                         while True:
-                            try:
-                                state = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0]
-                            except FileNotFoundError:
+                            state = recorded_process_state(pid)
+                            if state is None:
                                 break
                             if state in {"Z", "X"}:
                                 break
