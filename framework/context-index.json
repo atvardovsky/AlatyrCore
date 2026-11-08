@@ -91,7 +91,7 @@
         "ALATYR-SOURCE-001"
       ],
       "estimated_words": 949,
-      "content_digest": "sha256:ff0af86d6f7bbd5b211e722b4567788a5b703c14057f2fb28b83a443a95028bb"
+      "content_digest": "sha256:7836aacaa2f934e2e55093bb0a887027cd094357fc6e6cf055a2746717d171ed"
     },
     {
       "id": "framework.section.infrastructure",
@@ -177,7 +177,7 @@
         "ALATYR-TDD-001"
       ],
       "estimated_words": 375,
-      "content_digest": "sha256:b1f868857e723bd476c8e7c830828c9175b09b6bf2c8f4942b4774ffe550f6c3"
+      "content_digest": "sha256:1471e731934fb403d1aadfdb5202f440e7ea68ac7d8453c3b32dfa43f7286b66"
     }
   ]
 }

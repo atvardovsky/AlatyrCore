@@ -46,6 +46,7 @@ does not persist packets. Only the outer coordinator owns finalization.
 1. Load the compact bootstrap and select the smallest base task profile and
    project-area overlays.
 2. Apply the activation gate. Record why orchestration is needed.
+   Capture original coverage before planning: `.ai/framework/task-state-delivery.md#outcome-qualification`.
 
 ### Plan
 

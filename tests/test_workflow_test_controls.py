@@ -44,7 +44,8 @@ class HostedFixtureIsolationTests(unittest.TestCase):
                 reviewed_modules = modules[:-1]
                 additions = {"tests.test_dispatch_observation", "tests.test_default_validation_route", "tests.test_repair_qualification",
                              "tests.test_incident_retained_evidence", "tests.test_initialization_readiness", "tests.test_harness_contract",
-                             "tests.test_validation_context", "tests.test_request_brief", "tests.test_request_focus", "tests.test_lifecycle_setup"}
+                             "tests.test_validation_context", "tests.test_request_brief", "tests.test_request_focus", "tests.test_lifecycle_setup",
+                             "tests.test_outcome_evidence"}
                 self.assertTrue(additions <= set(reviewed_modules))
                 self.assertEqual(len(reviewed_modules), count + len(additions))
                 reviewed_modules = [module for module in reviewed_modules if module not in additions]

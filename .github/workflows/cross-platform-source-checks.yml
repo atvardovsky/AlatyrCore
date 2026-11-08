@@ -141,6 +141,7 @@ jobs:
           tests.test_lifecycle_setup
           tests.test_request_brief
           tests.test_request_focus
+          tests.test_outcome_evidence
           tests.test_contract_work
           tests.test_contract_work_delegation
           tests.test_dispatch_observation

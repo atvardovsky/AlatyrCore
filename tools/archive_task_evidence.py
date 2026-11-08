@@ -95,6 +95,20 @@ def prepare(target: Path, task_id: str, retention_review: str) -> EvidencePlan:
     git = GitEvidenceView(target)
     if any(git.is_ignored(path.as_posix()) is not False for path in (model_path, projection_path)):
         raise ValueError("durable witness destinations must be retainable by Git")
+    retained_inputs = {}
+    if "outcome_checks" in model.get("analysis_evidence", {}):
+        from outcome_evidence import retention_failures
+        from analysis_evidence import verify_artifacts
+        failures = retention_failures(model, git.is_ignored)
+        def read_retained(path: str, limit: int) -> bytes:
+            raw = read_output(target, target / path, max_bytes=limit)
+            if raw is None:
+                raise ValueError("missing retained outcome artifact: " + path)
+            retained_inputs[target / path] = raw
+            return raw
+        failures.extend(verify_artifacts(model, read_retained, historical_outcomes=True))
+        if failures:
+            raise ValueError("; ".join(failures))
     closure["analysis_witness"] = {
         "model": {"path": model_path.as_posix(), "sha256": hashlib.sha256(raw_model).hexdigest()},
         "projection": {"path": projection_path.as_posix(), "sha256": hashlib.sha256(raw_projection).hexdigest()},
@@ -107,6 +121,7 @@ def prepare(target: Path, task_id: str, retention_review: str) -> EvidencePlan:
                target / INDEX: (json.dumps(index, indent=2) + "\n").encode("utf-8")}
     inputs = {target / INDEX: raw_index, target / closure_binding["path"]: raw_closure,
               target / model_binding["path"]: raw_model, projection_source: raw_projection}
+    inputs.update(retained_inputs)
     for path in (target / model_path, target / projection_path):
         previous = read_output(target, path)
         if previous is not None and previous != outputs[path]:

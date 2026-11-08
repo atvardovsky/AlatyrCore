@@ -93,6 +93,20 @@ module agreement is not a substitute for this cross-module proof.
 
 ## Change Categories
 
+Outcome-qualification changes must couple original request coverage, source-bound
+oracles and actual observation scope through registered validation and lifecycle
+review. Cover wrong backend/role/entrypoint/volume, omitted hosts, unobserved or
+unreached checks, diagnostic tests that correctly retain deficits, malformed
+JSON and stale inputs. Publication/successor tests retain captured outcomes;
+approved supersession is distinct from fixing the original requirement.
+Selected/full lineage checks share a resolver, including malformed models and
+conflicting durable/runtime predecessors. Keep unrelated models unread, truthful
+partial answers valid and current/historical evidence separate. Absent controls
+perform no new artifact reads; adopted controls share existing byte ceilings.
+The Test project suite and structural regressions are not real-agent cohorts.
+Check ordinary target composition, not only conformance copies: capture guidance
+must reference assets selected in every applicable installation profile.
+
 Worker-communication changes must exercise real scoped reads and competing
 publication processes through the public CLI: foreign session/tree/worktree,
 nested membership, sender/recipient scope, source/snapshot drift, malformed

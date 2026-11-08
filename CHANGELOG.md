@@ -4,6 +4,24 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.132 - 2026-11-08
+
+- Share selected incident predecessor checks across full validation, current-task
+  views and lifecycle review; reject malformed or conflicting predecessor evidence
+  without scanning unrelated task models.
+- Add optional bounded outcome checks inside schema-7 analysis evidence: original
+  oracle/case bindings, requested coverage, actual scope, exact evidence classes,
+  decisive-check reach and shared artifact freshness/byte limits.
+- Retain captured expectations through publication and same-incident successors;
+  distinguish explicit owner supersession, honest partial progress, safe rejection
+  and canonical selected-task acceptance from green component checks.
+- Synchronize material-task, installation/update and behavioral-evaluation guidance
+  without claiming authentic execution, universal interception or semantic proof.
+- Reuse the installed problem-model template for outcome capture in every profile;
+  do not introduce an unselected standalone template or automatic control adoption.
+- Advance adapter schema to 109 and templates to 127. No new task registry,
+  default bootstrap, service, dependency or raised context/evidence ceiling.
+
 ## 0.1.0-alpha.131 - 2026-11-07
 
 - Clarify general request fidelity across investigation, code, data, architecture,

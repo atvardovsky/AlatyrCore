@@ -170,7 +170,8 @@ For changed user-visible or cross-boundary behavior, map the accepted outcomes
 to every requested surface in existing task evidence before choosing tests.
 Trace the actual entry, authorization/proxy, consumer contract and observable
 effect. Name mocked or unobserved edges. Missing surfaces remain open; a smaller
-implementation is not an approved exclusion.
+implementation is not an approved exclusion. For material/recurring closure,
+apply [outcome qualification](task-state-delivery.md#outcome-qualification).
 
 Before planning, identify a plausible substitute that passes implementation-shaped
 tests but violates the request. Reviewers receive the original source/reference.

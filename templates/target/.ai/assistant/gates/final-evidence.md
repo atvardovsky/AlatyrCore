@@ -19,8 +19,8 @@ Before completion:
   residual risk, and next owner/action
 - context index chain, obligation and selected-item IDs/digests, semantic term
   versions, packet/fallback, and budget expansion
-- continuity verification of packet and repository, selective reload and
-  renewed current-scope authorization
+- packet/repository continuity verification, selective reload, renewed
+  current-scope authorization
 - `durable_engineering_evidence`: captured/skipped/blocked,
   ID/path/repository binding, or reason
 - `validation_evidence_classes`: declared, locally observed, tool verified,
@@ -28,20 +28,20 @@ Before completion:
   evidence without stronger claims
 - selected gate evidence; never imply unselected modules ran
 
-For material changes or state-changing phases, complete
+For material/state-changing work, complete
 `.ai/assistant/templates/operation-completion-evidence.json` or equivalent fields.
 
 Completion semantics:
 
 - Report `complete` only when current authorization covers performed phases,
-  validation passed or is target-not-applicable, integrity and approval scope
-  are resolved, and no owner-decision risk remains.
-- Open, failed, blocked, or unevidenced proof obligations/reviews prevent a
-  `complete` result.
-- Missing, blocked, or unverified contour-sync evidence prevents a `complete` result
-  after code/test changes.
-- Report `partial`, `blocked`, or `unverified` when validation failed, was
-  skipped/unavailable, authorization/approval is missing, or evidence is
-  narrower than changed facts.
-- Bind each check to the semantic scope it proves; structural checks cannot prove semantics
-  or turn unverified capabilities into observed evidence.
+  validation passed/is target-not-applicable, integrity/approval are resolved
+  and no owner-decision risk remains.
+- Any open/failed/blocked/unevidenced proof/review or missing/blocked/unverified
+  contour sync prevents a `complete` result.
+- Report `partial`, `blocked`, or `unverified` for failed/skipped/unavailable
+  checks, missing authority or narrower evidence.
+- Bind each check to the semantic scope it proves; structural success proves
+  neither semantics nor unverified capabilities. Reconcile original outcomes/open
+  duties through canonical selected-task acceptance, never component success.
+- Material/recurring work: `.ai/framework/task-state-delivery.md#outcome-qualification`.
+  Lead with original outcomes/gaps, not test totals or deployment health.

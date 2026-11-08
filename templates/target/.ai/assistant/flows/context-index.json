@@ -362,8 +362,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1092,
-      "content_digest": "sha256:a178a31b1239f9024c2d48e37229f2b1656e1c0d9b98892ea1b0e671e8d06bb5"
+      "estimated_words": 1098,
+      "content_digest": "sha256:b5ae1342297538e7556c792955cfff3c8da9411dd21a6ee73ac3f3741a47e82e"
     },
     {
       "id": "assistant.content.flows-lifecycle-checkpoints-flow-md",
@@ -384,8 +384,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 420,
-      "content_digest": "sha256:80299c4bfa50bac6b0a70704c6524d41b59a766f33c6dbe2072eb6db92444d9c"
+      "estimated_words": 442,
+      "content_digest": "sha256:ab151553abf615183dc6a7d169578426436e01ecb2da1e82c24537e5539d8ef2"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",

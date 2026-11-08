@@ -138,6 +138,9 @@ def action_failures(brief: dict, action: dict, model: dict, *, request_id: str,
         failures.append("task identity differs from the request brief")
     if brief["objective"] != model["objective"]:
         failures.append("selected model objective differs from the request brief")
+    if "outcome_checks" in model.get("analysis_evidence", {}):
+        from outcome_evidence import request_outcome_failures
+        failures.extend(request_outcome_failures(brief, model))
     outcomes = {row["id"]: row for row in brief["outcomes"]}
     proofs = {row["id"]: row for row in model["proof_obligations"]}
     for outcome in outcomes.values():

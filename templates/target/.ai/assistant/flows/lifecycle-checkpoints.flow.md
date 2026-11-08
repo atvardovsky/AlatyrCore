@@ -48,6 +48,10 @@ Optional schema-2 delivery controls use
 `.ai/framework/test-execution-selection.md#bounded-delivery-review`; retain the
 selected validation history in the baseline, without enabling controls on update.
 Opt-in schema-3 focus: `.ai/framework/task-state-delivery.md#request-bound-work`.
+Before material/recurring repair plans, capture source-derived brief outcomes/surfaces
+with `.ai/assistant/templates/problem-model.json` in the existing model. Use
+`.ai/framework/task-state-delivery.md#outcome-qualification`; disclose absent
+adoption and native-interception limits.
 
 Runtime session state stays ignored under `.ai/.runtime/lifecycle-hooks/` and
 contains no conversation, approval record or duplicate project task inventory.

@@ -19,7 +19,7 @@ from target_adapter_validation.values import is_resolved_string
 from target_adapter_validation.context import TargetFileState
 from target_adapter_validation.consistency_map import parse_registry_fact_entries
 from target_validation_support import is_target_relative_path
-from task_evidence_contract import task_projection_mismatches, task_schema, task_model_header_failures, task_predecessor_failures
+from task_evidence_contract import task_projection_mismatches, task_schema, task_model_header_failures, task_predecessor_failures, task_lineage_failures
 from architecture_review import review_failures, BoundedReviewDigests, review_routes
 from target_adapter_validation.model_evidence import bound_object as _bound_object, retained_model_pair
 
@@ -91,6 +91,36 @@ def _task_model_evidence(validator: Any, task: dict[str, Any], closure: Any = No
                         f"{task_id}: runtime {name} is unsafe or unavailable; preserve it and inspect {runtime_binding['path']}",
                         INDEX_PATH, details=details)
     return model, witness["model"], validator.target_path(witness["projection"]["path"])
+
+
+def lineage_model(validator: Any, task: dict[str, Any]) -> Any:
+    """Read only a declared predecessor and validate its model/header contract."""
+    closure = None
+    if task["state"] == "closed":
+        closure = _bound_object(validator, task["completion_evidence"], "predecessor closure")
+        if (not isinstance(closure, dict) or not _schema_valid(validator, closure, "task-closure", task["completion_evidence"]["path"])
+                or not isinstance(closure.get("analysis_witness"), dict)):
+            validator.error("ACTIVE_TASK_PREDECESSOR", "closed predecessor requires durable model/projection witnesses", INDEX_PATH)
+            return None
+        if closure["task_id"] != task["task_id"] or task_projection_mismatches(task, closure):
+            validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor closure identity or projection differs from its header", INDEX_PATH)
+            return None
+    model, binding, projection = _task_model_evidence(validator, task, closure)
+    if not isinstance(model, dict):
+        return None
+    delivery = closure.get("delivery") if isinstance(closure, dict) else None
+    start = len(validator.findings)
+    model = validate_selected_problem_model(validator, validator.target_path(binding["path"]),
+        load_problem_model_schema(validator.schema_context),
+        require_completion=isinstance(delivery, dict) and delivery.get("evidence_finalization") == "final",
+        archived_projection=projection, original_source_path=task["problem_model"]["path"],
+        historical_witness=task["state"] == "closed")
+    if not isinstance(model, dict) or any(item.level == "error" for item in validator.findings[start:]):
+        return None
+    failures = [message for _, message in task_model_header_failures(task, model)]
+    for message in failures:
+        validator.error("ACTIVE_TASK_PREDECESSOR", f"{task['task_id']}: {message}", INDEX_PATH)
+    return None if failures else model
 
 
 def validate_capture_disposition(validator: Any, value: Any, source: str, closure: dict[str, Any]) -> None:
@@ -420,6 +450,8 @@ def validate_active_tasks(validator: Any, *, initializing: bool = False) -> None
         except (ValueError, UnicodeError, RecursionError):
             validator.warn("ACTIVE_TASK_BASELINE_UNAVAILABLE", "baseline headers cannot be read; historical selection cannot be narrowed", INDEX_PATH)
     task_by_id = {task["task_id"]: task for task in tasks}
+    lineage_models: dict[str, Any] = {}
+    lineage_reviewed: set[tuple[str, bool]] = set()
     for task_id, previous in previous_tasks.items():
         if previous.get("state") == "active" and task_id not in task_by_id:
             validator.error("ACTIVE_TASK_REMOVED", f"active task {task_id} requires a terminal closure before retirement", INDEX_PATH)
@@ -480,37 +512,11 @@ def validate_active_tasks(validator: Any, *, initializing: bool = False) -> None
                         validator.error("ACTIVE_TASK_MODEL_LINEAGE", message, INDEX_PATH)
                     else:
                         validator.error("ACTIVE_TASK_PROJECTION", message, INDEX_PATH)
-                incident = validated_model.get("incident") if isinstance(validated_model, dict) else None
-                if isinstance(incident, dict) and incident.get("mode") == "none" and task["predecessor_task_ids"]:
-                    validator.error("ACTIVE_TASK_PREDECESSOR", "non-incident model cannot claim incident predecessor tasks", INDEX_PATH)
-                for predecessor in task["predecessor_task_ids"]:
-                    if predecessor in task_by_id and task_by_id[predecessor]["incident_family_id"] != task["incident_family_id"]:
-                        validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor task belongs to another incident family", INDEX_PATH)
-                if isinstance(incident, dict):
-                    predecessor_models = set()
-                    for predecessor in task["predecessor_task_ids"]:
-                        header = task_by_id.get(predecessor)
-                        prior_model = _task_model_evidence(validator, header)[0] if isinstance(header, dict) else None
-                        if not isinstance(prior_model, dict) or not isinstance(prior_model.get("model_id"), str):
-                            validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor requires model evidence, not only a matching family header", INDEX_PATH)
-                            continue
-                        predecessor_models.add(prior_model["model_id"])
-                        if task_id == selected_task:
-                            if not isinstance(prior_model.get("proof_obligations"), list) or any(not isinstance(item, dict) for item in prior_model["proof_obligations"]):
-                                validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor proof obligations are malformed", INDEX_PATH)
-                                continue
-                            inherited_review = any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in prior_model.get("proof_obligations", []))
-                            retained_review = any(item.get("id") == "repair-evidence-review" and item.get("required") is True for item in validated_model.get("proof_obligations", []))
-                            if inherited_review and not retained_review:
-                                validator.error("ACTIVE_TASK_PREDECESSOR", "incident successors must retain the required repair-evidence-review obligation", INDEX_PATH)
-                        prior_incident = prior_model.get("incident")
-                        current_iteration = incident.get("corrective_iteration")
-                        prior_iteration = prior_incident.get("corrective_iteration") if isinstance(prior_incident, dict) else None
-                        if type(current_iteration) is not int or type(prior_iteration) is not int or prior_iteration >= current_iteration or prior_incident.get("family_id") != incident.get("family_id"):
-                            validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor family or iteration does not precede current work", INDEX_PATH)
-                    declared = incident.get("predecessor_model_ids")
-                    if not isinstance(declared, list) or not all(isinstance(item, str) for item in declared) or set(declared) != predecessor_models:
-                        validator.error("ACTIVE_TASK_PREDECESSOR", "predecessor tasks and model identities differ; retain required lineage headers", INDEX_PATH)
+                if isinstance(validated_model, dict):
+                    for message in task_lineage_failures(task, validated_model, task_by_id,
+                            lambda header: lineage_model(validator, header), retain_review=task_id == selected_task,
+                            loaded=lineage_models, reviewed=lineage_reviewed):
+                        validator.error("ACTIVE_TASK_PREDECESSOR", message, INDEX_PATH)
         if state == "closed":
             if closure is not None:
                 validate_task_closure(validator, closure, task)

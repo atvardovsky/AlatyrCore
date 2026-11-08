@@ -228,8 +228,8 @@
       "owner_refs": [
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 2121,
-      "content_digest": "sha256:79927b0e223999a1beaf3c933e6f3e71b212457103c7926c5daf90bd0ed3af71"
+      "estimated_words": 2127,
+      "content_digest": "sha256:7ea2a0d0cb5c875d87591e7dd16dc8ce70652870fe95286a5bd2060d92262bc6"
     },
     {
       "id": "framework.core.module-profile-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:294780871763e96159ac6e9d2507062be2610e490acaf27ba560bdec85761867"
+      "content_digest": "sha256:0600d96b3ba4a007bc82b597c2718559b959dde6f64a9ccc52af89707b03837e"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

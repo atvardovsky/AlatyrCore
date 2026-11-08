@@ -413,6 +413,13 @@ def validate_selected_problem_model(
         if not frozen or current_task and require_completion:
             for failure in verify_artifacts(model, read_artifact):
                 validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
+        elif "outcome_checks" in model.get("analysis_evidence", {}):
+            for failure in verify_artifacts(model, read_artifact, historical_outcomes=True):
+                validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
+        if archived and "outcome_checks" in model.get("analysis_evidence", {}):
+            from outcome_evidence import retention_failures
+            for failure in retention_failures(model, validator.git.is_ignored):
+                validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
         for failure in evidence_failures(model, completion=require_completion):
             validator.error("ANALYSIS_EVIDENCE_INVALID", failure, relpath)
     if not model_failures:

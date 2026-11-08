@@ -360,11 +360,13 @@ Classify every proposed target file:
     tasks. Disabled/deferred guidance must not require the reserved review
     obligation; preserve and surface incompatible existing captures for explicit
     owner reconciliation rather than deleting them during an upgrade.
-    Distinguish source availability, installed surfaces, target enablement and
-    exercised evidence. Propose schema-2 qualification only from target-owned
+    Separate source availability, installation, adoption and exercised evidence.
+    Propose schema-2 qualification only from target-owned
     scenario assertions and real run artifacts; preserve schema 1 or deferral
-    without an accepted adoption decision. Performance comparison is separately
-    target-selected, never a universal gate or runtime permission.
+    without an accepted adoption decision. Performance comparison stays
+    target-selected, not universal or operational authority.
+    Reconcile component progress versus acceptance:
+    `.ai/framework/task-state-delivery.md#outcome-qualification`.
     Keep current testing instructions in the compact testing index and selected
     execution/incident leaves; move long experiments into cold linked history.
     Preserve open obligations and concurrent incident heads in the existing

@@ -32,6 +32,43 @@ models or explicitly retire headers after preserving durable evidence.
 Optional reviewed active handoffs and exact-byte recovery follow
 [worktree collaboration](collaboration-worktrees.md). Foreign active witnesses
 keep current schema/source freshness; selected tasks require runtime rehydration.
+Selected views and lifecycle review reuse full validation's predecessor-model
+reconciliation. Only declared predecessor models are loaded; conflicting active
+runtime bytes, malformed prior models and header/model identity mismatches fail
+closed. Frozen closed witnesses do not require ignored runtime reconstruction.
+
+## Outcome Qualification
+
+Optional schema-7 analysis `outcome_checks` follow the canonical
+[outcome contract](../framework/task-state-delivery.md#outcome-qualification).
+They stay inside the existing model and artifact budget, not a second acceptance
+registry. Partial observations remain diagnostic; required proofs cannot pass
+using wrong scope/class, an unreached decisive check or a contradicted result.
+Request review reconciles captured checks with every declared brief outcome.
+Hash-bound input and result checks establish identity, not execution authenticity.
+
+Capture the exact normal entry, actor, backend/runtime, workload/exclusions and
+requested files. Source-derived review must find omissions before capture; two
+agreeing incomplete inventories do not establish coverage. Publication retains
+the oracle, scope and proof statements. A same-incident successor retains each captured ID; any
+changed expectation requires explicit original-case owner supersession whose
+decision artifact is bound in `analysis_evidence.selected_context` and cited by
+the original case. Its JSON `decision_owner` and `outcome_changes` must match the
+declared supersession: each changed `case_id` binds exact `predecessor_sha256`
+and `replacement_sha256` case digests. An unchanged decision cannot authorize
+another scope. This checks recorded scope, not the human's identity or authority.
+Supersession changes a requirement; it does not repair the original expectation.
+
+Before archival, retain reviewed immutable oracle/result snapshots outside ignored
+runtime storage. The archiver verifies them and binds their bytes transactionally.
+Frozen outcome witnesses continue checking those retained artifacts, not today's
+implementation inputs. A current selected acceptance still checks all current
+bindings. Do not rehash missing historical results to manufacture a pass.
+
+Local success or valid progress never substitutes for canonical selected-task
+acceptance. The read-only `current_task` view reports recorded orientation, not
+an acceptance grant. Verify native-client coverage separately before claiming
+automatic enforcement; unsupported clients remain procedural.
 
 ## Closure
 

@@ -84,6 +84,195 @@ class ReadinessTests(unittest.TestCase):
 
 
 class CurrentTaskTests(ActiveTaskFixture):
+    def add_predecessor(self):
+        from tests.test_behavior_acceptance import original_case
+        from target_adapter_validation.harness_scenarios.analysis_strategies import _write_model
+        prior = copy.deepcopy(self.model)
+        prior.update(model_id="prior-model", operation_id="prior-operation", original_case=original_case())
+        prior["task_binding"]["task_ids"] = ["prior-task"]
+        prior["active_projection"]["path"] = ".ai/.runtime/problem-model-projections/prior-model.json"
+        prior["incident"].update(mode="new", family_id="incident-family", trigger="reported-defect",
+                                 corrective_iteration=0, predecessor_model_ids=[])
+        path = self.target / ".ai/.runtime/problem-models/prior-model.json"
+        _write_model(self.target, path, prior)
+        header = copy.deepcopy(self.task)
+        header.update(task_id="prior-task", operation_id="prior-operation", problem_model=self.bind(path),
+                      incident_family_id="incident-family", predecessor_task_ids=[])
+        self.model["original_case"] = original_case()
+        self.model["incident"].update(mode="continuation", family_id="incident-family",
+            trigger="reported-defect", corrective_iteration=1, predecessor_model_ids=["prior-model"])
+        self.task.update(incident_family_id="incident-family", predecessor_task_ids=["prior-task"])
+        self.write_model(); self.write_index([self.task, header])
+        return prior, header, path
+
+    def test_valid_predecessor_is_bound_in_lifecycle_and_unrelated_models_are_not_loaded(self):
+        from lifecycle_checkpoints import selected_task
+        _, header, path = self.add_predecessor()
+        unrelated = copy.deepcopy(header)
+        unrelated.update(task_id="unrelated-task", operation_id="unrelated-operation", incident_family_id="none")
+        irrelevant = self.target / ".ai/.runtime/problem-models/unrelated.json"
+        irrelevant.write_text("malformed history")
+        unrelated["problem_model"] = self.bind(irrelevant)
+        self.write_index([self.task, header, unrelated])
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "bound-recorded-disposition", value)
+        checkpoint = selected_task(self.target, "fixture-task")
+        self.assertIn(path.relative_to(self.target).as_posix(), checkpoint["checkpoint_inputs"])
+        self.assertFalse(any("unrelated.json" in key for key in checkpoint["checkpoint_inputs"]))
+
+    def test_predecessor_mutation_during_lookup_clears_selected_view(self):
+        from target_adapter_validation.active_tasks import lineage_model
+        _, _, path = self.add_predecessor()
+        def changing(validator, header):
+            model = lineage_model(validator, header)
+            path.write_bytes(path.read_bytes() + b" ")
+            return model
+        with patch("target_adapter_validation.active_tasks.lineage_model", side_effect=changing):
+            value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown", value)
+        self.assertFalse(value["acceptance_granted"])
+
+    def test_active_predecessor_runtime_conflict_invalidates_durable_handoff_view(self):
+        from lifecycle_checkpoints import selected_task
+        prior, header, path = self.add_predecessor()
+        directory = self.target / ".ai/assistant/task-evidence/prior-task"
+        directory.mkdir(parents=True)
+        retained = directory / "model.json"
+        projection = directory / "projection.json"
+        retained.write_bytes(path.read_bytes())
+        projection.write_bytes((self.target / prior["active_projection"]["path"]).read_bytes())
+        header["analysis_handoff"] = {"model": self.bind(retained), "projection": self.bind(projection),
+                                      "retention_review": "fixture:reviewed"}
+        self.write_index([self.task, header])
+        self.assertEqual(current_task_view(changed_index_validator(self.target), "fixture-task")["state"], "bound-recorded-disposition")
+        path.write_bytes(path.read_bytes() + b" ")
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown", value)
+        with self.assertRaises(ValueError): selected_task(self.target, "fixture-task")
+
+    def test_selected_view_checks_transitive_predecessor_model_edges(self):
+        from lifecycle_checkpoints import selected_task
+        from target_adapter_validation.harness_scenarios.analysis_strategies import _write_model
+        prior, header, path = self.add_predecessor()
+        prior["incident"]["predecessor_model_ids"] = ["unrepresented-grandparent"]
+        _write_model(self.target, path, prior)
+        header["problem_model"] = self.bind(path)
+        self.write_model(); self.write_index([self.task, header])
+        self.assertIn("ACTIVE_TASK_PREDECESSOR", self.errors(self.check()))
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown", value)
+        self.assertTrue(any("prior-task" in message for message in value["diagnostics"]))
+        with self.assertRaises(ValueError): selected_task(self.target, "fixture-task")
+
+    def test_malformed_selected_or_predecessor_models_fail_all_routes_without_crashing(self):
+        from lifecycle_checkpoints import selected_task
+        for malformed in (None, [None], [{}]):
+            for selected in (True, False):
+                with self.subTest(value=malformed, selected=selected):
+                    prior, header, path = self.add_predecessor()
+                    if selected:
+                        value = copy.deepcopy(self.model)
+                        value["proof_obligations"] = malformed
+                        self.model_path.write_text(json.dumps(value))
+                        self.task["problem_model"] = self.bind(self.model_path)
+                    else:
+                        prior["proof_obligations"] = malformed
+                        path.write_text(json.dumps(prior))
+                        header["problem_model"] = self.bind(path)
+                    self.write_index([self.task, header])
+                    value = current_task_view(changed_index_validator(self.target), "fixture-task")
+                    self.assertEqual(value["state"], "unknown", value)
+                    self.assertTrue(self.errors(self.check()))
+                    with self.assertRaises(ValueError): selected_task(self.target, "fixture-task")
+
+    def test_schema_invalid_selected_task_ids_are_diagnostics_not_exceptions(self):
+        from lifecycle_checkpoints import selected_task
+        for malformed in (None, True, 3, {}, "fixture-task"):
+            with self.subTest(value=malformed):
+                self.model["task_binding"]["task_ids"] = malformed
+                self.write_model(); self.write_index()
+                value = current_task_view(changed_index_validator(self.target), "fixture-task")
+                self.assertEqual(value["state"], "unknown", value)
+                self.assertTrue(value["diagnostics"])
+                with self.assertRaises(ValueError): selected_task(self.target, "fixture-task")
+
+    def test_schema_invalid_predecessor_task_ids_are_diagnostics_not_exceptions(self):
+        from lifecycle_checkpoints import selected_task
+        prior, header, path = self.add_predecessor()
+        prior["task_binding"]["task_ids"] = None
+        path.write_text(json.dumps(prior))
+        header["problem_model"] = self.bind(path)
+        self.write_index([self.task, header])
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown", value)
+        with self.assertRaises(ValueError): selected_task(self.target, "fixture-task")
+
+    def test_closed_predecessor_requires_durable_witness_and_never_requires_runtime_files(self):
+        from lifecycle_checkpoints import selected_task
+        from target_adapter_validation.harness_scenarios.analysis_strategies import _write_model
+        prior, header, path = self.add_predecessor()
+        prior["original_case"].update(status="verified-fixed", evidence_refs=["fixture:accepted-original-case"])
+        _write_model(self.target, path, prior)
+        header["problem_model"] = self.bind(path)
+        selected = copy.deepcopy(self.task)
+        self.close()
+        closure = copy.deepcopy(self.closure)
+        self.task = selected
+        directory = self.target / ".ai/assistant/task-evidence/prior-task"
+        directory.mkdir(parents=True)
+        retained = directory / "model.json"
+        projection = directory / "projection.json"
+        retained.write_bytes(path.read_bytes())
+        runtime_projection = self.target / prior["active_projection"]["path"]
+        projection.write_bytes(runtime_projection.read_bytes())
+        closure.update(task_id="prior-task", operation_id="prior-operation", incident_family_id="incident-family",
+            predecessor_task_ids=[], analysis_witness={"model": self.bind(retained), "projection": self.bind(projection),
+                                                       "retention_review": "fixture:reviewed"})
+        closure_path = directory / "closure.json"
+        closure_path.write_text(json.dumps(closure))
+        header.update(state="closed", completion_evidence=self.bind(closure_path))
+        self.write_index([self.task, header])
+        path.unlink(); runtime_projection.unlink()
+        self.assertEqual(current_task_view(changed_index_validator(self.target), "fixture-task")["state"], "bound-recorded-disposition")
+        self.assertEqual(selected_task(self.target, "fixture-task")["task_state"], "active")
+        self.assertEqual(self.errors(self.check()), set())
+        retained_projection = projection.read_bytes()
+        projection.write_text("{}")
+        closure["analysis_witness"]["projection"] = self.bind(projection)
+        closure_path.write_text(json.dumps(closure))
+        header["completion_evidence"] = self.bind(closure_path)
+        self.write_index([self.task, header])
+        self.assertEqual(current_task_view(changed_index_validator(self.target), "fixture-task")["state"], "unknown")
+        with self.assertRaises(ValueError): selected_task(self.target, "fixture-task")
+        self.assertIn("ANALYSIS_PROBLEM_MODEL_PROJECTION_INVALID", self.errors(self.check()))
+        projection.write_bytes(retained_projection)
+        closure["analysis_witness"]["projection"] = self.bind(projection)
+        path.write_bytes(retained.read_bytes())
+        closure.pop("analysis_witness")
+        closure_path.write_text(json.dumps(closure))
+        header["completion_evidence"] = self.bind(closure_path)
+        self.write_index([self.task, header])
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown", value)
+        self.assertTrue(any("durable" in message for message in value["diagnostics"]))
+        with self.assertRaises(ValueError): selected_task(self.target, "fixture-task")
+
+    def test_selected_view_and_lifecycle_reject_unrepresented_model_predecessor(self):
+        from lifecycle_checkpoints import selected_task
+        from tests.test_behavior_acceptance import original_case
+        self.model["original_case"] = original_case()
+        self.model["incident"].update(mode="continuation", family_id="incident-family",
+            trigger="reported-defect", corrective_iteration=1,
+            predecessor_model_ids=["unrepresented-model"])
+        self.task["incident_family_id"] = "incident-family"
+        self.write_model(); self.write_index()
+        self.assertIn("ACTIVE_TASK_PREDECESSOR", self.errors(self.check()))
+        value = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(value["state"], "unknown", value)
+        self.assertTrue(any("predecessor" in message for message in value["diagnostics"]))
+        with self.assertRaisesRegex(ValueError, "predecessor"):
+            selected_task(self.target, "fixture-task")
+
     def test_selected_checkpoint_binding_invalidates_focus_without_history_scan(self):
         path = ".ai/.runtime/selected-checkpoint.json"
         artifact = self.target / path

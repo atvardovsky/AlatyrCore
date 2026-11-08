@@ -529,6 +529,7 @@ Final evidence must say:
 - target validation contract distinguishes adapter health, current-change
   validation, and complete archive audit; every command declares canonical,
   target-equivalent, structural-only, or manual coverage
+- component success is not task acceptance; reconcile original/predecessor outcomes
 - canonical commands route through the portable installed delegate, use
   structured operation/scope requirements, fail closed when source is
   unavailable, directly select the required delegate operation with only

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import copy
+import hashlib
 import shlex
 from pathlib import Path
 import subprocess
@@ -28,7 +30,7 @@ def documented_doctor_arguments(document: str, target: Path) -> list[str]:
     return [replacements.get(token, token) for token in shlex.split(examples[0])[2:]]
 
 
-def run_core_repair_workflow(target: Path) -> dict:
+def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False) -> dict:
     """Exercise real CLIs; fixture approvals never authorize production actions."""
     def run(*arguments, expected=0, structured=True):
         result = subprocess.run([sys.executable, str(ROOT / "tools/alatyr.py"), *map(str, arguments)],
@@ -70,6 +72,10 @@ def run_core_repair_workflow(target: Path) -> dict:
     base = run_git(target, "rev-parse", "HEAD")
     evidence = target / "evidence/workflow"
     evidence.mkdir(parents=True)
+    oracle = evidence / "outcome-oracle.md"
+    if outcome_checks:
+        oracle.write_text("The requested fixture outcome is workflow-product.txt containing repaired.\n"
+                          "A green helper without that actual file result is rejected.\n", encoding="utf-8")
     check = [sys.executable, "-c", "from pathlib import Path; assert Path('workflow-product.txt').read_text() == 'repaired\\n'"]
     diagnostic = subprocess.run(check, cwd=target, capture_output=True, text=True)
     if diagnostic.returncode == 0:
@@ -92,6 +98,29 @@ def run_core_repair_workflow(target: Path) -> dict:
     fixture.model["changed_facts"][0].update(owner_ref="README.md", statement="Synthetic workflow product returns its repaired value")
     fixture.model["invariants"][0]["owner_ref"] = "README.md"
     fixture.model["proof_obligations"][0].update(id="generic-repair-review", evidence_refs=["evidence/workflow/validation.txt.snapshot"])
+    if outcome_checks:
+        from outcome_evidence import case_binding
+        proof = fixture.model["proof_obligations"][0]["id"]
+        result_ref = "evidence/workflow/validation.txt.snapshot"
+        artifact = {"path": result_ref, "sha256": hashlib.sha256((target / result_ref).read_bytes()).hexdigest()}
+        scope = {"actor": fixture.model["original_case"]["actor"], "system": "Test project isolated file workflow",
+                 "entrypoint": "ordinary workflow product file read", "conditions": "actual seeded failure and repaired result",
+                 "surfaces": ["workflow-product.txt"]}
+        case = {"id": "original-case", "source_ref": fixture.model["original_case"]["source_ref"],
+            "oracle": {"path": oracle.relative_to(target).as_posix(), "sha256": hashlib.sha256(oracle.read_bytes()).hexdigest()},
+            "expected_result": fixture.model["original_case"]["expected_outcome"],
+            "rejected_substitute": "A green component result without the requested original effect",
+            "scope": scope, "evidence_class": "original-case", "proof_obligation_ids": [proof], "observation": None}
+        case["observation"] = {"case_sha256": case_binding(fixture.model, case), "scope": copy.deepcopy(scope),
+            "evidence_class": "original-case", "status": "supported", "decisive_check_reached": True,
+            "actual_result": "Actual file assertion failed before repair and passed after repair",
+            "input_sha256": {"workflow-product.txt": hashlib.sha256(product.read_bytes()).hexdigest()}, "artifacts": [artifact]}
+        fixture.model["counterexamples"].append({"id": "component-only", "statement": case["rejected_substitute"],
+                                                "evidence_refs": [result_ref]})
+        fixture.model["analysis_evidence"] = {"schema_version": 1, "probes": [], "updates": [],
+            "outcome_checks": [case], "review_challenges": [{"id": "original-outcome", "original_source_ref": case["source_ref"],
+                "normative_source_ref": case["oracle"]["path"], "counterexample_ids": ["component-only"],
+                "proof_obligation_ids": [proof], "artifacts": [artifact], "status": "passed", "reviewer_kind": "primary-separate-pass"}]}
     fixture.task = {"task_id": "fixture-task", "operation_id": "fixture-operation", "state": "active",
         "task_class": "standard-task", "problem_model": None, "completion_evidence": None,
         "canonical_owners": ["README.md"], "changed_fact_ids": ["change-1"], "incident_family_id": "workflow-incident",
@@ -164,4 +193,5 @@ def run_core_repair_workflow(target: Path) -> dict:
         "--task-class", "standard-task", "--require-task-acceptance", "--json", expected=1)
     product.write_text("repaired\n", encoding="utf-8")
     return {"publication": publication, "accepted": final, "stale_result": blocked, "protocol": protocol,
+            "outcome_checks_adopted": outcome_checks,
             "optional_policy_created": (target / ".ai/project/testing/test-first-policy.json").exists()}

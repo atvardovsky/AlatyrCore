@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from task_evidence_contract import task_model_header_failures, task_predecessor_failures
+from task_evidence_contract import task_model_header_failures, task_predecessor_failures, task_lineage_failures
 from task_readiness import execution_readiness
 from target_adapter_validation.active_tasks import _bound_object, _schema_valid, _task_model_evidence
 from target_adapter_validation.context import TargetFileState
@@ -110,7 +110,16 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     if closure is not None and model.get("schema_version") in (4, 5, 6):
         schema = _schema(PROBLEM_MODEL_SCHEMA.with_name(f"alatyr-problem-model-v{model['schema_version']}.schema.json"), validator.schema_context)
     failures = validate_problem_model(model, schema)
-    failures.extend(message for _, message in task_model_header_failures(task, model))
+    if not failures:
+        failures.extend(message for _, message in task_model_header_failures(task, model))
+    if failures:
+        result["diagnostics"].extend(failures[:8])
+        return result
+    from target_adapter_validation.active_tasks import lineage_model
+    start = len(validator.findings)
+    failures.extend(task_lineage_failures(task, model, headers,
+        lambda header: lineage_model(validator, header), retain_review=True))
+    failures.extend(item.message for item in validator.findings[start:] if item.level == "error")
     if failures:
         result["diagnostics"].extend(failures[:8])
         return result

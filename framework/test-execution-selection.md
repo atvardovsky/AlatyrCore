@@ -59,6 +59,10 @@ reviewers, measure duration, infer arbitrary shell commands or discover omitted
 runs. Record actual receipts and independently review history completeness,
 causality, estimates and original-request fidelity. A procedural success is not
 native interception, execution permission or semantic acceptance.
+Use [outcome qualification](task-state-delivery.md#outcome-qualification) when
+backend/topology, representative volume, omitted surfaces or unreached assertions
+can make a green suite narrower than the requested result. A test correctly
+describing missing evidence does not establish that the evidence gap is repaired.
 
 ## Current And Historical Evidence
 

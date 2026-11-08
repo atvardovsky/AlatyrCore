@@ -156,6 +156,9 @@ def evidence_failures(model: dict, *, completion: bool = False) -> list[str]:
             failures.append(f"challenge {challenge['id']} remains unresolved")
     if any(row["status"] == "passed" for row in model["review_results"]) and (not challenges or any(row["status"] != "passed" for row in challenges)):
         failures.append("passed adversarial review requires passed evidence-linked challenges")
+    if "outcome_checks" in block:
+        from outcome_evidence import outcome_failures
+        failures.extend(outcome_failures(model, completion=completion))
     return failures
 
 
@@ -170,6 +173,9 @@ def artifact_bindings(model: dict) -> list[tuple[str, str]]:
         result.extend((row["path"], row["sha256"]) for row in challenge["artifacts"])
     for update in block.get("updates", []):
         result.extend((row["path"], row["sha256"]) for row in update["artifacts"])
+    if "outcome_checks" in block:
+        from outcome_evidence import artifact_bindings as outcome_bindings
+        result.extend(outcome_bindings(model))
     return result
 
 
@@ -180,12 +186,16 @@ def active_retention_failures(model: dict, is_ignored: Callable[[str], bool | No
             if is_ignored(path) is not False]
 
 
-def verify_artifacts(model: dict, read: Callable[[str, int], bytes]) -> list[str]:
+def verify_artifacts(model: dict, read: Callable[[str, int], bytes], *, historical_outcomes: bool = False) -> list[str]:
     """Cap accepted payload and each read allocation; readers may probe one byte."""
     failures = []
     measured: dict[str, str] = {}
     total = 0
-    for path, expected in artifact_bindings(model):
+    bindings = artifact_bindings(model)
+    if historical_outcomes:
+        from outcome_evidence import retained_bindings
+        bindings = retained_bindings(model)
+    for path, expected in bindings:
         if not is_target_relative_path(path) or "\\" in path:
             failures.append(f"analysis evidence has unsafe artifact path: {path}")
             continue
@@ -201,6 +211,9 @@ def verify_artifacts(model: dict, read: Callable[[str, int], bytes]) -> list[str
                 break
             total += len(raw)
             measured[path] = hashlib.sha256(raw).hexdigest()
+            if "outcome_checks" in model.get("analysis_evidence", {}):
+                from outcome_evidence import supersession_artifact_failures
+                failures.extend(supersession_artifact_failures(model, path, raw))
         if measured[path] != expected:
             failures.append(f"analysis evidence artifact digest changed: {path}")
     return failures
@@ -215,6 +228,9 @@ def revision_failures(previous: dict, current: dict) -> list[str]:
     if new is None:
         return ["captured analysis evidence cannot be removed; use an explicit successor task"]
     failures = []
+    if "outcome_checks" in old:
+        from outcome_evidence import revision_failures as outcome_revisions
+        failures.extend(outcome_revisions(previous, current))
     current_probes = {row["obligation_id"]: row for row in new["probes"]}
     revised_hypotheses: set[str] = set()
     for probe in old["probes"]:
@@ -241,7 +257,12 @@ def revision_failures(previous: dict, current: dict) -> list[str]:
 
 def active_evidence(model: dict) -> dict:
     block = model["analysis_evidence"]
+    summary = {}
+    if "outcome_checks" in block:
+        from outcome_evidence import active_checks
+        summary["outcome_checks"] = active_checks(model)
     return {**({"selected_context": block["selected_context"]} if "selected_context" in block else {}),
+            **summary,
             "probes": [{"obligation_id": row["obligation_id"], "unknown_ids": row["unknown_ids"],
                         "method": row["method"], "action_kind": row["action_kind"],
                         "estimated_tool_calls": row["estimated_tool_calls"],

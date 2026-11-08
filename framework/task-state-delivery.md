@@ -122,6 +122,44 @@ never execute/reopen it or grant acceptance, publication or runtime readiness.
 Requests/end revoke pending continuation before waiting on slow checkpoint locks;
 interruption/freshness still win at delivery.
 
+## Outcome Qualification
+
+Before implementing or designing tests for material multi-boundary changes or
+recurring repairs, capture requested surfaces and rejected substitutes.
+Reuse request outcomes and required model proofs; do not create another task
+registry. Local checker success is component progress, never canonical selected-task
+acceptance. Reconcile remaining duties before stopping or reporting completion.
+
+Schema-7 `analysis_evidence` optionally adopts 1..16 `outcome_checks`. Each names
+the source, hash-bound oracle, expected result, rejected substitute, required
+proof IDs and exact actor/system/entrypoint/conditions/surfaces. Request review
+matches captured IDs, expectation, substitute and proofs to the current brief.
+Missing capture stays a disclosed procedural gap; never infer complete request
+coverage from mutually agreeing declarations.
+
+A nullable observation binds the case digest, actual scope, exact evidence class,
+decisive-check reach, status, surface digests and result artifacts. Classes are
+`source-review`, `component-execution`, `original-case`, and `native-client`;
+none substitutes for another. Passed proofs and completion need a supported,
+scope-matching observation whose decisive check was reached. Characterizing a
+deficit, fixture timeout, wrong backend or post-boundary injection cannot prove
+the requested outcome. Unverified observations remain valid progress when their
+proofs stay open. Expected safe rejection may be a successful outcome without
+claiming the larger repair complete.
+
+Capture cannot silently disappear or change. Successors retain checks;
+supersession needs a bound JSON owner decision matching exact before/after case
+digests, preserving IDs/history. Archive immutable oracle/results; historical
+verification excludes current implementation inputs. Sources and artifacts use
+the existing shared byte limits and freshness checks; overflow blocks evidence,
+not permission to truncate it. Projections expose derived qualification, not a
+bare supported label. Omitted controls keep their no-additional-read path.
+
+Checks validate recorded declarations/bytes, not execution, authority or semantic
+truth. Independently challenge the original-request oracle; observe native
+interception and real-agent behavior separately. Configuration, fixtures and
+hashes do not guarantee compliance.
+
 ## Selected Document Warnings
 
 During consistency routing, exact selected documents also select their reviewed

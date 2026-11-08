@@ -93,6 +93,10 @@ task.
 For business changes, the assistant must distinguish approved requirements from
 its own inferences. A repair retains the original reported case, so passing
 tests or a healthy adapter cannot by themselves mean the user's problem is fixed.
+For material repairs, outcome checks can bind the requested role, system and
+workflow to the actual observation, keeping incomplete or wrong-system evidence
+from qualifying recorded proofs. These checks support review; they cannot prove
+that an assistant captured every requirement or that an observation is authentic.
 For costly or repeatedly rejected work, optional
 [bounded delivery review](docs/assistant-lifecycle-hooks.md#request-bound-review)
 checks a representative outcome before expansion and requires deeper review
@@ -348,7 +352,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.131`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.132`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

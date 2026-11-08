@@ -23,6 +23,19 @@ from projection_graph import (  # noqa: E402
     validate_projection_graph,
 )
 class CompositionModelTests(unittest.TestCase):
+    def test_outcome_capture_uses_the_existing_model_template_in_every_profile(self):
+        import json
+        relative = ".ai/assistant/templates/problem-model.json"
+        flow = (ROOT / "templates/target/.ai/assistant/flows/lifecycle-checkpoints.flow.md").read_text(encoding="utf-8")
+        self.assertIn(f"`{relative}`", flow)
+        self.assertNotIn("templates/outcome-check.json", flow)
+        for profile in ("kernel", "core", "standard", "full"):
+            with self.subTest(profile=profile):
+                resolved = resolve_composition(CompositionRequest(profile))
+                self.assertIn(relative, resolved.selected_target_paths)
+        model = json.loads((ROOT / "templates/target" / relative).read_text(encoding="utf-8"))
+        self.assertNotIn("outcome_checks", model.get("analysis_evidence", {}))
+
     def resolve_with_manifest(self, manifest, requests):
         import composition_model as model
         original = model._object

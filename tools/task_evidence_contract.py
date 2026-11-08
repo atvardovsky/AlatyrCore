@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 import json
 from functools import lru_cache
 from pathlib import Path
@@ -54,6 +54,85 @@ def task_model_header_failures(task: dict[str, Any], model: dict[str, Any]) -> l
         gate = incident.get("latest_failed_gate")
         if isinstance(gate, dict) and gate.get("id") != task.get("latest_failed_gate_id"):
             failures.append(("ACTIVE_TASK_PROJECTION", "failed-gate header differs from problem model"))
+    return failures
+
+
+def task_model_predecessor_failures(
+    task: dict[str, Any], model: dict[str, Any], headers: dict[str, dict],
+    load_model: Callable[[dict], Any], *, retain_review: bool,
+) -> list[str]:
+    """Reconcile selected incident edges, without loading unrelated task models."""
+    incident = model.get("incident")
+    if not isinstance(incident, dict):
+        return []
+    failures = []
+    predecessors = task["predecessor_task_ids"]
+    if incident.get("mode") == "none" and predecessors:
+        failures.append("non-incident model cannot claim incident predecessor tasks")
+    predecessor_models = set()
+    for predecessor in predecessors:
+        header = headers.get(predecessor)
+        if not isinstance(header, dict):
+            failures.append("predecessor task is unavailable")
+            continue
+        if header["incident_family_id"] != task["incident_family_id"]:
+            failures.append("predecessor task belongs to another incident family")
+        prior = load_model(header)
+        if not isinstance(prior, dict) or not isinstance(prior.get("model_id"), str):
+            failures.append("predecessor requires model evidence, not only a matching family header")
+            continue
+        predecessor_models.add(prior["model_id"])
+        obligations = prior.get("proof_obligations")
+        if retain_review:
+            if not isinstance(obligations, list) or any(not isinstance(row, dict) for row in obligations):
+                failures.append("predecessor proof obligations are malformed")
+                continue
+            inherited = any(row.get("id") == "repair-evidence-review" and row.get("required") is True for row in obligations)
+            retained = any(row.get("id") == "repair-evidence-review" and row.get("required") is True for row in model.get("proof_obligations", []))
+            if inherited and not retained:
+                failures.append("incident successors must retain the required repair-evidence-review obligation")
+            if "outcome_checks" in prior.get("analysis_evidence", {}):
+                from outcome_evidence import inherited_failures
+                failures.extend(inherited_failures(prior, model))
+        prior_incident = prior.get("incident")
+        iteration = incident.get("corrective_iteration")
+        previous_iteration = prior_incident.get("corrective_iteration") if isinstance(prior_incident, dict) else None
+        if (type(iteration) is not int or type(previous_iteration) is not int
+                or previous_iteration >= iteration or prior_incident.get("family_id") != incident.get("family_id")):
+            failures.append("predecessor family or iteration does not precede current work")
+    declared = incident.get("predecessor_model_ids")
+    if not isinstance(declared, list) or not all(isinstance(row, str) for row in declared) or set(declared) != predecessor_models:
+        failures.append("predecessor tasks and model identities differ; retain required lineage headers")
+    return failures
+
+
+def task_lineage_failures(
+    task: dict[str, Any], model: dict[str, Any], headers: dict[str, dict],
+    load_model: Callable[[dict], Any], *, retain_review: bool,
+    loaded: dict[str, Any] | None = None, reviewed: set[tuple[str, bool]] | None = None,
+) -> list[str]:
+    """Bounded selected ancestry; caches live only within one validation pass."""
+    loaded = {} if loaded is None else loaded
+    reviewed = set() if reviewed is None else reviewed
+    pending, failures = [(task, model)], []
+    def read(header: dict) -> Any:
+        identity = header["task_id"]
+        if identity not in loaded:
+            loaded[identity] = load_model(header)
+        return loaded[identity]
+    while pending:
+        header, current = pending.pop()
+        identity = (header["task_id"], retain_review)
+        if identity in reviewed:
+            continue
+        reviewed.add(identity)
+        failures.extend(f"{header['task_id']}: {message}" for message in
+            task_model_predecessor_failures(header, current, headers, read, retain_review=retain_review))
+        for prior in header["predecessor_task_ids"]:
+            if prior in headers:
+                ancestor = read(headers[prior])
+                if isinstance(ancestor, dict):
+                    pending.append((headers[prior], ancestor))
     return failures
 
 
