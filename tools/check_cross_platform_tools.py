@@ -40,6 +40,7 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "source-adoption",
     "test-input-state",
     "code-relationships",
     "project-understanding",
@@ -100,6 +101,7 @@ EXPECTED_COMMANDS = {
     "clean-artifacts",
 }
 ALLOWED_WRITE_SCOPES = {
+    "source-ignored-runtime-with-explicit-write",
     "target-ignored-runtime-for-explicitly-enabled-policy",
     "target-ignored-runtime-with-explicit-write",
     "git-common-local-presence-with-explicit-write",

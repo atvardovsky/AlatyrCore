@@ -9,6 +9,15 @@
   },
   "canonical_rule": "ALATYR-CONTEXT-001",
   "conditional_overlays": {
+    "source-self-application": {
+      "activate_when": "material source work",
+      "canonical_rule": "ALATYR-AUTHORIZATION-001",
+      "fallback": "inspect until required bindings are current",
+      "policy": "tools/source_adoption.json",
+      "required_context": [
+        "docs/source-self-application.md"
+      ]
+    },
     "source-session-presence": {
       "activate_when": "independent source session work-period checkpoints",
       "canonical_rule": "ALATYR-CONTINUITY-001",

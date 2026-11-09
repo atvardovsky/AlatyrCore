@@ -69,6 +69,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--target", required=True, type=Path, action=Once)
     parser.add_argument("--provider", choices=sorted(PROVIDERS), default="procedural", action=Once)
+    parser.add_argument("--source-contour", action="store_true", help="Use the running source repository's explicit procedural lane, not an installed adapter.")
     actions = parser.add_subparsers(dest="action", required=True)
     event = actions.add_parser("event", allow_abbrev=False)
     event.add_argument("--event", required=True, action=Once, help="Exact native event, or a procedural checkpoint name.")
@@ -81,6 +82,8 @@ def build_parser() -> argparse.ArgumentParser:
         bind.add_argument("--" + field, required=True, action=Once)
     bind.add_argument("--completion-only", action="store_true", help="Review terminal evidence without reopening execution.")
     bind.add_argument("--request-brief", action=Once, help="Retained request brief, included in the reviewed context baseline.")
+    bind.add_argument("--diff-ref", action=Once, help="Source-only approved Git comparison base, resolved on binding.")
+    bind.add_argument("--approval-record", action="append", default=[], help="Source-only explicit target-relative approval record; repeatable.")
     review = actions.add_parser("review", allow_abbrev=False)
     review.add_argument("--request-brief", required=True, action=Once,
         help="Read-only declared request/action check; bounded action JSON on stdin, no hook adoption required.")
@@ -114,30 +117,40 @@ def main() -> int:
     target = None
     try:
         target = args.target.resolve(strict=True)
+        options = {"source_contour": True} if args.source_contour else {}
+        if args.source_contour:
+            from source_adoption import assert_source_root
+            assert_source_root(target)
+            if args.provider != "procedural" or args.action == "setup-plan" or getattr(args, "native_output", False):
+                raise ValueError("source contour supports procedural events only, not native setup/output")
         if args.action == "setup-plan":
             from lifecycle_setup import setup_plan
             result = setup_plan(target, args.provider, args.installation_kind,
                 native_setup_approved=args.native_setup_approved, client_version=args.client_version,
                 config_path=args.config_path, interpreter=args.interpreter)
         elif args.action == "status":
-            result = session_status(target, args.session_id)
+            result = session_status(target, args.session_id, **options)
         elif args.action == "bind":
             binding = {"request_id": args.request_id, "baseline": args.baseline, "task_id": args.task_id,
                        "completion_only": args.completion_only}
             if args.request_brief is not None:
                 binding["request_brief"] = args.request_brief
+            if args.diff_ref is not None or args.approval_record:
+                if not args.source_contour:
+                    raise ValueError("diff/approval binding options require the source-contour lane")
+                binding.update(diff_ref=args.diff_ref, approval_records=args.approval_record)
             result = handle(target, args.provider, "before-action", {"session_id": args.session_id},
-                bind=binding)
+                bind=binding, **options)
         else:
             raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
             if len(raw) > MAX_INPUT_BYTES:
                 raise ValueError("lifecycle event exceeds 64 KiB")
             payload = json_object(raw, "native lifecycle event")
             if args.action == "review":
-                result = review_request(target, args.request_brief, payload)
+                result = review_request(target, args.request_brief, payload, **options)
             else:
                 event, payload = normalize("procedural" if args.action == "checkpoint" else args.provider, args.event, payload)
-                result = handle(target, args.provider, event, payload, procedural=args.action == "checkpoint")
+                result = handle(target, args.provider, event, payload, procedural=args.action == "checkpoint", **options)
         if getattr(args, "native_output", False):
             print(json.dumps(result, sort_keys=True), file=sys.stderr)
             print(json.dumps(native_output(args.provider, args.event, result), sort_keys=True))

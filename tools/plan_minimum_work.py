@@ -17,7 +17,7 @@ from path_spec import PathDialect, matches_any
 from source_context_selection import (
     BOOTSTRAP, SOURCE_CONTEXT_BUDGET_FIELDS, bootstrap_outputs, compact_plan,
     contained_source_path, evaluate_source_budget, inspect_source_outputs,
-    project_file, read_source_bytes, read_source_object,
+    project_file, read_source_bytes, read_source_object, workflow_route,
 )
 
 from check_all import (
@@ -1147,6 +1147,7 @@ def build_plan(
         "requested_profile": requested_profile,
         "effective_profile": plan.effective_profile,
         "task_class": task_class,
+        "source_workflow": workflow_route(task_class),
         "task_classification": classification,
         "changed_from": resolved_changed_from,
         "changed_paths": plan.changed_paths,

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "provider": "procedural",
+  "mode": "observe",
+  "binding_ttl_seconds": 1800,
+  "max_reminders": 0,
+  "native_evidence": {
+    "state": "unverified",
+    "client_version": null,
+    "source": null,
+    "verified_at": null,
+    "expires_at": null
+  },
+  "request_guard": {"required": true, "file_tools": []}
+}

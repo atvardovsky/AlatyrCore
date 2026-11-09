@@ -2,7 +2,14 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Add source-only self-application routing with minimal ignored projections,
+  canonical task/request/delivery checks and resolved approval-versus-Git scope
+  bindings. Keep small tasks inline and default target behavior unchanged.
+- Classify source capability applicability separately from exercise; expose
+  bounded source knowledge references and selected, non-overwriting assistant
+  entry previews. No provider usage or native interception is inferred.
+- This source-tooling change requires no framework, adapter schema, template
+  version or installed-target migration update.
 
 ## 0.1.0-alpha.134 - 2026-11-09
 

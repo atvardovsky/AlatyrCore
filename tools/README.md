@@ -66,6 +66,18 @@ not the full machine router. Check or regenerate these derived files with
 Word/character limits and reserves are unchanged; four profile file-count
 ceilings account for the additional bounded descriptor.
 
+For material source work, use [source self-application](../docs/source-self-application.md).
+`python3 tools/alatyr.py source-adoption status` separates capability applicability
+from exercise evidence. `source-adoption reconcile` previews minimal ignored
+projections; `--write` applies them, and `--approve-policy-update` explicitly
+reconciles previously managed policy. Existing user instructions are preserved.
+`source-adoption knowledge --query "parser parity"` resolves selected source
+owners; `source-adoption bridge --surface claude` previews a source entry point.
+The existing `publish-task` and `lifecycle-checkpoint` commands accept an explicit
+`--source-contour` lane restricted to the running source root. Lifecycle `bind`
+also accepts source-only `--diff-ref` and repeated `--approval-record` arguments.
+These are procedural aids, not native tool interception or authenticated approval.
+
 Use `python3 tools/alatyr.py plan-work --source-profile framework-rule --context-selector rule_ids=ALATYR-CONTEXT-001 --compact`
 for a bounded agent view. Selectors name exact JSON record IDs or unique
 Markdown heading slugs. Unknown/ambiguous selectors require expansion; required

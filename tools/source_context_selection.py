@@ -270,6 +270,16 @@ def bootstrap_outputs(root: Path = ROOT) -> dict[str, str]:
     return outputs
 
 
+def workflow_route(task_class: str) -> dict:
+    """Pure source route; small tasks do not import or read adoption machinery."""
+    if task_class == "small-task":
+        return {"mode": "inline", "registered_task_required": False, "additional_bootstrap": []}
+    return {"mode": "source-bound-material-work", "registered_task_required": True,
+            "guide": "docs/source-self-application.md", "status_command": "python3 tools/alatyr.py source-adoption status",
+            "checkpoint_command": "python3 tools/alatyr.py lifecycle-checkpoint --target . --source-contour",
+            "cold_acceptance_required": True, "grants_authority": False}
+
+
 def compact_plan(plan: dict[str, Any]) -> dict[str, Any]:
     """Project presentation only; retain the canonical plan for machine checks."""
     context = plan["context_packet"]
@@ -285,6 +295,7 @@ def compact_plan(plan: dict[str, Any]) -> dict[str, Any]:
         "full_receipt_sha256": hashlib.sha256(encoded(plan).encode()).hexdigest(),
         "full_receipt": "same invocation without --compact; this view is not acceptance evidence",
         "source_profile": plan["source_profile"], "task_classification": plan["task_classification"],
+        **({"source_workflow": plan["source_workflow"]} if "source_workflow" in plan else {}),
         "context_readiness": context["readiness"], "selected_sources": list(sources.values()),
         "context_projections": context["context_projections"], "owner_fallbacks": context["owner_fallbacks"],
         "unrouted_requested_paths": context["unrouted_requested_paths"],

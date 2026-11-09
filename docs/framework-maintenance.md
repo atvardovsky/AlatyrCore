@@ -188,6 +188,12 @@ weakening checks.
 
 ## Self-Application Reviews
 
+Use [source self-application](source-self-application.md) for material source
+work. Its policy/catalog are tracked source controls; minimal policy, strategy
+and task projections plus session evidence remain ignored. Configuration,
+contract conformance, actual agent exercise and measured provider benefit are
+separate claims. No full source self-installation is required.
+
 When using Alatyr Core to inspect or improve this source repository, treat
 generated target-adapter output as scratch unless the task is explicitly to
 change tracked templates or docs.

@@ -395,7 +395,7 @@
       ],
       "overlap_decision": "disjoint",
       "required_context": [
-        "tools/source_context_router.json",
+        "tools/source-context/profiles/source-tooling.json",
         "tools/tool_commands.json",
         "docs/source-architecture.md"
       ],

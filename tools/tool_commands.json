@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "source-adoption",
+      "script": "inspect_source_adoption.py",
+      "purpose": "inspect source self-adoption or explicitly project minimal ignored task controls",
+      "write_scope": "source-ignored-runtime-with-explicit-write"
+    },
+    {
       "name": "test-input-state",
       "script": "inspect_test_input_state.py",
       "purpose": "capture or compare adopted material test inputs without running tests or writing files",

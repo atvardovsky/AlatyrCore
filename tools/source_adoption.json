@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "policy_kind": "alatyr-source-adoption",
+  "scope": "source-repository",
+  "lifecycle_policy": "tools/source_lifecycle_policy.json",
+  "knowledge_catalog": "tools/source_knowledge.json",
+  "guide": "docs/source-self-application.md",
+  "modules": {
+    "blueprint-change": {
+      "mode": "source-equivalent",
+      "references": [
+        "docs/source-architecture.md",
+        "docs/source-optimization/source-management.md"
+      ]
+    },
+    "consistency-map": {
+      "mode": "source-equivalent",
+      "references": [
+        "tools/source_change_impact.py",
+        "tools/check_manifest.json"
+      ]
+    },
+    "architecture-knowledge": {
+      "mode": "source-equivalent",
+      "references": [
+        "docs/source-architecture.md"
+      ]
+    },
+    "code-documentation": {
+      "mode": "conditional",
+      "references": [
+        "framework/code-documentation.md",
+        "requirements.txt"
+      ]
+    },
+    "project-vocabulary": {
+      "mode": "source-equivalent",
+      "references": [
+        "framework/semantics/index.json",
+        "framework/project-vocabulary.md"
+      ]
+    },
+    "test-first-development": {
+      "mode": "conditional",
+      "references": [
+        "docs/source-optimization/source-management.md",
+        "tools/check_manifest.json"
+      ]
+    },
+    "extensions": {
+      "mode": "conditional",
+      "references": [
+        "framework/capabilities.json"
+      ]
+    },
+    "dependency-knowledge": {
+      "mode": "conditional",
+      "references": [
+        "requirements.txt",
+        "constraints-ci.txt"
+      ]
+    },
+    "workspace-modes": {
+      "mode": "conditional",
+      "references": [
+        "tools/source-context/index.json",
+        "docs/source-architecture.md"
+      ]
+    },
+    "diagrams": {
+      "mode": "source-equivalent",
+      "references": [
+        "framework/diagram-guidance.md",
+        "framework/capabilities.json"
+      ]
+    },
+    "assistant-runtime-capabilities": {
+      "mode": "source-equivalent",
+      "references": [
+        "tools/source_worker_policy.json",
+        "AI_ASSISTANTS.md"
+      ]
+    },
+    "ai-infrastructure": {
+      "mode": "conditional",
+      "references": [
+        "tools/source_worker_policy.json",
+        "docs/source-worker-strategy.md"
+      ]
+    },
+    "multi-assistant-bridges": {
+      "mode": "source-equivalent",
+      "references": [
+        "AGENTS.md",
+        "AI_ASSISTANTS.md"
+      ]
+    },
+    "installed-operations": {
+      "mode": "source-equivalent",
+      "references": [
+        "tools/tool_commands.json",
+        "tools/source-context/index.json"
+      ]
+    },
+    "large-task-orchestration": {
+      "mode": "source-equivalent",
+      "references": [
+        "docs/source-worker-strategy.md",
+        "docs/source-optimization/development-context-contract.md"
+      ]
+    },
+    "subagent-delegation": {
+      "mode": "source-equivalent",
+      "references": [
+        "tools/source_worker_policy.json",
+        "docs/source-worker-strategy.md"
+      ]
+    },
+    "change-packages": {
+      "mode": "source-equivalent",
+      "references": [
+        "docs/release-process.md",
+        "docs/releases/0.1.0-alpha.134-migration.md"
+      ]
+    },
+    "team-collaboration": {
+      "mode": "conditional",
+      "references": [
+        "tools/source_session_presence_policy.json",
+        "docs/source-session-presence.md"
+      ]
+    },
+    "durable-approvals": {
+      "mode": "source-equivalent",
+      "references": [
+        "framework/approval-records.md",
+        "tools/report_approval_scope.py"
+      ]
+    },
+    "migration-diff": {
+      "mode": "source-equivalent",
+      "references": [
+        "docs/release-process.md",
+        "docs/releases/0.1.0-alpha.134-migration.md"
+      ]
+    },
+    "effectiveness-metrics": {
+      "mode": "source-equivalent",
+      "references": [
+        "docs/optimization-validation.md",
+        "conformance/evidence-status.json"
+      ]
+    },
+    "debug-mode": {
+      "mode": "source-equivalent",
+      "references": [
+        "framework/debug-mode.md"
+      ]
+    },
+    "support-generation": {
+      "mode": "source-equivalent",
+      "references": [
+        "tools/refresh_source_projections.py",
+        "framework/file-inventory.json"
+      ]
+    },
+    "runtime-observation": {
+      "mode": "conditional",
+      "references": [
+        "framework/runtime-observation.md",
+        "tools/check_all.py"
+      ]
+    },
+    "scaffolding": {
+      "mode": "conformance-only",
+      "references": [
+        "tools/run_conformance_scaffold.py",
+        "docs/framework-maintenance.md"
+      ]
+    }
+  }
+}

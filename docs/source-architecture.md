@@ -18,6 +18,11 @@ complicate cross-surface consistency without a demonstrated deployment need.
 
 ## Source Boundaries
 
+Material source tasks reuse the canonical request/model/delivery contracts via
+the [source self-application lane](source-self-application.md). Source policy
+and reference indexes live under `tools/`; runtime projections remain ignored.
+No duplicate task schema, portable framework copy or second planner is introduced.
+
 - Framework contracts live under `framework/` and own portable rule semantics.
 - Installer behavior lives under `installer/` and owns assistant-led adaptation
   flow.

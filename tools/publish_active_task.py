@@ -224,6 +224,26 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
     return TaskPublication(outputs, inputs)
 
 
+def source_reviewed_plan(target: Path, args, source_inputs: dict) -> TaskPublication:
+    plan = prepare(target, args.task_id, args.draft, args.registration, args.retention_review)
+    if args.source_contour:
+        from source_adoption import assert_current, assert_runtime_untracked, selected_strategy_inputs, sha
+        assert_runtime_untracked(target)
+        if assert_current(target) != source_inputs:
+            raise ValueError("source controls changed during task publication")
+        models = [raw for path, raw in plan.outputs.items()
+                  if path.relative_to(target).as_posix().startswith(PROBLEM_MODEL_RUNTIME_PREFIX)]
+        if len(models) != 1:
+            raise ValueError("source publication requires exactly one selected model")
+        selected = {**source_inputs, **selected_strategy_inputs(target, json.loads(models[0]))}
+        for path, digest in selected.items():
+            raw = read_output(target, target / path, max_bytes=65536)
+            if raw is None or sha(raw) != digest:
+                raise ValueError("source control changed: " + path)
+            _bind_input(plan.inputs, target / path, raw)
+    return plan
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--target", type=Path, required=True)
@@ -232,13 +252,22 @@ def main() -> int:
     parser.add_argument("--registration", help="Target-relative active registration draft, required for a new task.")
     parser.add_argument("--retention-review", help="Explicit review source permitting an active model/projection handoff to be retained by Git; required again on revisions.")
     parser.add_argument("--write", action="store_true")
+    parser.add_argument("--source-contour", action="store_true", help="Use minimal source runtime projections, restricted to the running source root.")
     args = parser.parse_args()
     target = args.target.resolve()
     try:
+        source_inputs = {}
+        if args.source_contour:
+            from source_adoption import assert_current, assert_runtime_untracked
+            source_inputs = assert_current(target)
+            assert_runtime_untracked(target)
+            if args.retention_review:
+                raise ValueError("source runtime is ignored; promote durable knowledge into source owners, not target handoff records")
         if args.write:
-            assert_write_compatible(target, tool_name="publish_active_task.py")
+            if not args.source_contour:
+                assert_write_compatible(target, tool_name="publish_active_task.py")
             with support_writer_lock(target):
-                plan = prepare(target, args.task_id, args.draft, args.registration, args.retention_review)
+                plan = source_reviewed_plan(target, args, source_inputs)
                 transaction = SupportTransaction(target)
                 try:
                     transaction.apply(plan.outputs, expected_inputs=plan.inputs)
@@ -248,7 +277,7 @@ def main() -> int:
                         print(f"Rollback conflicts preserved: {conflicts}", file=sys.stderr)
                     raise
         else:
-            plan = prepare(target, args.task_id, args.draft, args.registration, args.retention_review)
+            plan = source_reviewed_plan(target, args, source_inputs)
         print(json.dumps({"write": args.write, "task_id": args.task_id, "acceptance_granted": False,
             "changed_paths": [path.relative_to(target).as_posix() for path, value in plan.outputs.items() if value != plan.inputs.get(path)]}, indent=2))
         return 0

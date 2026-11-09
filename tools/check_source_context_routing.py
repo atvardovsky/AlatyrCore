@@ -499,6 +499,11 @@ def validate_source_profile_budget(
 def main() -> int:
     failures: list[str] = []
     try:
+        from source_adoption import policy_inputs
+        policy_inputs(ROOT)
+    except (OSError, UnicodeError, ValueError, RuntimeError) as exc:
+        failures.append(f"source adoption policy is invalid: {exc}")
+    try:
         source = load_object(SOURCE_ROUTER)
         installer = load_object(INSTALL_ROUTER)
         inventory = load_object(INVENTORY)

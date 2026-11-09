@@ -37,6 +37,8 @@ and delegation evaluation even when the worktree is clean.
 
 ### Installing AlatyrCore Into A Target Project
 
+For material source work, use [source self-application](docs/source-self-application.md).
+
 Use the [installation guide](INSTALL.md) and
 `installer/context-router.json`. Installation is repository-aware adaptation:
 inspect the target, prepare a plan, preserve existing instructions, and replace

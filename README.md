@@ -438,6 +438,10 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md), and the
 changes. Use the documented source checks; those commands validate AlatyrCore,
 not every target project's runtime.
 
+AlatyrCore also uses a [source-only self-application workflow](docs/source-self-application.md)
+for its own material changes. Small tasks stay lightweight; task/session records
+remain local and ignored rather than becoming a second installed adapter.
+
 Security reports follow [SECURITY.md](SECURITY.md). Do not put credentials,
 private project facts, or exploit details in public issues.
 Use [pseudonymized case summaries](docs/external-case-pseudonyms.md) for external

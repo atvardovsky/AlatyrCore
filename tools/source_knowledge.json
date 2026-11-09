@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "alatyr-source-knowledge-references",
+  "items": {
+    "contracted-modular-monolith": {"kind":"architecture","state":"accepted","owner":"docs/source-architecture.md","heading":"Chosen Model","aliases":["modular monolith"]},
+    "functional-core-imperative-shell": {"kind":"architecture","state":"accepted","owner":"docs/source-architecture.md","heading":"Engineering Principles","aliases":["functional core"]},
+    "projection-graph": {"kind":"architecture","state":"accepted","owner":"docs/source-architecture.md","heading":"Engineering Principles","aliases":["derived surfaces"]},
+    "source-contour": {"kind":"term","state":"accepted","owner":"docs/source-architecture.md","heading":"Source Boundaries","aliases":["AlatyrCore development contour"]},
+    "source-release-checkpoint": {"kind":"term","state":"accepted","owner":"docs/release-process.md","heading":"Migration Evidence","aliases":["untagged release checkpoint"]},
+    "adoption-versus-availability": {"kind":"term","state":"accepted","owner":"docs/source-self-application.md","heading":"Evidence Boundaries","aliases":["configured versus exercised"]},
+    "canonical-parser-parity": {"kind":"incident-learning","state":"accepted","owner":"docs/source-optimization/source-management.md","heading":"Review Contracts, Not Only Shapes","aliases":["parser parity"]},
+    "representation-not-enforcement": {"kind":"incident-learning","state":"accepted","owner":"docs/optimization-validation.md","heading":"Acceptance","aliases":["optimized path parity"]},
+    "outcomes-not-test-totals": {"kind":"incident-learning","state":"accepted","owner":"docs/source-self-application.md","heading":"Material Work","aliases":["whole-request delivery"]}
+  }
+}
