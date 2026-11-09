@@ -168,8 +168,25 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1450,
-      "content_digest": "sha256:78e6cd0508ed2bb7097f2ca2727d76a8a4d62e2d7f7452cec754463107f5fb43"
+      "estimated_words": 1480,
+      "content_digest": "sha256:797d617903b28fa68dadbfac5b31b2f1854f945dddabd896593f1f05f2391c31"
+    },
+    {
+      "id": "framework.support.test-delivery-efficiency-md",
+      "kind": "content",
+      "path": "test-delivery-efficiency.md",
+      "summary": "Delivery Efficiency",
+      "selectors": {
+        "path_terms": [
+          "test",
+          "delivery",
+          "efficiency"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 781,
+      "content_digest": "sha256:0124e5f58bf93ef85c4be54c10b180bee12b06a9e24e107fbf8d23ffc2ae5a71"
     },
     {
       "id": "framework.support.test-execution-selection-md",
@@ -185,8 +202,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1465,
-      "content_digest": "sha256:5cf52c2840cd7185f369849a8f6319cdbea408f5204da9ebe070fc473dc494c1"
+      "estimated_words": 1492,
+      "content_digest": "sha256:c5b82d611723a90eeb538eada77c86bd7f836f4ee407634d66a8042a1a060e46"
     },
     {
       "id": "framework.support.test-first-development-md",

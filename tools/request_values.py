@@ -11,6 +11,12 @@ WINDOWS_DEVICES = frozenset({"con", "prn", "aux", "nul", "conin$", "conout$",
                             *[f"{prefix}{number}" for prefix in ("com", "lpt") for number in range(1, 10)]})
 
 
+def integer(value: object, label: str, minimum: int, maximum: int) -> int:
+    if type(value) is not int or not minimum <= value <= maximum:
+        raise ValueError(f"{label} requires an integer in {minimum}..{maximum}")
+    return value
+
+
 def text(value: object, label: str, limit: int = 1024) -> str:
     if (not isinstance(value, str) or not value.strip() or len(value) > limit
             or any(ord(char) < 32 for char in value)

@@ -148,8 +148,21 @@ def validate_state(state: dict, session_id: str) -> None:
             raise ValueError("invalid reviewed lifecycle binding")
         if "request_brief" in binding:
             value = binding["request_brief"]
-            if not isinstance(value, dict) or set(value) != {"path", "sha256"}:
+            extra = {"history", "request_id", "history_inputs"}
+            if (not isinstance(value, dict) or set(value) - extra != {"path", "sha256"}
+                    or set(value) & extra not in (set(), extra)):
                 raise ValueError("invalid lifecycle request brief binding")
+            if "history" in value:
+                from delivery_receipts import artifact
+                artifact(value["history"], "bound delivery history")
+                identifier(value["request_id"], "bound history request_id")
+                paths = value["history_inputs"]
+                if not isinstance(paths, list) or not 1 <= len(paths) <= 128 or any(not isinstance(path, str) for path in paths):
+                    raise ValueError("bound delivery inputs require 1..128 literal paths")
+                if len(set(paths)) != len(paths):
+                    raise ValueError("bound delivery inputs cannot repeat paths")
+                for path in paths:
+                    relative_path(path)
             relative_path(value["path"])
             if not isinstance(value["sha256"], str) or len(value["sha256"]) != 64 or any(char not in "0123456789abcdef" for char in value["sha256"]):
                 raise ValueError("invalid request brief SHA-256")
@@ -193,7 +206,8 @@ def review_request(target: Path, brief_path: str, action: object, *,
                    request_id: str | None = None, task_id: str | None = None,
                    expected_sha256: str | None = None, native_guard: dict | None = None,
                    native_payload: dict | None = None, retained: dict | None = None,
-                   policy_sha256: str | None = None) -> dict:
+                   policy_sha256: str | None = None, history_anchor: dict | None = None,
+                   history_request_id: str | None = None, history_inputs: list[str] | None = None) -> dict:
     from request_brief import MAX_BRIEF_BYTES, action_failures, native_file_action_failures, parse_action
     raw, brief = request_artifact(target, brief_path)
     selected_action = parse_action(action)
@@ -210,25 +224,61 @@ def review_request(target: Path, brief_path: str, action: object, *,
         selected.get("evidence_readiness", {"state": "not-adopted"}))
     failures.extend(evidence_failures)
     progress = request_progress(brief, selected["request_model"], health)
+    required_context = set(selected["checkpoint_inputs"]) | {POLICY, brief_path}
     delivery_inputs = {}
+    delivery_review = None
+    delivery_history = None
     control = brief.get("delivery_control")
     if control is not None:
         from delivery_control import MAX_HISTORY_BYTES, delivery_failures, parse_history
         history_path = control["validation_history"]
         context = selected["request_contexts"][0]
         history_read = context.read_bytes_result(target / history_path, max_bytes=MAX_HISTORY_BYTES)
-        if history_read.value is None:
-            raise ValueError("missing or unreadable validation history: " + history_path)
-        history = parse_history(history_read.value, brief)
-        delivery_inputs[history_path] = digest(history_read.value)
+        if history_anchor is not None:
+            delivery_inputs[history_path] = history_anchor["sha256"]
+        try:
+            if history_read.value is None:
+                raise ValueError("missing or unreadable validation history: " + history_path)
+            delivery_inputs[history_path] = digest(history_read.value)
+            history = parse_history(history_read.value, brief)
+            failures.extend(delivery_failures(brief, selected_action, selected["request_model"], history))
+            if history["schema_version"] == 2:
+                from delivery_progress import execution_review
+                delivery_history = {"path": history_path, "sha256": digest(history_read.value)}
+                delivery_review, delivery_failures_found = execution_review(context, target, brief, selected_action,
+                    selected["request_model"], history, delivery_inputs, history_parser=parse_history,
+                    history_anchor=history_anchor, history_sha256=delivery_history["sha256"],
+                    anchor_request_id=history_request_id)
+                failures.extend(delivery_failures_found)
+                if history_anchor is None and (selected_action["phase"] != "inspect" or selected_action["kind"] == "complete"
+                                               or "validation" in selected_action):
+                    failures.append("schema-2 delivery work requires a retained history binding; use the bound procedural/native checkpoint")
+            elif history_anchor is not None:
+                failures.append("cannot drop an anchored schema-2 delivery history")
+        except ValueError as exc:
+            if control.get("execution_review") is None:
+                raise
+            recovery = selected_action["phase"] == "inspect" and selected_action["kind"] != "complete" and "validation" not in selected_action
+            if not recovery:
+                failures.append(str(exc))
+            delivery_review = {"state": "reassessment-required", "reasons": [str(exc)],
+                               "authorization_granted": False, "acceptance_granted": False}
         selected["checkpoint_inputs"].update(delivery_inputs)
-        failures.extend(delivery_failures(brief, selected_action, selected["request_model"], history))
     elif "validation" in selected_action:
         failures.append("validation preflight requires an adopted delivery_control")
+    elif history_anchor is not None:
+        failures.append("cannot drop an anchored delivery control within the same request")
     if selected["task_state"] == "closed" and selected_action["kind"] == "work":
         failures.append("closed task cannot reopen execution through request review")
     if retained is not None and not task_context_matches(retained, selected, policy_sha256):
-        failures.append("selected completion/request inputs are missing or changed in retained context; recapture exact selected evidence")
+        missing = task_context_missing(retained, selected, policy_sha256)
+        recovery = (delivery_review is not None and selected_action["phase"] == "inspect"
+                    and selected_action["kind"] != "complete" and "validation" not in selected_action)
+        if recovery and set(missing) <= set(delivery_inputs):
+            delivery_review["state"] = "reassessment-required"
+            delivery_review["reasons"].append("delivery input changed since binding; reconcile before state changes")
+        else:
+            failures.append("selected completion/request inputs are missing or changed in retained context; recapture exact selected evidence")
     if native_guard is not None:
         failures.extend(native_file_action_failures(target, native_guard, native_payload or {}, selected_action))
     else:
@@ -249,6 +299,11 @@ def review_request(target: Path, brief_path: str, action: object, *,
         result["reason"] += " Evidence is stale or unavailable; inspect evidence_readiness before relying on this action or answer."
     if delivery_inputs:
         result["delivery_inputs"] = delivery_inputs
+    if delivery_review is not None:
+        delivery_review["recovery_omissions"] = sorted(set(history_inputs or ()) - required_context)
+        result["delivery_review"] = delivery_review
+    if delivery_history is not None:
+        result["delivery_history"] = delivery_history
     return result
 
 
@@ -264,15 +319,28 @@ def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, reta
     action = {"request_id": state["request_id"], "task_id": bind["task_id"], "kind": "answer",
               "phase": "inspect", "outcome_ids": [row["id"] for row in brief["outcomes"]], "paths": [], "effects": [],
               "brief_sha256": digest(raw)}
-    review = review_request(target, path, action, request_id=state["request_id"], task_id=bind["task_id"])
+    prior_history = prior.get("request_brief", {}).get("history") if isinstance(prior, dict) else None
+    prior_request = prior.get("request_brief", {}).get("request_id") if isinstance(prior, dict) else None
+    prior_inputs = prior.get("request_brief", {}).get("history_inputs") if isinstance(prior, dict) else None
+    review = review_request(target, path, action, request_id=state["request_id"], task_id=bind["task_id"],
+                            history_anchor=prior_history, history_request_id=prior_request, history_inputs=prior_inputs)
     if review["checkpoint_required"]:
         raise ValueError(review["reason"])
+    if review.get("delivery_review", {}).get("state") == "reassessment-required":
+        raise ValueError("reconcile delivery evidence before binding: " + "; ".join(review["delivery_review"]["reasons"][:4]))
     expected = {row["path"]: row["sha256"] for row in validate_baseline(retained.get("baseline", retained))["inputs"]}
     if expected.get(path) != "sha256:" + digest(raw) or review["request_brief"]["sha256"] != digest(raw):
         raise ValueError("reviewed baseline must retain the exact request brief")
     if any(expected.get(name) != "sha256:" + sha for name, sha in review.get("delivery_inputs", {}).items()):
         raise ValueError("reviewed baseline must retain the exact validation history")
-    return review["request_brief"]
+    result = review["request_brief"]
+    if "delivery_history" in review:
+        result["history"] = review["delivery_history"]
+        result["request_id"] = brief["request_id"]
+        result["history_inputs"] = sorted(review["delivery_inputs"])
+        if len(result["history_inputs"]) > 128:
+            raise ValueError("delivery binding exceeds 128 selected artifacts; decompose without dropping history")
+    return result
 
 
 def handle(target: Path, provider: str, event: str, payload: dict, *,
@@ -383,7 +451,9 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
                     result = review_request(target, brief["path"], payload.get("alatyr_action"),
                         request_id=state["request_id"], task_id=binding["task_id"], expected_sha256=brief["sha256"],
                         native_guard=policy.get("request_guard", {"required": False, "file_tools": []}) if provider != "procedural" and not procedural and event == "before-action" else None,
-                        native_payload=payload, retained=retained, policy_sha256=digest(raw_policy))
+                        native_payload=payload, retained=retained, policy_sha256=digest(raw_policy),
+                        history_anchor=brief.get("history"), history_request_id=brief.get("request_id"),
+                        history_inputs=brief.get("history_inputs"))
                     if binding.get("completion_only") and event == "before-action":
                         result = decision("completion-only", "Terminal review cannot reopen execution.", block=True)
                     elif event == "completion" and payload["alatyr_action"]["kind"] == "work":
@@ -424,13 +494,24 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
             result["status"] = "handoff-required"
         # The binding record has no transcript, command, domain status or approval.
         encoded = (json.dumps(state, sort_keys=True) + "\n").encode()
+        if len(encoded) > MAX_INPUT_BYTES:
+            raise ValueError("lifecycle state exceeds its input byte ceiling; decompose selected context")
         replace_output(target, state_path, raw_state, encoded)
         # One canonical comparison, after task evaluation and durable state writes.
         if state["status"] == "bound" and result["status"] in {"bound", "current-context", "unfinished", "handoff-review", "handoff-required", "completion-only", "completion-evidence-consistent", "request-consistent"}:
-            context = check_retained_context(target, target / state["binding"]["baseline"])
+            selected_action = payload.get("alatyr_action", {})
+            recovery = (event == "before-action" and result.get("delivery_review", {}).get("state") == "reassessment-required"
+                        and selected_action.get("phase") == "inspect" and selected_action.get("kind") in {"answer", "work"}
+                        and "validation" not in selected_action)
+            omissions = result["delivery_review"].get("recovery_omissions", []) if recovery else []
+            context = (check_retained_context(target, target / state["binding"]["baseline"], inspection_omissions=omissions)
+                       if omissions else check_retained_context(target, target / state["binding"]["baseline"]))
             final_baseline, _ = object_at(target, state["binding"]["baseline"], 128 * 1024)
             if context["status"] != "current" or digest(final_baseline) != state["binding"]["baseline_sha256"]:
+                delivery_diagnostics = result.get("delivery_review")
                 result = decision("review-required", "Selected context or reviewed baseline changed before delivery; inspect only.", block=True)
+                if delivery_diagnostics is not None:
+                    result["delivery_review"] = delivery_diagnostics
         if read_output(target, target / POLICY, max_bytes=MAX_INPUT_BYTES) != raw_policy:
             raise ValueError("lifecycle policy changed before delivery")
         if (read_output(target, interrupt_path, max_bytes=128) or b"") != interrupt:

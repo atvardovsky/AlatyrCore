@@ -64,6 +64,12 @@ backend/topology, representative volume, omitted surfaces or unreached assertion
 can make a green suite narrower than the requested result. A test correctly
 describing missing evidence does not establish that the evidence gap is repaired.
 
+### Delivery Efficiency
+
+For costly/repeated work, use the conditional
+[delivery-efficiency contract](test-delivery-efficiency.md). It reuses the same
+request/history and review entry point; null controls add no reads or bootstrap.
+
 ## Current And Historical Evidence
 
 Schema 4 optionally selects `historical_evidence_records` as at most 64 exact

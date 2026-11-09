@@ -53,8 +53,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2846,
-      "content_digest": "sha256:96b32cc93490e9f35647975fd4321b42b679ec6c51771ad013304f675fb51f53"
+      "estimated_words": 2892,
+      "content_digest": "sha256:8edb7e0d3bd9fe9e3e4afe62b16faad62bfc6312d963059aab40430b8ec9ae20"
     },
     {
       "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
@@ -384,8 +384,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 475,
-      "content_digest": "sha256:7a49750d54fc48f4c1f5b2cd33393d0ca8aa19bfe1d860b6df2ddd35d4d6e91f"
+      "estimated_words": 513,
+      "content_digest": "sha256:7bd4b05331e4e6ce8d9bb32a160a9aa9541706f1704c061e7392bc84cdf2ecf0"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",

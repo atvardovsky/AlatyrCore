@@ -311,7 +311,7 @@ class RequestContractTests(unittest.TestCase):
             {"tool_name": "shell", "tool_input": {"file_path": "src/example.txt", "command": "arbitrary side effects"}}, action_fixture()))
 
 
-class RequestLifecycleTests(ActiveTaskFixture):
+class RequestLifecycleFixture(ActiveTaskFixture):
     def setUp(self):
         super().setUp()
         for name in TARGET_ANCHORS:
@@ -352,6 +352,8 @@ class RequestLifecycleTests(ActiveTaskFixture):
         return hooks.handle(self.target, self.policy["provider"], "before-action", {"session_id": "request-fixture"},
             bind={"request_id": self.request["request_id"], "baseline": self.baseline, "task_id": "fixture-task", "request_brief": self.brief_path, **changes})
 
+
+class RequestLifecycleTests(RequestLifecycleFixture):
     def test_public_cli_checks_the_request_without_adopting_hooks_or_writing(self):
         self.policy["enabled"] = False; self.write_policy()
         before = {p.relative_to(self.target): hashlib.sha256(p.read_bytes()).hexdigest() for p in self.target.rglob("*") if p.is_file() and ".git" not in p.parts}

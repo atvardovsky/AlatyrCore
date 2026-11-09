@@ -323,7 +323,22 @@ def context_report(args: argparse.Namespace) -> tuple[dict, dict]:
     return report, current
 
 
-def check_retained_context(target: Path, baseline: Path) -> dict:
+def check_retained_context(target: Path, baseline: Path, *, inspection_omissions=()) -> dict:
+    if inspection_omissions:
+        raw = read_regular_context_bytes(baseline, max_bytes=MAX_BASELINE_BYTES)
+        retained = json_object(raw, "retained context")
+        retained = validate_baseline(retained.get("baseline", retained))
+        # Knowledge-aware baselines retain their entire selected closure.
+        if retained["schema_version"] == 1:
+            protected = anchor_paths(False, retained["installation_state_path"]) | {".ai/alatyr.yaml"}
+            omitted = set(map(relative_path, inspection_omissions)) - protected
+            filtered = {**retained, "inputs": [row for row in retained["inputs"] if row["path"] not in omitted]}
+            filtered["fingerprint"] = fingerprint(filtered)
+            current, state, measurement = capture(target, [row["path"] for row in filtered["inputs"]],
+                                                   _retained_baseline=filtered)
+            return {"status": "current" if state == "accepted" and current["fingerprint"] == filtered["fingerprint"]
+                    else "rehydration-required", "inspection_only": True, "omitted_paths": sorted(omitted),
+                    "measurement": measurement, "authorization_granted": False, "acceptance_granted": False}
     return context_report(argparse.Namespace(target=target, action="check",
         source_contour=False, context=[], context_plan=[], baseline=baseline,
         expected=None))[0]

@@ -87,6 +87,8 @@ List what must not be changed.
   preservation of legacy version-2 evidence:
 - Existing test strategy, defects/regressions, levels, folders, commands,
   fixtures, isolation, feedback time, CI, and merge-gate evidence:
+- Conditional delivery-efficiency adoption, preserved history/receipt bindings,
+  equivalent-check evidence and authorized release-batch boundaries:
 - Recommendation behavior, activation triggers, selected modes, exceptions,
   RED/GREEN/refactor evidence, and expected quality/maintenance cost:
 - Policy acceptance, approval needs, lazy intent, configuration/change flows,

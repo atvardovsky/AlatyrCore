@@ -160,10 +160,9 @@ required digest cannot be resolved:
    checkpoint. Continue only when the new resolved bundle is accepted for the
    current phase and any newly required approval exists.
 
-An unchanged resolved digest avoids repeated owner loading but does not waive
-repository-drift, approval, or validation checks. A bundle digest identifies
-the recorded semantic metadata; it is not proof that an assistant read,
-understood, remembered, or complied with the guidance.
+Unchanged digests avoid rereading owners, not drift/approval/validation checks.
+A digest is not proof that an assistant read, understood, remembered or complied
+with guidance.
 
 ## Checkpoints
 
@@ -177,6 +176,7 @@ semantic-guidance bundle digest, and the next ready action.
 
 Do not claim a workstream complete when required approval or validation is
 missing. Use `blocked` or `unresolved` and name the missing evidence.
+[Review progress](test-delivery-efficiency.md).
 
 ## Final Convergence
 

@@ -4,7 +4,7 @@
   "intent": "test-first-request",
   "use_when": [
     "explicit test-first TDD regression-first characterization-first or contract-first request",
-    "bounded test-first recommendation gate returns required or recommended",
+    "test-first gate returns required or recommended",
     "test-first policy enable disable revise or review request"
   ],
   "operation_candidates": ["test-first-configuration", "test-first-change"],
@@ -32,6 +32,10 @@
     {
       "path": ".ai/framework/test-execution-selection.md",
       "when": "schema-3 selection/timing adoption or conflict"
+    },
+    {
+      "path": ".ai/framework/test-delivery-efficiency.md",
+      "when": "costly recurring work, delivery-efficiency adoption or bound history review"
     },
     {
       "path": ".ai/framework/repair-qualification.md",
@@ -71,11 +75,11 @@
     }
   ],
   "expand_when": [
-    "target policy state owner command trigger or isolation evidence is missing or conflicting",
+    "policy state, owner, command, trigger or isolation evidence is missing/conflicting",
     "the selected test level cannot prove the changed contract",
     "RED fails for setup syntax infrastructure or an unrelated reason",
     "the change crosses persistence network UI security or process boundaries",
     "a dependency CI merge-gate permission or protected-policy change is proposed"
   ],
-  "budget_behavior": "evaluate the compact recommendation gate from selected risk context first, then load only the target policy selected flow test level command owners and evidence template"
+  "budget_behavior": "evaluate the risk-selected recommendation gate; load only needed policy, flow, test-level, command owners and evidence template"
 }

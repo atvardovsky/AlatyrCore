@@ -112,7 +112,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 327,
-      "content_digest": "sha256:fcbb66f6b400009bb269505d69bfae04b9400a1b583e30c0f2feaf185303a910"
+      "content_digest": "sha256:25c89b27ecfbc4b92438e9cd17d20616d07e12d39a7977e5ae1e51fdb131b816"
     },
     {
       "id": "assistant.section.context-profiles",
@@ -142,7 +142,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 384,
-      "content_digest": "sha256:6cea53d947181ac2955dd920068c6c9cdf565330b7111aa09c1338bb88a230c3"
+      "content_digest": "sha256:905da101891cc508fd924f9946dc2331df1810d69dd96acab46662eb0006ecee"
     }
   ]
 }

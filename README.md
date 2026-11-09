@@ -326,6 +326,9 @@ To limit task drift, assistants retain the requested outcome, exclusions and
 action boundaries for all work, not only interfaces or testing. Optional request
 checks bind work to the reviewed request and declared prerequisites; they cannot guarantee understanding or
 obedience. See [request-bound review](docs/assistant-lifecycle-hooks.md#request-bound-review).
+For costly or repeated work, optional [delivery-efficiency review](docs/assistant-lifecycle-hooks.md#delivery-efficiency)
+helps surface stalled progress and repeated validation. Time limits trigger
+reassessment, not fewer required checks or permission to publish unfinished work.
 
 Session working state stays separate. Optional worker communication shares
 review-required updates only within a parent group, with source/snapshot checks
@@ -354,7 +357,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.133`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.134`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

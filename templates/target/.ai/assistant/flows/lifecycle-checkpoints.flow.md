@@ -51,6 +51,11 @@ partial-answer/completion distinctions and client-verification limits.
 Optional schema-2 delivery controls use
 `.ai/framework/test-execution-selection.md#bounded-delivery-review`; retain the
 selected validation history in the baseline, without enabling controls on update.
+Costly/repeated work may explicitly adopt
+`.ai/framework/test-execution-selection.md#delivery-efficiency`: retain schema-2
+history, its predecessor, progress and run receipts in the same baseline.
+Report adoption, exercised review and native interception separately; exhausted
+budgets preserve read-only recovery, original outcomes and every required gate.
 Opt-in schema-3 focus: `.ai/framework/task-state-delivery.md#request-bound-work`.
 Before material/recurring repair plans, capture source-derived brief outcomes/surfaces
 with `.ai/assistant/templates/problem-model.json` in the existing model. Use

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from request_values import fields, request_path, strings, text
+from request_values import fields, integer, request_path, strings, text
 
 MAX_HISTORY_BYTES = 65536
 MAX_ATTEMPTS = 32
@@ -10,21 +10,20 @@ MAX_SECONDS = 86400
 RESULTS = frozenset({"passed", "failed", "interrupted", "expected-red"})
 
 
-def integer(value: object, label: str, minimum: int, maximum: int) -> int:
-    if type(value) is not int or not minimum <= value <= maximum:
-        raise ValueError(f"{label} requires an integer in {minimum}..{maximum}")
-    return value
-
-
 def parse_control(value: object, outcome_ids: set[str]) -> dict:
-    control = fields(value, {"pilot_outcome_ids", "validation_history", "max_expensive_runs",
-                             "max_validation_seconds"}, "delivery_control")
+    required = {"pilot_outcome_ids", "validation_history", "max_expensive_runs", "max_validation_seconds"}
+    if isinstance(value, dict) and "execution_review" in value:
+        required.add("execution_review")
+    control = fields(value, required, "delivery_control")
     pilots = strings(control["pilot_outcome_ids"], "pilot_outcome_ids", minimum=1)
     if not set(pilots) <= outcome_ids:
         raise ValueError("pilot_outcome_ids must select original requested outcomes")
     request_path(control["validation_history"])
     integer(control["max_expensive_runs"], "max_expensive_runs", 1, MAX_ATTEMPTS)
     integer(control["max_validation_seconds"], "max_validation_seconds", 1, MAX_SECONDS)
+    if control.get("execution_review") is not None:
+        from delivery_progress import parse_review_control
+        parse_review_control(control["execution_review"])
     return control
 
 
@@ -49,10 +48,14 @@ def parse_history(raw: bytes, brief: dict) -> dict:
         document = json_object(raw, "validation history")
     except RecursionError as exc:
         raise ValueError("validation history nesting exceeds parser limits") from exc
-    history = fields(document,
-                     {"schema_version", "request_id", "task_id", "attempts"}, "validation history")
-    if type(history["schema_version"]) is not int or history["schema_version"] != 1:
-        raise ValueError("validation history requires schema 1")
+    required = {"schema_version", "request_id", "task_id", "attempts"}
+    if document.get("schema_version") == 2:
+        required.update({"previous", "progress"})
+    history = fields(document, required, "validation history")
+    if type(history["schema_version"]) is not int or history["schema_version"] not in (1, 2):
+        raise ValueError("validation history requires schema 1 or 2")
+    if brief["delivery_control"].get("execution_review") is not None and history["schema_version"] != 2:
+        raise ValueError("execution_review requires validation history schema 2")
     for key in ("request_id", "task_id"):
         if history[key] != brief[key]:
             raise ValueError("validation history has a different " + key)
@@ -61,7 +64,10 @@ def parse_history(raw: bytes, brief: dict) -> dict:
         raise ValueError("validation history exceeds 32 attempts; reassess instead of truncating")
     seen = set()
     for row in attempts:
-        fields(row, {"evidence_ref", "result", "scope", "duration_seconds", "expected_red_proof_id"}, "validation attempt")
+        required_row = {"evidence_ref", "result", "scope", "duration_seconds", "expected_red_proof_id"}
+        if history["schema_version"] == 2 and isinstance(row, dict) and ("receipt" in row or "command_id" in row):
+            required_row.update({"command_id", "receipt"})
+        fields(row, required_row, "validation attempt")
         text(row["evidence_ref"], "attempt.evidence_ref")
         if row["evidence_ref"] in seen:
             raise ValueError("validation attempts cannot repeat evidence references")
@@ -75,6 +81,9 @@ def parse_history(raw: bytes, brief: dict) -> dict:
             text(row["expected_red_proof_id"], "attempt.expected_red_proof_id")
         if row["result"] != "expected-red" and row["expected_red_proof_id"] is not None:
             raise ValueError("only expected-red attempts may select an expected RED proof")
+    if history["schema_version"] == 2:
+        from delivery_progress import parse_history_extension
+        parse_history_extension(history)
     return history
 
 

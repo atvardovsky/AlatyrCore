@@ -78,6 +78,10 @@ Preserve every requested outcome across supporting scopes, workers and publicati
 Preparation is not delivery. A local blocker stops only dependent work. Partial
 handoffs name remaining outcomes and blockers/next actions, never replacing the
 parent request or requiring already-granted approval again.
+For repeated/costly work, distinguish useful evidence from activity using the
+[existing delivery history](test-execution-selection.md#delivery-efficiency).
+Keep original obligations visible while batching supporting work or releases;
+budget exhaustion means reassessment, never reduced acceptance.
 
 Use verified hooks/controlled executors for pre-action checks; otherwise check
 procedurally and report no interception. No universal hook, intent parser,

@@ -26,8 +26,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1591,
-      "content_digest": "sha256:9387e7d77cd485770002972277033faffe5590a538f0ef837bd0ef0433ec4a7c"
+      "estimated_words": 1576,
+      "content_digest": "sha256:73d93a451ae68bb801c87ba65ab7710da2a3a984bbfa7ee3eb0924bf9349d112"
     },
     {
       "id": "framework.collaboration.subagent-delegation-md",

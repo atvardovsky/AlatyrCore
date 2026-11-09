@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.134 - 2026-11-09
+
+- Add optional progress/time reassessment through existing request delivery
+  review: retain one bounded history, preceding snapshot and exact task/proof
+  bindings; overdue work keeps read-only recovery, never weaker acceptance.
+- Verify schema-2 attempt receipts, measured run windows and result artifacts;
+  preserve prior attempts and historical input bindings without presenting them
+  as current test execution or authenticated, exhaustive history.
+- Document fixture preflight, representative integrated slices, safe equivalent
+  checks, resource-aware cooperation and small authorized release batches under
+  existing owners. Keep the detailed protocol conditionally loaded.
+- Synchronize installation/update adoption decisions and public lifecycle
+  regressions. Null controls, old histories, cold acceptance and separate
+  publication authority remain unchanged; no runner, daemon or automatic cache.
+- Advance adapter schema to 111 and templates to 129. Problem-model schema 7
+  and request-brief schemas 1/2/3 remain readable; no measured speedup is claimed.
+
 ## 0.1.0-alpha.133 - 2026-11-08
 
 - Carry canonical artifact freshness into ordinary lifecycle request review;

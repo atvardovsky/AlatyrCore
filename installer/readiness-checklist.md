@@ -357,6 +357,9 @@ Collect target-specific facts before writing project docs:
 - adopted execution-contract-3 selection/timing controls have conditional
   guidance, exact identity conservation and actual artifact-bound observations;
   legacy version-2 records remain historical, not newly qualified evidence
+- delivery-efficiency adoption is explicit for costly/repeated work; adopted
+  history/progress/receipt bindings pass public review, while opt-outs, required
+  checks, original outcomes and separate release authority remain unchanged
 - extension owner, source-access and prompt-injection policy, extension package
   manifest, immutable source and digest, compatibility, catalog/lock, bindings,
   permissions, approval, installed-file ownership, update/removal policy, lazy

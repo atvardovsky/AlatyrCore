@@ -353,13 +353,28 @@ class TargetRepositoryView:
 
         return self.status(Path(path)).exists
 
-    def read_bytes_result(self, path: Path, *, max_bytes: int | None = None) -> ValidationRead[bytes]:
+    def retained_byte_count(self) -> int:
+        """Count retained buffers, including separately read aliases, without I/O."""
+        return sum(len(item.data) for item in self._bytes_cache.values())
+
+    def read_bytes_result(self, path: Path, *, max_bytes: int | None = None,
+                          aggregate_max_bytes: int | None = None) -> ValidationRead[bytes]:
         """Read target bytes once while rechecking containment on every access."""
 
         candidate = self._candidate(path)
         key = self._cache_key(candidate)
         resolved = self.resolve_path(candidate)
         cached = self._bytes_cache.get(key)
+        if aggregate_max_bytes is not None:
+            if type(aggregate_max_bytes) is not int or aggregate_max_bytes < 0:
+                raise ValueError("aggregate byte limit requires a nonnegative integer")
+            self._bounded_recheck = True
+            remaining = aggregate_max_bytes - self.retained_byte_count()
+            if remaining < 0:
+                return ValidationRead(status=self.status(candidate), value=None, error="aggregate target byte budget exceeded")
+            existing = len(cached.data) if cached is not None else 0
+            available = remaining + existing
+            max_bytes = available if max_bytes is None else min(max_bytes, available)
         if cached is not None:
             if max_bytes is not None and len(cached.data) > max_bytes:
                 return ValidationRead(status=cached.status, value=None, error=f"target file exceeds {max_bytes} bytes")
@@ -538,6 +553,19 @@ class TargetRepositoryView:
     def _same_status(before: TargetFileStatus, after: TargetFileStatus) -> bool:
         return replace(before, error=None) == replace(after, error=None)
 
+    @staticmethod
+    def _bounded_digest(path: Path, size: int) -> str | None:
+        digest = hashlib.sha256()
+        remaining = size
+        with path.open("rb") as handle:
+            while remaining:
+                block = handle.read(min(65536, remaining))
+                if not block:
+                    return None
+                digest.update(block)
+                remaining -= len(block)
+            return None if handle.read(1) else digest.hexdigest()
+
     def finalize(self) -> tuple[TargetMutation, ...]:
         """Detect relevant target inputs changed after their first observation."""
 
@@ -548,7 +576,12 @@ class TargetRepositoryView:
             if observed.digest is not None and after.state == TargetFileState.FILE:
                 try:
                     resolved = self.resolve_path(key)
-                    after_digest = hashlib.sha256(resolved.read_bytes()).hexdigest()
+                    if getattr(self, "_bounded_recheck", False):
+                        size = observed.status.size
+                        after_digest = (self._bounded_digest(resolved, size)
+                                        if size is not None and size == after.size else None)
+                    else:
+                        after_digest = hashlib.sha256(resolved.read_bytes()).hexdigest()
                 except (OSError, TargetPathEscapeError):
                     after_digest = None
             content_changed = (

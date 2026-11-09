@@ -1,10 +1,10 @@
 {
-  "adapter_schema_version": 110,
+  "adapter_schema_version": 111,
   "files": [
     {
       "path": "framework/README.md",
       "rule_ids": [],
-      "sha256": "7535ddde470663b6fb8282ee8988f6db1dcdaad474edad910431cff188d5f6ba"
+      "sha256": "0125ad80cadb042b2ea149ffe6e537c0887fd79646868cc26ddf5a4ef37699e1"
     },
     {
       "path": "framework/action-authorization.md",
@@ -69,7 +69,7 @@
     {
       "path": "framework/capabilities.json",
       "rule_ids": [],
-      "sha256": "a6bfea7af8bc56defa652937345ccc11d3773938f01e8369683f9bd395b2b97d"
+      "sha256": "2fabcf7fa9f7c1ddb31870b26d92a2d8e3b697adfb46bef3a26e61f5e73029b5"
     },
     {
       "path": "framework/catalog/change/context-index.json",
@@ -79,17 +79,17 @@
     {
       "path": "framework/catalog/collaboration/context-index.json",
       "rule_ids": [],
-      "sha256": "fa5097d11914dde82865b208882a77424b622c5c5e9055041367532dfe805f16"
+      "sha256": "874f776b14195b9dcc463d0c6db6f63d06b3120b87560e88f058bdd2452770e2"
     },
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "297dd9b69c79871d3a485b03872bf2ceba365c8d52afe6632db1eb1738782a3b"
+      "sha256": "36e27f17afd9fd82d11472d5436ec60af078e5d76fae031dfe889a809f468822"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
       "rule_ids": [],
-      "sha256": "328b5956cf21a1767366c9496f7f517fa7345251da7a01bc63b7ba3fc0eb0969"
+      "sha256": "d41a992356208a3a9a2151b3e182d26026e5520b8b4b178de358c75707071bf5"
     },
     {
       "path": "framework/catalog/knowledge/context-index.json",
@@ -104,7 +104,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "4e5b9b6ca6b307b2815a21fa1229a5e26baa623582e581fbe9bf8fe14442bc05"
+      "sha256": "3a993a63da1fa6f482c13a2efea44f0be58381bddba7f5e36a46cbd836eba0c1"
     },
     {
       "path": "framework/change-packages.md",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "a83262548181605981a3ee7f957b47489e3f1012de313ffc4905e15790f7a699"
+      "sha256": "57a8bb6825c742e57138298be867a13b7f2e819199f5c41b9ee7ce62d4df5b97"
     },
     {
       "path": "framework/context-profiles.md",
@@ -219,7 +219,7 @@
     {
       "path": "framework/large-task-orchestration.md",
       "rule_ids": [],
-      "sha256": "9387e7d77cd485770002972277033faffe5590a538f0ef837bd0ef0433ec4a7c"
+      "sha256": "73d93a451ae68bb801c87ba65ab7710da2a3a984bbfa7ee3eb0924bf9349d112"
     },
     {
       "path": "framework/lifecycle.md",
@@ -412,7 +412,7 @@
     {
       "path": "framework/task-state-delivery.md",
       "rule_ids": [],
-      "sha256": "78e6cd0508ed2bb7097f2ca2727d76a8a4d62e2d7f7452cec754463107f5fb43"
+      "sha256": "797d617903b28fa68dadbfac5b31b2f1854f945dddabd896593f1f05f2391c31"
     },
     {
       "path": "framework/team-collaboration.md",
@@ -422,9 +422,14 @@
       "sha256": "3c0370214ab9056f5bae51f8ef561c68cc5778f8b98195efc12c82b1bd1db223"
     },
     {
+      "path": "framework/test-delivery-efficiency.md",
+      "rule_ids": [],
+      "sha256": "0124e5f58bf93ef85c4be54c10b180bee12b06a9e24e107fbf8d23ffc2ae5a71"
+    },
+    {
       "path": "framework/test-execution-selection.md",
       "rule_ids": [],
-      "sha256": "5cf52c2840cd7185f369849a8f6319cdbea408f5204da9ebe070fc473dc494c1"
+      "sha256": "c5b82d611723a90eeb538eada77c86bd7f836f4ee407634d66a8042a1a060e46"
     },
     {
       "path": "framework/test-first-development.md",
@@ -446,8 +451,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.133",
+  "framework_version": "0.1.0-alpha.134",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 128
+  "template_version": 129
 }

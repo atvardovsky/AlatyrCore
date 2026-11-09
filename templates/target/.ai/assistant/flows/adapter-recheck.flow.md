@@ -281,6 +281,11 @@ pre-acceptance, and message templates are not completion evidence.
     execution contract 3 require explicit target adoption, conditional
     `test-execution-selection.md` guidance and actual hash-bound observations;
     installing their templates alone does not enable them.
+    For costly/repeated work, assess conditional delivery-efficiency adoption
+    separately from hook installation. Preserve absent/null controls and old
+    histories; adopted schema-2 history retains its selected predecessor/progress/
+    receipt bindings. Recheck the actual public review path, opt-out behavior and
+    original outcome inventory; do not manufacture runs or weaken final acceptance.
     When extensions are enabled, preserve catalog and lock IDs, immutable
     source revisions/digests, target bindings, permissions, approvals, local
     deviations, installed-file ownership, and historical lifecycle evidence;

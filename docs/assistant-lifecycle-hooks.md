@@ -188,6 +188,16 @@ delegate check an action's optional `validation` object. Bind its history alongs
 the brief; changed history requires reconciliation before another bound action.
 Tests are not executed or authorized by that check. Report undeclared-run,
 duration-estimation and native shell-interception limitations explicitly.
+### Delivery Efficiency
+
+For adopted [delivery efficiency](../framework/test-delivery-efficiency.md),
+the same review reads schema-2 history, its preceding snapshot, progress evidence
+and run receipts. Retain all returned `delivery_inputs` before binding. Output
+`delivery_review` separates elapsed/stalled/stale declarations from acceptance;
+inspection can reassess overdue work without authorizing mutation. Old histories
+and null controls stay unchanged; no automatic runner, cache or timeout is added.
+
+### Focus And Request Guards
 
 Schema-3 `focus_control` independently adopts
 [request-bound work](../framework/task-state-delivery.md#request-bound-work).

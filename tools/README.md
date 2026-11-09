@@ -144,6 +144,10 @@ See the guide's [request contract](../docs/assistant-lifecycle-hooks.md#request-
 for exact fields, native file-tool matching, failure semantics and limits.
 Separate evidence readiness and whole-request progress remain visible even for
 partial answers; declaration consistency is not completion or fresh evidence.
+Conditional [delivery efficiency](../framework/test-execution-selection.md#delivery-efficiency)
+uses the same command and history. Schema-2 receipts bind retained run windows
+and outputs; `delivery_review` requests reassessment without skipping acceptance
+or claiming current test execution. No new service or automatic result cache.
 
 ## External Case Identity Audit
 

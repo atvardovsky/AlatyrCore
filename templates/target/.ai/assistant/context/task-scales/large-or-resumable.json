@@ -36,7 +36,9 @@
   ],
   "conditional_context": [
     {"path": ".ai/framework/task-state-delivery.md",
-     "when": "adopted execution dependencies or named-task current-disposition reconciliation"}
+     "when": "adopted execution dependencies or named-task current-disposition reconciliation"},
+    {"path": ".ai/framework/test-delivery-efficiency.md",
+     "when": "costly recurring work, delivery-efficiency adoption or bound history review"}
   ],
   "budget_behavior": "keep ordered semantic guidance identities within route packet limits; load only active workstream context and its fact owners and dependencies, then only new or changed owners when bundle revalidation differs",
   "semantic_guidance_revalidation": {

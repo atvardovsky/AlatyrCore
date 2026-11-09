@@ -233,26 +233,24 @@ Classify every proposed target file:
    framework version, adapter schema version, template version, owner,
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
-   When an enabled module requires assistant capability evidence, create the
-   projected capability index and detailed current-schema records for the generic
-   fallback plus explicitly selected target surfaces. Omit unselected records;
-   do not leave index references to files that were not installed.
-   Resolve instruction loading, skill source and activation, client permission
-   mode, context caching, context compaction and recovery signals, diagrams,
-   and delegation from exact-client evidence.
-   Record the selected model provider separately from the assistant surface;
-   preserve bounded context routing when caching is unavailable or unverified.
-   A selected but untested surface remains unknown; client permissions or
-   auto-approval never grant Alatyr action authorization.
-   Follow the lifecycle flow before projection: `setup-plan` with new/update
-   identity, enabled procedural/observe for new installs, approved local native
-   setup only, unverified evidence and zero reminders. Updates preserve settings,
-   absence, definitions and trust. Policy alone proves no installed callbacks.
+   When enabled modules need capability evidence, project the index and current-
+   schema generic/selected-client records. Omit unselected records/references.
+   Verify exact-client instruction loading, skill source/activation, permissions,
+   caching, compaction/recovery, diagrams and delegation. Record the model
+   provider separately; caching never replaces bounded routing. Untested means
+   unknown; client auto-approval grants no Alatyr action authority.
+   Before projection, follow lifecycle `setup-plan` with new/update identity:
+   new installs use procedural/observe and zero reminders; native setup requires
+   local approval and remains unverified until exercised. Updates preserve
+   absence, settings, definitions and trust. Policy is not callback evidence.
    Preserve target delegation preferences. For adopted contract-sensitive work,
    route to `framework/task-decomposition.md#contract-bound-work-parts`; do not
    invent task parts, contracts, run evidence or worker provenance during update.
    Keep `contract_work` absent for small tasks. Blocking hooks require exercised adoption;
    completion-only review never reopens execution.
+   For costly/repeated tasks, record conditional delivery-efficiency adoption
+   (`framework/test-delivery-efficiency.md`), separate from availability and
+   exercised interception. Updates preserve absent/null controls and history.
 11. Create or adapt target `.ai/README.md`.
 12. Copy or adapt the selected portable framework pack into target
     `.ai/framework`. Record the pack in the manifest and preserve its projected

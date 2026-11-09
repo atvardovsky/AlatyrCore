@@ -204,6 +204,8 @@ Those belong to a project contour or repository adapter.
   diagnostic contrast and performance detail under the test-first owner.
 - `.ai/framework/test-execution-selection.md`: conditional exact-request and
   observed-window controls under the schema-3 execution contract.
+- `.ai/framework/test-delivery-efficiency.md`: conditional progress reassessment,
+  receipt-bound run accounting, check equivalence and authorized release batching.
 - `.ai/framework/task-state-delivery.md`: conditional current-disposition,
   selected-document warning and optional declared dependency-readiness guidance.
 - `.ai/framework/extensions.md`: declarative external extension package,
