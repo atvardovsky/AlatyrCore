@@ -36,6 +36,7 @@ from check_all import (
     source_identity,
 )
 from source_check_reuse import SourceSnapshotIndex, check_input_fingerprint, load_reuse_report, reuse_decisions
+from source_check_manifest import configure_import_cache, flush_import_cache
 from source_state import source_snapshot
 from source_worker_contract import (
     load_source_worker_policy,
@@ -1044,6 +1045,7 @@ def build_plan(
     task_worker_packets: list[dict[str, Any]] | None = None,
     now: datetime | None = None,
     context_selectors: dict[str, list[str]] | None = None,
+    source_cache: str = "off",
 ) -> dict[str, Any]:
     if context_selectors:
         profile = _load_source_router()["profiles"][source_profile or "source-tooling"]
@@ -1058,11 +1060,14 @@ def build_plan(
         allowed_selectors -= {"changed_paths", "check_ids"}
         if set(context_selectors) - allowed_selectors:
             raise ValueError("unsupported or routing-owned context selector: " + ", ".join(sorted(set(context_selectors) - allowed_selectors)))
-    checks = load_manifest()
     selected_profile, additional_profiles = _requested_validation_profiles(
         requested_profile,
         source_profile,
     )
+    if source_cache == "local" and any(profile in {"full", "release"} for profile in additional_profiles):
+        raise ValueError("persistent source cache is not permitted for full/release acceptance")
+    configure_import_cache(source_cache, selected_profile)
+    checks = load_manifest()
     validation_profiles = [selected_profile, *additional_profiles]
     effective_reuse_report_path = (
         None if "release" in validation_profiles else reuse_report_path
@@ -1154,7 +1159,7 @@ def build_plan(
             task_worker_packets=task_worker_packets,
         )
     )
-    return {
+    result = {
         "schema_version": 1,
         "report_kind": "alatyr-source-minimum-work-plan",
         "scope": "source-repository",
@@ -1243,6 +1248,8 @@ def build_plan(
             "publish changes, or replace logical integrity review."
         ),
     }
+    flush_import_cache()
+    return result
 
 
 def render_summary(plan: dict[str, Any]) -> str:
@@ -1344,6 +1351,8 @@ def main() -> int:
     )
     parser.add_argument("--from-ref", help="Baseline substituted into change checks.")
     parser.add_argument("--reuse-report", type=Path)
+    parser.add_argument("--source-cache", choices=("off", "local"), default="off",
+                        help="Optional derived analysis cache for this plan; does not enable check-result reuse.")
     parser.add_argument("--impact", action="store_true", help="Join source capability/contract owners, companion review candidates and validation; advisory, not automatic edits.")
     presentation = parser.add_mutually_exclusive_group()
     presentation.add_argument("--summary", action="store_true")
@@ -1389,6 +1398,7 @@ def main() -> int:
             worker_session_id=args.worker_session_id,
             task_worker_packets=task_worker_packets,
             context_selectors=context_selectors,
+            source_cache=args.source_cache,
         )
         if args.impact:
             from source_change_impact import source_change_impact

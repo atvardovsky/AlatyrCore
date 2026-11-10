@@ -60,6 +60,13 @@ class CheckSourceFocusedTests(unittest.TestCase):
         args = run_focused_source_checks.parser().parse_args([])
 
         self.assertEqual(args.cache_mode, "local")
+        self.assertEqual(args.source_cache, "local")
+
+    def test_source_cache_can_be_disabled_independently(self) -> None:
+        args = run_focused_source_checks.parser().parse_args(["--changed-from", "HEAD", "--source-cache", "off"])
+        _, command = run_focused_source_checks.check_all_command(args)
+        self.assertEqual(command[command.index("--source-cache") + 1], "off")
+        self.assertEqual(command[command.index("--cache-mode") + 1], "local")
 
 
 if __name__ == "__main__":

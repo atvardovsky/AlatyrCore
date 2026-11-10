@@ -55,6 +55,8 @@ def parser() -> argparse.ArgumentParser:
         action="store_true",
         help="List the selected focused check commands without running them.",
     )
+    argument_parser.add_argument("--source-cache", choices=("off", "local"), default="local",
+                                 help="Derived import analysis cache; separate from check-result reuse.")
     return argument_parser
 
 
@@ -70,6 +72,8 @@ def check_all_command(args: argparse.Namespace) -> tuple[str, list[str]]:
         "--cache-mode",
         args.cache_mode,
     ]
+    if getattr(args, "source_cache", None) is not None:
+        command.extend(["--source-cache", args.source_cache])
     if args.from_ref:
         command.extend(["--from-ref", args.from_ref])
     if args.jobs is not None:
@@ -91,7 +95,7 @@ def main(argv: list[str] | None = None) -> int:
     print(
         "INFO: running focused source checks with "
         "`tools/check_all.py --profile fast "
-        f"--changed-from {changed_from} --cache-mode {args.cache_mode}`",
+        f"--changed-from {changed_from} --cache-mode {args.cache_mode} --source-cache {args.source_cache}`",
         flush=True,
     )
     result = subprocess.run(command, cwd=ROOT, check=False)

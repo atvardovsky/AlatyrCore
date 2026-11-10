@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add bounded, content-bound Git-local direct-import caching for focused
+  source planning and checks, separate from test-result reuse. Preserve
+  fresh inventory/source verification, canonical fallback and cold full/release
+  gates; no framework, adapter schema, template or migration change.
 - Isolate source-refresh Git refs, HEAD, config and index; preserve per-check
   mutation detection while sharing byte/mode observations and audited,
   implementation-bound rules/findings input keys with conservative fallback.

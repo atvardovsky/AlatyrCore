@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,6 +60,23 @@ class SourceCheckCacheTests(unittest.TestCase):
 
         self.assertNotIn("full", timing)
         self.assertEqual(cache_key("full"), f"full-{timing}")
+
+    def test_store_and_load_use_the_same_exact_byte_limit(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            cache = SourceCheckCache(self.repository(directory))
+            payload = {"text": "first\nsecond", "values": list(range(10))}
+            path = cache.store("imports", "boundary", payload)
+            raw = path.read_bytes()
+            self.assertNotIn(b"\r\n", raw)
+            for limit in (len(raw) - 1, len(raw), len(raw) + 1):
+                with self.subTest(limit=limit), patch("source_check_cache.MAX_CACHE_RECORD_BYTES", limit):
+                    if limit < len(raw):
+                        with self.assertRaisesRegex(ValueError, "size limit"):
+                            cache.store("imports", "boundary", payload)
+                        self.assertEqual(cache.load("imports", "boundary").status, "oversized")
+                    else:
+                        self.assertEqual(cache.store("imports", "boundary", payload).read_bytes(), raw)
+                        self.assertEqual(cache.load("imports", "boundary").value, payload)
 
     def test_prune_keeps_newest_bounded_records(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

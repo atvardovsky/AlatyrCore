@@ -171,6 +171,20 @@ unit timing hints choose a bounded shard layout by queued-work estimates;
 coverage, resource capacity and cold acceptance remain unchanged. Estimates are
 not measured latency, and missing hints retain file-size scheduling.
 
+Focused source tooling can persist direct Python import observations through
+`--source-cache local`; direct planner/runner calls default to `off`, while
+`check-source-focused` enables it. Result reuse remains a separate control.
+The disposable Git-local JSON binds source bytes and path, module inventory,
+loaded resolver code, implementation files, workspace and Python runtime.
+Observed import sources and implementation files are rehashed and the current
+resolution inventory checked before returning the plan; changed or unreadable
+source inputs require replanning. Corrupt/unavailable cache data falls back to
+canonical scanning. Whole graph JSON records are bounded to 10 MiB each and
+the newest 16 graph identities
+(best-effort retention under concurrent writers). Full/release profiles reject
+persistent source reuse. Hashes establish identity, not semantic correctness
+or authority; cached observations never replace cold acceptance.
+
 ## Development Context Contract
 
 For context-delivery or agent-workflow changes, follow the

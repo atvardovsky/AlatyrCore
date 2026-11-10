@@ -244,7 +244,12 @@ Before accepting a change, check:
   evidence. The plan is not edit, commit, publish, or semantic approval.
 - `python3 tools/alatyr.py check-source-focused` is available for cheap
   small-task source checks. It uses the fast changed-path route and does not
-  replace `check_all.py` as the full acceptance gate.
+  replace `check_all.py` as the full acceptance gate. It enables disposable
+  direct-import reuse independently of result reuse; use `--cache-mode off
+  --source-cache off` for a cold run. Direct planner/runner calls default to
+  source-cache off; full/release reject local source caching. The
+  [source architecture contract](source-architecture.md) owns freshness and
+  storage boundaries.
 - `python3 tools/check_framework_consistency.py` passes when the helper is
   available.
 - `python3 tools/check_framework_metadata.py` passes when rule-owner framework

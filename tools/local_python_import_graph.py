@@ -16,7 +16,7 @@ class ImportScan:
 class LocalPythonImportGraph:
     """Resolve static imports against one repository's ``tools`` package."""
 
-    def __init__(self, root: Path) -> None:
+    def __init__(self, root: Path, *, scan_cache_factory=None) -> None:
         self.root = root.resolve()
         self.modules = self._module_paths()
         self._path_modules = {path: name for name, path in self.modules.items()}
@@ -24,6 +24,14 @@ class LocalPythonImportGraph:
         self._trees: dict[Path, ast.Module | None] = {}
         self._transitive_dependencies: dict[Path, frozenset[Path]] = {}
         self._reverse_dependencies: dict[Path, set[Path]] | None = None
+        self._persistent_cache = None
+        if scan_cache_factory is not None:
+            try:
+                if any(path.is_symlink() for path in (self.root / "tools").rglob("*.py")):
+                    raise ValueError("symlinked import sources use canonical scanning")
+                self._persistent_cache = scan_cache_factory(self.root, self.modules, type(self))
+            except (OSError, ValueError, RecursionError):
+                pass
 
     def _module_paths(self) -> dict[str, Path]:
         modules: dict[str, Path] = {}
@@ -64,6 +72,22 @@ class LocalPythonImportGraph:
         cached = self._scans.get(resolved_path)
         if cached is not None:
             return cached
+        cache = self._persistent_cache
+        if cache is not None:
+            try:
+                raw = resolved_path.read_bytes()
+            except OSError as exc:
+                raise ValueError("source import input unavailable during analysis; retry: " + str(resolved_path)) from exc
+            hit = cache.lookup(resolved_path, raw)
+            if hit is not None:
+                result = ImportScan(*hit)
+                self._scans[resolved_path] = result
+                return result
+            if raw is not None:
+                try:
+                    self._trees[resolved_path] = ast.parse(raw.decode("utf-8"), filename=str(resolved_path))
+                except (SyntaxError, UnicodeError):
+                    self._trees[resolved_path] = None
         tree = self.syntax_tree(resolved_path)
         if tree is None:
             result = ImportScan(frozenset(), False)
@@ -142,7 +166,21 @@ class LocalPythonImportGraph:
                     dependencies.add(candidate)
         result = ImportScan(frozenset(dependencies), complete)
         self._scans[resolved_path] = result
+        if cache is not None and resolved_path in cache.observed:
+            try:
+                cache.remember(resolved_path, result.dependencies, result.complete)
+            except ValueError:
+                pass
         return result
+
+    def flush_cache(self) -> None:
+        cache = self._persistent_cache
+        if cache is not None:
+            cache.verify(self._module_paths(), resolution_modules=self.modules)
+            try:
+                cache.flush()
+            except (OSError, ValueError, RecursionError):
+                pass
 
     def transitive_dependencies(self, path: Path) -> set[Path]:
         resolved_path = path.resolve()

@@ -915,9 +915,19 @@ worker, claim completed delegation, or grant worker permissions.
 that route. It runs `check_all.py --profile fast --changed-from <baseline>`,
 selecting `origin/main` as the default baseline when available and `HEAD` when
 the repository has no remote main reference. Focused runs default to
-content-addressed Git-local reuse; pass `--cache-mode off` for a cold focused
+content-addressed Git-local result reuse and direct-import analysis reuse;
+pass `--cache-mode off --source-cache off` for a cold focused
 run. This is an optimization path, not a replacement for the full acceptance
 gate, and direct full or release validation remains cold by default.
+`plan-work` and `check_all.py` default to `--source-cache off`; opt in with
+`--source-cache local` to reuse derived import observations independently of
+test-result reuse. Only disposable Git-local JSON is written, never tracked
+source or acceptance records. Fresh hashes bind source bytes, importer path,
+module inventory, implementation, workspace and runtime; changed inputs
+invalidate reuse, and cache faults retain canonical scanning. Each record is
+limited to 10 MiB, with best-effort retention of 16 graph identities. Full and
+release profiles reject `--source-cache local`. See the
+[source architecture contract](../docs/source-architecture.md) for boundaries.
 The runner passes changed-path and selection-reason metadata to checks. The
 source unit-test wrapper is selected only for tests or routed Python/tooling
 changes, uses that metadata to run directly affected test modules, and falls

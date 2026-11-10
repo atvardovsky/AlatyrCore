@@ -11,6 +11,7 @@ from typing import Any
 
 from path_spec import PathDialect, PathSpec, matches_any
 from local_python_import_graph import LocalPythonImportGraph
+from source_import_cache import ImportScanCache
 from repository_inventory import RepositoryInventory
 
 
@@ -23,7 +24,8 @@ ALLOWED_DEPENDENCY_TRIGGER_MODES = {"none", "direct", "transitive"}
 RESOURCE_CLASS_DEFAULT_SLOTS = {"light": 1, "standard": 1, "heavy": 2}
 MAX_SCHEDULER_CAPACITY = 64
 MAX_DURATION_HINT_SECONDS = 86400
-LOCAL_IMPORT_GRAPH = LocalPythonImportGraph(ROOT)
+LOCAL_IMPORT_GRAPH: LocalPythonImportGraph | None = None
+_IMPORT_CACHE_ENABLED = False
 TOP_LEVEL_FIELDS = {"schema_version", "manifest_kind", "defaults", "checks"}
 DEFAULT_FIELDS = {
     "profiles",
@@ -54,6 +56,32 @@ CHECK_FIELDS = DEFAULT_FIELDS | {
     "requires_release_evidence",
     "derive_trigger_paths",
 }
+
+
+def configure_import_cache(mode: str, profile: str) -> None:
+    """Start an invocation; acceptance profiles never load persistent scans."""
+    global LOCAL_IMPORT_GRAPH, _IMPORT_CACHE_ENABLED
+    if not isinstance(mode, str) or mode not in {"off", "local"}:
+        raise ValueError("source cache mode must be off or local")
+    if mode == "local" and profile in {"full", "release"}:
+        raise ValueError("persistent source cache is not permitted for full/release acceptance")
+    _IMPORT_CACHE_ENABLED = mode == "local"
+    LOCAL_IMPORT_GRAPH = None
+    direct_local_tool_dependencies.cache_clear()
+    transitive_local_tool_dependencies.cache_clear()
+
+
+def source_import_graph() -> LocalPythonImportGraph:
+    global LOCAL_IMPORT_GRAPH
+    if LOCAL_IMPORT_GRAPH is None:
+        LOCAL_IMPORT_GRAPH = LocalPythonImportGraph(
+            ROOT, scan_cache_factory=ImportScanCache if _IMPORT_CACHE_ENABLED else None)
+    return LOCAL_IMPORT_GRAPH
+
+
+def flush_import_cache() -> None:
+    if LOCAL_IMPORT_GRAPH is not None:
+        LOCAL_IMPORT_GRAPH.flush_cache()
 
 
 def release_evidence_required(check: dict[str, Any]) -> bool:
@@ -126,7 +154,7 @@ def load_manifest(
 ) -> list[dict[str, Any]]:
     manifest = manifest_path or root / "tools" / "check_manifest.json"
     import_graph = (
-        LOCAL_IMPORT_GRAPH
+        source_import_graph()
         if root.resolve() == ROOT.resolve()
         else LocalPythonImportGraph(root)
     )
@@ -383,6 +411,7 @@ def load_manifest(
 
     for check_id in by_id:
         visit(check_id)
+    import_graph.flush_cache()
     return normalized
 
 
@@ -467,7 +496,7 @@ def direct_local_tool_dependencies(script: str) -> frozenset[str]:
     path = ROOT / script
     return frozenset(
         dependency.relative_to(ROOT).as_posix()
-        for dependency in LOCAL_IMPORT_GRAPH.scan(path).dependencies
+        for dependency in source_import_graph().scan(path).dependencies
     )
 
 
@@ -477,7 +506,7 @@ def transitive_local_tool_dependencies(script: str) -> frozenset[str]:
 
     return frozenset(
         path.relative_to(ROOT).as_posix()
-        for path in LOCAL_IMPORT_GRAPH.transitive_dependencies(ROOT / script)
+        for path in source_import_graph().transitive_dependencies(ROOT / script)
     )
 
 

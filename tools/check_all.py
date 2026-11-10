@@ -29,6 +29,8 @@ from source_check_manifest import (
     ALLOWED_RESOURCE_CLASSES,
     ALLOWED_WRITE_SCOPES,
     broad_trigger_patterns as _broad_trigger_patterns,
+    configure_import_cache,
+    flush_import_cache,
     load_manifest as load_source_check_manifest,
     matches,
     micro_routes,
@@ -1933,6 +1935,8 @@ def argument_parser() -> argparse.ArgumentParser:
             "only; 'local' also attempts exact result reuse."
         ),
     )
+    parser.add_argument("--source-cache", choices=("off", "local"), default="off",
+                        help="Optional Git-local derived import scans; full/release acceptance requires off.")
     return parser
 
 
@@ -1958,6 +1962,10 @@ def main() -> int:
         parser.error("--reuse-report is not permitted for release validation")
     if args.profile == "release" and args.cache_mode == "local":
         parser.error("--cache-mode local is not permitted for release validation")
+    try:
+        configure_import_cache(args.source_cache, args.profile)
+    except ValueError as exc:
+        parser.error(str(exc))
 
     cache: SourceCheckCache | None = None
     cache_events: list[str] = []
@@ -1995,6 +2003,8 @@ def main() -> int:
             except (OSError, ValueError) as exc:
                 cache_events.append(f"disabled:{exc}")
                 cache = None
+        if args.list:
+            flush_import_cache()
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
@@ -2026,6 +2036,7 @@ def main() -> int:
             or args.cache_mode == "local"
             else {}
         )
+        flush_import_cache()
         fingerprint_seconds = time.monotonic() - fingerprint_started
         current_source = {
             **source_identity(),

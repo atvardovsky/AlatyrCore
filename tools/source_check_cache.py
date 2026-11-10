@@ -6,6 +6,7 @@ import json
 import hashlib
 import os
 import re
+import stat
 import subprocess
 import sys
 import tempfile
@@ -44,7 +45,8 @@ def resolve_cache_root(repository: Path) -> Path:
     if result.returncode != 0 or not result.stdout.strip():
         raise ValueError(result.stderr.strip() or "cannot resolve Git-local cache path")
     path = Path(result.stdout.strip())
-    return path if path.is_absolute() else (repository / path).resolve()
+    # Keep the final component lexical so _path can reject a symlinked cache.
+    return path if path.is_absolute() else (repository / path).absolute()
 
 
 def cache_key(profile: str, *, include_profile: bool = True) -> str:
@@ -72,7 +74,7 @@ class SourceCheckCache:
         self.root = resolve_cache_root(repository)
 
     def _path(self, namespace: str, key: str) -> Path:
-        if namespace not in {"timing", "results", "checks"}:
+        if namespace not in {"timing", "results", "checks", "imports"}:
             raise ValueError(f"unsupported source-check cache namespace: {namespace}")
         if not SAFE_KEY.fullmatch(key):
             raise ValueError(f"unsafe source-check cache key: {key}")
@@ -88,17 +90,30 @@ class SourceCheckCache:
         try:
             if path.is_symlink():
                 return CacheLoad("unsafe", detail="cache record is a symlink")
-            size = path.stat().st_size
+            metadata = path.stat()
+            if not stat.S_ISREG(metadata.st_mode):
+                return CacheLoad("unsafe", detail="cache record is not a regular file")
+            size = metadata.st_size
             if size > MAX_CACHE_RECORD_BYTES:
                 return CacheLoad("oversized", detail=f"cache record is {size} bytes")
-            data = json.loads(path.read_text(encoding="utf-8"))
+            flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+            descriptor = os.open(path, flags)
+            with os.fdopen(descriptor, "rb") as stream:
+                opened = os.fstat(stream.fileno())
+                if not stat.S_ISREG(opened.st_mode) or (opened.st_dev, opened.st_ino) != (metadata.st_dev, metadata.st_ino):
+                    return CacheLoad("unsafe", detail="cache record changed during open")
+                raw = stream.read(MAX_CACHE_RECORD_BYTES + 1)
+            if len(raw) > MAX_CACHE_RECORD_BYTES:
+                return CacheLoad("oversized", detail="cache record grew beyond the size limit")
+            data = json.loads(raw.decode("utf-8"))
         except FileNotFoundError:
             return CacheLoad("missing")
-        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        except (OSError, UnicodeError, ValueError, RecursionError) as exc:
             return CacheLoad("corrupt", detail=str(exc))
         if (
             not isinstance(data, dict)
-            or data.get("schema_version") != CACHE_SCHEMA_VERSION
+            or type(data.get("schema_version")) is not int
+            or data["schema_version"] != CACHE_SCHEMA_VERSION
             or data.get("cache_kind") != CACHE_KIND
             or data.get("namespace") != namespace
             or data.get("key") != key
@@ -119,14 +134,13 @@ class SourceCheckCache:
             "key": key,
             "payload": payload,
         }
-        rendered = json.dumps(record, indent=2, sort_keys=True) + "\n"
-        if len(rendered.encode("utf-8")) > MAX_CACHE_RECORD_BYTES:
+        rendered = (json.dumps(record, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        if len(rendered) > MAX_CACHE_RECORD_BYTES:
             raise ValueError("source-check cache record exceeds the size limit")
         temporary_name: str | None = None
         try:
             with tempfile.NamedTemporaryFile(
-                mode="w",
-                encoding="utf-8",
+                mode="wb",
                 dir=path.parent,
                 prefix=f".{path.name}.",
                 suffix=".tmp",
