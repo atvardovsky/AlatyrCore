@@ -53,6 +53,14 @@ Runtime commands are procedural aids. They do not intercept every tool, authenti
 human approval, prevent an assistant from ignoring instructions, or grant acceptance.
 Source runtime files are ignored and are not durable team knowledge.
 
+Source authoring uses `publish-task --source-contour` and focused source checks;
+converge projections with `refresh-source` before cold acceptance. Installed-target
+`finalize-support` is not a source self-installation route. For substantial
+primary-controlled parallel work, follow the conditional
+[source worker strategy](source-worker-strategy.md#activation) and
+[workflow efficiency reference](workflow-efficiency.md). Keep workers inspect-only
+and the source-check scheduler unchanged; no helper grants authority or adoption.
+
 ## Knowledge And Decisions
 
 `tools/source_knowledge.json` is a bounded index of source-owned architecture,

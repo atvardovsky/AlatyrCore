@@ -18,7 +18,7 @@ from target_adapter_validation.context import TargetRepositoryView
 def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None = None,
               session_uid: str | None = None, source_contour: bool = False,
               handoff: dict | None = None, handoff_current: dict | None = None,
-              capacity: dict | None = None) -> dict:
+              capacity: dict | None = None, admission: dict | None = None) -> dict:
     resources = resource_plan(target, command_ids) if command_ids else None
     handoff_scopes = []
     intent = handoff_current.get("intent") if isinstance(handoff_current, dict) else None
@@ -26,7 +26,8 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
     reference = handoff_resource_scope(identity)
     if reference is not None:
         handoff_scopes.append(reference)
-    selected = list(dict.fromkeys([*scopes, *(resources["presence_scope_refs"] if resources else []), *handoff_scopes]))
+    selected = list(dict.fromkeys([*scopes, *(resources["presence_scope_refs"] if resources else []),
+                                  *(admission["presence_scope_refs"] if admission else []), *handoff_scopes]))
     if not selected:
         raise ValueError("select at least one scope or registered test command")
     presence = operate(target, "status", scope=selected, session_uid=session_uid, source_contour=source_contour)
@@ -55,10 +56,16 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
     handoff_view = handoff_report(handoff, handoff_current) if handoff is not None or handoff_current is not None else None
     capacity_view = capacity_report(capacity) if capacity is not None else None
     uncertain = uncertain or any(item is not None and item["state"] == "unresolved" for item in (handoff_view, capacity_view))
+    decision = "coordinate-before-work" if conflicts else "unknown" if uncertain else "no-reported-conflict"
+    if admission is not None and decision != "no-reported-conflict":
+        admission = {**admission, "selected_ids": [], "allocated_slots": admission["running_slots"],
+                     "held": {**admission["held"], **{key: decision for key in admission["selected_ids"]}},
+                     "coordination_hold": decision}
     return {"schema_version": 1, "report_kind": "alatyr-cooperation-preflight", "scope": selected,
-            "decision": "coordinate-before-work" if conflicts else "unknown" if uncertain else "no-reported-conflict",
+            "decision": decision,
             "presence": presence, "resources": resources,
             "handoff": handoff_view, "capacity": capacity_view,
+            **({"admission": admission} if admission is not None else {}),
             "limitation": "Advisory reported state only, not a reservation, liveness proof, isolation guarantee, authorization or command execution. Independent clones and unreported sessions are not observed."}
 
 
@@ -72,6 +79,7 @@ def main() -> int:
     parser.add_argument("--handoff", help="Target-relative selected handoff observations; never an approval grant.")
     parser.add_argument("--handoff-current", help="Independent current intent and pin observations.")
     parser.add_argument("--capacity", help="Optional target-relative capacity observations, not a reservation.")
+    parser.add_argument("--admission", help="Optional bounded projection of the existing task plan; proposes only.")
     parser.add_argument("--require-clear", action="store_true", help="Exit nonzero on reported conflict or uncertainty; does not reserve resources.")
     args = parser.parse_args()
     try:
@@ -86,9 +94,16 @@ def main() -> int:
             if bounded.value is None:
                 raise ValueError("observation input is unavailable or exceeds 256 KiB")
             return decode_observation(bounded.value)
+        admission = None
+        if args.admission is not None:
+            from execution_admission import inspect_admission
+            from target_validation_support import is_target_relative_path
+            if not is_target_relative_path(args.admission):
+                raise ValueError("admission must be target-relative")
+            admission = inspect_admission(view, args.admission)
         report = preflight(args.target, args.scope, command_ids=args.command,
                            session_uid=args.session_uid, source_contour=args.source_contour,
-                           handoff=load(args.handoff), handoff_current=load(args.handoff_current), capacity=load(args.capacity))
+                           handoff=load(args.handoff), handoff_current=load(args.handoff_current), capacity=load(args.capacity), admission=admission)
         print(json.dumps(report, indent=2))
         return 1 if args.require_clear and report["decision"] != "no-reported-conflict" else 0
     except (OSError, ValueError, subprocess.SubprocessError, RecursionError) as exc:

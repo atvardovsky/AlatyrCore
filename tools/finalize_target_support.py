@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -190,12 +191,16 @@ def execute_steps(
     return 0, None
 
 
-def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subprocess.run) -> tuple[int, str | None, list[str]]:
+def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subprocess.run, preflight=None) -> tuple[int, str | None, list[str]]:
     """Derive owned postimages in-process; never infer ownership from a later read."""
     transaction = SupportTransaction(target)
     failed_step = None
     with support_writer_lock(target):
         try:
+            if preflight is not None:
+                preflight.finalize_inputs()
+                if any(item.level == "error" for item in preflight.findings):
+                    return 2, "authoring-preflight-changed", []
             expected = snapshot(generated_paths(target), target=target)
             for step in steps:
                 failed_step = step.step_id
@@ -203,6 +208,7 @@ def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subproces
                     result, failed = execute_steps([step], runner=runner)
                     if result:
                         return result, failed, transaction.rollback()
+                    transaction.verify_owned()
                 else:
                     bindings = {}
                     outputs = step_outputs(step.step_id, target, input_bindings=bindings) if step.step_id == "module-profile" else step_outputs(step.step_id, target)
@@ -219,7 +225,9 @@ def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subproces
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--target", required=True, type=Path)
-    parser.add_argument("--write", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--write", action="store_true")
+    mode.add_argument("--preflight", action="store_true", help="Read-only selected authoring checks, not acceptance; emits JSON.")
     parser.add_argument("--migration-staging", action="store_true")
     parser.add_argument("--diff-ref")
     parser.add_argument("--approval-record", action="append", type=Path, default=[])
@@ -240,6 +248,34 @@ def main() -> int:
         )
 
     target = args.target.resolve()
+    try:
+        steps = build_steps(
+            target=target, write=args.write, migration_staging=args.migration_staging,
+            diff_ref=args.diff_ref, approval_records=args.approval_record,
+            change_packages=args.change_package, require_current_change=args.require_current_change,
+            task_id=args.task_id, task_class=args.task_class, problem_models=args.problem_model,
+            require_task_acceptance=args.require_task_acceptance,
+            historical_evidence_index=args.historical_evidence_index)
+    except (OSError, ValueError) as exc:
+        parser.error(str(exc))
+    preflight = None
+    if args.write or args.preflight:
+        from finalization_preflight import inspect_finalization, preflight_report
+        try:
+            preflight = inspect_finalization(target, task_id=args.task_id, task_class=args.task_class,
+                require_task_acceptance=args.require_task_acceptance, diff_ref=args.diff_ref,
+                approval_records=args.approval_record, problem_models=args.problem_model,
+                migration_staging=args.migration_staging)
+            report = preflight_report(preflight)
+        except (OSError, ValueError, RecursionError) as exc:
+            print(f"FAIL: authoring preflight: {exc}", file=sys.stderr)
+            return 2
+        if args.preflight:
+            print(json.dumps(report, indent=2))
+            return 2 if report["state"] == "blocked" else 0
+        if report["state"] == "blocked":
+            print(json.dumps(report, indent=2), file=sys.stderr)
+            return 2
     if args.write:
         try:
             assert_write_compatible(
@@ -251,25 +287,8 @@ def main() -> int:
             print(f"FAIL: {exc}", file=sys.stderr)
             return 2
     try:
-        steps = build_steps(
-            target=target,
-            write=args.write,
-            migration_staging=args.migration_staging,
-            diff_ref=args.diff_ref,
-            approval_records=args.approval_record,
-            change_packages=args.change_package,
-            require_current_change=args.require_current_change,
-            task_id=args.task_id,
-            task_class=args.task_class,
-            problem_models=args.problem_model,
-            require_task_acceptance=args.require_task_acceptance,
-            historical_evidence_index=args.historical_evidence_index,
-        )
-    except (OSError, ValueError) as exc:
-        parser.error(str(exc))
-    try:
         if args.write:
-            result, failed_step, conflicts = execute_write_steps(target, steps)
+            result, failed_step, conflicts = execute_write_steps(target, steps, preflight=preflight)
         else:
             result, failed_step = execute_steps(steps)
             conflicts = []

@@ -455,6 +455,18 @@ new primary-owned plan and authorization gate if that work is still desired.
 
 ## Dispatch And Convergence
 
+Refill selected ready work at completion, resource release or dependency change,
+within remaining policy/runtime/context, CPU/RAM and primary-review budgets.
+Use existing plan priority; branch-local blocks or oversized items must not stop
+unrelated eligible work. Unknown shared activity still requires coordination.
+
+Returns stay `REVIEW_REQUIRED` until primary review accepts current source-bound
+local evidence. Only accepted prerequisites unlock dependents; retries need
+explicit selection within cumulative limits. Recheck plan, scope, capability and
+resources before dispatch/integration. Proposals grant no reservation, permission
+or authentication; source-check scheduling remains separate from target/native
+execution.
+
 Dispatch independent packets in parallel only when their write sets and
 semantic owners do not overlap. Keep urgent blocking work on the primary
 critical path unless delegation materially shortens that path and introduces

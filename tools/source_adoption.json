@@ -106,21 +106,23 @@
       "mode": "source-equivalent",
       "references": [
         "docs/source-worker-strategy.md",
-        "docs/source-optimization/development-context-contract.md"
+        "docs/source-optimization/development-context-contract.md",
+        "docs/workflow-efficiency.md"
       ]
     },
     "subagent-delegation": {
       "mode": "source-equivalent",
       "references": [
         "tools/source_worker_policy.json",
-        "docs/source-worker-strategy.md"
+        "docs/source-worker-strategy.md",
+        "docs/workflow-efficiency.md"
       ]
     },
     "change-packages": {
       "mode": "source-equivalent",
       "references": [
         "docs/release-process.md",
-        "docs/releases/0.1.0-alpha.134-migration.md"
+        "docs/releases/0.1.0-alpha.135-migration.md"
       ]
     },
     "team-collaboration": {
@@ -141,7 +143,7 @@
       "mode": "source-equivalent",
       "references": [
         "docs/release-process.md",
-        "docs/releases/0.1.0-alpha.134-migration.md"
+        "docs/releases/0.1.0-alpha.135-migration.md"
       ]
     },
     "effectiveness-metrics": {

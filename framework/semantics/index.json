@@ -67,7 +67,7 @@
         "alatyr:mode-does-not-grant-authority@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:bounded-delegation@1": "sha256:6d69d3c0db14ae84d4fabcc56e25ed0f5ceaf4aa2aa9b43dcf74ef7473b76cb0",
+        "alatyr:bounded-delegation@1": "sha256:063854c9af3246be07e19e1b7103059e9c2823cfb16ef096addda97aad2bf013",
         "alatyr:mode-does-not-grant-authority@1": "sha256:dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
       },
       "content_digest": "sha256:daee94942f232bf7d1ba8cc9920f7730a57da61d4978d30961ba58a63628274d"

@@ -87,3 +87,16 @@ Keep the primary on the critical integration path; workers own complete bounded
 deliverables, not duplicated discovery. Reassess at phase boundaries or failed
 experiments, not every command. Measure delivery, rework, coordination and wait
 separately; agent counts or growing records do not demonstrate faster completion.
+
+## Readiness Before Finalization
+
+Run cheap canonical authoring checks before expensive finalization: selected
+task/model/closure bindings, shapes and phase outcomes. Report defects together.
+Leave repairable generated drift to its renderer; early success is not acceptance.
+Recheck inputs before writes; preserve observed peer edits on conflict.
+
+Separate support convergence, pre-publication qualification and final closure.
+Required publication stays pending until observed; do not repeat unreachable
+closure or remove gates to get a pass. Resolve conflicting target order with
+its owner. Update canonical knowledge alongside decisions; batch derived refresh
+on stable inputs. Existing evidence-equivalence rules still apply.

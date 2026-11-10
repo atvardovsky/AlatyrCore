@@ -89,9 +89,7 @@ class SupportTransaction:
         self.owned: dict[Path, bytes | None] = {}
 
     def apply(self, outputs: dict[Path, bytes | None], *, expected_inputs: dict[Path, bytes | None] | None = None) -> None:
-        for path, postimage in self.owned.items():
-            if read_output(self.target, path) != postimage:
-                raise ValueError(f"previously owned support output changed concurrently: {path.relative_to(self.target)}")
+        self.verify_owned()
         if expected_inputs is not None:
             for path, content in expected_inputs.items():
                 if read_output(self.target, path) != content:
@@ -103,6 +101,11 @@ class SupportTransaction:
             self.before.setdefault(path, preimages[path])
             replace_output(self.target, path, preimages[path], content)
             self.owned[path] = content
+
+    def verify_owned(self) -> None:
+        for path, postimage in self.owned.items():
+            if read_output(self.target, path) != postimage:
+                raise ValueError(f"previously owned support output changed concurrently: {path.relative_to(self.target)}")
 
     def rollback(self) -> list[str]:
         conflicts = []

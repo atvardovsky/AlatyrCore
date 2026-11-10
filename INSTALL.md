@@ -473,13 +473,13 @@ In a typical target repository:
    provenance when applicable. Route AI infrastructure through target item IDs
    and keep unresolved permissions, gates, validation, or output contracts
    blocked.
-11. Run target validation that exists. When source tooling is available,
-   converge approval/package indexes, entry/bootstrap/context projections, and
-   support state with `finalize-support`, then use its canonical validation
-   result. Bind material current-change finalization to the diff base, selected
-   approval records, and a selected change package when that module is enabled.
-   Registered task completion also binds task ID, independent class and
-   `--require-task-acceptance`; adapter health alone does not close the task.
+11. Run existing target validation. With source tooling, `finalize-support`
+   converges approval/package indexes, entry/bootstrap/context projections and
+   support state, then runs canonical validation. Bind material current changes
+   to the diff base, selected approvals and, when enabled, the change package.
+   Task completion also requires task ID, independent class and
+   `--require-task-acceptance`; adapter health is not closure. Optional
+   [authoring preflight](docs/workflow-efficiency.md) never grants acceptance.
 12. Apply the durable engineering-evidence decision. Capture reusable material
    installation knowledge when triggered and authorized, or report a specific
    skip/block reason. When Debug Mode was active, use reciprocal Debug session

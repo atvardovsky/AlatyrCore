@@ -203,7 +203,7 @@ def validate_capture_disposition(validator: Any, value: Any, source: str, closur
         # and repository-binding checks. Do not invent a second record validator.
 
 
-def validate_task_closure(validator: Any, closure: dict[str, Any], task: dict[str, Any]) -> None:
+def validate_task_closure(validator: Any, closure: dict[str, Any], task: dict[str, Any], *, authoring_only: bool = False) -> None:
     source = task["completion_evidence"]["path"]
     task_id = task["task_id"]
     if closure.get("record_kind") != "alatyr-task-closure" or closure.get("schema_version") != 1 or closure.get("task_id") != task_id or closure.get("operation_id") != task["operation_id"]:
@@ -211,14 +211,20 @@ def validate_task_closure(validator: Any, closure: dict[str, Any], task: dict[st
         return
     if not _schema_valid(validator, closure, "task-closure", source):
         return
+    delivery = closure["delivery"]
+    if validator.current_task_id == task_id and validator.validation_phase == "acceptance" and delivery["evidence_finalization"] != "final":
+        validator.error("TASK_CLOSURE_NOT_FINAL", "selected current-task acceptance requires finalized evidence", source)
+    for field in task_projection_mismatches(task, closure):
+        validator.error("ACTIVE_TASK_PROJECTION", f"{field} differs from closure", source)
+    if authoring_only:
+        if delivery["publication"] == "published":
+            _publication_receipts(validator, closure, source)
+        return
     validate_capture_disposition(validator, closure["engineering_evidence"], source, closure)
     if not is_resolved_string(closure["knowledge_review"]["reason"]):
         validator.error("TASK_KNOWLEDGE_DISPOSITION", "knowledge review needs a concrete reason", source)
-    delivery = closure["delivery"]
     if delivery["implementation"] == "complete" and closure["engineering_evidence"]["state"] == "blocked":
         validator.warn("TASK_CLOSURE_BLOCKED", "implementation is complete but evidence remains blocked; this is not completed task acceptance", source)
-    if validator.current_task_id == task_id and validator.validation_phase == "acceptance" and delivery["evidence_finalization"] != "final":
-        validator.error("TASK_CLOSURE_NOT_FINAL", "selected current-task acceptance requires finalized evidence", source)
     if delivery["evidence_finalization"] == "final":
         if delivery["implementation"] != "complete" or closure["engineering_evidence"]["state"] == "blocked":
             validator.error("TASK_CLOSURE_FINAL", "final evidence requires complete work without evidence blockers", source)
@@ -240,48 +246,57 @@ def validate_task_closure(validator: Any, closure: dict[str, Any], task: dict[st
         validator.warn("TASK_CLOSURE_PROVISIONAL", "implementation is complete but evidence is not finalized; this is not final acceptance evidence", source)
     if delivery["publication"] == "published":
         _validate_publication(validator, closure, source)
-    for field in task_projection_mismatches(task, closure):
-        validator.error("ACTIVE_TASK_PROJECTION", f"{field} differs from closure", source)
 
 
 def _validate_publication(validator: Any, closure: dict[str, Any], source: str) -> None:
+    for receipt in _publication_receipts(validator, closure, source):
+        _validate_publication_receipt(validator, closure, source, receipt)
+
+
+def _publication_receipts(validator: Any, closure: dict[str, Any], source: str) -> list[dict]:
+    receipts = []
     if not closure["publication_evidence"]:
         validator.error("TASK_CLOSURE_PUBLICATION", "published requires a hash-bound local observation receipt", source)
     for binding in closure["publication_evidence"]:
         receipt = _bound_object(validator, binding, "publication receipt")
         if receipt is None or not _schema_valid(validator, receipt, "publication-receipt", source):
             continue
-        remote = receipt["remote_ref"]
-        observed = validator.git.literal_remote_ref(remote)
-        if not validator.git.is_literal_remote_ref(remote):
-            validator.error("TASK_CLOSURE_PUBLICATION", "publication observation needs a literal remote-tracking ref, not revision syntax", source)
-        revision = validator.git.resolve_object(receipt["observed_revision"], "commit")
-        result_binding = closure["repository_binding"]
-        if receipt["task_id"] != closure["task_id"] or receipt["operation_id"] != closure["operation_id"] or revision != receipt["observed_revision"]:
-            validator.error("TASK_CLOSURE_PUBLICATION", "publication observation task, operation, or immutable observed revision differs", source)
-        if observed != receipt["observed_revision"]:
-            if validator.current_task_id == closure["task_id"]:
-                validator.error("TASK_CLOSURE_PUBLICATION", "current publication observation differs from the local remote-tracking ref", source)
-            else:
-                validator.warn("TASK_PUBLICATION_HISTORICAL", "recorded publication is historical; the local remote-tracking ref has moved or is unavailable", source)
-        matches = False
-        if isinstance(result_binding, dict):
-            if result_binding.get("kind") == "selected-file-snapshot":
-                selected_paths = result_binding.get("selected_paths")
-                if isinstance(selected_paths, list) and all(isinstance(path, str) for path in selected_paths):
-                    matches = validator.git.snapshot_sha256(receipt["observed_revision"], selected_paths, byte_limits=RESULT_BYTE_LIMITS) == result_binding.get("snapshot_sha256")
-            else:
-                kind = "tree" if result_binding.get("kind") == "tree" else "commit"
-                matches = validator.git.resolve_object(receipt["observed_revision"], kind) == result_binding.get("result_revision")
-        if not matches:
-            validator.error("TASK_CLOSURE_PUBLICATION", "publication observation does not bind the closure result", source)
-        try:
-            time = datetime.fromisoformat(receipt["observed_at"].replace("Z", "+00:00"))
-            if time.tzinfo is None or time > datetime.now(timezone.utc):
-                raise ValueError("invalid observation time")
-        except (ValueError, OverflowError):
-            validator.error("TASK_CLOSURE_PUBLICATION", "publication observation requires a valid, non-future timestamp", source)
-        validator.info("TASK_PUBLICATION_EVIDENCE_LIMIT", "receipt verifies a local observed remote-tracking ref, not current live remote state or authorization", source)
+        receipts.append(receipt)
+    return receipts
+
+
+def _validate_publication_receipt(validator: Any, closure: dict[str, Any], source: str, receipt: dict) -> None:
+    remote = receipt["remote_ref"]
+    observed = validator.git.literal_remote_ref(remote)
+    if not validator.git.is_literal_remote_ref(remote):
+        validator.error("TASK_CLOSURE_PUBLICATION", "publication observation needs a literal remote-tracking ref, not revision syntax", source)
+    revision = validator.git.resolve_object(receipt["observed_revision"], "commit")
+    result_binding = closure["repository_binding"]
+    if receipt["task_id"] != closure["task_id"] or receipt["operation_id"] != closure["operation_id"] or revision != receipt["observed_revision"]:
+        validator.error("TASK_CLOSURE_PUBLICATION", "publication observation task, operation, or immutable observed revision differs", source)
+    if observed != receipt["observed_revision"]:
+        if validator.current_task_id == closure["task_id"]:
+            validator.error("TASK_CLOSURE_PUBLICATION", "current publication observation differs from the local remote-tracking ref", source)
+        else:
+            validator.warn("TASK_PUBLICATION_HISTORICAL", "recorded publication is historical; the local remote-tracking ref has moved or is unavailable", source)
+    matches = False
+    if isinstance(result_binding, dict):
+        if result_binding.get("kind") == "selected-file-snapshot":
+            selected_paths = result_binding.get("selected_paths")
+            if isinstance(selected_paths, list) and all(isinstance(path, str) for path in selected_paths):
+                matches = validator.git.snapshot_sha256(receipt["observed_revision"], selected_paths, byte_limits=RESULT_BYTE_LIMITS) == result_binding.get("snapshot_sha256")
+        else:
+            kind = "tree" if result_binding.get("kind") == "tree" else "commit"
+            matches = validator.git.resolve_object(receipt["observed_revision"], kind) == result_binding.get("result_revision")
+    if not matches:
+        validator.error("TASK_CLOSURE_PUBLICATION", "publication observation does not bind the closure result", source)
+    try:
+        time = datetime.fromisoformat(receipt["observed_at"].replace("Z", "+00:00"))
+        if time.tzinfo is None or time > datetime.now(timezone.utc):
+            raise ValueError("invalid observation time")
+    except (ValueError, OverflowError):
+        validator.error("TASK_CLOSURE_PUBLICATION", "publication observation requires a valid, non-future timestamp", source)
+    validator.info("TASK_PUBLICATION_EVIDENCE_LIMIT", "receipt verifies a local observed remote-tracking ref, not current live remote state or authorization", source)
 
 
 def _normalized_path(value: str) -> str:
@@ -410,7 +425,7 @@ def _validate_selected_architecture_review(validator: Any, closure: dict[str, An
             validator.error("TASK_ARCHITECTURE_REVIEW", f"{item_id} requires revalidation: {failures}", source)
 
 
-def validate_active_tasks(validator: Any, *, initializing: bool = False) -> None:
+def validate_active_tasks(validator: Any, *, initializing: bool = False, selected_only: bool = False, authoring_only: bool = False) -> None:
     """Select registered work without walking ignored runtime or archive folders."""
     try:
         index_read = validator.context.read_bytes_result(validator.target_path(INDEX_PATH), max_bytes=MAX_ARTIFACT_BYTES)
@@ -458,6 +473,8 @@ def validate_active_tasks(validator: Any, *, initializing: bool = False) -> None
     for message in task_predecessor_failures(tasks):
         validator.error("ACTIVE_TASK_PREDECESSOR", message, INDEX_PATH)
     for task in tasks:
+        if selected_only and task.get("task_id") != selected_task:
+            continue
         if not isinstance(task, dict) or not is_resolved_string(task.get("task_id")):
             validator.error("ACTIVE_TASK_ENTRY", "task entries require a resolved task_id", INDEX_PATH)
             continue
@@ -497,6 +514,26 @@ def validate_active_tasks(validator: Any, *, initializing: bool = False) -> None
         if scale != "small-task" or model_binding is not None:
             model, selected_binding, archived_projection = _task_model_evidence(validator, task, closure)
             if model is not None:
+                if authoring_only:
+                    version = model.get("schema_version")
+                    name = f"alatyr-problem-model-v{version}.schema.json" if type(version) is int and version in (4, 5, 6) and state == "closed" else "alatyr-problem-model.schema.json"
+                    shape = validator.schema_context.read_json_result(validator.schema_context.target / name)
+                    if shape.value is None:
+                        validator.error("ACTIVE_TASK_SOURCE_SCHEMA", "model authoring schema is unavailable", INDEX_PATH)
+                        continue
+                    from analysis_strategy_contract import validate_problem_model
+                    errors = validate_problem_model(model, shape.value)
+                    for error in errors:
+                        validator.error("ANALYSIS_PROBLEM_MODEL_INVALID", error, INDEX_PATH)
+                    if errors:
+                        continue
+                    for code, message in task_model_header_failures(task, model):
+                        validator.error(code, message, INDEX_PATH)
+                    if closure is not None:
+                        validate_task_closure(validator, closure, task, authoring_only=True)
+                    elif state == "active" and task_id == selected_task and validator.validation_phase == "acceptance" and not initializing:
+                        validator.error("ACTIVE_TASK_NOT_CLOSED", "selected current-task acceptance requires a closure receipt", INDEX_PATH)
+                    continue
                 model_schema = model_schema or load_problem_model_schema()
                 path = validator.target_path(selected_binding["path"])
                 if state == "closed" and archived_projection is None:
@@ -519,9 +556,11 @@ def validate_active_tasks(validator: Any, *, initializing: bool = False) -> None
                         validator.error("ACTIVE_TASK_PREDECESSOR", message, INDEX_PATH)
         if state == "closed":
             if closure is not None:
-                validate_task_closure(validator, closure, task)
+                validate_task_closure(validator, closure, task, authoring_only=authoring_only)
         elif task.get("completion_evidence") is not None:
             validator.error("ACTIVE_TASK_ENTRY", "active work cannot claim a closed-task receipt", INDEX_PATH)
         elif task_id == selected_task and validator.validation_phase == "acceptance" and not initializing:
             validator.error("ACTIVE_TASK_NOT_CLOSED", "selected current-task acceptance requires a closure receipt", INDEX_PATH)
-    validator.info("ACTIVE_TASK_COVERAGE", f"checked {len(tasks)} registered current/recent tasks; unregistered history and runtime files were not scanned", INDEX_PATH)
+    coverage = (f"checked {len(tasks)} registered headers and selected evidence for {selected_task!r}"
+                if selected_only else f"checked {len(tasks)} registered current/recent tasks")
+    validator.info("ACTIVE_TASK_COVERAGE", coverage + "; unregistered history and runtime files were not scanned", INDEX_PATH)

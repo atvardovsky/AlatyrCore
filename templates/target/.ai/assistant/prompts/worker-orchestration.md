@@ -50,9 +50,10 @@ load the full flow only for communication, ambiguity, conflict or repair.
    Require structured findings with canonical-owner, surface, evidence, and
    proof-obligation references so the primary can merge results without loading
    every raw transcript.
-9. Reconcile accepted work and contract-work evidence against current state.
-   Re-run combined validation and primary-owned logical integrity,
-   authorization, approval, commit, and publish gates.
+9. Review current results and contract-work evidence; accept prerequisites
+   before refilling ready work within remaining resource/review budgets.
+   Explicitly select retries. Retain combined validation and primary-owned
+   logical integrity, authorization, approval, commit and publish gates.
 10. Stop when acceptance/evidence are covered or a depth, worker, context,
    result, primary-summary, retry, overlap, capability, envelope, checkpoint,
    validation, authority, or cost boundary is reached. Record

@@ -97,5 +97,4 @@ Machine-contract counterexamples: `{REJECTED_COUNTEREXAMPLE_IDS_OR_NOT_REQUIRED}
 Final logical integrity result: `{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}`
 Residual risk: `{RESIDUAL_RISK}`
 
-Completion is blocked while a required proof obligation or review pass is
-open, failed, blocked, unevidenced, or waived without target-authorized policy.
+Required proofs/reviews need passing evidence or target-authorized waivers before completion.

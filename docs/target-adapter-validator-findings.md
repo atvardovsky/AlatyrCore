@@ -179,7 +179,7 @@ Catalog entries: 1762
 - `ANALYSIS_PROBLEM_MODEL_FILE_SIZE`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID`
-  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`, `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID_SHAPE`

@@ -103,6 +103,9 @@ does not persist packets. Only the outer coordinator owns finalization.
 
 #### Converge
 
+Apply conditional delivery-efficiency guidance before finalization; publication
+and task closure remain distinct.
+
 10. After local workstreams finish, reconcile cross-workstream contracts and
    run one global logical integrity review over the combined repair set,
    re-derived invariants, and related review-item clusters. When scoped

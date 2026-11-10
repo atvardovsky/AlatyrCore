@@ -98,7 +98,7 @@ def build_parser() -> argparse.ArgumentParser:
     cooperation.add_argument("--command", action="append", default=[])
     cooperation.add_argument("--session-uid")
     cooperation.add_argument("--require-clear", action="store_true")
-    for name in ("handoff", "handoff-current", "capacity"):
+    for name in ("handoff", "handoff-current", "capacity", "admission"):
         cooperation.add_argument("--" + name, action=Once)
     readiness = subparsers.add_parser("worktree-preflight", allow_abbrev=False)
     add_common(readiness)
@@ -128,7 +128,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     finalize = subparsers.add_parser("finalize-support", allow_abbrev=False)
     add_common(finalize)
-    finalize.add_argument("--write", action="store_true")
+    mode = finalize.add_mutually_exclusive_group()
+    mode.add_argument("--write", action="store_true")
+    mode.add_argument("--preflight", action="store_true")
     finalize.add_argument("--migration-staging", action="store_true")
     finalize.add_argument("--diff-ref")
     finalize.add_argument("--approval-record", action="append", default=[])
@@ -163,7 +165,7 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
             command.extend(["--session-uid", args.session_uid])
         if getattr(args, "require_clear", False):
             command.append("--require-clear")
-        for name in ("handoff", "handoff_current", "capacity"):
+        for name in ("handoff", "handoff_current", "capacity", "admission"):
             if getattr(args, name, None):
                 command.extend(["--" + name.replace("_", "-"), getattr(args, name)])
         return command
@@ -223,6 +225,8 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
         return command
 
     command = ["finalize-support", "--target", str(target)]
+    if getattr(args, "preflight", False):
+        command.append("--preflight")
     if args.write:
         command.append("--write")
     if args.migration_staging:

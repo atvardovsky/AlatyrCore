@@ -102,6 +102,12 @@ For costly or repeatedly rejected work, optional
 checks a representative outcome before expansion and requires deeper review
 after failed validation. Historical test reports remain distinct from current proof.
 
+For substantial tasks, bounded parallel work can overlap independent parts while
+one coordinator reviews and integrates results. Early authoring diagnostics can
+avoid predictable finalization retries; neither mechanism replaces final checks.
+See [workflow efficiency](docs/workflow-efficiency.md) for the optional tooling
+and its evidence limits. No general speed or billing improvement is claimed.
+
 For uncertain causes, [evidence-guided analysis](framework/task-decomposition.md#evidence-guided-analysis)
 connects hypotheses to predictions, small discriminating checks and their result
 artifacts. Conclusions can be revised without losing unresolved duties. Optional
@@ -357,7 +363,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.134`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.135`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

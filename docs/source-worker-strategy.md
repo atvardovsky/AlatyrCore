@@ -21,22 +21,26 @@ task evidence.
 
 The threshold is a minimum, not a preferred fan-out. The primary owns the tree,
 ledger, branch authorization, decisions and convergence. Default selection
-remains the required minimum. Schedule selected work
-in waves within policy and verified runtime parallelism. All total, parent,
-context and retry limits remain cumulative; waves grant no new budget or
-permission. Workers normally return proposals. With verified nested transport,
+remains the required minimum. Refill independent ready work when a result is
+accepted or resources are released, within remaining policy/runtime/context
+and review capacity; do not wait for unrelated siblings. Only primary-accepted
+prerequisites unlock dependents. Limits stay cumulative; refill grants no
+budget or permission. Workers normally return proposals. With verified nested transport,
 a depth-1 coordinator may dispatch read-only depth-2 children only inside an
 unexpired hash-bound primary envelope. Enforce every worker, child, context,
 result, summary, retry, overlap, capability, authority, cancellation and cost
 limit. Stop when acceptance, required evidence and assigned obligations are
 covered, or at the first boundary; record the reason.
 
-For an explicit `repository-audit`, delegation evaluation is deterministic:
+For substantial plans, [admission](workflow-efficiency.md#parallel-admission)
+through `cooperation-preflight --source-contour --admission PLAN_VIEW` proposes
+only; source workers stay inspect-only and source-check scheduling is unchanged.
 
-1. Select the profile directly from user intent. Do not let a clean worktree or
-   automatic changed-path plan downgrade the audit.
-2. Load the reusable candidate workstreams from
-   `tools/source_worker_policy.json`.
+For explicit `repository-audit`:
+
+1. Select by user intent; clean worktrees and changed-path plans cannot
+   downgrade an explicit audit.
+2. Load policy candidate workstreams from `tools/source_worker_policy.json`.
 3. Verify whether the active runtime can launch and receive workers now.
 4. Select at least two independent read-only workstreams with bounded context.
    Start from each workstream's compact required context. Load a canonical
@@ -46,8 +50,7 @@ For an explicit `repository-audit`, delegation evaluation is deterministic:
    record omitted candidate IDs with budget reasons; do not claim exhaustive
    backlog optimization.
 5. Dispatch eligible packets, or record why each eligible packet stayed local.
-6. Keep authoritative checks, conflict resolution, final synthesis, and final
-   validation with the primary assistant.
+6. Primary owns authoritative checks, conflicts, synthesis and final validation.
 
 With verified runtime capability and multiple independent candidates, use the
 workers unless a concrete policy reason is recorded.
@@ -126,9 +129,8 @@ Choose the least costly verified model that can complete the packet reliably:
   architecture, security, semantic invariants, conflict resolution, and final
   synthesis
 
-Model names alone are not capability evidence. Verify that the current client
-can launch the worker and select or report the intended model. Otherwise use a
-verified fallback or keep the work with the primary assistant.
+Model names are not capability evidence. Verify current-client launch and
+intended-model selection/reporting. Otherwise use a verified fallback or the primary.
 
 ## Responsibility
 

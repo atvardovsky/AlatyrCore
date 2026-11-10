@@ -52,6 +52,11 @@ Relationship refs: `{RELATIONSHIP_REFS_OR_NONE}`
 Expected write scope: `{DISJOINT_PATHS_SURFACES_OR_NONE}`
 Runtime resources and access: `{CREDENTIAL_FREE_IDENTITIES_NAMESPACES_AND_MODES_OR_NONE}`
 Resource concurrency: `{VERIFIED_ISOLATION_SERIAL_ORDER_OR_BLOCKER_WITH_EVIDENCE}`
+Primary-accepted prerequisite results: `{CURRENT_RESULT_BINDINGS_OR_NOT_READY}`
+Retry decision: `{NOT_REQUIRED_OR_EXPLICIT_SELECTION_WITH_REMAINING_BUDGET}`
+Critical-path task and ready independent tasks: `{TASK_IDS_AND_DEPENDENCIES}`
+Remaining capacity/review budgets: `{WORKER_CONTEXT_CPU_RAM_AND_PENDING_REVIEWS}`
+Next admission trigger: `{COMPLETION_RESOURCE_RELEASE_DEPENDENCY_CHANGE_OR_REVIEW}`
 Role: `{ENABLED_ROLE_ID_OR_PRIMARY}`
 Executor decision: `{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}`
 Required context: `{PATHS_AND_REASONS}`

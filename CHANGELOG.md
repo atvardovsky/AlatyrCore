@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Apply ready-work refill and conditional admission references to source
+  maintenance, with searchable owners and source-specific authoring/projection
+  routes. Keep source workers read-only and installed-target finalization separate.
 - Add source-only self-application routing with minimal ignored projections,
   canonical task/request/delivery checks and resolved approval-versus-Git scope
   bindings. Keep small tasks inline and default target behavior unchanged.
@@ -10,6 +13,21 @@
   entry previews. No provider usage or native interception is inferred.
 - This source-tooling change requires no framework, adapter schema, template
   version or installed-target migration update.
+
+## 0.1.0-alpha.135 - 2026-11-10
+
+- Add selected canonical authoring preflight before support writes, with an
+  explicit read-only diagnostic mode and unchanged full acceptance. Recheck
+  selected inputs under the existing lock and owned outputs after validation.
+- Add optional bounded task-plan admission proposals to cooperation preflight:
+  retain accepted prerequisites, explicit retries, resource/write conflicts,
+  active allocations, review backpressure and peer uncertainty. No commands
+  are dispatched and no policy, authority or resource reservation is inferred.
+- Clarify conditional ready-work refill, exact evidence reuse and publication
+  versus task-closure phases. Preserve target test order, source worker scope,
+  cumulative budgets, context ceilings and optional adoption during updates.
+- Advance templates to 130; adapter schema remains 111 and existing model and
+  history formats remain unchanged. Real-agent time and billing are unmeasured.
 
 ## 0.1.0-alpha.134 - 2026-11-09
 

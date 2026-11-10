@@ -85,6 +85,18 @@ class SourceAdoptionTests(SourceAdoptionFixture):
         self.assertEqual(match["kind"], "incident-learning")
         self.assertEqual(knowledge(self.target, "no-such-term")["matches"], {})
 
+    def test_workflow_adoption_routes_to_conditional_source_owners(self):
+        report = status(self.target)
+        for module in ("subagent-delegation", "large-task-orchestration"):
+            self.assertIn("docs/workflow-efficiency.md", report["modules"][module]["references"])
+        for query in ("parallel admission", "workflow efficiency"):
+            match = knowledge(self.target, query)["matches"]["ready-work-refill"]
+            self.assertEqual(match["owner"], "docs/source-worker-strategy.md")
+            self.assertEqual(match["heading"], "Activation")
+        self.assertFalse(workflow_route("small-task")["registered_task_required"])
+        self.assertFalse((self.target / ".ai/alatyr.yaml").exists())
+        self.assertIn("not-established", report["module_exercise"])
+
     def test_small_task_routing_performs_no_adoption_reads(self):
         with patch.object(adoption, "source_object", side_effect=AssertionError("no reads")):
             route = workflow_route("small-task")

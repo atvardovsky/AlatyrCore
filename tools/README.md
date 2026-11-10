@@ -453,6 +453,13 @@ reported conflict or uncertainty, and exit 2 on invalid/unavailable inputs.
 The default remains advisory. Neither mode reserves resources or grants
 execution authority.
 
+Optional `--admission <target-relative-json>` adds a bounded view of the existing
+primary-owned task plan. It proposes compatible ready tasks, holds unaccepted
+dependencies and retries, and suppresses proposals on peer conflict/uncertainty.
+It does not execute work or verify semantic correspondence to the plan.
+See [workflow optimization](../docs/workflow-efficiency.md) for its exact input
+contract, freshness, remaining policy budgets and coordinator duties.
+
 For final task closure, add `--task-id TASK_ID`, `--task-class standard-task`,
 and `--require-task-acceptance` to `finalize-support` or `verify-upgrade` (choose the
 actual independent task class). Both forward optional repeatable
@@ -772,6 +779,9 @@ The stable command set is:
   package, enabled default consistency reverse-index, entry, context, bootstrap,
   and support-state surfaces, then runs
   canonical full validation; write failure restores generated files
+  where current bytes still match transaction-owned output. `--preflight` is
+  mutually exclusive with `--write` and returns selected canonical authoring
+  diagnostics without writes or acceptance; write mode runs those checks early.
 - `suggest-knowledge`: read-only, review-only candidates from verified
   package history, including owner, incident-family, failed-gate, and
   correction recurrence; it never promotes knowledge
