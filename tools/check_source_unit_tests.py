@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import heapq
 import io
 import json
 import math
@@ -201,6 +202,39 @@ def load_suite(paths: list[Path] | None, *, root: Path = ROOT) -> unittest.TestS
     return suite
 
 
+def test_weights(paths: list[Path], duration_hints: dict[str, float] | None) -> tuple[dict[Path, float], dict[Path, int]]:
+    hints = {}
+    for path in paths:
+        names = [path.as_posix()]
+        try:
+            names.append(path.relative_to(ROOT).as_posix())
+        except ValueError:
+            pass
+        value = next((seconds for name in names
+                      if (seconds := positive_seconds((duration_hints or {}).get(name))) is not None), None)
+        if value is not None:
+            hints[path] = value
+    # Normalize before summing or taking a median: finite hints can otherwise overflow.
+    scale = max(hints.values()) if hints else 1.0
+    normalized = {path: max(sys.float_info.min, value / scale) for path, value in hints.items()}
+    fallback = statistics.median(normalized.values()) if normalized else None
+    weights = {path: normalized[path] if path in normalized else
+               fallback if fallback is not None else float(max(1, path.stat().st_size)) for path in paths}
+    return weights, {path: 0 if path in hints else 1 for path in paths}
+
+
+def partition_shards(paths: list[Path], capacity: int, multiplier: int,
+                     weights: dict[Path, float], priorities: dict[Path, int]) -> list[list[Path]]:
+    count = min(max(1, capacity * multiplier), len(paths))
+    shards: list[list[Path]] = [[] for _ in range(count)]
+    loads = [0.0] * count
+    for path in sorted(paths, key=lambda path: (-weights[path], priorities[path], path.as_posix())):
+        index = min(range(count), key=lambda item: (loads[item], item))
+        shards[index].append(path)
+        loads[index] += weights[path]
+    return [sorted(shard) for shard in shards if shard]
+
+
 def test_shards(
     paths: list[Path],
     capacity: int,
@@ -214,40 +248,25 @@ def test_shards(
         MAX_SHARD_MULTIPLIER,
         max(MIN_SHARD_MULTIPLIER, shard_multiplier),
     )
-    shard_count = min(max(1, capacity * multiplier), len(paths))
-    shards: list[list[Path]] = [[] for _ in range(shard_count)]
-    weights = [0.0] * shard_count
-    hints = {k: seconds for k, v in (duration_hints or {}).items() if (seconds := positive_seconds(v)) is not None}
-    fallback = statistics.median(hints.values()) if hints else None
+    weights, priorities = test_weights(paths, duration_hints)
+    return partition_shards(paths, capacity, multiplier, weights, priorities)
 
-    def weight(path: Path) -> float:
-        candidates = [path.as_posix()]
-        try:
-            candidates.append(path.relative_to(ROOT).as_posix())
-        except ValueError:
-            pass
-        hinted = next((hints[key] for key in candidates if key in hints), None)
-        if (
-            isinstance(hinted, (int, float))
-            and not isinstance(hinted, bool)
-            and math.isfinite(float(hinted))
-            and hinted > 0
-        ):
-            return float(hinted)
-        return float(fallback if fallback is not None else max(1, path.stat().st_size))
 
-    def hint_priority(path: Path) -> int:
-        try:
-            relative = path.relative_to(ROOT).as_posix()
-        except ValueError:
-            relative = path.as_posix()
-        return 0 if path.as_posix() in hints or relative in hints else 1
-    ordered = sorted(paths, key=lambda path: (-weight(path), hint_priority(path), path.as_posix()))
-    for path in ordered:
-        index = min(range(shard_count), key=lambda item: (weights[item], item))
-        shards[index].append(path)
-        weights[index] += weight(path)
-    return [sorted(shard) for shard in shards if shard]
+def queued_shard_duration(shards: list[list[Path]], capacity: int, weights: dict[Path, float]) -> float:
+    workers = [0.0] * min(max(1, capacity), max(1, len(shards)))
+    for shard in shards:
+        start = heapq.heappop(workers)
+        heapq.heappush(workers, start + sum(weights[path] for path in shard))
+    return max(workers)
+
+
+def adaptive_test_shards(paths: list[Path], capacity: int, duration_hints: dict[str, float]) -> list[list[Path]]:
+    weights, priorities = test_weights(paths, duration_hints)
+    if not any(priority == 0 for priority in priorities.values()):
+        return partition_shards(paths, capacity, DEFAULT_SHARD_MULTIPLIER, weights, priorities)
+    candidates = [partition_shards(paths, capacity, multiplier, weights, priorities)
+                  for multiplier in range(MIN_SHARD_MULTIPLIER, MAX_SHARD_MULTIPLIER + 1)]
+    return min(candidates, key=lambda shards: (queued_shard_duration(shards, capacity, weights), len(shards)))
 
 
 def checked_shard_results(
@@ -282,7 +301,7 @@ def run_shards(
     if not paths:
         print("FAIL: no files selected for sharded execution", file=sys.stderr)
         return 1
-    shards = test_shards(paths, capacity, duration_hints=hints)
+    shards = adaptive_test_shards(paths, capacity, hints)
     flattened = [path for shard in shards for path in shard]
     if sorted(flattened) != sorted(paths) or len(flattened) != len(set(flattened)):
         print("FAIL: unit-test shard coverage is incomplete or duplicated", file=sys.stderr)

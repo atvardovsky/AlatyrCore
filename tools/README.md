@@ -52,13 +52,17 @@ and [support relationships](../framework/support-information.md#relationship-dis
 Plan source-generated updates with `python3 tools/alatyr.py refresh-source`.
 Use `--check` for read-only freshness validation or `--write` for an explicit
 source refresh. Installed projects and golden evidence are outside this helper.
-Refresh reuses canonical checks only within one call and only for an identical
-complete source snapshot and isolated Git index. It rejects checker mutations;
-new, deleted, modified or generated inputs invalidate affected reuse. No
-persistent cache or reduced final acceptance is introduced.
+Refresh reuses canonical checks only within one call. The default key binds the
+complete source snapshot; audited rules/findings stages use exact-renderer-bound
+input/output and inventory keys with a full-snapshot fallback. Every executed
+checker retains full byte/mode and Git-control observations. Private Git refs,
+HEAD, config and index prevent ordinary child Git writes from reaching caller
+metadata; this is not an operating-system sandbox. New, deleted or modified
+inputs invalidate affected reuse. No persistent decision cache or reduced final
+acceptance is introduced.
 Only verified exact-output checks may skip rendering. Entry/bootstrap
 provenance remains on the canonical generator path; output changes switch
-back to full repair rather than adding a probe before every renderer.
+back to full repair outside the two audited input contracts.
 
 Source agents start at `tools/source-context/index.json` and one linked profile,
 not the full machine router. Check or regenerate these derived files with
@@ -122,7 +126,7 @@ Scenario `end_to_end` includes presence and explicitly activated conditional
 files, but excludes unobserved runtime output and hidden provider context.
 
 Unit-test timing feedback records suite execution, excluding discovery/import
-time. Partial duration hints use a seconds-based fallback, not file bytes.
+time. Partial duration hints use a selected-path duration fallback, not file bytes.
 Hints affect scheduling only and never reduce selected tests or checks.
 Duplicate nested observations invalidate only their ambiguous module hints;
 unrelated current measurements remain usable.
@@ -1026,6 +1030,9 @@ results remain declaration-ordered. Missing, duplicate or malformed results
 cannot establish success. The unit suite has a finite 600-second outer watchdog;
 other checks retain their manifest limits. Child processes keep the inherited
 group so a suite timeout still terminates the whole checker tree.
+Valid selected-path timing hints compare bounded two-to-four-shards-per-worker
+layouts by estimated queued completion time. Missing hints retain file-size
+scheduling; estimates never grant acceptance or increase worker capacity.
 For an explicit portable regression subset, use
 `python3 tools/check_source_unit_tests.py --test-module tests.test_yaml_support
 tests.test_parallel_execution`. This exact module list bypasses changed-path

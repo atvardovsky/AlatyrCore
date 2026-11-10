@@ -176,7 +176,7 @@ class MinimumWorkPlanTests(unittest.TestCase):
                 ),
                 now=now,
             )
-        self.assertEqual(select_plan.call_args.args[1], expected_validation_profile)
+        self.assertEqual(select_plan.call_args_list[0].args[1], expected_validation_profile)
         self.assertEqual(baseline.call_args.args[0], selection.effective_profile)
         return plan
 

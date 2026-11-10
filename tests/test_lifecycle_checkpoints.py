@@ -469,7 +469,7 @@ class LifecycleTests(ActiveTaskFixture):
     def test_native_evidence_expiry_during_final_baseline_read_is_rejected(self):
         self.observed(); self.bind_session()
         end = hooks.timestamp(self.policy["native_evidence"]["expires_at"])
-        clock = [end-1]; reads = []; original = hooks.object_at
+        clock = [end-1]; reads = []; original = hooks.raw_at
         def expires(*args, **kwargs):
             result = original(*args, **kwargs)
             reads.append(args[1])
@@ -477,7 +477,7 @@ class LifecycleTests(ActiveTaskFixture):
                 clock[0] = end
             return result
         with patch.object(hooks.time, "time", side_effect=lambda: clock[0]), \
-                patch.object(hooks, "object_at", side_effect=expires):
+                patch.object(hooks, "raw_at", side_effect=expires):
             with self.assertRaisesRegex(ValueError, "native evidence expired"):
                 self.event("completion")
         self.assertEqual(len(reads), 2)

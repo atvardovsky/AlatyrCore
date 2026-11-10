@@ -22,6 +22,23 @@ from source_context_selection import workflow_route
 
 
 class SourceAdoptionTests(SourceAdoptionFixture):
+    def test_status_loads_the_complete_policy_once(self):
+        import inspect_source_adoption as inspect
+        with patch.object(adoption, "policy_inputs", wraps=adoption.policy_inputs) as load, \
+                patch.object(inspect, "policy_inputs", load):
+            self.assertEqual(status(self.target)["runtime"], "current-policy-projection")
+        self.assertEqual(load.call_count, 1)
+
+    def test_binding_shares_task_evaluation_but_rechecks_input_mutation(self):
+        self.brief["authorized_phases"] = ["inspect"]; self.write_brief(); self.refresh_baseline()
+        with patch.object(hooks, "selected_task", wraps=hooks.selected_task) as selected:
+            self.assertEqual(self.bind_request()["status"], "bound")
+        self.assertEqual(selected.call_count, 1)
+        self.model["objective"] += " changed"
+        self.write_model()
+        with self.assertRaises(ValueError):
+            self.bind_request()
+
     def test_reconcile_is_idempotent_and_preserves_task_index(self):
         before = (self.target / adoption.INDEX).read_bytes()
         self.assertEqual(adoption.reconcile(self.target)["changed_paths"], [])

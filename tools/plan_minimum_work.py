@@ -21,18 +21,21 @@ from source_context_selection import (
 )
 
 from check_all import (
+    DEFAULT_JOBS,
     SelectionResult,
+    build_run_identity,
     default_changed_from,
     effective_baseline,
     environment_report,
     load_manifest,
     resolve_changed_from,
+    resolve_job_count,
     resolved_command,
     select_check_plan,
     selection_report,
     source_identity,
 )
-from source_check_reuse import check_input_fingerprint, load_reuse_report, reuse_decisions
+from source_check_reuse import SourceSnapshotIndex, check_input_fingerprint, load_reuse_report, reuse_decisions
 from source_state import source_snapshot
 from source_worker_contract import (
     load_source_worker_policy,
@@ -463,7 +466,7 @@ def _recommended_command(
     reuse_report: Path | None,
 ) -> list[str]:
     command = [sys.executable, "tools/check_all.py", "--profile", effective_profile]
-    if effective_profile in {"micro", "fast"} and changed_from:
+    if changed_from:
         command.extend(["--changed-from", changed_from])
     command_baseline = from_ref
     if effective_profile == "release" and command_baseline is None:
@@ -1081,16 +1084,35 @@ def build_plan(
         check["id"]: resolved_command(check, baseline) for check in selected
     }
     snapshot = source_snapshot(ROOT)
+    snapshot_index = SourceSnapshotIndex(snapshot)
     input_fingerprints = {
-        check["id"]: check_input_fingerprint(check, snapshot) for check in selected
+        check["id"]: check_input_fingerprint(check, snapshot_index) for check in selected
     }
     previous_report = (
         load_reuse_report(effective_reuse_report_path)
         if effective_reuse_report_path
         else None
     )
-    current_source = source_identity()
+    current_source = {**source_identity(), "source_snapshot_sha256": snapshot_index.sha256}
     current_environment = environment_report()
+    selection = selection_report(
+        profile=selected_profile,
+        changed_from=resolved_changed_from,
+        plan=plan,
+        manifest_checks=checks,
+    )
+    execution_plan = select_check_plan(
+        checks, plan.effective_profile, resolved_changed_from, platform=plan.platform,
+    )
+    execution_selection = selection_report(
+        profile=plan.effective_profile, changed_from=resolved_changed_from,
+        plan=execution_plan, manifest_checks=checks,
+    )
+    identity = build_run_identity(
+        requested_profile=plan.effective_profile, selection=execution_selection,
+        changed_from=resolved_changed_from, baseline=baseline,
+        source=current_source, jobs=resolve_job_count(DEFAULT_JOBS),
+    )
     reuse = reuse_decisions(
         selected=selected,
         previous_report=previous_report,
@@ -1098,16 +1120,11 @@ def build_plan(
         current_environment=current_environment,
         input_fingerprints=input_fingerprints,
         commands_by_id=commands_by_id,
+        current_run_identity=identity,
     )
     reusable_ids = [
         check_id for check_id, decision in reuse.items() if decision["reusable"] is True
     ]
-    selection = selection_report(
-        profile=selected_profile,
-        changed_from=resolved_changed_from,
-        plan=plan,
-        manifest_checks=checks,
-    )
     heavy_checks = [
         check["id"] for check in selected if check.get("resource_class") == "heavy"
     ]

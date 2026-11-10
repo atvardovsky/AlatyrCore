@@ -82,12 +82,14 @@ class LocalPythonImportGraph:
         complete = True
         importlib_names = {"importlib"}
         import_functions = {"__import__"}
-        for node in ast.walk(tree):
+        nodes = [node for node in ast.walk(tree)
+                 if isinstance(node, (ast.Import, ast.ImportFrom, ast.Call))]
+        for node in nodes:
             if isinstance(node, ast.Import):
                 importlib_names.update(alias.asname or alias.name for alias in node.names if alias.name == "importlib")
             elif isinstance(node, ast.ImportFrom) and node.module == "importlib":
                 import_functions.update(alias.asname or alias.name for alias in node.names if alias.name == "import_module")
-        for node in ast.walk(tree):
+        for node in nodes:
             names: list[str] = []
             if isinstance(node, ast.Import):
                 names.extend(alias.name for alias in node.names)

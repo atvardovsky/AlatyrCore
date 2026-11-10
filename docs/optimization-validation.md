@@ -51,6 +51,27 @@ to release notes and completion summaries, not only benchmark records:
 This is a maintainer reporting checklist, not an automatic semantic-claim
 validator or a guarantee that an assistant follows the guidance.
 
+## Python Pipeline Qualification
+
+For import scanning, compare dependency sets and completeness flags, including
+aliased/literal/dynamic imports, invalid sources and package membership changes.
+For planner reuse, compare its emitted command with canonical runner identity;
+profile escalation, baseline forwarding, environment and snapshot changes must
+not produce false reuse. Missing or malformed evidence remains non-reusable.
+
+Refresh qualification compares bytes, modes, membership and planned changes
+against the conservative path. Test same-size/same-mtime edits, input/output
+deletion, new inventory members, unknown renderer implementations and Git
+HEAD/ref/config/index mutations. Rejection must leave caller metadata intact;
+detecting a write after it escaped isolation is insufficient. Keep the clean
+post-commit CLI regression and full-snapshot fallback for unproven stages.
+
+Compare adaptive shards against an independent queue simulation, including
+partial/invalid/unrelated hints and numeric extremes. Timing affects grouping
+only: every selected test still runs exactly once at the assigned capacity.
+Benchmark cold execution and timing-only scheduling separately. Do not count
+cached results as cold qualification or remove public-path tests for speed.
+
 ## Agent Outcome Measurements
 
 Use the existing [paired benchmark suite](../conformance/benchmarks/benchmark-task-suite.json)

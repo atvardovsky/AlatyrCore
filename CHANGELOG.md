@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Isolate source-refresh Git refs, HEAD, config and index; preserve per-check
+  mutation detection while sharing byte/mode observations and audited,
+  implementation-bound rules/findings input keys with conservative fallback.
+- Reduce repeated AST traversal, fingerprint-index construction, source-policy
+  loading, lifecycle task evaluation and conformance scenario resolution.
+  Bind planner reuse to its emitted runner command, refs and source snapshot;
+  malformed source-check evidence remains non-reusable.
+- Select bounded unit-test shard layouts using valid selected-path timing
+  hints, preserving coverage, isolation, capacity and cold acceptance. Source
+  tooling only: no framework, adapter schema, template or migration change.
 - Apply ready-work refill and conditional admission references to source
   maintenance, with searchable owners and source-specific authoring/projection
   routes. Keep source workers read-only and installed-target finalization separate.

@@ -154,7 +154,22 @@ only after dependency completeness is established; do not infer them from the
 ordering DAG or persist this optimization as release evidence.
 Checker-first generation is opt-in. Entry/bootstrap provenance normalizers
 retain their canonical generators; once outputs change, the full repair path
-runs instead of probing every remaining stage for possible reuse.
+runs except for the independently audited input contracts described below.
+
+Refresh children use private Git refs, HEAD, configuration and index, with shared
+immutable objects only. Each executed checker retains a full post-call byte/mode
+observation and Git-control comparison. Narrow check reuse is limited to the
+audited rules/findings input contracts in `refresh_source_projections.py`, bound
+to exact renderer hashes, output bytes and inventory membership. Changed or
+unknown implementations fall back to the full closure; ordering edges alone
+never establish input completeness. Entry/bootstrap normalization is unchanged.
+
+Planning shares one snapshot index and builds reuse identity for the emitted
+runner command, including resolved refs and default capacity. Invocation-local
+task/policy reuse retains final freshness checks, not cached authority. Optional
+unit timing hints choose a bounded shard layout by queued-work estimates;
+coverage, resource capacity and cold acceptance remain unchanged. Estimates are
+not measured latency, and missing hints retain file-size scheduling.
 
 ## Development Context Contract
 

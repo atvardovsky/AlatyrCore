@@ -10,7 +10,6 @@ from source_adoption import (ROOT, MARKER, MAX_BYTES, assert_current, assert_sou
     desired_runtime, parse_knowledge, parse_source_policy, policy_inputs, reconcile, sha, source_object, validate_knowledge_owner)
 from request_values import request_path, strings, text
 from support_write_transaction import SupportTransaction, read_output, support_writer_lock
-from target_validation_support import GitEvidenceView
 
 
 def knowledge(root, query: str) -> dict:
@@ -30,6 +29,7 @@ def knowledge(root, query: str) -> dict:
 
 
 def bridge(root, surface: str, *, write: bool) -> dict:
+    from target_validation_support import GitEvidenceView
     assert_source_root(root)
     _, catalog = source_object(root, "conformance/runs/assistant-surfaces.json")
     values = catalog.get("surfaces")
@@ -92,7 +92,7 @@ def status(root) -> dict:
         try:
             assert_current(root)
             runtime = "current-policy-projection"
-            expected, _ = desired_runtime(root)
+            expected, _ = desired_runtime(root, _loaded=(policy, inputs))
             drift = [path for path, raw in expected.items() if read_output(root, root / path, max_bytes=MAX_BYTES) != raw]
             strategies = "reconciliation-required" if drift else "current"
             if drift:

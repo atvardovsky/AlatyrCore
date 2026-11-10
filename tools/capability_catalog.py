@@ -173,8 +173,8 @@ def removable_target_files(
     return removable
 
 
-def minimum_pack(selected: Iterable[str]) -> str:
-    modules = load_modules()
+def minimum_pack(selected: Iterable[str], modules: dict[str, dict[str, Any]] | None = None) -> str:
+    modules = load_modules() if modules is None else modules
     required = "kernel"
     for module_id in dependency_closure(selected, modules):
         pack = modules[module_id].get("min_framework_pack")

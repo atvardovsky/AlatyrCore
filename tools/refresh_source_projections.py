@@ -38,6 +38,13 @@ class Stage:
 class RefreshSnapshot:
     entries: dict[str, SourceEntry]
     revision: str
+    refs: bytes
+
+
+@dataclass(frozen=True)
+class MirrorSnapshot:
+    files: dict[str, bytes]
+    modes: dict[str, int]
 
 
 def revision(root: Path) -> str:
@@ -61,6 +68,36 @@ STAGES = (
     Stage("evidence", ("support",), ("conformance/evidence-status.json",), ("render_evidence_status.py",), ("render_evidence_status.py", "--check"), check_first=True),
 )
 
+# Independently audited render/check inputs. Other stages retain the full closure.
+STAGE_INPUTS = {
+    "rules": ("framework/rule-registry.json",),
+    "findings": ("tools/validate_target_adapter.py", "tools/project_knowledge.py",
+                 "tools/target_adapter_validation/*.py"),
+}
+STAGE_IMPLEMENTATIONS = {
+    "rules": "e4d11ab9ba08a4bee1ff50f028495982dbcae715761dbe976a8efe4fc055c31d",
+    "findings": "7784045c8bd3d4d94add201a26bc6349e0f041cac65eff18e204bc54020ec75f",
+}
+
+
+def stage_input_digest(stage: Stage, root: Path, files: dict[str, bytes]) -> str | None:
+    canonical = next((item for item in STAGES if item.name == stage.name), None)
+    if stage != canonical or stage.name not in STAGE_INPUTS:
+        return None
+    implementation = files.get("tools/" + stage.command[0])
+    if implementation is None or hashlib.sha256(implementation).hexdigest() != STAGE_IMPLEMENTATIONS[stage.name]:
+        return None
+    patterns = (*STAGE_INPUTS[stage.name], "tools/" + stage.command[0],
+                "tools/" + stage.check[0], "tools/refresh_source_projections.py", *stage.outputs)
+    selected = {}
+    for pattern in patterns:
+        paths = list(root.glob(pattern)) if any(char in pattern for char in "*?[") else [root / pattern]
+        for path in paths:
+            name = path.relative_to(root).as_posix()
+            raw = files.get(name)
+            selected[name] = hashlib.sha256(raw).hexdigest() if raw is not None else None
+    return hashlib.sha256(json.dumps(sorted(selected.items())).encode()).hexdigest()
+
 
 def ordered_stages(stages: tuple[Stage, ...]) -> list[Stage]:
     # The conservative input closure includes membership and every source byte.
@@ -74,22 +111,74 @@ def ordered_stages(stages: tuple[Stage, ...]) -> list[Stage]:
     return [by_id[key] for key in order]
 
 
-def _files(root: Path) -> dict[str, bytes]:
-    result = {}
-    def visit(directory: Path) -> None:
+def mirror_snapshot(root: Path) -> MirrorSnapshot:
+    files, modes = {}, {}
+    def visit(directory: Path | str, prefix: str) -> None:
         with os.scandir(directory) as entries:
             for entry in entries:
-                if entry.name == "__pycache__":
-                    continue
                 if entry.is_symlink():
                     raise ValueError("source refresh refuses symbolic links")
-                path = Path(entry.path)
+                name = prefix + entry.name
                 if entry.is_dir(follow_symlinks=False):
-                    visit(path)
+                    visit(entry.path, name + "/")
                 elif entry.is_file(follow_symlinks=False):
-                    result[path.relative_to(root).as_posix()] = path.read_bytes()
-    visit(root)
-    return result
+                    modes[name] = stat.S_IMODE(entry.stat(follow_symlinks=False).st_mode)
+                    with open(entry.path, "rb") as stream:
+                        files[name] = stream.read()
+    visit(root, "")
+    return MirrorSnapshot(files, modes)
+
+
+def repository_refs(root: Path, env: dict[str, str] | None = None) -> bytes:
+    return subprocess.check_output(
+        ["git", "for-each-ref", "--format=%(refname) %(objectname)"], cwd=root, env=env)
+
+
+def isolated_git(root: Path, directory: Path, mirror: Path) -> tuple[dict[str, str], Path]:
+    """Private refs/config/index; only immutable source objects are shared."""
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+    config_env = {**env, **{key: os.environ[key] for key in
+                  ("GIT_CONFIG_GLOBAL", "GIT_CONFIG_SYSTEM", "GIT_CONFIG_NOSYSTEM") if key in os.environ}}
+    global_values = subprocess.check_output(["git", "config", "--null", "--list", "--includes"],
+                                            cwd=directory, env=config_env)
+    home = directory / "home"
+    home.mkdir()
+    global_config = home / ".gitconfig"
+    global_config.write_bytes(b"")
+    system_config = directory / "system.config"
+    system_config.write_bytes(b"")
+    env.update(HOME=str(home), USERPROFILE=str(home), XDG_CONFIG_HOME=str(home / ".config"),
+               GIT_CONFIG_GLOBAL=str(global_config), GIT_CONFIG_SYSTEM=str(system_config), GIT_CONFIG_NOSYSTEM="1")
+    for record in filter(None, global_values.split(b"\0")):
+        key, separator, value = record.partition(b"\n")
+        if key.lower().startswith((b"include.", b"includeif.")):
+            continue
+        subprocess.run(["git", "config", "--file", str(global_config), "--add", os.fsdecode(key),
+                        os.fsdecode(value) if separator else "true"], cwd=directory, env=env, check=True, capture_output=True)
+    metadata = directory / "metadata.git"
+    common = Path(subprocess.check_output(["git", "rev-parse", "--git-common-dir"], cwd=root, text=True).strip())
+    common = common if common.is_absolute() else root / common
+    git_dir = Path(subprocess.check_output(["git", "rev-parse", "--absolute-git-dir"], cwd=root, text=True).strip())
+    subprocess.run(["git", "clone", "--mirror", "--shared", "--quiet", str(common), str(metadata)],
+                   env=env, check=True, capture_output=True)
+    (metadata / "HEAD").write_bytes((git_dir / "HEAD").read_bytes())
+    index = Path(subprocess.check_output(["git", "rev-parse", "--git-path", "index"],
+                                      cwd=root, text=True).strip())
+    isolated_index = directory / "index"
+    index = index if index.is_absolute() else root / index
+    if index.is_file():
+        shutil.copyfile(index, isolated_index)
+    env.update(GIT_DIR=str(metadata), GIT_WORK_TREE=str(mirror),
+               GIT_INDEX_FILE=str(isolated_index), PYTHONDONTWRITEBYTECODE="1")
+    shared = subprocess.check_output(["git", "rev-parse", "--shared-index-path"], cwd=root, text=True).strip()
+    if shared:
+        backing = Path(shared)
+        backing = backing if backing.is_absolute() else root / backing
+        shutil.copyfile(backing, metadata / backing.name)
+        shutil.copyfile(backing, directory / backing.name)
+        subprocess.run(["git", "-c", "core.splitIndex=false", "update-index", "--no-split-index"],
+                       cwd=mirror, env=env, check=True, capture_output=True)
+    return env, isolated_index
 
 
 def _run(root: Path, command: tuple[str, ...], env: dict[str, str], *, require_success: bool = True,
@@ -112,14 +201,21 @@ def verify_outputs(changes, stages: tuple[Stage, ...]) -> None:
             raise ValueError(f"source projection output lacks a unique declared owner: {path}")
 
 
-def normalize_outputs(root: Path, stage: Stage) -> bool:
+def normalize_outputs(root: Path, stage: Stage, observed: dict[str, bytes] | None = None,
+                      original: dict[str, SourceEntry] | None = None) -> bool:
     changed = False
     for pattern in stage.outputs:
         for path in root.glob(pattern):
             if path.is_symlink():
                 raise ValueError("source renderer output must not be a symlink")
+            if path.is_file() and original is not None and path.relative_to(root).as_posix() not in original:
+                expected_mode = 0o666 if os.name == "nt" else 0o644
+                if stat.S_IMODE(path.stat().st_mode) != expected_mode:
+                    path.chmod(0o644)
+                    changed = True
             if path.is_file() and path.suffix in {".md", ".json"}:
-                content = path.read_bytes()
+                name = path.relative_to(root).as_posix()
+                content = observed[name] if observed is not None and name in observed else path.read_bytes()
                 if b"\r\n" in content:
                     path.write_bytes(content.replace(b"\r\n", b"\n"))
                     changed = True
@@ -131,9 +227,8 @@ def prepare(root: Path = ROOT, stages: tuple[Stage, ...] = STAGES, *, reuse_chec
     worktree = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], cwd=root, text=True).strip()).resolve()
     if worktree != root:
         raise ValueError("source refresh requires its repository root, not a nested vendor copy")
-    before = RefreshSnapshot(source_snapshot(root), revision(root))
+    before = RefreshSnapshot(source_snapshot(root), revision(root), repository_refs(root))
     ordered = ordered_stages(stages)
-    git_dir = subprocess.check_output(["git", "rev-parse", "--absolute-git-dir"], cwd=root, text=True).strip()
     with tempfile.TemporaryDirectory(prefix="alatyr-source-projections-") as directory:
         mirror = Path(directory) / "source"
         mirror.mkdir()
@@ -144,26 +239,25 @@ def prepare(root: Path = ROOT, stages: tuple[Stage, ...] = STAGES, *, reuse_chec
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(root / path, destination)
             destination.chmod(entry.mode)
-        initial = _files(mirror)
-        env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
-        env.update(GIT_DIR=git_dir, GIT_WORK_TREE=str(mirror), PYTHONDONTWRITEBYTECODE="1")
-        index_path = Path(subprocess.check_output(["git", "rev-parse", "--git-path", "index"], cwd=root, text=True).strip())
-        if not index_path.is_absolute():
-            index_path = root / index_path
-        isolated_index = Path(directory) / "index"
-        if index_path.is_file():
-            shutil.copyfile(index_path, isolated_index)
-        env["GIT_INDEX_FILE"] = str(isolated_index)
+        initial = mirror_snapshot(mirror).files
+        env, isolated_index = isolated_git(root, Path(directory), mirror)
         current = initial
         passed_checks: set[tuple] = set()
 
-        def git_refs() -> bytes:
-            return subprocess.check_output(["git", "for-each-ref", "--format=%(refname) %(objectname)"], cwd=root, env=env)
+        def git_refs() -> tuple:
+            metadata = Path(env["GIT_DIR"])
+            return (repository_refs(mirror, env), (metadata / "HEAD").read_bytes(),
+                    (metadata / "config").read_bytes(),
+                    (Path(env["HOME"]) / ".gitconfig").read_bytes(),
+                    Path(env["GIT_CONFIG_SYSTEM"]).read_bytes(),
+                    tuple((str(path), hashlib.sha256(path.read_bytes()).hexdigest())
+                          for parent in (metadata, Path(directory)) for path in sorted(parent.glob("sharedindex.*"))))
 
         initial_refs = git_refs()
 
         def file_modes(files: dict[str, bytes]) -> tuple[tuple[str, int], ...]:
-            return tuple((name, stat.S_IMODE((mirror / name).lstat().st_mode)) for name in sorted(files))
+            return tuple((name, stat.S_IMODE(os.lstat(str(mirror) + os.sep + name).st_mode))
+                         for name in sorted(files))
 
         def fingerprint(files: dict[str, bytes]) -> str:
             digest = hashlib.sha256()
@@ -173,21 +267,27 @@ def prepare(root: Path = ROOT, stages: tuple[Stage, ...] = STAGES, *, reuse_chec
             return digest.hexdigest()
 
         current_fingerprint = fingerprint(current)
+        verified_snapshot: MirrorSnapshot | None = None
 
         def checked(stage: Stage, *, required: bool = False) -> bool:
+            nonlocal verified_snapshot
+            verified_snapshot = None
             modes_before = file_modes(current)
             refs_before = git_refs()
             index_before = isolated_index.read_bytes() if isolated_index.exists() else None
             index_digest = hashlib.sha256(index_before).hexdigest() if index_before is not None else None
-            key = (stage.check, current_fingerprint, index_digest, modes_before, refs_before)
+            inputs = stage_input_digest(stage, mirror, current)
+            key = (stage.check, inputs or current_fingerprint, index_digest, modes_before, refs_before)
             if reuse_checks and key in passed_checks:
                 return True
             diagnostics: list[str] = []
             success = _run(mirror, stage.check, env, require_success=False, diagnostics=diagnostics)
-            if _files(mirror) != current or (
+            observed = mirror_snapshot(mirror)
+            if observed.files != current or (
                 isolated_index.read_bytes() if isolated_index.exists() else None
-            ) != index_before or file_modes(current) != modes_before or git_refs() != refs_before:
+            ) != index_before or tuple(sorted(observed.modes.items())) != modes_before or git_refs() != refs_before:
                 raise ValueError(f"projection checker {stage.check[0]} modified its input snapshot")
+            verified_snapshot = observed
             if success:
                 passed_checks.add(key)
             elif required:
@@ -201,16 +301,19 @@ def prepare(root: Path = ROOT, stages: tuple[Stage, ...] = STAGES, *, reuse_chec
                 # Keep historical generation metadata when the canonical check passes.
                 # Once outputs change, retain the canonical full repair path.
                 # Only support's historical-metadata comparison remains eager.
-                try_current = stage.preserve_current or (stage.check_first and not repairing)
+                try_current = stage.preserve_current or (stage.check_first and
+                    (not repairing or stage_input_digest(stage, mirror, current) is not None))
                 generated = not try_current or not checked(stage)
                 modes_before = dict(file_modes(current)) if generated else {}
                 if generated:
                     _run(mirror, stage.command, env)
-                normalized = normalize_outputs(mirror, stage)
+                normalized = normalize_outputs(mirror, stage,
+                    verified_snapshot.files if not generated and verified_snapshot is not None else None,
+                    before.entries)
                 if generated or normalized:
-                    next_files = _files(mirror)
-                    if generated and any((mirror / name).exists() and
-                                         stat.S_IMODE((mirror / name).lstat().st_mode) != mode
+                    observed = mirror_snapshot(mirror)
+                    next_files = observed.files
+                    if generated and any(name in observed.modes and observed.modes[name] != mode
                                          for name, mode in modes_before.items()):
                         raise ValueError("projection renderer changed source file permissions")
                     if next_files != current:
@@ -223,8 +326,9 @@ def prepare(root: Path = ROOT, stages: tuple[Stage, ...] = STAGES, *, reuse_chec
             raise ValueError("source projection closure did not stabilize; no source files were changed")
         for stage in ordered:
             checked(stage, required=True)
-        if _files(mirror) != current or any(
-            name in current and stat.S_IMODE((mirror / name).lstat().st_mode) != entry.mode
+        observed = mirror_snapshot(mirror)
+        if observed.files != current or any(
+            name in current and observed.modes[name] != entry.mode
             for name, entry in before.entries.items()
         ):
             raise ValueError("projection snapshot changed after validation")
@@ -233,14 +337,16 @@ def prepare(root: Path = ROOT, stages: tuple[Stage, ...] = STAGES, *, reuse_chec
         changes = {path: current.get(path) for path in sorted(set(initial) | set(current))
                    if initial.get(path) != current.get(path)}
         verify_outputs(changes, stages)
-    if source_snapshot(root) != before.entries or revision(root) != before.revision:
+    if (source_snapshot(root) != before.entries or revision(root) != before.revision
+            or repository_refs(root) != before.refs):
         raise ValueError("source changed while planning; rerun the refresh")
     return before, changes
 
 
 def apply(root: Path, before, changes: dict[str, bytes | None], stages: tuple[Stage, ...] = STAGES) -> None:
     verify_outputs(changes, stages)
-    if source_snapshot(root) != before.entries or revision(root) != before.revision:
+    if (source_snapshot(root) != before.entries or revision(root) != before.revision
+            or repository_refs(root) != before.refs):
         raise ValueError("source changed since refresh plan; no changes applied")
     for name, content in changes.items():
         path = root / name
@@ -261,7 +367,15 @@ def apply(root: Path, before, changes: dict[str, bytes | None], stages: tuple[St
     if any((root / p).read_bytes() != value if value is not None else (root / p).exists() for p, value in changes.items()):
         raise ValueError("source refresh was interrupted or modified; verify the partial result")
     after = source_snapshot(root)
-    if revision(root) != before.revision or {
+    for name, content in changes.items():
+        entry = after.get(name)
+        expected_mode = before.entries[name].mode if name in before.entries else (0o666 if os.name == "nt" else 0o644)
+        invalid = (entry is not None and entry.kind != "missing") if content is None else (
+            entry is None or entry.kind != "file" or entry.mode != expected_mode
+            or entry.digest != hashlib.sha256(content).hexdigest())
+        if invalid:
+            raise ValueError("source outputs changed during refresh; verify the partial result and rerun")
+    if revision(root) != before.revision or repository_refs(root) != before.refs or {
         p: entry for p, entry in after.items() if p not in changes
     } != {p: entry for p, entry in before.entries.items() if p not in changes}:
         raise ValueError("source inputs changed during refresh; verify the partial result and rerun")

@@ -270,43 +270,44 @@ def fixture_dirs(selected: list[str]) -> list[Path]:
     return result
 
 
-def support_profile_scenarios() -> list[tuple[str, str, list[str]]]:
-    scenarios = [(profile, profile, []) for profile in profile_names()]
+def support_profile_scenarios(selected_label: str | None = None) -> list[tuple[str, str, list[str]]]:
+    modules = load_modules()
+    candidates = [(profile, profile, []) for profile in profile_names()]
     profile_for_pack = {
         "kernel": "kernel",
         "core": "core",
         "standard": "standard",
         "complete": "full",
     }
-    scenarios.extend(
+    candidates.extend(
         (
             f"module-{module_id}",
-            profile_for_pack[minimum_pack([module_id])],
+            None,
             [module_id],
         )
-        for module_id, module in sorted(load_modules().items())
+        for module_id, module in sorted(modules.items())
         if module.get("module_kind") != "source-repository"
     )
-    scenarios.extend(
+    candidates.extend(
         (
             f"interaction-{label}",
-            profile_for_pack[minimum_pack(modules)],
-            modules,
+            None,
+            enabled,
         )
-        for label, modules in sorted(INTERACTION_SCENARIOS.items())
+        for label, enabled in sorted(INTERACTION_SCENARIOS.items())
     )
-    return scenarios
+    selected = [row for row in candidates if selected_label is None or row[0] == selected_label]
+    if not selected:
+        raise ValueError(f"unknown support profile scenario: {selected_label}")
+    return [(label, profile or profile_for_pack[minimum_pack(enabled, modules)], enabled)
+            for label, profile, enabled in selected]
 
 
 def validate_support_profiles(
     work_root: Path, selected_label: str | None = None
 ) -> list[str]:
     failures: list[str] = []
-    scenarios = support_profile_scenarios()
-    if selected_label is not None:
-        scenarios = [scenario for scenario in scenarios if scenario[0] == selected_label]
-        if not scenarios:
-            raise ValueError(f"unknown support profile scenario: {selected_label}")
+    scenarios = support_profile_scenarios(selected_label)
     for label, profile, enabled_modules in scenarios:
         repo = work_root / f"support-profile-{label}"
         repo.mkdir(parents=True, exist_ok=False)

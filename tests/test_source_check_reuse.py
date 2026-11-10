@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -17,8 +19,10 @@ from source_check_reuse import (  # noqa: E402
     check_cache_identity,
     check_input_fingerprint,
     environment_fingerprint,
+    load_reuse_report,
     reuse_decisions,
 )
+from path_spec import PathDialect, PathSpec  # noqa: E402
 from source_state import SourceEntry  # noqa: E402
 
 
@@ -159,6 +163,45 @@ def decision(
 
 
 class SourceCheckReuseTests(unittest.TestCase):
+    def test_malformed_report_fields_fail_closed_without_crashes(self) -> None:
+        mutations = [("source", None), ("source", []),
+                     ("status", []), ("status", {}), ("status", None),
+                     ("input_fingerprint", None), ("input_fingerprint", []),
+                     ("timed_out", None), ("timed_out", "false"), ("timed_out", 0)]
+        for key, value in mutations:
+            with self.subTest(key=key, value=value):
+                report = reusable_report()
+                if key == "source":
+                    report[key] = value
+                else:
+                    report["checks"][0][key] = value
+                self.assertFalse(decision(report)["reusable"])
+
+    def test_invalid_report_schema_types_produce_diagnostics(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            for value in ([], {}, None, True, "3", 3.0, 0):
+                with self.subTest(value=value):
+                    report = reusable_report()
+                    report["schema_version"] = value
+                    path.write_text(json.dumps(report), encoding="utf-8")
+                    with self.assertRaisesRegex(ValueError, "schema 2 or 3"):
+                        load_reuse_report(path)
+
+    def test_index_matches_host_oracle_at_unicode_and_case_boundaries(self) -> None:
+        names = ("docs/\U0010ffffleaf.md", "docs/a.md", "Docs/B.MD", "other/x.md")
+        snapshot = {name: SourceEntry("file", 0o644, name) for name in names}
+        index = SourceSnapshotIndex(snapshot)
+        for pattern in ("docs/*", "docs/**", "Docs/*", "Docs/B.MD", "docs/b.md", "**/*.md"):
+            with self.subTest(pattern=pattern):
+                expected = tuple(sorted(name for name in names
+                                        if PathSpec(pattern, PathDialect.SOURCE_HOST_V1).matches(name)))
+                self.assertEqual(index.matching_paths(pattern), expected)
+        item = {**check(), "contract_inputs": ["docs/*"]}
+        before = index.fingerprint(item)
+        snapshot[names[0]] = SourceEntry("file", 0o644, "changed")
+        self.assertNotEqual(SourceSnapshotIndex(snapshot).fingerprint(item), before)
+
     def test_per_check_cache_identity_ignores_unrelated_source_snapshot(self) -> None:
         selected = {
             **check(),

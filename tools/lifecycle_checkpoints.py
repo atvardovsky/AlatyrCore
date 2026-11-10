@@ -40,11 +40,16 @@ def digest(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def object_at(target: Path, relative: str, limit: int = MAX_INPUT_BYTES) -> tuple[bytes, dict]:
+def raw_at(target: Path, relative: str, limit: int = MAX_INPUT_BYTES) -> bytes:
     relative = relative_path(relative)
     raw = read_output(target, target / relative, max_bytes=limit)
     if raw is None:
         raise ValueError(f"missing lifecycle input: {relative}")
+    return raw
+
+
+def object_at(target: Path, relative: str, limit: int = MAX_INPUT_BYTES) -> tuple[bytes, dict]:
+    raw = raw_at(target, relative, limit)
     return raw, json_object(raw, relative)
 
 
@@ -220,15 +225,17 @@ def review_request(target: Path, brief_path: str, action: object, *,
                    native_payload: dict | None = None, retained: dict | None = None,
                    policy_sha256: str | None = None, history_anchor: dict | None = None,
                    history_request_id: str | None = None, history_inputs: list[str] | None = None,
-                   source_contour: bool = False, source_scope: dict | None = None) -> dict:
+                   source_contour: bool = False, source_scope: dict | None = None,
+                   _selected_task: dict | None = None) -> dict:
     from request_brief import MAX_BRIEF_BYTES, action_failures, native_file_action_failures, parse_action
     raw, brief = request_artifact(target, brief_path)
     selected_action = parse_action(action)
     if expected_sha256 is not None and digest(raw) != expected_sha256:
         raise ValueError("bound request brief changed; reconcile the newest request")
     selected_id = task_id if task_id is not None else brief["task_id"]
-    selected = selected_task(target, selected_id, request_review=True,
-                             require_completion=selected_action["kind"] == "complete", source_contour=source_contour)
+    selected = (_selected_task if _selected_task is not None else
+                selected_task(target, selected_id, request_review=True,
+                    require_completion=selected_action["kind"] == "complete", source_contour=source_contour))
     failures = action_failures(brief, selected_action, selected["request_model"],
         request_id=request_id if request_id is not None else brief["request_id"], task_id=selected_id)
     if source_contour:
@@ -329,7 +336,8 @@ def review_request(target: Path, brief_path: str, action: object, *,
     return result
 
 
-def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, retained: dict, *, source_contour: bool = False) -> dict | None:
+def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, retained: dict, *, source_contour: bool = False,
+                       _selected_task: dict | None = None) -> dict | None:
     path = bind.get("request_brief")
     prior = state.get("binding")
     required = policy.get("request_guard", {}).get("required", False) or isinstance(prior, dict) and "request_brief" in prior
@@ -346,7 +354,7 @@ def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, reta
     prior_inputs = prior.get("request_brief", {}).get("history_inputs") if isinstance(prior, dict) else None
     review = review_request(target, path, action, request_id=state["request_id"], task_id=bind["task_id"],
                             history_anchor=prior_history, history_request_id=prior_request, history_inputs=prior_inputs,
-                            source_contour=source_contour)
+                            source_contour=source_contour, _selected_task=_selected_task)
     if review["checkpoint_required"]:
         raise ValueError(review["reason"])
     if review.get("delivery_review", {}).get("state") == "reassessment-required":
@@ -443,7 +451,7 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
             if state["status"] in {"interrupted", "ended"} or bind.get("request_id") != state["request_id"]:
                 raise ValueError("reviewed binding requires the current non-interrupted request ID")
             baseline_raw, retained = object_at(target, bind["baseline"], 128 * 1024)
-            task_options = {"request_review": True, "source_contour": True} if source_contour else {}
+            task_options = {"request_review": True, "source_contour": source_contour} if bind.get("request_brief") is not None else ({"source_contour": True} if source_contour else {})
             task = selected_task(target, identifier(bind["task_id"], "task_id"), **task_options)
             completion_only = bind.get("completion_only", False)
             if type(completion_only) is not bool:
@@ -455,7 +463,8 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
                 raise ValueError("reviewed baseline must include current canonical task index, selected model and projection, and lifecycle policy; capture changed/missing selected inputs: " + ", ".join(missing[:12]))
             if read_output(target, target / bind["baseline"], max_bytes=128 * 1024) != baseline_raw:
                 raise ValueError("reviewed baseline changed during binding")
-            request_brief = bind_request_brief(target, bind, state, policy, retained, source_contour=source_contour)
+            request_brief = bind_request_brief(target, bind, state, policy, retained,
+                source_contour=source_contour, _selected_task=task)
             scope = None
             if source_contour:
                 from source_scope import bind_scope, scope_inputs
@@ -557,7 +566,7 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
             options = {"source_contour": True, "protected_inputs": tuple(assert_current(target))} if source_contour else {}
             context = (check_retained_context(target, target / state["binding"]["baseline"], inspection_omissions=omissions, **options)
                        if omissions else check_retained_context(target, target / state["binding"]["baseline"], **options))
-            final_baseline, _ = object_at(target, state["binding"]["baseline"], 128 * 1024)
+            final_baseline = raw_at(target, state["binding"]["baseline"], 128 * 1024)
             if context["status"] != "current" or digest(final_baseline) != state["binding"]["baseline_sha256"]:
                 delivery_diagnostics = result.get("delivery_review")
                 result = decision("review-required", "Selected context or reviewed baseline changed before delivery; inspect only.", block=True)

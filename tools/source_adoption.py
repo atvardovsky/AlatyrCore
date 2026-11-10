@@ -10,7 +10,6 @@ from lifecycle_policy import POLICY as LIFECYCLE_POLICY, parse_policy
 from request_values import fields, request_path, strings, text
 from source_context_selection import source_json
 from support_write_transaction import SupportTransaction, read_output, safe_output, support_writer_lock
-from target_validation_support import GitEvidenceView
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = "tools/source_adoption.json"
@@ -93,7 +92,7 @@ def policy_inputs(root: Path) -> tuple[dict, dict[str, bytes]]:
             if not safe_output(root, root / path).is_file():
                 raise ValueError("missing source equivalent reference: " + path)
     knowledge = parse_knowledge(source_json(inputs[policy["knowledge_catalog"]].decode("utf-8")))
-    owners = {}
+    owners = dict(inputs)
     for identity, item in knowledge["items"].items():
         if item["owner"] not in owners:
             owners[item["owner"]] = read_output(root, root / item["owner"], max_bytes=MAX_BYTES)
@@ -125,8 +124,9 @@ def validate_knowledge_owner(identity: str, item: dict, raw: bytes | None) -> No
         raise ValueError("source knowledge owner/heading is missing: " + identity)
 
 
-def desired_runtime(root: Path) -> tuple[dict[str, bytes], dict[str, bytes]]:
-    policy, inputs = policy_inputs(root)
+def desired_runtime(root: Path, *, _loaded: tuple[dict, dict[str, bytes]] | None = None) -> tuple[dict[str, bytes], dict[str, bytes]]:
+    policy, source_inputs = policy_inputs(root) if _loaded is None else _loaded
+    inputs = dict(source_inputs)
     outputs = {LIFECYCLE_POLICY: inputs[policy["lifecycle_policy"]]}
     strategy_hashes = {}
     directory = root / "templates/target/.ai/assistant/analysis-strategies"
@@ -174,6 +174,7 @@ def assert_current(root: Path) -> dict[str, str]:
 
 
 def assert_runtime_untracked(root: Path) -> None:
+    from target_validation_support import GitEvidenceView
     git = GitEvidenceView(root)
     for path in (INDEX, LIFECYCLE_POLICY, MARKER, ".ai/.runtime/support-writer/transaction.lock"):
         if git.is_ignored(path) is not True or git.is_tracked(path) is not False:
@@ -202,6 +203,7 @@ def selected_strategy_inputs(root: Path, model: dict) -> dict[str, str]:
 
 
 def reconcile(root: Path, *, write: bool = False, approve_policy_update: bool = False) -> dict:
+    from target_validation_support import GitEvidenceView
     assert_source_root(root)
     outputs, inputs = desired_runtime(root)
     assert_runtime_untracked(root)

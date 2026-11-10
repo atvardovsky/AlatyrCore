@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from bisect import bisect_left
+from itertools import islice, takewhile
 from pathlib import Path
 from typing import Any
 
@@ -38,6 +40,8 @@ class SourceSnapshotIndex:
         self._entries = tuple(sorted(snapshot.items()))
         self._by_path = dict(self._entries)
         self._paths = tuple(relpath for relpath, _entry in self._entries)
+        self._match_paths = tuple(sorted((os.path.normcase(path), path) for path in self._paths))
+        self._match_names = tuple(name for name, _path in self._match_paths)
         self._pattern_matches: dict[str, tuple[str, ...]] = {}
         self.sha256 = canonical_digest(
             {
@@ -59,7 +63,10 @@ class SourceSnapshotIndex:
         if cached is not None:
             return cached
         if not any(character in pattern for character in "*?["):
-            matched = (pattern,) if pattern in self._by_path else ()
+            normalized = os.path.normcase(pattern)
+            start = bisect_left(self._match_names, normalized)
+            matched = tuple(sorted(path for name, path in takewhile(
+                lambda item: item[0] == normalized, islice(self._match_paths, start, None))))
         else:
             spec = PathSpec(pattern, PathDialect.SOURCE_HOST_V1)
             wildcard = min(
@@ -67,18 +74,11 @@ class SourceSnapshotIndex:
                 for character in "*?["
                 if (index := pattern.find(character)) >= 0
             )
-            prefix = pattern[:wildcard]
-            start = bisect_left(self._paths, prefix) if prefix else 0
-            end = (
-                bisect_left(self._paths, prefix + "\U0010ffff")
-                if prefix
-                else len(self._paths)
-            )
-            matched = tuple(
-                relpath
-                for relpath in self._paths[start:end]
-                if spec.matches(relpath)
-            )
+            prefix = os.path.normcase(pattern[:wildcard])
+            start = bisect_left(self._match_names, prefix) if prefix else 0
+            candidates = takewhile(lambda item: item[0].startswith(prefix),
+                                   islice(self._match_paths, start, None))
+            matched = tuple(sorted(path for _name, path in candidates if spec.matches(path)))
         self._pattern_matches[pattern] = matched
         return matched
 
@@ -233,7 +233,8 @@ def cached_check_decision(
 
 def load_reuse_report(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or data.get("schema_version") not in {2, 3}:
+    if (not isinstance(data, dict) or type(data.get("schema_version")) is not int
+            or data["schema_version"] not in {2, 3}):
         raise ValueError("--reuse-report must point to a source-check report schema 2 or 3")
     if data.get("report_kind") != "alatyr-source-check-run":
         raise ValueError("--reuse-report must point to an alatyr-source-check-run report")
@@ -262,6 +263,8 @@ def _report_reuse_rejection(
         return "previous report is timing-only under the legacy reuse contract"
     if current_run_identity is None:
         return "current execution identity is unavailable"
+    if not isinstance(report.get("source"), dict):
+        return "previous source identity is invalid"
     if contract.get("completed") is not True:
         return "previous run was incomplete"
     if contract.get("successful") is not True:
@@ -281,8 +284,8 @@ def _report_reuse_rejection(
     ):
         return "previous run completion evidence is invalid"
     if any(
-        item.get("status") not in {"passed", "reused-pass"}
-        or item.get("timed_out") is True
+        not isinstance(item.get("status"), str) or item["status"] not in {"passed", "reused-pass"}
+        or item.get("timed_out") is not False
         for item in checks
         if isinstance(item, dict)
     ):
@@ -372,8 +375,10 @@ def reuse_decisions(
             reason = "check manifest digest changed"
         elif previous.get("command") != commands_by_id.get(check_id):
             reason = "check command changed"
+        elif not isinstance(previous.get("input_fingerprint"), dict):
+            reason = "previous input fingerprint is invalid"
         elif (
-            previous.get("input_fingerprint", {}).get("sha256")
+            previous["input_fingerprint"].get("sha256")
             != fingerprint["sha256"]
         ):
             reason = "check input fingerprint changed"
