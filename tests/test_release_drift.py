@@ -366,13 +366,15 @@ class ReleaseBaselineTests(unittest.TestCase):
     def test_current_chain_uses_latest_checkpoint(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         baseline, _intervening = nearest_release_baseline(version)
-        # The immediate prior changelog version has a reviewed checkpoint;
-        # future releases must not leave this assertion pinned to alpha.91.
-        previous_version = prior_changelog_versions(version)[0]
-        checkpoint = release_checkpoint(previous_version)
-        self.assertIsNotNone(checkpoint)
+        # Development-only versions may lack a releasable commit. The canonical
+        # resolver must choose the nearest reviewed checkpoint, never fabricate one.
+        prior = prior_changelog_versions(version)
+        available = [(name, release_checkpoint(name)) for name in prior[:prior.index(baseline.version) + 1]]
+        previous_version, checkpoint = next((name, item) for name, item in available if item is not None)
         self.assertEqual(baseline.label, f"release-checkpoint:{previous_version}")
         self.assertEqual(baseline.ref, checkpoint.ref)
+        for intervening in prior[:prior.index(previous_version)]:
+            self.assertTrue((ROOT / "docs/releases" / f"{intervening}-migration.md").is_file())
 
     def test_unverified_historical_checkpoints_are_not_accepted(self) -> None:
         self.assertIsNone(release_checkpoint("0.1.0-alpha.34"))

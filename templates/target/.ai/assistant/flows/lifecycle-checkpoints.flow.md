@@ -57,6 +57,11 @@ history, its predecessor, progress and run receipts in the same baseline.
 Report adoption, exercised review and native interception separately; exhausted
 budgets preserve read-only recovery, original outcomes and every required gate.
 Opt-in schema-3 focus: `.ai/framework/task-state-delivery.md#request-bound-work`.
+Optional `terminal_control` uses the same brief and canonical command receipts;
+see `.ai/framework/task-state-delivery.md#terminal-action-prerequisites`.
+Bind exact candidate/environment evidence, require terminal success before each
+dependent mutation, and retain the original action brief digest. Refresh receipt
+selection after a retry, not history or policy. A session ID is not a pass.
 Before material/recurring repair plans, capture source-derived brief outcomes/surfaces
 with `.ai/assistant/templates/problem-model.json` in the existing model. Use
 `.ai/framework/task-state-delivery.md#outcome-qualification`; disclose absent

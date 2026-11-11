@@ -95,6 +95,9 @@ def focus_failures(brief: dict, action: dict, model: dict, brief_sha256: str) ->
         failures.append("adopted focus_control requires action.brief_sha256 from the original dispatch/review")
     if "brief_sha256" in action and action["brief_sha256"] != brief_sha256:
         failures.append("action brief digest is stale; reconcile the newest request without retagging old work")
+    if (brief.get("terminal_control") is not None and action["kind"] == "work"
+            and action["phase"] in {"commit", "publish", "live-external"} and "brief_sha256" not in action):
+        failures.append("terminal-controlled mutations require the original action brief_sha256")
     if not adopted:
         if "obligation_ids" in action:
             failures.append("obligation selection requires an adopted focus_control")

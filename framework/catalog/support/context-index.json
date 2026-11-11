@@ -110,8 +110,8 @@
       "owner_refs": [
         "ALATYR-CONTINUITY-001"
       ],
-      "estimated_words": 1574,
-      "content_digest": "sha256:51da56d796ca0aadba20e3216ee5647c9826bc4cceec05b84234b7ee2c45a46b"
+      "estimated_words": 1604,
+      "content_digest": "sha256:98b5f3c820faee99c9e60edcf1fde76bab007edd63e08d218a24aed5e472f864"
     },
     {
       "id": "framework.support.support-information-md",
@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1480,
-      "content_digest": "sha256:797d617903b28fa68dadbfac5b31b2f1854f945dddabd896593f1f05f2391c31"
+      "estimated_words": 1609,
+      "content_digest": "sha256:65683d564cfe7f6dfffce15eee51c13d7f74e85bbc0be16c7670408e50e938d7"
     },
     {
       "id": "framework.support.test-delivery-efficiency-md",

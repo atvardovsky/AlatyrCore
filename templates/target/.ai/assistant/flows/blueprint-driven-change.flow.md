@@ -20,6 +20,10 @@ Replace placeholders with target facts before accepting installation.
 ### Analyze
 
 1. State change intent and non-goals.
+   Retain settled owner decisions; resolve code-answerable mechanics locally.
+   Map requested surfaces and existing action/permission/state parity before
+   selecting tests. For performance, retain the original entry-to-usable
+   boundary and decisive workload; a faster component is not whole-flow proof.
 2. Use `.ai/assistant/context-router.json` to load the smallest matching
    profile and project-area overlays plus the target source-of-truth docs.
    Activate the `large-or-resumable` scale overlay when its conditions apply.

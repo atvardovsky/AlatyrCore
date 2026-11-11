@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.136 - 2026-11-11
+
+- Add optional terminal action prerequisites through existing request review:
+  require successful terminal receipts, original dispatch identity, exact
+  candidate/environment inputs and freshness through final delivery. Preserve
+  append-only retries, current authorization and inspect-only recovery.
+- Resolve enabled-package local-task exemptions through shared selected-task
+  applicability, including indexed profile bindings and ordinary evidence.
+  Explicit packages, approval scope, named-task acceptance and full validation
+  remain enforced; absent or invalid evidence cannot grant an exemption.
+- Preserve settled owner decisions, existing-action parity and original
+  performance boundaries in conditional change preparation. Clarify resource
+  release conditions and existing/proposed/absent lifecycle enforcement status
+  without enabling hooks or adding routine bootstrap requirements.
+- Advance adapter schema to 112 and templates to 131. Existing brief schemas
+  and model schema 7 remain readable; new controls require explicit adoption
+  after tooling upgrade. Structural checks do not prove native interception,
+  semantic truth or measured agent productivity.
+
 - Add bounded, content-bound Git-local direct-import caching for focused
   source planning and checks, separate from test-result reuse. Preserve
   fresh inventory/source verification, canonical fallback and cold full/release

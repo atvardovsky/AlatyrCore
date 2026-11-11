@@ -29,6 +29,7 @@ def parse_brief(raw: bytes) -> dict:
         required.add("delivery_control")
     if document.get("schema_version") == 3:
         required.add("focus_control")
+        required.update(set(document) & {"terminal_control"})
     brief = fields(document, required, "request brief")
     if type(brief["schema_version"]) is not int or brief["schema_version"] not in (1, 2, 3) or brief["record_kind"] != "alatyr-request-brief":
         raise ValueError("request brief requires schema 1, 2 or 3 and alatyr-request-brief kind")
@@ -71,6 +72,9 @@ def parse_brief(raw: bytes) -> dict:
         parse_control(brief["delivery_control"], ids)
     from request_focus import parse_focus_control
     parse_focus_control(brief.get("focus_control"))
+    if brief.get("terminal_control") is not None:
+        from action_prerequisites import parse_terminal_control
+        parse_terminal_control(brief["terminal_control"], brief)
     from analysis_strategy_contract import structured_word_count
     if structured_word_count(brief) > MAX_BRIEF_WORDS:
         raise ValueError(f"request brief exceeds {MAX_BRIEF_WORDS} words")

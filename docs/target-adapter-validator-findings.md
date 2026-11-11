@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1762
+Catalog entries: 1765
 
 ## Families
 
@@ -53,13 +53,13 @@ Catalog entries: 1762
 - `MIGRATION`: 8 codes.
 - `MODULE`: 12 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 115 codes.
+- `PACKAGE`: 117 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
-- `ROUTER`: 77 codes.
+- `ROUTER`: 78 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `RUNTIME`: 37 codes.
@@ -2034,6 +2034,8 @@ Catalog entries: 1762
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_AFTER_REF`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_APPLICABILITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_APPROVAL_PATH`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_APPROVAL_RECORD`
@@ -2208,6 +2210,8 @@ Catalog entries: 1762
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_NOT_INDEXED`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_NOT_REQUIRED`
+  Level: info. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_OUTSIDE_TARGET`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_PATH_SCOPE`
@@ -2488,6 +2492,8 @@ Catalog entries: 1762
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_SCHEMA_LEGACY`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_SCHEMA_VERSION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_SMALL_TASK_BUDGET`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_SMALL_TASK_CONTEXT`

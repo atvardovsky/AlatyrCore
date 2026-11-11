@@ -205,6 +205,44 @@ Use the same `review` at dispatch/convergence, retaining original `brief_sha256`
 and work `obligation_ids`. Current hashes cannot prove source-first reconciliation.
 Legacy/null paths remain unchanged; delivery controls and TDD are independent.
 
+### Terminal Prerequisites
+
+For an owner-approved staged release or other dependent external action, use
+the optional [terminal prerequisite contract](../framework/task-state-delivery.md#terminal-action-prerequisites)
+in the same schema-3 brief. The ordinary `review`/bound-checkpoint routes consume
+it; no new executor or CLI is installed. One illustrative rule is:
+
+```json
+{
+  "schema_version": 1,
+  "rules": [{
+    "id": "previous-stage-ready",
+    "phase": "publish",
+    "effects": ["release:next-stage"],
+    "proof_id": "previous-stage-verification",
+    "command_id": "verify-previous-stage",
+    "receipt": {"path": "evidence/run.json", "sha256": "<actual receipt SHA-256>"},
+    "candidate": {"path": "evidence/candidate.json", "sha256": "<actual candidate SHA-256>"},
+    "environment": {"path": "evidence/environment.json", "sha256": "<actual environment SHA-256>"},
+    "max_age_seconds": 900
+  }]
+}
+```
+
+Replace illustrative paths/digests with actual bounded artifacts. The proof must
+cite the receipt; the receipt's exact input digests include candidate/environment
+bindings and its result artifact must remain intact. Keep the effective target
+configuration distinct from the candidate. Pass the original brief digest in
+the action. Retain these artifacts in the baseline before a bound mutation.
+After a retry, append a new run receipt and rebind current evidence without
+rewriting failed history or changing the prerequisite policy. Request replacement
+revokes old actions; a new hash does not retroactively retag an old dispatch.
+
+A receipt is a checked record, not proof of authentic command execution. The
+project's actual publishing operator or verified native boundary must consume
+the gate before mutation. Report disabled/procedural/native evidence separately;
+never claim that this helper intercepts arbitrary shell commands.
+
 For request guards, preserve disabled state unless the owner explicitly enables
 the guard. Set `request_guard.required` to true only after review, retain the
 brief in the selected context baseline, and add `--request-brief <path>` to

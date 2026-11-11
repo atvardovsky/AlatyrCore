@@ -1123,7 +1123,14 @@ class Validator:
             and self.diff_ref is not None
             and self.validation_phase == "acceptance"
         ):
-            self.enforce_change_package = True
+            from target_adapter_validation.package_applicability import package_requirement
+            decision = package_requirement(self, module_enabled=True, automatic=True,
+                                           explicit=self.enforce_change_package)
+            self.enforce_change_package = decision["required"]
+            for failure in decision["failures"]:
+                self.error("PACKAGE_APPLICABILITY", failure)
+            if decision["exemption"] is not None:
+                self.info("PACKAGE_NOT_REQUIRED", "Bound local-task exemption; semantic scope still requires primary review")
         for phase in self.validation_phases(
             manifest, support_profile, enabled_modules
         ):
@@ -3341,10 +3348,17 @@ class Validator:
             )
         return data
 
-    def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}:
+    def router_profiles(self, router: dict[str, Any], *, selected_profile: str | None = None,
+                        descriptor_bindings: dict[str, str] | None = None) -> dict[str, Any]:
+        version = router.get("schema_version")
+        if type(version) is not int:
+            self.error("ROUTER_SCHEMA_VERSION", "router schema_version must be an integer", ".ai/assistant/context-router.json")
+            return {}
+        if version not in {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}:
             profiles = router.get("profiles")
-            return profiles if isinstance(profiles, dict) else {}
+            if not isinstance(profiles, dict):
+                return {}
+            return profiles if selected_profile is None else {key: value for key, value in profiles.items() if key == selected_profile}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
@@ -3355,6 +3369,8 @@ class Validator:
             return {}
         profiles: dict[str, Any] = {}
         for name, entry in index.items():
+            if selected_profile is not None and name != selected_profile:
+                continue
             if not isinstance(entry, dict):
                 self.error(
                     "ROUTER_PROFILE_INDEX_ITEM",
@@ -3373,6 +3389,8 @@ class Validator:
                         str(entry.get("descriptor")),
                     )
                 profiles[name] = profile
+                if descriptor_bindings is not None:
+                    descriptor_bindings[name] = entry["descriptor"]
         return profiles
 
     def check_action_authorization_contract(self) -> None:

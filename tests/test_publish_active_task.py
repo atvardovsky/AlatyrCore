@@ -245,6 +245,17 @@ class PublishActiveTaskTests(ActiveTaskFixture):
                 SupportTransaction(self.target).apply(plan.outputs, expected_inputs=plan.inputs)
             self.assertEqual(self.model_path.read_bytes(), old_model)
 
+    def test_unchanged_model_publication_is_sparse_without_rewriting_history(self):
+        first = self.plan()
+        SupportTransaction(self.target).apply(first.outputs, expected_inputs=first.inputs)
+        second = self.plan()
+        before = {path: path.read_bytes() for path in second.outputs}
+        mtimes = {path: path.stat().st_mtime_ns for path in second.outputs}
+        changed = SupportTransaction(self.target).apply(second.outputs, expected_inputs=second.inputs)
+        self.assertFalse(changed)
+        self.assertEqual({path: path.read_bytes() for path in before}, before)
+        self.assertEqual({path: path.stat().st_mtime_ns for path in before}, mtimes)
+
     def test_new_registration_is_explicit_and_preview_does_not_write(self):
         self.write_index([])
         with self.assertRaisesRegex(ValueError, "registration draft"):

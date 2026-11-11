@@ -6,6 +6,13 @@ from tests.core_repair_workflow_fixture import run_core_repair_workflow
 
 
 class CoreRepairWorkflowTests(unittest.TestCase):
+    def test_enabled_packages_accept_a_bound_local_exemption_without_weakening_final_acceptance(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result = run_core_repair_workflow(Path(directory).resolve(), outcome_checks=True, package_exemption=True)
+        self.assertTrue(result["accepted"]["placeholder_validation"]["acceptance_eligible"])
+        self.assertEqual(result["accepted"]["task_acceptance"]["state"], "accepted")
+        self.assertEqual(result["stale_result"]["task_acceptance"]["state"], "blocked")
+
     def test_public_core_workflow_accepts_qualified_outcome_and_rejects_stale_actual_product(self):
         with tempfile.TemporaryDirectory() as directory:
             result = run_core_repair_workflow(Path(directory).resolve(), outcome_checks=True)

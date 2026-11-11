@@ -90,6 +90,19 @@ class LifecycleOutcomeReviewTests(ActiveTaskFixture):
         self.assertEqual(code, 0, value)
         self.assertEqual(value["evidence_readiness"]["action_state"], "read-only-recovery")
 
+    def test_component_latency_cannot_replace_original_click_to_usable_scope(self):
+        from outcome_evidence import case_binding
+        self.case["scope"].update(entrypoint="ordinary tab click to usable list",
+            conditions="representative full-volume workload with ordinary background requests")
+        self.case["observation"]["scope"] = copy.deepcopy(self.case["scope"])
+        self.case["observation"]["case_sha256"] = case_binding(self.model, self.case)
+        self.save()
+        self.assertEqual(self.run_delegate(self.action(kind="complete", phase="inspect", paths=[]))[0], 0)
+        self.case["observation"]["scope"].update(entrypoint="response received to render",
+            conditions="small isolated fixture with background work disabled")
+        self.save()
+        self.assertNotEqual(self.run_delegate(self.action(kind="complete", phase="inspect", paths=[]))[0], 0)
+
     def independent_outcome(self):
         proof = copy.deepcopy(self.model["proof_obligations"][0])
         proof.update(id="independent", status="open", evidence_refs=[])

@@ -163,9 +163,13 @@ def validate_state(state: dict, session_id: str, *, source_contour: bool = False
         if "request_brief" in binding:
             value = binding["request_brief"]
             extra = {"history", "request_id", "history_inputs"}
-            if (not isinstance(value, dict) or set(value) - extra != {"path", "sha256"}
+            optional = {"terminal_policy_sha256"}
+            if (not isinstance(value, dict) or set(value) - extra - optional != {"path", "sha256"}
                     or set(value) & extra not in (set(), extra)):
                 raise ValueError("invalid lifecycle request brief binding")
+            if "terminal_policy_sha256" in value:
+                from delivery_receipts import sha256
+                sha256(value["terminal_policy_sha256"], "bound terminal policy")
             if "history" in value:
                 from delivery_receipts import artifact
                 artifact(value["history"], "bound delivery history")
@@ -249,6 +253,13 @@ def review_request(target: Path, brief_path: str, action: object, *,
         selected.get("evidence_readiness", {"state": "not-adopted"}))
     failures.extend(evidence_failures)
     progress = request_progress(brief, selected["request_model"], health)
+    terminal_deadlines = []
+    if brief.get("terminal_control") is not None:
+        from action_prerequisites import terminal_prerequisite_failures
+        terminal_inputs = {}
+        failures.extend(terminal_prerequisite_failures(selected["request_contexts"][0], target,
+            brief, selected_action, selected["request_model"], terminal_inputs, deadlines=terminal_deadlines))
+        selected["checkpoint_inputs"].update(terminal_inputs)
     required_context = set(selected["checkpoint_inputs"]) | {POLICY, brief_path}
     delivery_inputs = {}
     delivery_review = None
@@ -318,12 +329,17 @@ def review_request(target: Path, brief_path: str, action: object, *,
         from source_adoption import assert_current
         if any(selected["checkpoint_inputs"].get(path) != sha for path, sha in assert_current(target).items()):
             raise ValueError("source controls changed during request review")
+    if terminal_deadlines and not max(row[0] for row in terminal_deadlines) <= time.time() <= min(row[1] for row in terminal_deadlines):
+        failures.append("terminal prerequisite receipt expired before review delivery")
     result = decision("request-review-required" if failures else "request-consistent",
         "; ".join(failures[:8]) if failures else "Declared request, selected model and action agree; newest intent and approval still require review.", block=bool(failures))
     result.update(request_id=brief["request_id"], task_id=selected_id, failures=failures,
         request_brief={"path": brief_path, "sha256": digest(raw)},
         focus_control=brief.get("focus_control"), evidence_readiness=health, request_progress=progress,
         request_provenance="declarative-unverified", execution_interception="not-performed")
+    if terminal_deadlines:
+        result["terminal_valid_after"] = max(row[0] for row in terminal_deadlines)
+        result["terminal_valid_until"] = min(row[1] for row in terminal_deadlines)
     if health["state"] == "stale-or-unavailable":
         result["reason"] += " Evidence is stale or unavailable; inspect evidence_readiness before relying on this action or answer."
     if delivery_inputs:
@@ -346,6 +362,11 @@ def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, reta
             raise ValueError("request guard requires an explicit request brief; rebind cannot drop it")
         return None
     raw, brief = request_artifact(target, path)
+    from action_prerequisites import terminal_policy_digest
+    terminal_digest = terminal_policy_digest(brief.get("terminal_control"))
+    previous_digest = prior.get("request_brief", {}).get("terminal_policy_sha256") if isinstance(prior, dict) else None
+    if previous_digest is not None and previous_digest != terminal_digest:
+        raise ValueError("cannot drop or alter adopted terminal prerequisite policy within the same request")
     action = {"request_id": state["request_id"], "task_id": bind["task_id"], "kind": "answer",
               "phase": "inspect", "outcome_ids": [row["id"] for row in brief["outcomes"]], "paths": [], "effects": [],
               "brief_sha256": digest(raw)}
@@ -365,6 +386,8 @@ def bind_request_brief(target: Path, bind: dict, state: dict, policy: dict, reta
     if any(expected.get(name) != "sha256:" + sha for name, sha in review.get("delivery_inputs", {}).items()):
         raise ValueError("reviewed baseline must retain the exact validation history")
     result = review["request_brief"]
+    if terminal_digest is not None:
+        result["terminal_policy_sha256"] = terminal_digest
     if "delivery_history" in review:
         result["history"] = review["delivery_history"]
         result["request_id"] = brief["request_id"]
@@ -583,6 +606,8 @@ def handle(target: Path, provider: str, event: str, payload: dict, *,
             raise ValueError("lifecycle native evidence expired during evaluation; use procedural review")
         if state["status"] == "bound" and not binding_current(state["binding"], policy, raw_policy, final_time):
             result = decision("review-required", "Lifecycle binding expired during evaluation; inspect only.", block=True)
+        if "terminal_valid_until" in result and not result["terminal_valid_after"] <= final_time <= result["terminal_valid_until"]:
+            result = decision("request-review-required", "Terminal prerequisite expired before checkpoint delivery; inspect only.", block=True)
         result["emit_native_block"] = active and (
             (event == "before-action" and result["checkpoint_required"])
             or (reminder and result["status"] == "unfinished" and state["status"] == "bound"))

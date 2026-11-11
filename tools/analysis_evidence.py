@@ -166,6 +166,10 @@ def evidence_failures(model: dict, *, completion: bool = False) -> list[str]:
 def artifact_bindings(model: dict) -> list[tuple[str, str]]:
     block = model.get("analysis_evidence", {})
     result = [(row["path"], row["sha256"]) for row in block.get("selected_context", [])]
+    applicability = block.get("package_applicability")
+    if applicability is not None:
+        result.extend((applicability[key]["path"], applicability[key]["sha256"])
+                      for key in ("router", "ordinary_result", "profile") if applicability.get(key) is not None)
     for probe in block.get("probes", []):
         if probe["result"] is not None:
             result.extend(probe["result"]["input_sha256"].items())

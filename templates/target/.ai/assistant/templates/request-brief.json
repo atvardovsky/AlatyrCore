@@ -20,5 +20,6 @@
   "write_scope": [],
   "effect_scope": [],
   "delivery_control": null,
-  "focus_control": null
+  "focus_control": null,
+  "terminal_control": null
 }

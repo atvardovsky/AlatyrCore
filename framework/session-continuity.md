@@ -177,7 +177,7 @@ housekeeping follows `ALATYR-AUTHORIZATION-001`; explicit no-writes and worker
 restrictions still win.
 
 Inspect bounded peer summaries at entry/resume, scope expansion, before edits,
-shared builds, Git mutations/publication, and completion. Scope references can
+shared builds, Git mutations/publication, and completion. Scope references
 name target-relative `path:`, project-owned `area:`, and shared `resource:`
 surfaces. Unknown scope cannot prove independence; no direct overlap does not
 prove semantic isolation. Resolve relevant omitted peers before acting on a
@@ -191,12 +191,16 @@ no daemon, message history, scheduler, task reservation, or build lock. Stale
 entries indicate uncertain freshness and must not be automatically deleted.
 Missing entries cannot establish that no other agent is working.
 
-Updates preserve enablement/housekeeping choices and live entries; rebind routes
-from installed policy. Recent means reported, not proven alive; stale/future-dated
-entries remain uncertain. Refresh at bounded checkpoints, without per-prompt or
-background polling. Missing helpers allow inspection with an unavailable-cooperation
-report; unresolved overlap requires coordination before mutation. Presence cannot
-notify idle agents, enforce instructions or authenticate users.
+Updates preserve enablement/housekeeping choices and entries; rebind from
+installed policy. Recent reports do not prove liveness; stale/future entries stay
+uncertain. Refresh at bounded checkpoints, never per-prompt/background polling.
+Missing helpers allow inspection with a cooperation warning; coordinate unresolved
+overlaps before mutation. Presence cannot notify, enforce or authenticate.
+
+Keep shared-resource holds' next action, blocker and release condition in the
+existing projection. Release unused holds independently of task closure.
+Acknowledgements are not progress. Continue safe, independently authorized work;
+timers, missing processes and handoffs grant no takeover, publication or completion.
 
 Read-only inspection can compare bounded prospective scope without session
 creation/adoption. Compose test-resource planning when useful. Whole-resource

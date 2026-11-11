@@ -271,6 +271,71 @@
         }]}
       }
     },
+    "packageApplicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "decision",
+        "reason",
+        "profile_id",
+        "project_area",
+        "router",
+        "profile",
+        "ordinary_result",
+        "activation"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "decision": {
+          "const": "not-required"
+        },
+        "reason": {
+          "$ref": "#/definitions/statement"
+        },
+        "profile_id": {
+          "$ref": "#/definitions/identifier"
+        },
+        "project_area": {
+          "$ref": "#/definitions/identifier"
+        },
+        "router": {
+          "$ref": "#/definitions/analysisArtifact"
+        },
+        "ordinary_result": {
+          "$ref": "#/definitions/analysisArtifact"
+        },
+        "profile": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/definitions/analysisArtifact"}]
+        },
+        "activation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "material_multisurface_approval",
+            "architecture_or_contract",
+            "multiple_facts_or_areas",
+            "reproducible_case"
+          ],
+          "properties": {
+            "material_multisurface_approval": {
+              "type": "boolean"
+            },
+            "architecture_or_contract": {
+              "type": "boolean"
+            },
+            "multiple_facts_or_areas": {
+              "type": "boolean"
+            },
+            "reproducible_case": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
     "analysisEvidence": {
       "type": "object",
       "additionalProperties": false,
@@ -281,6 +346,7 @@
         "review_challenges"
       ],
       "properties": {
+        "package_applicability": {"$ref": "#/definitions/packageApplicability"},
         "outcome_checks": {"type": "array", "minItems": 1, "maxItems": 16,
           "items": {"$ref": "#/definitions/outcomeCheck"}},
         "selected_context": {

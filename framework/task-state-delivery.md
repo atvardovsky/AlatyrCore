@@ -102,6 +102,25 @@ configuration, exercised interception and procedural fallback.
 Optional request guards follow request reconciliation and the lifecycle flow;
 partial answers remain distinct from canonical completion.
 
+### Terminal Action Prerequisites
+
+Schema-3 `terminal_control` schema 1 optionally binds 1..16 phase/effect rules:
+required proof, command, canonical receipt, distinct real candidate/effective
+environment artifacts and freshness limit (1..86400 seconds).
+
+Matching commit/publish/live-external review requires a passed proof citing the
+receipt, current task/request/command identity, terminal `passed`/integer exit 0,
+ordered nonfuture timestamps, exact current inputs and intact result artifact.
+Running, failed, interrupted, waived or unrelated evidence cannot unlock work.
+Select by phase/effect, not convenient outcome subsets. Polling is not completion.
+
+Retain consumed artifacts in the baseline and original `brief_sha256` in mutation
+actions. Rebinding may refresh receipt selection/hashes, never adopted policy;
+queued actions cannot inherit refreshed candidates. Null/absent control reads no
+prerequisite artifacts. Inspection, independent effects, settled work and existing
+readiness/authorization/acceptance remain unchanged. Only consuming callers are
+blocked; native/non-bypassable enforcement needs verified client/project setup.
+
 ## Request-Bound Work
 
 Schema-3 briefs add nullable `focus_control`: null preserves ordinary behavior;

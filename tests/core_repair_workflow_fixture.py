@@ -30,7 +30,7 @@ def documented_doctor_arguments(document: str, target: Path) -> list[str]:
     return [replacements.get(token, token) for token in shlex.split(examples[0])[2:]]
 
 
-def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False) -> dict:
+def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False, package_exemption: bool = False) -> dict:
     """Exercise real CLIs; fixture approvals never authorize production actions."""
     def run(*arguments, expected=0, structured=True):
         result = subprocess.run([sys.executable, str(ROOT / "tools/alatyr.py"), *map(str, arguments)],
@@ -53,10 +53,15 @@ def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False) -> d
     protected = {path: (target / path).read_bytes() for path in run_git(target, "ls-files", "-z").split("\0")
                  if path and path != "workflow-product.txt"}
     _, blocked = scaffold_plan(SimpleNamespace(target=target, write=True, overwrite_existing=False,
-        profile="core", framework_pack="matched", enable_module=[], assistant_surface=[]))
+        profile="core", framework_pack="matched", enable_module=["change-packages"] if package_exemption else [], assistant_surface=[]))
     if blocked:
         raise AssertionError(blocked)
-    resolve_adapter(target, "core")
+    resolve_adapter(target, "core", activate_composition=package_exemption)
+    if package_exemption:
+        activation = subprocess.run([sys.executable, str(ROOT / "tools/render_module_profile.py"),
+            "--target", str(target), "--write"], capture_output=True, text=True, timeout=120)
+        if activation.returncode:
+            raise AssertionError(activation.stdout + activation.stderr)
     if any((target / path).read_bytes() != raw for path, raw in protected.items()):
         raise AssertionError("fixture adaptation changed existing product files")
     mark_fixture_selected_assistant(target)
@@ -73,7 +78,7 @@ def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False) -> d
     evidence = target / "evidence/workflow"
     evidence.mkdir(parents=True)
     oracle = evidence / "outcome-oracle.md"
-    if outcome_checks:
+    if outcome_checks or package_exemption:
         oracle.write_text("The requested fixture outcome is workflow-product.txt containing repaired.\n"
                           "A green helper without that actual file result is rejected.\n", encoding="utf-8")
     check = [sys.executable, "-c", "from pathlib import Path; assert Path('workflow-product.txt').read_text() == 'repaired\\n'"]
@@ -98,7 +103,7 @@ def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False) -> d
     fixture.model["changed_facts"][0].update(owner_ref="README.md", statement="Synthetic workflow product returns its repaired value")
     fixture.model["invariants"][0]["owner_ref"] = "README.md"
     fixture.model["proof_obligations"][0].update(id="generic-repair-review", evidence_refs=["evidence/workflow/validation.txt.snapshot"])
-    if outcome_checks:
+    if outcome_checks or package_exemption:
         from outcome_evidence import case_binding
         proof = fixture.model["proof_obligations"][0]["id"]
         result_ref = "evidence/workflow/validation.txt.snapshot"
@@ -121,6 +126,17 @@ def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False) -> d
             "outcome_checks": [case], "review_challenges": [{"id": "original-outcome", "original_source_ref": case["source_ref"],
                 "normative_source_ref": case["oracle"]["path"], "counterexample_ids": ["component-only"],
                 "proof_obligation_ids": [proof], "artifacts": [artifact], "status": "passed", "reviewer_kind": "primary-separate-pass"}]}
+    if package_exemption:
+        def binding(relative):
+            return {"path": relative, "sha256": hashlib.sha256((target / relative).read_bytes()).hexdigest()}
+        fixture.model["analysis_evidence"]["package_applicability"] = {
+            "schema_version": 1, "decision": "not-required", "reason": "One local repaired fact with ordinary source-bound evidence",
+            "profile_id": "code-local", "project_area": "fixture-product",
+            "router": binding(".ai/assistant/context-router.json"),
+            "profile": binding(".ai/assistant/context/profiles/code-local.json"),
+            "ordinary_result": binding("evidence/workflow/validation.txt.snapshot"),
+            "activation": {"material_multisurface_approval": False, "architecture_or_contract": False,
+                           "multiple_facts_or_areas": False, "reproducible_case": False}}
     fixture.task = {"task_id": "fixture-task", "operation_id": "fixture-operation", "state": "active",
         "task_class": "standard-task", "problem_model": None, "completion_evidence": None,
         "canonical_owners": ["README.md"], "changed_fact_ids": ["change-1"], "incident_family_id": "workflow-incident",
@@ -163,6 +179,17 @@ def run_core_repair_workflow(target: Path, *, outcome_checks: bool = False) -> d
         "--task-id", "fixture-task", "--task-class", "standard-task", "--require-task-acceptance", "--json")
     if final["task_acceptance"]["state"] != "accepted":
         raise AssertionError(final)
+    if package_exemption:
+        profile = target / fixture.model["analysis_evidence"]["package_applicability"]["profile"]["path"]
+        original_profile = profile.read_bytes()
+        profile.write_bytes(original_profile + b"\n")
+        stale_applicability = run("validate-adapter", "--target", target, "--framework-source", ROOT,
+            "--validation-phase", "acceptance", "--validation-scope", "full", "--diff-ref", base,
+            "--approval-record", approval_path, "--enforce-approval-scope", "--task-id", "fixture-task",
+            "--task-class", "standard-task", "--require-task-acceptance", "--json", expected=1)
+        if not any(row["code"] == "PACKAGE_APPLICABILITY" for row in stale_applicability["findings"]):
+            raise AssertionError("stale applicability alone must block accepted task")
+        profile.write_bytes(original_profile)
     # Probe only after projection reconciliation; stale health must not pass.
     protocol = {}
     for operation in ("status", "doctor"):

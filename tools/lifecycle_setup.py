@@ -46,12 +46,20 @@ def setup_plan(target: Path, provider: str, installation_kind: str, *,
         native_hook_status="not-established", configuration_write_performed=False,
         approval_provenance="caller-declaration-not-authenticated",
         required_actions=[], procedural_events=[],
+        enforcement_status={"policy_enabled": existing["enabled"] if existing else False,
+            "policy_origin": "existing" if existing else "absent",
+            "provider": existing["provider"] if existing else "procedural",
+            "mode": existing["mode"] if existing else "not-configured",
+            "recorded_native_evidence": existing["native_evidence"]["state"] if existing else "unverified",
+            "native_interception_verified": False},
         limitations=["A policy or plan does not prove client installation, trust, loading or interception.",
                      "No plugins, global settings, automatic continuation, commits or pushes are performed."])
     if existing is not None:
         result.update(policy_action="preserve", policy_candidate=existing,
             setup_disposition="existing-policy-preserved",
             required_actions=["Retain policy bytes, native definitions and trust choices; use an explicitly scoped adoption change for new setup."])
+        if not existing["enabled"]:
+            result["required_actions"].append("Delivery is disabled: preserve the opt-out and report that no pre-action interception is established.")
         return result
     if installation_kind == "update":
         result["required_actions"] = ["Retain the absent policy; a fresh-install default is not upgrade adoption consent."]
@@ -63,6 +71,7 @@ def setup_plan(target: Path, provider: str, installation_kind: str, *,
             or template["native_evidence"]["state"] != "unverified"):
         raise ValueError("source hook default must be enabled procedural observe-only, unverified and reminder-free")
     candidate = copy.deepcopy(template)
+    result["enforcement_status"].update(policy_enabled=True, policy_origin="proposed", mode="observe")
     result.update(policy_action="create", policy_candidate=candidate,
         setup_disposition="procedural-fallback",
         required_actions=["Include this project policy in the approved installation scope; keep ordinary procedural checkpoints."])
@@ -72,6 +81,7 @@ def setup_plan(target: Path, provider: str, installation_kind: str, *,
         return result
 
     candidate["provider"] = provider
+    result["enforcement_status"]["provider"] = provider
     result.update(setup_disposition="native-setup-proposed",
         required_actions=["Confirm this exact client/runtime route is supported; merge only the approved project-local hook configuration, preserving existing definitions.",
                           "Respect native trust prompts; verify interpreter, delegate locator, Git-root working directory and ignored runtime storage.",

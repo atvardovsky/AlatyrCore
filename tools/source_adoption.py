@@ -17,6 +17,12 @@ MARKER = ".ai/assistant/source-adoption.json"
 INDEX = ".ai/assistant/active-tasks.json"
 MODES = frozenset({"source-equivalent", "conditional", "conformance-only"})
 MAX_BYTES = 65536
+SOURCE_CONTROL_INPUTS = (
+    "tools/source_adoption.py", "tools/source_scope.py", "tools/lifecycle_checkpoints.py",
+    "tools/run_lifecycle_checkpoint.py", "tools/lifecycle_policy.py", "tools/request_brief.py",
+    "tools/request_focus.py", "tools/action_prerequisites.py", "tools/delivery_control.py",
+    "tools/delivery_progress.py", "tools/delivery_receipts.py",
+)
 
 
 def sha(raw: bytes) -> str:
@@ -163,9 +169,7 @@ def assert_current(root: Path) -> dict[str, str]:
     parse_policy(canonical)
     # Bind the compact control catalog, not all referenced owner documents.
     result = {POLICY: sha(raw), MARKER: sha(marker_raw), policy["lifecycle_policy"]: sha(canonical)}
-    for path in (policy["knowledge_catalog"], "tools/source_adoption.py", "tools/source_scope.py",
-                 "tools/lifecycle_checkpoints.py", "tools/run_lifecycle_checkpoint.py", "tools/lifecycle_policy.py",
-                 "tools/request_brief.py", "tools/delivery_control.py", "tools/delivery_progress.py", "tools/delivery_receipts.py"):
+    for path in (policy["knowledge_catalog"], *SOURCE_CONTROL_INPUTS):
         value = read_output(root, root / path, max_bytes=MAX_BYTES)
         if value is None:
             raise ValueError("missing source control input: " + path)

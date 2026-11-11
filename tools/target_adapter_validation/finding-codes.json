@@ -38,6 +38,7 @@
     "tools/target_adapter_validation/model_evidence.py",
     "tools/target_adapter_validation/module_profile.py",
     "tools/target_adapter_validation/modules.py",
+    "tools/target_adapter_validation/package_applicability.py",
     "tools/target_adapter_validation/project_knowledge.py",
     "tools/target_adapter_validation/project_support_documentation.py",
     "tools/target_adapter_validation/project_vocabulary.py",
@@ -216,7 +217,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 115
+      "code_count": 117
     },
     {
       "id": "PLACEHOLDERS",
@@ -240,7 +241,7 @@
     },
     {
       "id": "ROUTER",
-      "code_count": 77
+      "code_count": 78
     },
     {
       "id": "ROUTING",
@@ -9132,6 +9133,15 @@
       ]
     },
     {
+      "code": "PACKAGE_APPLICABILITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "PACKAGE_APPROVAL_PATH",
       "levels": [
         "dynamic"
@@ -9911,6 +9921,15 @@
       "code": "PACKAGE_NOT_INDEXED",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_NOT_REQUIRED",
+      "levels": [
+        "info"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -11190,6 +11209,15 @@
       "code": "ROUTER_SCHEMA_LEGACY",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_SCHEMA_VERSION",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

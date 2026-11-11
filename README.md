@@ -143,6 +143,12 @@ if it is current and discoverable; validation helps only if its coverage is
 clear; a completed implementation is not the same as finalized evidence or
 published changes.
 
+For staged work, optional checks can require a successful completed prerequisite
+before the next action. The original user journey remains the acceptance target:
+a faster component, passing tests or a healthy deployment is not the same as
+delivering the requested result. These checks depend on the project's adopted
+workflow and do not guarantee agent compliance.
+
 Responsibility stays explicit:
 
 - **The project owns its knowledge and rules.** The adapter points to existing
@@ -363,7 +369,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.135`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.136`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

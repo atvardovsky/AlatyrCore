@@ -150,8 +150,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 863,
-      "content_digest": "sha256:6449228b04b76ef1fac1039d0f80dbee5a23fb9fcdf805cd3150c39fc8d8c1fd"
+      "estimated_words": 898,
+      "content_digest": "sha256:273c2b038ed0df0e31bdbe998828b85aa06c5875f1eca844bb67a789a7f8b307"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -384,8 +384,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 513,
-      "content_digest": "sha256:7bd4b05331e4e6ce8d9bb32a160a9aa9541706f1704c061e7392bc84cdf2ecf0"
+      "estimated_words": 560,
+      "content_digest": "sha256:8bdd1ceec5ae2a373994a9d4c855229ad72ba097f0db042e5d4551309a593ccd"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",

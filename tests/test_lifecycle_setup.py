@@ -53,6 +53,8 @@ class LifecycleSetupTests(unittest.TestCase):
         for flag in ("authorization_granted", "acceptance_granted", "configuration_write_performed"):
             self.assertFalse(result[flag])
         self.assertEqual(result["native_hook_status"], "not-established")
+        self.assertEqual(result["enforcement_status"]["policy_origin"], "proposed")
+        self.assertFalse(result["enforcement_status"]["native_interception_verified"])
 
     def test_native_routes_need_explicit_setup_approval_not_provider_selection(self):
         for provider in NATIVE_EVENTS:
@@ -104,6 +106,9 @@ class LifecycleSetupTests(unittest.TestCase):
                     self.assertEqual(result["existing_policy_sha256"], hashlib.sha256(raw).hexdigest())
                     self.assertEqual(result["callbacks"], [])
                     self.assertEqual((self.target / POLICY).read_bytes(), raw)
+                    self.assertEqual(result["enforcement_status"]["policy_origin"], "existing")
+                    self.assertEqual(result["enforcement_status"]["policy_enabled"], enabled)
+                    self.assertFalse(result["enforcement_status"]["native_interception_verified"])
 
     def test_update_with_absent_policy_never_adopts_fresh_defaults(self):
         result = setup_plan(self.target, "codex", "update", native_setup_approved=True,
@@ -111,6 +116,7 @@ class LifecycleSetupTests(unittest.TestCase):
         self.assertEqual(result["setup_disposition"], "adoption-decision-required")
         self.assertEqual(result["policy_action"], "none")
         self.assertIsNone(result["policy_candidate"])
+        self.assertEqual(result["enforcement_status"]["policy_origin"], "absent")
         self.assertEqual(result["callbacks"], [])
         self.assertEqual(list(self.target.iterdir()), [])
 

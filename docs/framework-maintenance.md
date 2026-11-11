@@ -104,6 +104,11 @@ conflicting durable/runtime predecessors. Keep unrelated models unread, truthful
 partial answers valid and current/historical evidence separate. Absent controls
 perform no new artifact reads; adopted controls share existing byte ceilings.
 The Test project suite and structural regressions are not real-agent cohorts.
+Terminal-prerequisite regressions cover original dispatch digests, append-only
+retries, expiry during review/delivery, exact candidate/environment inputs and
+nonterminal commands through registered review. Package-applicability regressions
+couple indexed/legacy routing, active/closed evidence freshness, explicit
+enforcement and selected-task acceptance; no optional declaration proves semantics.
 Check ordinary target composition, not only conformance copies: capture guidance
 must reference assets selected in every applicable installation profile.
 

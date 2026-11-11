@@ -153,6 +153,13 @@ or promoting unverified native evidence. Existing policy bytes are preserved.
 `bind --completion-only` reviews closed-task evidence without reopening execution.
 Its consistency result is not canonical acceptance or live-runtime readiness.
 
+Optional schema-3 `terminal_control` uses the same review with canonical terminal
+run receipts, source-bound candidate/environment inputs and original action
+digest. Running, failed, stale or foreign prerequisites block matched external
+actions, not inspection. See [terminal prerequisites](../docs/assistant-lifecycle-hooks.md#terminal-prerequisites).
+Setup plans expose `enforcement_status`, including existing/proposed/absent
+policy origin; none establishes native interception or changes opt-outs.
+
 `review --request-brief <path>` checks bounded action JSON from stdin without
 writes or hook adoption. `bind --request-brief <path>` retains the same brief in
 the reviewed context; optional `request_guard` adoption prevents silent omission.
@@ -786,6 +793,10 @@ The stable command set is:
   where current bytes still match transaction-owned output. `--preflight` is
   mutually exclusive with `--write` and returns selected canonical authoring
   diagnostics without writes or acceptance; write mode runs those checks early.
+  Enabled-package local-task exemptions use the selected model's current
+  `analysis_evidence.package_applicability`, matching `--task-id`/`--task-class`
+  and `--require-task-acceptance`. Explicit packages remain enforced; the shared
+  [activation contract](../framework/change-packages.md#activation) owns eligibility.
 - `suggest-knowledge`: read-only, review-only candidates from verified
   package history, including owner, incident-family, failed-gate, and
   correction recurrence; it never promotes knowledge

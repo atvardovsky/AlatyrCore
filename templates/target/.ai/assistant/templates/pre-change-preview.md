@@ -13,6 +13,7 @@ authorize the next state-changing phase.
 
 - Operation ID: `{OPERATION_ID}`
 - Goal: `{GOAL}`
+- Settled owner decisions/open choices: `{SETTLED_VS_OPEN_DECISIONS}`
 - Rejected substitute and first representative proof: `{COUNTEREXAMPLE_AND_PROOF_OR_NOT_REQUIRED_REASON}`
 - Selected context profile and overlays: `{PROFILE_AND_OVERLAYS}`
 - Changed facts or suspected facts: `{CHANGED_FACT_IDS_AND_SUMMARIES}`
@@ -21,6 +22,10 @@ authorize the next state-changing phase.
 - Original case: `{SOURCE_ACTOR_INPUT_AND_APPROVED_OBSERVABLE_OUTCOME_OR_NOT_APPLICABLE}`
 - Affected contours, project areas, and external surfaces:
   `{AFFECTED_SURFACES}`
+- Action/permission/state parity and accepted differences:
+  `{PARITY_INVENTORY_OR_NOT_APPLICABLE}`
+- Original measurement boundary/decisive workload:
+  `{ENTRY_TO_OBSERVABLE_OUTCOME_OR_NOT_APPLICABLE}`
 - Risk classes: `{RISK_CLASSES}`
 - Preview trigger: `{SEMANTIC_PROTECTED_CROSS_BOUNDARY_EXTERNAL_OR_UNCLEAR_SCOPE}`
 - Expected files or bounded surface patterns: `{EXPECTED_CHANGE_SCOPE}`

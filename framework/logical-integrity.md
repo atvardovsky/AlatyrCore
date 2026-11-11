@@ -166,31 +166,32 @@ satisfies one comment but leaves the shared invariant false must be revised.
 
 ## Consumer-Grounded Proof
 
-For changed user-visible or cross-boundary behavior, map the accepted outcomes
-to every requested surface in existing task evidence before choosing tests.
-Trace the actual entry, authorization/proxy, consumer contract and observable
-effect. Name mocked or unobserved edges. Missing surfaces remain open; a smaller
-implementation is not an approved exclusion. For material/recurring closure,
-apply [outcome qualification](task-state-delivery.md#outcome-qualification).
+Before choosing tests, map changed user-visible/cross-boundary outcomes to every requested
+surface in existing evidence.
+Retain reused actions/permissions/states or accepted differences; keep settled
+decisions closed during mechanics review. Preserve latency boundaries, decisive
+workloads and routes; SQL/render time and deployment health are distinct proofs.
+Trace actual entry, authorization/proxy, consumer contract and observable effect;
+name mocked/unobserved edges. Missing surfaces stay open, not implicitly excluded.
+Material/recurring closure requires
+[outcome qualification](task-state-delivery.md#outcome-qualification).
 
-Before planning, identify a plausible substitute that passes implementation-shaped
-tests but violates the request. Reviewers receive the original source/reference.
-For uncertain, costly or repeatedly rejected work, prove one real slice before
-replication. Material mismatches need owner decisions, not weaker criteria;
-matching approved work needs no redundant approval. Owner rejection reopens
-affected outcomes; prior tests remain historical evidence.
+Before planning, identify request-violating substitutes that pass implementation-shaped
+tests; give reviewers original sources. Prove a real slice before replicating
+uncertain/costly/repeatedly rejected work. Material mismatches need owner decisions,
+not weaker criteria; matching approved work needs no reapproval. Owner rejection
+reopens affected outcomes; prior tests stay historical.
 
-For visual work, inspect actual content, not just wrapper geometry or controls.
+Inspect actual content, not only wrapper geometry/controls.
 
-Check fixtures against the real consumer schema and version/lifecycle rules.
-For no-write claims, observe the actual method/resource and relevant state;
-challenge the assertion with a write to that resource. For asynchronous UI,
-cover pending work, mode changes, cancellation, failure and state retention.
-Documentation claiming enforced protection must identify its actual enforcing
-mechanism and a counterexample, not merely another agreeing document.
+Check fixtures against consumer schema/version/lifecycle rules. No-write claims
+need actual method/resource/state observation and a same-resource write challenge.
+Async UI covers pending work, mode changes, cancellation, failure and state
+retention. Claimed protection needs actual enforcement and a counterexample,
+not agreeing documents.
 
-Reuse proof obligations, counterexamples and target checks. Review cannot infer
-domain truth from identifiers or hashes, and this rule never authorizes tests.
+Reuse obligations, counterexamples, target checks. Identifiers/hashes cannot
+establish domain truth; this rule never authorizes tests.
 
 ## Alternative Path Parity
 

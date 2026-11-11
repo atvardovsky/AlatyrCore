@@ -162,7 +162,7 @@ def replacement(name: str) -> str:
     return "fixture-value"
 
 
-def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
+def resolve_adapter(repo: Path, support_profile: str = "core", *, activate_composition: bool = False) -> None:
     framework_root = repo / ".ai" / "framework"
     for path in sorted(repo.rglob("*")):
         if not path.is_file() or ".git" in path.parts:
@@ -199,14 +199,16 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
 
     manifest_path = repo / ".ai" / "alatyr.yaml"
     manifest = safe_load(manifest_path.read_text(encoding="utf-8"))
-    manifest["framework"]["pack"] = PROFILE_PACKS[support_profile]
+    if not activate_composition:
+        manifest["framework"]["pack"] = PROFILE_PACKS[support_profile]
     manifest["installation"]["support_profile"] = support_profile
     manifest["installation"]["state"] = "staged"
-    manifest["modules"]["selected"] = []
-    manifest["modules"]["staged"] = []
-    manifest["modules"]["enabled"] = []
-    manifest["modules"]["deferred"] = ["all optional modules: fixture does not require them"]
-    manifest["modules"]["blocked"] = []
+    if not activate_composition:
+        manifest["modules"].update(selected=[], staged=[], enabled=[],
+            deferred=["all optional modules: fixture does not require them"], blocked=[])
+    else:
+        manifest["modules"]["enabled"] = manifest["modules"]["staged"]
+        manifest["modules"]["staged"] = []
     manifest["source_of_truth"]["project_sources"] = ["README.md"]
     manifest_path.write_text(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
@@ -216,7 +218,7 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
         repo,
         operation="installation",
         support_profile=support_profile,
-        modules=[],
+        modules=manifest["modules"]["enabled"],
         categories=[],
     )
     discovery["target"]["observed_at"] = "2026-01-01T00:00:00Z"

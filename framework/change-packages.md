@@ -50,6 +50,21 @@ orchestration and change packages are independent overlays: use a workstream
 packet for execution complexity and a package for coherent outcome evidence;
 compose them only when both activation gates pass.
 
+Enabled current-change tooling requires a package unless the selected model
+binds `analysis_evidence.package_applicability` schema 1: `decision: not-required`,
+reason, one `profile_id`/`project_area`, `router`, nullable `profile` descriptor,
+independent `ordinary_result` and Boolean `activation` fields
+`material_multisurface_approval`, `architecture_or_contract`,
+`multiple_facts_or_areas`, `reproducible_case`. All must be false; model/header
+declare exactly one fact. Indexed routers bind the selected descriptor; legacy
+inline routers use null. Require matching named-task acceptance. Avoid cyclic
+closure/model bindings.
+
+Finalizer/validator share resolution: missing evidence retains the requirement;
+invalid/stale evidence blocks exemption; explicit enforcement wins. Approval,
+original outcomes, task, archive, index and existing-package checks remain.
+Declarations require source-first semantic review, not inferred materiality.
+
 ## Package Types
 
 Use a target-owned type such as:

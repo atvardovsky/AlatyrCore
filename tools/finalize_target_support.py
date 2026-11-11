@@ -15,7 +15,7 @@ from target_tool_compat import assert_write_compatible
 from task_acceptance_binding import add_task_arguments, task_arguments
 from support_write_transaction import SupportTransaction, read_output, support_writer_lock
 from target_support_outputs import step_outputs
-from target_adapter_validation.current_change import change_packages_enabled, enabled_capabilities
+from target_adapter_validation.current_change import enabled_capabilities, required_package_for_finalization
 
 
 TOOLS = Path(__file__).resolve().parent
@@ -64,7 +64,8 @@ def build_steps(
     if require_current_change:
         if not (diff_ref and approval_records):
             raise ValueError("--require-current-change requires --diff-ref and --approval-record")
-        package_required = change_packages_enabled(target)
+        package_required = required_package_for_finalization(target, task_id, task_class,
+            require_task_acceptance=require_task_acceptance, explicit=bool(packages))["required"]
         if package_required and not packages:
             raise ValueError("--require-current-change requires --change-package when change-packages is enabled")
     mode = ("--write",) if write else ()

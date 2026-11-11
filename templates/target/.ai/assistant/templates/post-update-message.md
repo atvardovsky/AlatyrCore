@@ -35,6 +35,11 @@ Framework version/schema:
 Updated adapter surfaces:
 `{UPDATED_ADAPTER_SURFACES}`
 
+Lifecycle delivery and enforcement:
+`{DISABLED_PROCEDURAL_OR_NATIVE_WITH_EXERCISED_INTERCEPTION_EVIDENCE}`
+Preserve opt-outs. Configuration, a proposed setup and successful validation
+do not establish native interception.
+
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
 - Other active sessions recheck retained context through `session-continuity`.

@@ -23,6 +23,7 @@ class SourceAdoptionFixture(ActiveTaskFixture):
                  "tools/lifecycle_checkpoints.py", "tools/run_lifecycle_checkpoint.py", "tools/lifecycle_policy.py",
                  "tools/request_brief.py", "tools/delivery_control.py", "tools/delivery_progress.py", "tools/delivery_receipts.py"}
         paths.update(row["owner"] for row in knowledge["items"].values())
+        paths.update(adoption.SOURCE_CONTROL_INPUTS)
         paths.update(path for row in policy["modules"].values() for path in row["references"])
         paths.update(path.relative_to(ROOT).as_posix() for path in
                      (ROOT / "templates/target/.ai/assistant/analysis-strategies").glob("*.json"))
