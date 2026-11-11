@@ -202,7 +202,8 @@ def artifact_obligations(model: dict, path: str, identities: dict[str, str]) -> 
     affected = {row["id"] for row in model["proof_obligations"] if any(matches(ref) for ref in row["evidence_refs"])}
     for probe in block.get("probes", []):
         result = probe["result"]
-        if result and (any(matches(ref) for ref in result["input_sha256"]) or any(matches(row["path"]) for row in result["artifacts"])):
+        if (any(matches(ref) for ref in probe["input_paths"])
+                or result and (any(matches(ref) for ref in result["input_sha256"]) or any(matches(row["path"]) for row in result["artifacts"]))):
             affected.add(probe["obligation_id"])
     for challenge in block.get("review_challenges", []):
         if any(matches(row["path"]) for row in challenge["artifacts"]):
@@ -230,9 +231,29 @@ def evidence_readiness(model: dict, issues: list[dict], identities: dict[str, st
             affected.update(scope)
     return {"state": "stale-or-unavailable" if issues else "current-content-not-execution-proof",
             "affected_obligation_ids": sorted(affected), "global_review_required": global_review,
-            "diagnostics": [{**issue, "identity": identities.get(issue["path"], issue["path"])} for issue in issues[:8]],
+            "diagnostics": [{**issue, "identity": identities.get(issue["path"], issue["path"]),
+                "aliases": sorted(path for path, identity in identities.items()
+                                  if identity == identities.get(issue["path"], issue["path"]))}
+                            for issue in issues[:8]],
             "failure_count": len(issues),
             "authority": "none", "authorization_granted": False, "acceptance_granted": False}
+
+
+def resolve_unmeasured_dependencies(model: dict, identities: dict[str, str], resolve: Callable[[str], str]) -> list[dict]:
+    """Resolve aliases only when stale evidence needs an independence decision."""
+    paths = {path for row in model["proof_obligations"] for path in row["evidence_refs"]}
+    paths.update(path for probe in model["analysis_evidence"]["probes"] for path in probe["input_paths"])
+    pending = paths - identities.keys()
+    if len(pending) > 128:
+        return [{"path": None, "message": "dependency identity review exceeds 128 unmeasured paths"}]
+    for path in sorted(pending):
+        try:
+            if not is_target_relative_path(path) or "\\" in path:
+                raise ValueError("dependency is not a contained file reference")
+            identities[path] = resolve(path)
+        except (OSError, ValueError) as exc:
+            return [{"path": None, "message": f"dependency identity is unverified for {path}: {exc}"}]
+    return []
 
 
 def verify_artifacts(model: dict, read: Callable[[str, int], bytes], *, historical_outcomes: bool = False,

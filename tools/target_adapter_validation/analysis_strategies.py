@@ -19,8 +19,6 @@ from analysis_strategy_contract import (
     PROBLEM_MODEL_TEMPLATE_RELPATH,
     STRATEGY_INDEX_RELPATH,
     build_active_problem_model_projection,
-    required_obligations_resolved,
-    required_reviews_passed,
     validate_active_problem_model_projection,
     validate_installed_strategy_templates,
     validate_problem_model,
@@ -402,26 +400,13 @@ def validate_selected_problem_model(
         for failure in active_retention_failures(model, validator.git.is_ignored):
             validator.error("ACTIVE_TASK_HANDOFF_RETENTION", failure, relpath)
     if model.get("schema_version") == 7:
-        from analysis_evidence import evidence_failures, verify_artifacts
-        def read_artifact(path: str, limit: int) -> bytes:
-            result = validator.context.read_bytes_result(validator.target_path(path), max_bytes=limit)
-            if result.value is None:
-                raise ValueError(result.error or "missing evidence artifact")
-            return result.value
-        # Frozen witnesses retain historical source bindings; do not compare them
-        # with today's implementation files. Current tasks must verify both.
-        if not frozen or current_task and require_completion:
-            for failure in verify_artifacts(model, read_artifact):
-                validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
-        elif "outcome_checks" in model.get("analysis_evidence", {}):
-            for failure in verify_artifacts(model, read_artifact, historical_outcomes=True):
-                validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
         if archived and "outcome_checks" in model.get("analysis_evidence", {}):
             from outcome_evidence import retention_failures
             for failure in retention_failures(model, validator.git.is_ignored):
                 validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
-        for failure in evidence_failures(model, completion=require_completion):
-            validator.error("ANALYSIS_EVIDENCE_INVALID", failure, relpath)
+    from target_adapter_validation.prerequisites import validate_model_prerequisites
+    validate_model_prerequisites(validator, model, relpath, require_completion=require_completion,
+                                 frozen=frozen, current_task=current_task)
     if not model_failures:
         selected_projection_schema = projection_schema
         if selected_projection_schema is None:
@@ -451,18 +436,6 @@ def validate_selected_problem_model(
         )
     for failure in validate_strategy_requirements(model, descriptor):
         validator.error("ANALYSIS_STRATEGY_REQUIREMENT", failure, relpath)
-    if require_completion and not required_obligations_resolved(model):
-        validator.error(
-            "ANALYSIS_REQUIRED_OBLIGATION_OPEN",
-            "selected problem model has unresolved required proof obligations",
-            relpath,
-        )
-    if require_completion and not required_reviews_passed(model):
-        validator.error(
-            "ANALYSIS_REQUIRED_REVIEW_OPEN",
-            "selected problem model has an incomplete required review",
-            relpath,
-        )
     if require_completion and model.get("schema_version") in (5, 6, 7) and not model_failures:
         for failure in behavior_failures(model, completion=True):
             validator.error("TASK_BEHAVIOR_ACCEPTANCE", failure, relpath)

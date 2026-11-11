@@ -15,9 +15,9 @@ TASK_PROJECTION_FIELDS = (
 )
 
 
-@lru_cache(maxsize=3)
+@lru_cache(maxsize=5)
 def task_schema(name: str) -> jsonschema.Draft7Validator:
-    if name not in {"active-task-index", "task-closure", "publication-receipt"}:
+    if name not in {"active-task-index", "task-closure", "publication-receipt", "task-evidence-loss", "evidence-loss-approval"}:
         raise ValueError(f"unsupported task schema: {name}")
     path = Path(__file__).resolve().parents[1] / f"schemas/alatyr-{name}.schema.json"
     value = json.loads(path.read_text(encoding="utf-8"))
@@ -152,4 +152,6 @@ def task_predecessor_failures(tasks: list[dict[str, Any]]) -> list[str]:
                     failures.append(f"{start} has cyclic or unavailable predecessor {predecessor}")
                 elif predecessor not in visited:
                     pending.append(predecessor)
+                if predecessor in by_id and by_id[start]["state"] == "active" and by_id[predecessor]["state"] == "historical-evidence-missing":
+                    failures.append(f"active task {start} depends on unresolved missing evidence from {predecessor}")
     return failures

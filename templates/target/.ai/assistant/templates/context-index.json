@@ -832,8 +832,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 239,
-      "content_digest": "sha256:742ed2c1b709cdea9236aaff43fb0f0420a613a403dd23deaa08d4a95c4e5f81"
+      "estimated_words": 257,
+      "content_digest": "sha256:5e69412ce87247b26e1cc8894e0328a1e352f9d984cb57f10a4b197776e5ecee"
     },
     {
       "id": "assistant.content.templates-problem-model-active-projection-json",

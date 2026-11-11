@@ -39,10 +39,19 @@ def tooling_comparison(view: TargetRepositoryView, source: Path) -> dict[str, An
             pin = scalar.value if scalar is not None else None
     known = all(value is not None for value in (*versions.values(), *installed.values()))
     state = ("same-declared-versions" if versions == installed else "different-tooling-baseline") if known else "unknown"
+    from tooling_identity import tooling_identity
+    identity = tooling_identity(producer, view, pin)
+    if identity["revision_identity"] == "different-recorded-revision":
+        state = "different-tooling-baseline"
+    if identity["active_task_reader"]["state"] in {"unsupported-format", "invalid-contract"}:
+        state = "incompatible-reader-contract"
+    if producer.finalize():
+        state = "unknown"
     return {"state": state, "producer_versions": versions, "installed_versions": installed,
+            "producer_identity": identity,
             "installed_baseline": pin, "next_action": "assess-upgrade" if state == "different-tooling-baseline" else "inspect-findings",
             "acceptance_granted": False, "findings_waived": False,
-            "limitation": "Declared versions only, not installed-content integrity or semantic compatibility. Newer-tool comparisons are migration evidence, not proof the older baseline was corrupt."}
+            "limitation": "Versions, observed revision and selected reader format only, not complete installed/producer integrity or semantic compatibility. Unknown identity stays unverified; no findings are waived."}
 
 
 def finding_groups(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:

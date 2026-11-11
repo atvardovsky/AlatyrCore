@@ -39,6 +39,8 @@
     "tools/target_adapter_validation/module_profile.py",
     "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/package_applicability.py",
+    "tools/target_adapter_validation/preflight_packages.py",
+    "tools/target_adapter_validation/prerequisites.py",
     "tools/target_adapter_validation/project_knowledge.py",
     "tools/target_adapter_validation/project_support_documentation.py",
     "tools/target_adapter_validation/project_vocabulary.py",
@@ -217,7 +219,7 @@
     },
     {
       "id": "PACKAGE",
-      "code_count": 117
+      "code_count": 121
     },
     {
       "id": "PLACEHOLDERS",
@@ -277,7 +279,7 @@
     },
     {
       "id": "TASK",
-      "code_count": 57
+      "code_count": 61
     },
     {
       "id": "TDD",
@@ -726,7 +728,8 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/analysis_strategies.py"
+        "tools/target_adapter_validation/analysis_strategies.py",
+        "tools/target_adapter_validation/prerequisites.py"
       ]
     },
     {
@@ -735,7 +738,7 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/analysis_strategies.py"
+        "tools/target_adapter_validation/prerequisites.py"
       ]
     },
     {
@@ -763,7 +766,8 @@
       ],
       "sources": [
         "tools/target_adapter_validation/active_tasks.py",
-        "tools/target_adapter_validation/analysis_strategies.py"
+        "tools/target_adapter_validation/analysis_strategies.py",
+        "tools/validate_target_adapter.py"
       ]
     },
     {
@@ -934,7 +938,7 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/analysis_strategies.py"
+        "tools/target_adapter_validation/prerequisites.py"
       ]
     },
     {
@@ -943,7 +947,7 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/analysis_strategies.py"
+        "tools/target_adapter_validation/prerequisites.py"
       ]
     },
     {
@@ -9493,6 +9497,15 @@
       ]
     },
     {
+      "code": "PACKAGE_INCIDENT_EVIDENCE_LOSS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "PACKAGE_INCIDENT_MODEL_DIGEST",
       "levels": [
         "error"
@@ -9635,7 +9648,8 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/change_package_index.py"
+        "tools/target_adapter_validation/change_package_index.py",
+        "tools/validate_target_adapter.py"
       ]
     },
     {
@@ -9645,6 +9659,24 @@
       ],
       "sources": [
         "tools/target_adapter_validation/change_package_index.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/preflight_packages.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/preflight_packages.py"
       ]
     },
     {
@@ -9680,7 +9712,8 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/change_package_index.py"
+        "tools/target_adapter_validation/change_package_index.py",
+        "tools/validate_target_adapter.py"
       ]
     },
     {
@@ -9743,7 +9776,8 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/change_package_index.py"
+        "tools/target_adapter_validation/change_package_index.py",
+        "tools/validate_target_adapter.py"
       ]
     },
     {
@@ -9824,7 +9858,8 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/change_package_index.py"
+        "tools/target_adapter_validation/change_package_index.py",
+        "tools/validate_target_adapter.py"
       ]
     },
     {
@@ -9842,15 +9877,18 @@
         "error"
       ],
       "sources": [
-        "tools/target_adapter_validation/change_package_index.py"
+        "tools/target_adapter_validation/change_package_index.py",
+        "tools/validate_target_adapter.py"
       ]
     },
     {
       "code": "PACKAGE_INVALID_JSON",
       "levels": [
-        "dynamic"
+        "dynamic",
+        "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/preflight_packages.py",
         "tools/validate_target_adapter.py"
       ]
     },
@@ -9861,6 +9899,15 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/preflight_packages.py"
       ]
     },
     {
@@ -10136,9 +10183,11 @@
     {
       "code": "PACKAGE_STATUS",
       "levels": [
-        "dynamic"
+        "dynamic",
+        "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/preflight_packages.py",
         "tools/validate_target_adapter.py"
       ]
     },
@@ -13387,6 +13436,42 @@
       "code": "TASK_EVIDENCE_LINEAGE",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS_BASELINE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS_REOPEN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOSS_SELECTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/active_tasks.py"
+      ]
+    },
+    {
+      "code": "TASK_EVIDENCE_LOST",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/target_adapter_validation/active_tasks.py"

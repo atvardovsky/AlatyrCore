@@ -1,9 +1,8 @@
 # Selected Task State Delivery
 
-Conditional guidance delegated by [large-task orchestration](large-task-orchestration.md)
-and [engineering evidence](engineering-evidence.md). Load for adopted dependency
-readiness or reconciliation of named-task disposition, not routine bootstrap.
-Existing canonical authorization, evidence and acceptance rules remain unchanged.
+Conditional detail of [orchestration](large-task-orchestration.md) and
+[evidence](engineering-evidence.md). Load for adopted readiness or named-task
+reconciliation, never routine bootstrap; existing rules remain authoritative.
 
 ## Current Disposition
 
@@ -14,24 +13,24 @@ bytes; do not insert a pointer into an immutable report or rehash it as current.
 Read that bound disposition before resuming work. Provisional finalization remains
 provisional after publication; a closure is not proof of current runtime state.
 
-With canonical tooling, `doctor --current-task <registered-id>` selects one bound model/closure
-without scanning historical reports. Invalidated inputs clear derived claims.
-Installed templates, policy adoption and exercised evidence remain distinct;
-availability and declared checkpoint passes grant neither permission nor proof.
-Selected closure views must use canonical closure/owner checks before exposing
-delivery claims. For incident work, lead with the bound original outcome,
-required obligations, failed gate and rejected mechanisms. Component progress
-must not replace an unresolved original case; these views remain declarations,
-not fresh runtime verification or a substitute for the next causal experiment.
-Reuse canonical selected execution/repair validation, including expected-negative
-outcomes. A consistent diagnostic record does not establish incident acceptance.
-For repeated or escaped incidents, the selected view also exposes the original
-input, terminal outcome, failed gate and repair-control adoption decision before
-another related patch. Request approval to adopt absent optional controls;
-never silently enable them or block independent unrelated work. Review fixture
-initial state and a falsifying observation, not only green component totals.
-Without that tooling, inspect the bound model/closure manually and report
-machine verification as unperformed; no portable runtime command is required.
+`doctor --current-task <registered-id>` selects a bound model/closure, not report
+history. Invalidated inputs clear affected claims. Templates, adopted policy and
+exercised evidence remain distinct; availability grants neither permission nor
+proof. Use canonical closure/owner checks before exposing delivery claims.
+Lead incident views with original input/outcome, required obligations, failed gate,
+rejected mechanisms and repair-control adoption. Component progress must not
+replace an unresolved original case or the next causal experiment. Reuse canonical
+execution/repair checks, including expected-negative outcomes. Diagnostics do not
+establish acceptance. Before another repeated/escaped repair, review fixture
+initial state and a falsifying observation. Absent optional controls need approval,
+not silent adoption or blocking unrelated work. Without tooling, inspect the bound
+model/closure and report machine verification unperformed; no command is mandatory.
+
+Opt-in schema-2 task indexes may retain owner-reviewed `historical-evidence-missing`
+dispositions with exact original registration, search, dependency and unresolved
+outcome witnesses. Loss grants no execution, closure or acceptance. Active
+transitive dependents and current/selected or complete packages cannot borrow
+historical exceptions; unavailable committed retention evidence fails closed.
 
 Bind optional checkpoints in `analysis_evidence.selected_context`: at most 16
 exact `{path, sha256}` rows. Publish model/projection/header together. Selected
@@ -60,7 +59,9 @@ method and completion condition; they are not commands or authorization.
 
 Separate ready, blocked, waiting and dependency-unconfigured probes. Unknown
 mappings neither require adoption nor establish readiness. Staleness clears
-readiness/advice, retaining duties. Overflow returns references without actions
+affected readiness/advice; only explicit dependency and artifact mappings can
+preserve independent work. Shared/unknown scope blocks actionable advice.
+Retain duties. Overflow returns references without actions
 or truncated constraints. Closed tasks remain historical, with no active work.
 
 Re-anchor for changed requirements, contradictory evidence, scope expansion,

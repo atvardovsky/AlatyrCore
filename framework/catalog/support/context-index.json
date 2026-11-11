@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1609,
-      "content_digest": "sha256:65683d564cfe7f6dfffce15eee51c13d7f74e85bbc0be16c7670408e50e938d7"
+      "estimated_words": 1593,
+      "content_digest": "sha256:1a3199c15762eeeefeb8ab22eac9ea379a8d99ae0f03a70e457f20a5dfed1d22"
     },
     {
       "id": "framework.support.test-delivery-efficiency-md",

@@ -91,8 +91,8 @@
       "owner_refs": [
         "ALATYR-TEAM-001"
       ],
-      "estimated_words": 2460,
-      "content_digest": "sha256:3c0370214ab9056f5bae51f8ef561c68cc5778f8b98195efc12c82b1bd1db223"
+      "estimated_words": 2648,
+      "content_digest": "sha256:d9f489af95d9d7b473085f1a36f8b04bee3f06a230b6adfe0fd0880b0fc2567c"
     },
     {
       "id": "framework.collaboration.workspace-modes-md",

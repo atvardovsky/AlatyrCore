@@ -20,6 +20,42 @@ from tests.active_task_fixture import ActiveTaskFixture
 
 
 class HealthViewTests(unittest.TestCase):
+    def test_equal_versions_do_not_hide_a_different_source_revision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, target = root / "source", root / "target"
+            source.mkdir(); (target / ".ai").mkdir(parents=True)
+            for args in (["init", "-q"], ["config", "user.email", "fixture@example.invalid"], ["config", "user.name", "Fixture"]):
+                subprocess.run(["git", *args], cwd=source, check=True)
+            for name, value in (("VERSION", "0.1.0-alpha.1"), ("ADAPTER_SCHEMA_VERSION", "1"), ("TEMPLATE_VERSION", "1")):
+                (source / name).write_text(value)
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "first"], cwd=source, check=True)
+            revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source).decode().strip()
+            (target / ".ai/alatyr.yaml").write_text(f"schema_version: 1\nframework:\n  version: 0.1.0-alpha.1\n  template_version: 1\n  source_commit: {revision}\n")
+            first = tooling_comparison(TargetRepositoryView(target), source)
+            self.assertEqual(first["producer_identity"]["revision_identity"], "same-recorded-revision")
+            (source / "reader.txt").write_text("changed contract with identical labels")
+            subprocess.run(["git", "add", "."], cwd=source, check=True)
+            subprocess.run(["git", "commit", "-qm", "second"], cwd=source, check=True)
+            second = tooling_comparison(TargetRepositoryView(target), source)
+            self.assertEqual(second["state"], "different-tooling-baseline")
+            self.assertEqual(second["producer_identity"]["revision_identity"], "different-recorded-revision")
+
+    def test_selected_reader_format_is_checked_independently_of_labels(self):
+        from tooling_identity import tooling_identity
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); source, target = root / "source", root / "target"
+            (source / "tools").mkdir(parents=True); (target / ".ai/assistant").mkdir(parents=True)
+            path = source / "tools/target-adapter-contract-compatibility.json"
+            index = target / ".ai/assistant/active-tasks.json"
+            index.write_text(json.dumps({"schema_version": 2, "tasks": []}))
+            for supported, expected in (([1], "unsupported-format"), ([1, 2], "supported-format"), ([True], "invalid-contract"), ({}, "invalid-contract")):
+                path.write_text(json.dumps({"contracts": {"analysis-strategies": {"artifacts": {"active-task-index": {"supported": supported}}}}}))
+                result = tooling_identity(TargetRepositoryView(source), TargetRepositoryView(target), None)
+                self.assertEqual(result["active_task_reader"]["state"], expected)
+                self.assertFalse(result["acceptance_granted"])
+
     def test_grouping_preserves_every_raw_finding_and_exposes_other_blockers(self):
         findings = [{"level": "error", "code": "STALE", "path": "current.json", "message": f"stale input {i}"} for i in range(63)]
         findings.append({"level": "error", "code": "OTHER_BLOCKER", "path": "contract.json", "message": "independent blocker"})

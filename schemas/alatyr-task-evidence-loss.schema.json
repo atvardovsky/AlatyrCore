@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "alatyr-task-evidence-loss.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "record_kind", "task_id", "operation_id", "registration", "missing_model", "owner_approval", "search_evidence", "dependency_review", "unresolved_outcomes", "authority", "acceptance_granted", "resumable", "missing_obligations"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-task-evidence-loss"},
+    "task_id": {"$ref": "#/definitions/text"},
+    "operation_id": {"$ref": "#/definitions/text"},
+    "registration": {"$ref": "#/definitions/registration"},
+    "missing_model": {"$ref": "#/definitions/binding"},
+    "owner_approval": {"$ref": "#/definitions/binding"},
+    "search_evidence": {"$ref": "#/definitions/binding"},
+    "dependency_review": {"$ref": "#/definitions/binding"},
+    "authority": {"const": "none"}, "acceptance_granted": {"const": false},
+    "resumable": {"const": false}, "missing_obligations": {"const": "unknown-not-discharged"},
+    "unresolved_outcomes": {
+      "type": "array", "minItems": 1, "maxItems": 128,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["fact_id", "state", "owner_ref", "statement", "next_safe_action"],
+        "properties": {
+          "fact_id": {"$ref": "#/definitions/text"}, "state": {"const": "unverified"},
+          "owner_ref": {"$ref": "#/definitions/text"}, "statement": {"$ref": "#/definitions/text"},
+          "next_safe_action": {"$ref": "#/definitions/text"}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "text": {"type": "string", "minLength": 1, "maxLength": 2048, "pattern": "^[^{}]+$"},
+    "binding": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/definitions/text"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+    },
+    "registration": {
+      "type": "object", "additionalProperties": false, "required": ["commit", "index_sha256"],
+      "properties": {"commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}, "index_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+    }
+  }
+}

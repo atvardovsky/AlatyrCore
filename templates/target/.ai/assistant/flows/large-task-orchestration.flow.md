@@ -1,10 +1,8 @@
 # Large-Task Orchestration Flow
 
-Use this flow in `{PROJECT_NAME}` for large, cross-boundary, multi-workstream,
-or resumable work. Do not use it for a small task that fits one context profile
-and one coherent change.
-
-Replace placeholders with target facts before accepting installation.
+Use in `{PROJECT_NAME}` for large, cross-boundary, multi-workstream or resumable
+work, not a small one-profile coherent change. Resolve placeholders from target
+evidence before installation acceptance.
 
 ## Target Sources
 
@@ -22,13 +20,10 @@ Replace placeholders with target facts before accepting installation.
 
 ## Activation Gate
 
-Activate the `large-or-resumable` task-scale overlay when the request is
-explicitly large or resumable, contains multiple independently verifiable
-workstreams, crosses multiple project areas or profiles, exceeds the profile
-context budget, or needs separate approval or validation checkpoints.
-
-If none applies, continue with the smallest normal operation flow and do not
-create a packet.
+Activate `large-or-resumable` for explicit large/resumable work, independently
+verifiable workstreams, multiple project areas/profiles, exceeded context budget,
+or separate approval/validation checkpoints. Otherwise use the smallest normal
+operation flow without a packet.
 
 When the optional `subagent-delegation` module is enabled, apply
 `.ai/assistant/flows/subagent-delegation.flow.md` only to independently useful,
@@ -123,9 +118,12 @@ and task closure remain distinct.
 
 ### Verify
 
-At material phase changes, refresh the registered model/projection/header and
-any adopted `analysis_evidence.selected_context` bindings. Load their references
-instead of treating a growing findings report as another current-task registry.
+At material phase changes, refresh registered model/projection/header and adopted
+`analysis_evidence.selected_context` bindings; reference them instead of growing
+narrative registries. After primary-reviewed receipt integration, recompute
+affected readiness/actions. Receipts settle no obligation. Distinguish resource
+waits, independent ready work, execution and acceptance; explicit handback releases
+resources, not outcomes. Load selected-phase owners/open duties, not process history.
 
 Do not authorize repairs or finalization here; return to authorized Apply and
 refresh affected evidence when a required check fails.

@@ -73,6 +73,21 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
         result["diagnostics"].extend(lineage_failures[:8])
         return result
     task = matches[0]
+    if task["state"] == "historical-evidence-missing":
+        from historical_task_evidence import validate_loss_disposition
+        loss = validate_loss_disposition(validator, task, index["tasks"])
+        if loss is None:
+            result["diagnostics"].append("historical evidence-loss disposition is invalid or stale")
+            return result
+        if view.finalize():
+            result["diagnostics"].append("historical evidence inputs changed during inspection")
+            return result
+        result.update(state="historical-evidence-missing", task_state=task["state"],
+                      model=task["problem_model"], disposition_source=task["evidence_loss_disposition"],
+                      resumable=False, missing_obligations="unknown-not-discharged",
+                      unresolved_outcomes=loss["unresolved_outcomes"],
+                      runtime_readiness={"state": "not-resumable", "authorization_granted": False, "acceptance_granted": False})
+        return result
     closure = None
     if task["state"] == "closed":
         closure = _bound_object(validator, task["completion_evidence"], "selected task closure")
@@ -155,14 +170,34 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
     if closure is None and "analysis_evidence" in model:
         from analysis_evidence import evidence_readiness, next_action_advice, verify_artifacts
         identities = {}
+        files = {}
+        unknown_identities = set()
+        def file_identity(status) -> str:
+            path = status.resolved_path.relative_to(view.target).as_posix()
+            if type(status.device) is int and type(status.inode) is int and status.inode > 0:
+                return files.setdefault((status.device, status.inode), path)
+            unknown_identities.add(path)
+            return path
         def read_artifact(path: str, limit: int) -> bytes:
             raw = view.read_bytes_result(validator.target_path(path), max_bytes=limit)
             if raw.value is None:
                 raise ValueError(raw.error or "missing analysis artifact")
-            identities[path] = raw.status.resolved_path.relative_to(view.target).as_posix()
+            identities[path] = file_identity(raw.status)
             return raw.value
         issues = []
         failures = verify_artifacts(model, read_artifact, issues=issues)
+        if failures:
+            from analysis_evidence import resolve_unmeasured_dependencies
+            def resolve_dependency(path: str) -> str:
+                status = view.status(validator.target_path(path))
+                if status.state != TargetFileState.FILE:
+                    raise ValueError("dependency is not an available contained file")
+                return file_identity(status)
+            identity_issues = resolve_unmeasured_dependencies(model, identities, resolve_dependency)
+            if unknown_identities:
+                identity_issues.append({"path": None, "message": "dependency filesystem identity is unavailable; independence is unverified"})
+            issues.extend(identity_issues)
+            failures.extend(issue["message"] for issue in identity_issues)
         result["evidence_readiness"] = evidence_readiness(model, issues, identities)
         selected = model["analysis_evidence"].get("selected_context")
         if selected is not None:
@@ -172,12 +207,23 @@ def current_task_view(validator: Any, task_id: str) -> dict[str, Any]:
                 "authority": "none", "acceptance_granted": False,
             }
         if failures:
-            readiness = {**readiness, "state": "blocked-by-stale-evidence", "ready": [],
-                         "failures": [*readiness["failures"], *failures]}
+            from request_focus import evidence_scope_review
+            blocked = {row["id"] for row in model["proof_obligations"]
+                       if evidence_scope_review(model, result["evidence_readiness"], {row["id"]}, readiness=readiness)}
+            independent = [key for key in readiness["ready"] if key not in blocked]
+            readiness = {**readiness, "ready": independent,
+                         "blocked": sorted(set(readiness["blocked"]) | blocked)}
+            if not independent:
+                readiness.update(state="blocked-by-stale-evidence", failures=[*readiness["failures"], *failures])
             if "execution_readiness" in result:
                 result["execution_readiness"] = readiness
-            result["next_action_advice"] = {"state": "blocked-by-stale-evidence", "model_sha256": binding["sha256"],
-                "diagnostics": failures, "authority": "none", "authorization_granted": False}
+            if independent:
+                result["next_action_advice"] = next_action_advice(model, binding["sha256"], readiness=readiness)
+                result["next_action_advice"].update(artifact_binding_state="partially-current-content",
+                                                    diagnostics=failures, evidence_review_required=True)
+            else:
+                result["next_action_advice"] = {"state": "blocked-by-stale-evidence", "model_sha256": binding["sha256"],
+                    "diagnostics": failures, "authority": "none", "authorization_granted": False}
         else:
             result["next_action_advice"] = next_action_advice(model, binding["sha256"], readiness=readiness)
             result["next_action_advice"]["artifact_binding_state"] = "current-content-not-execution-proof"

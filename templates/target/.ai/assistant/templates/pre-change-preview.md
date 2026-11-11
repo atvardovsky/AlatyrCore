@@ -36,6 +36,10 @@ authorize the next state-changing phase.
 - Next phase authorized: `{YES_NO_AND_REASON}`
 - Approval needs and selected records: `{APPROVAL_NEEDS_AND_RECORDS}`
 - Planned validation: `{VALIDATION_OR_MANUAL_REVIEW}`
+- Candidate freeze, peer-correction review and reusable artifact inputs:
+  `{EXACT_BINDINGS_DISPOSITIONS_AND_RECHECK_POINT_OR_NOT_APPLICABLE}`
+- Shared-resource owner, blocker and explicit handback:
+  `{RESOURCE_COORDINATION_OR_NOT_APPLICABLE}`
 - Unresolved questions: `{UNRESOLVED_QUESTIONS_OR_NONE}`
 - Evidence basis: `{FILES_RECORDS_AND_REVISION}`
 - Decision: `{PROCEED_ASK_OR_BLOCKED}`

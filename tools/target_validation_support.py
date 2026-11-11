@@ -17,7 +17,7 @@ from typing import Any, Tuple
 import yaml
 from yaml.nodes import MappingNode, Node, ScalarNode, SequenceNode
 
-from path_spec import PathDialect, PathSpec
+from path_spec import PathDialect, PathSpec, logical_path
 from yaml_support import safe_compose, safe_load
 
 
@@ -522,12 +522,16 @@ def extract_list_field(text: str, label: str) -> list[str]:
 
 
 def is_target_scope_pattern(value: str) -> bool:
-    if not value or value.startswith(("/", "\\")):
+    if not isinstance(value, str) or not value or value.startswith(("/", "\\")):
         return False
     if re.match(r"^[A-Za-z]:[\\/]", value):
         return False
     normalized = value.replace("\\", "/")
-    return ".." not in normalized.split("/")
+    try:
+        logical_path(normalized, pattern=True)
+    except ValueError:
+        return False
+    return True
 
 
 def scope_entries_cover(path: str, entries: list[str]) -> bool:

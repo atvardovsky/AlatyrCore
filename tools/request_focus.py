@@ -20,6 +20,21 @@ def prerequisite_closure(model: dict, identities: set[str]) -> set[str]:
     return closure
 
 
+def evidence_scope_review(model: dict, health: dict, obligation_ids, paths=(), *, readiness=None) -> bool:
+    """Shared scope decision; unknown dependency structure proves no independence."""
+    stale = health.get("state") == "stale-or-unavailable"
+    if not stale and not health.get("global_review_required") and not health.get("affected_obligation_ids") and not health.get("diagnostics"):
+        return False
+    relevant = health.get("global_review_required", False) or bool(
+        prerequisite_closure(model, set(obligation_ids)) & set(health.get("affected_obligation_ids", [])))
+    relevant = relevant or any(
+        PurePath(reference) == PurePath(path) or PurePath(path) in PurePath(reference).parents
+        for issue in health.get("diagnostics", [])
+        for reference in (issue["path"], issue.get("identity"), *issue.get("aliases", []))
+        if isinstance(reference, str) for path in paths)
+    return bool(relevant or stale and (readiness if readiness is not None else execution_readiness(model))["state"] != "declared-readiness")
+
+
 def request_progress(brief: dict, model: dict, health: dict) -> dict:
     """Cover the whole captured request, never just the action's selected slice."""
     proofs = {row["id"]: row for row in model["proof_obligations"]}
@@ -30,13 +45,13 @@ def request_progress(brief: dict, model: dict, health: dict) -> dict:
     for outcome in brief["outcomes"]:
         roots = set(outcome["proof_obligation_ids"])
         closure = prerequisite_closure(model, roots)
-        stale = health.get("global_review_required", False) or bool(closure & affected)
+        stale = evidence_scope_review(model, health, roots, readiness=readiness)
         unresolved = sorted(key for key in roots if key not in proofs or proofs[key]["status"] != "passed")
         ready = closure & ready_ids
         if health.get("global_review_required", False):
             ready = set()
         elif affected:
-            ready = {key for key in ready if not prerequisite_closure(model, {key}) & affected}
+            ready = {key for key in ready if not evidence_scope_review(model, health, {key}, readiness=readiness)}
         rows.append({"id": outcome["id"], "state": "evidence-review-required" if stale else
                      "unverified" if unresolved else "declared-proofs-passed-not-acceptance",
                      "unresolved_proof_ids": unresolved,
@@ -55,16 +70,8 @@ def evidence_action_review(brief: dict, action: dict, model: dict, health: dict)
              for key in selected[identity]["proof_obligation_ids"]}
     if brief.get("focus_control") == "dependency-readiness" and "obligation_ids" in action:
         roots = set(action["obligation_ids"])
-    relevant = health.get("global_review_required", False) or bool(
-        prerequisite_closure(model, roots) & set(health.get("affected_obligation_ids", [])))
-    relevant = relevant or any(issue.get("identity", issue["path"]) is not None and any(
-        PurePath(issue.get("identity", issue["path"])) == PurePath(path)
-        or PurePath(path) in PurePath(issue.get("identity", issue["path"])).parents
-        for path in action["paths"])
-        for issue in health.get("diagnostics", []))
+    relevant = evidence_scope_review(model, health, roots, action["paths"])
     stale = health.get("state") == "stale-or-unavailable"
-    if stale and not relevant and execution_readiness(model)["state"] != "declared-readiness":
-        relevant = True  # An absent dependency map cannot prove an independent branch.
     blocking = stale and relevant and action["kind"] == "work" and action["phase"] != "inspect"
     review = {**health, "action_state": "review-required" if blocking else
               "read-only-recovery" if stale and relevant else "not-relied-upon" if stale else health["state"],

@@ -4610,8 +4610,15 @@ class Validator:
                 f"approval archive mode {self.approval_archive_mode} does not provide "
                 "complete historical acceptance evidence",
             )
+        self.check_current_approval_scope(approval_records)
+
+    def check_current_approval_scope(self, approval_records: list[Path] | None = None) -> None:
+        """Share exact current diff enforcement without historical archive discovery."""
+        if approval_records is None:
+            approval_records = self.resolve_approval_records()
         if approval_records:
             self.check_approval_record_shape(approval_records)
+            self.check_approval_hash_evidence(approval_records)
 
         if self.enforce_approval_scope and not self.diff_ref:
             self.error(
@@ -4628,8 +4635,6 @@ class Validator:
             return
 
         if not self.diff_ref:
-            if approval_records:
-                self.check_approval_hash_evidence(approval_records)
             self.info(
                 "DIFF_SCOPE_SKIPPED",
                 "approval scope versus diff check skipped because --diff-ref was not provided",
@@ -4693,7 +4698,6 @@ class Validator:
                         self.rel(record),
                     )
 
-        self.check_approval_hash_evidence([scope.path for scope in scopes])
         for changed in checked_files:
             if any(
                 scope_entries_cover(changed, scope.allowed)
@@ -5663,28 +5667,36 @@ class Validator:
     def indexed_change_package_entries(
         self, index_data: dict[str, Any]
     ) -> list[dict[str, Any]]:
-        indexed = [
-            entry
-            for entry in index_data.get("records", [])
-            if isinstance(entry, dict)
-        ]
-        for descriptor in index_data.get("shards", []):
+        source = ".ai/assistant/change-packages/index.json"
+        records, shards = index_data.get("records"), index_data.get("shards", [])
+        if not isinstance(records, list) or not isinstance(shards, list):
+            self.error("PACKAGE_INDEX_RECORDS", "records and shards must be lists", source)
+            return []
+        indexed = list(records)
+        for descriptor in shards:
             if not isinstance(descriptor, dict):
+                self.error("PACKAGE_INDEX_SHARD", "shard descriptor must be an object", source)
                 continue
             shard_relpath = descriptor.get("path")
-            if not isinstance(shard_relpath, str) or not self.is_target_file(
-                shard_relpath
-            ):
+            if not isinstance(shard_relpath, str) or not is_target_relative_path(shard_relpath) or not self.is_target_file(shard_relpath):
+                self.error("PACKAGE_INDEX_SHARD_PATH", "shard path must resolve inside the target", source)
                 continue
             shard, shard_error = self.context.read_json(
                 self.target_path(shard_relpath)
             )
-            if shard_error is not None or not isinstance(shard, dict):
+            if shard_error is not None or not isinstance(shard, dict) or not isinstance(shard.get("records"), list):
+                self.error("PACKAGE_INDEX_RECORDS", "shard records must be a list", shard_relpath)
                 continue
-            for entry in shard.get("records", []):
-                if isinstance(entry, dict):
-                    indexed.append(entry)
-        return indexed
+            indexed.extend(shard["records"])
+        valid = []
+        for entry in indexed:
+            if not isinstance(entry, dict):
+                self.error("PACKAGE_INDEX_ENTRY", "package entry must be an object", source)
+            elif not isinstance(entry.get("status"), str) or entry["status"] not in CHANGE_PACKAGE_STATUSES:
+                self.error("PACKAGE_INDEX_STATUS", "package entry requires a canonical status", source)
+            else:
+                valid.append(entry)
+        return valid
 
     def indexed_change_package_paths(self, index_data: dict[str, Any]) -> set[str]:
         return {
@@ -5700,8 +5712,11 @@ class Validator:
         *,
         status: str,
         indexed_entries: list[dict[str, Any]],
+        authoring_only: bool = False,
     ) -> None:
         if status not in ACTIVE_CHANGE_PACKAGE_STATUSES:
+            if isinstance(data.get("incident_continuity"), dict) and "evidence_loss_disposition" in data["incident_continuity"]:
+                self.error("PACKAGE_INCIDENT_EVIDENCE_LOSS", "historical model loss cannot qualify a complete package", source)
             return
         incident = data.get("incident_continuity")
         for failure in incident_continuity_failures(data):
@@ -5734,8 +5749,10 @@ class Validator:
             predecessor_id = binding.get("package_id")
             predecessor_record = binding.get("record")
             predecessor_sha = binding.get("sha256")
-            if isinstance(predecessor_id, str):
-                predecessor_ids.append(predecessor_id)
+            if not is_resolved_string(predecessor_id):
+                self.error("PACKAGE_INCIDENT_PREDECESSOR", f"incident predecessors[{index}].package_id must be a resolved string", source)
+                continue
+            predecessor_ids.append(predecessor_id)
             indexed_entry = entry_by_id.get(predecessor_id)
             if not isinstance(indexed_entry, dict) or indexed_entry.get("record") != predecessor_record:
                 self.error(
@@ -5797,6 +5814,9 @@ class Validator:
                     source,
                 )
 
+        from historical_task_evidence import validate_package_loss
+        if validate_package_loss(self, data, source, status):
+            return
         model_binding = incident.get("problem_model")
         if not isinstance(model_binding, dict):
             return
@@ -5841,15 +5861,29 @@ class Validator:
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             self.error("PACKAGE_INCIDENT_MODEL_SCHEMA", str(exc), source)
             return
-        model = validate_selected_problem_model(
-            self,
-            model_path,
-            schema,
-            projection_schema=projection_schema,
-            require_completion=status == "validated",
-            archived_projection=archived_projection,
-            original_source_path=model_relpath,
-        )
+        if authoring_only:
+            from target_adapter_validation.model_evidence import bound_object
+            from target_adapter_validation.prerequisites import validate_model_prerequisites
+            from analysis_strategy_contract import validate_problem_model
+            model = bound_object(self, {"path": self.rel(model_path), "sha256": model_sha}, "incident problem model")
+            if model is not None:
+                if archived_projection is not None and model.get("schema_version") in (4, 5, 6):
+                    schema = self.schema_context.read_json_result(self.schema_context.target /
+                        f"alatyr-problem-model-v{model['schema_version']}.schema.json").value
+                errors = validate_problem_model(model, schema) if isinstance(schema, dict) else ["model schema is unavailable"]
+                for error in errors:
+                    self.error("ANALYSIS_PROBLEM_MODEL_INVALID", error, source)
+                if errors:
+                    return
+                validate_model_prerequisites(self, model, self.rel(model_path), require_completion=status == "validated",
+                                             frozen=archived_projection is not None,
+                                             current_task=self.target_path(source) in self.change_packages)
+        else:
+            model = validate_selected_problem_model(
+                self, model_path, schema, projection_schema=projection_schema,
+                require_completion=status == "validated", archived_projection=archived_projection,
+                original_source_path=model_relpath,
+            )
         if not isinstance(model, dict):
             return
         model_incident = model.get("incident")
@@ -6027,7 +6061,7 @@ class Validator:
         for entry in indexed_entries:
             record = entry.get("record")
             if (
-                entry.get("status") in ACTIVE_CHANGE_PACKAGE_STATUSES
+                isinstance(entry.get("status"), str) and entry["status"] in ACTIVE_CHANGE_PACKAGE_STATUSES
                 and isinstance(record, str)
                 and record not in selected_relpaths
             ):

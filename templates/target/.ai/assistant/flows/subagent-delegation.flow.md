@@ -129,6 +129,10 @@ verified and the work requires the governed tree tier.
 
 Apply the canonical assignment protocol and adopted receipt/node observation:
 messages do not establish execution; reconcile uncertain writers before retry.
+Planning or a later-batch discussion never authorizes edits. Before each launch,
+continuation or expansion, recheck the exact packet, current action ceiling,
+cumulative worker limits and current admitted allocation. Reuse the existing
+admission/cooperation controls where supported; previews reserve nothing.
 
 1. Create one packet per delegate by instantiating
    `.ai/assistant/templates/subagent-task-packet.md` into a target-approved
@@ -165,6 +169,11 @@ refresh the bounded packet. Channel views are not acceptance or permissions.
    fact, action, permission, or surface.
 3. Review the result against current repository state; do not assume the
    delegate's fork, context, or baseline is current.
+   At candidate freeze, compare relevant peer corrections with exact selected
+   peer/candidate hashes. Record applied, rejected or deferred dispositions in
+   existing evidence; preserve unresolved material corrections. Recheck that
+   bounded snapshot before consuming its proof. Importing an earlier patch does
+   not establish reconciliation with a later peer revision.
 4. Run or repeat target validation required by combined risk.
 5. Reconcile changed facts, approvals, companion surfaces, and workstreams in
    the primary operation or large-task packet.

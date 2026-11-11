@@ -46,11 +46,15 @@ boundaries; optional inputs never clear existing cooperation uncertainty. The
 portable filesystem group includes these regressions on Windows and macOS.
 
 Execution-focus regressions must couple freshness, readiness and presentation:
-stale evidence clears actionable lists, blocked/waiting/unknown duties remain
+stale evidence clears affected actionable lists, blocked/waiting/unknown duties remain
 distinct, pending revisions retain independent work, and invalid snapshots clear
 every derived view. Exercise public JSON/text delivery, malformed selected models,
 closed witnesses and below/at/above focus limits. Compare default routes and source
 read counts; structural replays are not live-agent concentration measurements.
+Historical-loss regressions must cover the committed baseline, full/changed
+selection, public view/readiness/restore routes, and rejected current-task/package
+use. Finalization preflight shares canonical selected prerequisites, never a
+second weaker contract. Test absent/stale/malformed bindings before any builder.
 The full unit suite reserves its existing four-worker ceiling to avoid locking
 in a smaller grant while other checks fill the schedule. Capacity still clamps
 to the host/check budget. `tools/check_manifest.json` owns the execution timeout;

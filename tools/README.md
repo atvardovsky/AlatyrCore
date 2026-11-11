@@ -316,6 +316,14 @@ worker inventory and aggregate accounting.
 Sibling artifacts are snapshots, not locks; serialize expansion decisions against
 the latest artifacts before delivery.
 
+Optional `--admission`, `--allocation-id` and `--admission-sha256` bind the
+current admission projection and reviewed plan; supply all three together.
+Preparation rejects non-admitted/planned work, excess parallelism, source write
+allocations and changed inputs. Expansion preserves original provenance and the
+same allocation while allowing RUNNING continuation; see the
+[exact contract](../docs/workflow-efficiency.md#parallel-admission).
+Recheck actual peers and authorization before dispatch; preparation launches nothing.
+
 For incremental delivery, use `--previous <bundle-dir>` and repeatable
 `--expand <exact-declared-conditional-path>`, with a new output directory. Do not
 resupply the prompt/bootstrap, drop sibling reservations, increase the allocation,
@@ -470,6 +478,12 @@ dependencies and retries, and suppresses proposals on peer conflict/uncertainty.
 It does not execute work or verify semantic correspondence to the plan.
 See [workflow optimization](../docs/workflow-efficiency.md) for its exact input
 contract, freshness, remaining policy budgets and coordinator duties.
+
+That reference also defines early package-input/scope checks and candidate-freeze
+peer reconciliation. Reviewed historical losses use the
+[historical-task contract](../docs/historical-task-loss.md), not fabricated
+restored models or completed tasks. Tooling health reports actual producer
+revision and selected reader support separately from declared version labels.
 
 For final task closure, add `--task-id TASK_ID`, `--task-class standard-task`,
 and `--require-task-acceptance` to `finalize-support` or `verify-upgrade` (choose the

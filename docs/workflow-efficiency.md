@@ -17,13 +17,14 @@ class and immutable comparison base. Explicit approval bindings can be supplied
 with repeatable `--approval-record`. This diagnostic mode is mutually exclusive
 with `--write`; it writes no projections, locks or task records.
 
-The helper reuses canonical header schemas, pure model contracts, selected model/closure digests,
-header correspondence, closure and publication-receipt shapes, and explicit
-approval shape/hash checks. It does not repeat expensive result snapshots,
-architecture reviews, model-to-runtime/source verification or unrelated task history.
-Its JSON always has `acceptance_eligible: false`. It does not establish
-full approval-versus-diff coverage, current human authorization, archive
-acceptance or projection convergence. Full canonical validation remains required.
+The helper reuses canonical model/closure schemas, digests, required proofs and
+reviews, analysis artifact checks and indexed active/selected incident inputs.
+It resolves reviewed retained/lost history through the same canonical functions,
+not by copying missing runtime files. With `--require-current-change`, selected
+approval-versus-diff checks run before rendering. It does not repeat expensive
+result snapshots, architecture reviews, unrelated closed history or generated
+projection consistency. Its JSON always has `acceptance_eligible: false`;
+human authorization, full archives and final acceptance remain separate.
 
 Write mode performs these selected checks before acquiring the support writer
 lock and rechecks their inputs under that lock before mutation. Generated drift
@@ -93,6 +94,42 @@ remaining policy/context budgets, verified native limits, host CPU/RAM, nested
 test workers, active peer work and review throughput. Reserve capacity if
 backfill would starve a critical task. Missing capacity evidence is not spare
 capacity; target/native dispatch remains outside this helper.
+
+Source inspect-only preparation can consume this plan using
+`prepare-worker-context --admission admission.json --allocation-id part-a
+--admission-sha256 <current lowercase SHA-256>` together with its ordinary packet,
+prompt/bootstrap and output arguments. All three bindings are required together.
+The selected allocation must be admitted, carry no write scope and respect the
+source policy parallel ceiling. Expansion retains original provenance and the
+same allocation, prerequisites, resources, slots and empty write scope. It may
+follow READY/reviewed-retry to RUNNING with current projection/plan hashes,
+without reserving another slot; RUNNING cannot revert to a fresh admission.
+Changed allocation or plan path requires primary reconciliation, not expansion.
+This verifies declared admission only, not liveness, reservation,
+native dispatch, human permission or execution. Recheck peers/capability and the
+same exact inputs immediately before separately authorized dispatch.
+
+## Candidate And Phase Boundaries
+
+Before freezing a candidate, retain a bounded exact-file comparison with relevant
+peer corrections. Keep hashes and applied/rejected/deferred reasons in existing
+analysis or operation evidence; do not replace actively edited peer files wholesale.
+Recheck selected peer/candidate bytes at integration and before consuming build or
+validation evidence. New relevant corrections require review and affected proof,
+not an automatic whole-task restart. Missing current evidence stays unverified.
+
+Use one build for the same compatible material inputs and environment. Preflight
+fixture identity, runner/backend and required tools before expensive qualification.
+Reuse a successful child after another child's failure only when the producer
+actually supports independent input-bound child evidence and policy permits it;
+source-check caches do not implement a target application's cache. Lockfile,
+toolchain, generated/ignored inputs, build-time values and external state remain
+part of equivalence where material. No HEAD-only cache waiver is introduced.
+
+Write target process guidance as a short index with phase-specific leaves. Existing
+context profiles/phase selectors route to the applicable leaf, canonical owners,
+current model and open duties; they do not preload every historical solution.
+Keep observed performance separate from targets and preserve owner test timing.
 
 ## Qualification And Migration
 

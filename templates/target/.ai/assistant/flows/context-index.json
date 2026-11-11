@@ -362,8 +362,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1110,
-      "content_digest": "sha256:ffd80a10c5cc02f0af01c9d4ff1c4889f2d396eaffaa4f8fdb71aa46945535b6"
+      "estimated_words": 1098,
+      "content_digest": "sha256:d53261674303999c40f90b26cfc3649ebff02fa86e59bca01b52597b20a144dd"
     },
     {
       "id": "assistant.content.flows-lifecycle-checkpoints-flow-md",
@@ -618,8 +618,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 1377,
-      "content_digest": "sha256:6cf95821dbd50be66f46a5d034ca6b40c0448deb223c6d7f7b193a85db8b7e7b"
+      "estimated_words": 1461,
+      "content_digest": "sha256:5629bf96947d92e78cd711c47a5a2da2a6a83aea72a31d6523c31440c67aef1a"
     },
     {
       "id": "assistant.content.flows-support-generation-flow-md",

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import subprocess
 import sys
@@ -16,6 +17,88 @@ from source_worker_contract import load_source_worker_policy, make_builtin_packe
 
 
 class WorkerContextTests(unittest.TestCase):
+    def admission(self, **changes):
+        from tests.test_execution_admission import projection, task
+        (self.root / "plan.md").write_text("accepted inspect-only work plan")
+        value = projection(task("worker"), **changes)
+        value["plan"]["sha256"] = hashlib.sha256((self.root / "plan.md").read_bytes()).hexdigest()
+        path = self.root / "admission.json"
+        path.write_text(json.dumps(value))
+        return {"admission_path": "admission.json", "allocation_id": "worker", "admission_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    def test_preparation_consumes_admission_and_expansion_retains_it(self):
+        args = self.admission()
+        prior = self.bundle(**args)
+        self.assertEqual(prior[0]["admission"]["allocation_id"], "worker")
+        self.assertFalse(prior[0]["admission"]["execution_authorized"])
+        self.bundle(previous=prior, prompt=None, bootstrap={}, expansions=["detail.txt"], **args)
+        with self.assertRaisesRegex(ValueError, "drop or replace"):
+            self.bundle(previous=prior, prompt=None, bootstrap={}, expansions=["detail.txt"])
+        (self.root / "plan.md").write_text("changed plan")
+        with self.assertRaisesRegex(ValueError, "stale"):
+            self.bundle(**args)
+
+    def test_planning_full_capacity_and_changed_admission_cannot_prepare_dispatch(self):
+        from tests.test_execution_admission import task
+        for rows in ([task("worker", state="PLANNED")], [task("peer", state="RUNNING"), task("peer2", state="RUNNING"), task("worker")]):
+            args = self.admission(tasks=rows)
+            with self.assertRaisesRegex(ValueError, "not currently admitted"):
+                self.bundle(**args)
+        args = self.admission(max_parallel=3)
+        with self.assertRaisesRegex(ValueError, "parallel limit"):
+            self.bundle(**args)
+        args = self.admission()
+        (self.root / "admission.json").write_text("{}")
+        with self.assertRaisesRegex(ValueError, "changed"):
+            self.bundle(**args)
+
+    def test_running_continuation_preserves_original_allocation_without_new_slot(self):
+        from tests.test_execution_admission import task
+        prior = self.bundle(**self.admission(capacity=1, max_parallel=1))
+        origin = copy.deepcopy(prior[0]["admission"])
+        args = self.admission(tasks=[task("worker", state="RUNNING")], capacity=1, max_parallel=1)
+        expanded = self.bundle(previous=prior, prompt=None, bootstrap={}, expansions=["detail.txt"], **args)
+        self.assertEqual(expanded[0]["admission"]["origin"], origin["origin"])
+        self.assertEqual(expanded[0]["admission"]["state"], "RUNNING")
+        self.assertNotEqual(expanded[0]["admission"]["sha256"], origin["sha256"])
+        self.assertTrue(expanded[1].startswith(prior[1]))
+        with self.assertRaisesRegex(ValueError, "not currently admitted"):
+            self.bundle(**args)
+        for change in ({"slots": 2}, {"write_scope": ["tools"]}, {"resources": None}, {"state": "REVIEW_REQUIRED"}):
+            args = self.admission(tasks=[task("worker", state="RUNNING", **change)] if "state" not in change else [task("worker", **change)])
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.bundle(previous=prior, prompt=None, bootstrap={}, expansions=["detail.txt"], **args)
+        args = self.admission()
+        with self.assertRaisesRegex(ValueError, "allocation binding"):
+            self.bundle(previous=expanded, prompt=None, bootstrap={}, **args)
+
+    def test_admission_binding_rejects_malformed_fields_without_crashing(self):
+        record, _ = self.bundle(**self.admission())
+        for field in record["admission"]:
+            for value in ({}, [], None, True, 4, "unknown"):
+                mutant = copy.deepcopy(record)
+                mutant["admission"][field] = value
+                with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                    validate_preflight(mutant, self.packet, self.policy)
+
+    def test_malformed_previous_bundle_returns_cli_diagnostic_without_outputs(self):
+        packet = make_builtin_packet(self.policy, "framework-rules")
+        packet_path = self.root / "packet.json"
+        packet_path.write_text(json.dumps(packet))
+        previous = self.root / "previous"
+        previous.mkdir()
+        (previous / "context.txt").write_text("retained context")
+        for value in ([], None, True, 4, "invalid"):
+            (previous / "preflight.json").write_text(json.dumps(value))
+            result = subprocess.run([sys.executable, "-B", str(ROOT / "tools/prepare_delegation_context.py"),
+                "--packet", str(packet_path), "--previous", str(previous), "--write",
+                "--output-dir", str(self.root / "output")], capture_output=True, text=True)
+            with self.subTest(value=value):
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertIn("invalid worker context preflight", result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertFalse((self.root / "output").exists())
+
     def test_generated_source_view_cannot_overwrite_a_host_artifact_label(self):
         packet = self.root / "packet.json"
         packet.write_text(json.dumps(make_builtin_packet(self.policy, "framework-rules")), encoding="utf-8")

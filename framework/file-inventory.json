@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 112,
+  "adapter_schema_version": 113,
   "files": [
     {
       "path": "framework/README.md",
@@ -79,7 +79,7 @@
     {
       "path": "framework/catalog/collaboration/context-index.json",
       "rule_ids": [],
-      "sha256": "6db14f77b8489ffaaa686b489a228dafbdf8d72f45fae832ad91094c7d946028"
+      "sha256": "090934e18a756ae500517a626d008487f65697f44d842d246303b513a2972973"
     },
     {
       "path": "framework/catalog/core/context-index.json",
@@ -104,7 +104,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "44965d07409cc7bede9cf65c161230344a966d3d3f5860fa80ddc9db7ccce068"
+      "sha256": "f88ff37192c2432987f680db81cbe7a971a5f6282eec59d1900fc7a9a7945ef3"
     },
     {
       "path": "framework/change-packages.md",
@@ -140,7 +140,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "62d0721c171aedf108cb880bf143556e0e9f2a1a6d29e085e14fc6158e34739e"
+      "sha256": "811d8939563aa39be83a7fe24245c3b2748e7c6f2045a12f466e83ac6d2a5458"
     },
     {
       "path": "framework/context-profiles.md",
@@ -412,14 +412,14 @@
     {
       "path": "framework/task-state-delivery.md",
       "rule_ids": [],
-      "sha256": "65683d564cfe7f6dfffce15eee51c13d7f74e85bbc0be16c7670408e50e938d7"
+      "sha256": "1a3199c15762eeeefeb8ab22eac9ea379a8d99ae0f03a70e457f20a5dfed1d22"
     },
     {
       "path": "framework/team-collaboration.md",
       "rule_ids": [
         "ALATYR-TEAM-001"
       ],
-      "sha256": "3c0370214ab9056f5bae51f8ef561c68cc5778f8b98195efc12c82b1bd1db223"
+      "sha256": "d9f489af95d9d7b473085f1a36f8b04bee3f06a230b6adfe0fd0880b0fc2567c"
     },
     {
       "path": "framework/test-delivery-efficiency.md",
@@ -451,8 +451,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.136",
+  "framework_version": "0.1.0-alpha.137",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 131
+  "template_version": 132
 }

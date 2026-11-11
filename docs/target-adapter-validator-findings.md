@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1765
+Catalog entries: 1773
 
 ## Families
 
@@ -53,7 +53,7 @@ Catalog entries: 1765
 - `MIGRATION`: 8 codes.
 - `MODULE`: 12 codes.
 - `OPERATION`: 35 codes.
-- `PACKAGE`: 117 codes.
+- `PACKAGE`: 121 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
 - `PROJECT`: 55 codes.
@@ -68,7 +68,7 @@ Catalog entries: 1765
 - `STALE`: 2 codes.
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
-- `TASK`: 57 codes.
+- `TASK`: 61 codes.
 - `TDD`: 70 codes.
 - `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
@@ -171,15 +171,15 @@ Catalog entries: 1765
 - `AI_ROUTER_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `ANALYSIS_EVIDENCE_ARTIFACT`
-  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`, `tools/target_adapter_validation/prerequisites.py`.
 - `ANALYSIS_EVIDENCE_INVALID`
-  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+  Level: error. Source: `tools/target_adapter_validation/prerequisites.py`.
 - `ANALYSIS_MANIFEST_SCHEMA_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_FILE_SIZE`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID`
-  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`, `tools/target_adapter_validation/analysis_strategies.py`.
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`, `tools/target_adapter_validation/analysis_strategies.py`, `tools/validate_target_adapter.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_PROBLEM_MODEL_INVALID_SHAPE`
@@ -217,9 +217,9 @@ Catalog entries: 1765
 - `ANALYSIS_PROBLEM_MODEL_TRACKED`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_REQUIRED_OBLIGATION_OPEN`
-  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+  Level: error. Source: `tools/target_adapter_validation/prerequisites.py`.
 - `ANALYSIS_REQUIRED_REVIEW_OPEN`
-  Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
+  Level: error. Source: `tools/target_adapter_validation/prerequisites.py`.
 - `ANALYSIS_STRATEGY_CATALOG`
   Level: error. Source: `tools/target_adapter_validation/analysis_strategies.py`.
 - `ANALYSIS_STRATEGY_CATALOG_INVALID_JSON`
@@ -2114,6 +2114,8 @@ Catalog entries: 1765
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_CONTINUITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INCIDENT_EVIDENCE_LOSS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_MODEL_DIGEST`
   Level: error. Source: `tools/target_adapter_validation/model_evidence.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INCIDENT_MODEL_DRIFT`
@@ -2145,9 +2147,13 @@ Catalog entries: 1765
 - `PACKAGE_INDEX_DUPLICATE`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_ENTRY`
-  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_FIELD`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
+- `PACKAGE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/preflight_packages.py`.
+- `PACKAGE_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/preflight_packages.py`.
 - `PACKAGE_INDEX_JSON`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_KIND`
@@ -2155,7 +2161,7 @@ Catalog entries: 1765
 - `PACKAGE_INDEX_PROJECTION`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_RECORDS`
-  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_RECORD_LOAD`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_RECORD_PATH`
@@ -2169,7 +2175,7 @@ Catalog entries: 1765
 - `PACKAGE_INDEX_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD`
-  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_SHARDS`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_COUNT`
@@ -2187,15 +2193,17 @@ Catalog entries: 1765
 - `PACKAGE_INDEX_SHARD_LOAD`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_SHARD_PATH`
-  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INDEX_SHARD_RECORDS`
   Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
 - `PACKAGE_INDEX_STATUS`
-  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`.
+  Level: error. Source: `tools/target_adapter_validation/change_package_index.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INVALID_JSON`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic, error. Source: `tools/target_adapter_validation/preflight_packages.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_INVALID_ROOT`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/preflight_packages.py`.
 - `PACKAGE_INVARIANTS`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_KIND`
@@ -2257,7 +2265,7 @@ Catalog entries: 1765
 - `PACKAGE_SNAPSHOT_READ`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_STATUS`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic, error. Source: `tools/target_adapter_validation/preflight_packages.py`, `tools/validate_target_adapter.py`.
 - `PACKAGE_TYPE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_WORKTREE_STATE`
@@ -2976,6 +2984,14 @@ Catalog entries: 1765
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_EVIDENCE_LINEAGE`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LOSS_BASELINE`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LOSS_REOPEN`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LOSS_SELECTED`
+  Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
+- `TASK_EVIDENCE_LOST`
+  Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_EVIDENCE_PRESERVATION`
   Level: error. Source: `tools/target_adapter_validation/active_tasks.py`.
 - `TASK_EVIDENCE_RESULT`

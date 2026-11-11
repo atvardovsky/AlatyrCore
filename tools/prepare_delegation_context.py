@@ -69,8 +69,11 @@ def _part(kind: str, name: str, data: bytes) -> bytes:
 def validate_preflight(record: dict, packet: dict, policy: dict) -> None:
     _, _, limits = _validate_policy_limits(policy)
     required = {"schema_version", "record_kind", "packet_sha256", "policy_sha256", "max_context_words", "context", "initial_context_words", "source_inputs", "other_contexts", "other_context_words", "dispatch_performed", "native_limit_enforced"}
-    if not isinstance(record, dict) or set(record) != required or type(record.get("schema_version")) is not int or record["schema_version"] != 1 or record.get("record_kind") != "alatyr-worker-context-preflight":
+    if not isinstance(record, dict) or not required <= set(record) or set(record) - required - {"admission"} or type(record.get("schema_version")) is not int or record["schema_version"] != 1 or record.get("record_kind") != "alatyr-worker-context-preflight":
         raise ValueError("invalid worker context preflight contract")
+    if "admission" in record:
+        from execution_admission import worker_admission_binding
+        worker_admission_binding(record["admission"])
     if record["packet_sha256"] != canonical_digest(packet) or record["policy_sha256"] != canonical_digest(policy):
         raise ValueError("worker context preflight packet or policy is stale")
     for name in ("max_context_words", "initial_context_words", "other_context_words"):
@@ -103,9 +106,23 @@ def validate_preflight(record: dict, packet: dict, policy: dict) -> None:
 
 def prepare(packet: dict, policy: dict, *, root: Path, prompt: bytes | None,
             bootstrap: dict[str, bytes], expansions: list[str], other_contexts: list[bytes],
-            max_context_words: int | None = None, previous: tuple[dict, bytes] | None = None) -> tuple[dict, bytes]:
+            max_context_words: int | None = None, previous: tuple[dict, bytes] | None = None,
+            admission_path: str | None = None, allocation_id: str | None = None,
+            admission_sha256: str | None = None) -> tuple[dict, bytes]:
     validate_worker_packet(packet, policy["worker_packet_contract"], root=root)
     _, _, limits = _validate_policy_limits(policy)
+    prior_admission = None
+    if previous is not None:
+        validate_preflight(previous[0], packet, policy)
+        prior_admission = previous[0].get("admission")
+    admission = None
+    if any(value is not None for value in (admission_path, allocation_id, admission_sha256)):
+        from execution_admission import inspect_worker_admission
+        from target_adapter_validation.context import TargetRepositoryView
+        admission = inspect_worker_admission(TargetRepositoryView(root), admission_path, allocation_id,
+                                              admission_sha256, policy, previous=prior_admission)
+    if previous is not None and (prior_admission is None) != (admission is None):
+        raise ValueError("expansion cannot drop or replace its original admission binding")
     source_inputs = {}
     if previous is None:
         if prompt is None or not prompt.strip() or not bootstrap:
@@ -127,7 +144,6 @@ def prepare(packet: dict, policy: dict, *, root: Path, prompt: bytes | None,
         limit = packet["max_initial_words"] if max_context_words is None else max_context_words
     else:
         prior, content = previous
-        validate_preflight(prior, packet, policy)
         if measurement(content) != prior["context"]:
             raise ValueError("previous context artifact differs from its measurement")
         if prompt is not None or bootstrap:
@@ -166,6 +182,8 @@ def prepare(packet: dict, policy: dict, *, root: Path, prompt: bytes | None,
         "max_context_words": limit, "context": measured, "initial_context_words": initial_words,
         "source_inputs": source_inputs, "other_contexts": others, "other_context_words": other_words,
         "dispatch_performed": False, "native_limit_enforced": False}
+    if admission is not None:
+        record["admission"] = admission
     validate_preflight(record, packet, policy)
     return record, content
 
@@ -180,6 +198,9 @@ def main() -> int:
     parser.add_argument("--other-context", type=Path, action="append", default=[], help="Actual context artifact for every other allocated worker.")
     parser.add_argument("--max-context-words", type=int)
     parser.add_argument("--previous", type=Path, help="Previous frozen bundle directory, required for incremental delivery.")
+    parser.add_argument("--admission", help="Optional current target-relative admission projection; requires allocation and current digest.")
+    parser.add_argument("--allocation-id")
+    parser.add_argument("--admission-sha256")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
@@ -202,7 +223,8 @@ def main() -> int:
             prompt=read_artifact(args.prompt) if args.prompt else None,
             bootstrap=bootstrap, expansions=args.expand,
             other_contexts=[read_artifact(path) for path in args.other_context],
-            max_context_words=args.max_context_words, previous=previous)
+            max_context_words=args.max_context_words, previous=previous,
+            admission_path=args.admission, allocation_id=args.allocation_id, admission_sha256=args.admission_sha256)
         if args.write:
             output = args.output_dir.absolute()
             if output.exists() or output.is_symlink() or any(parent.is_symlink() for parent in output.parents):

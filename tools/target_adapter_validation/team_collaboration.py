@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+import hashlib
+from pathlib import Path, PurePosixPath
+import re
+import subprocess
 from typing import Any
 
 from context_catalog import CONTEXT_INDEX_NAME
@@ -23,20 +26,215 @@ def _any_target_path_exists(
     return any(context.target_exists(path) for path in paths)
 
 
+def _uses_lexical_symlink(target: Path, path: Path) -> bool:
+    parts = path.relative_to(target).parts
+    return any(target.joinpath(*parts[:index]).is_symlink() for index in range(1, len(parts) + 1))
+
+
 def _repository_task_records(
-    context: CapabilityValidationContext, directory: Path
+    context: CapabilityValidationContext,
+    directory: Path,
+    *,
+    binding_registry_relpath: str | None = None,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     records: list[dict[str, Any]] = []
     sources: list[str] = []
-    for path in sorted(directory.glob("*.json")):
+    try:
+        if binding_registry_relpath is not None:
+            directory.relative_to(context.target).as_posix().encode("utf-8")
+            if _uses_lexical_symlink(context.target, directory):
+                context.error(
+                    "TEAM_REGISTRY_PATH",
+                    "evidence_binding: task records directory must not use a symlink",
+                    binding_registry_relpath,
+                )
+                return records, sources
+        # Path.glob can suppress scan errors, hiding records from binding coverage.
+        if binding_registry_relpath is not None:
+            paths = []
+            for path in directory.iterdir():
+                if path.name.endswith(".json") and path.name != CONTEXT_INDEX_NAME:
+                    paths.append(path)
+                    if len(paths) > 128:
+                        context.error("TEAM_REGISTRY_METADATA", "evidence_binding: task discovery exceeds 128 records", binding_registry_relpath)
+                        return records, sources
+            paths.sort()
+        else:
+            paths = sorted(directory.glob("*.json"))
+    except (OSError, UnicodeError, ValueError, RuntimeError):
+        if binding_registry_relpath is None:
+            raise
+        context.error(
+            "TEAM_REGISTRY_PATH",
+            f"evidence_binding: task records directory cannot be inspected safely: {str(directory)!r}",
+            binding_registry_relpath,
+        )
+        return records, sources
+    remaining = 8 * 1024 * 1024
+    for path in paths:
         # Navigation belongs to catalog validation, never to task discovery.
         if path == directory / CONTEXT_INDEX_NAME:
             continue
-        record = context.load_json_object(path, "TEAM_TASK")
+        try:
+            if binding_registry_relpath is not None:
+                source = path.relative_to(context.target).as_posix()
+                source.encode("utf-8")
+                if _uses_lexical_symlink(context.target, path):
+                    context.error(
+                        "TEAM_REGISTRY_PATH",
+                        f"evidence_binding: task record must not use a symlink: {source!r}",
+                        binding_registry_relpath,
+                    )
+                    continue
+                observed = context.filesystem.read_bytes_result(path, max_bytes=min(1024 * 1024, remaining))
+                if observed.value is None:
+                    context.error("TEAM_REGISTRY_PATH", "evidence_binding: task discovery requires bounded regular files", binding_registry_relpath)
+                    return records, sources
+                remaining -= len(observed.value)
+            else:
+                source = context.rel(path)
+            record = context.load_json_object(path, "TEAM_TASK")
+        except (OSError, UnicodeError, ValueError, RuntimeError):
+            if binding_registry_relpath is None:
+                raise
+            context.error(
+                "TEAM_REGISTRY_PATH",
+                f"evidence_binding: task record cannot be inspected safely: {str(path)!r}",
+                binding_registry_relpath,
+            )
+            continue
         if record is not None:
             records.append(record)
-            sources.append(context.rel(path))
+            sources.append(source)
     return records, sources
+
+
+def _check_registry_freshness(
+    context: CapabilityValidationContext,
+    registry: dict[str, Any],
+    registry_relpath: str,
+    required_sources: list[str],
+) -> None:
+    revision = registry.get("evidence_revision")
+    head = context.git.head_revision()
+    if "evidence_binding" not in registry:
+        if (
+            head
+            and isinstance(revision, str)
+            and revision.strip().lower() not in {"", "none", "unavailable", "not available", "not recorded"}
+            and not is_placeholder(revision)
+            and not context.git.refs_match(revision, head)
+        ):
+            context.warn(
+                "TEAM_REGISTRY_REVISION_STALE",
+                "team work registry evidence revision does not match current HEAD",
+                registry_relpath,
+            )
+        return
+
+    def invalid(message: str, *, path: bool = False) -> None:
+        context.error(
+            "TEAM_REGISTRY_PATH" if path else "TEAM_REGISTRY_METADATA",
+            "evidence_binding: " + message,
+            registry_relpath,
+        )
+
+    binding = registry["evidence_binding"]
+    if (
+        registry.get("schema_version") != 2
+        or not isinstance(binding, dict)
+        or set(binding) != {"schema_version", "inputs"}
+        or type(binding.get("schema_version")) is not int
+        or binding["schema_version"] != 1
+        or not isinstance(binding.get("inputs"), list)
+        or not 1 <= len(binding["inputs"]) <= 128
+    ):
+        invalid("requires schema-2 registry, binding schema_version 1 and 1..128 inputs")
+        return
+    if (
+        not isinstance(revision, str)
+        or re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", revision) is None
+        or context.git.resolve_object(revision) != revision
+        or not head
+        or context.git.is_ancestor(revision, head) is not True
+    ):
+        invalid("evidence_revision must be an exact available ancestor commit of HEAD")
+        return
+    try:
+        root = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=context.target,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        root_matches = root.returncode == 0 and Path(root.stdout.decode("utf-8").strip()).resolve() == context.target
+    except (OSError, UnicodeError, ValueError):
+        root_matches = False
+    if not root_matches:
+        invalid("target must be the Git worktree root", path=True)
+        return
+
+    inputs: dict[str, str] = {}
+    for item in binding["inputs"]:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256"}:
+            invalid("each input requires exactly path and sha256")
+            return
+        path, digest = item["path"], item["sha256"]
+        if (
+            not isinstance(path, str)
+            or not path
+            or "\\" in path
+            or ":" in path
+            or "\0" in path
+            or PurePosixPath(path).is_absolute()
+            or PurePosixPath(path).as_posix() != path
+            or any(part in {".", "..", ".git"} for part in PurePosixPath(path).parts)
+            or path == "."
+            or path == registry_relpath
+            or path in inputs
+        ):
+            invalid("input paths must be unique canonical target-relative files, excluding Git metadata and the registry itself", path=True)
+            return
+        try:
+            path.encode("utf-8")
+        except UnicodeError:
+            invalid("input paths must be UTF-8 encodable", path=True)
+            return
+        if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+            invalid("input sha256 must be 64 lowercase hexadecimal characters")
+            return
+        inputs[path] = digest
+    if not all(isinstance(path, str) and path in inputs for path in required_sources):
+        invalid("inputs must cover the registered policy, model, backend, active index, task template and every discovered task record")
+        return
+
+    remaining = [8 * 1024 * 1024] * 3
+    for path, expected in inputs.items():
+        try:
+            selected = context.target / path
+            if _uses_lexical_symlink(context.target, selected):
+                invalid(f"input must not use a symlink: {path}", path=True)
+                return
+            observed = context.filesystem.read_bytes_result(selected, max_bytes=min(1024 * 1024, remaining[0]))
+            original = context.git.bounded_file_at_ref(revision, path, min(1024 * 1024, remaining[1]))
+            committed = context.git.bounded_file_at_ref(head, path, min(1024 * 1024, remaining[2]))
+        except (OSError, UnicodeError, ValueError, RuntimeError):
+            invalid(f"input path cannot be inspected safely: {path!r}", path=True)
+            return
+        if observed.value is None or original is None or committed is None:
+            invalid(f"input must be an available bounded regular file in the reviewed commit, HEAD and worktree: {path}", path=True)
+            return
+        for index, value in enumerate((observed.value, original, committed)):
+            remaining[index] -= len(value)
+        if hashlib.sha256(original).hexdigest() != expected:
+            invalid(f"input hash does not match the reviewed commit: {path}")
+        elif observed.digest != expected or hashlib.sha256(committed).hexdigest() != expected:
+            context.warn(
+                "TEAM_REGISTRY_REVISION_STALE",
+                f"team work registry source changed since evidence_revision: {path}",
+                registry_relpath,
+            )
 
 
 def validate_team_collaboration(
@@ -424,7 +622,11 @@ def validate_team_collaboration(
             tasks = legacy_tasks
             task_sources = [registry_relpath] * len(tasks)
     elif context.is_target_dir(tasks_path):
-        tasks, task_sources = _repository_task_records(context, tasks_path)
+        tasks, task_sources = _repository_task_records(
+            context,
+            tasks_path,
+            binding_registry_relpath=registry_relpath if "evidence_binding" in registry else None,
+        )
 
     task_statuses = {
         "proposed",
@@ -1094,17 +1296,13 @@ def validate_team_collaboration(
                 ".ai/.gitignore",
             )
 
-    registry_revision = registry.get("evidence_revision")
-    if (
-        current_head
-        and concrete(registry_revision)
-        and not context.git.refs_match(str(registry_revision), current_head)
-    ):
-        context.warn(
-            "TEAM_REGISTRY_REVISION_STALE",
-            "team work registry evidence revision does not match current HEAD",
-            registry_relpath,
-        )
+    _check_registry_freshness(
+        context,
+        registry,
+        registry_relpath,
+        [policy_relpath, model_relpath, backend_relpath, index_relpath,
+         registry.get("task_record_template"), *task_sources],
+    )
 
     router_path = context.target_path(".ai/assistant/context-router.json")
     router = context.load_json_object(router_path, "ROUTER")

@@ -54,8 +54,8 @@
       "windsurf"
     ]
   },
-  "current_contract_digest": "d27cff8f89732e38b69e4135f8cf0bf55ac7bd952759c62c1e8816513402c209",
-  "current_framework_version": "0.1.0-alpha.136",
+  "current_contract_digest": "ba81fb0c03097a5d139b13a8c32779af79a4d91a5b3d7ee81169bfad55f3c11e",
+  "current_framework_version": "0.1.0-alpha.137",
   "effectiveness": {
     "broad_cost_or_quality_claim_supported": false,
     "captured_benchmarks": [

@@ -43,7 +43,7 @@ def build_execution_focus(model: dict, task: dict, binding: dict,
     runtime_blocked = readiness["state"] == "blocked-by-runtime-evidence"
     if runtime_blocked:
         signals.append({"reason": "runtime-evidence-unresolved", "ids": []})
-    if stale:
+    if stale or advice is not None and advice.get("artifact_binding_state") == "partially-current-content":
         signals.append({"reason": "input-artifacts-changed", "ids": []})
     candidates = advice.get("candidates", []) if advice is not None and not stale and not runtime_blocked else []
     retries = [row["obligation_id"] for row in candidates if row["retry_review_required"]]

@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import copy
 import io
+import hashlib
 import json
 import subprocess
 import sys
@@ -18,6 +19,84 @@ from finalize_target_support import Step, execute_write_steps
 
 
 class FinalizationPreflightTests(ActiveTaskFixture):
+    def test_explicit_approval_hashes_are_checked_for_clean_and_unprotected_diff(self):
+        from tests.test_approval_scope_command import approval_record
+        approval = self.target / ".ai/assistant/approvals/selected.json"
+        approval.parent.mkdir(parents=True, exist_ok=True)
+        record = approval_record(["**"])
+        record["plan"] = {"version": "1", "file": "design.md", "sha256": "0" * 64}
+        approval.write_text(json.dumps(record))
+        self.git_commit("Record selected approval")
+        for dirty in (False, True):
+            if dirty:
+                (self.target / "src/example.txt").write_bytes(b"unprotected change")
+            report = preflight_report(self.inspect(diff_ref="HEAD", approval_records=[approval]))
+            with self.subTest(dirty=dirty):
+                self.assertIn("APPROVAL_PLAN_HASH_MISMATCH", {row["code"] for row in report["findings"]})
+        record["plan"]["sha256"] = hashlib.sha256((self.target / "design.md").read_bytes()).hexdigest()
+        approval.write_text(json.dumps(record))
+        report = preflight_report(self.inspect(diff_ref="HEAD", approval_records=[approval]))
+        self.assertIn("APPROVAL_PLAN_HASH_MATCH", {row["code"] for row in report["findings"]})
+
+    def git_commit(self, message):
+        for args in (("add", "."), ("commit", "-qm", message)):
+            subprocess.run(["git", *args], cwd=self.target, check=True, capture_output=True)
+
+    def test_malformed_indexed_predecessor_ids_return_findings(self):
+        package = self.target / ".ai/assistant/change-packages/incident.json"
+        package.parent.mkdir(parents=True, exist_ok=True)
+        for value in ([], {}, None, True, 7):
+            package.write_text(json.dumps({"status": "blocked", "operation": {"id": "other"},
+                "incident_continuity": {"mode": "systemic-repair", "family_id": "family",
+                    "trigger": "corrective-iteration", "corrective_iteration": 2,
+                    "predecessors": [{"package_id": value, "record": "previous.json", "sha256": "0" * 64}],
+                    "problem_model": {"path": "missing.json", "sha256": "a" * 64},
+                    "latest_failed_gate": {"state": "none", "id": "none", "evidence_refs": []}, "lifecycle_model_required": True}}))
+            (package.parent / "index.json").write_text(json.dumps({"records": [{"record": package.relative_to(self.target).as_posix(), "status": "blocked"}]}))
+            report = preflight_report(self.inspect())
+            with self.subTest(value=value):
+                self.assertEqual(report["state"], "blocked")
+                self.assertIn("PACKAGE_INCIDENT_PREDECESSOR", {row["code"] for row in report["findings"]})
+
+    def test_indexed_active_incident_input_is_checked_before_rendering(self):
+        self.close()
+        package = self.target / ".ai/assistant/change-packages/incident.json"
+        package.parent.mkdir(parents=True, exist_ok=True)
+        package.write_text(json.dumps({"status": "blocked", "operation": {"id": "other"},
+            "incident_continuity": {"mode": "none", "family_id": "none", "trigger": "none",
+                "corrective_iteration": 0, "predecessors": [],
+                "problem_model": {"path": ".ai/.runtime/problem-models/missing.json", "sha256": "a" * 64},
+                "latest_failed_gate": {"state": "none", "id": "none", "evidence_refs": []},
+                "lifecycle_model_required": False}}))
+        index = package.parent / "index.json"
+        index.write_text(json.dumps({"records": [{"record": package.relative_to(self.target).as_posix(), "status": "blocked"}]}))
+        before = self.tree()
+        report = preflight_report(self.inspect(require_task_acceptance=True))
+        self.assertIn("PACKAGE_INCIDENT_MODEL_MISSING", {row["code"] for row in report["findings"]})
+        self.assertEqual(report["state"], "blocked")
+        self.assertEqual(before, self.tree())
+        command = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "finalize-support",
+            "--target", str(self.target), "--preflight", "--task-id", self.task["task_id"],
+            "--task-class", self.task["task_class"], "--require-task-acceptance"]
+        completed = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 2, completed.stderr)
+        self.assertIn("PACKAGE_INCIDENT_MODEL_MISSING", {row["code"] for row in json.loads(completed.stdout)["findings"]})
+
+    def test_required_model_proofs_and_reviews_are_checked_early(self):
+        for pending in ("proof", "review"):
+            with self.subTest(pending=pending):
+                saved = copy.deepcopy(self.model)
+                if pending == "proof":
+                    self.model["proof_obligations"][0]["status"] = "open"
+                else:
+                    self.model["required_review_ids"] = ["adversarial-review"]
+                    self.model["review_results"] = [{"id": "adversarial-review", "status": "pending", "evidence_refs": []}]
+                self.write_model(); self.close()
+                report = preflight_report(self.inspect(require_task_acceptance=True))
+                code = "ANALYSIS_REQUIRED_OBLIGATION_OPEN" if pending == "proof" else "ANALYSIS_REQUIRED_REVIEW_OPEN"
+                self.assertIn(code, {row["code"] for row in report["findings"]})
+                self.model = saved
+
     def inspect(self, **kwargs):
         kwargs.setdefault("diff_ref", self.base)
         return inspect_finalization(self.target, task_id=self.task["task_id"], task_class=self.task["task_class"], **kwargs)

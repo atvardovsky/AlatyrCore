@@ -266,7 +266,8 @@ def main() -> int:
             preflight = inspect_finalization(target, task_id=args.task_id, task_class=args.task_class,
                 require_task_acceptance=args.require_task_acceptance, diff_ref=args.diff_ref,
                 approval_records=args.approval_record, problem_models=args.problem_model,
-                migration_staging=args.migration_staging)
+                migration_staging=args.migration_staging, change_packages=args.change_package,
+                enforce_approval_scope=args.require_current_change)
             report = preflight_report(preflight)
         except (OSError, ValueError, RecursionError) as exc:
             print(f"FAIL: authoring preflight: {exc}", file=sys.stderr)

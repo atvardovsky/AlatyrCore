@@ -163,3 +163,79 @@ def inspect_admission(view, path):
     if view.finalize():
         raise ValueError("admission inputs changed during inspection")
     return report
+
+
+def worker_admission_binding(value):
+    """Validate retained preparation metadata before any dependent lookup."""
+    fields = {"path", "sha256", "allocation_id", "plan", "allocation", "state", "origin",
+              "input_sha256", "execution_authorized", "reservation_granted"}
+    if (not isinstance(value, dict) or set(value) != fields
+            or value["execution_authorized"] is not False or value["reservation_granted"] is not False):
+        raise ValueError("invalid preparation admission binding")
+    _ids([value["allocation_id"]], "allocation id")
+    def binding(item):
+        if (not isinstance(item, dict) or set(item) != {"path", "sha256"}
+                or not isinstance(item["path"], str) or not is_target_relative_path(item["path"])
+                or "\\" in item["path"] or PurePosixPath(item["path"]).as_posix() != item["path"]
+                or not isinstance(item["sha256"], str) or re.fullmatch(r"[a-f0-9]{64}", item["sha256"]) is None):
+            raise ValueError("invalid preparation admission path/digest")
+    binding({"path": value["path"], "sha256": value["sha256"]})
+    binding(value["plan"])
+    origin = value["origin"]
+    if not isinstance(origin, dict) or set(origin) != {"sha256", "plan"}:
+        raise ValueError("invalid original admission binding")
+    binding({"path": value["path"], "sha256": origin["sha256"]})
+    binding(origin["plan"])
+    if origin["plan"]["path"] != value["plan"]["path"]:
+        raise ValueError("admission continuation cannot replace its plan path")
+    row = value["allocation"]
+    if not isinstance(row, dict) or set(row) != {"id", "requires", "slots", "resources", "write_scope"}:
+        raise ValueError("invalid retained worker allocation")
+    if row["id"] != value["allocation_id"] or row["write_scope"] != []:
+        raise ValueError("worker allocation identity/scope mismatch")
+    _ids(row["requires"], "worker prerequisites")
+    if type(row["slots"]) is not int or not 1 <= row["slots"] <= 64 or row["resources"] is None or resource_failures(row["resources"]):
+        raise ValueError("worker allocation requires bounded slots and known resources")
+    if not isinstance(value["state"], str) or value["state"] not in {"READY", "FAILED", "RUNNING"}:
+        raise ValueError("invalid worker admission state")
+    inputs = value["input_sha256"]
+    expected = {value["path"]: value["sha256"], value["plan"]["path"]: value["plan"]["sha256"]}
+    if len(expected) != 2 or not isinstance(inputs, dict) or inputs != expected:
+        raise ValueError("admission requires exact current projection and plan input bindings")
+
+
+def inspect_worker_admission(view, path, allocation_id, expected_sha256, policy, *, previous=None):
+    """Bind a source inspect-only packet preparation to a current allocation."""
+    from inspect_session_context import json_object
+    if not isinstance(path, str) or not is_target_relative_path(path) or "\\" in path:
+        raise ValueError("admission path must be target-relative")
+    if not isinstance(expected_sha256, str) or re.fullmatch(r"[a-f0-9]{64}", expected_sha256) is None:
+        raise ValueError("admission requires its current lowercase SHA-256")
+    _ids([allocation_id], "allocation id")
+    if previous is not None:
+        worker_admission_binding(previous)
+    read = view.read_bytes_result(view.target / path, max_bytes=MAX_BYTES)
+    if read.value is None or read.digest != expected_sha256:
+        raise ValueError("admission projection is missing, oversized or changed")
+    value = json_object(read.value, "worker admission")
+    report = inspect_admission(view, path)
+    if value["max_parallel"] > policy["tree_policy"]["max_parallel_delegates"]:
+        raise ValueError("admission exceeds the worker policy parallel limit")
+    allocation = next((row for row in value["tasks"] if row["id"] == allocation_id), None)
+    continuing = previous is not None and allocation is not None and allocation["state"] == "RUNNING"
+    if allocation_id not in report["selected_ids"] and not continuing:
+        raise ValueError("worker allocation is not currently admitted: " + str(report["held"].get(allocation_id, "not selected")))
+    if allocation["write_scope"] != []:
+        raise ValueError("source inspect-only worker allocation cannot carry write scope")
+    stable = {key: val for key, val in allocation.items() if key != "state"}
+    if previous is not None and (previous["path"] != path or previous["allocation_id"] != allocation_id
+            or previous["plan"]["path"] != report["plan"]["path"] or previous["allocation"] != stable
+            or previous["state"] == "RUNNING" and allocation["state"] != "RUNNING"):
+        raise ValueError("expansion cannot drop or replace its original allocation binding")
+    result = {"path": path, "sha256": expected_sha256, "allocation_id": allocation_id,
+            "allocation": stable, "state": allocation["state"],
+            "origin": previous["origin"] if previous else {"sha256": expected_sha256, "plan": report["plan"]},
+            "plan": report["plan"], "input_sha256": view.content_bindings(),
+            "execution_authorized": False, "reservation_granted": False}
+    worker_admission_binding(result)
+    return result

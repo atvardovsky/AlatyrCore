@@ -51,6 +51,16 @@ def approval_record(allowed: list[str]) -> dict[str, object]:
 
 
 class ApprovalScopeCommandTests(unittest.TestCase):
+    def test_invalid_scope_patterns_cannot_crash_or_cover_paths(self):
+        sys.path.insert(0, str(ROOT / "tools"))
+        from target_validation_support import is_target_scope_pattern, scope_entries_cover
+        for value in (".", "./src", "src//file", "src/", "../src", "src/../file", "bad\0path", {}, [], None):
+            with self.subTest(value=value):
+                self.assertFalse(is_target_scope_pattern(value))
+                if isinstance(value, str):
+                    self.assertFalse(scope_entries_cover("src/file", [value]))
+        self.assertTrue(scope_entries_cover("src/file", ["src/**"]))
+
     def make_repo(self) -> tuple[tempfile.TemporaryDirectory[str], Path, Path]:
         directory = tempfile.TemporaryDirectory()
         target = Path(directory.name)

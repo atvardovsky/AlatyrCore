@@ -4,6 +4,32 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.137 - 2026-11-11
+
+- Support explicitly reviewed historical task-evidence loss through opt-in
+  schema-2 indexes. Preserve immutable registration, bounded owner/search and
+  dependency witnesses, unresolved outcomes and non-executable dispositions.
+  Reject unavailable committed retention evidence, silent reopening, active
+  transitive dependents and current/complete package exceptions.
+- Distinguish actual producer revision and selected reader-format support from
+  version-label equality. Preserve unknown identity and content-integrity limits.
+- Support opt-in team registry source bindings across unrelated HEAD advances,
+  with exact ancestor and bounded reviewed/HEAD/worktree byte checks. Preserve
+  legacy freshness behavior and fail closed on missing or oversized evidence.
+- Reuse canonical selected model/artifact/completion and current approval-scope
+  checks before finalization; inspect indexed active/selected incident inputs
+  before projection writes. Full final acceptance and archives remain required.
+- Bind optional source worker preparation/expansion to exact current admission
+  and policy limits. Preserve explicit dispatch authority, peer reconciliation,
+  stable candidates, resource handbacks and phase-specific guidance.
+- Share evidence-impact decisions between request review and selected task
+  advice. Only explicit dependency/artifact independence preserves ready work;
+  unrun probe inputs remain dependencies and unknown/shared staleness fails closed.
+- Advance adapter schema to 113 and templates to 132. Legacy task indexes and
+  context previews remain readable; optional controls require owner adoption.
+  No native interception, automatic scheduler, default budget increase or
+  measured agent-speed/billing benefit is claimed.
+
 ## 0.1.0-alpha.136 - 2026-11-11
 
 - Add optional terminal action prerequisites through existing request review:

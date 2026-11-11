@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
+import os
 import subprocess
 import sys
 from unittest.mock import patch
@@ -63,6 +65,80 @@ class ExecutionFocusTests(ActiveTaskFixture):
         self.assertIn("next-proof", readiness["retained_unresolved"])
         self.assertIsNone(view["execution_focus"]["next_action"])
         self.assertFalse(view["execution_focus"]["authorization_granted"])
+
+    def test_scoped_staleness_retains_only_explicitly_independent_work(self):
+        self.add_probe("affected")
+        self.add_probe("independent")
+        affected = self.model["analysis_evidence"]["probes"][-2]
+        independent = self.model["analysis_evidence"]["probes"][-1]
+        affected.update(input_paths=["affected.txt"])
+        independent.update(input_paths=["independent.txt"])
+        (self.target / "independent.txt").write_bytes(b"independent input")
+        source = self.target / "affected.txt"
+        source.write_bytes(b"current input")
+        affected["result"] = copy.deepcopy(self.model["analysis_evidence"]["probes"][0]["result"])
+        affected["result"]["input_sha256"] = {"affected.txt": hashlib.sha256(source.read_bytes()).hexdigest()}
+        affected["result"]["probe_sha256"] = probe_binding(self.model, affected)
+        self.selected()
+        source.write_bytes(b"changed input")
+        view = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(view["execution_readiness"]["ready"], ["independent"])
+        self.assertEqual([row["obligation_id"] for row in view["next_action_advice"]["candidates"]], ["independent"])
+        self.assertTrue(view["execution_focus"]["next_action"]["reanchor_required"])
+        self.assertFalse(view["execution_focus"]["authorization_granted"])
+        from request_focus import evidence_action_review
+        from tests.test_request_brief import brief_fixture, action_fixture
+        brief = brief_fixture(proof_id="independent")
+        review, failures = evidence_action_review(brief, action_fixture(paths=["affected.txt"]), self.model, view["evidence_readiness"])
+        self.assertTrue(failures)
+        self.assertTrue(review["checkpoint_required"])
+        _, failures = evidence_action_review(brief, action_fixture(paths=["independent.txt"]), self.model, view["evidence_readiness"])
+        self.assertEqual(failures, [])
+
+    def test_unmeasured_alias_cannot_appear_independent_of_stale_input(self):
+        self.test_scoped_staleness_retains_only_explicitly_independent_work()
+        alias = self.target / "alias.txt"
+        try:
+            alias.symlink_to("affected.txt")
+        except OSError as exc:
+            self.skipTest(str(exc))
+        self.model["analysis_evidence"]["probes"][-1]["input_paths"] = ["alias.txt"]
+        self.write_model(); self.write_index()
+        validator = changed_index_validator(self.target)
+        view = current_task_view(validator, "fixture-task")
+        self.assertEqual(view["execution_readiness"]["ready"], [])
+        self.assertIn("independent", view["evidence_readiness"]["affected_obligation_ids"])
+        from request_focus import evidence_scope_review
+        self.assertTrue(evidence_scope_review(self.model, view["evidence_readiness"], set(), ["alias.txt"]))
+        alias.unlink(); alias.symlink_to("independent.txt")
+        self.assertTrue(validator.context.finalize(), "alias retargeting must invalidate the snapshot")
+
+    def test_unavailable_dependency_identity_prevents_independence_claim(self):
+        self.test_scoped_staleness_retains_only_explicitly_independent_work()
+        (self.target / "independent.txt").unlink()
+        view = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(view["execution_readiness"]["ready"], [])
+        self.assertTrue(view["evidence_readiness"]["global_review_required"])
+
+    def test_hard_linked_dependency_cannot_appear_independent(self):
+        self.test_scoped_staleness_retains_only_explicitly_independent_work()
+        alias = self.target / "hard-alias.txt"
+        try:
+            os.link(self.target / "affected.txt", alias)
+        except OSError as exc:
+            self.skipTest(str(exc))
+        self.model["analysis_evidence"]["probes"][-1]["input_paths"] = ["hard-alias.txt"]
+        self.write_model(); self.write_index()
+        view = current_task_view(changed_index_validator(self.target), "fixture-task")
+        self.assertEqual(view["execution_readiness"]["ready"], [])
+        self.assertIn("independent", view["evidence_readiness"]["affected_obligation_ids"])
+        from request_focus import evidence_scope_review
+        self.assertTrue(evidence_scope_review(self.model, view["evidence_readiness"], set(), ["hard-alias.txt"]))
+
+    def test_healthy_path_does_not_resolve_unmeasured_dependencies(self):
+        self.add_probe("future-work")
+        with patch("analysis_evidence.resolve_unmeasured_dependencies", side_effect=AssertionError("stale path only")):
+            self.selected()
 
     def test_missing_selected_runtime_clears_action_candidates_but_retains_duties(self):
         from publish_active_task import prepare

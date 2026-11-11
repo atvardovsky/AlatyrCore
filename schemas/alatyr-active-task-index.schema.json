@@ -4,7 +4,7 @@
   "type": "object", "additionalProperties": false,
   "required": ["schema_version", "index_kind", "tasks"],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {"type": "integer", "enum": [1, 2]},
     "index_kind": {"const": "target-active-task-index"},
     "tasks": {
       "type": "array", "maxItems": 128,
@@ -14,7 +14,8 @@
         "properties": {
           "task_id": {"$ref": "#/definitions/text"},
           "operation_id": {"$ref": "#/definitions/text"},
-          "state": {"enum": ["active", "closed"]},
+          "state": {"enum": ["active", "closed", "historical-evidence-missing"]},
+          "evidence_loss_disposition": {"$ref": "#/definitions/binding"},
           "task_class": {"enum": ["small-task", "standard-task", "large-or-resumable", "protected-or-sensitive"]},
           "problem_model": {"anyOf": [{"$ref": "#/definitions/binding"}, {"type": "null"}]},
           "analysis_handoff": {
@@ -36,11 +37,15 @@
         },
         "allOf": [
           {"if": {"properties": {"task_class": {"not": {"const": "small-task"}}}}, "then": {"properties": {"problem_model": {"$ref": "#/definitions/binding"}}}},
-          {"if": {"properties": {"state": {"const": "closed"}}}, "then": {"properties": {"completion_evidence": {"$ref": "#/definitions/binding"}}}, "else": {"properties": {"completion_evidence": {"type": "null"}}}}
+          {"if": {"properties": {"state": {"const": "closed"}}}, "then": {"properties": {"completion_evidence": {"$ref": "#/definitions/binding"}}}, "else": {"properties": {"completion_evidence": {"type": "null"}}}},
+          {"if": {"properties": {"state": {"const": "historical-evidence-missing"}}}, "then": {"required": ["evidence_loss_disposition"], "properties": {"problem_model": {"$ref": "#/definitions/binding"}}}, "else": {"not": {"required": ["evidence_loss_disposition"]}}}
         ]
       }
     }
   },
+  "allOf": [
+    {"if": {"properties": {"schema_version": {"const": 1}}}, "then": {"properties": {"tasks": {"items": {"properties": {"state": {"enum": ["active", "closed"]}}, "not": {"required": ["evidence_loss_disposition"]}}}}}}
+  ],
   "definitions": {
     "text": {"type": "string", "minLength": 1, "maxLength": 1024, "pattern": "^[^{}]+$"},
     "strings": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/definitions/text"}},
