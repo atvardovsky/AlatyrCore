@@ -66,6 +66,7 @@
       ],
       "additional_files": [
         "large-task-orchestration.md",
+        "rolling-delivery.md",
         "migration-diff.md"
       ]
     },

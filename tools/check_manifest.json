@@ -332,8 +332,8 @@
     {
       "id": "large-task-orchestration",
       "command": ["tools/check_large_task_orchestration.py"],
-      "contract_inputs": ["framework/large-task-orchestration.md", "schemas/alatyr-context-receipt.schema.json", "templates/target/.ai/assistant/context/task-scales/**", "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md", "templates/target/.ai/assistant/templates/large-task-operation-packet.md"],
-      "implementation_paths": ["tools/context_receipt.py", "tools/check_large_task_orchestration.py"],
+      "contract_inputs": ["framework/large-task-orchestration.md", "framework/rolling-delivery.md", "schemas/alatyr-context-receipt.schema.json", "templates/target/.ai/assistant/context/task-scales/**", "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md", "templates/target/.ai/assistant/templates/large-task-operation-packet.md"],
+      "implementation_paths": ["tools/context_receipt.py", "tools/check_large_task_orchestration.py", "tools/execution_admission.py", "tools/rolling_delivery.py", "tools/cooperation_preflight.py", "tests/test_rolling_delivery.py"],
       "derive_trigger_paths": true
     },
     {

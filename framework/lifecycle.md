@@ -233,8 +233,8 @@ cannot acknowledge instruction delivery for peers.
    result/summary/retry budgets, coverage keys, evidence saturation, recursive
    branch envelopes and checkpoints, accepted-summary propagation, stop
    reasons, and primary convergence.
-10. Prepare a target migration note or installation plan from reviewed
-    assessment evidence.
+10. Prepare target migration or installation plans from reviewed assessment
+    evidence.
 11. Require approval before overwriting existing target AI instructions.
 12. Recheck the installed adapter for framework references, bridge files, gates,
    prompts, skills, lifecycle notes, and maturity gaps.

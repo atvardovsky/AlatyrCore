@@ -523,7 +523,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 260,
-      "content_digest": "sha256:48830f9847d26169442b20b2b98911a478352250cac6ccc2d8836d2a4ae7596e"
+      "content_digest": "sha256:cea4acce8d8cbaaae5c082e57fded7ea0b992e5fc9baa428bbecad913c9030b3"
     },
     {
       "id": "assistant.section.extensions",
@@ -553,7 +553,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1303,
-      "content_digest": "sha256:56369f069797f02c010f6997778eb5a0162ee716d742a260d9255df7534ad8f3"
+      "content_digest": "sha256:9df8ea91b73e80457660f44829b87b43435f2fc19c697a176bd45ed21990e23c"
     },
     {
       "id": "assistant.section.gates",
@@ -643,7 +643,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2278,
-      "content_digest": "sha256:980a6b6d9b567e953727091ec01e6528d4dae0f74a4591fb6b0843edc8ab1220"
+      "content_digest": "sha256:9244fd6fd0b330ebaf829efd407cc7b4a6577cff6f18e9eed0a804c22869d739"
     },
     {
       "id": "assistant.section.tools",

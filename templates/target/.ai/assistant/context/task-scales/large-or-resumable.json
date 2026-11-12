@@ -35,6 +35,8 @@
     "approval scope no longer covers applied changes"
   ],
   "conditional_context": [
+    {"path": ".ai/framework/rolling-delivery.md",
+     "when": "explicitly selected growing multitask queue or rolling-delivery coordination"},
     {"path": ".ai/framework/task-state-delivery.md",
      "when": "adopted execution dependencies or named-task current-disposition reconciliation"},
     {"path": ".ai/framework/test-delivery-efficiency.md",

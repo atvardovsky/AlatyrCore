@@ -362,8 +362,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1098,
-      "content_digest": "sha256:d53261674303999c40f90b26cfc3649ebff02fa86e59bca01b52597b20a144dd"
+      "estimated_words": 1106,
+      "content_digest": "sha256:679d01ff8db7f51a22b7a3d1bb27342d9d15679b250a1961a690ce46c9e14ede"
     },
     {
       "id": "assistant.content.flows-lifecycle-checkpoints-flow-md",

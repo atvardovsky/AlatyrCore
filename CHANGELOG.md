@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.138 - 2026-11-12
+
+- Add conditional Rolling Delivery guidance for explicitly selected growing
+  multitask queues, with stable original outcomes, coordinator review, frozen
+  validation waves and explicit final barriers. Preserve existing rule owners,
+  target test/release timing, source inspect-only workers and cumulative budgets.
+- Add opt-in schema-2 admission through canonical schema-1 selection. Verify
+  complete bound request outcomes, frozen membership/ownership and actual declared
+  candidate inputs; recheck input stability through public peer inspection.
+- Retain additional delivery inputs and original request/owner bindings through
+  source worker preparation and continuation. Peer uncertainty suppresses new
+  proposals; local acceptance never establishes publication or final delivery.
+- Bound the added view to 8 KiB/800 words with non-actionable reference fallback.
+  Advance adapter schema to 114 and templates to 133. Ordinary schema-1 admission,
+  default bootstrap and policy ceilings remain unchanged. No automatic scheduler,
+  native interception, blanket authorization or measured agent-speed benefit.
+
 ## 0.1.0-alpha.137 - 2026-11-11
 
 - Support explicitly reviewed historical task-evidence loss through opt-in

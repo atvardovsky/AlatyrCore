@@ -678,8 +678,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 789,
-      "content_digest": "sha256:5154f885f6cc858792de31336013283408aac58449575932773039a3e30d2957"
+      "estimated_words": 787,
+      "content_digest": "sha256:0f6901d7258f9226e0ce237e267cb24c72f12ef12b44e7d3600398e48589f457"
     },
     {
       "id": "assistant.content.templates-migration-note-md",

@@ -473,7 +473,12 @@ The default remains advisory. Neither mode reserves resources or grants
 execution authority.
 
 Optional `--admission <target-relative-json>` adds a bounded view of the existing
-primary-owned task plan. It proposes compatible ready tasks, holds unaccepted
+primary-owned plan. Schema 1 is unchanged; opt-in schema 2 adds source-bound
+[Rolling Delivery](../docs/workflow-efficiency.md#optional-rolling-delivery)
+coordination, frozen candidate inputs and coordinator-owned final barriers.
+Neither format dispatches work or grants acceptance. Follow that contract for
+exact fields, limits, freshness and worker continuation.
+It proposes compatible ready tasks, holds unaccepted
 dependencies and retries, and suppresses proposals on peer conflict/uncertainty.
 It does not execute work or verify semantic correspondence to the plan.
 See [workflow optimization](../docs/workflow-efficiency.md) for its exact input

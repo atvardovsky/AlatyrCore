@@ -61,6 +61,9 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
         admission = {**admission, "selected_ids": [], "allocated_slots": admission["running_slots"],
                      "held": {**admission["held"], **{key: decision for key in admission["selected_ids"]}},
                      "coordination_hold": decision}
+        if "delivery" in admission:
+            from rolling_delivery import coordination_hold
+            coordination_hold(admission, decision)
     return {"schema_version": 1, "report_kind": "alatyr-cooperation-preflight", "scope": selected,
             "decision": decision,
             "presence": presence, "resources": resources,
@@ -104,6 +107,8 @@ def main() -> int:
         report = preflight(args.target, args.scope, command_ids=args.command,
                            session_uid=args.session_uid, source_contour=args.source_contour,
                            handoff=load(args.handoff), handoff_current=load(args.handoff_current), capacity=load(args.capacity), admission=admission)
+        if admission is not None and admission["schema_version"] == 2 and view.finalize():
+            raise ValueError("delivery inputs changed during cooperation inspection")
         print(json.dumps(report, indent=2))
         return 1 if args.require_clear and report["decision"] != "no-reported-conflict" else 0
     except (OSError, ValueError, subprocess.SubprocessError, RecursionError) as exc:

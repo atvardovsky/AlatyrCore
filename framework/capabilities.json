@@ -291,7 +291,7 @@
       "requires": ["installed-operations"],
       "operation_ids": ["large-task"],
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "framework_files": ["large-task-orchestration.md"],
+      "framework_files": ["large-task-orchestration.md", "rolling-delivery.md"],
       "target_files": [
         ".ai/assistant/context/task-scales/large-or-resumable.json",
         ".ai/assistant/flows/large-task-orchestration.flow.md",

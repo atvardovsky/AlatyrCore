@@ -1,14 +1,9 @@
 # Alatyr Core Framework
 
-This directory defines the portable Alatyr Core assistant framework.
-
-It is the reusable source that an assistant can adapt into a target project.
-It is separate from any target project's product facts and from any target
-repository's local AI adapter.
-
-The framework exists to make assistants work predictably on a project by
-forcing context discovery, ownership separation, approval gates, documentation
-sync, logical integrity review, and final evidence.
+Portable rules for repository-aware adaptation, separate from target product
+facts and local adapters. They define context discovery, ownership, approval,
+documentation sync, logical integrity review and final evidence; instructions
+alone do not enforce assistant compliance.
 
 ## Owns
 
@@ -245,6 +240,8 @@ Those belong to a project contour or repository adapter.
   impact across comparable tasks and adapter states.
 - `.ai/framework/large-task-orchestration.md`: optional coordination contract
   for large, cross-boundary, multi-workstream, or resumable changes.
+- `.ai/framework/rolling-delivery.md`: conditional growing-queue coordination,
+  bounded coordinator decisions and frozen validation waves.
 - `.ai/framework/task-decomposition.md`: required request decomposition
   contract for assigning implementation levels, dependencies, bounded context,
   analysis strategy, proof obligations, executor decisions, validation, and

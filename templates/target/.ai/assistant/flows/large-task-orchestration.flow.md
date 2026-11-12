@@ -45,6 +45,8 @@ does not persist packets. Only the outer coordinator owns finalization.
 
 ### Plan
 
+Growing queues: follow `.ai/framework/rolling-delivery.md` only when explicitly selected.
+
 3. Propose one packet from
    `.ai/assistant/templates/large-task-operation-packet.md` at the
    target-approved path.

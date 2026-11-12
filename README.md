@@ -105,6 +105,9 @@ after failed validation. Historical test reports remain distinct from current pr
 For substantial tasks, bounded parallel work can overlap independent parts while
 one coordinator reviews and integrates results. Early authoring diagnostics can
 avoid predictable finalization retries; neither mechanism replaces final checks.
+For a growing task queue, optional [Rolling Delivery](docs/workflow-efficiency.md#optional-rolling-delivery)
+keeps later work moving while ready groups enter frozen validation batches.
+Worker completion, release and acceptance remain separate.
 See [workflow efficiency](docs/workflow-efficiency.md) for the optional tooling
 and its evidence limits. No general speed or billing improvement is claimed.
 
@@ -369,7 +372,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.137`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.138`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.

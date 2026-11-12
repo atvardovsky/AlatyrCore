@@ -116,6 +116,14 @@ def main() -> int:
         failures.append(f"invalid large task router overlay: {exc}")
     else:
         required_context = scale.get("required_context", [])
+        rolling_path = ".ai/framework/rolling-delivery.md"
+        if rolling_path in required_context or not any(
+            isinstance(row, dict) and row.get("path") == rolling_path
+            and row.get("when") for row in scale.get("conditional_context", [])
+        ):
+            failures.append("rolling delivery must be conditionally routed, never required bootstrap")
+        if not (ROOT / "framework/rolling-delivery.md").is_file():
+            failures.append("rolling delivery canonical detail is missing")
         for value in [
             ".ai/framework/large-task-orchestration.md",
             ".ai/assistant/flows/large-task-orchestration.flow.md",

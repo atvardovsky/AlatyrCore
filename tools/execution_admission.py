@@ -40,6 +40,13 @@ def _overlap(left, right):
 
 
 def admission_plan(value):
+    if isinstance(value, dict) and type(value.get("schema_version")) is int and value["schema_version"] == 2:
+        from rolling_delivery import delivery_plan
+        return delivery_plan(value, _schema1_admission_plan)
+    return _schema1_admission_plan(value)
+
+
+def _schema1_admission_plan(value):
     required = {"schema_version", "plan", "capacity", "max_parallel", "accepted_ids", "retry_ids", "tasks"}
     if not isinstance(value, dict) or set(value) != required or type(value.get("schema_version")) is not int or value["schema_version"] != 1:
         raise ValueError("admission requires the exact schema-1 plan projection")
@@ -155,11 +162,15 @@ def inspect_admission(view, path):
     read = view.read_bytes_result(view.target / path, max_bytes=MAX_BYTES)
     if read.value is None:
         raise ValueError(read.error or "admission projection is unavailable")
-    report = admission_plan(json_object(read.value, "admission projection"))
+    value = json_object(read.value, "admission projection")
+    report = admission_plan(value)
     binding = report["plan"]
     plan = view.read_bytes_result(view.target / binding["path"], max_bytes=MAX_BYTES)
     if plan.value is None or hashlib.sha256(plan.value).hexdigest() != binding["sha256"]:
         raise ValueError("admission plan is unavailable, oversized or stale")
+    if report["schema_version"] == 2:
+        from rolling_delivery import inspect_delivery
+        inspect_delivery(view, value=value, report=report)
     if view.finalize():
         raise ValueError("admission inputs changed during inspection")
     return report
@@ -169,6 +180,8 @@ def worker_admission_binding(value):
     """Validate retained preparation metadata before any dependent lookup."""
     fields = {"path", "sha256", "allocation_id", "plan", "allocation", "state", "origin",
               "input_sha256", "execution_authorized", "reservation_granted"}
+    if isinstance(value, dict) and "delivery" in value:
+        fields.add("delivery")
     if (not isinstance(value, dict) or set(value) != fields
             or value["execution_authorized"] is not False or value["reservation_granted"] is not False):
         raise ValueError("invalid preparation admission binding")
@@ -200,7 +213,15 @@ def worker_admission_binding(value):
         raise ValueError("invalid worker admission state")
     inputs = value["input_sha256"]
     expected = {value["path"]: value["sha256"], value["plan"]["path"]: value["plan"]["sha256"]}
-    if len(expected) != 2 or not isinstance(inputs, dict) or inputs != expected:
+    if len(expected) != 2:
+        raise ValueError("admission projection and plan must be distinct")
+    if "delivery" in value:
+        from rolling_delivery import worker_delivery_binding
+        extra = worker_delivery_binding(value["delivery"], value["allocation_id"])
+        if set(extra) & set(expected):
+            raise ValueError("delivery inputs must remain distinct from admission and plan")
+        expected.update(extra)
+    if not isinstance(inputs, dict) or inputs != expected:
         raise ValueError("admission requires exact current projection and plan input bindings")
 
 
@@ -237,5 +258,14 @@ def inspect_worker_admission(view, path, allocation_id, expected_sha256, policy,
             "origin": previous["origin"] if previous else {"sha256": expected_sha256, "plan": report["plan"]},
             "plan": report["plan"], "input_sha256": view.content_bindings(),
             "execution_authorized": False, "reservation_granted": False}
+    if value["schema_version"] == 2:
+        from rolling_delivery import retained_worker_delivery
+        result["delivery"] = retained_worker_delivery(value, allocation_id, result["input_sha256"], path)
+    if previous is not None:
+        prior_delivery, current_delivery = previous.get("delivery"), result.get("delivery")
+        if ((prior_delivery is None) != (current_delivery is None)
+                or prior_delivery is not None and any(prior_delivery[key] != current_delivery[key]
+                    for key in ("operation_id", "item", "request_source"))):
+            raise ValueError("expansion cannot replace its original delivery request or ownership binding")
     worker_admission_binding(result)
     return result

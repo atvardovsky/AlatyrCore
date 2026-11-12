@@ -32,9 +32,9 @@ result, summary, retry, overlap, capability, authority, cancellation and cost
 limit. Stop when acceptance, required evidence and assigned obligations are
 covered, or at the first boundary; record the reason.
 
-For substantial plans, [admission](workflow-efficiency.md#parallel-admission)
-through `cooperation-preflight --source-contour --admission PLAN_VIEW` proposes
-only; source workers stay inspect-only and source-check scheduling is unchanged.
+For substantial plans, [admission and Rolling Delivery](workflow-efficiency.md#parallel-admission)
+advise only. `cooperation-preflight --source-contour --admission PLAN_VIEW` neither
+dispatches work nor changes inspect-only source workers or check scheduling.
 
 For explicit `repository-audit`:
 

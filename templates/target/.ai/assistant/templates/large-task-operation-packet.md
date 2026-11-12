@@ -1,8 +1,7 @@
 # Large-Task Operation Packet
 
-Use this template in `{PROJECT_NAME}` only for large, cross-boundary,
-multi-workstream, or resumable operations. The completed packet is coordination
-evidence, not a source of truth for project facts.
+Coordinates large, cross-boundary, multi-workstream or resumable work in
+`{PROJECT_NAME}`; project facts retain their canonical owners.
 
 ## Operation
 
@@ -107,6 +106,8 @@ Repeat this block for each coherent workstream.
 - Handoff state: `{NEXT_ACTION_AND_REQUIRED_CONTEXT}`
 
 ## Checkpoints
+
+Selected rolling queues reference `.ai/framework/rolling-delivery.md`; retain wave and barrier bindings.
 
 Repeat after local validation, an approval boundary, a handoff, or before a
 context reset.

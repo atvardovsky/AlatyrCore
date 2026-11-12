@@ -26,8 +26,24 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1576,
-      "content_digest": "sha256:73d93a451ae68bb801c87ba65ab7710da2a3a984bbfa7ee3eb0924bf9349d112"
+      "estimated_words": 1591,
+      "content_digest": "sha256:766a119d50510fc75c035d73ac819dcf420f2e1220d12e901801b6fa7de5e413"
+    },
+    {
+      "id": "framework.collaboration.rolling-delivery-md",
+      "kind": "content",
+      "path": "rolling-delivery.md",
+      "summary": "Rolling Delivery",
+      "selectors": {
+        "path_terms": [
+          "rolling",
+          "delivery"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 415,
+      "content_digest": "sha256:9bd66091f537840977da642114c1ecd572545b53f236ec8c1899fd377bf316c8"
     },
     {
       "id": "framework.collaboration.subagent-delegation-md",

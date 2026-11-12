@@ -65,6 +65,7 @@ SUPPORT_SECTIONS = {
     "capabilities.json": "infrastructure",
     "skill-adaptation.md": "infrastructure",
     "large-task-orchestration.md": "collaboration",
+    "rolling-delivery.md": "collaboration",
     "migration-diff.md": "lifecycle",
     "framework-packs.json": "lifecycle",
     "portability.md": "lifecycle",

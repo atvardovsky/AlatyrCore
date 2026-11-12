@@ -576,6 +576,20 @@ def check_context_budgets(router: dict[str, Any], failures: list[str]) -> None:
         failures.append("context_budgets.on_exceed must be a non-empty string")
 
 
+def check_large_task_conditions(contract, entry, failures):
+    conditional = check_conditional_context(
+        contract, "task_scale_overlays.large-or-resumable", failures
+    )
+    behavior = contract.get("budget_behavior")
+    if not isinstance(behavior, str):
+        failures.append("large task overlay needs budget_behavior")
+    elif "only new or changed owners" not in behavior:
+        failures.append("large task overlay must keep guidance reloads delta-only")
+    if not isinstance(entry, dict) or entry.get("required_module") != "large-task-orchestration":
+        failures.append("large task overlay route must require large-task-orchestration")
+    return conditional
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -1251,13 +1265,9 @@ def main() -> int:
         failures,
         {"required_context"},
     )
-    budget_behavior = large_task.get("budget_behavior")
-    if not isinstance(budget_behavior, str):
-        failures.append("large task overlay needs budget_behavior")
-    elif "only new or changed owners" not in budget_behavior:
-        failures.append("large task overlay must keep guidance reloads delta-only")
-    if not isinstance(large_entry, dict) or large_entry.get("required_module") != "large-task-orchestration":
-        failures.append("large task overlay route must require large-task-orchestration")
+    large_conditional_context = check_large_task_conditions(
+        large_task, large_entry, failures
+    )
     revalidation = large_task.get("semantic_guidance_revalidation")
     if not isinstance(revalidation, dict):
         failures.append("large task overlay needs semantic_guidance_revalidation")
@@ -1475,6 +1485,7 @@ def main() -> int:
             if isinstance(value, str) and value.startswith(".ai/framework/")
         )
     for conditional_context in [
+        large_conditional_context,
         diagram_conditional_context,
         change_package_conditional_context,
         engineering_evidence_conditional_context,

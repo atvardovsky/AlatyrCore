@@ -2,6 +2,8 @@
 
 Keep large work coherent without full-project loading. Adopted dependency
 readiness: [task-state delivery](task-state-delivery.md).
+For an explicitly selected growing multitask queue, use conditional
+[Rolling Delivery](rolling-delivery.md); ordinary orchestration is unchanged.
 
 It composes `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`,

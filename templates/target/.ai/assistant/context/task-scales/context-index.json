@@ -145,8 +145,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 255,
-      "content_digest": "sha256:7bc6e81b55d10a6f5801f7a3c0142b7a531aee80bbbfb1b09b22c127d23726cb"
+      "estimated_words": 266,
+      "content_digest": "sha256:d485c94bd53e51285e800a9f69ade6d478c16021b484cbbf37bd02dfb5ca6c97"
     },
     {
       "id": "assistant.content.context-task-scales-protected-or-sensitive-json",

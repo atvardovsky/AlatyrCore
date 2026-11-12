@@ -111,6 +111,60 @@ same exact inputs immediately before separately authorized dispatch.
 
 ## Candidate And Phase Boundaries
 
+### Optional Rolling Delivery
+
+Canonical semantics: [Rolling Delivery](../framework/rolling-delivery.md).
+Use schema 1 unchanged for ordinary admission. Explicitly selected rolling work
+may use schema 2: the same fields plus `delivery`. The existing
+`cooperation-preflight --admission` CLI and installed delegate consume both.
+Nothing automatically enables a worker, hook or scheduler.
+
+`delivery` has exactly these fields:
+
+- `operation_id`: resolved bounded operation ID.
+- `requests`: 1..16 `{id, source: {path, sha256}}` entries. Each source is a
+  canonical request brief, limited to its existing 16 KiB/1200-word contract.
+- `items`: exactly one `{task_id, request_id, outcome_ids, owner_ref}` per
+  admission task. Every source request is used and all of its original outcome
+  IDs must be mapped, without invented or omitted outcomes. Owners are declared
+  references, not authenticated assignment or authority. Task order remains
+  primary-owned admission priority; this view does not rank it again.
+- `active_wave`: null or `{id, task_ids, manifest: {path, sha256}}`. Members
+  require accepted local results, never inferred final delivery.
+- `final_barrier`: null or `{task_id, requires}` naming the complete remaining
+  task snapshot. `requires` must match that task's graph dependencies. Later
+  arrivals require explicit boundary reconciliation rather than silent extension.
+  The helper holds final-barrier dispatch for coordinator review; accepted local
+  prerequisites do not establish required publication or runtime outcomes.
+
+The immutable manifest is JSON with exactly `schema_version: 1`,
+`record_kind: "alatyr-delivery-wave"`, matching `operation_id`, `wave_id`, ordered
+`task_ids`, the exact selected `items` and referenced `requests`, and `inputs`.
+`inputs` contains 1..64 unique `{path, sha256}` material-file bindings, excluding
+the manifest itself. Freeze and retain it in existing operation evidence, never
+rehash old run results to qualify changed source. Declaration completeness and
+external build/runtime state still need primary review.
+
+Projection, plan and manifest each fit 64 KiB. Material files fit 1 MiB each;
+request/manifest/material reads together fit 8 MiB and are deduplicated by path.
+Paths are normalized contained target-relative references of at most 1024
+characters; request sources must be distinct from the plan. Hashes are lowercase SHA-256.
+The additional delivery view fits 8 KiB/800 words or falls back to counts and
+the bound plan without truncating duties into actionable advice. It adds no
+default bootstrap requirement and does not scan unrelated historical tasks.
+
+The public CLI verifies brief IDs/outcome coverage, frozen membership/ownership
+and actual declared material bytes, then rechecks through peer inspection.
+Unknown peer state clears new proposals and delivery advice. Exit zero without
+`--require-clear` is not clearance. Direct pure-function reports remain explicitly
+unverified until their sources have been inspected. No result grants dispatch,
+acceptance, current human intent, permission or exclusive resources.
+
+Source worker preparation may use schema 2 with its existing admission flags.
+It retains the extra observed input bindings and selected request/owner mapping;
+continuation cannot replace that mapping or downgrade to schema 1. Original
+allocation, provenance, empty write scope and policy limits remain unchanged.
+
 Before freezing a candidate, retain a bounded exact-file comparison with relevant
 peer corrections. Keep hashes and applied/rejected/deferred reasons in existing
 analysis or operation evidence; do not replace actively edited peer files wholesale.
