@@ -21,7 +21,7 @@ from target_adapter_validation.consistency_map import parse_registry_fact_entrie
 from target_validation_support import is_target_relative_path
 from task_evidence_contract import task_projection_mismatches, task_schema, task_model_header_failures, task_predecessor_failures, task_lineage_failures
 from architecture_review import review_failures, BoundedReviewDigests, review_routes
-from target_adapter_validation.model_evidence import bound_object as _bound_object, retained_model_pair
+from target_adapter_validation.model_evidence import bound_object as _bound_object, retained_model_pair, retained_artifact_locations
 
 INDEX_PATH = ".ai/assistant/active-tasks.json"
 MAX_TASKS = 128
@@ -114,7 +114,8 @@ def lineage_model(validator: Any, task: dict[str, Any]) -> Any:
         load_problem_model_schema(validator.schema_context),
         require_completion=isinstance(delivery, dict) and delivery.get("evidence_finalization") == "final",
         archived_projection=projection, original_source_path=task["problem_model"]["path"],
-        historical_witness=task["state"] == "closed")
+        historical_witness=task["state"] == "closed",
+        artifact_locations=retained_artifact_locations(validator, task, model))
     if not isinstance(model, dict) or any(item.level == "error" for item in validator.findings[start:]):
         return None
     failures = [message for _, message in task_model_header_failures(task, model)]
@@ -552,8 +553,11 @@ def validate_active_tasks(validator: Any, *, initializing: bool = False, selecte
                         continue
                     from target_adapter_validation.prerequisites import validate_model_prerequisites
                     validate_model_prerequisites(validator, model, selected_binding["path"],
-                        require_completion=require_completion, frozen=archived_projection is not None,
-                        current_task=task_id == selected_task)
+                        require_completion=require_completion,
+                        frozen=archived_projection is not None and not (state == "active" and "artifact_manifest" in task.get("analysis_handoff", {})),
+                        current_task=task_id == selected_task,
+                        artifact_locations=retained_artifact_locations(validator, task, model),
+                        original_source_path=model_binding["path"])
                     for code, message in task_model_header_failures(task, model):
                         validator.error(code, message, INDEX_PATH)
                     if closure is not None:
@@ -567,7 +571,8 @@ def validate_active_tasks(validator: Any, *, initializing: bool = False, selecte
                     validator.error("ACTIVE_TASK_WITNESS", "closed non-small tasks require durable model and projection witnesses", INDEX_PATH)
                 validated_model = validate_selected_problem_model(validator, path, model_schema, require_completion=require_completion,
                     archived_projection=archived_projection, original_source_path=model_binding["path"], current_task=task_id == selected_task,
-                    historical_witness=state == "closed")
+                    historical_witness=state == "closed",
+                    artifact_locations=retained_artifact_locations(validator, task, model))
                 if task_id == selected_task and isinstance(validated_model, dict):
                     from target_adapter_validation.repair_review import validate_task_repair_review
                     validate_task_repair_review(validator, task, validated_model, completion=require_completion)

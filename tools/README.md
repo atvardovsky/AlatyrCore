@@ -282,6 +282,20 @@ filesystem-wide atomic snapshot.
 Active checkpoints may leave standing support projections pending; converge them
 with the existing finalizer before adapter acceptance, not at every checkpoint.
 
+For explicitly reviewed retention of an existing active task, use
+`publish-task --target <repo> --task-id <id> --retain-existing
+--retention-review <source>` (preview first; `--write` is separate). This mode
+does not accept a draft or registration, rewrite runtime models/projections,
+or change task status. It retains their exact bytes, including preexisting
+shared task bindings, and copies only consumed ignored analysis artifacts into
+the task/model-digest namespace with a hash-bound `artifact_manifest`.
+The manifest keeps original logical input paths and hashes; every copy and
+extant original must match. Mappings are private to that archived nonselected
+model. Selected work still requires original runtime artifacts and rehydration;
+closed/package witnesses gain no alias fallback. The same artifact/aggregate
+byte limits, explicit privacy review and conflict-preserving transaction apply.
+No retention action grants authority, closure, commit/push or task acceptance.
+
 ```sh
 python3 tools/alatyr.py publish-task --target /path/to/target-repo --task-id TASK_ID --draft .ai/.runtime/drafts/task.json
 ```

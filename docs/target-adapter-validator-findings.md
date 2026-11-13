@@ -10,11 +10,11 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1774
+Catalog entries: 1775
 
 ## Families
 
-- `ACTIVE`: 25 codes.
+- `ACTIVE`: 26 codes.
 - `AGENT`: 2 codes.
 - `AI`: 18 codes.
 - `ANALYSIS`: 48 codes.
@@ -83,6 +83,8 @@ Catalog entries: 1774
 - `ACTIVE_TASK_ARTIFACT_INVALID_JSON`
   Level: error. Source: `tools/target_adapter_validation/model_evidence.py`.
 - `ACTIVE_TASK_ARTIFACT_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/model_evidence.py`.
+- `ACTIVE_TASK_ARTIFACT_RETENTION`
   Level: error. Source: `tools/target_adapter_validation/model_evidence.py`.
 - `ACTIVE_TASK_BASELINE_UNAVAILABLE`
   Level: warning. Source: `tools/target_adapter_validation/active_tasks.py`.

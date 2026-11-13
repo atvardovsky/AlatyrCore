@@ -104,16 +104,16 @@ Use one operation-wide record; splitting records cannot reset cumulative delegat
 
 ### Active Task Selection
 
-Register non-trivial authorized work in the bounded active-task index: task,
-scale, phase, hash-bound runtime model and ended-work closure. Validation applies
-model, projection, strategy, obligation and review checks even without a change
-package. Open duties are permitted during execution, not completed-task acceptance.
+Register authorized non-trivial work in the bounded active-task index: task,
+scale, phase, hash-bound runtime model and ended-work closure. Validate model,
+projection, strategy, obligations and reviews with or without a package. Open
+duties may remain during execution, never completed-task acceptance.
 
-Validation receives task ID and independently classified scale; records cannot
-downgrade themselves. An empty index does not prove no work exists. Inspect-only
-registration may remain host-native/in-memory without write authorization;
-report unavailable machine verification. Eligible small tasks stay inline,
-without a model or durable receipt by default.
+Validation takes task ID and independently classified scale; records cannot
+self-downgrade. An empty index cannot prove no work exists. Without write authorization,
+inspect-only registration may stay host-native/in-memory; report unavailable
+machine verification. Eligible small tasks default inline without models or
+durable receipts.
 
 Keep at most 128 current/recent headers. Changed-scope checks load active,
 selected or changed receipts; full checks may inspect all registered entries,
@@ -121,6 +121,16 @@ not arbitrary ignored history. Active tasks retain live models/projections;
 reviewed cross-worktree handoffs follow
 [session continuity](session-continuity.md#worktree-prerequisites-and-active-handoffs)
 without historical freshness exemptions.
+Explicitly reviewed active handoffs may bind closed `artifact_manifest`s:
+original model path/hash, each consumed ignored artifact's logical path/hash,
+and exact retainable copies in that task/model-digest namespace. Preserve
+model/projection bytes, captured probe inputs, outcomes, obligations and authority.
+Verify every copy and extant original; reject missing/extra/conflicting/unsafe/
+oversized mappings; verify nonignored inputs normally. Only that nonselected
+archived active model may use these locations. Selected work requires original
+runtime evidence and explicit rehydration. Manifests waive no freshness,
+completion, execution or privacy requirement; ordinary authoring and closed/package
+witnesses gain no implicit artifact aliases.
 Closed non-small tasks retain sanitized hash-bound model/projection witnesses
 in durable task-evidence storage, bound from closure with original model digest
 and task/operation/fact lineage. Historical validation uses frozen witnesses,
@@ -135,27 +145,25 @@ it unknown. Navigation cannot retire tasks, resolve gates, infer shared causalit
 or narrow validation. Load retained models for named decisions, dependencies or
 conflicts only.
 
-Author active state from a separate draft. Validate the model, derive its compact
-projection, and synchronize the selected registration as one conflict-checked
-local operation. Preserve unresolved duties and other tasks; reject closed-task
-rewrites. Synchronization is neither evidence creation nor task acceptance, and
-does not require a full support rebuild at every work checkpoint.
+Author active state from a separate draft: validate the model, derive its compact
+projection and synchronize selected registration in one conflict-checked local
+operation. Preserve unresolved duties and other tasks; reject closed-task rewrites.
+Synchronization creates neither evidence nor acceptance and needs no per-checkpoint
+full support rebuild.
 
-Task completion binds the current task ID and independently selected task class
-through finalization, upgrade verification and canonical validation. Require the
-explicit task-acceptance result, including original-case acceptance when
-applicable. General adapter health or current-change scope alone does not prove
-task closure. Read-only health checks need no invented task binding.
+Completion binds current task ID and independently selected class through
+finalization, upgrade verification and canonical validation. Require explicit
+task acceptance, including applicable original-case acceptance. General health
+or current-change scope alone cannot prove closure. Read-only health needs no
+invented task binding.
 
-Closure records implementation, evidence finalization, and publication
-separately. Complete implementation may still have provisional or blocked
-evidence. Only final evidence with reproducible repository binding supports
-current-task acceptance. Publication is optional and separately authorized;
-neither task status nor a final snapshot implies a commit or push.
-If publication is claimed, retain a hash-bound local observation receipt with
-task/operation identity, an immutable observed remote-tracking revision, and a
-valid timestamp. It verifies the local observation, not current live remote
-state or publication authorization.
+Closure separates implementation, evidence finalization and publication. Complete
+implementation may have provisional/blocked evidence. Current-task acceptance
+requires final evidence with reproducible repository binding. Publication is
+optional, separately authorized; task status/final snapshots imply no commit/push.
+Publication claims require a hash-bound local observation receipt: task/operation
+identity, immutable observed remote-tracking revision and valid timestamp. It
+verifies local observation, not current live remote state or publication authority.
 
 Use the [engineering-evidence](engineering-evidence.md) capture disposition.
 Record knowledge review as reviewed, deferred, or not-required with a reason;
@@ -228,25 +236,21 @@ requires `adversarial-review`; the reviewer derives a weaker counterexample
 from the normative source instead of treating the author's fixture as an
 independent oracle.
 
-A problem model is bounded to 65,536 canonical serialized bytes and 6,000
-structured words. Its collections and individual strings also have schema
-limits. When that bound is insufficient, create a digest-linked successor or
-split disjoint work into separate task-bound models; do not truncate unresolved
-obligations or required evidence.
+Limit problem models to 65,536 canonical serialized bytes, 6,000 structured
+words and schema-bounded collections/strings. Overflow requires digest-linked
+successors or disjoint task-bound models, never truncated unresolved obligations
+or required evidence.
 
-Every non-trivial model has a deterministic active projection bound to the full
-model digest. The projection is limited to 16,384 payload bytes and 1,200 words
-and carries task scope, repository binding, changed facts, current assumptions,
-invariants, strategy-specific claims, reviews, obligations, unresolved
-decisions, and the latest transition. Routine execution and continuity
-recovery load that projection. Load full model history only for a named
-conflict, a stale or invalid projection, or a transition update.
+Every non-trivial model has a deterministic active projection bound to its full
+model digest. Limit payloads to 16,384 bytes and 1,200 words; retain task scope,
+repository binding, changed facts, current assumptions, invariants, strategy-specific
+claims, reviews, obligations, unresolved decisions and latest transition.
+Routine execution/continuity loads projections; full history requires a named
+conflict, stale/invalid projection or transition update.
 
-Installed problem-model and active-projection authoring templates must
-materialize into instances accepted by their current canonical schemas after
-authoring placeholders are replaced with neutral values. File presence and a
-matching version number are insufficient when required fields, limits, or
-enums have drifted.
+Installed model/projection authoring templates, with neutral placeholder
+substitutions, must materialize into current canonical schema-valid instances.
+Matching filenames/versions cannot excuse drift in required fields, limits or enums.
 
 Strategy transitions are historical evidence. Their assumption and obligation
 references must resolve, but a referenced assumption may remain invalidated and

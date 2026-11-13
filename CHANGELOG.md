@@ -4,6 +4,21 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.140 - 2026-11-13
+
+- Retain explicitly reviewed immutable analysis artifacts for active-task
+  handoffs through a model-bound manifest. Preserve original logical paths,
+  raw model/projection bytes, hashes, outcomes and unresolved obligations.
+- Resolve exact retained bytes only for nonselected active handoffs. Current
+  tasks and explicitly selected runtime models still require their original
+  inputs; retention never supplies execution or completion authority.
+- Reject missing, extra, conflicting, unsafe, cross-task, corrupt and oversized
+  bindings. Keep existing source guards, byte limits and independent validation.
+- Extend the canonical task publisher with preview-first retention of existing
+  records, including shared task models, without reopening or rewriting history.
+- Advance adapter schema to 116 and generated templates to 135. Optional
+  controls remain opt-in; no runtime, financial or acceptance gate is weakened.
+
 ## 0.1.0-alpha.139 - 2026-11-12
 
 - Add optional bounded read-only project lookup through the public tool and

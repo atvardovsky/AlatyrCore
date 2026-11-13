@@ -224,8 +224,100 @@ def prepare(target: Path, task_id: str, draft: str, registration: str | None = N
     return TaskPublication(outputs, inputs)
 
 
+def prepare_retention(target: Path, task_id: str, retention_review: str) -> TaskPublication:
+    """Retain exact existing bytes, including shared task bindings; do not author."""
+    from retained_analysis_artifacts import (consumed_ignored, read_safe,
+        MAX_ARTIFACT_BYTES, MAX_EVIDENCE_BYTES, MAX_MANIFEST_BYTES)
+    from analysis_evidence import verify_artifacts
+    from behavior_acceptance import resolved
+    if (not isinstance(task_id, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", task_id) is None
+            or not resolved(retention_review) or len(retention_review) > 1024
+            or retention_review.strip().casefold() in {"none", "unknown", "pending", "tbd"}):
+        raise ValueError("exact task identity and explicit retention review are required")
+    index_raw, index = _object(target, INDEX, 512 * 1024)
+    if not task_schema("active-task-index").is_valid(index):
+        raise ValueError("active-task index schema is invalid")
+    tasks = [row for row in index["tasks"] if row["task_id"] == task_id]
+    if len({row["task_id"] for row in index["tasks"]}) != len(index["tasks"]) or task_predecessor_failures(index["tasks"]):
+        raise ValueError("active-task identities or predecessor graph are invalid")
+    if len(tasks) != 1 or tasks[0]["state"] != "active" or tasks[0]["problem_model"] is None:
+        raise ValueError("exact retention requires one existing active non-small task")
+    task = tasks[0]
+    source = task["problem_model"]
+    raw_model, model = _object(target, source["path"], MAX_PROBLEM_MODEL_FILE_BYTES)
+    if hashlib.sha256(raw_model).hexdigest() != source["sha256"]:
+        raise ValueError("existing model digest binding changed")
+    failures = validate_problem_model(model, load_json_object(ROOT / "schemas/alatyr-problem-model.schema.json"))
+    failures += [message for _, message in task_model_header_failures(task, model)]
+    if failures:
+        raise ValueError("invalid existing model: " + "; ".join(failures))
+    projection_path = model["active_projection"]["path"]
+    raw_projection, projection = _object(target, projection_path, MAX_ACTIVE_PROJECTION_FILE_BYTES)
+    expected = build_active_problem_model_projection(model, source_path=source["path"], source_sha256=source["sha256"])
+    failures = validate_active_problem_model_projection(projection,
+        load_json_object(ROOT / "schemas/alatyr-problem-model-active-projection.schema.json"), expected=expected)
+    if failures:
+        raise ValueError("invalid existing projection: " + "; ".join(failures))
+    git = GitEvidenceView(target)
+    if (not source["path"].startswith(PROBLEM_MODEL_RUNTIME_PREFIX)
+            or any(git.is_ignored(path) is not True or git.is_tracked(path) is not False
+                   for path in (source["path"], projection_path))):
+        raise ValueError("existing model/projection must remain ignored untracked runtime evidence")
+    inputs = {target / INDEX: index_raw, target / source["path"]: raw_model,
+              target / projection_path: raw_projection}
+    def read(relative, limit):
+        raw = read_output(target, target / relative, max_bytes=limit)
+        _bind_input(inputs, target / relative, raw)
+        return raw
+    def required(relative, limit):
+        raw = read_safe(target, relative, limit, read)
+        if raw is None:
+            raise ValueError("retention source artifact is missing")
+        return raw
+    failures = verify_artifacts(model, required)
+    if failures:
+        raise ValueError("invalid existing analysis artifacts: " + "; ".join(failures))
+    prefix = f".ai/assistant/task-evidence/{task_id}/{source['sha256']}/"
+    outputs = {}
+    def retain(relative, raw):
+        if git.is_ignored(relative) is not False:
+            raise ValueError("retention outputs must be retainable by Git")
+        previous = read_output(target, target / relative, max_bytes=max(len(raw), MAX_PROBLEM_MODEL_FILE_BYTES))
+        if previous is not None and previous != raw:
+            raise ValueError("immutable retention output conflicts with existing bytes")
+        _bind_input(inputs, target / relative, previous)
+        outputs[target / relative] = raw
+        return {"path": relative, "sha256": hashlib.sha256(raw).hexdigest()}
+    witness = {"model": retain(prefix + "model.json", raw_model),
+               "projection": retain(prefix + "projection.json", raw_projection),
+               "retention_review": retention_review}
+    rows, total = [], 0
+    for number, (logical, digest) in enumerate(sorted(consumed_ignored(model, git.is_ignored).items())):
+        raw = required(logical, min(MAX_ARTIFACT_BYTES, MAX_EVIDENCE_BYTES - total))
+        total += len(raw)
+        rows.append({"source_path": logical, "retained": retain(prefix + f"artifacts/{number:03d}-{digest}.blob", raw)})
+    if rows:
+        manifest = _render({"schema_version": 1, "record_kind": "alatyr-retained-analysis-artifacts",
+                            "source_model": source, "artifacts": rows})
+        if len(manifest) > MAX_MANIFEST_BYTES:
+            raise ValueError("retained manifest exceeds byte limit")
+        witness["artifact_manifest"] = retain(prefix + "artifact-manifest.json", manifest)
+    task["analysis_handoff"] = witness
+    if not task_schema("active-task-index").is_valid(index):
+        raise ValueError("retained active-task index schema is invalid")
+    outputs[target / INDEX] = _render(index)
+    return TaskPublication(outputs, inputs)
+
+
 def source_reviewed_plan(target: Path, args, source_inputs: dict) -> TaskPublication:
-    plan = prepare(target, args.task_id, args.draft, args.registration, args.retention_review)
+    if args.retain_existing:
+        if args.source_contour or args.draft or args.registration:
+            raise ValueError("retain-existing is an installed-target exact retention action, not model authoring")
+        plan = prepare_retention(target, args.task_id, args.retention_review)
+    else:
+        if not args.draft:
+            raise ValueError("model publication requires --draft")
+        plan = prepare(target, args.task_id, args.draft, args.registration, args.retention_review)
     if args.source_contour:
         from source_adoption import assert_current, assert_runtime_untracked, selected_strategy_inputs, sha
         assert_runtime_untracked(target)
@@ -248,7 +340,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--target", type=Path, required=True)
     parser.add_argument("--task-id", required=True)
-    parser.add_argument("--draft", required=True, help="Ignored target-relative JSON authoring draft; never a completion receipt.")
+    parser.add_argument("--draft", help="Ignored target-relative JSON authoring draft; never a completion receipt.")
+    parser.add_argument("--retain-existing", action="store_true", help="Retain exact existing active evidence and consumed immutable artifacts without rewriting models or outcomes.")
     parser.add_argument("--registration", help="Target-relative active registration draft, required for a new task.")
     parser.add_argument("--retention-review", help="Explicit review source permitting an active model/projection handoff to be retained by Git; required again on revisions.")
     parser.add_argument("--write", action="store_true")

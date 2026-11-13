@@ -24,6 +24,7 @@
             "properties": {
               "model": {"$ref": "#/definitions/binding"},
               "projection": {"$ref": "#/definitions/binding"},
+              "artifact_manifest": {"$ref": "#/definitions/binding"},
               "retention_review": {"$ref": "#/definitions/text"}
             }
           },

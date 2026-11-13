@@ -63,7 +63,7 @@
   "families": [
     {
       "id": "ACTIVE",
-      "code_count": 25
+      "code_count": 26
     },
     {
       "id": "AGENT",
@@ -326,6 +326,15 @@
     },
     {
       "code": "ACTIVE_TASK_ARTIFACT_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/model_evidence.py"
+      ]
+    },
+    {
+      "code": "ACTIVE_TASK_ARTIFACT_RETENTION",
       "levels": [
         "error"
       ],

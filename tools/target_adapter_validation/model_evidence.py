@@ -38,7 +38,8 @@ def bound_object(validator: Any, binding: Any, label: str, *, details: dict | No
 
 
 def retained_model_pair(validator: Any, binding: Any, witness: Any, task_id: Any) -> tuple[Any, Any]:
-    if (not isinstance(witness, dict) or set(witness) != {"model", "projection", "retention_review"}
+    if (not isinstance(witness, dict) or not {"model", "projection", "retention_review"} <= set(witness)
+            or set(witness) - {"model", "projection", "retention_review", "artifact_manifest"}
             or not is_resolved_string(witness.get("retention_review"))):
         validator.error("ACTIVE_TASK_WITNESS", "durable evidence requires explicit bindings and retention review", INDEX_PATH)
         return None, None
@@ -60,6 +61,29 @@ def retained_model_pair(validator: Any, binding: Any, witness: Any, task_id: Any
         details={"task_id": task_id, "evidence_binding": witness[name], "action": "recover-exact-evidence"})
         for name in ("model", "projection"))
     return result if all(isinstance(item, dict) for item in result) else (None, None)
+
+
+def retained_artifact_locations(validator: Any, task: dict, model: dict) -> dict[str, str]:
+    """Only active handoffs may carry model-local artifact locations."""
+    witness = task.get("analysis_handoff")
+    if task.get("state") != "active" or not isinstance(witness, dict) or "artifact_manifest" not in witness:
+        return {}
+    from retained_analysis_artifacts import load_aliases
+    from target_adapter_validation.context import TargetFileState
+    def read(relative, limit):
+        candidate = validator.target_path(relative)
+        result = validator.context.read_bytes_result(candidate, max_bytes=limit)
+        if result.value is not None:
+            return result.value
+        if validator.context.status(candidate).state == TargetFileState.MISSING:
+            return None
+        raise ValueError(result.error or "retained artifact is unavailable")
+    try:
+        return load_aliases(validator.target, task["task_id"], task["problem_model"], model,
+                            witness["artifact_manifest"], read=read, is_ignored=validator.git.is_ignored)
+    except (OSError, ValueError, TypeError, KeyError, RecursionError) as error:
+        validator.error("ACTIVE_TASK_ARTIFACT_RETENTION", str(error), INDEX_PATH)
+        return {}
 
 
 def incident_model_location(validator: Any, data: dict, source: str, binding: dict) -> tuple[Any, Any]:

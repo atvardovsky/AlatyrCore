@@ -310,6 +310,7 @@ def validate_selected_problem_model(
     original_source_path: str | None = None,
     current_task: bool = False,
     historical_witness: bool = True,
+    artifact_locations: dict[str, str] | None = None,
 ) -> dict[str, Any] | None:
     relpath = validator.rel(model_path)
     archived = archived_projection is not None
@@ -397,16 +398,19 @@ def validate_selected_problem_model(
                 validator.error("CONTRACT_WORK_DELEGATION", failure, relpath)
     if archived and not historical_witness:
         from analysis_evidence import active_retention_failures
-        for failure in active_retention_failures(model, validator.git.is_ignored):
+        def retained_ignored(path):
+            return validator.git.is_ignored((artifact_locations or {}).get(path, path))
+        for failure in active_retention_failures(model, retained_ignored):
             validator.error("ACTIVE_TASK_HANDOFF_RETENTION", failure, relpath)
     if model.get("schema_version") == 7:
         if archived and "outcome_checks" in model.get("analysis_evidence", {}):
             from outcome_evidence import retention_failures
-            for failure in retention_failures(model, validator.git.is_ignored):
+            for failure in retention_failures(model, lambda path: validator.git.is_ignored((artifact_locations or {}).get(path, path))):
                 validator.error("ANALYSIS_EVIDENCE_ARTIFACT", failure, relpath)
     from target_adapter_validation.prerequisites import validate_model_prerequisites
     validate_model_prerequisites(validator, model, relpath, require_completion=require_completion,
-                                 frozen=frozen, current_task=current_task)
+                                 frozen=frozen, current_task=current_task, artifact_locations=artifact_locations,
+                                 original_source_path=original_source_path)
     if not model_failures:
         selected_projection_schema = projection_schema
         if selected_projection_schema is None:
