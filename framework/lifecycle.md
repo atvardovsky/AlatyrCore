@@ -138,6 +138,9 @@ cannot acknowledge instruction delivery for peers.
    rewrite a custom checker without current-scope approval. Confirm declared
    proof labels against registered command kind and execution evidence.
 6. Preserve target project facts.
+   Reconcile registry ambiguity and conditional
+   [question routing](context-profiles.md#read-only-project-questions) without
+   changing target facts, activating tools or inventing non-applicability.
 7. Compare supported assistant bridge needs and limitations. Merge source
    surface additions by ID without overwriting target capability evidence.
    Recheck exact runtime variant, selected entry path, competing instruction

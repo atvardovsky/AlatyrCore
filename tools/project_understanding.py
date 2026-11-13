@@ -12,16 +12,20 @@ from project_evidence import ProjectEvidence, MAX_FILE_BYTES
 from target_adapter_validation.values import is_resolved_string, is_string_list
 
 SCENARIO = Path(__file__).resolve().parents[1] / "conformance/operations/project-understanding.json"
+SCENARIOS = ("project-understanding", "project-lookup")
 STATES = {"observed", "proposed", "accepted", "unknown", "contradicted"}
 MAX_ANSWERS = 16
 MAX_CITATIONS = 128
 
 
-def understanding_request() -> dict[str, Any]:
-    raw = read_regular_context_bytes(SCENARIO, max_bytes=MAX_FILE_BYTES)
+def understanding_request(scenario_id: str = "project-understanding") -> dict[str, Any]:
+    if not isinstance(scenario_id, str) or scenario_id not in SCENARIOS:
+        raise ValueError("unknown project-understanding scenario")
+    path = SCENARIO if scenario_id == "project-understanding" else SCENARIO.with_name(scenario_id + ".json")
+    raw = read_regular_context_bytes(path, max_bytes=MAX_FILE_BYTES)
     scenario = json.loads(raw)
     if (not isinstance(scenario, dict) or type(scenario.get("schema_version")) is not int
-            or scenario["schema_version"] != 1 or scenario.get("operation") != "project-understanding"
+            or scenario["schema_version"] != 1 or scenario.get("operation") != scenario_id
             or scenario.get("fixture_kind") != "assistant-operation-conformance"
             or scenario.get("allowed_actions") != ["read-only"]):
         raise ValueError("project-understanding scenario is invalid")
@@ -34,6 +38,7 @@ def understanding_request() -> dict[str, Any]:
             or len({row["id"] for row in questions}) != len(questions)):
         raise ValueError("project-understanding questions must have unique concrete IDs and questions")
     return {"schema_version": 1, "report_kind": "project-understanding-request",
+            "scenario_id": scenario_id,
             "status": "prepared-not-executed", "scenario_sha256": hashlib.sha256(raw).hexdigest(),
             "questions": questions, "requirements": scenario["required_for_every_surface"],
             "result_shape": {"schema_version": 1, "report_kind": "project-understanding-result",
@@ -68,8 +73,8 @@ def _citations(value: Any, label: str, evidence: ProjectEvidence) -> set[str]:
     return seen
 
 
-def check_understanding(target: Path, report: Path) -> dict[str, Any]:
-    request = understanding_request()
+def check_understanding(target: Path, report: Path, scenario_id: str = "project-understanding") -> dict[str, Any]:
+    request = understanding_request(scenario_id)
     with ProjectEvidence(report.absolute().parent) as records, ProjectEvidence(target) as evidence:
         data = records.object(report.name)
         if type(data.get("schema_version")) is not int or data["schema_version"] != 1:
@@ -112,11 +117,11 @@ def check_understanding(target: Path, report: Path) -> dict[str, Any]:
                 raise ValueError(f"{question} requires current source evidence")
             if state == "contradicted" and (len(sources) < 2 or not row["limitations"]):
                 raise ValueError(f"{question} requires both conflicting sources and a retained limitation")
-        result = {"status": "structurally-valid-review-required", "operation": "project-understanding",
+        result = {"status": "structurally-valid-review-required", "operation": scenario_id,
                   "unknown_questions": unknown, "input_bindings": evidence.bindings(),
                   "report_sha256": records.bindings()[0]["sha256"],
                   "semantic_review": "required-against-target-specific-oracle",
                   "fresh_session_isolation": "not-independently-verified", "acceptance_granted": False}
-        if understanding_request()["scenario_sha256"] != request["scenario_sha256"]:
+        if understanding_request(scenario_id)["scenario_sha256"] != request["scenario_sha256"]:
             raise ValueError("understanding scenario changed during result validation")
     return result

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "assistant-operation-conformance",
+  "operation": "project-lookup",
+  "allowed_actions": ["read-only"],
+  "questions": [
+    {"id": "local-observation", "question": "Explain one selected function using its implementation and necessary immediate sources. Avoid unrelated adapter context and distinguish observation from intent."},
+    {"id": "canonical-intent", "question": "Why does the selected boundary exist? Cite the registered canonical decision rather than promoting the implementation or derived explanation."},
+    {"id": "coverage-gap", "question": "The selected fact applies, but relationship mapping is deferred. What can you establish, and what bounded owner review is still needed?"},
+    {"id": "contradiction", "question": "Implementation conflicts with the selected accepted decision. Show both sources, retain the contradiction and do not silently repair either."},
+    {"id": "caller-coverage", "question": "Find references to one selected symbol with available navigation or search. Distinguish symbolic results from textual candidates and explain why empty or partial results do not prove no callers."},
+    {"id": "authorization-transition", "question": "After these explanations, the user asks to discuss a possible fix. State the next permitted phase without inheriting implementation, commit or publish authorization."}
+  ],
+  "required_for_every_surface": [
+    "Use a fresh target-only session, existing entry constraints and the smallest sufficient evidence path; record all exposed context.",
+    "Inspect only. Do not register a task, install tools, run the application, mutate files or execute captured navigation commands solely to answer these questions.",
+    "Bind every cited source by target-relative path and SHA-256; preserve authority, freshness, coverage gaps and contradictions separately.",
+    "Use existing host navigation when available; otherwise use source reads/search and report the limitation. No provider capability is assumed.",
+    "Retain all six questions. A primary reviewer checks their meaning against a separately retained target-specific oracle.",
+    "Compare equivalent tasks for correctness, missed constraints and rework; measure unique inputs, physical reads, delivered context, worker overhead, latency and billing separately.",
+    "Unknown client/provider measurements stay unknown. Fewer files or structural validity prove neither better answers nor token/billing savings."
+  ]
+}

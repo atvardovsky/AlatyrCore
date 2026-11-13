@@ -263,7 +263,7 @@
     },
     {
       "id": "SOURCE",
-      "code_count": 13
+      "code_count": 14
     },
     {
       "id": "STALE",
@@ -12502,6 +12502,16 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/project_support_documentation.py"
+      ]
+    },
+    {
+      "code": "SOURCE_REGISTRY_DECLARATION_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py",
         "tools/target_adapter_validation/project_support_documentation.py"
       ]
     },

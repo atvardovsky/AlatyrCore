@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1773
+Catalog entries: 1774
 
 ## Families
 
@@ -64,7 +64,7 @@ Catalog entries: 1773
 - `RULE`: 1 codes.
 - `RUNTIME`: 37 codes.
 - `SESSION`: 70 codes.
-- `SOURCE`: 13 codes.
+- `SOURCE`: 14 codes.
 - `STALE`: 2 codes.
 - `SUPPORT`: 21 codes.
 - `TARGET`: 24 codes.
@@ -2776,6 +2776,8 @@ Catalog entries: 1773
   Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
 - `SOURCE_REGISTRY_BLOCKING_GAP`
   Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
+- `SOURCE_REGISTRY_DECLARATION_CONFLICT`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`, `tools/target_adapter_validation/project_support_documentation.py`.
 - `SOURCE_REGISTRY_EMPTY`
   Level: error. Source: `tools/target_adapter_validation/project_support_documentation.py`.
 - `SOURCE_REGISTRY_EVIDENCE_FIELDS`

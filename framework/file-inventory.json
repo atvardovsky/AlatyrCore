@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 114,
+  "adapter_schema_version": 115,
   "files": [
     {
       "path": "framework/README.md",
@@ -84,7 +84,7 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "dbb6e2e275b236913d7b94a8d0fbbb627f19d6eac4806a666918900cb8fdfa47"
+      "sha256": "703c0f9bbbeeefa85c035b04d374f26d32b08bae4f832df573df57b3f674fb39"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -99,7 +99,7 @@
     {
       "path": "framework/catalog/lifecycle/context-index.json",
       "rule_ids": [],
-      "sha256": "a476bf7a343b7b2635f94f5cfbc39f55701f4e977eff59be606ef7d85a84e426"
+      "sha256": "e92e8ebc98588966a7d4ea6e76184ce156b77c5caacfba968d3d883f2ac9ad8e"
     },
     {
       "path": "framework/catalog/support/context-index.json",
@@ -140,19 +140,19 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "b00f4397b80fa9daf04ba118db834a8730f39ab665467f9d97492f093d9098b1"
+      "sha256": "62823f4478c22dd73d5c9013e6e1b2930d552ad59148d5f9fc52ed6baf3320c3"
     },
     {
       "path": "framework/context-profiles.md",
       "rule_ids": [
         "ALATYR-CONTEXT-001"
       ],
-      "sha256": "58fccbe621f4e19d04b768ae21721131ff76ade42888fd29880f015f6d531d20"
+      "sha256": "3d528f5e3561124d2e36a22a77fba38c2fc7ed72995207432e387109e7bdc60b"
     },
     {
       "path": "framework/context-router.md",
       "rule_ids": [],
-      "sha256": "74b86bbcbb7fbaa261050137222c2bdf0b969612c7e4f95c375f06dd4c9ae145"
+      "sha256": "c98c33ccc0ea5455ce44d6d71286dd8041a045dc8a7956450811f4f11877bcd1"
     },
     {
       "path": "framework/contour.md",
@@ -226,7 +226,7 @@
       "rule_ids": [
         "ALATYR-LIFECYCLE-001"
       ],
-      "sha256": "8f8a929c287a455fe68c887b7128a7ef4465db97d8aa3d39234590116dc6bf84"
+      "sha256": "139da8912c4502a29ef6ec0c92df3050a553f3c10e70266a2c0247114664c0df"
     },
     {
       "path": "framework/logical-integrity.md",
@@ -352,7 +352,7 @@
     {
       "path": "framework/semantics/index.json",
       "rule_ids": [],
-      "sha256": "c6b7ec60a9ddffa492bfa40d8ca9cd0d0fd5da0abaac1b5db711d80976f9a421"
+      "sha256": "685bc09eafc4f9fbae328166732563f1f1d7938a82d375031c5cc3aaf87f08be"
     },
     {
       "path": "framework/semantics/infrastructure.json",
@@ -456,8 +456,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.138",
+  "framework_version": "0.1.0-alpha.139",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 133
+  "template_version": 134
 }

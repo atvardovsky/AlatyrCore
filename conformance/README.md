@@ -12,6 +12,14 @@ The optional `project-understanding` scenario asks six cold-start questions
 about orientation, architecture, ownership, change impact, decision states and
 validation. Prepare or check captured answers with
 [`alatyr.py project-understanding`](../tools/README.md#optional-code-and-knowledge-evidence).
+
+`project-understanding --scenario project-lookup` prepares a separate six-case
+read-only exercise for direct code explanations, canonical intent, deferred
+coverage, contradictions, bounded caller discovery and authorization transitions.
+Use fresh target-only answers and an independent target-specific oracle, not
+synthetic fixtures as evidence of agent compliance or efficiency. Equivalent
+before/after tasks must preserve constraints and answer correctness; measure
+physical reads, delivered context, latency and billing independently.
 Reuse the existing executor lifecycle or manual import on every surface. Do not
 use an installation-shape pass as proof that a new agent understood the project.
 Keep the target-specific answer oracle separate from the agent's visible

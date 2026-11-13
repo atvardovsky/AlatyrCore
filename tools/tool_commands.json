@@ -2,6 +2,12 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "project-lookup",
+      "script": "inspect_project_lookup.py",
+      "purpose": "select bounded read-only code, canonical-owner and optional navigation evidence",
+      "write_scope": "none"
+    },
+    {
       "name": "source-adoption",
       "script": "inspect_source_adoption.py",
       "purpose": "inspect source self-adoption or explicitly project minimal ignored task controls",

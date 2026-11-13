@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
 from context_input_snapshot import ContextInputSnapshot
 from path_spec import logical_path
+from cli_inputs import json_object
 
 MAX_FILE_BYTES = 1024 * 1024
 MAX_TOTAL_BYTES = 8 * MAX_FILE_BYTES
@@ -42,10 +42,7 @@ class ProjectEvidence(ContextInputSnapshot):
         return self.read(self.root / relpath)
 
     def object(self, relpath: str) -> dict[str, Any]:
-        value = json.loads(self.exact(relpath))
-        if not isinstance(value, dict):
-            raise ValueError(f"{relpath} must contain a JSON object")
-        return value
+        return json_object(self.exact(relpath), relpath)
 
     def bindings(self) -> list[dict[str, str]]:
         return [{"path": path.relative_to(self.root).as_posix(), "sha256": digest}

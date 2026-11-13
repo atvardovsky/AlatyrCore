@@ -25,6 +25,15 @@ No. Code can provide evidence for an `observed` architecture item. Accepted,
 preferred, restricted, or deprecated states require project-owned decision
 evidence. Contradictions and unknowns should remain explicit.
 
+## Does Every Code Question Need An Alatyr Workflow?
+
+No. A narrow question about what a function does can use a direct source read.
+The assistant should expand to decisions, contracts or impact review when the
+question needs them, not load every project document by default. Optional lookup
+and existing code-navigation tools can help, but are not mandatory steps per
+question. The [canonical question route](../../framework/context-profiles.md#read-only-project-questions)
+keeps inspection separate from authorization to change the project.
+
 ## Does Every Developer Need To Understand The Internal Framework?
 
 No. Developers are intended to interact through normal questions and tasks.
@@ -113,7 +122,7 @@ newest file or the implementation is automatically correct. See the
 
 ## Is The Project Production-Ready?
 
-The source [VERSION](../../VERSION) currently records `0.1.0-alpha.138`.
+The source [VERSION](../../VERSION) currently records `0.1.0-alpha.139`.
 AlatyrCore has implemented framework contracts, target templates, source
 checks, conformance fixtures, optional scaffolding, and an optional structural
 target validator. It should not be

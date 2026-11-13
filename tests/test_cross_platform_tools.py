@@ -14,6 +14,7 @@ from check_cross_platform_tools import (  # noqa: E402
     source_tool_surface_failures,
     tree_hashes,
     verify_upgrade_documentation_failures,
+    project_lookup_documentation_failures,
 )
 
 
@@ -45,6 +46,17 @@ def documentation_with_posix(arguments: list[str]) -> dict[str, str]:
 
 
 class CrossPlatformToolTests(unittest.TestCase):
+    def test_lookup_examples_use_the_canonical_parser_without_execution(self):
+        prefix = "python3 tools/alatyr.py project-lookup"
+        valid = prefix + ' --target /example --question "Explain selected code" --source src/core.py'
+        self.assertEqual([], project_lookup_documentation_failures({"example.md": valid}))
+        for mutated in (valid.replace("--target /example", ""),
+                        valid.replace('--question "Explain selected code"', '--question -h'),
+                        valid.replace("--source", "--source-invalid"),
+                        valid + " --purpose observed-code --purpose project-intent"):
+            with self.subTest(command=mutated):
+                self.assertTrue(project_lookup_documentation_failures({"example.md": mutated}))
+
     def test_tree_hashes_ignore_git_metadata_but_detect_project_changes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)

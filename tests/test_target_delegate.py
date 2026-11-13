@@ -29,6 +29,20 @@ finally:
 
 
 class TargetDelegateTests(unittest.TestCase):
+    def test_common_source_git_timeout_is_a_controlled_unresolved_locator(self):
+        import contextlib
+        import io
+        import subprocess
+        with tempfile.TemporaryDirectory() as directory:
+            errors = io.StringIO()
+            with patch.dict(os.environ, {}, clear=True), patch.object(sys, "argv", ["alatyr_delegate.py",
+                    "project-lookup", "--target", directory, "--", "--question", "Explain", "--source", "src/core.py"]), \
+                    patch.object(delegate.subprocess, "run", side_effect=subprocess.TimeoutExpired("git", 10)), \
+                    contextlib.redirect_stderr(errors):
+                self.assertEqual(2, delegate.main())
+            self.assertIn("source is unresolved", errors.getvalue())
+            self.assertNotIn("Traceback", errors.getvalue())
+
     def test_common_locator_and_readiness_are_declared_and_forwarded(self) -> None:
         contract = json.loads((ROOT / "templates/target/.ai/assistant/validation-contract.json").read_text())
         self.assertEqual(contract["source_resolution"]["common_git_config"], "alatyr/framework-source")

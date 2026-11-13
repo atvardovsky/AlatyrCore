@@ -221,6 +221,9 @@ sufficient. Standard, large, protected, or delegated work should load the
 target decomposition policy and plan template before implementation or worker
 dispatch.
 
+Read-only [questions](context-profiles.md#read-only-project-questions) precede
+change expansion; `lookup` never strips mandatory context from change plans.
+
 The decomposition plan assigns each subtask one implementation level,
 dependencies, bounded context, allowed files or surfaces, validation,
 acceptance criteria, and executor decision. Delegation consumes the
@@ -283,13 +286,10 @@ provider evidence. Provider usage can support token accounting when exposed by
 the provider, but only host delivery telemetry can prove the exact semantic
 guidance bundle reached the model.
 
-Resolved context packets should record the exact selector reason for each
-selected item, omitted candidate IDs, expansion triggers, and fail-closed
-behavior for unresolved selectors. Their planned receipt records selected paths
-and the static word estimate. Resolved or observed receipt fields may be used
-only when corresponding host or provider evidence exists. These packet fields
-route canonical owners; they do not create a second policy owner or prove that
-the model understood the delivered material.
+Record exact selector reasons, omitted IDs, expansion triggers and fail-closed
+selector dispositions. Receipt layers follow the canonical
+[budget/receipt contract](context-profiles.md#context-budgets-and-receipts),
+not a second policy or comprehension claim.
 
 Recursive catalogs index the installed framework, project-support, and
 assistant contours. When a concrete target file outside `.ai/` is explicitly
@@ -297,6 +297,8 @@ declared as required context by the selected profile, a deterministic planner
 may bind that file directly by target-relative path, measured size, and content
 digest. It must not use this exception for missing `.ai/` support surfaces or
 for unrecognized task paths.
+
+### Cache-Aware Delivery
 
 Prompt or context caching reduces repeated provider computation, latency, or
 billed input cost when the exact provider and client support it. It does not

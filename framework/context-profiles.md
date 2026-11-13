@@ -48,6 +48,21 @@ Load generated `.ai/assistant/entry-packet.json` only for recovery, audit or rou
 conflict. Human profile/help prose and full support state stay lazy unless routing
 is missing, stale, disputed or insufficient.
 
+## Read-Only Project Questions
+
+After applicable entry constraints, narrow read-only code questions use selected
+sources: no task/change packet/tests solely for explanation. Helpers are optional.
+Intent needs canonical owners; impact needs existing profile/relationship review
+and bounded fallback for gaps.
+
+Keep applicability/authority/freshness/coverage separate. Deferred mapping is not
+inapplicability; dirty counts/fresh bytes renew neither knowledge nor approval.
+Preserve knowledge states/conflicting sources. Text matches are candidates;
+captured symbols retain provenance/coverage limits; empty results prove no caller
+absence. No implicit backend installation/execution. Uncertainty, wider scope or
+implementation requests trigger applicable routing and fresh authorization.
+Retain citations/limitations, not a ledger.
+
 ## Recursive Context Navigation
 
 Every substantial framework, project, and assistant contour should expose a
@@ -260,22 +275,12 @@ requires it.
 
 ## Cache-Aware Delivery
 
-Deliver stable assistant, framework and project guidance first, selected canonical
-evidence next, and volatile task, revision, timestamp and runtime data last.
-This permits provider caching where the selected client and model support it.
-Never enlarge a profile to meet a provider minimum or make correctness depend
-on a cache hit.
-
-Read cache capability only from the selected surface record under
-`.ai/assistant/assistant-capabilities/`. Keep assistant client, model provider,
-model, provider cache mode, exposed controls, exposed telemetry, retention and
-minimum cacheable size distinct. For unknown or stale evidence, retain bounded
-routing without cache claims. Cached tokens still count as model context;
-budgets and lazy expansion remain unchanged.
-
-Record stable-prefix and dynamic-tail digests in resolved packets as identity
-evidence only. Exact cache-hit, token, latency or monetary claims require
-observed host/provider telemetry.
+Follow [cache-aware delivery](context-router.md#cache-aware-delivery) for ordering,
+digests and selected-surface evidence. Keep client/provider/model/cache mode,
+controls/telemetry, retention and minimum size distinct. Never enlarge a profile
+to meet a cache minimum or depend on a hit for correctness. Cached tokens remain
+context; budgets apply. Exact claims require observed host/provider telemetry;
+unknown/stale evidence uses bounded routing without cache claims.
 
 ## Context Budgets And Receipts
 
@@ -298,11 +303,9 @@ Use one normalized context receipt with separate layers:
 - `resolved`: paths actually resolved by routing and their static word estimate
 - `observed`: files and tokens exposed by host or provider telemetry
 
-For a resolved context packet, also record the traversed index chain, selected
-item IDs and digests, resolved semantic term IDs and versions, packet digest,
-dictionary fallback or expansion events, and intentionally omitted branches.
-This evidence proves packet identity and routing behavior, not model
-comprehension.
+Resolved packets record index chains, selected item IDs/digests, resolved semantic
+term IDs/versions, packet digest, dictionary fallback/expansion events and omitted
+branches. These establish packet identity/routing, not comprehension.
 
 Recursive catalog selectors such as `path_terms` and semantic-shard selectors
 are discovery metadata. They do not independently authorize or load a catalog
@@ -333,10 +336,8 @@ with sorted object keys, ASCII escaping and compact separators. Array order is
 significant. The empty applicable-guidance set has a valid digest distinct from
 unavailable evidence.
 
-Only exact host or provider telemetry supports observed context or token-cost
-comparisons. Planned and resolved estimates remain routing evidence even when
-observed telemetry is partial or unavailable; they must not be relabeled as
-actual model context.
+Observed context/token-cost comparisons require exact host/provider telemetry.
+Planned/resolved estimates remain routing evidence, not actual model context.
 
 A semantic bundle digest proves only which identity metadata was planned,
 resolved, or observably delivered at the stated evidence level. It does not
@@ -353,11 +354,9 @@ If sufficient context exceeds a budget, continue safely and record:
 - context intentionally not loaded
 - residual risk
 
-Source-template estimates must charge unresolved target references against the
-reserved target capacity. Accepted adapters resolve and measure concrete target
-paths. Budgets reduce accidental overloading; they never justify skipping an
-owner, approval rule, safety policy, or validation fact required by changed
-behavior.
+Charge unresolved template references against reserved target capacity. Accepted
+adapters resolve and measure concrete paths. Budgets never justify skipping
+required owners, approvals, safety or validation.
 
 ## Project-Area Overlays
 

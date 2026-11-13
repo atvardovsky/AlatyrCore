@@ -13,6 +13,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
+from cli_inputs import Once, json_object
 
 from bootstrap_index import BOOTSTRAP_PATH, SEMANTIC_INDEX_PATH, SOURCE_PATHS
 from context_input_snapshot import ContextInputSnapshot, read_regular_context_bytes
@@ -35,6 +36,7 @@ OPTIONAL_TARGET_ANCHORS = frozenset({"AI_ASSISTANTS.md"})
 SOURCE_ANCHORS = frozenset({
     "AGENTS.md", "VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION",
     "tools/source-context/index.json", "tools/inspect_session_context.py",
+    "tools/cli_inputs.py",
 })
 HASH = re.compile(r"sha256:[0-9a-f]{64}\Z")
 
@@ -72,21 +74,6 @@ def relative_path(value: Any) -> str:
             or PurePosixPath(value).as_posix() != value
             or any(part in {".", ".."} for part in value.split("/"))):
         raise ValueError("context paths must be normalized target-relative paths")
-    return value
-
-
-def json_object(raw: bytes, label: str) -> dict[str, Any]:
-    def unique(pairs):
-        result = {}
-        for key, value in pairs:
-            if key in result:
-                raise ValueError(f"{label} contains duplicate keys")
-            result[key] = value
-        return result
-
-    value = json.loads(raw, object_pairs_hook=unique)
-    if not isinstance(value, dict):
-        raise ValueError(f"{label} must be an object")
     return value
 
 
@@ -239,15 +226,6 @@ def capture(target: Path, paths: list[str], *, source_contour: bool = False,
     validate_baseline(baseline)
     return baseline, state, {"input_files": len(inputs), "input_bytes": total,
                              "verification_reads": len(inputs)}
-
-
-class Once(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        seen = getattr(namespace, "_seen", set())
-        if self.dest in seen:
-            parser.error(f"{option_string} may be supplied only once")
-        namespace._seen = seen | {self.dest}
-        setattr(namespace, self.dest, values)
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import re
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -27,7 +25,11 @@ from impact_graph import (
 )
 from path_spec import PathDialect, PathSpec
 from repository_inventory import RepositoryInventory, RepositoryInventoryError
-from registry_ownership import OwnerDeclaration, owner_declarations, ownership_failures
+from registry_ownership import ownership_failures
+from registry_facts import (
+    REGISTRY_ENTRY_HEADING_RE, RegistryFactEntry, compact_markdown_scalar,
+    markdown_scalar, parse_registry_fact_entries,
+)
 from reviewed_warnings import selected_candidate_warnings
 from relationship_candidates import candidate_semantic_failures
 
@@ -56,84 +58,11 @@ CONSISTENCY_REGISTRY_SYNC_POLICY_V3 = {
     "fact_type_match": "exact",
     "extra_nodes": "allowed-for-derived-contract-area-system-adapter-and-surface-nodes",
 }
-REGISTRY_ENTRY_HEADING_RE = re.compile(
-    r"^### Fact Type: `([^`]+)`\s*$", re.MULTILINE
-)
 RELATIONSHIP_CANDIDATES_SCHEMA = (
     Path(__file__).resolve().parents[2]
     / "schemas"
     / "alatyr-relationship-candidates.schema.json"
 )
-
-
-@dataclass(frozen=True)
-class RegistryFactEntry:
-    heading_fact_type: str
-    declared_fact_type: str | None
-    map_node_id: str | None
-    canonical_owner_values: tuple[str, ...]
-    line: int
-    owner_declarations: tuple[OwnerDeclaration, ...] = ()
-
-
-def markdown_scalar(block: str, field: str) -> str | None:
-    match = re.search(
-        rf"^{re.escape(field)}:\s*(.*?)\s*$",
-        block,
-        flags=re.MULTILINE,
-    )
-    if match is None:
-        return None
-    value = match.group(1).strip()
-    if len(value) >= 2 and value.startswith("`") and value.endswith("`"):
-        value = value[1:-1].strip()
-    return value or None
-
-
-def compact_markdown_scalar(
-    block: str, group: str, *keys: str
-) -> str | None:
-    line = re.search(rf"^{re.escape(group)}:\s*(.*?)\s*$", block, re.MULTILINE)
-    if line is None:
-        return None
-    for key in keys:
-        match = re.search(
-            rf"(?:^|;\s*){re.escape(key)}=`([^`]*)`", line.group(1)
-        )
-        if match is not None:
-            return match.group(1).strip()
-    return None
-
-
-def parse_registry_fact_entries(text: str) -> list[RegistryFactEntry]:
-    matches = list(REGISTRY_ENTRY_HEADING_RE.finditer(text))
-    entries: list[RegistryFactEntry] = []
-    for index, match in enumerate(matches):
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
-        block = text[match.end():end]
-        owner_values = tuple(
-            value.strip().strip("`")
-            for _field, value in re.findall(
-                r"^([^:\n]*owner):\s*(.*?)\s*$",
-                block,
-                flags=re.MULTILINE | re.IGNORECASE,
-            )
-            if value.strip()
-        )
-        entries.append(
-            RegistryFactEntry(
-                heading_fact_type=match.group(1).strip(),
-                declared_fact_type=markdown_scalar(block, "Fact type"),
-                map_node_id=markdown_scalar(block, "Consistency map node")
-                or compact_markdown_scalar(
-                    block, "Routing", "consistency_node", "cn"
-                ),
-                canonical_owner_values=owner_values,
-                line=text.count("\n", 0, match.start()) + 1,
-                owner_declarations=owner_declarations(block, text.count("\n", 0, match.end()) + 1),
-            )
-        )
-    return entries
 
 
 def _manifest_schema_version(manifest: Any) -> int | None:
@@ -597,6 +526,9 @@ def _validate_registry_sync(
             heading_counts.get(entry.heading_fact_type, 0) + 1
         )
         entry_path = f"{registry_relpath}:{entry.line}"
+        for name in entry.conflicts:
+            context.error("SOURCE_REGISTRY_DECLARATION_CONFLICT",
+                          f"Fact Type {entry.heading_fact_type!r} repeats or contradicts {name}", entry_path)
         if entry.declared_fact_type != entry.heading_fact_type:
             context.error(
                 "CONSISTENCY_REGISTRY_FACT_TYPE_DRIFT",

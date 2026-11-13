@@ -118,6 +118,16 @@ approximate them with substring checks. Differential tests must cover valid
 entry points and missing, malformed, near-match, below-, exact-, and over-limit
 inputs. Representation may shrink; enforcement may not.
 
+Read-only project questions may use bounded source selection without creating
+a change task. `project_lookup` composes `ProjectEvidence`, the shared
+`registry_facts` parser, existing architecture source review and passive
+`code_navigation` evidence. It is not a second context/impact planner or an
+acceptance packet. Keep external report snapshots open through result assembly
+and preserve snapshot nesting. Captured tool identity is not authentication;
+ordinary source reads remain the fallback, with no mandatory backend.
+Treat identifiers as opaque; derive status from its declared field, never a
+status-like identifier spelling.
+
 Derive behavioral fixtures from the canonical owner independently of generated
 metadata. Include capability-disabled and minimal accepted targets, not only
 full profiles that agree with each other. Mutate selected metadata through the

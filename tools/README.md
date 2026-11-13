@@ -2,6 +2,57 @@
 
 ## Optional Code And Knowledge Evidence
 
+For a narrow code question, host search and a direct read are sufficient when
+applicable project constraints allow it. No Alatyr command is required per
+question. Optional bounded source selection is available as:
+
+```sh
+python3 tools/alatyr.py project-lookup --target /path/to/target-repo --question "What does this function do?" --source src/app/service.py --start-line 10 --end-line 30
+python3 tools/alatyr.py project-lookup --target /path/to/target-repo --question "Why is this boundary required?" --purpose project-intent --fact-type "architecture decision"
+```
+
+Paths, fact types and lines above are illustrative. `observed-code` reads only
+explicit sources. `project-intent` and `change-impact` select one exact registry
+fact and exact canonical owner files, then require existing owner/impact review.
+Directory/glob owners require explicit bounded selection; decision-owner names
+are not source paths. Deferred mapping, accepted authority and unknown freshness
+remain independent. Findings never silently repair an adapter.
+
+`--architecture-item ID` optionally checks one derived architecture item's
+existing source-review bindings; a current digest is not semantic approval.
+`--navigation-report PATH` accepts captured, normalized evidence from an already
+available host tool. It installs/launches no LSP, plugin, command or service.
+The report uses this shape; bind `query` to the exact lookup question:
+
+```json
+{"schema_version":1,"report_kind":"code-navigation-evidence","query":"Who references this symbol?","backend":"actual-host-tool","match_kind":"symbol-reference","coverage":"selected-files","source_bindings":[{"path":"src/app/service.py","sha256":"<actual lowercase SHA-256>"}],"matches":[{"path":"src/app/service.py","line":12}],"limitations":[]}
+```
+
+Use `text-match` for textual candidates. Symbol references remain tool-reported,
+not independently resolved. Matches require current hashes and real locations
+inside explicitly selected sources. No matches do not prove absent callers.
+Other providers may normalize their existing native results to this same
+passive boundary; unsupported tools fall back to ordinary source reads.
+
+The installed delegate exposes the same canonical implementation:
+
+```sh
+python .ai/assistant/tools/alatyr_delegate.py project-lookup --target . --framework-source /path/to/AlatyrCore -- --question "What does this function do?" --source src/app/service.py
+```
+
+Limits: 8 selected/owner files, 200 question words/2000 characters, 24 KiB and
+4000 words of selected content, 64 KiB final serialized report, and the shared
+evidence-reader ceilings below. Ranges require one source and include both
+endpoints. Whole-file hashes bind excerpts; bounds fail rather than truncate.
+Navigation has at most 8 source bindings, 128 unique locations and 8 bounded
+limitations. JSON duplicate members and single-option duplicates are rejected.
+Output is stdout only. `ready-for-inspection` and `expansion-required` are routing
+states, not answers, correctness, action authorization or target acceptance.
+Measurements describe selected unique inputs/content, not total physical I/O,
+host context, delivered tokens, latency or billing.
+These helper ceilings never override lower target/worker budgets or mandatory
+constraints. Its output is not a canonical ready context-plan packet.
+
 These source helpers inspect a target without installing or changing its
 adapter. They add no bootstrap files, hooks, packages or graph database.
 Paths below are examples, not facts about this repository.
@@ -43,6 +94,13 @@ within the shared evidence ceilings. A successful result is explicitly
 `structurally-valid-review-required`: assess meaning against a separately held
 target-specific oracle. It does not verify hidden context, agent provenance,
 semantic truth or billing/token benefit. No paid model call is automatic.
+
+Use `--scenario project-lookup` to prepare/check the six narrow-question,
+authority, stale/deferred-coverage, contradiction, caller-coverage and
+authorization-transition cases. The default six-question scenario is unchanged.
+Each scenario has a distinct content hash; evidence from one cannot validate the
+other. Qualify actual answers in the existing conformance lifecycle against a
+separately retained oracle. Synthetic result-shape tests are not agent runs.
 
 Canonical boundaries: [architecture](../framework/architecture-knowledge.md#knowledge-states)
 and [support relationships](../framework/support-information.md#relationship-discovery).

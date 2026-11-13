@@ -12,6 +12,9 @@ require accepted authority, decision source, evidence revision, review date,
 and gap severity. Other authority states are noncanonical. `not-applicable`
 requires target evidence and decision authority.
 
+Keep applicability/authority/freshness/coverage independent. Long/compact fields
+must agree; repeated/conflicting declarations require repair. Dates are not freshness checks.
+
 Section-local compact fields retain evidence at lower context cost. Replace
 each placeholder within its Fact Type section:
 

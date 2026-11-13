@@ -66,6 +66,22 @@ class ProjectUnderstandingTests(unittest.TestCase):
         self.assertEqual("not-independently-verified", payload["fresh_session_isolation"])
         self.assertEqual(["README.md"], [path.name for path in self.target.iterdir()])
 
+    def test_optional_lookup_scenario_has_its_own_exact_source_binding(self):
+        request = understanding_request("project-lookup")
+        self.assertEqual(6, len(request["questions"]))
+        self.assertNotEqual(self.data["scenario_sha256"], request["scenario_sha256"])
+        self.data["scenario_sha256"] = request["scenario_sha256"]
+        for row, question in zip(self.data["answers"], request["questions"]):
+            row["question_id"] = question["id"]
+        self.save()
+        completed = subprocess.run([sys.executable, "-B", str(ROOT / "tools/alatyr.py"),
+            "project-understanding", "--target", str(self.target), "--scenario", "project-lookup", "--report", str(self.path)],
+            capture_output=True, text=True, check=False)
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        self.assertEqual("project-lookup", json.loads(completed.stdout)["operation"])
+        with self.assertRaises(ValueError):
+            check_understanding(self.target, self.path)
+
     def test_missing_duplicate_or_unknown_questions_are_rejected(self):
         original = copy.deepcopy(self.data)
         for mutation in ("missing", "duplicate", "unknown"):

@@ -45,6 +45,9 @@ or the target task-decomposition policy needs repair. Routine routing uses
 
 ## Recursive Selection And Semantic Terms
 
+Local observations: direct source reads; see
+`.ai/framework/context-profiles.md#read-only-project-questions`.
+
 For each selected contour, open its root `context-index.json` and follow only
 entries matched by exact task, operation, owner, path, fact, contract,
 dependency, risk, or conflict signals. Repeat through child indexes until the

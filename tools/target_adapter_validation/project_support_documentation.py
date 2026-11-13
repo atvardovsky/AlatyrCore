@@ -3,16 +3,15 @@
 from __future__ import annotations
 
 import datetime as dt
-import re
 from typing import Any
 
 from target_adapter_validation.capability import CapabilityValidationContext
 from target_validation_support import is_placeholder, is_unresolved_value
+from registry_facts import parse_registry_fact_entries
 
 
 REGISTRY_PATH = ".ai/project/source-of-truth-registry.md"
 CONTOUR_PATH = ".ai/project/contour.md"
-ENTRY_RE = re.compile(r"^### Fact Type: `([^`]+)`\s*$", re.MULTILINE)
 APPLICABILITY_STATES = {"applicable", "not-applicable", "unknown"}
 AUTHORITY_STATES = {
     "observed",
@@ -38,28 +37,6 @@ ROUTING_FIELDS = (
     "Consistency map node",
     "Relationship coverage",
 )
-
-
-def _scalar(block: str, field: str) -> str | None:
-    match = re.search(rf"^{re.escape(field)}:\s*(.*?)\s*$", block, re.MULTILINE)
-    if match is None:
-        return None
-    value = match.group(1).strip().strip("`").strip()
-    return value or None
-
-
-def _compact_scalar(block: str, group: str, *keys: str) -> str | None:
-    line = re.search(rf"^{re.escape(group)}:\s*(.*?)\s*$", block, re.MULTILINE)
-    if line is None:
-        return None
-    for key in keys:
-        match = re.search(
-            rf"(?:^|;\s*){re.escape(key)}=`([^`]*)`", line.group(1)
-        )
-        if match is not None:
-            value = match.group(1).strip()
-            return value or None
-    return None
 
 
 def _resolved(value: str | None) -> bool:
@@ -105,8 +82,8 @@ def validate_project_support_documentation(
                 CONTOUR_PATH,
             )
     registry = context.read_text(context.target_path(REGISTRY_PATH))
-    matches = list(ENTRY_RE.finditer(registry))
-    if not matches:
+    entries = parse_registry_fact_entries(registry)
+    if not entries:
         context.error(
             "SOURCE_REGISTRY_EMPTY",
             "source-of-truth registry contains no Fact Type entries",
@@ -114,12 +91,9 @@ def validate_project_support_documentation(
         )
         return
     seen_fact_types: set[str] = set()
-    for index, match in enumerate(matches):
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(registry)
-        block = registry[match.end():end]
-        fact_type = match.group(1).strip()
-        line = registry.count("\n", 0, match.start()) + 1
-        path = f"{REGISTRY_PATH}:{line}"
+    for entry in entries:
+        fact_type = entry.heading_fact_type
+        path = f"{REGISTRY_PATH}:{entry.line}"
         if fact_type in seen_fact_types:
             context.error(
                 "SOURCE_REGISTRY_FACT_TYPE_DUPLICATE",
@@ -127,40 +101,11 @@ def validate_project_support_documentation(
                 path,
             )
         seen_fact_types.add(fact_type)
-        fields = {
-            "Fact type": _scalar(block, "Fact type"),
-            "Applicability state": _scalar(block, "Applicability state")
-            or _compact_scalar(block, "Authority", "applicability", "ap"),
-            "Authority state": _scalar(block, "Authority state")
-            or _compact_scalar(block, "Authority", "state", "st"),
-            "Decision source": _scalar(block, "Decision source")
-            or _compact_scalar(block, "Authority", "decision_source", "ds"),
-            "Evidence revision": _scalar(block, "Evidence revision")
-            or _compact_scalar(block, "Authority", "evidence_revision", "er"),
-            "Last reviewed": _scalar(block, "Last reviewed")
-            or _compact_scalar(block, "Authority", "reviewed", "at"),
-            "Gap severity": _scalar(block, "Gap severity")
-            or _compact_scalar(block, "Authority", "gap", "gs"),
-            "Consistency level": _scalar(block, "Consistency level")
-            or _compact_scalar(block, "Routing", "consistency_level", "cl"),
-            "Project area": _scalar(block, "Project area")
-            or _compact_scalar(block, "Routing", "project_area", "pa"),
-            "Consistency map node": _scalar(block, "Consistency map node")
-            or _compact_scalar(block, "Routing", "consistency_node", "cn"),
-            "Relationship coverage": _scalar(block, "Relationship coverage")
-            or _compact_scalar(
-                block, "Routing", "relationship_coverage", "rc"
-            ),
-        }
-        owner_values = [
-            value.strip().strip("`")
-            for _label, value in re.findall(
-                r"^([^:\n]*owner):\s*(.*?)\s*$",
-                block,
-                flags=re.MULTILINE | re.IGNORECASE,
-            )
-            if value.strip()
-        ]
+        fields = entry.fields
+        owner_values = entry.canonical_owner_values
+        for name in entry.conflicts:
+            context.error("SOURCE_REGISTRY_DECLARATION_CONFLICT",
+                          f"Fact Type {fact_type!r} repeats or contradicts {name}", path)
         missing = [
             field
             for field in (*REQUIRED_FIELDS, *ROUTING_FIELDS)

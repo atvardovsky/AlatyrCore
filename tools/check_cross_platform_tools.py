@@ -17,6 +17,7 @@ from documented_command_contract import (
 )
 from parallel_execution import run_commands
 from verify_target_upgrade import build_parser as build_verify_upgrade_parser
+from inspect_project_lookup import build_parser as build_project_lookup_parser
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,6 +41,7 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
 EXPECTED_COMMANDS = {
+    "project-lookup",
     "source-adoption",
     "test-input-state",
     "code-relationships",
@@ -153,6 +155,12 @@ def verify_upgrade_documentation_failures(
     )
 
 
+def project_lookup_documentation_failures(documents: Mapping[str, str]) -> list[str]:
+    return argparse_documentation_failures(documents,
+        invocations=(DocumentedInvocation("python3 tools/alatyr.py project-lookup", "posix"),),
+        parser_factory=build_project_lookup_parser)
+
+
 def source_tool_surface_failures() -> list[str]:
     failures: list[str] = []
     if not SOURCE_CHECK_SUMMARY.is_file():
@@ -166,6 +174,7 @@ def source_tool_surface_failures() -> list[str]:
         failures.append(f"verify-upgrade documentation is unavailable: {exc}")
     else:
         failures.extend(verify_upgrade_documentation_failures(documents))
+        failures.extend(project_lookup_documentation_failures(documents))
     return failures
 
 

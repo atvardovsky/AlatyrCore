@@ -4,6 +4,25 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.139 - 2026-11-12
+
+- Add optional bounded read-only project lookup through the public tool and
+  installed delegate. Local observations select source files/ranges directly;
+  intent and impact retain canonical owner review and existing change routing.
+- Share registry parsing between support validation, consistency maps and
+  lookup. Reject conflicting/repeated declarations instead of choosing a
+  representation silently. Keep applicability, authority, freshness and
+  relationship coverage separate; deferred mapping is not non-applicability.
+- Accept passive captured host navigation with current selected source hashes,
+  bounded locations and explicit symbolic/textual/provenance limitations.
+  Reuse source-bound architecture review without promoting derived views.
+- Add a separate provider-neutral lookup conformance scenario and public-path
+  negative, boundary, freshness, delegate-parity and malformed-input tests.
+- Advance adapter schema to 115 for stricter registry ambiguity validation and
+  templates to 134. Target entry instructions do not grow in words; preserve all
+  context ceilings. No automatic backend, execution, authorization, acceptance
+  or measured agent-speed/token/billing improvement is claimed.
+
 ## 0.1.0-alpha.138 - 2026-11-12
 
 - Add conditional Rolling Delivery guidance for explicitly selected growing

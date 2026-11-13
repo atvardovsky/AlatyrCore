@@ -33,6 +33,9 @@ def main() -> int:
         request = understanding_request()
         if len(request["questions"]) != 6 or request["status"] != "prepared-not-executed":
             failures.append("project-understanding must prepare six questions without execution")
+        lookup = understanding_request("project-lookup")
+        if len(lookup["questions"]) != 6 or lookup["status"] != "prepared-not-executed":
+            failures.append("project-lookup must prepare six read-only questions without execution")
         surface_data = load(SURFACES)
         bridge_data = load(BRIDGES)
     except (OSError, json.JSONDecodeError, ValueError) as exc:

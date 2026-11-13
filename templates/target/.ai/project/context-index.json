@@ -112,8 +112,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1164,
-      "content_digest": "sha256:28bc1e3ad275cd08d5e3b49d173808e40bd993864262688fd988ca7c508c93cd"
+      "estimated_words": 1180,
+      "content_digest": "sha256:52164b8975ab4da96d6b7ca10ead89b415ed52588a2e1a2dda8415d4fe12b776"
     },
     {
       "id": "project.content.support-policy-json",

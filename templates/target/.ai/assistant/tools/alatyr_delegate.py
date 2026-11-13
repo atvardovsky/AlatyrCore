@@ -19,7 +19,7 @@ def common_source_config(target: Path) -> Path | None:
     try:
         result = subprocess.run(["git", "-C", str(target), "rev-parse", "--git-common-dir"],
                                 capture_output=True, text=True, env=env, timeout=10, check=False)
-    except OSError:
+    except (OSError, subprocess.TimeoutExpired):
         return None
     if result.returncode:
         return None
@@ -85,7 +85,7 @@ class Once(argparse.Action):
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     subparsers = parser.add_subparsers(dest="operation", required=True)
-    for name in ("session-presence", "session-context", "lifecycle-checkpoint"):
+    for name in ("session-presence", "session-context", "lifecycle-checkpoint", "project-lookup"):
         operation = subparsers.add_parser(name, allow_abbrev=False)
         operation.add_argument("--target", type=Path, required=True, action=Once)
         operation.add_argument("--framework-source", type=Path, action=Once)
@@ -152,7 +152,9 @@ def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) ->
         if args.require_ready:
             command.append("--require-ready")
         return command
-    if args.operation in {"session-presence", "session-context"}:
+    if args.operation in {"session-presence", "session-context", "project-lookup"}:
+        if args.operation == "project-lookup" and args.arguments[:1] == ["--"]:
+            return [args.operation, "--target", str(target), *args.arguments[1:]]
         return [args.operation, "--target", str(target), *args.arguments]
     if args.operation == "lifecycle-checkpoint":
         return [args.operation, "--target", str(target), "--provider", args.provider, *args.arguments]

@@ -138,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3497,
-      "content_digest": "sha256:58fccbe621f4e19d04b768ae21721131ff76ade42888fd29880f015f6d531d20"
+      "estimated_words": 3464,
+      "content_digest": "sha256:3d528f5e3561124d2e36a22a77fba38c2fc7ed72995207432e387109e7bdc60b"
     },
     {
       "id": "framework.core.context-router-md",
@@ -153,8 +153,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3357,
-      "content_digest": "sha256:74b86bbcbb7fbaa261050137222c2bdf0b969612c7e4f95c375f06dd4c9ae145"
+      "estimated_words": 3325,
+      "content_digest": "sha256:c98c33ccc0ea5455ce44d6d71286dd8041a045dc8a7956450811f4f11877bcd1"
     },
     {
       "id": "framework.core.contour-md",
@@ -484,7 +484,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 323,
-      "content_digest": "sha256:c6b7ec60a9ddffa492bfa40d8ca9cd0d0fd5da0abaac1b5db711d80976f9a421"
+      "content_digest": "sha256:685bc09eafc4f9fbae328166732563f1f1d7938a82d375031c5cc3aaf87f08be"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

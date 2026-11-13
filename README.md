@@ -183,6 +183,12 @@ A discussion or recommendation does not authorize edits. The assistant should
 cite project sources, separate facts from assumptions, and name missing or
 contradictory evidence.
 
+Simple implementation questions can go directly to the relevant code. Questions
+about intent need canonical decisions; proposed changes need the applicable
+impact and validation review. Optional code-navigation tools complement this
+process, but neither search results nor Alatyr metadata prove code correctness.
+See [how ordinary code questions work](docs/human/faq.md#does-every-code-question-need-an-alatyr-workflow).
+
 The following conversations are illustrative. Angle-bracketed sources are
 examples of target-project evidence, not paths or business facts in AlatyrCore.
 
@@ -372,7 +378,7 @@ is defined by [installed operations](framework/installed-operations.md) and
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.138`. Implemented assets
+The source [VERSION](VERSION) currently records `0.1.0-alpha.139`. Implemented assets
 include framework contracts, target templates, assistant-driven installation
 guidance, source checks, conformance fixtures, optional scaffolding, and an
 optional installed-adapter validator.
