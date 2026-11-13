@@ -14,6 +14,7 @@ from render_context_catalogs import (
     build_directory_catalog_contents,
     build_framework_catalog_contents,
     framework_base_files,
+    generated_directory_catalog_paths,
 )
 from target_tool_compat import assert_write_compatible
 
@@ -60,8 +61,8 @@ def generated_paths(target: Path) -> set[Path]:
     return {
         framework / INDEX_NAME,
         *framework.glob(f"catalog/**/{INDEX_NAME}"),
-        *(target / ".ai" / "project").glob(f"**/{INDEX_NAME}"),
-        *(target / ".ai" / "assistant").glob(f"**/{INDEX_NAME}"),
+        *generated_directory_catalog_paths(target / ".ai" / "project", "project"),
+        *generated_directory_catalog_paths(target / ".ai" / "assistant", "assistant"),
     }
 
 

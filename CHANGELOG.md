@@ -4,6 +4,16 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.141 - 2026-11-13
+
+- Add bounded file/hash/exact-literal historical local-path bindings, preserving
+  current-file errors, current authority and coherent config/input verification.
+- Preserve immutable task-evidence indexes during source and installed context
+  maintenance. Historical indexes are neither active generated outputs nor
+  stale outputs to delete; current and lookalike paths remain fully checked.
+- Keep adapter schema 116; advance generated template metadata to 136. No model,
+  approval, evidence hash, historical outcome or safety gate changes.
+
 ## 0.1.0-alpha.140 - 2026-11-13
 
 - Retain explicitly reviewed immutable analysis artifacts for active-task

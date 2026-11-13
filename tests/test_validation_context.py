@@ -24,6 +24,386 @@ from target_validation_support import GitEvidenceState, GitEvidenceView  # noqa:
 import validate_target_adapter  # noqa: E402
 
 
+class HistoricalLocalPathBindingTests(unittest.TestCase):
+    def setUp(self):
+        import base64
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name).resolve()
+        self.name = '.ai/assistant/task-evidence/fixture/history.md'
+        self.literal = '/tmp/historical-control/old'
+        self.document = self.root / self.name
+        self.document.parent.mkdir(parents=True)
+        self.document.write_text(self.literal + '\n', encoding='utf-8')
+        self.row = {'path': self.name, 'sha256': hashlib.sha256(self.document.read_bytes()).hexdigest(),
+                    'literals_base64': [base64.b64encode(self.literal.encode()).decode()],
+                    'reason': 'Immutable historical evidence; no current authority.'}
+        self.config_path = self.root / '.ai/assistant/validator-config.json'
+
+    def validator(self, rows=None, **kwargs):
+        from validate_target_adapter import load_validator_config
+        self.config_path.write_text(json.dumps({'schema_version': 1,
+            'historical_local_path_bindings': [self.row] if rows is None else rows}), encoding='utf-8')
+        config, findings = load_validator_config(self.root, None)
+        return self.from_config(config, initial_findings=findings, **kwargs)
+
+    def from_config(self, config, **kwargs):
+        values = dict(framework_source=None, diff_ref=None, approval_records=[],
+            enforce_approval_scope=False, change_packages=[], enforce_change_package=False,
+            migration_diff=None, allow_placeholders=False, allow_local_paths=[], config=config)
+        values.update(kwargs)
+        return Validator(self.root, **values)
+
+    def test_exact_binding_exempts_only_its_historical_file_and_literal(self):
+        current = self.root / '.ai/project/current.md'
+        current.parent.mkdir(parents=True)
+        current.write_text(self.literal + '\n' + self.literal + '-lookalike\n', encoding='utf-8')
+        self.document.write_text(self.literal + '\n/tmp/unlisted/value\n', encoding='utf-8')
+        self.row['sha256'] = hashlib.sha256(self.document.read_bytes()).hexdigest()
+        validator = self.validator()
+        validator.check_local_paths()
+        errors = [row for row in validator.findings if row.level == 'error']
+        self.assertEqual([row.code for row in errors], ['LOCAL_PATH_LEAKAGE'] * 3)
+        self.assertEqual(sum(row.path.startswith('.ai/project/current.md:') for row in errors), 2)
+        self.assertTrue(any(row.path == self.name + ':2' for row in errors))
+
+    def test_config_has_no_plaintext_path_exemption(self):
+        self.row['reason'] = self.literal
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE'
+                            and row.path == '.ai/assistant/validator-config.json' for row in validator.findings))
+
+    def test_absent_bindings_preserve_existing_failures(self):
+        validator = self.validator([])
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings))
+
+    def test_exact_decoded_structured_literal(self):
+        import base64
+        self.document.unlink()
+        self.name = '.ai/assistant/task-evidence/fixture/history.json'
+        self.document = self.root / self.name
+        self.document.write_text(r'{"path":"\/tmp\/historical-control\/old"}', encoding='utf-8')
+        self.row.update(path=self.name, sha256=hashlib.sha256(self.document.read_bytes()).hexdigest(),
+                        literals_base64=[base64.b64encode(self.literal.encode()).decode()])
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertEqual([row.code for row in validator.findings], ['VALIDATOR_CONFIG_LOADED'])
+
+    def test_malformed_bindings_fail_closed_as_a_complete_set(self):
+        import base64
+        import copy
+        invalid = [None, {}, [None], [{**self.row, 'extra': True}],
+            [{**self.row, 'path': '../outside.md'}], [{**self.row, 'path': '/tmp/outside.md'}],
+            [{**self.row, 'path': '.ai/assistant/task-evidence-lookalike/history.md'}],
+            [{**self.row, 'path': '.ai/project/current.md'}],
+            [{**self.row, 'path': self.name.replace('/', '\\')}],
+            [{**self.row, 'sha256': '0' * 64}],
+            [{**self.row, 'literals_base64': []}], [{**self.row, 'literals_base64': ['']}],
+            [{**self.row, 'literals_base64': [base64.b64encode(b'/tmp/not-present').decode()]}],
+            [{**self.row, 'literals_base64': self.row['literals_base64'] * 2}],
+            [self.row, copy.deepcopy(self.row)],
+            [self.row, {**self.row, 'path': self.name.upper()}], [self.row] * 65]
+        for rows in invalid:
+            with self.subTest(rows=rows):
+                validator = self.validator(rows)
+                # None means the helper default; explicitly retain a malformed null here.
+                if rows is None:
+                    validator.config.historical_local_path_bindings = None
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+                self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings))
+
+    def test_noncanonical_or_invalid_encoded_literals_reject(self):
+        import base64
+        values = ['%%%=', 'YQ', 'YQ===', 'Y R==', 'YR==', '_w==', '/w==',
+                  self.row['literals_base64'][0] + '\n', base64.b64encode(b'not a local path').decode()]
+        for value in values:
+            with self.subTest(value=value):
+                validator = self.validator([{**self.row, 'literals_base64': [value]}])
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+                self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings))
+
+    def test_missing_changed_nontext_and_oversized_history_reject(self):
+        from target_adapter_validation import local_paths
+        original = self.document.read_bytes()
+        for data in (b'changed', b'\xff', b'\x00', None):
+            with self.subTest(data=data):
+                self.document.write_bytes(original)
+                validator = self.validator()
+                if data is None:
+                    self.document.unlink()
+                else:
+                    self.document.write_bytes(data)
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        self.document.write_bytes(original)
+        validator = self.validator()
+        with patch.object(local_paths, 'MAX_HISTORY_FILE_BYTES', 1):
+            validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_leaf_and_ancestor_symlinks_reject(self):
+        original = self.document.read_bytes()
+        self.document.unlink()
+        outside = self.root / 'original.md'
+        outside.write_bytes(original)
+        try:
+            self.document.symlink_to(outside)
+        except OSError as exc:
+            self.skipTest(str(exc))
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        self.document.unlink()
+        self.document.parent.rmdir()
+        alternate = self.root / 'alternate'
+        alternate.mkdir()
+        (alternate / 'history.md').write_bytes(original)
+        self.document.parent.symlink_to(alternate, target_is_directory=True)
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_selected_current_authority_is_not_exempt(self):
+        for key in ('approval_records', 'problem_models', 'change_packages'):
+            with self.subTest(key=key):
+                validator = self.validator(**{key: [self.document]})
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+                self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings))
+
+    def test_current_package_cannot_use_a_retained_plan_exemption(self):
+        old = self.document
+        self.name = '.ai/assistant/change-packages/old-retained-' + self.row['sha256'] + '-plan.md'
+        self.document = self.root / self.name
+        self.document.parent.mkdir(parents=True, exist_ok=True)
+        old.rename(self.document)
+        self.row['path'] = self.name
+        index = self.document.parent / 'index.json'
+        package = self.document.parent / 'current.json'
+        index.write_text(json.dumps({'records': [{'record': '.ai/assistant/change-packages/current.json'}]}))
+        package.write_text(json.dumps({'evidence_classification': 'historical-record',
+                                      'status': 'implementing', 'plan': {'file': self.name}}))
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        package.write_text(json.dumps({'evidence_classification': 'historical-record',
+                                      'status': 'complete', 'plan': {'file': self.name}}))
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertEqual([row.code for row in validator.findings], ['VALIDATOR_CONFIG_LOADED'])
+
+    def test_configuration_drift_before_and_after_construction_blocks(self):
+        from validate_target_adapter import load_validator_config
+        self.validator()
+        config, _ = load_validator_config(self.root, None)
+        self.config_path.write_text(self.config_path.read_text() + '\n')
+        validator = self.from_config(config)
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertEqual([row.code for row in validator.findings], ['VALIDATOR_CONFIG_LOADED'])
+        self.config_path.write_text(self.config_path.read_text() + '\n')
+        self.assertTrue(validator.context.finalize())
+        self.document.write_text(self.literal + '-changed\n')
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_duplicate_configuration_fields_do_not_grant_exemptions(self):
+        self.validator()
+        raw = self.config_path.read_text()
+        self.config_path.write_text(raw[:-1] + ', "schema_version": 1}')
+        config, errors = validate_target_adapter.load_validator_config(self.root, None)
+        validator = self.from_config(config, initial_findings=errors)
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_selected_package_approval_lists_and_selected_model_evidence_remain_current(self):
+        for kind in ('package', 'model'):
+            with self.subTest(kind=kind):
+                owner = self.root / '.ai/assistant/task-evidence/fixture/owner.json'
+                data = ({'evidence_classification': 'historical-record', 'status': 'complete',
+                         'approved_scope': {'approval_records': [self.name]}}
+                        if kind == 'package' else {'proof': {'path': self.name}})
+                owner.write_text(json.dumps(data))
+                kwargs = {'change_packages' if kind == 'package' else 'problem_models': [owner]}
+                validator = self.validator(**kwargs)
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+                self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings))
+
+    def test_initial_config_acquisition_is_bounded_before_decoding(self):
+        self.config_path.write_bytes(b' ' * (4 * 1024 * 1024 + 1))
+        config, errors = validate_target_adapter.load_validator_config(self.root, None)
+        self.assertTrue(any(row.level == 'error' and row.code == 'VALIDATOR_CONFIG_READ_ERROR' for row in errors))
+        self.assertEqual(config.historical_local_path_bindings, ())
+
+    def test_project_root_alias_preserves_exact_config_binding(self):
+        self.validator()
+        alias = self.root.parent / (self.root.name + '-alias')
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except OSError as exc:
+            self.skipTest(str(exc))
+        self.addCleanup(alias.unlink)
+        config, findings = validate_target_adapter.load_validator_config(alias, None)
+        validator = self.from_config(config, initial_findings=findings)
+        validator.check_local_paths()
+        self.assertEqual([row.code for row in validator.findings], ['VALIDATOR_CONFIG_LOADED'])
+
+    def test_selected_model_authority_and_evidence_reference_fields_stay_strict(self):
+        owner = self.root / '.ai/assistant/task-evidence/fixture/owner.json'
+        for key in ('authority_ref', 'normative_source_ref', 'positive_evidence_refs', 'enforcement_refs'):
+            with self.subTest(key=key):
+                owner.write_text(json.dumps({key: [self.name] if key.endswith('_refs') else self.name}))
+                validator = self.validator(problem_models=[owner])
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_indexed_validated_package_bound_to_selected_model_is_current(self):
+        owner = self.root / '.ai/assistant/task-evidence/fixture/owner.json'
+        owner.write_text('{}')
+        package = self.root / '.ai/assistant/change-packages/current.json'
+        package.parent.mkdir(parents=True)
+        package.write_text(json.dumps({'evidence_classification': 'historical-record', 'status': 'validated',
+            'incident_continuity': {'problem_model': {'path': owner.relative_to(self.root).as_posix()}},
+            'plan': {'file': self.name}}))
+        (package.parent / 'index.json').write_text(json.dumps({'records': [{'record': package.relative_to(self.root).as_posix()}]}))
+        validator = self.validator(problem_models=[owner])
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_bindings_without_the_parsed_config_owner_fail_closed(self):
+        validator = self.validator()
+        validator.config.source = None
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_hardlinked_history_and_malformed_structured_bytes_fail_closed(self):
+        import os
+        linked = self.root / 'linked.md'
+        try:
+            os.link(self.document, linked)
+        except OSError as exc:
+            self.skipTest(str(exc))
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        linked.unlink()
+        self.document.unlink()
+        self.name = '.ai/assistant/task-evidence/fixture/history.json'
+        self.document = self.root / self.name
+        self.document.write_text('{"path": "' + self.literal + '"')
+        self.row.update(path=self.name, sha256=hashlib.sha256(self.document.read_bytes()).hexdigest())
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings))
+
+    def test_selected_approval_plan_and_active_header_owner_stay_current(self):
+        owner = self.root / '.ai/assistant/task-evidence/fixture/owner.json'
+        owner.write_text(json.dumps({'plan': {'file': self.name}}))
+        validator = self.validator(approval_records=[owner])
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        active = self.root / '.ai/assistant/active-tasks.json'
+        active.write_text(json.dumps({'tasks': [{'state': 'active', 'canonical_owners': [self.name]}]}))
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_schema_rejection_does_not_install_optional_bindings(self):
+        self.validator()
+        data = json.loads(self.config_path.read_text())
+        data['schema_version'] = 999
+        self.config_path.write_text(json.dumps(data))
+        config, findings = validate_target_adapter.load_validator_config(self.root, None)
+        self.assertEqual(config.historical_local_path_bindings, ())
+        validator = self.from_config(config, initial_findings=findings)
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'VALIDATOR_CONFIG_SCHEMA_VERSION' for row in validator.findings))
+        self.assertTrue(any(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings))
+
+    def test_valid_literal_with_noncanonical_pad_bits_is_rejected(self):
+        import base64
+        literal = self.literal + 'x'
+        while len(literal.encode()) % 3 != 1:
+            literal += 'x'
+        self.document.write_text(literal + '\n')
+        canonical = base64.b64encode(literal.encode()).decode()
+        alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+        encoded = canonical[:-3] + alphabet[alphabet.index(canonical[-3]) | 1] + '=='
+        self.assertEqual(base64.b64decode(encoded, validate=True), literal.encode())
+        self.row.update(sha256=hashlib.sha256(self.document.read_bytes()).hexdigest(), literals_base64=[encoded])
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_binary_rejection_is_independent_of_the_file_hash(self):
+        for raw in (b'\xff', b'\x00' + self.literal.encode()):
+            with self.subTest(raw=raw):
+                self.document.write_bytes(raw)
+                self.row['sha256'] = hashlib.sha256(raw).hexdigest()
+                validator = self.validator()
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_unique_row_and_literal_count_limits_are_independent(self):
+        import base64
+        rows = []
+        for index in range(65):
+            name = self.name.replace('history.md', f'history{index}.md')
+            (self.root / name).write_bytes(self.document.read_bytes())
+            rows.append({**self.row, 'path': name})
+        validator = self.validator(rows)
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        literals = [self.literal + str(index) for index in range(65)]
+        self.document.write_text('\n'.join(literals) + '\n')
+        self.row.update(sha256=hashlib.sha256(self.document.read_bytes()).hexdigest(),
+                        literals_base64=[base64.b64encode(value.encode()).decode() for value in literals])
+        validator = self.validator()
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+    def test_aggregate_limit_and_all_or_nothing_binding_disposition(self):
+        from target_adapter_validation import local_paths
+        second = {**self.row, 'path': self.name.replace('history.md', 'second.md')}
+        (self.root / second['path']).write_bytes(self.document.read_bytes())
+        validator = self.validator([self.row, second])
+        budget = self.config_path.stat().st_size * 2 + self.document.stat().st_size * 2
+        with patch.object(local_paths, 'MAX_HISTORY_TOTAL_BYTES', budget - 1):
+            validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+        self.assertEqual(sum(row.code == 'LOCAL_PATH_LEAKAGE' for row in validator.findings), 2)
+        validator = self.validator([self.row, second])
+        with patch.object(local_paths, 'MAX_HISTORY_TOTAL_BYTES', budget):
+            validator.check_local_paths()
+        self.assertEqual([row.code for row in validator.findings], ['VALIDATOR_CONFIG_LOADED'])
+
+    def test_retained_plan_name_hash_and_parsed_binding_mutation_reject(self):
+        original = self.document
+        for embedded in ('0' * 64, self.row['sha256'][:-1]):
+            with self.subTest(embedded=embedded):
+                name = '.ai/assistant/change-packages/old-retained-' + embedded + '-plan.md'
+                path = self.root / name
+                path.parent.mkdir(exist_ok=True)
+                path.write_bytes(original.read_bytes())
+                validator = self.validator([{**self.row, 'path': name}])
+                validator.check_local_paths()
+                self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+                path.unlink()
+        validator = self.validator()
+        validator.config.historical_local_path_bindings[0]['reason'] += ' altered'
+        validator.check_local_paths()
+        self.assertTrue(any(row.code == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in validator.findings))
+
+
 class ValidationContextTests(unittest.TestCase):
     def test_validator_phase_plan_is_closed_and_stably_ordered(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

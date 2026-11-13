@@ -318,7 +318,7 @@ class ValidatorTrustBoundaryTests(unittest.TestCase):
             invalid_utf8.write_bytes(b"\xff")
 
             _, unicode_findings = load_validator_config(target, invalid_utf8)
-            with patch.object(Path, "read_text", side_effect=PermissionError("denied")):
+            with patch.object(Path, "open", side_effect=PermissionError("denied")):
                 _, os_findings = load_validator_config(target, target / "denied.json")
 
             self.assertEqual(unicode_findings[0].code, "VALIDATOR_CONFIG_READ_ERROR")

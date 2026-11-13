@@ -725,6 +725,24 @@ manifest. It does not turn Alatyr into a runtime service or replace the
 assistant-led installation process. Each command reports its write scope in
 help.
 
+Immutable historical local-path literals may be registered separately through
+`historical_local_path_bindings`. Each row requires exactly `path`, `sha256`,
+`literals_base64` (a nonempty list of canonical Base64-encoded UTF-8 scanner
+values), and `reason`. Only exact task-evidence descendants or digest-named
+retained plans qualify; file bytes and each decoded complete literal must match.
+Encoding is representation, not secrecy or authorization. It avoids adding a
+current-config scan exemption. Plaintext local paths elsewhere in the config,
+current files and lookalikes remain checked. Existing global allow patterns are
+unchanged and are not populated from historical bindings.
+
+Bindings fail closed on malformed/duplicate configuration or rows, missing,
+changed, unsafe, symlinked, hardlinked, binary or oversized files, unmatched
+literals and current/selected authority conflicts. Parsed config bytes are
+SHA-bound to the same coherent validation context as history and authority
+inventories; final input verification still detects mutation. At most64 rows,
+64 literals per row,4MiB per file and16MiB of binding reads are allowed. No
+historical outcome, approval, task acceptance or other validator check is waived.
+
 Linux or macOS:
 
 ```sh

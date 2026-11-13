@@ -443,6 +443,18 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
     return sorted(set(refs)), sorted(set(owners))
 
 
+def _is_inert_task_evidence(root: Path, contour: str, path: Path) -> bool:
+    return contour == "assistant" and path.relative_to(root).parts[:1] == ("task-evidence",)
+
+
+def generated_directory_catalog_paths(root: Path, contour: str) -> set[Path]:
+    return {
+        path
+        for path in root.glob(f"**/{INDEX_NAME}")
+        if not _is_inert_task_evidence(root, contour, path)
+    }
+
+
 def build_directory_catalog_contents(
     root: Path,
     contour: str,
@@ -479,9 +491,8 @@ def build_directory_catalog_contents(
                     f"selected {contour} catalog path does not exist: {relpath}"
                 )
             all_files.append(path)
-    if contour == "assistant":
-        # Historical witnesses are selected through the task index, never bootstrap context.
-        all_files = [path for path in all_files if path.relative_to(root).parts[0] != "task-evidence"]
+    # Historical witnesses are selected through the task index, never bootstrap context.
+    all_files = [path for path in all_files if not _is_inert_task_evidence(root, contour, path)]
     directories = {root}
     for path in all_files:
         current = path.parent
@@ -575,8 +586,8 @@ def existing_generated_paths() -> set[Path]:
     return {
         *FRAMEWORK.glob(f"catalog/**/{INDEX_NAME}"),
         FRAMEWORK / INDEX_NAME,
-        *(TARGET / ".ai" / "project").glob(f"**/{INDEX_NAME}"),
-        *(TARGET / ".ai" / "assistant").glob(f"**/{INDEX_NAME}"),
+        *generated_directory_catalog_paths(TARGET / ".ai" / "project", "project"),
+        *generated_directory_catalog_paths(TARGET / ".ai" / "assistant", "assistant"),
     }
 
 

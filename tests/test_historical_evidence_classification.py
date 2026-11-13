@@ -361,6 +361,36 @@ class HistoricalEvidenceClassificationTests(unittest.TestCase):
         self.assertTrue(any(f["level"] == "error" and f.get("path") == RECORD for f in payload["findings"]))
         self.assertEqual((self.root / RECORD).read_bytes(), before)
 
+    def test_public_cli_exact_history_path_binding_never_covers_current_or_stale_bytes(self):
+        import base64
+        name = '.ai/assistant/task-evidence/fixture/history.md'
+        literal = '/tmp/retained-negative/escape.json'
+        self.write(name, literal + '\n')
+        self.write('.ai/project/current.md', literal + '\n')
+        self.write('.ai/assistant/validator-config.json', {
+            'schema_version': 1,
+            'historical_local_path_bindings': [{**self.ref(name),
+                'literals_base64': [base64.b64encode(literal.encode()).decode()],
+                'reason': 'Retained exact negative-test data, not current authority.'}],
+        })
+        command = [sys.executable, '-B', str(ROOT / 'tools/validate_target_adapter.py'),
+                   '--target', str(self.root), '--json']
+        result = subprocess.run(command, capture_output=True, text=True)
+        payload = json.loads(result.stdout)
+        self.assertNotIn('Traceback', result.stderr)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual((self.root / name).read_text(), literal + '\n')
+        errors = [row for row in payload['findings'] if row['code'] == 'LOCAL_PATH_LEAKAGE']
+        self.assertFalse(any(row.get('path', '').startswith(name + ':') for row in errors))
+        self.assertTrue(any(row.get('path', '').startswith('.ai/project/current.md:') for row in errors))
+        self.assertFalse(any(row['code'] == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in payload['findings']))
+        self.write(name, literal + '\nchanged\n')
+        result = subprocess.run(command, capture_output=True, text=True)
+        payload = json.loads(result.stdout)
+        self.assertTrue(any(row['code'] == 'LOCAL_PATH_SCAN_INCOMPLETE' for row in payload['findings']))
+        self.assertTrue(any(row['code'] == 'LOCAL_PATH_LEAKAGE'
+                            and row.get('path', '').startswith(name + ':') for row in payload['findings']))
+
     def test_public_cli_accepts_absolute_index_through_project_root_alias(self):
         with tempfile.TemporaryDirectory() as directory:
             alias = self.root_alias(directory)

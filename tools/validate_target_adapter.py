@@ -100,7 +100,8 @@ from target_adapter_validation.context_catalogs import (
 from target_adapter_validation.baseline_claims import validate_baseline_claims
 from target_adapter_validation.validation_contract import validate_validation_contract
 from target_adapter_validation.local_paths import (
-    LOCAL_PATH_RE, UNIX_LOCAL_PATH_RE, WINDOWS_LOCAL_PATH_RE, scan_local_paths,
+    LOCAL_PATH_RE, UNIX_LOCAL_PATH_RE, WINDOWS_LOCAL_PATH_RE, scan_local_paths, historical_path_bindings,
+    MAX_HISTORY_FILE_BYTES,
 )
 from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.ai_infrastructure import (
@@ -840,6 +841,8 @@ class AdapterValidatorConfig:
     severity_overrides: dict[str, str] | None = None
     accepted_deviations: list[AcceptedDeviation] | None = None
     required_checker_coverage: dict[str, str] | None = None
+    source_sha256: str | None = None
+    historical_local_path_bindings: Any = ()
 
     def local_path_patterns(self) -> list[str]:
         return self.allow_local_path_patterns or []
@@ -4389,6 +4392,12 @@ class Validator:
             )
 
     def check_local_paths(self) -> None:
+        try:
+            historical = historical_path_bindings(self)
+        except (OSError, ValueError, UnicodeError, RecursionError, TypeError, AttributeError):
+            historical = {}
+            self.error("LOCAL_PATH_SCAN_INCOMPLETE", "historical local-path bindings are invalid, stale or unsafe",
+                       ".ai/assistant/validator-config.json")
         scan_paths = self.scan_text_files()
         target_string = str(self.target)
         for path in scan_paths:
@@ -4397,6 +4406,8 @@ class Validator:
             for failure in scan.failures:
                 self.error("LOCAL_PATH_SCAN_INCOMPLETE", failure, self.rel(path))
             for match in scan.matches:
+                if match.value in historical.get(self.rel(path), set()):
+                    continue
                 if any(allowed and allowed in match.value for allowed in self.allow_local_paths):
                     continue
                 location = self.rel(path) + (f":{match.line}" if match.line is not None else "")
@@ -6956,7 +6967,11 @@ def load_validator_config(
             return AdapterValidatorConfig(), findings
 
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        with path.open('rb') as config_stream:
+            raw_config = config_stream.read(MAX_HISTORY_FILE_BYTES + 1)
+        if len(raw_config) > MAX_HISTORY_FILE_BYTES:
+            raise OSError('validator config exceeds the bounded input limit')
+        data = json.loads(raw_config.decode("utf-8"))
     except FileNotFoundError:
         findings.append(
             Finding("warning", "VALIDATOR_CONFIG_MISSING", f"config file missing: {path}")
@@ -6995,6 +7010,7 @@ def load_validator_config(
         return AdapterValidatorConfig(source=path), findings
 
     config = AdapterValidatorConfig(source=path)
+    config.source_sha256 = hashlib.sha256(raw_config).hexdigest()
     schema_version = data.get("schema_version")
     if schema_version not in (None, 1):
         findings.append(
@@ -7008,6 +7024,7 @@ def load_validator_config(
         )
         return config, findings
 
+    config.historical_local_path_bindings = data.get("historical_local_path_bindings", ())
     config.allow_local_path_patterns = string_list_config(
         data, "allow_local_path_patterns", path, findings
     )

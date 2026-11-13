@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
+import shutil
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
@@ -32,6 +35,8 @@ from render_context_catalogs import (
     build_framework_catalog_contents,
 )
 from check_context_catalogs import semantic_operation_selector_failures  # noqa: E402
+import render_context_catalogs as source_catalogs
+import render_installed_context_catalogs as installed_catalogs
 
 
 def write_json(path: Path, value: object) -> None:
@@ -784,6 +789,129 @@ class ContextCatalogTests(unittest.TestCase):
             first["cache_delivery"]["capability_record"],
             ".ai/assistant/assistant-capabilities/codex.json",
         )
+
+
+class ContextCatalogHistoricalIsolationTests(unittest.TestCase):
+    def _fixture(self, base: Path) -> tuple[Path, Path, list[Path], Path]:
+        framework = base / "framework"
+        target = base / "target"
+        shutil.copytree(ROOT / "framework", framework)
+        shutil.copytree(framework, target / ".ai" / "framework")
+        assistant = target / ".ai" / "assistant"
+        project = target / ".ai" / "project"
+        for root in (assistant, project):
+            root.mkdir(parents=True, exist_ok=True)
+            (root / "README.md").write_text("# Current contour\n", encoding="utf-8")
+        for relative in ("task-evidence-lookalike", "nested/task-evidence"):
+            directory = assistant / relative
+            directory.mkdir(parents=True)
+            (directory / "README.md").write_text("# Current owner\n", encoding="utf-8")
+        directory = project / "task-evidence"
+        directory.mkdir()
+        (directory / "README.md").write_text("# Current project owner\n", encoding="utf-8")
+        historical = [assistant / "task-evidence/history/context-index.json",
+                      assistant / "task-evidence/history/nested/context-index.json"]
+        for index, item in enumerate(historical):
+            item.parent.mkdir(parents=True, exist_ok=True)
+            item.write_bytes(b"not a current index {PROJECT_NAME}\t \n" + bytes([48 + index]))
+            item.chmod(0o755 if index == 0 else 0o644)
+        stale = assistant / "orphan/context-index.json"
+        stale.parent.mkdir()
+        stale.write_text("{}\n", encoding="utf-8")
+        return target, framework, historical, stale
+
+    def _snapshot(self, paths: list[Path]) -> dict[Path, tuple[bytes, int]]:
+        return {path: (path.read_bytes(), path.stat().st_mode & 0o7777) for path in paths}
+
+    def _write(self, outputs: dict[Path, str]) -> None:
+        for path, content in outputs.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content.encode("utf-8"))
+
+    def _main(self, module: object, argv: list[str]) -> tuple[int, str]:
+        output = io.StringIO()
+        with patch.object(sys, "argv", argv), redirect_stdout(output), redirect_stderr(output):
+            result = module.main()
+        return result, output.getvalue()
+
+    def test_both_discovery_entrypoints_exclude_only_exact_assistant_task_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            target, framework, historical, stale = self._fixture(base)
+            assistant = target / ".ai" / "assistant"
+            current = [assistant / "task-evidence-lookalike/context-index.json",
+                       assistant / "nested/task-evidence/context-index.json",
+                       target / ".ai/project/task-evidence/context-index.json"]
+            for path in current:
+                path.write_text("{}\n", encoding="utf-8")
+            original = self._snapshot(historical)
+            with patch.multiple(source_catalogs, ROOT=base, FRAMEWORK=framework, TARGET=target):
+                discovered = {"source": source_catalogs.existing_generated_paths(),
+                              "installed": installed_catalogs.generated_paths(target)}
+                expected = installed_catalogs.expected_outputs(target)
+            for name, paths in discovered.items():
+                with self.subTest(entrypoint=name):
+                    self.assertTrue(set(historical).isdisjoint(paths))
+                    self.assertTrue(set(current).issubset(paths))
+                    self.assertIn(stale, paths)
+            self.assertTrue(set(historical).isdisjoint(expected))
+            self.assertTrue(set(current).issubset(expected))
+            self.assertEqual(self._snapshot(historical), original)
+
+    def test_uppercase_lookalike_is_current_in_its_own_portable_fixture(self) -> None:
+        # Upper/lowercase siblings cannot coexist on case-insensitive filesystems.
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            target = base / "target"
+            current = target / ".ai/assistant/Task-Evidence/context-index.json"
+            current.parent.mkdir(parents=True)
+            current.write_bytes(b"current stale index\n")
+            with patch.multiple(source_catalogs, FRAMEWORK=base / "framework", TARGET=target):
+                self.assertIn(current, source_catalogs.existing_generated_paths())
+                self.assertIn(current, installed_catalogs.generated_paths(target))
+
+    def test_source_main_removes_current_stale_indexes_but_preserves_inert_bytes_and_modes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            target, framework, historical, stale = self._fixture(base)
+            original = self._snapshot(historical)
+            with patch.multiple(source_catalogs, ROOT=base, FRAMEWORK=framework, TARGET=target):
+                self._write(source_catalogs.expected_outputs())
+                code, diagnostic = self._main(source_catalogs, ["render_context_catalogs.py", "--check"])
+                self.assertEqual(code, 1)
+                self.assertIn("unexpected " + stale.relative_to(base).as_posix(), diagnostic)
+                code, _ = self._main(source_catalogs, ["render_context_catalogs.py"])
+                self.assertEqual(code, 0)
+                self.assertFalse(stale.exists())
+                self.assertEqual(self._snapshot(historical), original)
+                code, _ = self._main(source_catalogs, ["render_context_catalogs.py", "--check"])
+                self.assertEqual(code, 0)
+                current = target / ".ai/assistant/task-evidence-lookalike/context-index.json"
+                current.write_text("not a current index\n", encoding="utf-8")
+                code, diagnostic = self._main(source_catalogs, ["render_context_catalogs.py", "--check"])
+                self.assertEqual(code, 1)
+                self.assertIn(current.relative_to(base).as_posix(), diagnostic)
+                self.assertEqual(self._snapshot(historical), original)
+
+    def test_installed_main_checks_history_only_state_and_still_rejects_current_stale_or_malformed_indexes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            target, _framework, historical, stale = self._fixture(base)
+            original = self._snapshot(historical)
+            self._write(installed_catalogs.expected_outputs(target))
+            argv = ["render_installed_context_catalogs.py", "--target", str(target)]
+            code, diagnostic = self._main(installed_catalogs, argv)
+            self.assertEqual(code, 1)
+            self.assertIn("unexpected " + stale.relative_to(target).as_posix(), diagnostic)
+            stale.unlink()  # Test precondition only, not a substitute installed writer.
+            code, _ = self._main(installed_catalogs, argv)
+            self.assertEqual(code, 0)
+            current = target / ".ai/assistant/task-evidence-lookalike/context-index.json"
+            current.write_text("not a current index\n", encoding="utf-8")
+            code, diagnostic = self._main(installed_catalogs, argv)
+            self.assertEqual(code, 1)
+            self.assertIn(current.relative_to(target).as_posix(), diagnostic)
+            self.assertEqual(self._snapshot(historical), original)
 
 
 if __name__ == "__main__":
