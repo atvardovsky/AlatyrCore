@@ -60,6 +60,91 @@ def policy_projection_failures(projected: Any, canonical: Any) -> list[str]:
     return [] if isinstance(canonical, dict) and projected == canonical else ["adapter policy must equal its canonical project owner; reconcile from the owner, never overwrite it from the mirror"]
 
 
+def execution_authority_failures(record: dict, execution: dict, contract: dict) -> list[str]:
+    """Shared pre/post execution checks; callers validate canonical shapes first."""
+    failures = []
+    if record["authorization"] != "authorized" or record["availability"] != "available" or not record["prerequisites_satisfied"]:
+        failures.append("execution requires current authorization, availability and satisfied prerequisites independently")
+    timing = {"before-implementation": "pre-implementation-authorized", "after-manual-review": "manual-review-complete", "explicit-request-only": "explicit-request-authorized"}
+    if execution["kind"] == "automated-test" and record["timing_disposition"] != timing[contract["timing"]]:
+        failures.append("execution timing disposition does not satisfy the target's review/authorization gate")
+    coordination = record["resource_coordination"]
+    if any(item["access"] != "read" for item in record["resources"]):
+        ref = coordination["evidence_ref"]
+        if (coordination["decision"] not in ("serialized", "isolated") or not isinstance(ref, str)
+                or not ref.strip() or is_placeholder(ref) or is_unresolved_value(ref)):
+            failures.append("executed resource writes require resolved serialization or verified-isolation evidence")
+        if coordination["decision"] == "isolated" and any(item["access"] != "read" and
+                (item["namespace"] is None or item["isolation"] != "verified-isolated") for item in record["resources"]):
+            failures.append("isolated execution requires verified, concrete writable namespaces")
+    return failures
+
+
+def review_execution_request(context, target: Path, brief: dict, action: dict) -> tuple[dict, dict[str, str]]:
+    """Use the same policy/evidence invariants as registered target validation."""
+    import hashlib
+    from cli_inputs import json_object
+    from request_values import request_path
+    bindings = {}
+    def read(path):
+        request_path(path)
+        result = context.read_bytes_result(target / path, max_bytes=1024 * 1024)
+        if result.value is None:
+            raise ValueError("required validation input is unavailable: " + path)
+        bindings[path] = hashlib.sha256(result.value).hexdigest()
+        return result.value
+    policy = json_object(read(REPAIR_POLICY), REPAIR_POLICY)
+    contract = TestExecutionContract()
+    failures = contract.policy_failures(policy)
+    if failures:
+        raise ValueError("; ".join(failures[:8]))
+    owner = policy["execution_contract"]["canonical_policy"]
+    canonical = json_object(read(owner), owner)
+    if policy_projection_failures(policy, canonical):
+        raise ValueError("testing policy differs from its canonical owner")
+    run = action["validation"]
+    command = next((row for row in policy["commands"] if row["id"] == run["command_id"]), None)
+    if command is None:
+        raise ValueError("validation command_id is not registered")
+    execution = command["execution"]
+    if (execution["environment"] not in {"none", "disposable"} or
+            not set(execution["effects"]) <= {"temporary-files", "disposable-db-writes"}):
+        raise ValueError("external/shared services, network, installation and service startup require their separately authorized project-owned route")
+    argv = command.get("argv")
+    if (not isinstance(argv, list) or not 1 <= len(argv) <= 128 or
+            any(not isinstance(part, str) or not part or len(part) > 4096 or "\0" in part for part in argv)):
+        raise ValueError("registered validation requires an explicit bounded argv vector")
+    path = run["execution_evidence"]
+    record = json_object(read(path), path)
+    failures = contract.evidence_failures(record, command, policy["execution_contract"])
+    if failures:
+        raise ValueError("; ".join(failures[:8]))
+    failures = execution_authority_failures(record, command["execution"], policy["execution_contract"])
+    if failures:
+        raise ValueError("; ".join(failures))
+    if (record["command_id"] != run["command_id"] or record["authorization_source"] != brief["source_ref"]
+            or record["policy_sha256"] != bindings[owner]):
+        raise ValueError("pre-run evidence must bind the current command, request source and canonical policy")
+    if (record["state"] not in {"authored", "discovered"} or record["claim"] != "none"
+            or record["counts"]["executed"] != 0 or record["result_artifact"] is not None):
+        raise ValueError("pre-run evidence cannot claim a future execution or reuse a prior passed run")
+    from target_validation_support import GitEvidenceView
+    if record["repository_revision"] != GitEvidenceView(target).resolve_ref("HEAD"):
+        raise ValueError("pre-run evidence repository revision is stale")
+    required = set(command["execution"].get("harness_inputs", []))
+    if not required <= record["input_sha256"].keys():
+        raise ValueError("pre-run evidence must bind every declared harness input")
+    if len(record["input_sha256"]) > 128:
+        raise ValueError("pre-run evidence exceeds 128 input bindings")
+    for selected, expected in record["input_sha256"].items():
+        if hashlib.sha256(read(selected)).hexdigest() != expected:
+            raise ValueError("pre-run evidence input is stale: " + selected)
+    if command["execution"]["suite_scope"] == "full" and run["scope"] != "broad":
+        raise ValueError("a full registered suite must consume the broad-run budget")
+    return {"command_id": command["id"], "argv": argv, "kind": command["execution"]["kind"],
+            "input_sha256": bindings, "authorization_provenance": "caller-declared-not-authenticated"}, bindings
+
+
 class TestExecutionContract:
     __test__ = False
 
@@ -214,12 +299,8 @@ class TestExecutionContract:
         if sorted(record["resources"], key=resource_key) != sorted(execution["resources"], key=resource_key):
             failures.append("observed resources must match the selected command contract")
         counts, files = record["counts"], record["files"]
-        coordination = record["resource_coordination"]
-        writes = any(resource["access"] != "read" for resource in record["resources"])
-        if counts["executed"] > 0 and writes and (coordination["decision"] not in ("serialized", "isolated") or not isinstance(coordination["evidence_ref"], str) or not coordination["evidence_ref"].strip() or is_placeholder(coordination["evidence_ref"]) or is_unresolved_value(coordination["evidence_ref"])):
-            failures.append("executed resource writes require resolved serialization or verified-isolation evidence")
-        if counts["executed"] > 0 and writes and coordination["decision"] == "isolated" and any(item["access"] != "read" and (item["namespace"] is None or item["isolation"] != "verified-isolated") for item in record["resources"]):
-            failures.append("isolated execution requires verified, concrete writable namespaces")
+        if counts["executed"] > 0:
+            failures.extend(execution_authority_failures(record, execution, execution_contract))
         if counts["executed"] != counts["passed"] + counts["failed"] or counts["discovered"] != counts["executed"] + counts["skipped"] + counts.get("not_run", 0):
             failures.append("test counts do not conserve discovered, executed, passed, failed, skipped and not_run cases")
         if record["proof_boundary"] != execution["proof_boundary"]:
@@ -230,11 +311,6 @@ class TestExecutionContract:
             failures.append("authorization source must be resolved, not an assertion of availability")
         if record["filter"] is not None and execution["filtering"]["state"] != "supported":
             failures.append("unsupported or unknown filtering cannot be used or silently broadened")
-        if counts["executed"] > 0 and (record["authorization"] != "authorized" or record["availability"] != "available" or not record["prerequisites_satisfied"]):
-            failures.append("execution requires current authorization, availability and satisfied prerequisites independently")
-        timing = {"before-implementation": "pre-implementation-authorized", "after-manual-review": "manual-review-complete", "explicit-request-only": "explicit-request-authorized"}
-        if execution["kind"] == "automated-test" and counts["executed"] > 0 and record["timing_disposition"] != timing[execution_contract["timing"]]:
-            failures.append("execution timing disposition does not satisfy the target's review/authorization gate")
         if record["state"] in {"authored", "discovered", "skipped", "blocked"} and (counts["executed"] or record["claim"] != "none"):
             failures.append("unexecuted or blocked states cannot claim executed proof")
         if record["state"] == "passed" and (counts["executed"] == 0 or counts["failed"]):

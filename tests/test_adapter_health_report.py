@@ -18,6 +18,22 @@ from target_adapter_validation.context import TargetRepositoryView
 
 
 class AdapterHealthReportTests(unittest.TestCase):
+    def test_health_reports_absent_and_disabled_guards_without_interception_claims(self):
+        from report_adapter_health import health_payload
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            payload = health_payload(target=target)
+            self.assertEqual(payload["guard_activation"]["state"], "absent")
+            policy = json.loads((ROOT / "templates/target/.ai/assistant/policies/lifecycle-hooks.json").read_text())
+            policy["enabled"] = False
+            path = target / ".ai/assistant/policies/lifecycle-hooks.json"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(policy))
+            payload = health_payload(target=target)
+            self.assertEqual(payload["guard_activation"]["state"], "disabled")
+            self.assertFalse(payload["guard_activation"]["native_interception_verified"])
+            self.assertIn("Guard activation: disabled", render_text(payload))
+
     def test_repair_plan_names_exact_missing_bindings_without_waiving_findings(self):
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)

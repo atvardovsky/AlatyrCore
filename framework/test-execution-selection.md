@@ -70,6 +70,27 @@ For costly/repeated work, use the conditional
 [delivery-efficiency contract](test-delivery-efficiency.md). It reuses the same
 request/history and review entry point; null controls add no reads or bootstrap.
 
+### Registered Launch Gate
+
+The optional `lifecycle-checkpoint run-validation` route checks the bound current
+request and delivery budget before launching one exact target-owned command.
+Select `validation.execution_evidence`: an authored/discovered execution record
+with no execution claim, current authorization source, policy/input hashes and
+target timing, prerequisites and resource coordination. The command must declare
+explicit `argv`; supplied arguments must match exactly. No shell parsing,
+implicit filters, child-command inference or automatic retries are provided.
+Full-suite commands consume the broad-run budget. Retain selected inputs in the
+context baseline; relevant changes block launch or invalidate its result.
+Only none/disposable environments and temporary/disposable-database effects use
+this route. Network, shared services, installs and service startup retain separate
+project-owned authorization and guarded execution.
+
+This explicit launcher is not automatic interception. Hosts/wrappers must select
+it; bypassed shell calls are not guarded. Caller declarations do not authenticate
+human approval. Target commands retain fixture isolation, timeouts and descendant
+cleanup. A child exit is not test-case accounting, task acceptance or a new
+history receipt. Record the attempt using existing evidence/history controls.
+
 ## Current And Historical Evidence
 
 Schema 4 optionally selects `historical_evidence_records` as at most 64 exact

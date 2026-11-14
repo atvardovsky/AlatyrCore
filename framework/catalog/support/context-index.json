@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1593,
-      "content_digest": "sha256:1a3199c15762eeeefeb8ab22eac9ea379a8d99ae0f03a70e457f20a5dfed1d22"
+      "estimated_words": 1650,
+      "content_digest": "sha256:33f64b22ead6c9315682f2f5e9895996b3d680a12dfe11bfeb558000b952eb37"
     },
     {
       "id": "framework.support.test-delivery-efficiency-md",
@@ -202,8 +202,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1492,
-      "content_digest": "sha256:c5b82d611723a90eeb538eada77c86bd7f836f4ee407634d66a8042a1a060e46"
+      "estimated_words": 1658,
+      "content_digest": "sha256:85f4639b10318eddec16c1eae16dbc9aa6575d304950ec8b4ede26993ed0b190"
     },
     {
       "id": "framework.support.test-first-development-md",

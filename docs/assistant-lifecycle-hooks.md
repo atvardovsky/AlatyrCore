@@ -10,7 +10,10 @@ This delivers the existing
 [task-state](../framework/task-state-delivery.md),
 [authorization](../framework/action-authorization.md) and
 [continuity](../framework/session-continuity.md) rules, not a new task registry,
-executor, security boundary or source of approval.
+security boundary or source of approval. Callbacks do not execute project work.
+The separately selected `run-validation` action launches one exact registered
+command only after its bound request, testing and delivery checks pass; it is
+not automatic shell interception or a general test orchestrator.
 
 ## Adoption
 
@@ -322,7 +325,7 @@ action classification and returns a neutral diagnostic, not an interception
 claim; verify callback arguments before activation. None of these transport
 statuses establishes acceptance.
 
-Recognized non-event commands (`review`, `bind`, `status`, `checkpoint`, `setup-plan`) retain
+Recognized non-event commands (`review`, `bind`, `status`, `checkpoint`, `setup-plan`, `guard-status`, `run-validation`) retain
 ordinary parser errors; an invalid `--native-output` flag cannot convert them
 into successful neutral callback transport.
 

@@ -1824,10 +1824,10 @@
         "words": 4768
       },
       "full_reference_union": {
-        "bytes": 172400,
-        "characters": 172400,
+        "bytes": 173747,
+        "characters": 173747,
         "declared_files": 21,
-        "estimated_tokens_4_chars": 43100,
+        "estimated_tokens_4_chars": 43437,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/testing-guidance.md",
@@ -1836,7 +1836,7 @@
           ".ai/framework/test-delivery-efficiency.md",
           ".ai/framework/repair-qualification.md"
         ],
-        "portable_words": 6722,
+        "portable_words": 6888,
         "resolved_files": 21,
         "resolved_paths": [
           ".ai/assistant/operation-catalog.json",
@@ -1881,9 +1881,9 @@
         ],
         "target_words": 10842,
         "unresolved_references": [],
-        "words": 17564
+        "words": 17730
       },
-      "word_reduction_percent": 72.9
+      "word_reduction_percent": 73.1
     },
     "workspace-mode": {
       "compact": {
@@ -2967,10 +2967,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 885487,
-        "characters": 885487,
+        "bytes": 887229,
+        "characters": 887229,
         "declared_files": 70,
-        "estimated_tokens_4_chars": 221372,
+        "estimated_tokens_4_chars": 221808,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -3044,7 +3044,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 108610,
+        "portable_words": 108833,
         "resolved_files": 70,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -3121,7 +3121,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 108610
+        "words": 108833
       },
       "selected_route": {
         "bytes": 36319,

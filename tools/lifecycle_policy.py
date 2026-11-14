@@ -105,3 +105,27 @@ def parse_policy(raw: bytes) -> dict:
     if failures:
         raise ValueError("; ".join(failures))
     return policy
+
+
+def enforcement_status(raw: bytes | None) -> dict:
+    """Report configuration and recorded evidence, never observed interception."""
+    result = {"state": "absent", "policy_enabled": False, "provider": "procedural",
+              "mode": "not-configured", "recorded_native_evidence": "unverified",
+              "request_guard_required": False, "native_interception_verified": False,
+              "automatic_command_interception_verified": False,
+              "validation_launch_guard": "explicit-run-validation-only"}
+    if raw is None:
+        return result
+    try:
+        policy = parse_policy(raw)
+    except (ValueError, UnicodeError, RecursionError) as exc:
+        return {**result, "state": "invalid", "diagnostic": str(exc)[:500]}
+    result.update(policy_enabled=policy["enabled"], provider=policy["provider"],
+                  mode=policy["mode"], recorded_native_evidence=policy["native_evidence"]["state"],
+                  request_guard_required=policy.get("request_guard", {}).get("required", False))
+    result["state"] = ("disabled" if not policy["enabled"] else
+                       "procedural-only" if policy["provider"] == "procedural" else
+                       "observe-only" if policy["mode"] == "observe" else
+                       "checkpoint-configured" if policy["native_evidence"]["state"] == "observed" else
+                       "checkpoint-unverified")
+    return result

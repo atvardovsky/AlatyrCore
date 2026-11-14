@@ -28,8 +28,12 @@ def parse_control(value: object, outcome_ids: set[str]) -> dict:
 
 
 def parse_validation(value: object) -> dict:
-    run = fields(value, {"command_id", "scope", "estimated_seconds", "diagnosis_proof_id",
-                         "independent_review_proof_id"}, "validation")
+    required = {"command_id", "scope", "estimated_seconds", "diagnosis_proof_id", "independent_review_proof_id"}
+    if isinstance(value, dict) and "execution_evidence" in value:
+        required.add("execution_evidence")
+    run = fields(value, required, "validation")
+    if "execution_evidence" in run:
+        request_path(run["execution_evidence"])
     text(run["command_id"], "validation.command_id")
     if not isinstance(run["scope"], str) or run["scope"] not in {"focused", "broad"}:
         raise ValueError("validation.scope must be focused or broad")

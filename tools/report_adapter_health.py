@@ -134,6 +134,13 @@ def health_payload(
         required_capabilities=required_capabilities,
     )
     payload["capability_advisory"] = advisory
+    from lifecycle_policy import POLICY, MAX_INPUT_BYTES, enforcement_status
+    from target_adapter_validation.context import TargetFileState, TargetRepositoryView
+    guard_view = TargetRepositoryView(target.resolve())
+    guard_read = guard_view.read_bytes_result(target.resolve() / POLICY, max_bytes=MAX_INPUT_BYTES)
+    payload["guard_activation"] = enforcement_status(guard_read.value)
+    if (guard_read.error and guard_read.status.state != TargetFileState.MISSING) or guard_view.finalize():
+        payload["guard_activation"].update(state="unknown", diagnostic="Lifecycle policy is unreadable or changed during inspection.")
     payload["checkout_context"] = validator.git.checkout_context()
     if readiness is not None:
         payload["initialization_readiness"] = readiness
@@ -204,6 +211,7 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
 
     lines = [
         f"Alatyr adapter health: {display(health.get('state'))}",
+        "Guard activation: " + display(payload.get("guard_activation", {}).get("state")) + "; configuration is not verified interception",
         f"Installation state: {display(payload.get('installation_state'))}",
         (
             "Health layers: "

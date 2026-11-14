@@ -788,8 +788,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1791,
-      "content_digest": "sha256:0d7f08ea67159c3d1e44d0ef872b6ce3737ea07f56c34b4d31419917f41492f7"
+      "estimated_words": 1802,
+      "content_digest": "sha256:ee306d9133a1ba20034b8be26307ad031299e0507d87cb6d16ed2c10b62c1b64"
     },
     {
       "id": "assistant.content.templates-post-update-message-md",
@@ -810,8 +810,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1754,
-      "content_digest": "sha256:6480e1a8021dd1b813edb42478b2ed8ac6f3d91a11a5c0c48708dada7765916c"
+      "estimated_words": 1769,
+      "content_digest": "sha256:8689fcffae755d94b853bfed4423e0d04ebefc0d6ee118bdb8c246526188e1c3"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",

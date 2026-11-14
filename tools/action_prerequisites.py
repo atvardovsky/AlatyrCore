@@ -30,11 +30,13 @@ def parse_terminal_control(value: object, brief: dict) -> dict:
             raise ValueError("terminal prerequisite IDs must be unique")
         seen.add(rule["id"])
         phase = rule["phase"]
-        if not isinstance(phase, str) or phase not in {"commit", "publish", "live-external"}:
-            raise ValueError("terminal prerequisite requires commit, publish or live-external")
-        if phase not in brief["authorized_phases"]:
+        if not isinstance(phase, str) or phase not in {"complete", "commit", "publish", "live-external"}:
+            raise ValueError("terminal prerequisite requires complete, commit, publish or live-external")
+        if ("inspect" if phase == "complete" else phase) not in brief["authorized_phases"]:
             raise ValueError("terminal prerequisite phase exceeds the current request ceiling")
-        effects = strings(rule["effects"], "terminal prerequisite.effects", minimum=1)
+        effects = strings(rule["effects"], "terminal prerequisite.effects", minimum=0 if phase == "complete" else 1)
+        if phase == "complete" and effects:
+            raise ValueError("completion prerequisites must not declare external effects")
         if not set(effects) <= set(brief["effect_scope"]):
             raise ValueError("terminal prerequisite effects exceed the current request scope")
         integer(rule["max_age_seconds"], "terminal prerequisite.max_age_seconds", 1, 86400)
@@ -61,10 +63,12 @@ def terminal_prerequisite_failures(context, target, brief: dict, action: dict,
                                    model: dict, inputs: dict, *, now: float | None = None,
                                    deadlines: list[tuple[float, float]] | None = None) -> list[str]:
     control = brief.get("terminal_control")
-    if control is None or action["kind"] != "work" or action["phase"] == "inspect":
+    completing = action["kind"] == "complete"
+    if control is None or not completing and (action["kind"] != "work" or action["phase"] == "inspect"):
         return []
-    selected = [rule for rule in control["rules"] if rule["phase"] == action["phase"]
-                and set(rule["effects"]) & set(action["effects"])]
+    selected = [rule for rule in control["rules"] if
+                (completing and rule["phase"] == "complete") or
+                (not completing and rule["phase"] == action["phase"] and set(rule["effects"]) & set(action["effects"]))]
     if not selected:
         return []
     from request_focus import prerequisite_closure

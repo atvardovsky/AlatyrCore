@@ -643,7 +643,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2278,
-      "content_digest": "sha256:9244fd6fd0b330ebaf829efd407cc7b4a6577cff6f18e9eed0a804c22869d739"
+      "content_digest": "sha256:bd9bc4f4c6b3785bcdf82b43cf7514510e6e8fbea5f2ba92c5b42f6c34d655f6"
     },
     {
       "id": "assistant.section.tools",

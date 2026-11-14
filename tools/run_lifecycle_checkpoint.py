@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deliver optional lifecycle checkpoints without executing project work."""
+"""Deliver lifecycle checks or explicitly launch one checked registered command."""
 
 from __future__ import annotations
 
@@ -89,6 +89,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Read-only declared request/action check; bounded action JSON on stdin, no hook adoption required.")
     status = actions.add_parser("status", allow_abbrev=False)
     status.add_argument("--session-id", required=True, action=Once)
+    actions.add_parser("guard-status", allow_abbrev=False)
+    run = actions.add_parser("run-validation", allow_abbrev=False)
+    run.add_argument("command_argv", nargs=argparse.REMAINDER,
+        help="Exact registered argv after --; action/session JSON is read from stdin.")
     setup = actions.add_parser("setup-plan", allow_abbrev=False)
     setup.add_argument("--installation-kind", choices=("new", "update"), required=True, action=Once)
     setup.add_argument("--native-setup-approved", action="store_true")
@@ -106,7 +110,7 @@ def main() -> int:
         with contextlib.redirect_stderr(parser_errors) if native_requested else contextlib.nullcontext():
             args = build_parser().parse_args(namespace=partial)
     except SystemExit as exc:
-        ordinary = getattr(partial, "action", None) in {"bind", "review", "status", "checkpoint", "setup-plan"}
+        ordinary = getattr(partial, "action", None) in {"bind", "review", "status", "checkpoint", "setup-plan", "guard-status", "run-validation"}
         if not native_requested or exc.code != 2 or ordinary:
             if native_requested and ordinary:
                 print(parser_errors.getvalue(), file=sys.stderr, end="")
@@ -123,7 +127,13 @@ def main() -> int:
             assert_source_root(target)
             if args.provider != "procedural" or args.action == "setup-plan" or getattr(args, "native_output", False):
                 raise ValueError("source contour supports procedural events only, not native setup/output")
-        if args.action == "setup-plan":
+        if args.action == "guard-status":
+            from lifecycle_policy import POLICY, enforcement_status
+            from support_write_transaction import read_output
+            result = enforcement_status(read_output(target, target / POLICY, max_bytes=MAX_INPUT_BYTES))
+            print(json.dumps(result, sort_keys=True))
+            return 1 if result["state"] == "invalid" else 0
+        elif args.action == "setup-plan":
             from lifecycle_setup import setup_plan
             result = setup_plan(target, args.provider, args.installation_kind,
                 native_setup_approved=args.native_setup_approved, client_version=args.client_version,
@@ -146,7 +156,13 @@ def main() -> int:
             if len(raw) > MAX_INPUT_BYTES:
                 raise ValueError("lifecycle event exceeds 64 KiB")
             payload = json_object(raw, "native lifecycle event")
-            if args.action == "review":
+            if args.action == "run-validation":
+                if args.source_contour:
+                    raise ValueError("registered validation launch requires a target-owned testing policy, not source self-installation")
+                from guarded_validation import run_validation
+                argv = args.command_argv[1:] if args.command_argv[:1] == ["--"] else args.command_argv
+                result = run_validation(target, args.provider, payload, argv)
+            elif args.action == "review":
                 result = review_request(target, args.request_brief, payload, **options)
             else:
                 event, payload = normalize("procedural" if args.action == "checkpoint" else args.provider, args.event, payload)

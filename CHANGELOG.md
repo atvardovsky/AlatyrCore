@@ -4,6 +4,20 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.142 - 2026-11-15
+
+- Add opt-in exact registered validation launches through the existing lifecycle
+  checkpoint: current request, authorization/timing, input identity and delivery
+  budgets are checked before starting the child. No shell guessing or retries.
+- Share pre/post execution permission and resource checks; keep future execution
+  claims, stale inputs and changed arguments outside accepted launch evidence.
+- Expose guard activation in adapter health and installation/update reporting;
+  configuration never proves native interception and existing opt-outs remain.
+- Compose optional project-owned completion checks with native outcome closure
+  through existing terminal prerequisites, without a second task/acceptance model.
+- Advance adapter schema to 117 and target templates to 137. Defaults, context
+  ceilings, project test timing and independent final acceptance remain unchanged.
+
 ## 0.1.0-alpha.141 - 2026-11-13
 
 - Add bounded file/hash/exact-literal historical local-path bindings, preserving

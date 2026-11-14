@@ -82,6 +82,26 @@ class TerminalPrerequisiteTests(ActiveTaskFixture):
         self.assertEqual(code, 0, value)
         self.assertFalse(value["native_interception_verified"])
 
+    def test_completion_composes_project_receipt_with_native_outcome_checks(self):
+        rule = self.brief["terminal_control"]["rules"][0]
+        rule.update(phase="complete", effects=[])
+        self.action = action_fixture(kind="complete", phase="inspect", paths=[])
+        self.save()
+        self.close()
+        self.assertEqual(self.failures(), [])
+        code, result = self.delegate()
+        self.assertEqual(code, 0, result)
+        self.receipt.update(result="failed", exit_code=1)
+        self.save_receipt()
+        code, result = self.delegate()
+        self.assertNotEqual(code, 0, result)
+        self.assertIn("terminal prerequisite", result["reason"])
+
+    def test_completion_prerequisites_cannot_grant_external_effects(self):
+        self.brief["terminal_control"]["rules"][0]["phase"] = "complete"
+        with self.assertRaisesRegex(ValueError, "external effects"):
+            parse_brief(json.dumps(self.brief).encode())
+
     def test_running_failed_interrupted_and_inconsistent_results_block_publication(self):
         original = copy.deepcopy(self.receipt)
         for result, code in (("running", None), ("failed", 1), ("interrupted", None), ("passed", None),

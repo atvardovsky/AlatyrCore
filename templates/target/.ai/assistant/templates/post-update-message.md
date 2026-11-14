@@ -39,6 +39,8 @@ Lifecycle delivery and enforcement:
 `{DISABLED_PROCEDURAL_OR_NATIVE_WITH_EXERCISED_INTERCEPTION_EVIDENCE}`
 Preserve opt-outs. Configuration, a proposed setup and successful validation
 do not establish native interception.
+Report health `guard_activation` or `lifecycle-checkpoint guard-status`;
+explicit registered-command launch protection is separate from automatic hooks.
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.

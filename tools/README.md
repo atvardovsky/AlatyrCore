@@ -215,6 +215,25 @@ Optional schema-3 `terminal_control` uses the same review with canonical termina
 run receipts, source-bound candidate/environment inputs and original action
 digest. Running, failed, stale or foreign prerequisites block matched external
 actions, not inspection. See [terminal prerequisites](../docs/assistant-lifecycle-hooks.md#terminal-prerequisites).
+
+`lifecycle-checkpoint --target <target> guard-status` reports actual policy state;
+doctor/status also expose `guard_activation`. These distinguish disabled and
+procedural/observe delivery from configured checkpoints, never prove interception.
+
+Opt-in `lifecycle-checkpoint --target <target> run-validation -- <exact argv>`
+reads the usual session/action JSON from stdin. The action must select adopted
+delivery controls and `validation.execution_evidence`, a current authored or
+discovered test-execution record. Retain its policy, selected input and request
+bindings in the session baseline. The selected command's canonical `argv` must
+match exactly; no implicit shell, appended filters or default suite is chosen.
+Permission/timing, freshness and retry-budget failures prevent child launch.
+Declared network, shared/external environments, installs and service startup are
+rejected; use their separately authorized project-owned routes instead.
+Child output goes to stderr; stdout is a gate/result JSON, not test acceptance.
+Target runners keep cleanup/timeouts; this helper adds no retries or history
+receipts. Omitted launch controls leave ordinary commands unchanged.
+Completion prerequisites may select `phase: complete` with empty effects to
+require a target-owned original-outcome gate in addition to native closure.
 Setup plans expose `enforcement_status`, including existing/proposed/absent
 policy origin; none establishes native interception or changes opt-outs.
 

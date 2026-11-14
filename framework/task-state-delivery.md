@@ -115,6 +115,12 @@ ordered nonfuture timestamps, exact current inputs and intact result artifact.
 Running, failed, interrupted, waived or unrelated evidence cannot unlock work.
 Select by phase/effect, not convenient outcome subsets. Polling is not completion.
 
+Optional `phase: complete` rules use empty effects and apply to completion review,
+not inspection or answers. Use them to compose a target-owned outcome checker
+with native closure: its registered command must fail for partial/failed outcomes
+and retain a canonical receipt/result. Both gates must pass; a successful generic
+suite cannot replace the original case or supply semantic authority.
+
 Retain consumed artifacts in the baseline and original `brief_sha256` in mutation
 actions. Rebinding may refresh receipt selection/hashes, never adopted policy;
 queued actions cannot inherit refreshed candidates. Null/absent control reads no

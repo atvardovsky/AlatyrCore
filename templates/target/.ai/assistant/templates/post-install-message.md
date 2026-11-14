@@ -15,6 +15,8 @@ Alatyr Core is installed for `{PROJECT_NAME}`.
 Installation state: `{SCAFFOLDED_STAGED_ACCEPTED_DEGRADED_OR_INVALID}`
 Adapter health: `{READY_ATTENTION_BLOCKED_OR_UNVERIFIED}`
 Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+Guard activation: `{OBSERVED_GUARD_STATUS_OR_UNAVAILABLE}`
+Use health `guard_activation`; configuration is not exercised interception.
 
 `scaffolded`, `staged`, and `degraded` installations are not `ready`.
 Only `accepted` installation state with current strict validation can be

@@ -7,7 +7,7 @@ import hashlib
 from pathlib import Path
 
 from lifecycle_checkpoints import EVENTS, NATIVE_EVENTS, ROOT, decision
-from lifecycle_policy import POLICY, PROVIDERS, identifier, load_policy
+from lifecycle_policy import POLICY, PROVIDERS, enforcement_status, identifier, load_policy
 from request_brief import request_path
 from support_write_transaction import safe_output
 
@@ -55,6 +55,7 @@ def setup_plan(target: Path, provider: str, installation_kind: str, *,
         limitations=["A policy or plan does not prove client installation, trust, loading or interception.",
                      "No plugins, global settings, automatic continuation, commits or pushes are performed."])
     if existing is not None:
+        result["enforcement_status"].update(enforcement_status(raw))
         result.update(policy_action="preserve", policy_candidate=existing,
             setup_disposition="existing-policy-preserved",
             required_actions=["Retain policy bytes, native definitions and trust choices; use an explicitly scoped adoption change for new setup."])

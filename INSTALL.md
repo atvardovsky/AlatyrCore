@@ -555,6 +555,9 @@ New installs use enabled procedural/observe [lifecycle delivery](docs/assistant-
 Before projection, use its read-only `setup-plan` for approved local setup:
 unverified evidence, zero reminders, native trust and procedural fallback.
 Retain update settings/absence; policy demonstrates no interception.
+Report `lifecycle-checkpoint guard-status` (or health `guard_activation`) after
+installation/update. Distinguish absent, disabled, procedural, observe-only and
+configured checkpoints; preserve opt-outs and never infer exercised interception.
 
 When delegation is enabled, keep the critical path primary-owned and dispatch
 bounded independent sidecars under target policy. Record per-surface freshness,

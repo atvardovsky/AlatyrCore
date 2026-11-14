@@ -264,6 +264,7 @@ def review_request(target: Path, brief_path: str, action: object, *,
     delivery_inputs = {}
     delivery_review = None
     delivery_history = None
+    validation_command = None
     control = brief.get("delivery_control")
     if control is not None:
         from delivery_control import MAX_HISTORY_BYTES, delivery_failures, parse_history
@@ -304,6 +305,15 @@ def review_request(target: Path, brief_path: str, action: object, *,
         failures.append("validation preflight requires an adopted delivery_control")
     elif history_anchor is not None:
         failures.append("cannot drop an anchored delivery control within the same request")
+    validation = selected_action.get("validation")
+    if control is not None and validation is not None and "execution_evidence" in validation:
+        from test_execution_contract import review_execution_request
+        try:
+            validation_command, execution_inputs = review_execution_request(
+                selected["request_contexts"][0], target, brief, selected_action)
+            selected["checkpoint_inputs"].update(execution_inputs)
+        except (OSError, ValueError, RecursionError) as exc:
+            failures.append("validation launch: " + str(exc))
     if selected["task_state"] == "closed" and selected_action["kind"] == "work":
         failures.append("closed task cannot reopen execution through request review")
     if retained is not None and not task_context_matches(retained, selected, policy_sha256):
@@ -337,6 +347,10 @@ def review_request(target: Path, brief_path: str, action: object, *,
         request_brief={"path": brief_path, "sha256": digest(raw)},
         focus_control=brief.get("focus_control"), evidence_readiness=health, request_progress=progress,
         request_provenance="declarative-unverified", execution_interception="not-performed")
+    if validation_command is not None:
+        validation_command["input_sha256"].update(selected["checkpoint_inputs"])
+        validation_command["input_sha256"].update({brief_path: digest(raw), POLICY: digest(raw_at(target, POLICY))})
+        result["validation_command"] = validation_command
     if terminal_deadlines:
         result["terminal_valid_after"] = max(row[0] for row in terminal_deadlines)
         result["terminal_valid_until"] = min(row[1] for row in terminal_deadlines)
