@@ -618,8 +618,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 1461,
-      "content_digest": "sha256:5629bf96947d92e78cd711c47a5a2da2a6a83aea72a31d6523c31440c67aef1a"
+      "estimated_words": 1500,
+      "content_digest": "sha256:4fd62ac638b5b7a54ef722ef9a331d63ab7d8652d7295264b763794c7b342267"
     },
     {
       "id": "assistant.content.flows-support-generation-flow-md",

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resolved Alatyr worker model selection",
+  "$comment": "Relative ranks and suitability are target declarations. The shared resolver also enforces assignment bindings, cheapest eligible choice and observed identity; no price or quality oracle is implied.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "packet_id", "node_id", "capability_sha256", "task_class", "options", "exclusions", "selected_option", "selection_mode", "rationale", "max_cost_rank", "observed"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "packet_id": {"$ref": "#/definitions/text"},
+    "node_id": {"$ref": "#/definitions/text"},
+    "capability_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "task_class": {"$ref": "#/definitions/task"},
+    "options": {"type": "array", "minItems": 1, "maxItems": 16, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "model", "reasoning", "cost_rank", "eligible_for", "availability", "authorized", "evidence_ref", "selection_modes"],
+      "properties": {
+        "id": {"$ref": "#/definitions/text"}, "model": {"$ref": "#/definitions/text"},
+        "reasoning": {"$ref": "#/definitions/text"}, "cost_rank": {"$ref": "#/definitions/rank"},
+        "eligible_for": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/task"}},
+        "availability": {"enum": ["available", "unavailable", "unknown"]}, "authorized": {"type": "boolean"},
+        "evidence_ref": {"$ref": "#/definitions/text"},
+        "selection_modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/mode"}}
+      }
+    }},
+    "exclusions": {"type": "array", "maxItems": 16, "items": {
+      "type": "object", "additionalProperties": false, "required": ["option_id", "reason", "evidence_ref"],
+      "properties": {"option_id": {"$ref": "#/definitions/text"}, "reason": {"enum": ["observed-quality-failure", "policy-restriction", "runtime-unavailable"]}, "evidence_ref": {"$ref": "#/definitions/text"}}
+    }},
+    "selected_option": {"anyOf": [{"type": "null"}, {"$ref": "#/definitions/text"}]},
+    "selection_mode": {"$ref": "#/definitions/mode"}, "rationale": {"$ref": "#/definitions/text"},
+    "max_cost_rank": {"anyOf": [{"type": "null"}, {"$ref": "#/definitions/rank"}]},
+    "observed": {"type": "object", "additionalProperties": false, "required": ["state", "model", "reasoning", "evidence_ref"],
+      "properties": {"state": {"enum": ["verified", "unverified"]},
+        "model": {"anyOf": [{"type": "null"}, {"$ref": "#/definitions/text"}]},
+        "reasoning": {"anyOf": [{"type": "null"}, {"$ref": "#/definitions/text"}]},
+        "evidence_ref": {"anyOf": [{"type": "null"}, {"$ref": "#/definitions/text"}]}}
+    }
+  },
+  "definitions": {
+    "text": {"type": "string", "minLength": 1, "maxLength": 2048},
+    "rank": {"type": "integer", "minimum": 0, "maximum": 10000},
+    "task": {"enum": ["mechanical", "bounded-code", "semantic"]},
+    "mode": {"enum": ["explicit-model", "inherit", "client-default"]}
+  }
+}

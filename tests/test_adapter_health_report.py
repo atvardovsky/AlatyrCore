@@ -24,6 +24,8 @@ class AdapterHealthReportTests(unittest.TestCase):
             target = Path(directory)
             payload = health_payload(target=target)
             self.assertEqual(payload["guard_activation"]["state"], "absent")
+            self.assertEqual(payload["adapter_applicability"]["state"], "not-detected")
+            self.assertFalse(payload["adapter_applicability"]["automatic_activation"])
             policy = json.loads((ROOT / "templates/target/.ai/assistant/policies/lifecycle-hooks.json").read_text())
             policy["enabled"] = False
             path = target / ".ai/assistant/policies/lifecycle-hooks.json"
@@ -33,6 +35,12 @@ class AdapterHealthReportTests(unittest.TestCase):
             self.assertEqual(payload["guard_activation"]["state"], "disabled")
             self.assertFalse(payload["guard_activation"]["native_interception_verified"])
             self.assertIn("Guard activation: disabled", render_text(payload))
+            manifest = target / ".ai/alatyr.yaml"
+            manifest.write_text("schema_version: 1\n")
+            payload = health_payload(target=target)
+            self.assertEqual(payload["adapter_applicability"]["state"], "adapter-present")
+            self.assertEqual(payload["adapter_applicability"]["guard_state"], "disabled")
+            self.assertIn("does not prove intentional exclusion", payload["adapter_applicability"]["limitation"])
 
     def test_repair_plan_names_exact_missing_bindings_without_waiving_findings(self):
         with tempfile.TemporaryDirectory() as directory:

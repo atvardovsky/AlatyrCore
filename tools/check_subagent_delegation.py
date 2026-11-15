@@ -607,6 +607,7 @@ def main() -> int:
             load_object(EXECUTION_TREE_SCHEMA),
             load_object(WORKER_RESULT_SCHEMA),
             load_object(SINGLE_RECEIPT_SCHEMA),
+            load_object(ROOT / "schemas/alatyr-worker-model-selection.schema.json"),
             load_object(BRANCH_ENVELOPE_SCHEMA),
             load_object(BRANCH_CHECKPOINT_SCHEMA),
         ]

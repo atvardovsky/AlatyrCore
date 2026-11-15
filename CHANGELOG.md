@@ -4,6 +4,26 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.143 - 2026-11-15
+
+- Add provider-neutral economical model/effort selection with target-declared
+  suitability, verified availability, evidence-backed exclusions and cost ranks.
+  Both delegation receipt tiers enforce the same hash-bound selection contract;
+  source policy schema 9 requires it. Observed usage stays separate from intent.
+- Bind session context to local Git branch/HEAD as well as selected bytes,
+  including linked worktrees and unborn branches; preserve non-Git fast paths
+  and separate content reuse from control freshness.
+- Add bounded read-only qualification review using existing delivery receipts.
+  Current, retained, failed, contradictory and uncovered cases stay distinct;
+  retained passes never become fresh acceptance.
+- Reuse receipt-backed prerequisites for exact registered validation commands,
+  blocking a child until target-native harness readiness is current and passed.
+- Report adapter presence separately from hook activation and adoption intent;
+  installation/update guidance preserves explicit opt-outs and worktree scope.
+- Advance adapter schema to 118 and template version to 138. Existing procedural
+  delegation evidence stays explicitly legacy; no global model settings, native
+  hooks, test-policy adoption, execution permission or bootstrap ceiling changes.
+
 ## 0.1.0-alpha.142 - 2026-11-15
 
 - Add opt-in exact registered validation launches through the existing lifecycle

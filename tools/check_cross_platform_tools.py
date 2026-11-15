@@ -42,6 +42,8 @@ VERIFY_UPGRADE_INVOCATIONS = (
 )
 EXPECTED_COMMANDS = {
     "project-lookup",
+    "plan-worker-model",
+    "review-qualification",
     "source-adoption",
     "test-input-state",
     "code-relationships",

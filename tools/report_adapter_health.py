@@ -150,6 +150,14 @@ def health_payload(
         payload["placeholder_validation"]["acceptance_eligible"] = False
     payload["repair_plan"] = repair_plan(validator.context, payload.get("findings", []))
     payload["tooling_comparison"] = tooling_comparison(validator.context, Path(__file__).resolve().parents[1])
+    manifest_read = validator.context.read_bytes_result(target.resolve() / ".ai/alatyr.yaml", max_bytes=256 * 1024)
+    payload["adapter_applicability"] = {
+        "state": "not-detected" if manifest_read.status.state == TargetFileState.MISSING else
+                 "adapter-present" if manifest_read.value is not None else "unverified",
+        "guard_state": payload["guard_activation"]["state"],
+        "tooling_baseline": payload["tooling_comparison"]["state"],
+        "scope": "current-worktree-only", "automatic_activation": False,
+        "limitation": "Missing support does not prove intentional exclusion; disabled guards do not disable the whole adapter. Confirm target-owned branch/mode intent; never copy another worktree's adapter implicitly."}
     if include_work_overview:
         payload["work_overview"] = work_overview(validator.context)
     if task_view is not None:
@@ -213,6 +221,7 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         f"Alatyr adapter health: {display(health.get('state'))}",
         "Guard activation: " + display(payload.get("guard_activation", {}).get("state")) + "; configuration is not verified interception",
         f"Installation state: {display(payload.get('installation_state'))}",
+        "Adapter applicability: " + display(payload.get("adapter_applicability", {}).get("state")) + "; current worktree only",
         (
             "Health layers: "
             f"installation={display(layers.get('installation', {}).get('state'))} "

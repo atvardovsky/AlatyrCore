@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 
-POLICY_SCHEMA_VERSION = 8
+POLICY_SCHEMA_VERSION = 9
 CAPABILITY_SCHEMA_VERSION = 3
 PACKET_SCHEMA_VERSION = 6
 EXECUTION_TREE_SCHEMA_VERSION = 3
@@ -214,6 +214,7 @@ PRIMARY_OWNED_ACTIONS = {
     "live-external",
 }
 POLICY_FIELDS = {
+    "model_selection",
     "schema_version",
     "policy_kind",
     "scope",
@@ -917,6 +918,7 @@ def validate_source_worker_policy(
         "canonical_rule": CANONICAL_RULE,
         "runtime_capability_owner": "active-assistant",
         "fallback_executor": "primary-assistant",
+        "model_selection": "required",
     }
     for field, value in expected_scalars.items():
         if policy.get(field) != value:

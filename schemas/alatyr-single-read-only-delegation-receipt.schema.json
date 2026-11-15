@@ -12,6 +12,8 @@
   ],
   "properties": {
     "dispatch": {"type": "object"},
+    "model_selection": {"type": ["object", "null"], "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"$ref": "#/definitions/sha256"}}},
     "schema_version": {"enum": [1, 2]},
     "receipt_kind": {"const": "alatyr-single-depth1-read-only-delegation"},
     "operation_id": {"type": "string", "minLength": 1},

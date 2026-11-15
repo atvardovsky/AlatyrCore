@@ -22,6 +22,17 @@ from tests.test_target_validator_installation_state import write_accepted_record
 
 
 class SessionContextTests(unittest.TestCase):
+    def git(self, *args):
+        result = subprocess.run(["git", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", *args],
+                                cwd=self.target, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return result.stdout.strip()
+
+    def initialize_git(self):
+        self.git("init", "--quiet")
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "fixture")
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
@@ -86,6 +97,73 @@ class SessionContextTests(unittest.TestCase):
         (self.target / "product.txt").write_bytes(b"unrelated code")
         after = self.baseline(".ai/framework/selected-rule.md")
         self.assertEqual(before, after)
+
+    def test_git_branch_and_revision_changes_invalidate_same_content_and_expected_hash(self):
+        self.initialize_git()
+        before = self.baseline()
+        saved = self.save_baseline(before)
+        self.assertEqual(self.command("check", "--baseline", str(saved)).returncode, 0)
+        self.git("checkout", "--quiet", "-b", "other")
+        for mutation in ("branch", "revision", "detached"):
+            with self.subTest(mutation=mutation):
+                if mutation == "revision":
+                    self.git("commit", "--quiet", "--allow-empty", "-m", "next")
+                elif mutation == "detached":
+                    self.git("checkout", "--quiet", "--detach", "HEAD")
+                changed = self.command("check", "--baseline", str(saved))
+                self.assertEqual(changed.returncode, 1, changed.stdout + changed.stderr)
+                result = json.loads(changed.stdout)
+                self.assertFalse(result["workspace_control_matches"])
+                self.assertEqual(result["changed_paths"], [])
+                self.assertEqual(self.baseline()["inputs"], before["inputs"])
+                self.assertEqual(self.command("check", "--expected", before["fingerprint"]).returncode, 1)
+        self.assertEqual(json.loads(saved.read_text()), before)
+
+    def test_legacy_git_baseline_and_inspection_omission_cannot_skip_control_drift(self):
+        self.initialize_git()
+        before = self.baseline()
+        legacy = {k: v for k, v in before.items() if k != "control_state"}
+        legacy["fingerprint"] = session.fingerprint(legacy)
+        self.assertEqual(self.command("check", "--baseline", str(self.save_baseline(legacy))).returncode, 1)
+        saved = self.save_baseline(before)
+        self.git("checkout", "--quiet", "-b", "inspection")
+        result = session.check_retained_context(self.target, saved, inspection_omissions=["optional.md"])
+        self.assertEqual(result["status"], "rehydration-required")
+
+    def test_unborn_and_linked_worktree_controls_are_local_to_the_worktree(self):
+        from workspace_control import capture_control
+        self.git("init", "--quiet")
+        self.assertIsNone(self.baseline()["control_state"]["revision"])
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "fixture")
+        linked = self.target.parent / "linked"
+        self.git("worktree", "add", "--quiet", "-b", "linked", str(linked))
+        original = capture_control(self.target)
+        other = capture_control(linked)
+        self.assertNotEqual(original["git_dir"], other["git_dir"])
+        self.assertEqual(other["branch"], "refs/heads/linked")
+        self.git("commit", "--quiet", "--allow-empty", "-m", "root-only")
+        self.assertEqual(capture_control(linked), other)
+
+    def test_control_mutation_malformed_metadata_and_non_git_transition_fail_closed(self):
+        from workspace_control import validate_control
+        self.initialize_git()
+        before = self.baseline()
+        saved = self.save_baseline(before)
+        for field in ("git_dir", "branch", "revision"):
+            for bad in ({}, [], True, 17):
+                with self.subTest(field=field, bad=bad), self.assertRaises(ValueError):
+                    validate_control({**before["control_state"], field: bad})
+        with patch.object(session, "capture_control", side_effect=[before["control_state"],
+                {**before["control_state"], "branch": "refs/heads/other"}]), self.assertRaisesRegex(ValueError, "changed"):
+            self.baseline()
+        (self.target / ".git").rename(self.target / ".retained-git")
+        self.assertEqual(self.command("check", "--baseline", str(saved)).returncode, 1)
+        (self.target / ".retained-git").rename(self.target / ".git")
+        (self.target / ".git/HEAD").write_text("invalid metadata\n")
+        result = self.command("capture")
+        self.assertEqual(result.returncode, 2, result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
 
     def test_every_anchor_change_changes_identity(self):
         before = self.baseline()

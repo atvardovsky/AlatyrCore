@@ -13,11 +13,8 @@ alatyr_doc:
 ---
 # Session Continuity
 
-This safeguard preserves work across compaction, resume, handoff and other
-context loss.
-
-Summaries preserve continuity without authority. Use provider-native compaction
-when verified; otherwise use this portable fallback.
+Preserve work across compaction, resume, handoff and context loss. Summaries
+carry continuity, not authority. Use verified native compaction or this fallback.
 
 ## Boundary Model
 
@@ -31,9 +28,8 @@ Boundaries can change the assistant's available context:
 - explicit context reset or recovery
 - an installed framework, adapter policy, routing or selected context change
 
-The assistant should prepare a bounded continuity packet before a predictable
-boundary. After any observed or suspected boundary, it must rehydrate before
-the next state-changing action.
+Prepare bounded packets before predictable boundaries; rehydrate after observed
+or suspected boundaries before any state-changing action.
 
 ## Authority
 
@@ -80,31 +76,32 @@ current local adapter/runtime-write authorization.
 
 ### Active Session Freshness
 
-Compare retained bindings at entry/resume, new requests, phase changes and
-before mutation batches; coalesce adjacent checks without polling. Bind the
-worktree, contour, actual bootstrap inputs and every still-applicable loaded
-file. Versions alone are insufficient. Keep baselines in session memory or
-authorized ignored continuity records.
+Check entry/resume, requests, phase/pre-mutation boundaries, material decisions,
+worker convergence and finalization; coalesce checks without polling. Bind
+worktree, contour, actual bootstrap and all applicable loaded files, not versions
+alone. Keep baselines in session memory or authorized ignored records.
 
-Also check before material decisions, worker convergence and finalization. When
-using a ready knowledge-aware plan, retain its automatic owner/source and routing
-bindings. Reconcile affected knowledge on change or review expiry, preserving
-warnings; keep observation times outside content identity and canonical files.
-See [knowledge freshness](project-knowledge.md#authority-and-freshness).
+Git roots bind local Git directory, branch/HEAD, including unborn/detached
+states. Recapture legacy baselines; identical bytes cannot mask control drift.
+Use bounded read-only queries, no fetch/status scan; non-Git checks stay
+subprocess-free. Review reconciliation before content reuse.
 
-On drift, use this gate: reload changed owners/dependencies and reconsider
-affected assumptions, plans, approvals, validation and worker results. Preserve
-unaffected work and the old baseline until reconciliation. New selected paths
-need reviewed bindings. Fingerprints establish identity, never instruction
-delivery, correctness or authority; capture alone cannot acknowledge reloading.
-Without a helper, obtain equivalent bounded evidence or report context unverified
-before mutation.
+Ready knowledge-aware plans retain automatic owner/source/routing bindings and
+expiry. Reconcile changes/expiry; preserve warnings. Keep observation times
+outside canonical files/content identity. See
+[knowledge freshness](project-knowledge.md#authority-and-freshness).
 
-Nonaccepted installations keep peers inspect-only; the authorized updater uses
-the [lifecycle](lifecycle.md#upgrade-process) path. Worktrees retain distinct
-bindings. Checkpoints are samples, not locks or notifications. Existing sessions
-unaware of this rule need an explicit recheck/restart; updates cannot inject
-instructions into retained context.
+Reload changed owners/dependencies; reconsider affected assumptions, plans,
+approvals, validation and worker results. Retain unaffected work/prior baseline
+until reconciliation. Review new bindings. Fingerprints prove identity, not
+instruction delivery/correctness/authority; capture cannot acknowledge reloads.
+Without helpers, provide bounded equivalent evidence or report context
+unverified before mutation.
+
+Nonaccepted installations keep peers inspect-only; authorized updaters follow
+[lifecycle](lifecycle.md#upgrade-process). Bind worktrees separately. Checkpoints
+sample, never lock/notify. Unaware sessions need explicit recheck/restart;
+updates cannot inject retained instructions.
 
 Before state-changing work resumes:
 

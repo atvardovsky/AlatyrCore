@@ -67,7 +67,7 @@
         "alatyr:mode-does-not-grant-authority@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:bounded-delegation@1": "sha256:063854c9af3246be07e19e1b7103059e9c2823cfb16ef096addda97aad2bf013",
+        "alatyr:bounded-delegation@1": "sha256:ba87418732ef1f4033e429f918bd7f088397b7772a81abbaae2199044ae32f96",
         "alatyr:mode-does-not-grant-authority@1": "sha256:dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
       },
       "content_digest": "sha256:daee94942f232bf7d1ba8cc9920f7730a57da61d4978d30961ba58a63628274d"
@@ -85,7 +85,7 @@
         "alatyr:session-continuity@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:session-continuity@1": "sha256:98b5f3c820faee99c9e60edcf1fde76bab007edd63e08d218a24aed5e472f864"
+        "alatyr:session-continuity@1": "sha256:64d987d8a500c4c0fc8217f948dcb7c30ff3e88d0ad7cce85df8026ee2dfd6c3"
       },
       "content_digest": "sha256:e0f9cb30abaa0aff433e63a603dc1abdc6bdf13b9856365351c4357a51afb348"
     },

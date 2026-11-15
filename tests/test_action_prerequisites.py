@@ -102,6 +102,22 @@ class TerminalPrerequisiteTests(ActiveTaskFixture):
         with self.assertRaisesRegex(ValueError, "external effects"):
             parse_brief(json.dumps(self.brief).encode())
 
+    def test_validation_rule_selects_exact_command_and_requires_the_same_receipts(self):
+        rule = self.brief["terminal_control"]["rules"][0]
+        rule.update(phase="validation", effects=[], validation_command_id="browser")
+        self.action = action_fixture(phase="inspect", paths=[])
+        self.action["validation"] = {"command_id": "browser"}
+        self.save()
+        self.assertEqual(self.failures(), [])
+        self.receipt.update(result="failed", exit_code=1)
+        self.save_receipt()
+        self.assertTrue(self.failures())
+        self.action["validation"]["command_id"] = "other"
+        self.assertEqual(self.failures(), [])
+        rule["effects"] = ["release:next"]
+        with self.assertRaisesRegex(ValueError, "external effects"):
+            parse_brief(json.dumps(self.brief).encode())
+
     def test_running_failed_interrupted_and_inconsistent_results_block_publication(self):
         original = copy.deepcopy(self.receipt)
         for result, code in (("running", None), ("failed", 1), ("interrupted", None), ("passed", None),

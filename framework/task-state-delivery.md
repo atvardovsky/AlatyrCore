@@ -121,6 +121,11 @@ with native closure: its registered command must fail for partial/failed outcome
 and retain a canonical receipt/result. Both gates must pass; a successful generic
 suite cannot replace the original case or supply semantic authority.
 
+Optional `phase: validation` rules name `validation_command_id` and empty
+effects. Require the same passed receipt before that registered child starts,
+not Boolean harness readiness. Unrelated commands stay independent; setup
+retains separate authorization.
+
 Retain consumed artifacts in the baseline and original `brief_sha256` in mutation
 actions. Rebinding may refresh receipt selection/hashes, never adopted policy;
 queued actions cannot inherit refreshed candidates. Null/absent control reads no

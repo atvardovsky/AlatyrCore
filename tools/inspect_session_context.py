@@ -20,6 +20,7 @@ from context_input_snapshot import ContextInputSnapshot, read_regular_context_by
 from scaffold_state import validate_installation_state_record
 from yaml_support import safe_load
 from yaml import YAMLError
+from workspace_control import capture_control, controls_match, validate_control
 
 
 MAX_INPUTS = 256
@@ -37,6 +38,7 @@ SOURCE_ANCHORS = frozenset({
     "AGENTS.md", "VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION",
     "tools/source-context/index.json", "tools/inspect_session_context.py",
     "tools/cli_inputs.py",
+    "tools/workspace_control.py",
 })
 HASH = re.compile(r"sha256:[0-9a-f]{64}\Z")
 
@@ -91,6 +93,9 @@ def validate_baseline(record: Any) -> dict[str, Any]:
     }
     if isinstance(record, dict) and record.get("schema_version") == 2:
         fields.add("knowledge")
+    if isinstance(record, dict) and "control_state" in record:
+        fields.add("control_state")
+        validate_control(record["control_state"])
     if (not isinstance(record, dict) or set(record) != fields
             or type(record.get("schema_version")) is not int or record["schema_version"] not in {1, 2}
             or record.get("record_kind") != "alatyr-session-context"):
@@ -136,6 +141,7 @@ def capture(target: Path, paths: list[str], *, source_contour: bool = False,
     root = target.resolve(strict=True)
     if not root.is_dir():
         raise ValueError("target must be a directory")
+    control = capture_control(root)
     selected = [relative_path(path) for path in paths]
     if len(selected) != len(set(selected)):
         raise ValueError("context paths must not be repeated")
@@ -213,6 +219,8 @@ def capture(target: Path, paths: list[str], *, source_contour: bool = False,
                     present = False
                 if present != (relpath in optional):
                     raise ValueError("optional bootstrap input changed during capture")
+    if capture_control(root) != control:
+        raise ValueError("workspace Git control state changed during context capture")
     baseline = {
         "schema_version": 2 if knowledge is not None else 1, "record_kind": "alatyr-session-context",
         "target_identity": digest(str(root).encode("utf-8")),
@@ -222,6 +230,8 @@ def capture(target: Path, paths: list[str], *, source_contour: bool = False,
     }
     if knowledge is not None:
         baseline["knowledge"] = knowledge
+    if control is not None:
+        baseline["control_state"] = control
     baseline["fingerprint"] = fingerprint(baseline)
     validate_baseline(baseline)
     return baseline, state, {"input_files": len(inputs), "input_bytes": total,
@@ -266,12 +276,14 @@ def context_report(args: argparse.Namespace) -> tuple[dict, dict]:
                                            context_plans=args.context_plan, _retained_baseline=prior)
     comparable = prior is None or (prior["target_identity"] == current["target_identity"]
                                   and prior["contour"] == current["contour"])
-    matches = expected is not None and expected == current["fingerprint"] and comparable
+    control_matches = prior is None or controls_match(prior, current)
+    matches = expected is not None and expected == current["fingerprint"] and comparable and control_matches
     status = ("update-in-progress" if state in {"staged", "scaffolded"} else
               "installation-degraded" if state == "degraded" else
               "baseline-candidate" if args.action == "capture" else
               "current" if matches else "rehydration-required")
     report = {"status": status, "fingerprint": current["fingerprint"],
+              "content_fingerprint": fingerprint({k: v for k, v in current.items() if k not in {"fingerprint", "control_state"}}),
               "installation_state": state, "context_matches": matches,
               "authorization_granted": False, "acceptance_granted": False,
               "measurement": measurement}
@@ -282,6 +294,9 @@ def context_report(args: argparse.Namespace) -> tuple[dict, dict]:
         after = {item["path"]: item["sha256"] for item in current["inputs"]}
         report["changed_paths"] = sorted(path for path in before.keys() | after.keys() if before.get(path) != after.get(path))
         report["same_target_and_contour"] = comparable
+        report["workspace_control_matches"] = control_matches
+        if not control_matches:
+            report["workspace_control_changed"] = True
     if "knowledge" in current:
         from session_knowledge import knowledge_delta
         report["knowledge"] = knowledge_delta(current["knowledge"], report.get("changed_paths", []))
@@ -318,7 +333,7 @@ def check_retained_context(target: Path, baseline: Path, *, inspection_omissions
             filtered["fingerprint"] = fingerprint(filtered)
             current, state, measurement = capture(target, [row["path"] for row in filtered["inputs"]],
                                                    source_contour=source_contour, _retained_baseline=filtered)
-            return {"status": "current" if state == ("source-contour" if source_contour else "accepted") and current["fingerprint"] == filtered["fingerprint"]
+            return {"status": "current" if state == ("source-contour" if source_contour else "accepted") and current["fingerprint"] == filtered["fingerprint"] and controls_match(filtered, current)
                     else "rehydration-required", "inspection_only": True, "omitted_paths": sorted(omitted),
                     "measurement": measurement, "authorization_granted": False, "acceptance_granted": False}
     return context_report(argparse.Namespace(target=target, action="check",

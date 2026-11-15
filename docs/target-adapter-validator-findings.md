@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1775
+Catalog entries: 1776
 
 ## Families
 
@@ -33,7 +33,7 @@ Catalog entries: 1775
 - `CONTEXT`: 26 codes.
 - `CONTRACT`: 3 codes.
 - `DEBUG`: 140 codes.
-- `DELEGATION`: 101 codes.
+- `DELEGATION`: 102 codes.
 - `DEPENDENCY`: 63 codes.
 - `DEVELOPMENT`: 17 codes.
 - `DIAGRAM`: 32 codes.
@@ -1189,6 +1189,8 @@ Catalog entries: 1775
 - `DELEGATION_MODEL_OVERRIDE_UNSUPPORTED`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_MODEL_SELECTION_MODE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_MODEL_SELECTION_POLICY`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_NATIVE_BACKEND_UNSUPPORTED`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.

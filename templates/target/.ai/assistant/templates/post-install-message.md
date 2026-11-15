@@ -17,6 +17,7 @@ Adapter health: `{READY_ATTENTION_BLOCKED_OR_UNVERIFIED}`
 Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
 Guard activation: `{OBSERVED_GUARD_STATUS_OR_UNAVAILABLE}`
 Use health `guard_activation`; configuration is not exercised interception.
+Worktree applicability: `{CURRENT_WORKTREE_ADAPTER_APPLICABILITY_AND_ADOPTION_INTENT}`
 
 `scaffolded`, `staged`, and `degraded` installations are not `ready`.
 Only `accepted` installation state with current strict validation can be

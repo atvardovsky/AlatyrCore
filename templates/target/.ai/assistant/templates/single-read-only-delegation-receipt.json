@@ -8,6 +8,7 @@
   "problem_model_sha256": null,
   "policy_sha256": "{LOWERCASE_SHA256}",
   "capability_sha256": "{LOWERCASE_SHA256}",
+  "model_selection": {"path": "{TARGET_RELATIVE_MODEL_SELECTION_PATH}", "sha256": "{LOWERCASE_SHA256}"},
   "worker_context_mode": "{ISOLATED_EXPLICIT_OR_INHERITED_MEASURED}",
   "packet": {
     "packet_id": "{PACKET_ID}",

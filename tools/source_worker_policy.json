@@ -1,11 +1,12 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
   "canonical_rule": "ALATYR-DELEGATION-001",
   "runtime_capability_owner": "active-assistant",
   "fallback_executor": "primary-assistant",
+  "model_selection": "required",
   "tree_policy": {
     "dispatch_owner": "primary-assistant",
     "worker_child_behavior": "primary-preauthorized-read-only",

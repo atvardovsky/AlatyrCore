@@ -26,6 +26,7 @@ REQUIRED_PATHS = (
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/templates/worker-result.json",
     ".ai/assistant/templates/single-read-only-delegation-receipt.json",
+    ".ai/assistant/templates/worker-model-selection.json",
     ".ai/assistant/templates/delegation-branch-envelope.json",
     ".ai/assistant/templates/delegation-branch-checkpoint.json",
     ".ai/assistant/workers/role-catalog.json",
@@ -267,6 +268,9 @@ def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
 
 
 def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
+    mode = policy.get("model_selection", "procedural")
+    if not isinstance(mode, str) or mode not in {"required", "procedural"}:
+        self.error("DELEGATION_MODEL_SELECTION_POLICY", "model_selection must be required or procedural", POLICY_RELPATH)
     if policy.get("schema_version") != 7:
         self.error(
             "DELEGATION_POLICY_SCHEMA",
@@ -1364,6 +1368,7 @@ def _validate_delegation_templates(self: Any) -> None:
         "allowed_actions",
         "write_scope",
         "context_evidence",
+        "model_selection",
         "context_words",
         "max_result_words",
         "max_summary_words",

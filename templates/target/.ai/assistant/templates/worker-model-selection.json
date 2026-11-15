@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "packet_id": "{PACKET_ID}",
+  "node_id": "{NODE_ID}",
+  "capability_sha256": "{LOWERCASE_SHA256_OF_BOUND_CAPABILITY_EVIDENCE}",
+  "task_class": "{MECHANICAL_BOUNDED_CODE_OR_SEMANTIC}",
+  "options": [
+    {
+      "id": "{TARGET_OPTION_ID}",
+      "model": "{VERIFIED_MODEL_IDENTIFIER}",
+      "reasoning": "{VERIFIED_REASONING_SETTING}",
+      "cost_rank": "{TARGET_RELATIVE_COST_RANK_0_THROUGH_10000}",
+      "eligible_for": ["{MECHANICAL_BOUNDED_CODE_OR_SEMANTIC}"],
+      "availability": "{AVAILABLE_UNAVAILABLE_OR_UNKNOWN}",
+      "authorized": false,
+      "evidence_ref": "{CAPABILITY_AND_COST_BASIS_SOURCE}",
+      "selection_modes": ["{EXPLICIT_MODEL_INHERIT_OR_CLIENT_DEFAULT}"]
+    }
+  ],
+  "exclusions": [],
+  "selected_option": null,
+  "selection_mode": "{EXPLICIT_MODEL_INHERIT_OR_CLIENT_DEFAULT}",
+  "rationale": "{TASK_SUITABILITY_AND_REVIEW_REQUIREMENTS}",
+  "max_cost_rank": null,
+  "observed": {"state": "unverified", "model": null, "reasoning": null, "evidence_ref": null}
+}

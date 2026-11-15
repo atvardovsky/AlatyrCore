@@ -55,6 +55,7 @@
       "allowed_actions": ["{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_OR_CODE_AND_TESTS}"],
       "write_scope": "{NONE_OR_BOUNDED_WRITE_SCOPE}",
       "context_evidence": "{MEASURED_CONTEXT_ARTIFACT_OR_NULL_FOR_PRIMARY}",
+      "model_selection": null,
       "context_words": "{CONTEXT_WORD_COUNT}",
       "max_result_words": "{NODE_RESULT_WORD_LIMIT}",
       "max_summary_words": "{NODE_SUMMARY_WORD_LIMIT}",

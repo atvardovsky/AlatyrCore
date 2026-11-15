@@ -330,6 +330,8 @@ In a typical target repository:
    requested/discovered/executed identities and observed qualification windows
    to real result artifacts. Preserve readable version-2 records as legacy
    evidence, not proof of newly activated controls.
+   Harness prerequisites and historical qualification review are separately
+   adopted controls, never implicit setup or fresh acceptance.
    Add `.ai/project/team-policy.json` and its human-oriented
    `.ai/project/team-operating-model.md` only when team collaboration is
    enabled. Derive actors, aliases, authority, priorities, review, transitions,

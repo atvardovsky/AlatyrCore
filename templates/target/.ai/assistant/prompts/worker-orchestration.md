@@ -20,8 +20,8 @@ load the full flow only for communication, ambiguity, conflict or repair.
    allow it. Strategy and global obligation acceptance remain primary-owned.
 4. Apply canonical executor-preference precedence; `auto` stays cost-aware.
    Never delegate non-delegable work.
-5. Select an enabled role within its action ceiling. Bind current capability
-   evidence, else use suggestion-only or sequential-primary fallback.
+5. Bind enabled role/capability and economical model/effort selection; obey role
+   ceilings. Otherwise use suggestion-only or sequential-primary fallback.
 6. Use `.ai/assistant/templates/single-read-only-delegation-receipt.json` for
    exactly one depth-one inspect-only worker with no writes, retries, child
    proposals, or overlap. Load the full execution-tree contracts for multiple

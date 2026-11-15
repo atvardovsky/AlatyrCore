@@ -98,6 +98,14 @@ Schema 4 optionally selects `historical_evidence_records` as at most 64 exact
 The validator verifies retained bytes, not compatibility with today's policy,
 source, commands or suite inventory. History supplies no current acceptance.
 Existing current evidence still receives every freshness and behavior check.
+
+Optional `review-qualification` uses `qualification-review.json`, existing
+delivery receipts and hash-bound `{cases: [{id, status}]}` results. Enumerate
+required cases/current inputs; preserve failures and contradictions. Current
+passes need current bindings; historical passes need hash-bound
+`qualification-equivalence-review.json` with owner/reason. Report fresh gaps
+separately. Review never grants acceptance or waives fresh requirements;
+target-native normalization/completeness remain target-owned.
 Missing or changed history remains a finding; do not rehash it to erase a failure.
 
 At task transition or update, review the selected task, original run and retained

@@ -303,6 +303,32 @@ If model selection is unavailable, the target may inherit the primary model,
 use a verified client default, suggest delegation without executing it, or
 continue locally. Never silently claim that a requested model was used.
 
+### Economical Model Selection
+
+Adopted `model_selection: required` binds each ready/running/completed worker
+to `model_selection: {path, sha256}` in either receipt tier; the primary node
+uses null. Resolve `.ai/assistant/templates/worker-model-selection.json` with
+the packet/node IDs and the enclosing capability digest before dispatch.
+Classify the bounded task as `mechanical`, `bounded-code` or `semantic`.
+Enumerate available target-authorized model/effort options, verified selection
+modes, task eligibility and relative `cost_rank` (0..10000). Choose the lowest
+eligible rank. A higher rank needs a concrete evidence-backed exclusion of
+cheaper eligible options, not a preference or a model's reputation.
+
+Optional `max_cost_rank` bounds selection. Record `observed` identity/effort
+separately; verified observations must match the choice. Unavailable reporting
+stays unverified, never guessed. A running/completed hard-ceiling assignment
+requires verified observation; otherwise stop or select a reviewed fallback.
+Update the reference digest after observation. Full-tree and lightweight paths
+share this resolver; legacy `procedural` policy makes no enforced cost claim.
+
+The read-only `plan-worker-model` helper selects among declared options. It
+does not dispatch, change client settings, authenticate telemetry, discover an
+exhaustive market, or establish prices, quality or savings. Target owners must
+review suitability and cost evidence; do not remove necessary reasoning to
+obtain a cheaper choice. Unsupported providers keep explicit fallback and
+unverified status, not fabricated parity.
+
 Do not infer capability parity between assistant products. The same strategy
 applies through the shared packet and convergence contract, while execution
 mechanics remain target-verified for each surface.

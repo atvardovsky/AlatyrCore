@@ -119,18 +119,13 @@ unobserved, not zero; timings never waive a gate or establish cost savings.
 
 ## Model Routing
 
-Choose the least costly verified model that can complete the packet reliably:
-
-- fast, lightweight model: bounded read-only discovery, inventories, log or
-  test-output parsing, and mechanical checks
-- balanced coding model: scoped implementation or review with objective
-  acceptance criteria
-- strongest available reasoning model: ambiguous cross-cutting analysis,
-  architecture, security, semantic invariants, conflict resolution, and final
-  synthesis
-
-Model names are not capability evidence. Verify current-client launch and
-intended-model selection/reporting. Otherwise use a verified fallback or the primary.
+Choose the least costly suitable verified model/effort: lightweight for
+mechanical discovery, balanced for bounded review, stronger reasoning for
+ambiguous analysis. Architecture, security, conflicts and final synthesis stay
+primary-owned. Source policy 9 requires shared
+[selection evidence](../framework/subagent-delegation.md#economical-model-selection)
+in both receipt tiers. Names are not capability proof: verify client launch and
+actual usage, or record unverified status and an explicit fallback.
 
 ## Responsibility
 

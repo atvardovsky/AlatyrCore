@@ -284,6 +284,31 @@ def load_json_object(path: Path, label: str, *, expected_sha256: str | None = No
         raise DelegationEvidenceError(f"cannot load {label}: {path}: {str(exc)[:240]}") from exc
 
 
+def _validate_model_choice(value: Any, policy: dict, *, artifact_root: Path,
+                           packet_id: str, node_id: str, capability_sha256: str, state: str) -> None:
+    mode = policy.get("model_selection", "procedural")
+    if not isinstance(mode, str) or mode not in {"required", "procedural"}:
+        raise DelegationEvidenceError("model_selection policy must be required or procedural")
+    if value is None:
+        if mode == "required" and state in {"READY", "RUNNING", "DONE"}:
+            raise DelegationEvidenceError("worker model selection evidence is required before dispatch or completion")
+        return
+    from cli_inputs import json_object
+    from worker_model_selection import review_selection
+    ref = _object(value, "worker model selection reference")
+    _exact(ref, {"path", "sha256"}, "worker model selection reference")
+    expected = _sha256(ref["sha256"], "worker model selection digest")
+    try:
+        path = _contained_file(artifact_root, ref["path"], "worker model selection")
+        raw = _read_evidence(path, 65536)
+        if len(raw) > 65536 or hashlib.sha256(raw).hexdigest() != expected:
+            raise ValueError("worker model selection is oversized or differs from its digest")
+        review_selection(json_object(raw, "worker model selection"), packet_id=packet_id, node_id=node_id,
+            capability_sha256=capability_sha256, execution_state=state)
+    except (OSError, ValueError, UnicodeError, RecursionError) as exc:
+        raise DelegationEvidenceError("worker model selection: " + str(exc)) from exc
+
+
 def validate_branch_envelope(
     path: Path,
     *,
@@ -619,7 +644,7 @@ def validate_single_read_only_receipt(
             "current_user_authorization", "analysis_strategy_id",
             "problem_model_sha256", "policy_sha256", "capability_sha256",
             "worker_context_mode", "packet", "result", "primary_convergence",
-        } | ({"dispatch"} if "dispatch" in receipt else set()),
+        } | ({"dispatch"} if "dispatch" in receipt else set()) | ({"model_selection"} if "model_selection" in receipt else set()),
         "single delegation receipt",
     )
     if receipt.get("schema_version") != 2 or receipt.get("receipt_kind") != (
@@ -679,6 +704,9 @@ def validate_single_read_only_receipt(
     obligations = set(_strings(packet.get("proof_obligation_ids"), "single delegation obligations"))
 
     result = _object(receipt.get("result"), "single delegation receipt.result")
+    _validate_model_choice(receipt.get("model_selection"), policy, artifact_root=artifact_root,
+        packet_id=packet["packet_id"], node_id=packet["node_id"], capability_sha256=receipt["capability_sha256"],
+        state="DONE" if result.get("status") == "succeeded" else "FAILED")
     from dispatch_observation import NO_DISPATCH, dispatch_failures
     failures = dispatch_failures(receipt.get("dispatch", NO_DISPATCH), operation_id=receipt["operation_id"],
         packet_id=packet["packet_id"], node_id=packet["node_id"], attempt=packet["attempt"],
@@ -936,7 +964,8 @@ def _validate_nodes(
     coverage_keys: set[str] = set()
     for raw in raw_nodes:
         node = _object(raw, "execution node")
-        _exact(node, NODE_FIELDS | ({"dispatch"} if "dispatch" in node else set()), "execution node")
+        _exact(node, NODE_FIELDS | ({"dispatch"} if "dispatch" in node else set()) |
+               ({"model_selection"} if "model_selection" in node else set()), "execution node")
         node_id = _string(node.get("node_id"), "execution node.node_id")
         if node_id in nodes:
             raise DelegationEvidenceError(f"duplicate execution node: {node_id}")
@@ -1269,6 +1298,21 @@ def _validate_tree_dispatches(tree: dict, nodes: dict, policy: dict, artifact_ro
             assignments.add(assignment)
 
 
+def _validate_node_allocations_and_models(nodes, policy, budget, capability_digest, artifact_root):
+    for node in nodes.values():
+        if node["depth"] == 0:
+            if node.get("model_selection") is not None:
+                raise DelegationEvidenceError("primary node cannot claim a worker model selection")
+            continue
+        _validate_model_choice(node.get("model_selection"), policy, artifact_root=artifact_root,
+            packet_id=node["packet_id"], node_id=node["node_id"], capability_sha256=capability_digest,
+            state=node["status"])
+        for field, limit in (("max_result_words", "max_result_words_total"),
+                             ("max_summary_words", "max_primary_summary_words_total")):
+            if node[field] > budget[limit]:
+                raise DelegationEvidenceError(f"execution node {node['node_id']} {field} exceeds aggregate budget")
+
+
 def validate_execution_tree(
     tree: dict[str, Any],
     policy: dict[str, Any],
@@ -1290,17 +1334,7 @@ def validate_execution_tree(
         allowed_stop_reasons=allowed_stop_reasons,
     )
     _validate_tree_dispatches(tree, nodes, policy, artifact_root)
-    for node in nodes.values():
-        if node["depth"] == 0:
-            continue
-        if node["max_result_words"] > budget["max_result_words_total"]:
-            raise DelegationEvidenceError(
-                f"execution node {node['node_id']} result limit exceeds aggregate budget"
-            )
-        if node["max_summary_words"] > budget["max_primary_summary_words_total"]:
-            raise DelegationEvidenceError(
-                f"execution node {node['node_id']} summary limit exceeds aggregate budget"
-            )
+    _validate_node_allocations_and_models(nodes, policy, budget, capability_evidence_sha256, artifact_root)
 
     depth_two_present = any(node["depth"] == 2 for node in nodes.values())
     if depth_two_present and policy["tree_policy"]["worker_child_behavior"] != (

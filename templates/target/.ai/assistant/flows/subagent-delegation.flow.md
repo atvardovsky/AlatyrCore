@@ -84,6 +84,11 @@ verified and the work requires the governed tree tier.
 5. If the requested model is unavailable, unsupported, unknown, expired,
    rate-limited, or not selectable by the client, apply the recorded fallback.
    Never report a model as used without evidence.
+6. Apply the canonical `subagent-delegation.md#economical-model-selection`
+   contract. Resolve `worker-model-selection.json`, choose the least costly
+   eligible verified model/effort, and hash-bind it in either receipt tier.
+   Reconcile actual usage before accepting results; a hard ceiling cannot be
+   verified from an unobserved inherited/default model.
 
 ## Evidence Tier
 

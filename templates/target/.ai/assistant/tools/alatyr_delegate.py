@@ -92,6 +92,11 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "lifecycle-checkpoint":
             operation.add_argument("--provider", choices=["procedural", "codex", "claude", "gemini", "cursor", "copilot"], default="procedural", action=Once)
         operation.add_argument("arguments", nargs=argparse.REMAINDER)
+    for name, option in (("plan-worker-model", "--record"), ("review-qualification", "--manifest")):
+        operation = subparsers.add_parser(name, allow_abbrev=False)
+        operation.add_argument("--target", type=Path, required=True, action=Once)
+        operation.add_argument("--framework-source", type=Path, action=Once)
+        operation.add_argument(option, required=True, action=Once)
     cooperation = subparsers.add_parser("cooperation-preflight", allow_abbrev=False)
     add_common(cooperation)
     cooperation.add_argument("--scope", action="append", default=[])
@@ -145,6 +150,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def canonical_arguments(args: argparse.Namespace, target: Path, source: Path) -> list[str]:
+    if args.operation in {"plan-worker-model", "review-qualification"}:
+        option = "record" if args.operation == "plan-worker-model" else "manifest"
+        return [args.operation, "--target", str(target), "--" + option, getattr(args, option)]
     if args.operation == "worktree-preflight":
         command = [args.operation, "--target", str(target), "--framework-source", str(source)]
         if args.task_id:

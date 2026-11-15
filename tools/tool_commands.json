@@ -2,6 +2,18 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "review-qualification",
+      "script": "inspect_qualification_evidence.py",
+      "purpose": "review bounded current and retained case evidence without fresh acceptance or test execution",
+      "write_scope": "none"
+    },
+    {
+      "name": "plan-worker-model",
+      "script": "plan_worker_model.py",
+      "purpose": "select a declared least-cost eligible model and reasoning option without dispatch or authority",
+      "write_scope": "none"
+    },
+    {
       "name": "project-lookup",
       "script": "inspect_project_lookup.py",
       "purpose": "select bounded read-only code, canonical-owner and optional navigation evidence",

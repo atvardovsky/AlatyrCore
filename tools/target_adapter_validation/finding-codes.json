@@ -139,7 +139,7 @@
     },
     {
       "id": "DELEGATION",
-      "code_count": 101
+      "code_count": 102
     },
     {
       "id": "DEPENDENCY",
@@ -5313,6 +5313,15 @@
     },
     {
       "code": "DELEGATION_MODEL_SELECTION_MODE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_MODEL_SELECTION_POLICY",
       "levels": [
         "error"
       ],

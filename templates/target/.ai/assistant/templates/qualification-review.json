@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "required_case_ids": ["{EXACT_REQUIRED_CASE_ID}"],
+  "current_input_sha256": {"{TARGET_RELATIVE_INPUT_PATH}": "{LOWERCASE_SHA256}"},
+  "runs": [
+    {
+      "id": "{QUALIFICATION_RUN_ID}",
+      "receipt": {"path": "{TARGET_RELATIVE_DELIVERY_RUN_RECEIPT}", "sha256": "{LOWERCASE_SHA256}"},
+      "disposition": "{CURRENT_OR_RETAINED}",
+      "equivalence_review": null
+    }
+  ]
+}

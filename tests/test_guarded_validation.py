@@ -5,6 +5,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from tests.test_request_brief import RequestLifecycleFixture, delivery_fixture, validation_fixture
@@ -54,6 +55,7 @@ class GuardedValidationTests(RequestLifecycleFixture):
         selected = hooks.selected_task(self.target, "fixture-task", request_review=True)
         paths = set(selected["checkpoint_inputs"]) | {hooks.POLICY, self.brief_path, POLICY,
             self.record_path, self.brief["delivery_control"]["validation_history"], "test.cfg", "tests/a.py"}
+        paths.update(getattr(self, "additional_context", []))
         self.put(self.baseline, capture(self.target, sorted(paths))[0])
         self.assertEqual(self.bind_request()["status"], "bound")
 
@@ -176,3 +178,37 @@ class GuardedValidationTests(RequestLifecycleFixture):
             result = review_request(self.target, self.brief_path, self.current_action)
             self.assertTrue(result["checkpoint_required"], result)
             self.assertFalse((self.target / "child-started.txt").exists())
+
+    def test_harness_prerequisite_blocks_actual_child_without_a_current_passed_receipt(self):
+        def bound(path, value):
+            self.put(path, value)
+            return {"path": path, "sha256": hashlib.sha256((self.target / path).read_bytes()).hexdigest()}
+        now = datetime.now(timezone.utc)
+        candidate = bound("prerequisite/candidate.json", {"inputs": self.record["input_sha256"]})
+        environment = bound("prerequisite/environment.json", {"kind": "disposable"})
+        output = bound("prerequisite/result.json", {"native_syntax": "passed"})
+        receipt = {"schema_version": 1, "record_kind": "alatyr-delivery-run-receipt",
+            "request_id": self.brief["request_id"], "task_id": self.brief["task_id"], "command_id": "native-syntax",
+            "started_at": (now - timedelta(seconds=2)).isoformat(), "finished_at": now.isoformat(),
+            "result": "passed", "exit_code": 0, "input_sha256": {r["path"]: r["sha256"] for r in (candidate, environment)},
+            "result_artifact": output}
+        evidence = bound("prerequisite/receipt.json", receipt)
+        proof = self.model["proof_obligations"][0]
+        proof.update(status="passed", evidence_refs=[evidence["path"]])
+        self.write_model(); self.write_index()
+        self.brief.update(schema_version=3, focus_control=None, terminal_control={"schema_version": 1, "rules": [
+            {"id": "syntax-before-browser", "phase": "validation", "validation_command_id": "unit", "effects": [],
+             "proof_id": proof["id"], "command_id": "native-syntax", "receipt": evidence,
+             "candidate": candidate, "environment": environment, "max_age_seconds": 900}]})
+        self.additional_context = [r["path"] for r in (candidate, environment, output, evidence)]
+        self.prepare()
+        code, result = self.launch(delegate=True)
+        self.assertEqual(code, 0, result)
+        (self.target / "child-started.txt").unlink()
+        receipt.update(result="failed", exit_code=1)
+        self.brief["terminal_control"]["rules"][0]["receipt"] = bound("prerequisite/receipt.json", receipt)
+        self.prepare()
+        code, result = self.launch(delegate=True)
+        self.assertNotEqual(code, 0, result)
+        self.assertFalse((self.target / "child-started.txt").exists())
+        self.assertIn("terminal prerequisite", result["reason"])

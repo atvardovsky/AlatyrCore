@@ -234,6 +234,9 @@ Target runners keep cleanup/timeouts; this helper adds no retries or history
 receipts. Omitted launch controls leave ordinary commands unchanged.
 Completion prerequisites may select `phase: complete` with empty effects to
 require a target-owned original-outcome gate in addition to native closure.
+Harness prerequisites may select `phase: validation` plus an exact
+`validation_command_id` and empty effects, using the same passed proof/receipt
+bindings before the registered child starts. This does not authorize setup.
 Setup plans expose `enforcement_status`, including existing/proposed/absent
 policy origin; none establishes native interception or changes opt-outs.
 
@@ -334,6 +337,28 @@ Both context and support-impact plans can deliver selected, digest-bound
 [reviewed warnings](../framework/consistency-model.md#drift-and-staleness).
 
 ## Worker Context Preparation
+
+`plan-worker-model` is a read-only declared-option selector, also exposed by
+the installed delegate. Start from the
+[selection template](../templates/target/.ai/assistant/templates/worker-model-selection.json)
+and follow the [canonical contract](../framework/subagent-delegation.md#economical-model-selection).
+Ranks include model and reasoning effort, not model branding. Bind the result
+to the worker packet/capability and retain actual-use evidence separately.
+
+```sh
+python3 tools/alatyr.py plan-worker-model --target /path/to/target-repo --record .ai/.runtime/worker-choice.json
+```
+
+`review-qualification` produces a bounded selected-case projection from existing
+delivery receipts and normalized outcomes; it does not run tests or grant
+acceptance. Use the
+[review template](../templates/target/.ai/assistant/templates/qualification-review.json).
+Exit zero means review generated, not a fresh passing matrix. Retained passed
+cases, uncovered/fresh-missing cases and failed runs remain distinct.
+
+```sh
+python3 tools/alatyr.py review-qualification --target /path/to/target-repo --manifest .ai/.runtime/qualification-review.json
+```
 
 ### Parent-Scoped Communication
 
@@ -649,8 +674,13 @@ uncooperative filesystem races, external services, or arbitrary editors.
 
 `session-context` independently compares an active session's retained context
 at request/resume, phase and pre-mutation checkpoints. It hashes canonical
-bootstrap sources plus explicitly selected loaded files, without Git commands
-or a recursive scan. Default output is read-only; `--output` explicitly writes
+bootstrap sources plus explicitly selected loaded files without a recursive
+scan. Git roots also bind the local Git directory, branch and HEAD using bounded
+read-only Git queries; non-Git roots make no Git calls. Control identity is in
+the session fingerprint, while `content_fingerprint` supports separate reviewed
+content reuse. Branch/HEAD drift invalidates continuation even with identical
+selected bytes; legacy Git baselines need recapture. Default output is read-only;
+`--output` explicitly writes
 an evidence report. Capture is a baseline candidate, never proof of instruction
 delivery or approval. Keep a prior baseline until changed owners and affected
 plans, approvals, checks and workers have been reconciled.

@@ -494,8 +494,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 189,
-      "content_digest": "sha256:e5842f6329a17933c3ff5e15686230dc30e88f2993791be69c07cf67c3369c83"
+      "estimated_words": 191,
+      "content_digest": "sha256:c389c5c996fd3048205b14a3b6ca93e24067e9d0fc1322efc07fac3fc4dbf435"
     },
     {
       "id": "assistant.content.templates-dependency-knowledge-sync-report-md",
@@ -788,8 +788,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1802,
-      "content_digest": "sha256:ee306d9133a1ba20034b8be26307ad031299e0507d87cb6d16ed2c10b62c1b64"
+      "estimated_words": 1805,
+      "content_digest": "sha256:cb3a2f31686dd844e3352d90887e74fa442356382bc199acf1e08b83a315ba38"
     },
     {
       "id": "assistant.content.templates-post-update-message-md",
@@ -810,8 +810,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1769,
-      "content_digest": "sha256:8689fcffae755d94b853bfed4423e0d04ebefc0d6ee118bdb8c246526188e1c3"
+      "estimated_words": 1772,
+      "content_digest": "sha256:c13dc81ee61f34ccf36fc1c4de7baea645d04e4e00e427dd9eae8680fa97e0b0"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",
@@ -931,6 +931,49 @@
       ],
       "estimated_words": 26,
       "content_digest": "sha256:7467db6dc253e9360357d1b2eb3da4bdf25ae5d70f2cc3f689c7aee6c322e231"
+    },
+    {
+      "id": "assistant.content.templates-qualification-equivalence-review-json",
+      "kind": "content",
+      "path": "templates/qualification-equivalence-review.json",
+      "summary": "Qualification Equivalence Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "qualification",
+          "equivalence",
+          "review"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 15,
+      "content_digest": "sha256:bb6e5c1aa6746b7ac34b205e9400907ef233cc231762a512709d55c925d78fa0"
+    },
+    {
+      "id": "assistant.content.templates-qualification-review-json",
+      "kind": "content",
+      "path": "templates/qualification-review.json",
+      "summary": "Qualification Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "qualification",
+          "review"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 25,
+      "content_digest": "sha256:9fbb3e1e25f6367bdb5cb7518d2c214fab2592604297d2b418904ef6122b5213"
     },
     {
       "id": "assistant.content.templates-repair-qualification-json",
@@ -1062,8 +1105,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 104,
-      "content_digest": "sha256:bd7cce0a97ebfe776b6e9e217d183169f52f9cca054f16f1c176108a207b3bf4"
+      "estimated_words": 109,
+      "content_digest": "sha256:587e1422a8d74061499fa155bcee895a284ebffab3e2a483112702b13320f5c1"
     },
     {
       "id": "assistant.content.templates-small-task-evidence-md",
@@ -1385,6 +1428,30 @@
       ],
       "estimated_words": 326,
       "content_digest": "sha256:9f48637e158d122d4797a056794e9eb8e6483613e02f5a8e205e6525c4fc0890"
+    },
+    {
+      "id": "assistant.content.templates-worker-model-selection-json",
+      "kind": "content",
+      "path": "templates/worker-model-selection.json",
+      "summary": "Worker Model Selection",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "worker",
+          "model",
+          "selection"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 54,
+      "content_digest": "sha256:ceed22d0623bf90473aac03b68d09af0992eeb9b5dcb952680e5c4f9dc465cfb"
     },
     {
       "id": "assistant.content.templates-worker-result-json",

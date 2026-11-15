@@ -22,21 +22,24 @@ def parse_terminal_control(value: object, brief: dict) -> dict:
         raise ValueError("terminal_control requires 1..16 rules")
     seen = set()
     for rule in rules:
+        validation_fields = {"validation_command_id"} if isinstance(rule, dict) and rule.get("phase") == "validation" else set()
         fields(rule, {"id", "phase", "effects", "proof_id", "command_id", "receipt",
-                      "candidate", "environment", "max_age_seconds"}, "terminal prerequisite")
+                      "candidate", "environment", "max_age_seconds"} | validation_fields, "terminal prerequisite")
         for key in ("id", "proof_id", "command_id"):
             text(rule[key], "terminal prerequisite." + key)
         if rule["id"] in seen:
             raise ValueError("terminal prerequisite IDs must be unique")
         seen.add(rule["id"])
         phase = rule["phase"]
-        if not isinstance(phase, str) or phase not in {"complete", "commit", "publish", "live-external"}:
-            raise ValueError("terminal prerequisite requires complete, commit, publish or live-external")
-        if ("inspect" if phase == "complete" else phase) not in brief["authorized_phases"]:
+        if not isinstance(phase, str) or phase not in {"validation", "complete", "commit", "publish", "live-external"}:
+            raise ValueError("terminal prerequisite requires validation, complete, commit, publish or live-external")
+        if phase == "validation":
+            text(rule["validation_command_id"], "terminal prerequisite.validation_command_id")
+        if ("inspect" if phase in {"complete", "validation"} else phase) not in brief["authorized_phases"]:
             raise ValueError("terminal prerequisite phase exceeds the current request ceiling")
-        effects = strings(rule["effects"], "terminal prerequisite.effects", minimum=0 if phase == "complete" else 1)
-        if phase == "complete" and effects:
-            raise ValueError("completion prerequisites must not declare external effects")
+        effects = strings(rule["effects"], "terminal prerequisite.effects", minimum=0 if phase in {"complete", "validation"} else 1)
+        if phase in {"complete", "validation"} and effects:
+            raise ValueError("completion/validation prerequisites must not declare external effects")
         if not set(effects) <= set(brief["effect_scope"]):
             raise ValueError("terminal prerequisite effects exceed the current request scope")
         integer(rule["max_age_seconds"], "terminal prerequisite.max_age_seconds", 1, 86400)
@@ -64,10 +67,12 @@ def terminal_prerequisite_failures(context, target, brief: dict, action: dict,
                                    deadlines: list[tuple[float, float]] | None = None) -> list[str]:
     control = brief.get("terminal_control")
     completing = action["kind"] == "complete"
-    if control is None or not completing and (action["kind"] != "work" or action["phase"] == "inspect"):
+    validating = action["kind"] == "work" and isinstance(action.get("validation"), dict)
+    if control is None or not completing and not validating and (action["kind"] != "work" or action["phase"] == "inspect"):
         return []
     selected = [rule for rule in control["rules"] if
                 (completing and rule["phase"] == "complete") or
+                (validating and rule["phase"] == "validation" and rule["validation_command_id"] == action["validation"]["command_id"]) or
                 (not completing and rule["phase"] == action["phase"] and set(rule["effects"]) & set(action["effects"]))]
     if not selected:
         return []

@@ -110,8 +110,8 @@
       "owner_refs": [
         "ALATYR-CONTINUITY-001"
       ],
-      "estimated_words": 1604,
-      "content_digest": "sha256:98b5f3c820faee99c9e60edcf1fde76bab007edd63e08d218a24aed5e472f864"
+      "estimated_words": 1564,
+      "content_digest": "sha256:64d987d8a500c4c0fc8217f948dcb7c30ff3e88d0ad7cce85df8026ee2dfd6c3"
     },
     {
       "id": "framework.support.support-information-md",
@@ -168,8 +168,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1650,
-      "content_digest": "sha256:33f64b22ead6c9315682f2f5e9895996b3d680a12dfe11bfeb558000b952eb37"
+      "estimated_words": 1681,
+      "content_digest": "sha256:5f54ec21c3e6d007f15dbb98547e54c16ba60436d52b4341647684b79beab1ff"
     },
     {
       "id": "framework.support.test-delivery-efficiency-md",
@@ -202,8 +202,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1658,
-      "content_digest": "sha256:85f4639b10318eddec16c1eae16dbc9aa6575d304950ec8b4ede26993ed0b190"
+      "estimated_words": 1707,
+      "content_digest": "sha256:31462202b07a7d03e6106616e8431698aea340d428e1eeedc9be4bdca59f7e20"
     },
     {
       "id": "framework.support.test-first-development-md",

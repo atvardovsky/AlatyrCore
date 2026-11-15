@@ -66,6 +66,9 @@ class DispatchObservationTests(unittest.TestCase):
             capability["subagent_delegation"]["assignment_protocol"] = PROTOCOL
             receipt["capability_sha256"] = fixtures.canonical_value_digest(capability)
             receipt["policy_sha256"] = fixtures.canonical_value_digest(policy)
+            from tests.worker_model_fixtures import selection_fixture, write_selection
+            receipt["model_selection"] = write_selection(root, "single-model.json",
+                selection_fixture(capability_sha256=receipt["capability_sha256"]))
             with self.assertRaisesRegex(DelegationEvidenceError, "dispatch"):
                 validate_single_read_only_receipt(receipt, policy, capability, artifact_root=root)
             packet = receipt["packet"]
@@ -93,6 +96,10 @@ class DispatchObservationTests(unittest.TestCase):
             cap_path.write_text(json.dumps(capability))
             import hashlib
             tree["capability_evidence_sha256"] = hashlib.sha256(cap_path.read_bytes()).hexdigest()
+            for node in tree["nodes"]:
+                if node["depth"]:
+                    node["model_selection"] = write_selection(root, node["node_id"] + "-model.json",
+                        selection_fixture(node["packet_id"], node["node_id"], tree["capability_evidence_sha256"]))
             envelope = json.loads((root / tree["nodes"][1]["branch_envelope"]).read_text())
             envelope["capability_evidence_sha256"] = tree["capability_evidence_sha256"]
             bind_branch(root, tree, envelope=envelope)

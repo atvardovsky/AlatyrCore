@@ -349,7 +349,7 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
         coordinator_result["raw_payload"]["word_count"]
         + child_result["raw_payload"]["word_count"]
     )
-    return {
+    tree = {
         "schema_version": 3,
         "tree_kind": "alatyr-delegation-execution-tree",
         "operation_id": "op-1",
@@ -407,6 +407,12 @@ def recursive_execution_fixture(root: Path) -> dict[str, object]:
             "final_stop_reason_id": "evidence-sufficient",
         },
     }
+    from tests.worker_model_fixtures import selection_fixture, write_selection
+    for item in tree["nodes"]:
+        if item["depth"]:
+            item["model_selection"] = write_selection(root, item["node_id"] + "-model.json",
+                selection_fixture(item["packet_id"], item["node_id"], tree["capability_evidence_sha256"]))
+    return tree
 
 
 class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
@@ -484,6 +490,9 @@ class SingleReadOnlyDelegationReceiptTests(unittest.TestCase):
                 "residual_risk": "none",
             },
         }
+        from tests.worker_model_fixtures import selection_fixture, write_selection
+        receipt["model_selection"] = write_selection(root, "single-model.json",
+            selection_fixture(capability_sha256=receipt["capability_sha256"]))
         return receipt, policy, capability
 
     @staticmethod

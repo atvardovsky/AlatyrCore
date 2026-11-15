@@ -338,6 +338,8 @@ Required files:
 - `.ai/assistant/gates/test-first-development.md`
 - `.ai/assistant/templates/test-first-evidence.md`
 - `.ai/assistant/templates/test-execution-evidence.json`
+- `.ai/assistant/templates/qualification-review.json`
+- `.ai/assistant/templates/qualification-equivalence-review.json`
 - `.ai/assistant/templates/repair-review.json`
 - `.ai/assistant/templates/repair-qualification.json` when schema 2 is adopted
 - `.ai/framework/repair-qualification.md` when schema 2 is adopted
@@ -550,6 +552,7 @@ Required files:
 - `.ai/assistant/templates/worker-result.md`
 - `.ai/assistant/templates/worker-result.json`
 - `.ai/assistant/templates/single-read-only-delegation-receipt.json`
+- `.ai/assistant/templates/worker-model-selection.json`
 - `.ai/assistant/templates/delegation-branch-envelope.json`
 - `.ai/assistant/templates/delegation-branch-checkpoint.json`
 - `.ai/assistant/workers/role-catalog.json`

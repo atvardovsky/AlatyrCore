@@ -8,6 +8,7 @@
   "max_parallel_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
   "single_depth1_read_only_evidence": "lightweight-receipt",
   "dispatch_verification": "procedural",
+  "model_selection": "required",
   "full_tree_required_when": [
     "multiple-workers",
     "depth-two",
