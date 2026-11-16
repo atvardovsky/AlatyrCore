@@ -75,6 +75,54 @@ class DeliveryControlTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 contract.parse_brief(json.dumps({**self.brief, "delivery_control": value}).encode())
 
+    def test_repeat_admission_is_opt_in_and_checks_successful_prior_runs(self):
+        self.assertEqual(self.failures(), [])
+        self.history["attempts"] = [attempt_fixture(result="passed")]
+        self.assertEqual(self.failures(), [])
+        self.brief["delivery_control"]["repeat_admission"] = "required"
+        self.assertIn("repeat admission", ";".join(self.failures()))
+        repeat = {"previous_attempt": "attempt-1.json", "reason": "changed-input", "proof_id": "diagnosis"}
+        self.assertEqual(self.failures(repeat=repeat), [])
+        self.assertTrue(self.failures(repeat={**repeat, "previous_attempt": "old.json"}))
+        self.assertTrue(self.failures(repeat={**repeat, "reason": "execution-repair"}))
+        self.assertEqual(self.failures(repeat={**repeat, "reason": "distinct-required-evidence"}), [])
+        self.history["attempts"] = []
+        self.assertEqual(self.failures(), [])
+        self.assertTrue(self.failures(repeat=repeat))
+
+    def test_repeat_proof_and_existing_failure_and_budget_checks_compose(self):
+        self.brief["delivery_control"]["repeat_admission"] = "required"
+        self.history["attempts"] = [attempt_fixture()]
+        repeat = {"previous_attempt": "attempt-1.json", "reason": "execution-repair", "proof_id": "review"}
+        self.assertTrue(self.failures(repeat=repeat))  # Diagnosis still required.
+        self.assertEqual(self.failures(repeat=repeat, diagnosis_proof_id="diagnosis"), [])
+        for key in ("missing", "proof"):
+            self.assertTrue(self.failures(repeat={**repeat, "proof_id": key}, diagnosis_proof_id="diagnosis"))
+        proof = self.model["proof_obligations"][2]
+        for changes in ({"required": False}, {"status": "open"}, {"evidence_refs": ["old.json"]}):
+            original = copy.deepcopy(proof)
+            proof.update(changes)
+            self.assertTrue(self.failures(repeat=repeat, diagnosis_proof_id="diagnosis"))
+            proof.update(original)
+        self.brief["delivery_control"]["max_validation_seconds"] = 19
+        self.assertIn("max_validation_seconds", ";".join(self.failures(repeat=repeat, diagnosis_proof_id="diagnosis")))
+
+    def test_repeat_fields_reject_malformed_values_and_unknown_keys(self):
+        repeat = {"previous_attempt": "attempt-1.json", "reason": "changed-input", "proof_id": "review"}
+        for value in ({}, [], None, True, 1, "unknown"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                delivery.parse_validation(validation_fixture(repeat=value))
+            changed = copy.deepcopy(self.brief)
+            changed["delivery_control"]["repeat_admission"] = value
+            with self.assertRaises(ValueError):
+                contract.parse_brief(json.dumps(changed).encode())
+        for key in repeat:
+            for value in ({}, [], None, True, 1, ""):
+                with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                    delivery.parse_validation(validation_fixture(repeat={**repeat, key: value}))
+        with self.assertRaises(ValueError):
+            delivery.parse_validation(validation_fixture(repeat={**repeat, "extra": True}))
+
     def test_pilot_must_pass_before_expansion_or_broad_validation(self):
         self.model["proof_obligations"][0]["status"] = "open"
         self.assertEqual(self.failures(), [])
@@ -477,6 +525,28 @@ class RequestLifecycleTests(RequestLifecycleFixture):
             self.assertIn("diagnosis", json.loads(result.stdout)["reason"])
         history["attempts"] = []
         (self.target/self.brief["delivery_control"]["validation_history"]).write_text(json.dumps(history), encoding="utf-8")
+        self.assertEqual(hooks.review_request(self.target, self.brief_path, action)["status"], "request-consistent")
+
+    def test_repeat_after_success_is_blocked_through_cli_and_delegate(self):
+        history = delivery_fixture(self.brief)
+        self.brief["delivery_control"]["repeat_admission"] = "required"
+        history["attempts"] = [attempt_fixture(result="passed")]
+        path = self.target/self.brief["delivery_control"]["validation_history"]
+        path.write_text(json.dumps(history), encoding="utf-8")
+        self.write_brief()
+        action = self.action(phase="inspect", paths=[], validation=validation_fixture())
+        for entry in (ROOT/"tools/alatyr.py", ROOT/"templates/target/.ai/assistant/tools/alatyr_delegate.py"):
+            command = [sys.executable, "-B", str(entry), "lifecycle-checkpoint", "--target", str(self.target)]
+            if entry.name == "alatyr_delegate.py":
+                command += ["--framework-source", str(ROOT)]
+            result = subprocess.run(command+["review", "--request-brief", self.brief_path],
+                                    input=json.dumps(action), capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1, result.stdout+result.stderr)
+            report = json.loads(result.stdout)
+            self.assertIn("repeat admission", report["reason"])
+            self.assertFalse(report["authorization_granted"])
+        history["attempts"] = []
+        path.write_text(json.dumps(history), encoding="utf-8")
         self.assertEqual(hooks.review_request(self.target, self.brief_path, action)["status"], "request-consistent")
 
     def test_public_delivery_budget_boundaries_missing_history_and_null_control(self):

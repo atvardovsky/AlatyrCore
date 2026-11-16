@@ -90,6 +90,13 @@ separately; agent counts or growing records do not demonstrate faster completion
 
 ## Readiness Before Finalization
 
+Validate example invocations with the real command parser, without executing
+them. Verify discovered case identities and fixture capabilities, not just test
+counts. Collect independent authoring failures together; failed prerequisites
+block dependent expensive work, not unrelated safe inspection. Resolve a clean,
+durable tooling source matching the installed revision before execution; a
+temporary worktree or a newer directory name is not an exact source binding.
+
 Run cheap canonical authoring checks before expensive finalization: selected
 task/model/closure bindings, shapes and phase outcomes. Report defects together.
 Leave repairable generated drift to its renderer; early success is not acceptance.
@@ -100,3 +107,39 @@ Required publication stays pending until observed; do not repeat unreachable
 closure or remove gates to get a pass. Resolve conflicting target order with
 its owner. Update canonical knowledge alongside decisions; batch derived refresh
 on stable inputs. Existing evidence-equivalence rules still apply.
+
+## Repeat Admission
+
+Targets may explicitly adopt `delivery_control.repeat_admission: "required"`
+in the existing schema-2/3 request brief. Omission retains the legacy path; an
+upgrade must not enable it automatically. With retained attempts, every planned
+validation needs `validation.repeat`: exact `previous_attempt` (the latest
+attempt's `evidence_ref`), `reason`, and `proof_id`. Reasons are `changed-input`,
+`execution-repair`, or `distinct-required-evidence`. The proof must be required,
+passed, separate from pilot proofs, and reference that attempt. Execution repair
+requires a failed/interrupted predecessor. First runs omit `repeat`; a supplied
+repeat without a predecessor is invalid. Existing budgets, diagnosis, independent
+review and current-source requirements still apply, including after a prior pass.
+
+The primary reviews the reason's meaning: relevant changed inputs, a diagnosed
+and repaired execution failure, or a distinct original obligation/environment/
+independent review. A proof ID or hash alone establishes none of these. Exclude
+volatile transport variables, labels and timestamps from material-change claims;
+keep tooling/environment identity separate from relevant input differences.
+Confidence, worker replacement and cosmetic evidence edits justify no repeat.
+Apply this reasoning to reopened investigations and decisions too; the machine
+gate covers declared validation actions only, not arbitrary shell/model calls.
+
+Retain this one history and task identity across workers and retries. Report
+guarded entrypoints separately from raw calls and disabled/unverified hooks;
+never infer universal interception or enable hooks against target opt-outs.
+One owner schedules shared expensive checks; classify cost by actual work, not
+an agent's "cheap" label. Avoid duplicate compiler/build runs only when actual
+child coverage and current bindings prove equivalence; preserve required fresh
+acceptance and independent review. Track unjustified repeats, duplicate discovery,
+rework and completed original outcomes in existing effectiveness evidence.
+
+Keep project procedures segmented: a short mandatory kernel routes to task/phase
+leaves through existing indexes. Do not append every incident's full explanation
+to mandatory bootstrap. Preserve authorization, owners and applicable constraints.
+Tooling regression passes do not establish improved real-agent behavior.

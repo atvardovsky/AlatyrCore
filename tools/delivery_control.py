@@ -14,6 +14,8 @@ def parse_control(value: object, outcome_ids: set[str]) -> dict:
     required = {"pilot_outcome_ids", "validation_history", "max_expensive_runs", "max_validation_seconds"}
     if isinstance(value, dict) and "execution_review" in value:
         required.add("execution_review")
+    if isinstance(value, dict) and "repeat_admission" in value:
+        required.add("repeat_admission")
     control = fields(value, required, "delivery_control")
     pilots = strings(control["pilot_outcome_ids"], "pilot_outcome_ids", minimum=1)
     if not set(pilots) <= outcome_ids:
@@ -21,6 +23,8 @@ def parse_control(value: object, outcome_ids: set[str]) -> dict:
     request_path(control["validation_history"])
     integer(control["max_expensive_runs"], "max_expensive_runs", 1, MAX_ATTEMPTS)
     integer(control["max_validation_seconds"], "max_validation_seconds", 1, MAX_SECONDS)
+    if "repeat_admission" in control and control["repeat_admission"] != "required":
+        raise ValueError("repeat_admission must be required when adopted")
     if control.get("execution_review") is not None:
         from delivery_progress import parse_review_control
         parse_review_control(control["execution_review"])
@@ -31,9 +35,18 @@ def parse_validation(value: object) -> dict:
     required = {"command_id", "scope", "estimated_seconds", "diagnosis_proof_id", "independent_review_proof_id"}
     if isinstance(value, dict) and "execution_evidence" in value:
         required.add("execution_evidence")
+    if isinstance(value, dict) and "repeat" in value:
+        required.add("repeat")
     run = fields(value, required, "validation")
     if "execution_evidence" in run:
         request_path(run["execution_evidence"])
+    if "repeat" in run:
+        repeat = fields(run["repeat"], {"previous_attempt", "reason", "proof_id"}, "validation.repeat")
+        for key in ("previous_attempt", "proof_id"):
+            text(repeat[key], "validation.repeat." + key)
+        if not isinstance(repeat["reason"], str) or repeat["reason"] not in {
+                "changed-input", "execution-repair", "distinct-required-evidence"}:
+            raise ValueError("validation.repeat.reason requires an exact supported reason")
     text(run["command_id"], "validation.command_id")
     if not isinstance(run["scope"], str) or run["scope"] not in {"focused", "broad"}:
         raise ValueError("validation.scope must be focused or broad")
@@ -115,6 +128,20 @@ def delivery_failures(brief: dict, action: dict, model: dict, history: dict) -> 
         failures.append("latest validation attempt is not passed; do not report complete")
     if run is None:
         return failures
+    repeat = run.get("repeat")
+    if control.get("repeat_admission") == "required" and attempts and repeat is None:
+        failures.append("repeat admission requires the latest prior attempt, reason and linked required proof")
+    if repeat is not None:
+        if not attempts or repeat["previous_attempt"] != attempts[-1]["evidence_ref"]:
+            failures.append("repeat admission must bind the latest prior attempt")
+        proof_id = repeat["proof_id"]
+        proof = proofs.get(proof_id)
+        if (not passed(proof_id) or proof_id in pilot_proofs or
+                repeat["previous_attempt"] not in proof.get("evidence_refs", [])):
+            failures.append("repeat admission requires a distinct passed required proof linked to its prior attempt")
+        if (repeat["reason"] == "execution-repair" and attempts and
+                attempts[-1]["result"] not in {"failed", "interrupted"}):
+            failures.append("execution-repair requires a failed or interrupted prior attempt")
     if len(attempts) >= MAX_ATTEMPTS:
         failures.append("validation history is full; reassess without dropping earlier attempts")
     broad_runs = sum(row["scope"] == "broad" for row in attempts)

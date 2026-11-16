@@ -4,6 +4,18 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.144 - 2026-11-16
+
+- Add opt-in repeat admission to existing delivery controls: bind the latest
+  attempt and a passed required justification proof, including after success.
+  Preserve cumulative budgets, failure escalation and legacy unadopted paths.
+- Clarify material-input versus incidental metadata, parser/discovery preflight,
+  exact tooling provenance, shared expensive-check ownership, segmented project
+  procedures and model-plus-effort selection. Guard coverage is explicit;
+  tooling tests do not prove changed real-agent behavior.
+- Advance adapter schema to 119 and template version to 139. Adoption is explicit;
+  no hooks, global model settings, bootstrap ceiling or target policy is enabled.
+
 ## 0.1.0-alpha.143 - 2026-11-15
 
 - Add provider-neutral economical model/effort selection with target-declared

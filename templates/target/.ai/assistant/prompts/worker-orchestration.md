@@ -6,8 +6,8 @@ for decisions and convergence. Follow the normal authoritative route;
 load the full flow only for communication, ambiguity, conflict or repair.
 
 1. Load `.ai/assistant/assistant-capabilities.json` and only the selected
-   surface record. Continue only when current evidence verifies worker
-   availability and `worker_context_mode` is `isolated-explicit` or
+   surface record. Require current evidence of worker availability;
+   `worker_context_mode` must be `isolated-explicit` or
    `inherited-measured`. Unverified/unsafe context requires policy-permitted local
    work or a blocked required-delegation part, never invented capability.
 2. After successful preflight, load `.ai/assistant/task-decomposition.json`,
@@ -20,8 +20,8 @@ load the full flow only for communication, ambiguity, conflict or repair.
    allow it. Strategy and global obligation acceptance remain primary-owned.
 4. Apply canonical executor-preference precedence; `auto` stays cost-aware.
    Never delegate non-delegable work.
-5. Bind enabled role/capability and economical model/effort selection; obey role
-   ceilings. Otherwise use suggestion-only or sequential-primary fallback.
+5. Bind enabled role/capability; compare verified model/effort options, including
+   lower effort. Obey ceilings; otherwise use suggestion-only or sequential-primary fallback.
 6. Use `.ai/assistant/templates/single-read-only-delegation-receipt.json` for
    exactly one depth-one inspect-only worker with no writes, retries, child
    proposals, or overlap. Load the full execution-tree contracts for multiple
@@ -50,8 +50,8 @@ load the full flow only for communication, ambiguity, conflict or repair.
    Require structured findings with canonical-owner, surface, evidence, and
    proof-obligation references so the primary can merge results without loading
    every raw transcript.
-9. Review current results and contract-work evidence; accept prerequisites
-   before refilling ready work within remaining resource/review budgets.
+9. Review results and contract-work evidence; accept prerequisites
+   before refilling work within resource/review budgets.
    Explicitly select retries. Retain combined validation and primary-owned
    logical integrity, authorization, approval, commit and publish gates.
 10. Stop when acceptance/evidence are covered or a depth, worker, context,
@@ -63,5 +63,6 @@ Workers report assigned local proof evidence. They cannot change the primary
 strategy, waive obligations, accept primary-owned obligations, or promote a
 review pass to operation completion.
 
-Parallelism, model identity, speed, cost and quality claims require matching
+Shared checks/repeats follow `.ai/framework/test-delivery-efficiency.md`.
+Parallelism, model/effort, speed, cost and quality claims require matching
 capability record and result evidence.
