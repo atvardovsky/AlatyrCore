@@ -3,9 +3,17 @@
 
 from __future__ import annotations
 
+import sys
+
+from toolchain import python_failure
+
+_failure = python_failure()
+if _failure is not None:
+    print(f"FAIL: {_failure}", file=sys.stderr)
+    raise SystemExit(2)
+
 import json
 import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 

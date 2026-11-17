@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import math
+import os
+import sys
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -74,9 +76,39 @@ def configure_import_cache(mode: str, profile: str) -> None:
 def source_import_graph() -> LocalPythonImportGraph:
     global LOCAL_IMPORT_GRAPH
     if LOCAL_IMPORT_GRAPH is None:
+        configure_import_cache_from_environment()
         LOCAL_IMPORT_GRAPH = LocalPythonImportGraph(
             ROOT, scan_cache_factory=ImportScanCache if _IMPORT_CACHE_ENABLED else None)
     return LOCAL_IMPORT_GRAPH
+
+
+def configure_import_cache_from_environment() -> None:
+    """Apply an explicit child-checker cache policy with profile enforcement.
+
+    Child processes inherit ``ALATYR_SOURCE_CACHE`` from the runner. They must
+    still enforce acceptance restrictions themselves: a full/release child never
+    enables persistent analysis caching merely because its parent requested a
+    local developer cache.
+    """
+
+    mode = os.environ.get("ALATYR_SOURCE_CACHE", "off")
+    if mode == "off":
+        return
+    if mode != "local":
+        print(
+            f"WARN: unsupported ALATYR_SOURCE_CACHE value {mode!r}; using canonical analysis",
+            file=sys.stderr,
+        )
+        return
+    profile = os.environ.get("ALATYR_SOURCE_CHECK_PROFILE", "")
+    if profile in {"full", "release"}:
+        print(
+            f"WARN: ignoring ALATYR_SOURCE_CACHE=local for {profile} acceptance; "
+            "using canonical analysis",
+            file=sys.stderr,
+        )
+        return
+    configure_import_cache("local", profile or "quick")
 
 
 def flush_import_cache() -> None:

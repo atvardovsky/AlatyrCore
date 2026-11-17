@@ -5,6 +5,7 @@ from __future__ import annotations
 import fnmatch
 from dataclasses import dataclass
 from enum import Enum
+from functools import lru_cache
 from pathlib import PurePosixPath, PureWindowsPath
 
 
@@ -66,13 +67,20 @@ class PathSpec:
         return fnmatch.fnmatchcase(candidate, pattern)
 
 
+@lru_cache(maxsize=4096)
+def _compiled_spec(pattern: str, dialect: PathDialect) -> PathSpec:
+    """Process-local memoization only; never persisted or treated as evidence."""
+
+    return PathSpec(pattern, dialect)
+
+
 def matches_any(
     path: str,
     patterns: tuple[str, ...] | list[str],
     *,
     dialect: PathDialect = PathDialect.PORTABLE_FNMATCH_V1,
 ) -> bool:
-    return any(PathSpec(pattern, dialect).matches(path) for pattern in patterns)
+    return any(_compiled_spec(pattern, dialect).matches(path) for pattern in patterns)
 
 
 def select_paths(
@@ -81,5 +89,5 @@ def select_paths(
     *,
     dialect: PathDialect = PathDialect.PORTABLE_FNMATCH_V1,
 ) -> tuple[str, ...]:
-    specs = tuple(PathSpec(pattern, dialect) for pattern in patterns)
+    specs = tuple(_compiled_spec(pattern, dialect) for pattern in patterns)
     return tuple(sorted(path for path in paths if any(spec.matches(path) for spec in specs)))

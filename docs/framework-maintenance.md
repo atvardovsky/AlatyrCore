@@ -243,7 +243,9 @@ Before accepting a change, check:
   `--cache-mode local` also attempts bounded, per-check, content-addressed,
   fail-closed result reuse and is rejected by the release profile. Check
   identities include transitive local Python implementation dependencies.
-  Cache hits never replace cold release evidence.
+  Add `--source-cache local` for repeated developer runs to reuse derived
+  import observations; child checkers enforce their own full/release
+  restrictions. Cache hits never replace cold release evidence.
 - `python3 tools/alatyr.py plan-work --summary` is available as the read-only
   minimum-work preflight. Pass `--source-profile` for an explicit named source
   operation; automatic changed-path planning does not infer user intent. The

@@ -130,7 +130,11 @@ def _title_from_text(text: str, path: Path) -> str:
 
 
 def _title(path: Path) -> str:
-    return _title_from_text(path.read_text(encoding="utf-8"), path)
+    try:
+        text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"catalog source is not UTF-8 text: {path}") from exc
+    return _title_from_text(text, path)
 
 
 def _selectors(path: str, owner_refs: list[str]) -> dict[str, list[str]]:
@@ -455,6 +459,12 @@ def generated_directory_catalog_paths(root: Path, contour: str) -> set[Path]:
     }
 
 
+def _is_disposable_bytecode(path: Path) -> bool:
+    """Return True only for Python bytecode that is never catalog content."""
+
+    return "__pycache__" in path.parts or path.suffix in {".pyc", ".pyo"}
+
+
 def build_directory_catalog_contents(
     root: Path,
     contour: str,
@@ -463,22 +473,35 @@ def build_directory_catalog_contents(
     allowed_semantic_refs: set[str] | None = None,
 ) -> dict[str, str]:
     if selected_files is None:
-        all_files = [
-            path
-            for path in root.rglob("*")
-            if path.is_file()
-            and path.name
-            not in {
+        all_files = []
+        for path in root.rglob("*"):
+            if not path.is_file():
+                continue
+            if path.name in {
                 INDEX_NAME,
                 "bootstrap-index.json",
                 "bootstrap-integrity.json",
                 ".gitignore",
-            }
-        ]
+            }:
+                continue
+            if _is_disposable_bytecode(path):
+                print(
+                    f"WARN: ignored disposable bytecode in {contour} catalog: "
+                    f"{path.relative_to(root).as_posix()}",
+                    file=sys.stderr,
+                )
+                continue
+            all_files.append(path)
     else:
         all_files = []
         for relpath in sorted(selected_files):
             path = root / relpath
+            if _is_disposable_bytecode(path):
+                print(
+                    f"WARN: ignored disposable bytecode in {contour} catalog: {relpath}",
+                    file=sys.stderr,
+                )
+                continue
             if path.name in {
                 INDEX_NAME,
                 "bootstrap-index.json",

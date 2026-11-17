@@ -3,6 +3,15 @@
 
 from __future__ import annotations
 
+import sys
+
+from toolchain import REQUIRED_PACKAGES, ToolchainError, preflight, python_failure
+
+_failure = python_failure()
+if _failure is not None:
+    print(f"FAIL: {_failure}", file=sys.stderr)
+    raise SystemExit(2)
+
 import argparse
 import concurrent.futures
 import hashlib
@@ -14,7 +23,6 @@ import signal
 import shutil
 import string
 import subprocess
-import sys
 import tempfile
 import time
 from dataclasses import dataclass
@@ -754,6 +762,7 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
         max(1, int(check.get("_child_capacity", 1)))
     )
     environment["ALATYR_CHECK_VERBOSE"] = "1" if check.get("_verbose") else "0"
+    environment["ALATYR_SOURCE_CACHE"] = str(check.get("_source_cache", "off"))
     if check["id"] == "source-unit-tests":
         environment["ALATYR_TEST_DURATION_HINTS_JSON"] = json.dumps(check.get("_unit_duration_hints", {}))
     artifact_root = check.get("_run_artifact_root")
@@ -1945,6 +1954,11 @@ def main() -> int:
     parser = argument_parser()
     args = parser.parse_args()
     try:
+        preflight(require_git=True, packages=() if args.list else REQUIRED_PACKAGES)
+    except ToolchainError as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 2
+    try:
         jobs = resolve_job_count(args.jobs)
     except ValueError as exc:
         parser.error(str(exc))
@@ -1977,7 +1991,7 @@ def main() -> int:
         baseline = effective_baseline(args.profile, changed_from, args.from_ref)
         plan = select_check_plan(checks, args.profile, changed_from,
                                  validation_stage=args.validation_stage)
-        selected = [{**check, "_verbose": args.verbose} for check in plan.selected]
+        selected = [{**check, "_verbose": args.verbose, "_source_cache": args.source_cache} for check in plan.selected]
         commands = [resolved_command(check, baseline) for check in selected]
         commands_by_id = {
             check["id"]: command for check, command in zip(selected, commands)

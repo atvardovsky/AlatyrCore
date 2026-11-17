@@ -382,6 +382,37 @@ class SourceCacheInvocationTests(unittest.TestCase):
                     check_all.main()
                 self.assertEqual(result.exception.code, 2)
 
+    def test_child_environment_policy_is_bounded_by_profile(self):
+        with patch.dict(
+            os.environ,
+            {"ALATYR_SOURCE_CACHE": "local", "ALATYR_SOURCE_CHECK_PROFILE": "quick"},
+            clear=False,
+        ):
+            manifest.configure_import_cache("off", "quick")
+            manifest.configure_import_cache_from_environment()
+            self.assertTrue(manifest._IMPORT_CACHE_ENABLED)
+
+        for profile in ("full", "release"):
+            with self.subTest(profile=profile), patch.dict(
+                os.environ,
+                {"ALATYR_SOURCE_CACHE": "local", "ALATYR_SOURCE_CHECK_PROFILE": profile},
+                clear=False,
+            ), contextlib.redirect_stderr(io.StringIO()) as error:
+                manifest.configure_import_cache("off", profile)
+                manifest.configure_import_cache_from_environment()
+                self.assertFalse(manifest._IMPORT_CACHE_ENABLED)
+                self.assertIn("ignoring ALATYR_SOURCE_CACHE=local", error.getvalue())
+
+        with patch.dict(
+            os.environ,
+            {"ALATYR_SOURCE_CACHE": "unexpected", "ALATYR_SOURCE_CHECK_PROFILE": "quick"},
+            clear=False,
+        ), contextlib.redirect_stderr(io.StringIO()) as error:
+            manifest.configure_import_cache("off", "quick")
+            manifest.configure_import_cache_from_environment()
+            self.assertFalse(manifest._IMPORT_CACHE_ENABLED)
+            self.assertIn("unsupported ALATYR_SOURCE_CACHE", error.getvalue())
+
     def test_invocation_reset_clears_both_dependency_memos(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

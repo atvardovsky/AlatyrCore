@@ -3,6 +3,15 @@
 
 from __future__ import annotations
 
+import sys
+
+from toolchain import python_failure
+
+_failure = python_failure()
+if _failure is not None:
+    print(f"FAIL: {_failure}", file=sys.stderr)
+    raise SystemExit(2)
+
 import argparse
 import heapq
 import io
@@ -10,7 +19,6 @@ import json
 import math
 import os
 import re
-import sys
 import time
 import unittest
 import statistics
@@ -194,10 +202,9 @@ def load_suite(paths: list[Path] | None, *, root: Path = ROOT) -> unittest.TestS
     loader = unittest.defaultTestLoader
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
-    if paths is None:
-        return loader.discover(str(root / "tests"), pattern="test_*.py")
+    selected = _all_test_paths(root) if paths is None else paths
     suite = unittest.TestSuite()
-    for path in paths:
+    for path in selected:
         suite.addTests(loader.loadTestsFromName(_test_module_name(path, root=root)))
     return suite
 
@@ -295,13 +302,28 @@ def checked_shard_results(
     return [by_id[item_id] for item_id in expected_ids]
 
 
+def execution_shards(
+    paths: list[Path], capacity: int, hints: dict[str, float]
+) -> list[list[Path]]:
+    """Return execution shards, isolating every file when serial.
+
+    A capacity-one run cannot rely on process isolation between test modules.
+    One file per subprocess preserves the same case inventory and intentional
+    integration coverage at the cost of bounded interpreter startup work.
+    """
+
+    if capacity == 1:
+        return [[path] for path in paths]
+    return adaptive_test_shards(paths, capacity, hints)
+
+
 def run_shards(
     paths: list[Path], capacity: int, *, hints: dict[str, float], verbose: bool
 ) -> int:
     if not paths:
         print("FAIL: no files selected for sharded execution", file=sys.stderr)
         return 1
-    shards = adaptive_test_shards(paths, capacity, hints)
+    shards = execution_shards(paths, capacity, hints)
     flattened = [path for shard in shards for path in shard]
     if sorted(flattened) != sorted(paths) or len(flattened) != len(set(flattened)):
         print("FAIL: unit-test shard coverage is incomplete or duplicated", file=sys.stderr)
@@ -406,7 +428,7 @@ def main() -> int:
         return 0
     all_paths = _all_test_paths() if selected_paths is None else selected_paths
     capacity = child_capacity()
-    if not args.test_file and capacity > 1 and len(all_paths) > 1:
+    if not args.test_file and (capacity > 1 or selected_paths is None) and len(all_paths) > 1:
         hint_payload: str | None = None
         if args.duration_hints is not None:
             try:

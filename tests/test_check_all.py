@@ -164,7 +164,8 @@ class CheckGraphTests(unittest.TestCase):
             (root / "tests").mkdir()
             (root / "tests/__init__.py").touch()
             for name in ("check_source_unit_tests.py", "parallel_execution.py",
-                         "local_python_import_graph.py", "source_test_timing.py"):
+                         "local_python_import_graph.py", "source_test_timing.py",
+                         "toolchain.py"):
                 shutil.copyfile(ROOT / "tools" / name, root / "tools" / name)
             (root / "tests/test_fast.py").write_text(
                 "import unittest\nclass Fast(unittest.TestCase):\n def test_pass(self): pass\n")
@@ -191,8 +192,9 @@ class CheckGraphTests(unittest.TestCase):
                         started.set()
                         return process
                     def interrupt():
-                        if started.wait(2):
-                            while not stop.wait(0.01):
+                        if started.wait(5):
+                            deadline = time.monotonic() + 10
+                            while time.monotonic() < deadline and not stop.wait(0.01):
                                 if all(path.is_file() for path in acknowledgements):
                                     os.kill(roots[0].pid, signal.SIGINT)
                                     signaled.set()
@@ -202,7 +204,7 @@ class CheckGraphTests(unittest.TestCase):
                         monitor.start()
                     item = check("timed-real-shards")
                     item.update(command=[str(root / "tools/check_source_unit_tests.py")],
-                                timeout_seconds=2, _child_capacity=3)
+                                timeout_seconds=10, _child_capacity=3)
                     try:
                         with patch.object(checker.subprocess, "Popen", side_effect=launch):
                             result = run_check(item, None)
@@ -1238,6 +1240,22 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(optional.result[1], "0\n")
         self.assertEqual(required.result[0], 0)
         self.assertEqual(required.result[1], "1\n")
+
+    def test_runner_exports_explicit_source_cache_policy(self) -> None:
+        item = check("cache-policy")
+        item["command"] = [
+            "-c",
+            "import os; print(os.environ.get('ALATYR_SOURCE_CACHE', 'missing'))",
+        ]
+        item["_source_cache"] = "local"
+        local = run_check(item, None)
+        item["_source_cache"] = "off"
+        off = run_check(item, None)
+
+        self.assertEqual(local.result[0], 0)
+        self.assertEqual(local.result[1], "local\n")
+        self.assertEqual(off.result[0], 0)
+        self.assertEqual(off.result[1], "off\n")
 
     def test_process_timeout_terminates_descendants(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

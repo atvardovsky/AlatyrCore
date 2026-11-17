@@ -22,9 +22,18 @@ from check_source_unit_tests import (  # noqa: E402
     load_duration_hints,
     test_shards,
     load_suite,
+    execution_shards,
     explicit_test_modules,
     checked_shard_results,
 )
+
+
+def _flatten_suite(suite: unittest.TestSuite):
+    for item in suite:
+        if isinstance(item, unittest.TestSuite):
+            yield from _flatten_suite(item)
+        else:
+            yield item
 
 
 class SourceUnitTestSelectionTests(unittest.TestCase):
@@ -197,14 +206,91 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
         with patch.dict(os.environ, {}, clear=True), patch.object(sys, "dont_write_bytecode", False), patch.object(sys, "argv", ["source-unit-tests"]), patch.object(runner, "_all_test_paths", return_value=[]), patch.object(runner, "load_suite", return_value=suite), patch.object(runner, "child_capacity", return_value=1), redirect_stdout(io.StringIO()):
             self.assertEqual(runner.main(), 0)
 
-    def test_serial_discovery_has_repository_root_for_shared_fixtures(self):
+    def test_complete_suite_uses_package_qualified_loading(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            with patch.object(unittest.defaultTestLoader, "discover", side_effect=lambda *a, **k: unittest.TestSuite() if str(root) in sys.path else self.fail("root missing")):
-                try:
-                    load_suite(None, root=root)
-                finally:
+            tests = root / "tests"
+            tests.mkdir()
+            (tests / "test_alpha.py").write_text(
+                "import unittest\n"
+                "class Alpha(unittest.TestCase):\n"
+                " def test_ok(self): pass\n",
+                encoding="utf-8",
+            )
+            (tests / "test_beta.py").write_text(
+                "import unittest\n"
+                "class Beta(unittest.TestCase):\n"
+                " def test_ok(self): pass\n",
+                encoding="utf-8",
+            )
+            try:
+                suite = load_suite(None, root=root)
+                self.assertIn(str(root), sys.path)
+            finally:
+                if str(root) in sys.path:
                     sys.path.remove(str(root))
+        ids = [test.id() for test in _flatten_suite(suite)]
+        self.assertEqual(len(ids), 2)
+        self.assertTrue(all(identifier.startswith("tests.test_") for identifier in ids))
+        self.assertCountEqual(
+            ids,
+            ["tests.test_alpha.Alpha.test_ok", "tests.test_beta.Beta.test_ok"],
+        )
+
+    def test_package_qualified_loading_avoids_tools_test_name_collision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tests").mkdir()
+            (root / "tools").mkdir()
+            (root / "tools/test_collision.py").write_text(
+                "raise AssertionError('tools helper must not be imported as a test')\n",
+                encoding="utf-8",
+            )
+            (root / "tests/test_collision.py").write_text(
+                "import unittest\n"
+                "class Collision(unittest.TestCase):\n"
+                " def test_ok(self): pass\n",
+                encoding="utf-8",
+            )
+            tools_path = str(root / "tools")
+            sys.path.insert(0, tools_path)
+            try:
+                suite = load_suite(None, root=root)
+            finally:
+                if tools_path in sys.path:
+                    sys.path.remove(tools_path)
+                if str(root) in sys.path:
+                    sys.path.remove(str(root))
+        self.assertEqual(
+            [test.id() for test in _flatten_suite(suite)],
+            ["tests.test_collision.Collision.test_ok"],
+        )
+
+    def test_serial_execution_isolates_each_file_and_preserves_inventory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tests").mkdir()
+            paths = [root / "tests/test_one.py", root / "tests/test_two.py"]
+            for path in paths:
+                path.write_text("import unittest\n", encoding="utf-8")
+            serial = execution_shards(paths, 1, {})
+            self.assertEqual(serial, [[paths[0]], [paths[1]]])
+            parallel = execution_shards(paths, 2, {})
+            self.assertCountEqual([path for shard in parallel for path in shard], paths)
+            self.assertEqual(len({path for shard in parallel for path in shard}), len(paths))
+
+    def test_complete_run_uses_subprocess_scheduler_at_capacity_one(self):
+        import check_source_unit_tests as runner
+        with patch.object(sys, "argv", ["source-unit-tests"]), \
+                patch.dict(os.environ, {}, clear=True), \
+                patch.object(runner, "_all_test_paths", return_value=[ROOT / "tests/test_yaml_support.py", ROOT / "tests/test_parallel_execution.py"]), \
+                patch.object(runner, "child_capacity", return_value=1), \
+                patch.object(runner, "run_shards", return_value=0) as shards, \
+                redirect_stdout(io.StringIO()):
+            self.assertEqual(runner.main(), 0)
+        shards.assert_called_once()
+        self.assertEqual(shards.call_args.args[1], 1)
+
     def test_docs_only_change_selects_no_unit_tests(self) -> None:
         self.assertEqual(focused_test_paths(["README.md"], root=ROOT), [])
 

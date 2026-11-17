@@ -1253,6 +1253,16 @@ through `constraints-ci.txt`; update and validate the complete pinned set as one
 dependency change rather than allowing each platform to resolve unrelated
 versions.
 
+Run the lightweight prerequisite check first when the environment is uncertain:
+
+```sh
+python3 tools/check_toolchain.py --require-git
+```
+
+It reports one actionable Python, package, or Git failure before source
+analysis. This is a source-tooling requirement, not a Markdown framework or
+target-adapter requirement.
+
 The workflow at `.github/workflows/cross-platform-source-checks.yml` runs the
 full suite on the minimum and current Python versions on Linux and the portable
 contract slice on macOS and Windows. Every job writes a machine-readable report
@@ -1274,6 +1284,9 @@ python3 tools/check_all.py --profile platform
 python3 tools/check_all.py --profile full --report /tmp/alatyr-source-checks.json
 python3 tools/check_all.py --profile fast --jobs auto --cache-mode timing
 python3 tools/check_all.py --profile fast --cache-mode local
+python3 tools/check_all.py --profile quick --jobs auto --cache-mode local --source-cache local
+python3 tools/check_toolchain.py --require-git
+python3 tools/alatyr.py check-toolchain
 python3 tools/check_all.py --list
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py check-source-focused --changed-from HEAD --list
@@ -1293,6 +1306,9 @@ py -3 .\tools\check_all.py --profile platform
 py -3 .\tools\check_all.py --profile full --report C:\Temp\alatyr-source-checks.json
 py -3 .\tools\check_all.py --profile fast --jobs auto --cache-mode timing
 py -3 .\tools\check_all.py --profile fast --cache-mode local
+py -3 .\tools\check_all.py --profile quick --jobs auto --cache-mode local --source-cache local
+py -3 .\tools\check_toolchain.py --require-git
+py -3 .\tools\alatyr.py check-toolchain
 py -3 .\tools\check_all.py --list
 .\tools\alatyr.ps1 check-source-focused
 .\tools\alatyr.ps1 check-source-focused --changed-from HEAD --list

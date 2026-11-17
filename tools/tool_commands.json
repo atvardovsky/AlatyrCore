@@ -2,6 +2,13 @@
   "schema_version": 1,
   "commands": [
     {
+      "name": "check-toolchain",
+      "script": "check_toolchain.py",
+      "purpose": "report source-tooling Python, package and Git prerequisites without running source checks",
+      "write_scope": "none",
+      "default_arguments": ["--require-git"]
+    },
+    {
       "name": "review-qualification",
       "script": "inspect_qualification_evidence.py",
       "purpose": "review bounded current and retained case evidence without fresh acceptance or test execution",

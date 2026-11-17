@@ -914,5 +914,34 @@ class ContextCatalogHistoricalIsolationTests(unittest.TestCase):
             self.assertEqual(self._snapshot(historical), original)
 
 
+    def test_directory_catalog_skips_disposable_bytecode_but_keeps_unknown_text_files(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "README.md").write_text("# Title\n", encoding="utf-8")
+            (root / "notes.txt").write_text("ordinary project note\n", encoding="utf-8")
+            (root / "__pycache__").mkdir()
+            (root / "__pycache__/x.cpython-310.pyc").write_bytes(b"\x00\xfb")
+            stderr = io.StringIO()
+            with redirect_stderr(stderr):
+                contents = build_directory_catalog_contents(root, "assistant")
+            rendered = "\n".join(contents.values())
+            self.assertIn("README.md", rendered)
+            self.assertIn("notes.txt", rendered)
+            self.assertNotIn("x.cpython-310.pyc", rendered)
+            self.assertIn("ignored disposable bytecode", stderr.getvalue())
+
+            stderr = io.StringIO()
+            with redirect_stderr(stderr):
+                explicit = build_directory_catalog_contents(
+                    root,
+                    "assistant",
+                    selected_files={"__pycache__/x.cpython-310.pyc"},
+                )
+            self.assertFalse(
+                any("x.cpython-310.pyc" in text for text in explicit.values())
+            )
+            self.assertIn("ignored disposable bytecode", stderr.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()
