@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
@@ -10,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from check_cross_platform_tools import (  # noqa: E402
+    EXPECTED_COMMANDS,
     changed_tree_paths,
     source_tool_surface_failures,
     tree_hashes,
@@ -46,6 +48,11 @@ def documentation_with_posix(arguments: list[str]) -> dict[str, str]:
 
 
 class CrossPlatformToolTests(unittest.TestCase):
+    def test_tool_command_manifest_matches_expected_command_surface(self) -> None:
+        data = json.loads((ROOT / "tools/tool_commands.json").read_text(encoding="utf-8"))
+        names = {command["name"] for command in data["commands"]}
+        self.assertEqual(names, EXPECTED_COMMANDS)
+
     def test_lookup_examples_use_the_canonical_parser_without_execution(self):
         prefix = "python3 tools/alatyr.py project-lookup"
         valid = prefix + ' --target /example --question "Explain selected code" --source src/core.py'

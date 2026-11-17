@@ -40,7 +40,11 @@ VERIFY_UPGRADE_INVOCATIONS = (
     DocumentedInvocation(".\\tools\\alatyr.ps1 verify-upgrade", "powershell"),
     DocumentedInvocation("tools\\alatyr.cmd verify-upgrade", "cmd"),
 )
+# Keep this explicit surface in sync with tools/tool_commands.json.
+# tests/test_cross_platform_tools.py enforces exact parity so a new command
+# cannot bypass the platform check.
 EXPECTED_COMMANDS = {
+    "check-toolchain",
     "project-lookup",
     "plan-worker-model",
     "review-qualification",
