@@ -408,6 +408,15 @@ def _non_inert_files(state: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
+def _has_inert_files(state: dict[str, Any]) -> bool:
+    return any(
+        isinstance(item, dict)
+        and isinstance(item.get("path"), str)
+        and is_inert_support_path(item["path"])
+        for item in state.get("files", [])
+    )
+
+
 def state_differences(before: dict[str, Any], after: dict[str, Any]) -> list[SupportDifference]:
     before_files = {
         path: item.get("digest") for path, item in _non_inert_files(before).items()
@@ -460,10 +469,16 @@ def state_is_current(recorded: dict[str, Any], current: dict[str, Any]) -> bool:
         and recorded.get("policy_digest") == current.get("policy_digest")
     ):
         return False
-    # Historical task evidence is retained but inert. An installed state that
-    # still carries such entries is current when every non-inert file record
-    # matches (classification, kind, size and group included).
-    return _non_inert_files(recorded) == _non_inert_files(current)
+    if _has_inert_files(recorded) or _has_inert_files(current):
+        # Legacy snapshots may still include inert historical task evidence.
+        # Compare every active file record completely; aggregate digests that
+        # include archived entries cannot be compared to the current aggregate.
+        return _non_inert_files(recorded) == _non_inert_files(current)
+    return (
+        recorded.get("root_digest") == current.get("root_digest")
+        and recorded.get("groups") == current.get("groups")
+        and recorded.get("files") == current.get("files")
+    )
 
 
 def render_state(state: dict[str, Any]) -> str:

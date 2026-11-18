@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -15,6 +16,9 @@ from support_state import (
     state_differences,
     state_is_current,
 )
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def policy() -> dict[str, object]:
@@ -212,12 +216,101 @@ class SupportStateTests(unittest.TestCase):
         )
         self.assertFalse(state_is_current(recorded, current))
 
+    def test_tampered_aggregate_digests_fail_without_inert_entries(self) -> None:
+        target = self.make_target()
+        current = build_support_state(target)
+        zero = "sha256:" + "0" * 64
+
+        root_tampered = json.loads(render_state(current))
+        root_tampered["root_digest"] = zero
+        self.assertFalse(state_is_current(root_tampered, current))
+
+        group_tampered = json.loads(render_state(current))
+        group_tampered["groups"][0]["digest"] = zero
+        self.assertFalse(state_is_current(group_tampered, current))
+
+    def test_legacy_inert_state_still_rejects_active_classification_change(self) -> None:
+        target = self.make_target()
+        current = build_support_state(target)
+        recorded = json.loads(render_state(current))
+        recorded["files"].append(
+            {
+                "path": ".ai/assistant/task-evidence/historical-git-trees/abc/.ai/project/x.json",
+                "kind": "file",
+                "classification": "exact-contract",
+                "classification_id": "adapter",
+                "group": "assistant",
+                "digest": "sha256:legacy",
+                "canonical_size": 1,
+            }
+        )
+        recorded["files"][0]["classification"] = "derived"
+        self.assertFalse(state_is_current(recorded, current))
+
     def test_non_inert_metadata_difference_still_fails_freshness(self) -> None:
         target = self.make_target()
         current = build_support_state(target)
         recorded = json.loads(render_state(current))
         recorded["files"][0]["classification"] = "derived"
         self.assertFalse(state_is_current(recorded, current))
+
+    def test_snapshot_cli_rejects_tampered_aggregate_digests(self) -> None:
+        target = self.make_target()
+        baseline = build_support_state(target)
+        state_path = target / ".ai/support-state.json"
+        state_path.write_text(render_state(baseline), encoding="utf-8")
+
+        def run() -> subprocess.CompletedProcess[str]:
+            return subprocess.run(
+                [
+                    sys.executable,
+                    "-B",
+                    str(ROOT / "tools/snapshot_target_support.py"),
+                    "--target",
+                    str(target),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertEqual(run().returncode, 0)
+
+        zero = "sha256:" + "0" * 64
+        root_tampered = json.loads(render_state(baseline))
+        root_tampered["root_digest"] = zero
+        state_path.write_text(json.dumps(root_tampered), encoding="utf-8")
+        self.assertEqual(run().returncode, 1)
+
+        group_tampered = json.loads(render_state(baseline))
+        group_tampered["groups"][0]["digest"] = zero
+        state_path.write_text(json.dumps(group_tampered), encoding="utf-8")
+        self.assertEqual(run().returncode, 1)
+
+        legacy = json.loads(render_state(baseline))
+        legacy["files"].append(
+            {
+                "path": ".ai/assistant/task-evidence/historical-git-trees/abc/.ai/project/x.json",
+                "kind": "file",
+                "classification": "exact-contract",
+                "classification_id": "adapter",
+                "group": "assistant",
+                "digest": "sha256:legacy",
+                "canonical_size": 1,
+            }
+        )
+        state_path.write_text(json.dumps(legacy), encoding="utf-8")
+        self.assertEqual(run().returncode, 0)
+
+        legacy["files"][0]["classification"] = "derived"
+        state_path.write_text(json.dumps(legacy), encoding="utf-8")
+        self.assertEqual(run().returncode, 1)
+
+        state_path.write_text(render_state(baseline), encoding="utf-8")
+        (target / ".ai/project/rule.md").write_text("changed\n", encoding="utf-8")
+        changed = run()
+        self.assertEqual(changed.returncode, 1)
+        self.assertIn("FAIL: modified .ai/project/rule.md", changed.stderr)
 
     def test_unclassified_file_fails_closed(self) -> None:
         target = self.make_target()
