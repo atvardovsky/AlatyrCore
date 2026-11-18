@@ -7,7 +7,12 @@ import json
 import sys
 from pathlib import Path
 
-from context_catalog import ContextCatalogError, load_codebook, validate_context_catalog
+from context_catalog import (
+    CatalogItem,
+    ContextCatalogError,
+    load_codebook,
+    validate_context_catalog,
+)
 from render_context_catalogs import INDEX_NAME, framework_base_files
 
 
@@ -15,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FRAMEWORK = ROOT / "framework"
 TARGET = ROOT / "templates" / "target"
 CODEBOOK = FRAMEWORK / "semantics" / "index.json"
+RULE_REGISTRY = FRAMEWORK / "rule-registry.json"
 CONTEXT_OWNER = FRAMEWORK / "context-profiles.md"
 OPERATION_CATALOG = TARGET / ".ai" / "assistant" / "operation-catalog.json"
 REQUIRED_PRELOAD_TERMS = {
@@ -62,6 +68,34 @@ def semantic_operation_selector_failures(
             failures.append(
                 f"semantic shard {path.name} names unknown operations: {unknown}"
             )
+    return failures
+
+
+def relationship_failures(
+    items: list[CatalogItem], rule_ids: set[str]
+) -> list[str]:
+    """Check owner references, rule reachability, and duplicate content."""
+
+    failures: list[str] = []
+    referenced: set[str] = set()
+    digests: dict[str, str] = {}
+    for item in items:
+        refs = set(item.owner_refs) | set(item.selectors.get("rule_ids", ()))
+        unknown = sorted(refs - rule_ids)
+        if unknown:
+            failures.append(f"{item.path} names unknown rule owners: {unknown}")
+        referenced.update(refs)
+        if item.kind == "content":
+            previous = digests.get(item.content_digest)
+            if previous is not None and previous != item.path:
+                failures.append(
+                    f"duplicate catalog content: {previous} and {item.path}"
+                )
+            else:
+                digests[item.content_digest] = item.path
+    missing = sorted(rule_ids - referenced)
+    if missing:
+        failures.append(f"rule registry entries lack context ownership: {missing}")
     return failures
 
 
@@ -117,6 +151,31 @@ def main() -> int:
         failures.append(
             "framework file inventory must stay outside its recursive digest catalog"
         )
+    try:
+        registry = json.loads(RULE_REGISTRY.read_text(encoding="utf-8"))
+        rules = registry.get("rules") if isinstance(registry, dict) else None
+        if not isinstance(rules, list):
+            raise ValueError("rule registry rules must be a list")
+        rule_ids = {
+            rule["id"]
+            for rule in rules
+            if isinstance(rule, dict) and isinstance(rule.get("id"), str)
+        }
+        if len(rule_ids) != len(rules):
+            raise ValueError("rule registry contains invalid or duplicate rule IDs")
+        failures.extend(
+            relationship_failures(
+                all_items := [
+                    item
+                    for resolution in resolutions.values()
+                    for item in resolution.items
+                ],
+                rule_ids,
+            )
+        )
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        failures.append(f"rule relationship contract: {exc}")
+        all_items = []
     try:
         context_owner = CONTEXT_OWNER.read_text(encoding="utf-8")
     except OSError as exc:
@@ -210,6 +269,7 @@ def main() -> int:
             for contour, resolution in resolutions.items()
         )
         + f" terms={len(resolved_terms)}"
+        + f" supporting={sum(1 for item in all_items if item.kind == 'content' and not item.owner_refs and not item.selectors.get('rule_ids'))}"
     )
     return 0
 

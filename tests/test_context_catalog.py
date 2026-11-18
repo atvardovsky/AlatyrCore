@@ -34,7 +34,7 @@ from render_context_catalogs import (
     build_directory_catalog_contents,
     build_framework_catalog_contents,
 )
-from check_context_catalogs import semantic_operation_selector_failures  # noqa: E402
+from check_context_catalogs import relationship_failures, semantic_operation_selector_failures  # noqa: E402
 import render_context_catalogs as source_catalogs
 import render_installed_context_catalogs as installed_catalogs
 
@@ -941,6 +941,38 @@ class ContextCatalogHistoricalIsolationTests(unittest.TestCase):
                 any("x.cpython-310.pyc" in text for text in explicit.values())
             )
             self.assertIn("ignored disposable bytecode", stderr.getvalue())
+
+
+    def test_relationship_failures_reject_unknown_owner_duplicate_and_missing_rule(self) -> None:
+        def item(path: str, rule: str, digest: str) -> CatalogItem:
+            return CatalogItem(
+                item_id=path,
+                kind="content",
+                path=path,
+                summary=path,
+                selectors={},
+                load_when=("test",),
+                semantic_refs=(),
+                owner_refs=(rule,),
+                estimated_words=1,
+                estimated_characters=1,
+                content_digest=digest,
+            )
+
+        self.assertEqual(
+            relationship_failures(
+                [item("a.md", "R1", "d1"), item("b.md", "R2", "d2")],
+                {"R1", "R2"},
+            ),
+            [],
+        )
+        failures = relationship_failures(
+            [item("a.md", "R1", "d1"), item("b.md", "R2", "d1")],
+            {"R1", "R3"},
+        )
+        self.assertTrue(any("unknown rule owners" in failure for failure in failures))
+        self.assertTrue(any("duplicate catalog content" in failure for failure in failures))
+        self.assertTrue(any("lack context ownership" in failure for failure in failures))
 
 
 if __name__ == "__main__":
