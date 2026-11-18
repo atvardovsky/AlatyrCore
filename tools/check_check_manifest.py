@@ -47,6 +47,25 @@ def evidence_contract_routing_failures(checks: list[dict[str, Any]]) -> list[str
     return failures
 
 
+def evidence_contract_profile_failures(checks: list[dict[str, Any]]) -> list[str]:
+    """Require the evidence status contract to run in local profiles.
+
+    The digest binds every contract input. Keeping the check only in remote
+    profiles lets contract drift escape local validation and fail later in
+    full CI.
+    """
+
+    evidence_checks = [check for check in checks if check["id"] == "evidence-status"]
+    if len(evidence_checks) != 1:
+        return ["manifest must define exactly one evidence-status check"]
+    missing = sorted({"quick", "fast"} - set(evidence_checks[0]["profiles"]))
+    if missing:
+        return [
+            "evidence-status must run in local profiles: " + ", ".join(missing)
+        ]
+    return []
+
+
 def tool_command_routing_failures(checks: list[dict[str, Any]]) -> list[str]:
     """Require every stable tool command script to be routed by source checks."""
 
@@ -122,6 +141,7 @@ def main() -> int:
             failures.append(f"release-only helper is not an approved release gate: {check['id']}")
 
     failures.extend(evidence_contract_routing_failures(checks))
+    failures.extend(evidence_contract_profile_failures(checks))
     failures.extend(tool_command_routing_failures(checks))
 
     drift_commands = [

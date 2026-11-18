@@ -16,6 +16,7 @@ from check_check_manifest import (  # noqa: E402
     SourcePathIndex,
     declaration_matches_source,
     direct_local_tool_dependencies,
+    evidence_contract_profile_failures,
     evidence_contract_routing_failures,
     tool_command_routing_failures,
 )
@@ -274,6 +275,29 @@ class CheckManifestContractTests(unittest.TestCase):
         checks = check_all.load_manifest()
 
         self.assertEqual(evidence_contract_routing_failures(checks), [])
+
+    def test_live_manifest_runs_evidence_status_in_local_profiles(self) -> None:
+        checks = check_all.load_manifest()
+
+        self.assertEqual(evidence_contract_profile_failures(checks), [])
+        evidence = next(check for check in checks if check["id"] == "evidence-status")
+        self.assertIn("quick", evidence["profiles"])
+        self.assertIn("fast", evidence["profiles"])
+
+    def test_evidence_status_profile_check_rejects_remote_only_execution(self) -> None:
+        failures = evidence_contract_profile_failures(
+            [manifest_entry(id="evidence-status", profiles=["full", "release"])]
+        )
+        self.assertEqual(
+            failures,
+            ["evidence-status must run in local profiles: fast, quick"],
+        )
+        self.assertEqual(
+            evidence_contract_profile_failures(
+                [manifest_entry(id="evidence-status", profiles=["quick", "fast", "full"])]
+            ),
+            [],
+        )
 
     def test_tool_command_scripts_require_source_check_routes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
