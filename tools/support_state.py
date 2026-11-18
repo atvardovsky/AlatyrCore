@@ -20,12 +20,23 @@ STATE_KIND = "target-support-state"
 DIGEST_CONTRACT = "alatyr-support-state-v1"
 STATE_PATH = ".ai/support-state.json"
 POLICY_PATH = ".ai/project/support-policy.json"
+INERT_SUPPORT_PREFIXES = (".ai/assistant/task-evidence",)
 CLASSIFICATIONS = {
     "exact-contract",
     "derived",
     "append-only-evidence",
     "local-transient",
 }
+
+
+def is_inert_support_path(relpath: str) -> bool:
+    """Historical task evidence is retained but never current support."""
+
+    normalized = relpath.rstrip("/")
+    return any(
+        normalized == prefix or normalized.startswith(prefix + "/")
+        for prefix in INERT_SUPPORT_PREFIXES
+    )
 
 
 class SupportStateError(ValueError):
@@ -196,6 +207,9 @@ def select_support_paths(
     """Classify candidate support paths using one validated support policy."""
 
     validate_policy(policy)
+    candidates = [
+        relpath for relpath in candidates if not is_inert_support_path(relpath)
+    ]
     casefolded: dict[str, str] = {}
     collisions: list[str] = []
     for relpath in sorted(candidates):
@@ -255,7 +269,11 @@ def build_support_state_from_bound_entries(
     """Build a support-state record from already canonical path-bound content."""
 
     validate_policy(policy)
-    bound_entries = list(bound)
+    bound_entries = [
+        (relpath, kind, content)
+        for relpath, kind, content in bound
+        if not is_inert_support_path(relpath)
+    ]
     files: list[dict[str, Any]] = []
     group_entries: dict[str, list[tuple[str, str, bytes]]] = {}
     for relpath, kind, content in bound_entries:
@@ -380,16 +398,22 @@ def load_state(target: Path, relpath: str = STATE_PATH) -> dict[str, Any]:
     return data
 
 
+def _non_inert_files(state: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {
+        item["path"]: item
+        for item in state.get("files", [])
+        if isinstance(item, dict)
+        and isinstance(item.get("path"), str)
+        and not is_inert_support_path(item["path"])
+    }
+
+
 def state_differences(before: dict[str, Any], after: dict[str, Any]) -> list[SupportDifference]:
     before_files = {
-        item["path"]: item.get("digest")
-        for item in before.get("files", [])
-        if isinstance(item, dict) and isinstance(item.get("path"), str)
+        path: item.get("digest") for path, item in _non_inert_files(before).items()
     }
     after_files = {
-        item["path"]: item.get("digest")
-        for item in after.get("files", [])
-        if isinstance(item, dict) and isinstance(item.get("path"), str)
+        path: item.get("digest") for path, item in _non_inert_files(after).items()
     }
     differences: list[SupportDifference] = []
     for path in sorted(before_files.keys() | after_files.keys()):
@@ -429,14 +453,17 @@ def state_is_current(recorded: dict[str, Any], current: dict[str, Any]) -> bool:
             recorded_provenance.get(field) == current_provenance.get(field)
             for field in stable_provenance_fields
         )
-    return (
-        provenance_current
-        and recorded.get("digest_contract") == current.get("digest_contract")
+    if not provenance_current:
+        return False
+    if not (
+        recorded.get("digest_contract") == current.get("digest_contract")
         and recorded.get("policy_digest") == current.get("policy_digest")
-        and recorded.get("root_digest") == current.get("root_digest")
-        and recorded.get("groups") == current.get("groups")
-        and recorded.get("files") == current.get("files")
-    )
+    ):
+        return False
+    # Historical task evidence is retained but inert. An installed state that
+    # still carries such entries is current when every non-inert file record
+    # matches (classification, kind, size and group included).
+    return _non_inert_files(recorded) == _non_inert_files(current)
 
 
 def render_state(state: dict[str, Any]) -> str:

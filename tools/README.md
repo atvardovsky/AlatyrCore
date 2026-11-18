@@ -2453,6 +2453,11 @@ from product paths. Use it as the first review step after adapter or code
 changes to select affected support owners before opening broad support prose.
 When a target consistency map is enabled, follow it with `plan_support_impact.py`.
 
+Historical task evidence under `.ai/assistant/task-evidence/**` is retained but
+inert: it is excluded from current support state, catalog discovery, and routine
+support deltas. Load it only for an explicit audit; do not regenerate historical
+snapshots into current support.
+
 ```sh
 python3 tools/alatyr.py support-delta --target /path/to/target-repo --diff-ref HEAD~1
 python3 tools/report_support_delta.py --target /path/to/target-repo --diff-ref HEAD~1 --output tmp/support-delta.json
