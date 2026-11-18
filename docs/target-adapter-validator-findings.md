@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1776
+Catalog entries: 1777
 
 ## Families
 
@@ -26,6 +26,7 @@ Catalog entries: 1776
 - `BASELINE`: 3 codes.
 - `BLUEPRINT`: 7 codes.
 - `BOOTSTRAP`: 9 codes.
+- `BRIDGE`: 1 codes.
 - `CAPABILITY`: 10 codes.
 - `CHANGED`: 2 codes.
 - `CODEDOC`: 37 codes.
@@ -582,6 +583,8 @@ Catalog entries: 1776
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_INDEX_SOURCE_INVALID`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `BRIDGE_REFERENCE_MISSING`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_CATALOG_INVALID`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_CATALOG_INVALID_JSON`

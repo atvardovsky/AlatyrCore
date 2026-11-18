@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from finalize_target_support import Step, build_steps, execute_write_steps, generated_paths, main, restore, snapshot  # noqa: E402
+from finalize_target_support import Step, build_steps, execute_steps, execute_write_steps, generated_paths, main, restore, snapshot  # noqa: E402
 from render_change_package_index import expected_outputs  # noqa: E402
 
 
@@ -324,6 +324,36 @@ class FinalizeTargetSupportTests(unittest.TestCase):
             [step.step_id for step in steps].index("support-state"),
             [step.step_id for step in steps].index("canonical-validation"),
         )
+
+    def test_summary_adds_validator_summary_flag_and_keeps_output_compact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            steps = build_steps(
+                target=target,
+                write=False,
+                migration_staging=False,
+                diff_ref=None,
+                approval_records=[],
+                change_packages=[],
+                summary=True,
+            )
+        validator = next(step for step in steps if step.step_id == "canonical-validation")
+        self.assertIn("--summary", validator.arguments)
+
+        success = subprocess.CompletedProcess(["step"], 0, "child output\n", "")
+        stream = io.StringIO()
+        with contextlib.redirect_stdout(stream):
+            result = execute_steps([Step("one", "unused.py", ())], runner=lambda *a, **k: success, summary=True)
+        self.assertEqual(result, (0, None))
+        self.assertEqual(stream.getvalue(), "PASS: one\n")
+
+        failure = subprocess.CompletedProcess(["step"], 7, "child output\n", "child error\n")
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            result = execute_steps([Step("one", "unused.py", ())], runner=lambda *a, **k: failure, summary=True)
+        self.assertEqual(result, (7, "one"))
+        self.assertIn("child output", stdout.getvalue())
+        self.assertIn("child error", stderr.getvalue())
 
     def test_restore_reverts_modified_and_removes_new_generated_surfaces(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

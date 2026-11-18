@@ -57,6 +57,7 @@ def build_steps(
     problem_models: Iterable[Path] = (),
     require_task_acceptance: bool = False,
     historical_evidence_index: Path | None = None,
+    summary: bool = False,
 ) -> list[Step]:
     approval_records = tuple(approval_records)
     packages = tuple(change_packages)
@@ -141,6 +142,8 @@ def build_steps(
         validator_arguments.append("--enforce-change-package")
     if require_current_change:
         validator_arguments.append("--enforce-approval-scope")
+    if summary:
+        validator_arguments.append("--summary")
     validator_arguments.extend(task_arguments(task_id=task_id, task_class=task_class,
         problem_models=problem_models, required=require_task_acceptance))
     steps.append(
@@ -180,8 +183,28 @@ def execute_steps(
     steps: Iterable[Step],
     *,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+    summary: bool = False,
 ) -> tuple[int, str | None]:
     for step in steps:
+        if summary:
+            result = runner(
+                [sys.executable, "-B", str(TOOLS / step.script), *step.arguments],
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+            if result.returncode:
+                print(
+                    f"FAIL: {step.step_id} (exit {result.returncode})",
+                    file=sys.stderr,
+                )
+                if result.stdout:
+                    print(result.stdout, end="" if result.stdout.endswith("\n") else "\n")
+                if result.stderr:
+                    print(result.stderr, end="" if result.stderr.endswith("\n") else "\n", file=sys.stderr)
+                return result.returncode, step.step_id
+            print(f"PASS: {step.step_id}")
+            continue
         result = runner(
             [sys.executable, "-B", str(TOOLS / step.script), *step.arguments],
             check=False,
@@ -192,7 +215,7 @@ def execute_steps(
     return 0, None
 
 
-def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subprocess.run, preflight=None) -> tuple[int, str | None, list[str]]:
+def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subprocess.run, preflight=None, summary: bool = False) -> tuple[int, str | None, list[str]]:
     """Derive owned postimages in-process; never infer ownership from a later read."""
     transaction = SupportTransaction(target)
     failed_step = None
@@ -206,7 +229,7 @@ def execute_write_steps(target: Path, steps: Iterable[Step], *, runner=subproces
             for step in steps:
                 failed_step = step.step_id
                 if step.step_id == "canonical-validation":
-                    result, failed = execute_steps([step], runner=runner)
+                    result, failed = execute_steps([step], runner=runner, summary=summary)
                     if result:
                         return result, failed, transaction.rollback()
                     transaction.verify_owned()
@@ -235,6 +258,15 @@ def main() -> int:
     parser.add_argument("--change-package", action="append", type=Path, default=[])
     parser.add_argument("--historical-evidence-index", type=Path)
     parser.add_argument("--require-current-change", action="store_true")
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help=(
+            "Print compact per-step results; validator details use its compact "
+            "summary. Failures retain captured diagnostics. Full text remains "
+            "available without this flag."
+        ),
+    )
     add_task_arguments(parser)
     args = parser.parse_args()
     try:
@@ -256,7 +288,8 @@ def main() -> int:
             change_packages=args.change_package, require_current_change=args.require_current_change,
             task_id=args.task_id, task_class=args.task_class, problem_models=args.problem_model,
             require_task_acceptance=args.require_task_acceptance,
-            historical_evidence_index=args.historical_evidence_index)
+            historical_evidence_index=args.historical_evidence_index,
+            summary=args.summary)
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
     preflight = None
@@ -290,9 +323,9 @@ def main() -> int:
             return 2
     try:
         if args.write:
-            result, failed_step, conflicts = execute_write_steps(target, steps, preflight=preflight)
+            result, failed_step, conflicts = execute_write_steps(target, steps, preflight=preflight, summary=args.summary)
         else:
-            result, failed_step = execute_steps(steps)
+            result, failed_step = execute_steps(steps, summary=args.summary)
             conflicts = []
     except (OSError, ValueError) as exc:
         print(f"FAIL: support writer unavailable: {exc}", file=sys.stderr)

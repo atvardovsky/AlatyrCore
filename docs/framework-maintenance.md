@@ -261,6 +261,10 @@ Before accepting a change, check:
   source-cache off; full/release reject local source caching. The
   [source architecture contract](source-architecture.md) owns freshness and
   storage boundaries.
+- `python3 tools/alatyr.py finalize-support --summary` prints compact per-step
+  results and asks the canonical validator for grouped output. Full diagnostics
+  remain available without `--summary`; compact output does not change
+  acceptance semantics.
 - `python3 tools/check_framework_consistency.py` passes when the helper is
   available.
 - `python3 tools/check_framework_metadata.py` passes when rule-owner framework

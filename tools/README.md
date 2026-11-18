@@ -810,7 +810,8 @@ python3 tools/alatyr.py approval-check --target /path/to/target-repo --diff-ref 
 python3 tools/alatyr.py archive-approvals --target /path/to/target-repo
 python3 tools/alatyr.py render-package-index --target /path/to/target-repo
 python3 tools/alatyr.py finalize-support --target /path/to/target-repo
-python3 tools/alatyr.py finalize-support --target /path/to/target-repo --write --require-current-change --diff-ref HEAD~1 --approval-record /path/to/target-repo/.ai/assistant/approvals/approval.json --change-package /path/to/target-repo/.ai/assistant/change-packages/package.json
+python3 tools/alatyr.py finalize-support --target /path/to/target-repo --summary
+python3 tools/alatyr.py finalize-support --target /path/to/target-repo --write --summary --require-current-change --diff-ref HEAD~1 --approval-record /path/to/target-repo/.ai/assistant/approvals/approval.json --change-package /path/to/target-repo/.ai/assistant/change-packages/package.json
 python3 tools/alatyr.py suggest-knowledge --target /path/to/target-repo
 python3 tools/alatyr.py render-entry --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo
@@ -846,6 +847,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 approval-check --target C:\path\to\target-repo --diff-ref HEAD~1 --approval-record .ai\assistant\approvals\approval.json
 .\tools\alatyr.ps1 render-package-index --target C:\path\to\target-repo
 .\tools\alatyr.ps1 finalize-support --target C:\path\to\target-repo
+.\tools\alatyr.ps1 finalize-support --target C:\path\to\target-repo --summary
 .\tools\alatyr.ps1 render-entry --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo --write
@@ -879,6 +881,7 @@ tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 tools\alatyr.cmd approval-check --target C:\path\to\target-repo --diff-ref HEAD~1 --approval-record .ai\assistant\approvals\approval.json
 tools\alatyr.cmd render-package-index --target C:\path\to\target-repo
 tools\alatyr.cmd finalize-support --target C:\path\to\target-repo
+tools\alatyr.cmd finalize-support --target C:\path\to\target-repo --summary
 tools\alatyr.cmd render-entry --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo --write
@@ -951,6 +954,9 @@ The stable command set is:
   where current bytes still match transaction-owned output. `--preflight` is
   mutually exclusive with `--write` and returns selected canonical authoring
   diagnostics without writes or acceptance; write mode runs those checks early.
+  `--summary` prints compact per-step results and asks the canonical validator
+  for its compact summary; failures still retain captured diagnostics. Full
+  text remains available without the flag.
   Enabled-package local-task exemptions use the selected model's current
   `analysis_evidence.package_applicability`, matching `--task-id`/`--task-class`
   and `--require-task-acceptance`. Explicit packages remain enforced; the shared

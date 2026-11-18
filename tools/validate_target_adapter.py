@@ -397,6 +397,27 @@ HISTORICAL_ADAPTER_PREFIXES = (
 )
 
 NEUTRAL_ASSISTANT_ENTRY_FILES = {"AGENT.md", "AGENTS.md", "AI_ASSISTANTS.md"}
+BRIDGE_REFERENCE_RE = re.compile(r"`(\.ai/[^`#\s]+)(?:#[^`]*)?`")
+
+
+def missing_bridge_references(text: str, exists: Callable[[str], bool]) -> list[str]:
+    """Return target-relative .ai references that do not resolve.
+
+    Only explicit backticked paths are inspected. Globs, placeholders, URLs
+    and anchor-only references are not treated as missing files.
+    """
+
+    missing: set[str] = set()
+    for match in BRIDGE_REFERENCE_RE.finditer(text):
+        value = match.group(1).rstrip(".,;:)").rstrip("/")
+        if not value or value == ".ai":
+            continue
+        if any(marker in value for marker in "*?{<>|"):
+            continue
+        if not exists(value):
+            missing.add(value)
+    return sorted(missing)
+
 
 MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("schema_version",),
@@ -4193,6 +4214,13 @@ class Validator:
                     "bootstrap recovery references do not include .ai/README.md",
                     relpath,
                 )
+            level = self.error if relpath in {"AGENT.md", "AGENTS.md"} else self.warn
+            for value in missing_bridge_references(text, self.target_exists):
+                level(
+                    "BRIDGE_REFERENCE_MISSING",
+                    f"bridge reference does not resolve: {value}",
+                    relpath,
+                )
 
         gates = self.target_path(".ai/assistant/gates/checklist.md")
         if self.is_target_file(gates) and ".ai/assistant/gates/index.json" not in self.read_text(gates):
@@ -7419,10 +7447,44 @@ def render_summary(
     change_package_required: bool = False,
     approval_archive_mode: str = "full",
     git_evidence: GitEvidenceView | None = None,
+    summary: bool = False,
 ) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
-    for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
-        print(finding.render())
+    if summary:
+        errors = sorted(
+            (finding for finding in findings if finding.level == "error"),
+            key=lambda item: (item.code, item.path or ""),
+        )
+        blocking_warnings = sorted(
+            (
+                finding
+                for finding in findings
+                if finding.level == "warning" and is_blocking_finding(finding)
+            ),
+            key=lambda item: (item.code, item.path or ""),
+        )
+        shown = [*errors[:20], *blocking_warnings[:20]]
+        for finding in shown:
+            print(finding.render())
+        omitted_errors = max(0, len(errors) - 20)
+        omitted_warnings = max(0, len(blocking_warnings) - 20)
+        if omitted_errors or omitted_warnings:
+            print(
+                f"... {omitted_errors} more error(s) and {omitted_warnings} more "
+                "blocking warning(s); use --json or --output for the full report."
+            )
+        grouped: dict[str, int] = {}
+        for finding in findings:
+            if finding.level == "warning" and not is_blocking_finding(finding):
+                grouped[finding.code] = grouped.get(finding.code, 0) + 1
+        for code, count in sorted(grouped.items()):
+            print(f"WARNING {code}: {count} finding(s)")
+    else:
+        for finding in sorted(
+            findings,
+            key=lambda item: (order[item.level], item.code, item.path or ""),
+        ):
+            print(finding.render())
 
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
@@ -7693,6 +7755,27 @@ def approval_enforcement_enabled(
     return explicitly_enforced or bool(diff_ref and approval_records)
 
 
+def add_output_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print machine-readable JSON instead of text findings.",
+    )
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help=(
+            "Print compact text: errors and blocking warnings, grouped warning "
+            "codes and counts. Full details remain available with --json or --output."
+        ),
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="Write machine-readable JSON findings to this file.",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -7875,16 +7958,7 @@ def main() -> int:
         action="store_true",
         help="Return non-zero when warnings are present.",
     )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        help="Print machine-readable JSON instead of text findings.",
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        help="Write machine-readable JSON findings to this file.",
-    )
+    add_output_arguments(parser)
     args = parser.parse_args()
     try:
         task_arguments(task_id=args.task_id, task_class=args.task_class, required=args.require_task_acceptance)
@@ -7985,6 +8059,7 @@ def main() -> int:
         change_package_required=change_package_required,
         approval_archive_mode=approval_archive_mode,
         git_evidence=validator.git,
+        summary=args.summary,
     )
 
 

@@ -110,6 +110,10 @@
       "code_count": 9
     },
     {
+      "id": "BRIDGE",
+      "code_count": 1
+    },
+    {
       "id": "CAPABILITY",
       "code_count": 10
     },
@@ -2578,6 +2582,15 @@
       "code": "BOOTSTRAP_INDEX_SOURCE_INVALID",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BRIDGE_REFERENCE_MISSING",
+      "levels": [
+        "dynamic"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
