@@ -109,6 +109,59 @@ class PathSpecTests(unittest.TestCase):
             )
         )
 
+    def test_compiled_matching_is_differentially_equal_to_legacy_fnmatch(self) -> None:
+        import fnmatch
+        import path_spec as source
+
+        def legacy(pattern: str, dialect: PathDialect, path: str) -> bool:
+            candidate, normalized = path, pattern
+            if dialect == PathDialect.APPROVAL_SCOPE_V1:
+                candidate = candidate.replace("\\", "/")
+                normalized = normalized.replace("\\", "/")
+            if dialect == PathDialect.SUPPORT_TREE_V1 and normalized.endswith("/**"):
+                prefix = normalized[:-3].rstrip("/")
+                return candidate == prefix or candidate.startswith(prefix + "/")
+            if dialect == PathDialect.SOURCE_HOST_V1:
+                return fnmatch.fnmatch(candidate, normalized)
+            return fnmatch.fnmatchcase(candidate, normalized)
+
+        patterns = [
+            "src/*.py",
+            "src/**/*.py",
+            "docs/**",
+            "**/*.md",
+            "tools/file?.py",
+            "tools/file[0-9].py",
+            "tools/file[!0-9].py",
+            "a/b/c",
+            "*",
+            "**",
+        ]
+        paths = [
+            "src/a.py",
+            "src/nested/a.py",
+            "src/nested/deeper/a.py",
+            "SRC/a.py",
+            "docs/a.md",
+            "docs/nested/a.md",
+            "README.md",
+            "tools/file1.py",
+            "tools/filex.py",
+            "a/b/c",
+            "a/b/c.txt",
+            "src\\nested\\a.py",
+        ]
+        source._compiled_match.cache_clear()
+        for dialect in PathDialect:
+            for pattern in patterns:
+                spec = PathSpec(pattern, dialect)
+                for path in paths:
+                    with self.subTest(dialect=dialect, pattern=pattern, path=path):
+                        self.assertEqual(
+                            spec.matches(path), legacy(pattern, dialect, path)
+                        )
+        self.assertEqual(source._compiled_match.cache_info().maxsize, 4096)
+
 
 if __name__ == "__main__":
     unittest.main()

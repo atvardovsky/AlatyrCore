@@ -6,6 +6,7 @@ import hashlib
 import json
 import subprocess
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
 
@@ -136,8 +137,13 @@ def load_policy(target: Path, relpath: str = POLICY_PATH) -> dict[str, Any]:
     return policy
 
 
+@lru_cache(maxsize=4096)
+def _compiled_support_spec(pattern: str) -> PathSpec:
+    return PathSpec(pattern, PathDialect.SUPPORT_TREE_V1)
+
+
 def _matches(path: str, pattern: str) -> bool:
-    return PathSpec(pattern, PathDialect.SUPPORT_TREE_V1).matches(path)
+    return _compiled_support_spec(pattern).matches(path)
 
 
 def _git_revision(target: Path) -> str:

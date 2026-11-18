@@ -829,6 +829,28 @@ class ValidationContextTests(unittest.TestCase):
                 self.assertEqual(scan.failures, [])
                 self.assertEqual(len(scan.matches), count, scan)
 
+        scan = scan_local_paths('{"value":"fixture"}', '.json', 'fixture')
+        self.assertEqual([match.value for match in scan.matches], ['fixture'])
+
+    def test_local_path_marker_prefilter_retains_each_supported_form(self):
+        from target_adapter_validation.local_paths import scan_local_paths
+        for text, expected in [
+            ('/home/example/file', '/home/example/file'),
+            ('/Users/example/file', '/Users/example/file'),
+            ('/tmp/example/file', '/tmp/example/file'),
+            ('/var/folders/ab/example', '/var/folders/ab/example'),
+            ('/private/tmp/example', '/private/tmp/example'),
+            ('C:\\Users\\Example\\file', 'C:\\Users\\Example\\file'),
+        ]:
+            with self.subTest(text=text):
+                scan = scan_local_paths(text, '.md', '')
+                self.assertEqual(scan.failures, [])
+                self.assertEqual([match.value for match in scan.matches], [expected])
+        self.assertEqual(
+            scan_local_paths('relative/path and https://example.invalid', '.md', '').matches,
+            [],
+        )
+
     def test_structured_path_limits_and_malformed_input_fail_closed(self):
         from target_adapter_validation import local_paths
         for suffix, text in [('.json', '{"path":"C:\\\\Users\\\\Example\\\\file",'),

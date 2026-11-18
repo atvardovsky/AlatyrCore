@@ -138,6 +138,7 @@ class MinimumWorkPlanTests(unittest.TestCase):
             select_plan = stack.enter_context(
                 patch("plan_minimum_work.select_check_plan", return_value=selection)
             )
+            self.last_select_plan = select_plan
             stack.enter_context(patch(
                 "plan_minimum_work.source_snapshot",
                 return_value={
@@ -243,6 +244,30 @@ class MinimumWorkPlanTests(unittest.TestCase):
         self.assertIn("logical integrity review", plan["quality_boundary"])
         self.assertEqual(plan["reuse"]["reusable_check_count"], 0)
         self.assertIn("--profile fast", render_summary(plan))
+
+    def test_build_plan_reuses_unchanged_execution_selection(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=["docs/human/faq.md"],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={
+                "docs": {
+                    "reasons": ["changed-path-trigger"],
+                    "matched_changed_paths": ["docs/human/faq.md"],
+                }
+            },
+            effective_profile="fast",
+        )
+        self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="fast",
+            source_profile="docs-local",
+        )
+
+        self.assertEqual(self.last_select_plan.call_count, 1)
+        self.assertEqual(self.last_select_plan.call_args.args[1], "fast")
 
     def test_unavailable_rule_selectors_remain_omitted_with_owner_fallback(self) -> None:
         packet = build_source_profile_context("framework-rule")

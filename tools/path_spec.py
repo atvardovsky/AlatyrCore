@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import fnmatch
+import os
+import re
 from dataclasses import dataclass
 from enum import Enum
 from functools import lru_cache
@@ -63,8 +65,24 @@ class PathSpec:
             prefix = pattern[:-3].rstrip("/")
             return candidate == prefix or candidate.startswith(prefix + "/")
         if self.dialect == PathDialect.SOURCE_HOST_V1:
-            return fnmatch.fnmatch(candidate, pattern)
-        return fnmatch.fnmatchcase(candidate, pattern)
+            normcase = os.path.normcase
+            return _compiled_match(pattern, self.dialect, normcase).match(
+                normcase(candidate)
+            ) is not None
+        return _compiled_match(pattern, self.dialect, None).match(candidate) is not None
+
+
+@lru_cache(maxsize=4096)
+def _compiled_match(
+    pattern: str, dialect: PathDialect, normcase
+) -> re.Pattern[str]:
+    """Compile one policy pattern once per dialect and normalization policy."""
+
+    if dialect == PathDialect.SOURCE_HOST_V1:
+        if normcase is None:
+            raise ValueError("source-host matching requires a host normcase function")
+        pattern = normcase(pattern)
+    return re.compile(fnmatch.translate(pattern))
 
 
 @lru_cache(maxsize=4096)

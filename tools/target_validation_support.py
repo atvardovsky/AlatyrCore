@@ -543,27 +543,27 @@ def _is_target_scope_pattern_cached(value: str) -> bool:
 
 
 @lru_cache(maxsize=8192)
-def _approval_scope_specs(entries: tuple[str, ...]) -> tuple[PathSpec, ...]:
-    specs: list[PathSpec] = []
+def _approval_scope_index(
+    entries: tuple[str, ...],
+) -> tuple[frozenset[str], tuple[PathSpec, ...]]:
+    exact: set[str] = set()
+    globs: list[PathSpec] = []
     for entry in entries:
         if is_placeholder(entry) or not is_target_scope_pattern(entry):
             continue
-        specs.append(
-            PathSpec(entry.replace("\\", "/"), PathDialect.APPROVAL_SCOPE_V1)
-        )
-    return tuple(specs)
+        normalized = entry.replace("\\", "/")
+        spec = PathSpec(normalized, PathDialect.APPROVAL_SCOPE_V1)
+        if any(marker in normalized for marker in "*?["):
+            globs.append(spec)
+        else:
+            exact.add(normalized)
+    return frozenset(exact), tuple(globs)
 
 
 def scope_entries_cover(path: str, entries: list[str]) -> bool:
     normalized = path.replace("\\", "/")
-    for spec in _approval_scope_specs(tuple(entries)):
-        if normalized == spec.pattern:
-            return True
-        if not any(marker in spec.pattern for marker in "*?["):
-            continue
-        if spec.matches(normalized):
-            return True
-    return False
+    exact, globs = _approval_scope_index(tuple(entries))
+    return normalized in exact or any(spec.matches(normalized) for spec in globs)
 
 
 def nested_json_value(data: Any, path: tuple[str, ...]) -> Any:

@@ -105,6 +105,53 @@ class SourceContextSelectionTests(unittest.TestCase):
         context = build_source_profile_context("source-tooling", changed_paths=["tools/README.md"], selector_values={"cli_topics": ["worker-context-preparation"]})
         self.assertNotIn("tools/README.md", context["context_projections"])
 
+    def test_broad_changed_scope_blocks_before_loading_changed_content(self):
+        changed = sorted(
+            path.relative_to(ROOT).as_posix()
+            for path in (ROOT / "tools").glob("*.py")
+        )[:20]
+        changed += sorted(
+            path.relative_to(ROOT).as_posix()
+            for path in (ROOT / "tests").glob("test_*.py")
+        )[:20]
+        context = build_source_profile_context(
+            "source-tooling", changed_paths=changed
+        )
+
+        self.assertEqual(context["readiness"]["status"], "needs-expansion")
+        self.assertTrue(
+            any("compact file budget" in reason for reason in context["readiness"]["reasons"])
+        )
+        self.assertEqual(context["context_projections"], {})
+        self.assertEqual(context["selectors"]["changed_paths"], sorted(changed))
+        selected_ids = {
+            item["id"] for item in context["selected_conditionals"]
+        }
+        self.assertNotIn("source-tool-changed-path", selected_ids)
+        self.assertNotIn("source-test-changed-path", selected_ids)
+        self.assertEqual(
+            context["context_budget"]["omitted_changed_scope_paths"], 40
+        )
+        self.assertLessEqual(
+            context["context_budget"]["resolved"]["files"],
+            context["context_budget"]["max_resolved_files"],
+        )
+        self.assertLess(
+            context["context_budget"]["resolved"]["words"],
+            24_000,
+        )
+
+    def test_single_changed_tool_keeps_its_compact_context(self):
+        path = "tools/check_tool_complexity.py"
+        context = build_source_profile_context("source-tooling", changed_paths=[path])
+
+        self.assertEqual(context["readiness"]["status"], "ready")
+        self.assertIn(
+            "source-tool-changed-path",
+            {item["id"] for item in context["selected_conditionals"]},
+        )
+        self.assertIn(path, context["context_budget"]["resolved"]["paths"])
+
     def test_development_context_contract_is_not_read_by_routine_profiles(self):
         router = json.loads((ROOT / "tools/source_context_router.json").read_text())
         strategy_paths = {

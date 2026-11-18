@@ -18,6 +18,7 @@ from yaml_support import SAFE_LOADER, safe_compose_all
 UNIX_LOCAL_PATH_RE = re.compile(r"(?<![A-Za-z0-9_])/(?:home|Users|tmp|var/folders|private/tmp)/[^\s)`>\"']+")
 WINDOWS_LOCAL_PATH_RE = re.compile(r"\b[A-Za-z]:\\(?:Users|Temp|tmp|Projects|projects|[^\\\s`\"']+)(?:\\[^\s`\"']+)*")
 LOCAL_PATH_RE = re.compile(f"(?:{UNIX_LOCAL_PATH_RE.pattern})|(?:{WINDOWS_LOCAL_PATH_RE.pattern})")
+UNIX_LOCAL_PATH_PREFIXES = ("/home", "/Users", "/tmp", "/var/folders", "/private/tmp")
 MAX_SCAN_BYTES = 8 * 1024 * 1024
 MAX_SCAN_NODES = 200_000
 MAX_SCAN_DEPTH = 128
@@ -223,10 +224,22 @@ def _pointer(parent: str, key: str) -> str:
     return value
 
 
+def _may_contain_local_path(text: str) -> bool:
+    """Cheap prefilter for both local-path regex alternatives."""
+
+    if any(prefix in text for prefix in UNIX_LOCAL_PATH_PREFIXES):
+        return True
+    return "\\" in text and ":" in text
+
+
 def _scan_scalar(result: PathScan, text: str, target: str, *, line: int | None,
                  pointer: str | None = None, kind: str = "text",
                  member_path: tuple[int, ...] = (), scalar_start_line: int | None = None) -> None:
+    if not _may_contain_local_path(text) and (not target or target not in text):
+        return
     for offset, part in enumerate(text.splitlines(), start=0):
+        if not _may_contain_local_path(part) and (not target or target not in part):
+            continue
         target_found = False
         for match in LOCAL_PATH_RE.finditer(part):
             value = match.group(0)

@@ -334,6 +334,7 @@
       "id": "cross-platform-tools",
       "command": ["tools/check_cross_platform_tools.py"],
       "duration_hint_seconds": 22,
+      "scheduler_slots": 4,
       "child_capacity_max": 4,
       "profiles": ["full", "platform"],
       "contract_inputs": [".gitattributes", ".github/workflows/**", "INSTALL.md", "constraints-ci.txt", "requirements*.txt", "tools/README.md", "tools/runtime-compatibility.json", "tools/tool_commands.json"],

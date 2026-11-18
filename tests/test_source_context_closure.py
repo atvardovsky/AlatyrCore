@@ -143,6 +143,40 @@ class SourceContextClosureTests(unittest.TestCase):
         empty = dict(budget, max_required_files=0, max_required_words=0)
         self.assertEqual(selection.evaluate_source_budget(empty, **dict(kwargs, required_files=0, required_words=0))["failures"], [])
 
+    def test_compact_view_bounds_repeated_matched_paths(self):
+        entry = {
+            "id": "broad",
+            "selection_reasons": ["full-fallback-unmatched"],
+            "matched_changed_paths": [f"path/{number}.md" for number in range(20)],
+        }
+        selection_report = {
+            "checks": [entry],
+            "broad_trigger_diagnostics": {"checks": [entry]},
+        }
+        context = planner.build_source_profile_context("source-tooling")
+        plan = {
+            "context_packet": context,
+            "source_profile": "source-tooling",
+            "task_classification": {},
+            "check_plan": [],
+            "validation_profiles": [],
+            "selection": selection_report,
+            "delegation_assessment": {},
+            "reuse": {"reusable_check_ids": []},
+            "quality_boundary": "planning only",
+        }
+        view = selection.compact_plan(plan)
+
+        compact = view["check_selection_reasons"]["checks"][0]
+        self.assertEqual(len(compact["matched_changed_paths"]), 8)
+        self.assertEqual(compact["matched_changed_path_count"], 20)
+        self.assertEqual(compact["omitted_matched_changed_path_count"], 12)
+        self.assertEqual(
+            view["check_selection_reasons"]["broad_trigger_diagnostics"]["checks"][0],
+            compact,
+        )
+        self.assertEqual(len(plan["selection"]["checks"][0]["matched_changed_paths"]), 20)
+
     def test_compact_view_keeps_required_path_and_does_not_mutate_full_plan(self):
         context = planner.build_source_profile_context("source-tooling")
         path = "conformance/runs/assistant-surfaces.json"

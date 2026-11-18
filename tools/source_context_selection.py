@@ -280,6 +280,42 @@ def workflow_route(task_class: str) -> dict:
             "cold_acceptance_required": True, "grants_authority": False}
 
 
+COMPACT_MATCHED_PATH_LIMIT = 8
+
+
+def _compact_selection(selection: dict[str, Any]) -> dict[str, Any]:
+    """Bound repeated path lists in the agent view; the full plan is unchanged."""
+
+    checks: list[dict[str, Any]] = []
+    compact_by_id: dict[str, dict[str, Any]] = {}
+    for entry in selection.get("checks", []):
+        if not isinstance(entry, dict):
+            continue
+        compact = dict(entry)
+        matched = compact.get("matched_changed_paths")
+        if isinstance(matched, list) and len(matched) > COMPACT_MATCHED_PATH_LIMIT:
+            compact["matched_changed_paths"] = matched[:COMPACT_MATCHED_PATH_LIMIT]
+            compact["matched_changed_path_count"] = len(matched)
+            compact["omitted_matched_changed_path_count"] = (
+                len(matched) - COMPACT_MATCHED_PATH_LIMIT
+            )
+        checks.append(compact)
+        compact_by_id[str(compact.get("id"))] = compact
+    result = {**selection, "checks": checks}
+    diagnostics = selection.get("broad_trigger_diagnostics")
+    if isinstance(diagnostics, dict):
+        diagnostic_checks = [
+            compact_by_id.get(str(item.get("id")), item)
+            for item in diagnostics.get("checks", [])
+            if isinstance(item, dict)
+        ]
+        result["broad_trigger_diagnostics"] = {
+            **diagnostics,
+            "checks": diagnostic_checks,
+        }
+    return result
+
+
 def compact_plan(plan: dict[str, Any]) -> dict[str, Any]:
     """Project presentation only; retain the canonical plan for machine checks."""
     context = plan["context_packet"]
@@ -306,7 +342,7 @@ def compact_plan(plan: dict[str, Any]) -> dict[str, Any]:
                               if item.get("unresolved_selectors") or item.get("unresolved_owner_rule_ids") or item.get("unresolved_paths")],
         "context_budget": {key: value for key, value in context["context_budget"].items() if key not in {"planned", "resolved"}},
         "check_plan": plan["check_plan"], "validation_profiles": plan["validation_profiles"],
-        "check_selection_reasons": plan["selection"],
+        "check_selection_reasons": _compact_selection(plan["selection"]),
         "delegation": plan["delegation_assessment"],
         "reuse": {"reusable_check_ids": plan["reuse"]["reusable_check_ids"], "evidence": "candidates only; not executed or accepted"},
         "quality_boundary": plan["quality_boundary"],

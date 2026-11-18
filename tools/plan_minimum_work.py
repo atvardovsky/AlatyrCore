@@ -356,6 +356,39 @@ def build_source_profile_context(
     selected_conditionals, omitted_conditionals = resolve_source_conditionals(
         profile.get("conditional_context", []), selectors, root=ROOT
     )
+    budget = profile.get("context_budget")
+    budget = budget if isinstance(budget, dict) else {}
+    omitted_changed_scope = 0
+    max_files = budget.get("max_resolved_files")
+    reserved_files = budget.get("reserved_files")
+    if type(max_files) is int and type(reserved_files) is int:
+        remaining_files = max(0, max_files - reserved_files - len(dict.fromkeys(required)))
+        changed_candidates = {
+            path
+            for item in selected_conditionals
+            if item.get("resolver") == "path-pattern"
+            for path in item.get("resolved_paths", [])
+        }
+        if len(changed_candidates) > remaining_files:
+            kept_conditionals: list[dict[str, Any]] = []
+            omitted_scope: list[dict[str, Any]] = []
+            for item in selected_conditionals:
+                if item.get("resolver") != "path-pattern" or not item.get("resolved_paths"):
+                    kept_conditionals.append(item)
+                    continue
+                omitted_changed_scope += len(item["resolved_paths"])
+                omitted_scope.append(
+                    {
+                        **item,
+                        "status": "omitted",
+                        "reason": (
+                            "changed-scope context exceeds the compact file budget; "
+                            "expand explicitly"
+                        ),
+                    }
+                )
+            selected_conditionals = kept_conditionals
+            omitted_conditionals = [*omitted_conditionals, *omitted_scope]
     conditional_paths = [
         path
         for item in selected_conditionals
@@ -374,11 +407,9 @@ def build_source_profile_context(
              if path not in required and path not in whole_owners}
     projected_content = {path: view["content"] for path, view in views.items()}
     planned_measurement = measure_source_context([*required, *conditional_paths], root=ROOT, projections=projected_content)
-    budget = profile.get("context_budget")
     evaluation = evaluate_source_budget(budget, required_files=len(required_context),
         required_words=required_measurement["resolved_words"], initial_words=initial_measurement["resolved_words"],
         resolved=planned_measurement)
-    budget = budget if isinstance(budget, dict) else {}
     result = {
         "source_profile": source_profile,
         "preloaded_context": router.get("preloaded_context", []),
@@ -435,9 +466,15 @@ def build_source_profile_context(
             "remaining_capacity": evaluation["remaining_capacity"],
             "reserved_capacity": evaluation["reserved_capacity"],
             "reserved_capacity_preserved": evaluation["reserved_capacity_preserved"],
+            "omitted_changed_scope_paths": omitted_changed_scope,
         },
     }
     reasons = list(evaluation["failures"])
+    if omitted_changed_scope:
+        reasons.append(
+            f"changed-scope context omits {omitted_changed_scope} path(s) over the "
+            "compact file budget; expand explicitly"
+        )
     outputs = {path: content for path, content in bootstrap_outputs(ROOT).items()
                if path in {BOOTSTRAP, f"tools/source-context/profiles/{source_profile}.json"}}
     for path in inspect_source_outputs(ROOT, outputs):
@@ -1106,8 +1143,12 @@ def build_plan(
         plan=plan,
         manifest_checks=checks,
     )
-    execution_plan = select_check_plan(
-        checks, plan.effective_profile, resolved_changed_from, platform=plan.platform,
+    execution_plan = (
+        plan
+        if plan.effective_profile == selected_profile
+        else select_check_plan(
+            checks, plan.effective_profile, resolved_changed_from, platform=plan.platform,
+        )
     )
     execution_selection = selection_report(
         profile=plan.effective_profile, changed_from=resolved_changed_from,
