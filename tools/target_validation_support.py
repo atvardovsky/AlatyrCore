@@ -11,6 +11,7 @@ import stat
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Tuple
 
@@ -522,7 +523,14 @@ def extract_list_field(text: str, label: str) -> list[str]:
 
 
 def is_target_scope_pattern(value: str) -> bool:
-    if not isinstance(value, str) or not value or value.startswith(("/", "\\")):
+    if not isinstance(value, str):
+        return False
+    return _is_target_scope_pattern_cached(value)
+
+
+@lru_cache(maxsize=65536)
+def _is_target_scope_pattern_cached(value: str) -> bool:
+    if not value or value.startswith(("/", "\\")):
         return False
     if re.match(r"^[A-Za-z]:[\\/]", value):
         return False
@@ -534,15 +542,26 @@ def is_target_scope_pattern(value: str) -> bool:
     return True
 
 
-def scope_entries_cover(path: str, entries: list[str]) -> bool:
-    normalized = path.replace("\\", "/")
+@lru_cache(maxsize=8192)
+def _approval_scope_specs(entries: tuple[str, ...]) -> tuple[PathSpec, ...]:
+    specs: list[PathSpec] = []
     for entry in entries:
         if is_placeholder(entry) or not is_target_scope_pattern(entry):
             continue
-        pattern = entry.replace("\\", "/")
-        if normalized == pattern or PathSpec(
-            pattern, PathDialect.APPROVAL_SCOPE_V1
-        ).matches(normalized):
+        specs.append(
+            PathSpec(entry.replace("\\", "/"), PathDialect.APPROVAL_SCOPE_V1)
+        )
+    return tuple(specs)
+
+
+def scope_entries_cover(path: str, entries: list[str]) -> bool:
+    normalized = path.replace("\\", "/")
+    for spec in _approval_scope_specs(tuple(entries)):
+        if normalized == spec.pattern:
+            return True
+        if not any(marker in spec.pattern for marker in "*?["):
+            continue
+        if spec.matches(normalized):
             return True
     return False
 

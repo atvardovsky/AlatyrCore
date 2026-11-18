@@ -173,6 +173,7 @@ from target_adapter_validation.project_support_documentation import (
     validate_project_support_documentation,
 )
 from target_adapter_validation.support_state import validate_support_state
+from support_state import is_inert_support_path
 from target_adapter_validation.session_continuity import validate_session_continuity
 from target_adapter_validation.workspace_modes import validate_workspace_modes
 from target_adapter_validation.values import is_resolved_string
@@ -4547,6 +4548,7 @@ class Validator:
             path
             for path in self.scan_live_text_files()
             if not self.rel(path).startswith(".ai/framework/")
+            and not is_inert_support_path(self.rel(path))
         ]
         referenced = False
         for path in adapter_text_files:

@@ -60,5 +60,37 @@ class TargetValidatorLiveScanTests(unittest.TestCase):
         )
 
 
+    def test_checker_claims_ignore_inert_task_evidence_text(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            current = target / ".ai/assistant/contour.md"
+            current.parent.mkdir(parents=True)
+            current.write_text("no local Alatyr checker found\n", encoding="utf-8")
+            historical = (
+                target
+                / ".ai/assistant/task-evidence/historical-git-trees/abc"
+                / ".ai/assistant/contour.md"
+            )
+            historical.parent.mkdir(parents=True)
+            historical.write_text("no local Alatyr checker found\n", encoding="utf-8")
+            checker = target / "scripts/check-alatyr.sh"
+            checker.parent.mkdir(parents=True)
+            checker.write_text("#!/bin/sh\n", encoding="utf-8")
+            instance = validator(target)
+            instance.check_checker_claims([checker], [])
+            stale = {
+                finding.path
+                for finding in instance.findings
+                if finding.code == "STALE_CHECKER_MISSING_CLAIM"
+            }
+
+        self.assertIn(".ai/assistant/contour.md", stale)
+        self.assertNotIn(
+            ".ai/assistant/task-evidence/historical-git-trees/abc/"
+            ".ai/assistant/contour.md",
+            stale,
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

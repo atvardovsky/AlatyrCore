@@ -60,6 +60,39 @@ class ApprovalScopeCommandTests(unittest.TestCase):
                 if isinstance(value, str):
                     self.assertFalse(scope_entries_cover("src/file", [value]))
         self.assertTrue(scope_entries_cover("src/file", ["src/**"]))
+        self.assertTrue(scope_entries_cover("src/file", ["src/file"]))
+        self.assertFalse(scope_entries_cover("src/file", ["src/other"]))
+        self.assertFalse(scope_entries_cover("src/file", ["src/file.md"]))
+        self.assertFalse(scope_entries_cover("src/file", ["SRC/file"]))
+        self.assertTrue(scope_entries_cover("src\\file", ["src/file"]))
+
+    def test_exact_scope_fast_path_matches_full_pathspec_semantics(self) -> None:
+        sys.path.insert(0, str(ROOT / "tools"))
+        from path_spec import PathDialect, PathSpec
+        from target_validation_support import scope_entries_cover
+
+        cases = [
+            ("src/file", ["src/file"]),
+            ("src/file", ["src/other"]),
+            ("src/file", ["src/*"]),
+            ("src/file", ["src/**"]),
+            ("src/file", ["src/file[0]"]),
+            ("src/file", ["src/file?"]),
+            ("src\\file", ["src/file"]),
+            ("SRC/file", ["src/file"]),
+            ("a/b/c", ["a/*/c", "a/b/c"]),
+        ]
+        for path, entries in cases:
+            with self.subTest(path=path, entries=entries):
+                normalized = path.replace("\\", "/")
+                expected = any(
+                    normalized == entry.replace("\\", "/")
+                    or PathSpec(
+                        entry.replace("\\", "/"), PathDialect.APPROVAL_SCOPE_V1
+                    ).matches(normalized)
+                    for entry in entries
+                )
+                self.assertEqual(scope_entries_cover(path, entries), expected)
 
     def make_repo(self) -> tuple[tempfile.TemporaryDirectory[str], Path, Path]:
         directory = tempfile.TemporaryDirectory()
