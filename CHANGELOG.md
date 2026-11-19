@@ -19,6 +19,10 @@
   unregistered tasks as `register-task-or-leave` lost-task candidates. An
   unreadable configured team index or missing active index remains unavailable,
   not a false loss.
+- Add an ignored runtime artifact store with SHA-256-addressed blobs and a
+  compact metadata index. Store raw validation/log/profiler output once and
+  retrieve bounded excerpts; keep `put` explicit, `index` read-only, and raw
+  payloads out of context by default.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 

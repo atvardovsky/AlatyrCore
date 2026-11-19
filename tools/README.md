@@ -844,6 +844,9 @@ python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-che
 python3 tools/alatyr.py inspect-dependency-knowledge --source /path/to/local-package-export
 python3 tools/alatyr.py clean-artifacts --older-than-days 7
 python3 tools/alatyr.py clean-artifacts --older-than-days 7 --apply
+python3 tools/alatyr.py runtime-store --target . put --write --kind validation --task TASK_ID --file tmp/validation.log --summary "85 checks passed"
+python3 tools/alatyr.py runtime-store --target . index --task TASK_ID
+python3 tools/alatyr.py runtime-store --target . get --digest sha256:... --max-bytes 4096
 ```
 
 Windows PowerShell:
@@ -1003,6 +1006,10 @@ The stable command set is:
 - `summarize-benchmark`: read-only reviewed measurement comparison
 - `clean-artifacts`: dry-run report by default; removes old ignored `tmp/`
   entries only with `--apply`
+- `runtime-store`: stores process artifacts once under ignored
+  `.ai/.runtime/store/blobs` and returns compact digest/summary references;
+  `index` is read-only, `put` requires `--write`, and `get` prints a bounded
+  excerpt unless an exact `--output` write is explicitly authorized
 
 Source validation also includes `tool-complexity`, a no-growth guardrail for
 known oversized Python functions. It does not claim the validator is already
