@@ -36,6 +36,12 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
     coordination = presence.get("coordination")
     valid = isinstance(coordination, dict) and all(type(coordination.get(key)) is int and coordination[key] >= 0 for key in ("reported_overlaps", "unknown_scope_peers", "same_worktree_uncertain"))
     coordination = coordination if isinstance(coordination, dict) else {}
+    recovery = coordination.get("recovery")
+    recovery = (
+        [item for item in recovery if isinstance(item, dict)]
+        if isinstance(recovery, list)
+        else []
+    )
     peers = presence.get("sessions")
     valid = (valid and isinstance(peers, list)
              and all(isinstance(peer, dict) and isinstance(peer.get("freshness"), str)
@@ -66,7 +72,7 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
             coordination_hold(admission, decision)
     return {"schema_version": 1, "report_kind": "alatyr-cooperation-preflight", "scope": selected,
             "decision": decision,
-            "presence": presence, "resources": resources,
+            "presence": presence, "recovery": recovery, "resources": resources,
             "handoff": handoff_view, "capacity": capacity_view,
             **({"admission": admission} if admission is not None else {}),
             "limitation": "Advisory reported state only, not a reservation, liveness proof, isolation guarantee, authorization or command execution. Independent clones and unreported sessions are not observed."}

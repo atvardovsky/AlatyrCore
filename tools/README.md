@@ -759,7 +759,10 @@ Routine output is an eight-peer summary with omitted counts and overlap signals.
 `status --full` or `detail --session-uid <peer-uuid>` exposes diagnosis.
 Registration/update include a peer snapshot, avoiding a second routine call.
 Multiple recent same-worktree entries activate coordination. Stale/future-dated
-records preserve uncertainty; worktrees still share Git/build resources.
+records preserve uncertainty; worktrees still share Git/build resources. A stale
+same-worktree report includes bounded `coordination.recovery` entries with the
+UID, expected version and task. Refresh or leave only as the owner; recovery
+entries are advisory and never auto-delete records or grant takeover.
 Use `path:`, `area:`, and `resource:` references; unknown scope is not isolation.
 Workers are represented by their coordinator. The explicit
 [source route](../docs/source-session-presence.md) uses `--source-contour`;

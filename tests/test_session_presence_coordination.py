@@ -12,11 +12,12 @@ from tests import test_session_presence_runtime as fixtures
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from session_presence_contract import (
-    DEFAULT_PRESENCE, POLICY_PATH, SOURCE_POLICY_PATH, merge_presence_policy,
-    presence_policy, scope_reference,
+    DEFAULT_PRESENCE, POLICY_PATH, SOURCE_POLICY_PATH, encoded_registry,
+    merge_presence_policy, presence_policy, scope_reference,
 )
 from session_presence_store import git_identity, load_registry, operate
 from session_presence_summary import MAX_SUMMARY_SESSIONS, scope_overlap
+from cooperation_preflight import preflight
 
 
 class PresenceCoordinationTests(unittest.TestCase):
@@ -134,6 +135,39 @@ class PresenceCoordinationTests(unittest.TestCase):
                 result = json.loads(projected_template_content(Path(rel), "kernel", run.composition.framework_pack, selected, context, args.target))
                 self.assertEqual(result["session_presence"]["enabled"], enabled)
             self.assertFalse(json.loads(projected_policy)["presence"]["own_entry_housekeeping"])
+
+    def test_stale_same_worktree_recovery_is_explicit_and_read_only(self):
+        one = self.join(["path:src/api/"])
+        _, hub, repository_id = git_identity(self.target)
+        value = load_registry(hub, repository_id)
+        value["sessions"][one["session_uid"]].update(
+            started_at="2026-11-17T19:36:41Z",
+            updated_at="2026-11-17T19:36:41Z",
+        )
+        (hub / "sessions.json").write_bytes(encoded_registry(value, repository_id))
+        before = (hub / "sessions.json").read_bytes()
+
+        status = operate(self.target, "status", scope=["path:src/api/"])
+        coordination = status["coordination"]
+
+        self.assertEqual(coordination["stale_same_worktree"], 1)
+        self.assertEqual(
+            coordination["recovery"],
+            [
+                {
+                    "action": "refresh-or-leave",
+                    "session_uid": one["session_uid"],
+                    "expected_version": 1,
+                    "task": "Review API",
+                    "freshness": "stale",
+                    "reason": "stale-same-worktree",
+                }
+            ],
+        )
+        report = preflight(self.target, ["path:src/api/"])
+        self.assertEqual(report["decision"], "coordinate-before-work")
+        self.assertEqual(report["recovery"], coordination["recovery"])
+        self.assertEqual((hub / "sessions.json").read_bytes(), before)
 
     def test_freshness_and_refresh_boundaries_without_registry_changes(self):
         registered = datetime(2026, 9, 3, 12, tzinfo=timezone.utc)

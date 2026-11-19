@@ -44,8 +44,12 @@ Unavailable helpers require an honest cooperation warning, not manual JSON edits
 
 Prospective status and cooperation preflight do not register, refresh or delete
 sessions. Preflight returns `coordinate-before-work`, `unknown`, or
-`no-reported-conflict`, never an exclusivity or authorization grant. When a
-target testing policy is available, repeat `--command <registered-id>` to add
-its declared test resources. `plan-test-resources` exposes matching
-`presence_scope_refs` for reporting while those resources are in use. Namespace
-isolation does not split these conservative whole-resource identities.
+`no-reported-conflict`, never an exclusivity or authorization grant. Stale
+same-worktree reports include bounded recovery entries naming the peer UID,
+expected version and task. Refresh or leave only as the owner; a recovery entry
+is advisory and never deletes a record or grants takeover. When a target testing
+policy is available, repeat
+`--command <registered-id>` to add its declared test resources.
+`plan-test-resources` exposes matching `presence_scope_refs` for reporting while
+those resources are in use. Namespace isolation does not split these
+conservative whole-resource identities.

@@ -49,6 +49,7 @@ def summarize(value: dict[str, Any], worktree: str, policy: dict[str, Any],
     compared_scope = scope if scope is not None else own["scope"] if own else None
     entries = []
     recent = uncertain = other_worktrees = overlaps = unknown = 0
+    recovery: list[dict[str, Any]] = []
     own_view = None
     for entry in value["sessions"].values():
         shared = same_worktree(entry["worktree"], worktree)
@@ -57,6 +58,21 @@ def summarize(value: dict[str, Any], worktree: str, policy: dict[str, Any],
         if shared:
             recent += freshness == "recent"
             uncertain += freshness != "recent"
+            if freshness != "recent":
+                recovery.append(
+                    {
+                        "action": "refresh-or-leave",
+                        "session_uid": entry["session_uid"],
+                        "expected_version": entry["version"],
+                        "task": entry["task"],
+                        "freshness": freshness,
+                        "reason": (
+                            "stale-same-worktree"
+                            if freshness == "stale"
+                            else "clock-uncertain-same-worktree"
+                        ),
+                    }
+                )
         else:
             other_worktrees += 1
         view = {key: entry[key] for key in ("session_uid", "task", "scope", "activity", "version")}
@@ -80,7 +96,12 @@ def summarize(value: dict[str, Any], worktree: str, policy: dict[str, Any],
         "observed_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "coordination": {"state": state, "same_worktree_recent": recent,
                          "same_worktree_uncertain": uncertain, "other_worktrees": other_worktrees,
-                         "reported_overlaps": overlaps, "unknown_scope_peers": unknown},
+                         "reported_overlaps": overlaps, "unknown_scope_peers": unknown,
+                         "stale_same_worktree": len(recovery),
+                         "recovery": sorted(
+                             recovery,
+                             key=lambda item: (item["session_uid"], item["expected_version"]),
+                         )},
         "own_session": own_view, "sessions": selected,
         "omitted_sessions": len(entries) - len(selected),
     }

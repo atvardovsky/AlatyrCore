@@ -10,6 +10,10 @@
   existing behavior for targets without branch policy. Installation guidance now
   requires canonical-worktree routing and acceptance on the validated branch and
   revision.
+- Add bounded stale same-worktree recovery entries to presence and cooperation
+  reports, with peer UID, expected version and task. Recovery stays advisory:
+  refresh or leave requires ownership and current authorization, and records are
+  never auto-pruned.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 
