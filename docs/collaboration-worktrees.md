@@ -19,11 +19,12 @@ prerequisites are available for context review, not acceptance. With
 
 When `.ai/alatyr.yaml` declares `branch_policy.alatyr_development_branch`, the
 preflight also verifies that the current checkout is that branch. If the branch
-is registered in a worktree, use that worktree; if its path is missing, repair
-the registration before work. A detached historical checkout is read-only for
-adapter work unless release/tag inspection explicitly passes
-`--allow-detached`. A passing sibling worktree does not make the active
-checkout current.
+is registered in a worktree, use that worktree only after confirming it is still
+this repository's worktree root with that branch checked out. An existing empty
+directory or unrelated checkout at the old path is not a usable replacement. A
+detached historical checkout is read-only for adapter work unless release/tag
+inspection explicitly passes `--allow-detached`. A passing sibling worktree does
+not make the active checkout current.
 
 Inspect worktree metadata before assuming a branch is available:
 

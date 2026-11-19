@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from target_adapter_validation.worktree_routing import (  # noqa: E402
     branch_exists,
+    current_branch,
     routing_issues,
 )
 from validate_target_adapter import AdapterValidatorConfig, Validator  # noqa: E402
@@ -87,6 +88,22 @@ class WorktreeRoutingTests(unittest.TestCase):
 
         self.assertEqual([issue["code"] for issue in issues], ["WORKTREE_PATH_MISSING"])
         self.assertTrue(issues[0]["blocking"])
+
+    def test_reused_empty_directory_is_not_recommended(self) -> None:
+        canonical = self.canonical_worktree()
+        moved = Path(self.temporary.name) / "moved"
+        canonical.rename(moved)
+        canonical.mkdir()
+        before_branch = current_branch(self.target)
+
+        issues = routing_issues(self.target, self.manifest(), acceptance=True)
+
+        self.assertEqual([issue["code"] for issue in issues], ["WORKTREE_PATH_INVALID"])
+        self.assertTrue(issues[0]["blocking"])
+        self.assertIn("repair the worktree registration", issues[0]["message"])
+        self.assertNotIn("use the canonical", issues[0]["message"])
+        self.assertEqual(current_branch(self.target), before_branch)
+        self.assertFalse((canonical / ".git").exists())
 
     def test_missing_branch_and_absent_policy_keep_previous_behavior(self) -> None:
         self.assertFalse(branch_exists(self.target, "preDev-alatyr"))

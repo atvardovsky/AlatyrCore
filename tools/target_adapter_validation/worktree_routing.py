@@ -61,6 +61,50 @@ def worktrees(target: Path) -> list[WorktreeRecord]:
     return records
 
 
+def _git_text(base: Path, *arguments: str) -> str | None:
+    result = _git(base, *arguments)
+    if result.returncode != 0:
+        return None
+    return result.stdout.decode("utf-8", errors="surrogateescape").strip()
+
+
+def _git_path(base: Path, value: str | None) -> Path | None:
+    if not value:
+        return None
+    path = Path(value)
+    return (path if path.is_absolute() else base / path).resolve()
+
+
+def worktree_identity_matches(target: Path, path: Path, branch: str) -> bool:
+    """Confirm the directory is this repository's worktree root on the branch.
+
+    Directory existence alone is insufficient: an old path can be recreated as
+    an empty directory or reused by an unrelated repository.
+    """
+
+    if not os.path.isdir(path):
+        return False
+    try:
+        if _git_text(path, "rev-parse", "--is-inside-work-tree") != "true":
+            return False
+        top = _git_path(
+            path, _git_text(path, "rev-parse", "--show-toplevel")
+        )
+        if top is None or top != path.resolve():
+            return False
+        if _git_text(path, "branch", "--show-current") != branch:
+            return False
+        common = _git_path(
+            path, _git_text(path, "rev-parse", "--git-common-dir")
+        )
+        target_common = _git_path(
+            target, _git_text(target, "rev-parse", "--git-common-dir")
+        )
+        return common is not None and target_common is not None and common == target_common
+    except (OSError, RuntimeError):
+        return False
+
+
 def branch_policy(manifest: dict[str, Any] | None) -> dict[str, Any]:
     if not isinstance(manifest, dict):
         return {}
@@ -102,8 +146,16 @@ def routing_issues(
         for record in worktrees(target)
         if record.branch == f"refs/heads/{canonical}"
     ]
-    valid = [record for record in records if os.path.isdir(record.path)]
-    missing = [record for record in records if not os.path.isdir(record.path)]
+    valid: list[WorktreeRecord] = []
+    missing: list[WorktreeRecord] = []
+    invalid: list[WorktreeRecord] = []
+    for record in records:
+        if not os.path.isdir(record.path):
+            missing.append(record)
+        elif worktree_identity_matches(target, record.path, canonical):
+            valid.append(record)
+        else:
+            invalid.append(record)
     current_label = current or "detached HEAD"
 
     if valid:
@@ -129,6 +181,20 @@ def routing_issues(
                 "message": (
                     f"canonical {canonical} worktree path is missing: "
                     f"{missing[0].path.as_posix()}; repair the worktree registration"
+                ),
+            }
+        ]
+    if invalid:
+        return [
+            {
+                "level": level,
+                "blocking": True,
+                "code": "WORKTREE_PATH_INVALID",
+                "path": ".ai/alatyr.yaml",
+                "message": (
+                    f"canonical {canonical} worktree path exists but is not a "
+                    f"worktree root of this repository on {canonical}: "
+                    f"{invalid[0].path.as_posix()}; repair the worktree registration"
                 ),
             }
         ]

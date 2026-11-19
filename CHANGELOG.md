@@ -3,11 +3,13 @@
 ## Unreleased
 
 - Add optional worktree-routing checks for targets with a configured Alatyr
-  development branch. Report detached, stale, missing or sibling worktrees from
-  the read-only preflight and adapter validation; keep release/tag inspection
-  explicit and preserve the existing behavior for targets without branch policy.
-  Installation guidance now requires canonical-worktree routing and acceptance
-  on the validated branch and revision.
+  development branch. Report detached, stale, missing, reused-invalid or sibling
+  worktrees from the read-only preflight and adapter validation; only recommend a
+  directory after confirming it is this repository's worktree root on the
+  configured branch. Keep release/tag inspection explicit and preserve the
+  existing behavior for targets without branch policy. Installation guidance now
+  requires canonical-worktree routing and acceptance on the validated branch and
+  revision.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 

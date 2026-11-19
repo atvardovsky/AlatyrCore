@@ -454,7 +454,9 @@ List commands or manual checks:
 - checked-out target branch and revision recorded for migration and final
   validation evidence:
 - canonical development-branch worktree exists and is not a stale or prunable
-  registration; detached historical checkouts are not treated as canonical:
+  registration; an existing directory is usable only when it is the same
+  repository's worktree root with that branch checked out; detached historical
+  checkouts are not canonical:
 - `worktree-preflight --require-ready` passes on the worktree used for adapter
   work and final acceptance:
 - every `AGENTS.md` / `AI_ASSISTANTS.md` / bridge reference resolves:
