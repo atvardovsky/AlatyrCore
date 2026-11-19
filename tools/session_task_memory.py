@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from target_adapter_validation.context import TargetRepositoryView
+from target_validation_support import is_target_relative_path
 
 
 ACTIVE_TASKS = ".ai/assistant/active-tasks.json"
@@ -62,9 +63,32 @@ def task_memory(
         active_state = "invalid"
     active_ids = _task_ids(active, "tasks")
     team, team_state = _read_object(view, TEAM_WORK)
-    if team_state == "current" and not isinstance(team.get("entries"), list):
-        team_state = "invalid"
-    team_ids = _task_ids(team, "entries")
+    team_ids: set[str] = set()
+    team_verification = team_state
+    if team_state == "current":
+        if isinstance(team.get("entries"), list):
+            team_ids = _task_ids(team, "entries")
+        else:
+            index_reference = team.get("active_work_index")
+            if (
+                not isinstance(index_reference, str)
+                or not is_target_relative_path(index_reference)
+            ):
+                team_verification = "invalid-index-reference"
+            else:
+                index, index_state = _read_object(view, index_reference)
+                if index_state != "current":
+                    team_verification = f"index-{index_state}"
+                elif not isinstance(index.get("entries"), list):
+                    team_verification = "index-invalid"
+                else:
+                    team_ids = _task_ids(index, "entries")
+    team_unverified = team_verification in {
+        "invalid",
+        "invalid-index-reference",
+        "index-missing",
+        "index-invalid",
+    }
     stale_sessions = [
         session
         for session in sessions
@@ -73,7 +97,7 @@ def task_memory(
         and session.get("freshness") != "recent"
     ]
     lost: list[dict[str, Any]] = []
-    if active_state == "current":
+    if active_state == "current" and not team_unverified:
         for session in stale_sessions:
             task = session.get("task")
             if not isinstance(task, str) or not task or task in active_ids or task in team_ids:
@@ -94,7 +118,7 @@ def task_memory(
         else "current"
         if not stale_sessions
         else "unavailable"
-        if active_state != "current"
+        if active_state != "current" or team_unverified
         else "current"
     )
     return {
@@ -104,7 +128,9 @@ def task_memory(
         "active_task_source": ACTIVE_TASKS,
         "active_task_state": active_state,
         "team_work_source": TEAM_WORK,
-        "team_work_state": team_state,
+        "team_work_state": team_verification,
+        "team_index_required": team_state != "missing",
+        "team_index_verified": team_verification == "current",
         "active_task_count": len(active_ids),
         "team_task_count": len(team_ids),
         "stale_session_count": len(stale_sessions),

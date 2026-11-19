@@ -18,6 +18,7 @@ from session_presence_contract import (
 from session_presence_store import git_identity, load_registry, operate
 from session_presence_summary import MAX_SUMMARY_SESSIONS, scope_overlap
 from cooperation_preflight import preflight
+from check_team_collaboration_scenarios import task as team_task, write_fixture
 
 
 class PresenceCoordinationTests(unittest.TestCase):
@@ -177,6 +178,62 @@ class PresenceCoordinationTests(unittest.TestCase):
         report = preflight(self.target, ["path:src/api/"])
         self.assertEqual(report["task_memory"]["state"], "current")
         self.assertEqual(report["task_memory"]["lost_candidates"], [])
+
+    def test_team_active_index_registers_stale_session_task(self):
+        write_fixture(self.target, team_task())
+        active = ROOT / "templates/target/.ai/assistant/active-tasks.json"
+        (self.target / ".ai/assistant/active-tasks.json").write_bytes(
+            active.read_bytes()
+        )
+        uid = operate(
+            self.target,
+            "register",
+            write=True,
+            task="task-1",
+            scope=["path:src/api/"],
+        )["session_uid"]
+        _, hub, repository_id = git_identity(self.target)
+        value = load_registry(hub, repository_id)
+        value["sessions"][uid].update(
+            started_at="2020-01-01T00:00:00Z",
+            updated_at="2020-01-01T00:00:00Z",
+        )
+        (hub / "sessions.json").write_bytes(encoded_registry(value, repository_id))
+
+        report = preflight(self.target, ["path:other/"])
+        memory = report["task_memory"]
+        self.assertEqual(memory["team_work_state"], "current")
+        self.assertTrue(memory["team_index_verified"])
+        self.assertEqual(memory["team_task_count"], 1)
+        self.assertEqual(memory["state"], "current")
+        self.assertEqual(memory["lost_candidates"], [])
+        self.assertNotIn(
+            "register-task-or-leave",
+            {item["action"] for item in report["recovery"]},
+        )
+
+        index_path = self.target / ".ai/assistant/team/active-work-index.json"
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        index["entries"] = []
+        index_path.write_text(json.dumps(index), encoding="utf-8")
+        report = preflight(self.target, ["path:other/"])
+        memory = report["task_memory"]
+        self.assertEqual(memory["state"], "attention")
+        self.assertEqual(
+            [(item["task"], item["action"]) for item in memory["lost_candidates"]],
+            [("task-1", "register-task-or-leave")],
+        )
+
+        registry_path = self.target / ".ai/assistant/team/work-registry.json"
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        registry["active_work_index"] = ".ai/assistant/team/missing.json"
+        registry_path.write_text(json.dumps(registry), encoding="utf-8")
+        report = preflight(self.target, ["path:other/"])
+        memory = report["task_memory"]
+        self.assertEqual(memory["state"], "unavailable")
+        self.assertEqual(memory["team_work_state"], "index-missing")
+        self.assertFalse(memory["team_index_verified"])
+        self.assertEqual(memory["lost_candidates"], [])
 
     def test_stale_task_without_active_index_is_not_false_positive(self):
         one = self.join(["path:src/api/"])

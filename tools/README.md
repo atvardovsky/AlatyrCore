@@ -764,7 +764,9 @@ same-worktree report includes bounded `coordination.recovery` entries with the
 UID, expected version and task. Refresh or leave only as the owner; recovery
 entries are advisory and never auto-delete records or grant takeover.
 Cooperation preflight also checks those task labels against the active-task and
-team work registries. Unregistered tasks appear in
+team work registries. Schema-2 team registries resolve their
+`active_work_index` reference; an unreadable configured index is reported as
+unavailable, not as task loss. Unregistered tasks appear in
 `task_memory.lost_candidates` with `register-task-or-leave`; a missing active
 index is `unavailable`, not a false loss.
 Use `path:`, `area:`, and `resource:` references; unknown scope is not isolation.
