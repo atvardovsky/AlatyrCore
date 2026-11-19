@@ -140,6 +140,30 @@ def _blob_path(store: Path, digest: str) -> Path:
     return store / BLOBS / digest.removeprefix("sha256:")
 
 
+def _file_digest(path: Path) -> str:
+    hasher = hashlib.sha256()
+    with path.open("rb") as stream:
+        while True:
+            chunk = stream.read(1024 * 1024)
+            if not chunk:
+                break
+            hasher.update(chunk)
+    return "sha256:" + hasher.hexdigest()
+
+
+def _write_blob(store: Path, blob: Path, data: bytes) -> None:
+    descriptor, temporary = tempfile.mkstemp(prefix=".blob-", dir=store / BLOBS)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, blob)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
 def _entry(
     *, digest: str, size: int, kind: str, task: str | None, summary: str | None
 ) -> dict[str, Any]:
@@ -184,22 +208,16 @@ def put(
     digest = "sha256:" + digest_hex
     blob = _blob_path(store, digest)
     deduplicated = False
+    repaired = False
     if blob.exists():
         _safe_file(blob)
-        if blob.stat().st_size != len(data):
-            raise ValueError("runtime blob exists with a different size")
-        deduplicated = True
+        if _file_digest(blob) == digest:
+            deduplicated = True
+        else:
+            _write_blob(store, blob, data)
+            repaired = True
     else:
-        descriptor, temporary = tempfile.mkstemp(prefix=".blob-", dir=store / BLOBS)
-        try:
-            with os.fdopen(descriptor, "wb") as stream:
-                stream.write(data)
-                stream.flush()
-                os.fsync(stream.fileno())
-            os.replace(temporary, blob)
-        finally:
-            if os.path.exists(temporary):
-                os.unlink(temporary)
+        _write_blob(store, blob, data)
 
     with file_lock(store / LOCK):
         index = _load_index(store)
@@ -232,6 +250,7 @@ def put(
         "schema_version": SCHEMA_VERSION,
         "kind": "runtime-store-put",
         "deduplicated": deduplicated,
+        "repaired": repaired,
         "entry": existing,
         "path": STORE_REL + "/" + BLOBS + "/" + digest_hex,
     }

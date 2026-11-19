@@ -62,6 +62,7 @@ class RuntimeStoreTests(unittest.TestCase):
 
         self.assertFalse(first["deduplicated"])
         self.assertTrue(second["deduplicated"])
+        self.assertFalse(second["repaired"])
         self.assertEqual(first["entry"]["digest"], second["entry"]["digest"])
         self.assertEqual(third["entry"]["digest"], first["entry"]["digest"])
         self.assertEqual(first["entry"]["summary"], "85 checks passed")
@@ -82,6 +83,37 @@ class RuntimeStoreTests(unittest.TestCase):
         )
         self.assertEqual(raw, b"full val")
         self.assertEqual(size, len(b"full validation report\n"))
+
+    def test_corrupt_existing_blob_is_atomically_repaired(self) -> None:
+        original = b"example log\n"
+        first = runtime_store.put(
+            self.target,
+            kind="log",
+            task=None,
+            summary=None,
+            data=original,
+        )
+        blob = self.target / first["path"]
+        corrupted = b"X" + original[1:]
+        self.assertEqual(len(corrupted), len(original))
+        blob.write_bytes(corrupted)
+
+        retry = runtime_store.put(
+            self.target,
+            kind="log",
+            task=None,
+            summary=None,
+            data=original,
+        )
+
+        self.assertFalse(retry["deduplicated"])
+        self.assertTrue(retry["repaired"])
+        self.assertEqual(
+            runtime_store.get_bytes(
+                self.target, retry["entry"]["digest"], max_bytes=100
+            )[0],
+            original,
+        )
 
     def test_cli_put_requires_write_and_index_is_read_only(self) -> None:
         empty = self.cli("index")

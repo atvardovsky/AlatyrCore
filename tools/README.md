@@ -1009,7 +1009,9 @@ The stable command set is:
 - `runtime-store`: stores process artifacts once under ignored
   `.ai/.runtime/store/blobs` and returns compact digest/summary references;
   `index` is read-only, `put` requires `--write`, and `get` prints a bounded
-  excerpt unless an exact `--output` write is explicitly authorized
+  excerpt unless an exact `--output` write is explicitly authorized. A
+  duplicate put verifies the existing blob against the digest and atomically
+  repairs a corrupt or truncated blob instead of reporting a false deduplication
 
 Source validation also includes `tool-complexity`, a no-growth guardrail for
 known oversized Python functions. It does not claim the validator is already
