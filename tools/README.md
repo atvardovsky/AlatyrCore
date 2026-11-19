@@ -293,6 +293,11 @@ acknowledged publication observations and optional per-host build planning, see
 conditional helpers do not add bootstrap context, grant permission or replace
 full acceptance. `worktree-preflight` is read-only; `restore-task` writes ignored
 runtime bytes only with explicit `--write`.
+When `branch_policy.alatyr_development_branch` is configured, the preflight also
+reports `WORKTREE_ROUTING_REQUIRED`, `WORKTREE_PATH_MISSING` or
+`WORKTREE_CANONICAL_UNAVAILABLE` for a detached, stale or missing development
+worktree. `--allow-detached` is inspection-only for release/tag checkouts and
+does not make them adapter-acceptance worktrees.
 It reads a separate ignored draft, validates the canonical schema and header,
 and keeps unresolved proof and pending reviews unchanged. New tasks also need
 an explicit `--registration` draft matching the active-task index entry shape.

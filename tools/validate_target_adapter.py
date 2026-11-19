@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import jsonschema
+from yaml import YAMLError
 from task_acceptance_binding import task_arguments
 
 from approval_archive import INDEX_PATH as APPROVAL_ARCHIVE_INDEX_PATH, build_archive_index
@@ -112,6 +113,7 @@ from target_adapter_validation.ai_infrastructure import (
 COMPACT_INDEX_REVIEW_MAX_RECORDS = 64
 COMPACT_INDEX_REVIEW_MAX_BYTES = 64 * 1024
 from target_adapter_validation.action_modes import ALLOWED_ACTION_MODES
+from target_adapter_validation.worktree_routing import routing_issues
 from target_adapter_validation.assistant_capabilities import (
     CACHE_EXPOSURE_STATES,
     CACHE_FALLBACK,
@@ -1131,6 +1133,24 @@ class Validator:
                 return deviation.reason
         return ""
 
+    def check_worktree_routing(self) -> None:
+        path = self.target_path(".ai/alatyr.yaml")
+        if not self.is_target_file(path):
+            return
+        try:
+            manifest = load_manifest_object(path)
+        except (OSError, UnicodeError, ValueError, YAMLError):
+            return
+        for issue in routing_issues(
+            self.target,
+            manifest,
+            acceptance=self.validation_phase == "acceptance",
+        ):
+            if issue["level"] == "error":
+                self.error(issue["code"], issue["message"], issue["path"])
+            else:
+                self.warn(issue["code"], issue["message"], issue["path"])
+
     def run(self) -> list[Finding]:
         if not self.target.exists():
             self.error("TARGET_MISSING", f"target does not exist: {self.target}")
@@ -1140,6 +1160,7 @@ class Validator:
             return self.findings
 
         manifest = self.check_manifest()
+        self.check_worktree_routing()
         support_profile = self.manifest_support_profile(manifest)
         enabled_modules = self.enabled_modules(manifest)
         self.enabled_module_ids = set(enabled_modules)

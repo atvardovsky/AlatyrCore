@@ -453,6 +453,13 @@ List commands or manual checks:
   context:
 - checked-out target branch and revision recorded for migration and final
   validation evidence:
+- canonical development-branch worktree exists and is not a stale or prunable
+  registration; detached historical checkouts are not treated as canonical:
+- `worktree-preflight --require-ready` passes on the worktree used for adapter
+  work and final acceptance:
+- every `AGENTS.md` / `AI_ASSISTANTS.md` / bridge reference resolves:
+- selected assistant surfaces have current instruction-loading evidence, or are
+  recorded as limited/unselected:
 - migration-staging output classified as non-accepting, with active unresolved
   placeholders listed and an acceptance-phase rerun required:
 - explicit `update Alatyr` routed as current-scope adapter modification through

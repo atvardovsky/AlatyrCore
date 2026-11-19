@@ -330,6 +330,12 @@ the target, refreshing supporting indexes, and final validation. The assistant
 reports acceptance or the exact blocker and next action; an assessment alone
 is not a completed upgrade.
 
+If the project uses multiple worktrees, keep Alatyr work in the worktree for
+the configured development branch. Run the worktree preflight before adapter
+writes or acceptance; a detached or stale checkout is not made current by a
+passing sibling worktree. See
+[worktree routing](docs/collaboration-worktrees.md).
+
 Project documentation can use focused topics behind small indexes, including
 existing docs outside `.ai/`. Alatyr can propose a bounded refactor for older,
 heavy support structures; it does not reorganize them merely because you

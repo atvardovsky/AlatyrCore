@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Add optional worktree-routing checks for targets with a configured Alatyr
+  development branch. Report detached, stale, missing or sibling worktrees from
+  the read-only preflight and adapter validation; keep release/tag inspection
+  explicit and preserve the existing behavior for targets without branch policy.
+  Installation guidance now requires canonical-worktree routing and acceptance
+  on the validated branch and revision.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 

@@ -13,6 +13,7 @@ from pathlib import Path
 
 from adapter_health_views import tooling_comparison
 from target_adapter_validation.context import TargetRepositoryView
+from target_adapter_validation.worktree_routing import routing_issues
 from task_evidence_contract import task_schema
 from target_validation_support import GitEvidenceView, is_target_relative_path
 from yaml_support import safe_load
@@ -66,10 +67,12 @@ def bound_bytes(view: TargetRepositoryView, binding: dict, *, limit: int = MAX_P
     return result.value, "bound"
 
 
-def readiness(target: Path, source: Path | None = None, task_id: str | None = None) -> dict:
+def readiness(target: Path, source: Path | None = None, task_id: str | None = None,
+              *, allow_detached: bool = False) -> dict:
     target = target.resolve()
     view = TargetRepositoryView(target)
     issues = []
+    manifest_data: dict = {}
     source_path = None
     try:
         resolver = runpy.run_path(str(ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py"))["resolve_source"]
@@ -85,6 +88,7 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
     try:
         manifest = view.read_bytes_result(target / ".ai/alatyr.yaml", max_bytes=512 * 1024)
         data = safe_load(manifest.value.decode("utf-8")) if manifest.value is not None else None
+        manifest_data = data if isinstance(data, dict) else {}
         installation = data.get("installation") if isinstance(data, dict) else None
         route = installation.get("state_record") if isinstance(installation, dict) else None
         if isinstance(route, str) and is_target_relative_path(route):
@@ -95,6 +99,16 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
                         and isinstance(state.value, dict) and state.value.get("current_state") == "accepted")
     except (OSError, UnicodeError, ValueError, YAMLError):
         pass
+    for issue in routing_issues(
+        target, manifest_data, acceptance=False, allow_detached=allow_detached
+    ):
+        issues.append(
+            {
+                "code": issue["code"],
+                "path": issue["path"],
+                "next_action": issue["message"],
+            }
+        )
     if not accepted:
         issues.append({"code": "WORKTREE_INSTALLATION", "path": state_path, "next_action": "inspect installation state; finish or repair the target update"})
     raw = view.read_bytes_result(target / INDEX, max_bytes=512 * 1024)
@@ -201,9 +215,17 @@ def main() -> int:
     parser.add_argument("--framework-source", type=Path)
     parser.add_argument("--task-id")
     parser.add_argument("--require-ready", action="store_true")
+    parser.add_argument(
+        "--allow-detached",
+        action="store_true",
+        help="allow a detached release/tag checkout when the development branch is configured",
+    )
     args = parser.parse_args()
     try:
-        report = readiness(args.target, args.framework_source, args.task_id)
+        report = readiness(
+            args.target, args.framework_source, args.task_id,
+            allow_detached=args.allow_detached,
+        )
         print(json.dumps(report, indent=2))
         return 1 if args.require_ready and report["state"] != "ready-for-context-review" else 0
     except (OSError, ValueError, RecursionError, subprocess.SubprocessError) as exc:

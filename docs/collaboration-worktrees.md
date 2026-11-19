@@ -17,6 +17,25 @@ active-model bindings, not the full adapter or project test suite. Exit 0 means
 prerequisites are available for context review, not acceptance. With
 `--require-ready`, unresolved prerequisites return 1; invalid input returns 2.
 
+When `.ai/alatyr.yaml` declares `branch_policy.alatyr_development_branch`, the
+preflight also verifies that the current checkout is that branch. If the branch
+is registered in a worktree, use that worktree; if its path is missing, repair
+the registration before work. A detached historical checkout is read-only for
+adapter work unless release/tag inspection explicitly passes
+`--allow-detached`. A passing sibling worktree does not make the active
+checkout current.
+
+Inspect worktree metadata before assuming a branch is available:
+
+```sh
+git worktree list --porcelain
+git worktree prune --dry-run
+```
+
+Do not run `git worktree prune`, switch branches, or reset dirty product files
+automatically. Report the stale path or missing registration and require an
+explicit owner action.
+
 Source selection precedence is explicit `--framework-source`, `ALATYR_CORE`,
 worktree `.ai/local/framework-source`, then an explicitly configured
 `alatyr/framework-source` file below `git rev-parse --git-common-dir`. A relative

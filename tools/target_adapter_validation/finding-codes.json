@@ -58,7 +58,8 @@
     "tools/target_adapter_validation/testing_execution.py",
     "tools/target_adapter_validation/validation_contract.py",
     "tools/target_adapter_validation/values.py",
-    "tools/target_adapter_validation/workspace_modes.py"
+    "tools/target_adapter_validation/workspace_modes.py",
+    "tools/target_adapter_validation/worktree_routing.py"
   ],
   "families": [
     {

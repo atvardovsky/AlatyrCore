@@ -507,6 +507,8 @@ In a typical target repository:
 
 ## Post-Install Operations
 
+Before adapter work, follow [worktree routing](docs/collaboration-worktrees.md).
+
 After installation, use
 `installer/installed-operation-request-template.md` when asking an assistant to
 operate the installed target adapter. Typical requests include blueprint

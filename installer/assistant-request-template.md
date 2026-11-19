@@ -11,6 +11,9 @@ Alatyr Core source path:
 Target repository path:
 <path-or-repo-url-to-target-project>
 
+Worktree routing:
+<canonical-development-worktree-or-none; if used, run worktree-preflight before adapter work>
+
 Supported assistants needed:
 <Codex/Claude/Gemini/GitHub Copilot/Cursor/Devin/Cascade/Windsurf/generic>
 
@@ -24,6 +27,8 @@ Constraints:
   ALATYR-EVIDENCE-001.
 - Do not use an installer script.
 - Inspect the target repository before creating files.
+- If a development worktree is configured, use it for adapter work and
+  acceptance; do not load a stale detached or sibling checkout.
 - Prepare an installation plan from Alatyr Core's installer template.
 - Separate framework core, target project facts, and target repository adapter
   facts.
