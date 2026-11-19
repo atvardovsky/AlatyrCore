@@ -11,6 +11,7 @@ from pathlib import Path
 from plan_test_resources import resource_plan
 from session_presence_contract import scope_reference
 from session_presence_store import operate
+from session_task_memory import task_memory as task_memory_report
 from collaboration_observations import handoff_report, capacity_report, decode_observation, handoff_resource_scope
 from target_adapter_validation.context import TargetRepositoryView
 
@@ -51,12 +52,45 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
                      for peer in peers)
              and type(presence.get("enabled")) is bool
              and type(presence.get("omitted_sessions")) is int and presence["omitted_sessions"] >= 0)
+    memory_sessions = list(peers) if valid else []
+    if valid and isinstance(presence.get("own_session"), dict):
+        memory_sessions.append(presence["own_session"])
+    if (
+        valid
+        and not source_contour
+        and presence.get("omitted_sessions")
+    ):
+        complete = operate(
+            target,
+            "status",
+            scope=selected,
+            session_uid=session_uid,
+            source_contour=source_contour,
+            full=True,
+        )
+        if isinstance(complete, dict):
+            memory_sessions = [
+                item for item in complete.get("sessions", [])
+                if isinstance(item, dict)
+            ]
+    task_memory = task_memory_report(
+        target,
+        memory_sessions,
+        source_contour=source_contour,
+    )
+    lost_tasks = [
+        item for item in task_memory.get("lost_candidates", [])
+        if isinstance(item, dict)
+    ]
+    recovery.extend(lost_tasks)
     conflicts = (valid and (coordination["reported_overlaps"] > 0 or any(peer["overlap"] == "reported-overlap" for peer in peers))
-                 or resources is not None and not resources["concurrent_eligible"])
+                 or resources is not None and not resources["concurrent_eligible"]
+                 or bool(lost_tasks))
     uncertain = (any(scope_reference(scope)[0] == "unknown" for scope in selected)
                  or not valid or not presence.get("enabled") or bool(presence.get("omitted_sessions"))
                  or bool(coordination.get("unknown_scope_peers"))
                  or bool(coordination.get("same_worktree_uncertain"))
+                 or task_memory.get("state") == "unavailable"
                  or any(peer.get("freshness") != "recent" or peer.get("overlap") in {"unknown", "not-compared"}
                         for peer in (peers if valid else [])))
     handoff_view = handoff_report(handoff, handoff_current) if handoff is not None or handoff_current is not None else None
@@ -72,7 +106,8 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
             coordination_hold(admission, decision)
     return {"schema_version": 1, "report_kind": "alatyr-cooperation-preflight", "scope": selected,
             "decision": decision,
-            "presence": presence, "recovery": recovery, "resources": resources,
+            "presence": presence, "recovery": recovery, "task_memory": task_memory,
+            "resources": resources,
             "handoff": handoff_view, "capacity": capacity_view,
             **({"admission": admission} if admission is not None else {}),
             "limitation": "Advisory reported state only, not a reservation, liveness proof, isolation guarantee, authorization or command execution. Independent clones and unreported sessions are not observed."}

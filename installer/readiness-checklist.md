@@ -462,6 +462,8 @@ List commands or manual checks:
 - every `AGENTS.md` / `AI_ASSISTANTS.md` / bridge reference resolves:
 - selected assistant surfaces have current instruction-loading evidence, or are
   recorded as limited/unselected:
+- stale same-worktree session tasks are registered in active tasks or team work,
+  or explicitly left; cooperation task-memory attention is resolved:
 - migration-staging output classified as non-accepting, with active unresolved
   placeholders listed and an acceptance-phase rerun required:
 - explicit `update Alatyr` routed as current-scope adapter modification through

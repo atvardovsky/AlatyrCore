@@ -136,6 +136,70 @@ class PresenceCoordinationTests(unittest.TestCase):
                 self.assertEqual(result["session_presence"]["enabled"], enabled)
             self.assertFalse(json.loads(projected_policy)["presence"]["own_entry_housekeeping"])
 
+    def test_stale_task_without_durable_registration_is_reported(self):
+        one = self.join(["path:src/api/"])
+        _, hub, repository_id = git_identity(self.target)
+        value = load_registry(hub, repository_id)
+        value["sessions"][one["session_uid"]].update(
+            started_at="2026-11-17T19:36:41Z",
+            updated_at="2026-11-17T19:36:41Z",
+        )
+        (hub / "sessions.json").write_bytes(encoded_registry(value, repository_id))
+        active = self.target / ".ai/assistant/active-tasks.json"
+        active.parent.mkdir(parents=True, exist_ok=True)
+        active.write_text(json.dumps({"tasks": [{"task_id": "OTHER-TASK"}]}), encoding="utf-8")
+        before = (hub / "sessions.json").read_bytes()
+
+        report = preflight(self.target, ["path:src/api/"])
+
+        self.assertEqual(report["task_memory"]["state"], "attention")
+        self.assertEqual(
+            report["task_memory"]["lost_candidates"],
+            [
+                {
+                    "action": "register-task-or-leave",
+                    "session_uid": one["session_uid"],
+                    "expected_version": 1,
+                    "task": "Review API",
+                    "freshness": "stale",
+                    "reason": "stale-session-task-not-registered",
+                }
+            ],
+        )
+        self.assertIn(
+            "register-task-or-leave",
+            {item["action"] for item in report["recovery"]},
+        )
+        self.assertEqual(report["decision"], "coordinate-before-work")
+        self.assertEqual((hub / "sessions.json").read_bytes(), before)
+
+        active.write_text(json.dumps({"tasks": [{"task_id": "Review API"}]}), encoding="utf-8")
+        report = preflight(self.target, ["path:src/api/"])
+        self.assertEqual(report["task_memory"]["state"], "current")
+        self.assertEqual(report["task_memory"]["lost_candidates"], [])
+
+    def test_stale_task_without_active_index_is_not_false_positive(self):
+        one = self.join(["path:src/api/"])
+        _, hub, repository_id = git_identity(self.target)
+        value = load_registry(hub, repository_id)
+        value["sessions"][one["session_uid"]].update(
+            started_at="2026-11-17T19:36:41Z",
+            updated_at="2026-11-17T19:36:41Z",
+        )
+        (hub / "sessions.json").write_bytes(encoded_registry(value, repository_id))
+
+        report = preflight(self.target, ["path:src/api/"])
+
+        self.assertEqual(report["task_memory"]["state"], "unavailable")
+        self.assertEqual(report["task_memory"]["lost_candidates"], [])
+
+        active = self.target / ".ai/assistant/active-tasks.json"
+        active.parent.mkdir(parents=True, exist_ok=True)
+        active.write_text(json.dumps({"tasks": {}}), encoding="utf-8")
+        report = preflight(self.target, ["path:src/api/"])
+        self.assertEqual(report["task_memory"]["state"], "unavailable")
+        self.assertEqual(report["task_memory"]["lost_candidates"], [])
+
     def test_stale_same_worktree_recovery_is_explicit_and_read_only(self):
         one = self.join(["path:src/api/"])
         _, hub, repository_id = git_identity(self.target)

@@ -14,6 +14,9 @@
   reports, with peer UID, expected version and task. Recovery stays advisory:
   refresh or leave requires ownership and current authorization, and records are
   never auto-pruned.
+- Cross-check stale session task labels against active-task and team work
+  registries. Report unregistered tasks as `register-task-or-leave` lost-task
+  candidates; a missing active index remains unavailable, not a false loss.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 

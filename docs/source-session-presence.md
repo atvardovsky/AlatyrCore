@@ -47,9 +47,12 @@ sessions. Preflight returns `coordinate-before-work`, `unknown`, or
 `no-reported-conflict`, never an exclusivity or authorization grant. Stale
 same-worktree reports include bounded recovery entries naming the peer UID,
 expected version and task. Refresh or leave only as the owner; a recovery entry
-is advisory and never deletes a record or grants takeover. When a target testing
-policy is available, repeat
-`--command <registered-id>` to add its declared test resources.
-`plan-test-resources` exposes matching `presence_scope_refs` for reporting while
-those resources are in use. Namespace isolation does not split these
-conservative whole-resource identities.
+is advisory and never deletes a record or grants takeover. Preflight also
+matches stale same-worktree task labels against the active-task index and team
+work registry. An unregistered task appears under `task_memory.lost_candidates`
+with `register-task-or-leave`; a missing active-task index is reported as
+unavailable rather than as a false loss. When a target testing policy is
+available, repeat `--command <registered-id>` to add its declared test
+resources. `plan-test-resources` exposes matching `presence_scope_refs` for
+reporting while those resources are in use. Namespace isolation does not split
+these conservative whole-resource identities.
