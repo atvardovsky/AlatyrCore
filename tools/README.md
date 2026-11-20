@@ -847,6 +847,9 @@ python3 tools/alatyr.py clean-artifacts --older-than-days 7 --apply
 python3 tools/alatyr.py runtime-store --target . put --write --kind validation --task TASK_ID --file tmp/validation.log --summary "85 checks passed"
 python3 tools/alatyr.py runtime-store --target . index --task TASK_ID
 python3 tools/alatyr.py runtime-store --target . get --digest sha256:... --max-bytes 4096
+python3 tools/alatyr.py context-slice --target . list --path tools/validate_target_adapter.py
+python3 tools/alatyr.py context-slice --target . read --path tools/validate_target_adapter.py --symbol check_change_packages --max-words 2000
+python3 tools/alatyr.py context-slice --target . read --path framework/lifecycle.md --heading upgrade-process --max-words 1200
 ```
 
 Windows PowerShell:
@@ -1012,6 +1015,9 @@ The stable command set is:
   excerpt unless an exact `--output` write is explicitly authorized. A
   duplicate put verifies the existing blob against the digest and atomically
   repairs a corrupt or truncated blob instead of reporting a false deduplication
+- `context-slice`: read-only bounded slice by Markdown heading, Python symbol, or
+  line range; `list` shows heading or symbol offsets and word costs, and an
+  over-budget slice fails closed instead of truncating silently
 
 Source validation also includes `tool-complexity`, a no-growth guardrail for
 known oversized Python functions. It does not claim the validator is already

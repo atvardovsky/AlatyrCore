@@ -22,3 +22,18 @@ Store a validation log or profiler report once, then keep only its digest,
 summary and a retrieval handle in the task working set. The store is evidence
 storage, not canonical project authority, and it never replaces tracked owners,
 approvals or acceptance records.
+
+## Bounded File Slicing
+
+`context-slice` reads only the selected Markdown heading, Python symbol, or
+line range. `list` returns offsets and word costs without content; `read`
+returns the slice plus path, digest, range, and the share of the whole file.
+A slice above `--max-words` fails closed instead of truncating.
+
+For example, `tools/validate_target_adapter.py` is 8,090 lines. Slicing the
+`check_change_packages` function returns 565 lines instead of the whole file;
+`framework/lifecycle.md` can be read by heading instead of its full 31 KB.
+Use this for large tools and owner documents where the task names the exact
+function, heading, or range. Structural checks and canonical owners remain
+authoritative; a slice is a bounded delivery mechanism, not a summary or an
+acceptance claim.

@@ -107,6 +107,7 @@ EXPECTED_COMMANDS = {
     "check-benchmark",
     "summarize-benchmark",
     "runtime-store",
+    "context-slice",
     "clean-artifacts",
 }
 ALLOWED_WRITE_SCOPES = {

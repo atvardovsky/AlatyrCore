@@ -24,6 +24,9 @@
   retrieve bounded excerpts; keep `put` explicit, `index` read-only, and raw
   payloads out of context by default. Verify existing blobs before reporting
   deduplication; atomically repair a corrupt duplicate from the verified input.
+- Add a read-only `context-slice` command for bounded Markdown headings, Python
+  symbols, or line ranges. `list` exposes offsets and word costs; `read` fails
+  closed above its word budget instead of silently truncating canonical content.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 

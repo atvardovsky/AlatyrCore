@@ -385,6 +385,12 @@
       "write_scope": "target-ignored-runtime-with-explicit-write"
     },
     {
+      "name": "context-slice",
+      "script": "context_slice.py",
+      "purpose": "return a bounded heading, symbol, or line slice of a repository text file",
+      "write_scope": "none"
+    },
+    {
       "name": "clean-artifacts",
       "script": "clean_local_artifacts.py",
       "purpose": "report or explicitly remove old ignored source-repository artifacts",
