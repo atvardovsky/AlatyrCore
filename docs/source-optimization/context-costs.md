@@ -37,3 +37,17 @@ Use this for large tools and owner documents where the task names the exact
 function, heading, or range. Structural checks and canonical owners remain
 authoritative; a slice is a bounded delivery mechanism, not a summary or an
 acceptance claim.
+
+## Read Ledger
+
+`read-ledger` records what exact file ranges were delivered to a session and
+answers whether unchanged content can be reused. Receipts bind the session,
+task, path, file SHA-256, line coverage, and ledger generation. `check` returns
+`reused`, `partial`, `changed`, `redeliver`, or `miss`; `record` merges
+coverage; `compact` invalidates every receipt because delivery is not memory.
+
+The ledger is session state under ignored `.ai/.runtime/reads`, not project
+knowledge. It carries no authority, never spans tasks or sessions by default,
+and never replaces drift, approval, or validation checks. Use it only where a
+task genuinely reopens the same unchanged content: measured broad sessions can
+show near-zero exact repeats, while repeat-heavy owner reads gain 5-20%.

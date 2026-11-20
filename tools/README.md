@@ -850,6 +850,10 @@ python3 tools/alatyr.py runtime-store --target . get --digest sha256:... --max-b
 python3 tools/alatyr.py context-slice --target . list --path tools/validate_target_adapter.py
 python3 tools/alatyr.py context-slice --target . read --path tools/validate_target_adapter.py --symbol check_change_packages --max-words 2000
 python3 tools/alatyr.py context-slice --target . read --path framework/lifecycle.md --heading upgrade-process --max-words 1200
+python3 tools/alatyr.py context-slice --target . read --path framework/lifecycle.md --heading upgrade-process --session SES --task TASK --reuse
+python3 tools/alatyr.py read-ledger --target . record --session SES --task TASK --path framework/lifecycle.md --range 99:398 --selector "heading upgrade-process"
+python3 tools/alatyr.py read-ledger --target . check --session SES --task TASK --path framework/lifecycle.md --range 99:398
+python3 tools/alatyr.py read-ledger --target . compact --session SES
 ```
 
 Windows PowerShell:
@@ -1018,6 +1022,11 @@ The stable command set is:
 - `context-slice`: read-only bounded slice by Markdown heading, Python symbol, or
   line range; `list` shows heading or symbol offsets and word costs, and an
   over-budget slice fails closed instead of truncating silently
+- `read-ledger`: session-scoped, content-addressed read receipts. `check`
+  returns `reused`, `partial`, `changed`, `redeliver`, or `miss`; `record`
+  writes under ignored `.ai/.runtime/reads`; `compact` invalidates receipts
+  after context compaction. Receipts carry no authority and never replace
+  drift, approval, or validation checks
 
 Source validation also includes `tool-complexity`, a no-growth guardrail for
 known oversized Python functions. It does not claim the validator is already

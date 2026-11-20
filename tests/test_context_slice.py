@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import context_slice  # noqa: E402
+import read_ledger  # noqa: E402
 
 
 GUIDE = """# Guide
@@ -213,6 +214,89 @@ class ContextSliceTests(unittest.TestCase):
             ["top", "decorated", "Widget", "render", "Inner", "nested"],
         )
         self.assertEqual(context_slice.words("one two  three\n"), 3)
+
+    def test_reuse_returns_receipt_then_content_after_compaction(self) -> None:
+        first = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertIn("Alpha text.", first.stdout)
+
+        second = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertIn("already-delivered", second.stdout)
+        self.assertNotIn("Alpha text.", second.stdout)
+
+        read_ledger.compact_session(self.target, session_id="s1")
+        third = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(third.returncode, 0, third.stderr)
+        self.assertIn("Alpha text.", third.stdout)
+
+    def test_reuse_json_reports_no_content_when_reused(self) -> None:
+        arguments = (
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse", "--json",
+        )
+        self.assertEqual(self.cli(*arguments).returncode, 0)
+        reused = self.cli(*arguments)
+        self.assertEqual(reused.returncode, 0, reused.stderr)
+        payload = json.loads(reused.stdout)
+        self.assertEqual(payload["kind"], "context-slice-reuse")
+        self.assertIsNone(payload["content"])
+
+    def test_reuse_partial_returns_only_missing_lines(self) -> None:
+        first = self.cli(
+            "read", "--path", "docs/guide.md", "--lines", "1:3",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertIn("Intro text.", first.stdout)
+
+        partial = self.cli(
+            "read", "--path", "docs/guide.md", "--lines", "1:6",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(partial.returncode, 0, partial.stderr)
+        self.assertIn("missing: 4-6", partial.stdout)
+        self.assertIn("## Alpha", partial.stdout)
+        self.assertNotIn("Intro text.", partial.stdout)
+
+        reused = self.cli(
+            "read", "--path", "docs/guide.md", "--lines", "1:6",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(reused.returncode, 0, reused.stderr)
+        self.assertIn("already-delivered", reused.stdout)
+
+    def test_reuse_changed_file_redelivers_content(self) -> None:
+        first = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(first.returncode, 0, first.stderr)
+        (self.target / "docs/guide.md").write_text(
+            GUIDE.replace("Alpha text.", "Alpha changed."), encoding="utf-8"
+        )
+        second = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertIn("Alpha changed.", second.stdout)
+
+    def test_reuse_requires_session_and_task(self) -> None:
+        result = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha", "--reuse"
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--session and --task", result.stderr)
 
 
 if __name__ == "__main__":

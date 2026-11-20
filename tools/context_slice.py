@@ -13,6 +13,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from read_ledger import LedgerError, check_delivery, record_delivery
+
 
 MAX_FILE_BYTES = 8 * 1024 * 1024
 MAX_WORDS = 20_000
@@ -297,7 +299,70 @@ def build_parser() -> argparse.ArgumentParser:
     selection.add_argument("--lines")
     read_parser.add_argument("--max-words", type=int, default=DEFAULT_WORDS)
     read_parser.add_argument("--json", action="store_true")
+    read_parser.add_argument("--session")
+    read_parser.add_argument("--task")
+    read_parser.add_argument("--reuse", action="store_true")
     return parser
+
+
+def _ledger_decision(target: Path, args: argparse.Namespace, result: dict[str, Any]) -> dict[str, Any] | None:
+    if not args.reuse:
+        return None
+    if not args.session or not args.task:
+        raise SliceError("--reuse requires --session and --task")
+    try:
+        return check_delivery(
+            target,
+            session_id=args.session,
+            task_id=args.task,
+            relpath=args.path,
+            start=result["start_line"],
+            end=result["end_line"],
+        )
+    except LedgerError as exc:
+        print(f"WARN: read ledger: {exc}", file=sys.stderr)
+        return {"state": "unavailable", "reusable": False, "reason": str(exc)}
+
+
+def _record_delivery(target: Path, args: argparse.Namespace, result: dict[str, Any]) -> None:
+    if not args.session or not args.task:
+        return
+    try:
+        record_delivery(
+            target,
+            session_id=args.session,
+            task_id=args.task,
+            relpath=args.path,
+            start=result["start_line"],
+            end=result["end_line"],
+            selector=result["selection"],
+            words=result["words"],
+        )
+    except LedgerError as exc:
+        print(f"WARN: read ledger: {exc}", file=sys.stderr)
+
+
+def _reuse_receipt(result: dict[str, Any], decision: dict[str, Any]) -> str:
+    share = 100 * result["words"] / max(result["total_words"], 1)
+    return "\n".join(
+        [
+            f"already-delivered: {result['path']} {result['selection']}",
+            f"digest: {decision.get('file_sha256', result['sha256'])}",
+            f"lines: {result['start_line']}-{result['end_line']}",
+            f"words: {result['words']} of {result['total_words']} ({share:.1f}%)",
+            "reuse: true",
+        ]
+    ) + "\n"
+
+
+def _missing_content(result: dict[str, Any], decision: dict[str, Any]) -> list[dict[str, Any]]:
+    lines = result["content"].splitlines(keepends=True)
+    base = result["start_line"]
+    output = []
+    for start, end in decision.get("missing_ranges", []):
+        content = "".join(lines[start - base:end - base + 1])
+        output.append({"start_line": start, "end_line": end, "content": content})
+    return output
 
 
 def main() -> int:
@@ -325,25 +390,74 @@ def main() -> int:
                 f"slice is {result['words']} words (limit {args.max_words}); "
                 "narrow --heading, --symbol, or --lines"
             )
+        decision = _ledger_decision(target, args, result)
+        if decision is not None and decision["state"] == "reused":
+            if args.json:
+                print(
+                    json.dumps(
+                        {
+                            "kind": "context-slice-reuse",
+                            "path": result["path"],
+                            "selection": result["selection"],
+                            "decision": decision,
+                            "content": None,
+                        },
+                        indent=2,
+                    )
+                    + "\n",
+                    end="",
+                )
+            else:
+                sys.stdout.write(_reuse_receipt(result, decision))
+            return 0
+        if decision is not None and decision["state"] == "partial":
+            missing = _missing_content(result, decision)
+            if args.json:
+                print(
+                    json.dumps(
+                        {
+                            "kind": "context-slice-reuse",
+                            "path": result["path"],
+                            "selection": result["selection"],
+                            "decision": decision,
+                            "missing": missing,
+                        },
+                        indent=2,
+                    )
+                    + "\n",
+                    end="",
+                )
+            else:
+                sys.stdout.write(_reuse_receipt(result, decision))
+                print("missing: " + ", ".join(
+                    f"{item['start_line']}-{item['end_line']}" for item in missing
+                ))
+                print("---")
+                for item in missing:
+                    sys.stdout.write(item["content"])
+            _record_delivery(target, args, result)
+            return 0
         if args.json:
             print(json.dumps(result, indent=2) + "\n", end="")
-            return 0
-        share = 100 * result["words"] / max(result["total_words"], 1)
-        print(f"path: {result['path']}")
-        print(f"sha256: {result['sha256']}")
-        print(f"selection: {result['selection']}")
-        print(
-            f"lines: {result['start_line']}-{result['end_line']} "
-            f"({result['end_line'] - result['start_line'] + 1})"
-        )
-        print(
-            f"words: {result['words']} of {result['total_words']} "
-            f"({share:.1f}%)"
-        )
-        print("---")
-        sys.stdout.write(result["content"])
-        if not result["content"].endswith("\n"):
-            sys.stdout.write("\n")
+        else:
+            share = 100 * result["words"] / max(result["total_words"], 1)
+            print(f"path: {result['path']}")
+            print(f"sha256: {result['sha256']}")
+            print(f"selection: {result['selection']}")
+            print(
+                f"lines: {result['start_line']}-{result['end_line']} "
+                f"({result['end_line'] - result['start_line'] + 1})"
+            )
+            print(
+                f"words: {result['words']} of {result['total_words']} "
+                f"({share:.1f}%)"
+            )
+            print("---")
+            sys.stdout.write(result["content"])
+            if not result["content"].endswith("\n"):
+                sys.stdout.write("\n")
+        if decision is not None and decision["state"] not in {"unavailable", "unsafe", "too-large"}:
+            _record_delivery(target, args, result)
         return 0
     except (OSError, SliceError) as exc:
         print(f"FAIL: context slice: {exc}", file=sys.stderr)

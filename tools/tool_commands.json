@@ -391,6 +391,12 @@
       "write_scope": "none"
     },
     {
+      "name": "read-ledger",
+      "script": "read_ledger.py",
+      "purpose": "record session-scoped read receipts and decide whether unchanged content can be reused",
+      "write_scope": "target-ignored-runtime-with-explicit-write"
+    },
+    {
       "name": "clean-artifacts",
       "script": "clean_local_artifacts.py",
       "purpose": "report or explicitly remove old ignored source-repository artifacts",
