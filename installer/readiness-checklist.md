@@ -439,6 +439,8 @@ List commands or manual checks:
 - routed gate-index/profile-fragment review:
 - preloaded versus compact-bootstrap review:
 - context total/portable/reserved-target budget and receipt review:
+- context closure after a context-bearing update: measured costs, retained
+  coverage, compaction capability, and ledger epoch or TTL fallback:
 - project-area overlay review:
 - adapter drift/local leakage review:
 - module-profile review:

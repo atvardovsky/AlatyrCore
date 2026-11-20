@@ -108,6 +108,7 @@ EXPECTED_COMMANDS = {
     "summarize-benchmark",
     "runtime-store",
     "context-slice",
+    "context-closure",
     "read-ledger",
     "clean-artifacts",
 }

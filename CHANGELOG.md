@@ -36,6 +36,11 @@
   receipt TTL expires stale entries when no hook exists, and host-telemetry
   observations invalidate conservatively on a large context-size drop. Size
   never authorizes reuse.
+- Add a measured context-closure check for context-bearing updates. Compare
+  before/after first-use, operational-entry, and profile costs; block lost
+  mandatory coverage; verify `context_compaction`; and require a read-ledger
+  epoch or explicit TTL fallback. Closure is convergence, not a mandate to
+  rewrite unrelated structures.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 

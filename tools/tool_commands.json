@@ -391,6 +391,12 @@
       "write_scope": "none"
     },
     {
+      "name": "context-closure",
+      "script": "context_closure.py",
+      "purpose": "validate measured context closure, mandatory coverage and compaction evidence after a context-bearing update",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
       "name": "read-ledger",
       "script": "read_ledger.py",
       "purpose": "record session-scoped read receipts and decide whether unchanged content can be reused",

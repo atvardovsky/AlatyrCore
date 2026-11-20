@@ -58,3 +58,8 @@ invalidates immediately. Without a hook, receipts expire after
 at least 30% invalidates conservatively, but a stable size never authorizes
 reuse. `tokens_cache_read` is not live context and must not be used for this
 decision.
+
+After a context-bearing update, run the measured closure check in
+[context closure](context-closure.md). It compares before/after costs, retains
+mandatory coverage, verifies `context_compaction`, and requires an epoch or an
+explicit TTL fallback.

@@ -69,3 +69,9 @@ Do not refresh a cost baseline merely to make a regression pass. Investigate
 missing companion updates, rework, or performance regressions before accepting
 the optimization. Rules guide agents; checks cannot prove that every agent
 understood or followed them.
+
+After a context-bearing update, apply the measured
+[context closure](context-closure.md) helper: compare before/after costs, retain
+mandatory coverage, verify compaction capability, and advance or replace the
+read-ledger epoch. Closure is convergence and evidence, not a mandate to rewrite
+unrelated supportive structures.

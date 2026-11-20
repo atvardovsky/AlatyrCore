@@ -856,6 +856,7 @@ python3 tools/alatyr.py read-ledger --target . check --session SES --task TASK -
 python3 tools/alatyr.py read-ledger --target . epoch --session SES --epoch 4 --source host-hook --event compaction
 python3 tools/alatyr.py read-ledger --target . observe --session SES --tokens-used 42000 --window 128000 --source host-telemetry
 python3 tools/alatyr.py read-ledger --target . compact --session SES
+python3 tools/alatyr.py context-closure --before tmp/context-costs-before.json --after tmp/context-costs-after.json --capability .ai/assistant/assistant-capabilities.json --surface opencode --epoch-file .ai/.runtime/reads/SESSION/epoch.json --output tmp/context-closure.json --write
 ```
 
 Windows PowerShell:
@@ -1031,6 +1032,10 @@ The stable command set is:
   expires stale receipts when no hook exists, and host-telemetry `observe`
   invalidates only on a large size drop. Receipts carry no authority and never
   replace drift, approval, or validation checks
+- `context-closure`: validates measured before/after context costs, retained
+  mandatory coverage, `context_compaction` capability, and read-ledger epoch or
+  explicit TTL fallback after a context-bearing update; blocks regressions and
+  never grants acceptance
 
 Source validation also includes `tool-complexity`, a no-growth guardrail for
 known oversized Python functions. It does not claim the validator is already
