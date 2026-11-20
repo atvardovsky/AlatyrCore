@@ -853,6 +853,8 @@ python3 tools/alatyr.py context-slice --target . read --path framework/lifecycle
 python3 tools/alatyr.py context-slice --target . read --path framework/lifecycle.md --heading upgrade-process --session SES --task TASK --reuse
 python3 tools/alatyr.py read-ledger --target . record --session SES --task TASK --path framework/lifecycle.md --range 99:398 --selector "heading upgrade-process"
 python3 tools/alatyr.py read-ledger --target . check --session SES --task TASK --path framework/lifecycle.md --range 99:398
+python3 tools/alatyr.py read-ledger --target . epoch --session SES --epoch 4 --source host-hook --event compaction
+python3 tools/alatyr.py read-ledger --target . observe --session SES --tokens-used 42000 --window 128000 --source host-telemetry
 python3 tools/alatyr.py read-ledger --target . compact --session SES
 ```
 
@@ -1025,8 +1027,10 @@ The stable command set is:
 - `read-ledger`: session-scoped, content-addressed read receipts. `check`
   returns `reused`, `partial`, `changed`, `redeliver`, or `miss`; `record`
   writes under ignored `.ai/.runtime/reads`; `compact` invalidates receipts
-  after context compaction. Receipts carry no authority and never replace
-  drift, approval, or validation checks
+  after context compaction. A host `epoch` is authoritative, `--max-age-seconds`
+  expires stale receipts when no hook exists, and host-telemetry `observe`
+  invalidates only on a large size drop. Receipts carry no authority and never
+  replace drift, approval, or validation checks
 
 Source validation also includes `tool-complexity`, a no-growth guardrail for
 known oversized Python functions. It does not claim the validator is already

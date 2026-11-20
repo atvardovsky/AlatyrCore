@@ -298,6 +298,23 @@ class ContextSliceTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("--session and --task", result.stderr)
 
+    def test_reuse_epoch_advance_redelivers(self) -> None:
+        first = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(first.returncode, 0, first.stderr)
+        read_ledger.epoch_session(
+            self.target, session_id="s1", epoch=1,
+            source="host-hook", event="compaction",
+        )
+        second = self.cli(
+            "read", "--path", "docs/guide.md", "--heading", "alpha",
+            "--session", "s1", "--task", "t1", "--reuse",
+        )
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertIn("Alpha text.", second.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

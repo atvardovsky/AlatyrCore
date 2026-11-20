@@ -51,3 +51,10 @@ knowledge. It carries no authority, never spans tasks or sessions by default,
 and never replaces drift, approval, or validation checks. Use it only where a
 task genuinely reopens the same unchanged content: measured broad sessions can
 show near-zero exact repeats, while repeat-heavy owner reads gain 5-20%.
+
+Compaction is an event, not a size. A host `epoch` is authoritative and
+invalidates immediately. Without a hook, receipts expire after
+`--max-age-seconds` (default 1800). Host telemetry can call `observe`; a drop of
+at least 30% invalidates conservatively, but a stable size never authorizes
+reuse. `tokens_cache_read` is not live context and must not be used for this
+decision.

@@ -33,9 +33,11 @@ MAX_RANGES = 256
 MAX_SESSION = 256
 MAX_TASK = 240
 MAX_SELECTOR = 240
+MAX_METADATA_BYTES = 64 * 1024
 DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 WORD_RE = re.compile(r"\S+")
 RETENTION = {"delivered", "compacted", "evicted", "unknown"}
+OBSERVATION_SOURCES = {"host-telemetry", "provider-usage", "assistant-reported", "manual"}
 
 
 class LedgerError(ValueError):
@@ -297,6 +299,133 @@ def _path_key(value: str) -> str:
     return os.path.normcase(unicodedata.normalize("NFC", value))
 
 
+def _timestamp(value: Any) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _age_seconds(value: Any) -> float | None:
+    stamp = _timestamp(value)
+    if stamp is None:
+        return None
+    return max(0.0, (datetime.now(timezone.utc) - stamp).total_seconds())
+
+
+def _load_metadata(
+    path: Path, session_id: str, required: set[str], label: str
+) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    if path.is_symlink():
+        raise LedgerUnavailable(f"{label} must not be a symlink")
+    try:
+        if path.stat().st_size > MAX_METADATA_BYTES:
+            raise LedgerUnavailable(f"{label} exceeds its byte bound")
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, ValueError, RecursionError) as exc:
+        if isinstance(exc, LedgerUnavailable):
+            raise
+        raise LedgerUnavailable(f"{label} is not valid JSON") from exc
+    if not isinstance(value, dict) or set(value) != required:
+        raise LedgerUnavailable(f"{label} has an invalid shape")
+    if value.get("schema_version") != 1 or value.get("session_id") != session_id:
+        raise LedgerUnavailable(f"{label} identity is invalid")
+    return value
+
+
+def _load_epoch(session_dir: Path, session_id: str) -> dict[str, Any] | None:
+    value = _load_metadata(
+        session_dir / "epoch.json",
+        session_id,
+        {"schema_version", "session_id", "epoch", "event", "source", "observed_at"},
+        "epoch",
+    )
+    if value is None:
+        return None
+    if type(value["epoch"]) is not int or value["epoch"] < 0:
+        raise LedgerUnavailable("epoch number is invalid")
+    for field in ("event", "source", "observed_at"):
+        if not isinstance(value[field], str) or not value[field]:
+            raise LedgerUnavailable(f"epoch {field} is invalid")
+    return value
+
+
+def _write_epoch(
+    session_dir: Path, session_id: str, epoch: int, source: str, event: str
+) -> dict[str, Any]:
+    value = {
+        "schema_version": 1,
+        "session_id": session_id,
+        "epoch": epoch,
+        "event": event,
+        "source": source,
+        "observed_at": _now(),
+    }
+    _write(session_dir / "epoch.json", value)
+    return value
+
+
+def _load_observations(session_dir: Path, session_id: str) -> dict[str, Any] | None:
+    value = _load_metadata(
+        session_dir / "observations.json",
+        session_id,
+        {
+            "schema_version", "session_id", "high_water_tokens", "last_tokens",
+            "window", "source", "observed_at", "suspected_compaction", "generation",
+        },
+        "observations",
+    )
+    if value is None:
+        return None
+    for field in ("high_water_tokens", "last_tokens", "window", "generation"):
+        if type(value[field]) is not int or value[field] < 0:
+            raise LedgerUnavailable(f"observations {field} is invalid")
+    if type(value["suspected_compaction"]) is not bool:
+        raise LedgerUnavailable("observations suspected_compaction is invalid")
+    if value["source"] not in OBSERVATION_SOURCES:
+        raise LedgerUnavailable("observations source is invalid")
+    return value
+
+
+def _write_observations(
+    session_dir: Path,
+    session_id: str,
+    *,
+    high_water: int,
+    last: int,
+    window: int,
+    source: str,
+    generation: int,
+    suspected: bool,
+) -> dict[str, Any]:
+    value = {
+        "schema_version": 1,
+        "session_id": session_id,
+        "high_water_tokens": high_water,
+        "last_tokens": last,
+        "window": window,
+        "source": source,
+        "observed_at": _now(),
+        "suspected_compaction": suspected,
+        "generation": generation,
+    }
+    _write(session_dir / "observations.json", value)
+    return value
+
+
+def _adopt_epoch(ledger: dict[str, Any], epoch: dict[str, Any] | None) -> bool:
+    if epoch is None or epoch["epoch"] <= ledger["generation"]:
+        return False
+    ledger["generation"] = epoch["epoch"]
+    for entry in ledger["entries"]:
+        entry["retention"] = "compacted"
+    return True
+
+
 def _range(value: str) -> tuple[int, int]:
     match = re.fullmatch(r"\s*(\d+)\s*[:\-]\s*(\d+)\s*", value)
     if not match:
@@ -415,9 +544,12 @@ def check_delivery(
     start: int | None = None,
     end: int | None = None,
     full: bool = False,
+    max_age_seconds: int = 1800,
 ) -> dict[str, Any]:
     session_id = _text(session_id, "session", MAX_SESSION)
     task_id = _text(task_id, "task", MAX_TASK)
+    if type(max_age_seconds) is not int or max_age_seconds < 0:
+        raise LedgerError("--max-age-seconds must be a non-negative integer")
     path, logical = _relative_path(target, relpath)
     try:
         size = path.stat().st_size
@@ -439,11 +571,26 @@ def check_delivery(
     file_id = _file_id(path)
     session_dir, index, _ = _store_paths(target, session_id, create=False)
     try:
+        epoch = _load_epoch(session_dir, session_id)
+    except LedgerUnavailable as exc:
+        return _decision(
+            "redeliver", logical, task_id, reusable=False,
+            reason="epoch-invalid", epoch_error=str(exc),
+            file_sha256=digest, total_lines=total,
+        )
+    try:
         ledger = _load(session_id, index)
     except LedgerUnavailable as exc:
         return _decision(
             "unavailable", logical, task_id, reusable=False,
             reason=str(exc), file_sha256=digest, total_lines=total,
+        )
+    if epoch is not None and epoch["epoch"] > ledger["generation"]:
+        return _decision(
+            "redeliver", logical, task_id, reusable=False,
+            reason="host-epoch-advanced", epoch=epoch["epoch"],
+            file_sha256=digest, total_lines=total,
+            generation=ledger["generation"],
         )
     entry = _find(ledger, _path_key(logical), file_id, task_id)
     if entry is None:
@@ -460,9 +607,27 @@ def check_delivery(
     if entry["retention"] != "delivered" or entry["generation"] != ledger["generation"]:
         return _decision(
             "redeliver", logical, task_id, reusable=False,
+            reason="compacted-or-generation-changed",
             file_sha256=digest, retention=entry["retention"],
             total_lines=total, generation=ledger["generation"],
         )
+    if max_age_seconds > 0:
+        age = _age_seconds(entry["delivered_at"])
+        if age is None:
+            return _decision(
+                "redeliver", logical, task_id, reusable=False,
+                reason="receipt-timestamp-invalid",
+                file_sha256=digest, total_lines=total,
+                generation=ledger["generation"],
+            )
+        if age > max_age_seconds:
+            return _decision(
+                "redeliver", logical, task_id, reusable=False,
+                reason="receipt-expired", age_seconds=round(age, 1),
+                max_age_seconds=max_age_seconds,
+                file_sha256=digest, total_lines=total,
+                generation=ledger["generation"],
+            )
     covered, missing = _coverage(entry["ranges"], start, end)
     state = "partial" if missing else "reused"
     return _decision(
@@ -470,6 +635,7 @@ def check_delivery(
         file_sha256=digest, retention=entry["retention"],
         covered_ranges=covered, missing_ranges=missing,
         total_lines=total, generation=ledger["generation"],
+        max_age_seconds=max_age_seconds,
         entry=_public_entry(entry),
     )
 
@@ -539,6 +705,7 @@ def record_delivery(
     session_dir, index, lock = _store_paths(target, session_id, create=True)
     with file_lock(lock):
         ledger = _load(session_id, index)
+        _adopt_epoch(ledger, _load_epoch(session_dir, session_id))
         entry = _find(ledger, _path_key(logical), file_id, task_id)
         if entry is None:
             entry = _new_entry(
@@ -583,7 +750,14 @@ def compact_session(target: Path, *, session_id: str) -> dict[str, Any]:
     session_dir, index, lock = _store_paths(target, session_id, create=True)
     with file_lock(lock):
         ledger = _load(session_id, index)
-        ledger["generation"] += 1
+        try:
+            epoch = _load_epoch(session_dir, session_id)
+        except LedgerUnavailable:
+            epoch = None
+        generation = ledger["generation"] + 1
+        if epoch is not None and epoch["epoch"] > generation:
+            generation = epoch["epoch"]
+        ledger["generation"] = generation
         for entry in ledger["entries"]:
             entry["retention"] = "compacted"
         _write(index, ledger)
@@ -593,6 +767,7 @@ def compact_session(target: Path, *, session_id: str) -> dict[str, Any]:
             "state": "compacted",
             "session_id": session_id,
             "generation": ledger["generation"],
+            "epoch": epoch["epoch"] if epoch is not None else None,
             "entries": len(ledger["entries"]),
             "authority_granted": False,
         }
@@ -622,12 +797,24 @@ def status_session(target: Path, *, session_id: str) -> dict[str, Any]:
         ranges += len(entry["ranges"])
         if entry["retention"] == "delivered":
             delivered_words += sum(item["words"] for item in entry["ranges"])
+    try:
+        epoch = _load_epoch(session_dir, session_id)
+        epoch_state = "current" if epoch is not None else "absent"
+    except LedgerUnavailable:
+        epoch = None
+        epoch_state = "invalid"
     return {
         "schema_version": SCHEMA_VERSION,
         "kind": "read-ledger-status",
         "state": "current",
         "session_id": session_id,
         "generation": ledger["generation"],
+        "epoch": epoch["epoch"] if epoch is not None else None,
+        "epoch_source": epoch["source"] if epoch is not None else None,
+        "epoch_state": epoch_state,
+        "compaction_pending": (
+            epoch is not None and epoch["epoch"] > ledger["generation"]
+        ),
         "entries": len(ledger["entries"]),
         "tasks": tasks,
         "ranges": ranges,
@@ -636,6 +823,107 @@ def status_session(target: Path, *, session_id: str) -> dict[str, Any]:
         "authority": "none",
         "authority_granted": False,
     }
+
+
+def epoch_session(
+    target: Path, *, session_id: str, epoch: int, source: str, event: str
+) -> dict[str, Any]:
+    session_id = _text(session_id, "session", MAX_SESSION)
+    if type(epoch) is not int or epoch < 0:
+        raise LedgerError("--epoch must be a non-negative integer")
+    source = _text(source, "source", 64)
+    event = _text(event, "event", 64)
+    session_dir, index, lock = _store_paths(target, session_id, create=True)
+    with file_lock(lock):
+        ledger = _load(session_id, index)
+        if epoch > ledger["generation"]:
+            ledger["generation"] = epoch
+            for entry in ledger["entries"]:
+                entry["retention"] = "compacted"
+            _write(index, ledger)
+        record = _write_epoch(session_dir, session_id, epoch, source, event)
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "kind": "read-ledger-epoch",
+            "state": "recorded",
+            "session_id": session_id,
+            "epoch": record["epoch"],
+            "source": record["source"],
+            "event": record["event"],
+            "generation": ledger["generation"],
+            "authority_granted": False,
+        }
+
+
+def observe_session(
+    target: Path,
+    *,
+    session_id: str,
+    tokens_used: int,
+    window: int,
+    source: str,
+    drop_threshold: float = 0.3,
+) -> dict[str, Any]:
+    session_id = _text(session_id, "session", MAX_SESSION)
+    if type(tokens_used) is not int or tokens_used < 0:
+        raise LedgerError("--tokens-used must be a non-negative integer")
+    if type(window) is not int or window <= 0:
+        raise LedgerError("--window must be a positive integer")
+    if source not in OBSERVATION_SOURCES:
+        raise LedgerError(f"--source must be one of {sorted(OBSERVATION_SOURCES)}")
+    if (
+        isinstance(drop_threshold, bool)
+        or not isinstance(drop_threshold, (int, float))
+        or not 0 < float(drop_threshold) < 1
+    ):
+        raise LedgerError("--drop-threshold must be greater than 0 and less than 1")
+    threshold = float(drop_threshold)
+    session_dir, index, lock = _store_paths(target, session_id, create=True)
+    with file_lock(lock):
+        ledger = _load(session_id, index)
+        adopted = _adopt_epoch(ledger, _load_epoch(session_dir, session_id))
+        observations = _load_observations(session_dir, session_id)
+        if observations is None or adopted or observations["generation"] != ledger["generation"]:
+            high_water = tokens_used
+        else:
+            high_water = max(observations["high_water_tokens"], tokens_used)
+        suspected = False
+        if (
+            high_water > 0
+            and tokens_used <= high_water * (1 - threshold)
+            and source == "host-telemetry"
+        ):
+            ledger["generation"] += 1
+            for entry in ledger["entries"]:
+                entry["retention"] = "compacted"
+            high_water = tokens_used
+            suspected = True
+            _write(index, ledger)
+        elif adopted:
+            _write(index, ledger)
+        _write_observations(
+            session_dir,
+            session_id,
+            high_water=high_water,
+            last=tokens_used,
+            window=window,
+            source=source,
+            generation=ledger["generation"],
+            suspected=suspected,
+        )
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "kind": "read-ledger-observe",
+            "state": "suspected-compaction" if suspected else "observed",
+            "session_id": session_id,
+            "generation": ledger["generation"],
+            "high_water_tokens": high_water,
+            "last_tokens": tokens_used,
+            "window": window,
+            "source": source,
+            "suspected_compaction": suspected,
+            "authority_granted": False,
+        }
 
 
 def prune_session(target: Path, *, session_id: str, max_entries: int) -> dict[str, Any]:
@@ -692,6 +980,7 @@ def build_parser() -> argparse.ArgumentParser:
     check.add_argument("--task", required=True)
     check.add_argument("--path", required=True)
     _add_selection(check)
+    check.add_argument("--max-age-seconds", type=int, default=1800)
     record = actions.add_parser("record", allow_abbrev=False)
     record.add_argument("--session", required=True)
     record.add_argument("--task", required=True)
@@ -701,6 +990,17 @@ def build_parser() -> argparse.ArgumentParser:
     record.add_argument("--words", type=int)
     compact = actions.add_parser("compact", allow_abbrev=False)
     compact.add_argument("--session", required=True)
+    epoch = actions.add_parser("epoch", allow_abbrev=False)
+    epoch.add_argument("--session", required=True)
+    epoch.add_argument("--epoch", type=int, required=True)
+    epoch.add_argument("--source", default="host-hook")
+    epoch.add_argument("--event", default="compaction")
+    observe = actions.add_parser("observe", allow_abbrev=False)
+    observe.add_argument("--session", required=True)
+    observe.add_argument("--tokens-used", type=int, required=True)
+    observe.add_argument("--window", type=int, required=True)
+    observe.add_argument("--source", default="host-telemetry")
+    observe.add_argument("--drop-threshold", type=float, default=0.3)
     status = actions.add_parser("status", allow_abbrev=False)
     status.add_argument("--session", required=True)
     prune = actions.add_parser("prune", allow_abbrev=False)
@@ -723,6 +1023,7 @@ def main() -> int:
             result = check_delivery(
                 target, session_id=args.session, task_id=args.task,
                 relpath=args.path, start=start, end=end, full=args.full,
+                max_age_seconds=args.max_age_seconds,
             )
         elif args.action == "record":
             start = end = None
@@ -735,6 +1036,17 @@ def main() -> int:
             )
         elif args.action == "compact":
             result = compact_session(target, session_id=args.session)
+        elif args.action == "epoch":
+            result = epoch_session(
+                target, session_id=args.session, epoch=args.epoch,
+                source=args.source, event=args.event,
+            )
+        elif args.action == "observe":
+            result = observe_session(
+                target, session_id=args.session, tokens_used=args.tokens_used,
+                window=args.window, source=args.source,
+                drop_threshold=args.drop_threshold,
+            )
         elif args.action == "status":
             result = status_session(target, session_id=args.session)
         elif args.action == "prune":

@@ -302,6 +302,7 @@ def build_parser() -> argparse.ArgumentParser:
     read_parser.add_argument("--session")
     read_parser.add_argument("--task")
     read_parser.add_argument("--reuse", action="store_true")
+    read_parser.add_argument("--max-age-seconds", type=int, default=1800)
     return parser
 
 
@@ -318,6 +319,7 @@ def _ledger_decision(target: Path, args: argparse.Namespace, result: dict[str, A
             relpath=args.path,
             start=result["start_line"],
             end=result["end_line"],
+            max_age_seconds=args.max_age_seconds,
         )
     except LedgerError as exc:
         print(f"WARN: read ledger: {exc}", file=sys.stderr)
@@ -376,6 +378,8 @@ def main() -> int:
             return 0
         if args.max_words < 1 or args.max_words > MAX_WORDS:
             raise SliceError(f"--max-words must be from 1 to {MAX_WORDS}")
+        if args.max_age_seconds < 0:
+            raise SliceError("--max-age-seconds must be a non-negative integer")
         path = _relative_path(target, args.path)
         text = _read(path)
         selected = _select(

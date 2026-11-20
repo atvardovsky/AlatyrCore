@@ -220,6 +220,138 @@ class ReadLedgerTests(unittest.TestCase):
         self.assertEqual(json.loads(status.stdout)["entries"], 0)
         self.assertFalse((self.target / ".ai").exists())
 
+    def test_epoch_advance_invalidates_and_record_adopts(self) -> None:
+        self.record("--full")
+        epoch = self.cli(
+            "epoch", "--session", "s1", "--epoch", "2",
+            "--source", "host-hook", "--event", "compaction",
+        )
+        self.assertEqual(epoch.returncode, 0, epoch.stderr)
+        self.assertEqual(json.loads(epoch.stdout)["generation"], 2)
+
+        decision = self.check("--full")
+        self.assertEqual(decision["state"], "redeliver")
+        self.assertEqual(decision["reason"], "compacted-or-generation-changed")
+        self.assertEqual(decision["generation"], 2)
+
+        self.record("--full")
+        reused = self.check("--full")
+        self.assertEqual(reused["state"], "reused")
+        self.assertEqual(reused["generation"], 2)
+
+    def test_invalid_epoch_denies_reuse_and_can_be_repaired(self) -> None:
+        self.record("--full")
+        session_dir = read_ledger._session_dir(self.target, "s1")
+        (session_dir / "epoch.json").write_text("{bad", encoding="utf-8")
+
+        decision = self.check("--full")
+        self.assertEqual(decision["state"], "redeliver")
+        self.assertEqual(decision["reason"], "epoch-invalid")
+
+        refused = self.cli(
+            "record", "--session", "s1", "--task", "t1", "--path", "a.txt", "--full"
+        )
+        self.assertEqual(refused.returncode, 1)
+
+        repaired = self.cli(
+            "epoch", "--session", "s1", "--epoch", "1",
+            "--source", "host-hook", "--event", "compaction",
+        )
+        self.assertEqual(repaired.returncode, 0, repaired.stderr)
+        self.assertEqual(self.check("--full")["state"], "redeliver")
+        self.record("--full")
+        self.assertEqual(self.check("--full")["state"], "reused")
+
+    def test_receipt_ttl_expires_and_zero_disables(self) -> None:
+        self.record("--full")
+        path = self.ledger_path()
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data["entries"][0]["delivered_at"] = "2000-01-01T00:00:00Z"
+        path.write_text(json.dumps(data), encoding="utf-8")
+
+        expired = self.cli(
+            "check", "--session", "s1", "--task", "t1", "--path", "a.txt",
+            "--full", "--max-age-seconds", "60",
+        )
+        self.assertEqual(expired.returncode, 0, expired.stderr)
+        payload = json.loads(expired.stdout)
+        self.assertEqual(payload["state"], "redeliver")
+        self.assertEqual(payload["reason"], "receipt-expired")
+
+        disabled = self.cli(
+            "check", "--session", "s1", "--task", "t1", "--path", "a.txt",
+            "--full", "--max-age-seconds", "0",
+        )
+        self.assertEqual(json.loads(disabled.stdout)["state"], "reused")
+
+    def test_observe_size_drop_invalidates(self) -> None:
+        self.record("--full")
+        first = self.cli(
+            "observe", "--session", "s1", "--tokens-used", "1000",
+            "--window", "10000", "--source", "host-telemetry",
+        )
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertEqual(json.loads(first.stdout)["state"], "observed")
+
+        second = self.cli(
+            "observe", "--session", "s1", "--tokens-used", "500",
+            "--window", "10000", "--source", "host-telemetry",
+        )
+        self.assertEqual(second.returncode, 0, second.stderr)
+        payload = json.loads(second.stdout)
+        self.assertEqual(payload["state"], "suspected-compaction")
+        self.assertEqual(payload["generation"], 1)
+
+        self.assertEqual(self.check("--full")["state"], "redeliver")
+        self.record("--full")
+        self.assertEqual(self.check("--full")["state"], "reused")
+
+    def test_observe_stable_or_non_telemetry_does_not_invalidate(self) -> None:
+        self.record("--full")
+        self.cli(
+            "observe", "--session", "s1", "--tokens-used", "1000",
+            "--window", "10000", "--source", "host-telemetry",
+        )
+        stable = self.cli(
+            "observe", "--session", "s1", "--tokens-used", "900",
+            "--window", "10000", "--source", "host-telemetry",
+        )
+        self.assertEqual(json.loads(stable.stdout)["state"], "observed")
+        self.assertEqual(self.check("--full")["state"], "reused")
+
+        manual = self.cli(
+            "observe", "--session", "s1", "--tokens-used", "400",
+            "--window", "10000", "--source", "manual",
+        )
+        self.assertEqual(json.loads(manual.stdout)["state"], "observed")
+        self.assertEqual(self.check("--full")["state"], "reused")
+
+    def test_status_reports_pending_epoch(self) -> None:
+        self.record("--full")
+        read_ledger._write_epoch(
+            read_ledger._session_dir(self.target, "s1"), "s1", 3, "host-hook", "compaction"
+        )
+        status = self.cli("status", "--session", "s1")
+        self.assertEqual(status.returncode, 0, status.stderr)
+        payload = json.loads(status.stdout)
+        self.assertEqual(payload["epoch"], 3)
+        self.assertEqual(payload["generation"], 0)
+        self.assertTrue(payload["compaction_pending"])
+        self.assertEqual(payload["epoch_state"], "current")
+        decision = self.check("--full")
+        self.assertEqual(decision["state"], "redeliver")
+        self.assertEqual(decision["reason"], "host-epoch-advanced")
+
+    def test_observe_validation(self) -> None:
+        for arguments in (
+            ("--tokens-used", "-1", "--window", "1000"),
+            ("--tokens-used", "10", "--window", "0"),
+            ("--tokens-used", "10", "--window", "1000", "--drop-threshold", "1"),
+            ("--tokens-used", "10", "--window", "1000", "--source", "unknown"),
+        ):
+            result = self.cli("observe", "--session", "s1", *arguments)
+            self.assertEqual(result.returncode, 2, arguments)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -32,6 +32,10 @@
   `reused`, `partial`, `changed`, `redeliver`, or `miss`; `compact` invalidates
   all receipts. The ledger carries no authority and never suppresses drift,
   approval, or validation checks.
+- Make read-ledger retention compaction-safe. A host epoch is authoritative,
+  receipt TTL expires stale entries when no hook exists, and host-telemetry
+  observations invalidate conservatively on a large context-size drop. Size
+  never authorizes reuse.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 
