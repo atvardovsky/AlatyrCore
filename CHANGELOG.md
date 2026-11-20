@@ -41,6 +41,9 @@
   mandatory coverage; verify `context_compaction`; and require a read-ledger
   epoch or explicit TTL fallback. Closure is convergence, not a mandate to
   rewrite unrelated structures.
+- Fix context closure to compare removed paths in `first_use`,
+  `operational_entry`, and every retained profile. A path retained in another
+  scope no longer masks the loss, and an unexplained removal blocks.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 

@@ -177,6 +177,71 @@ class ContextClosureTests(unittest.TestCase):
         )
         self.assertEqual(passed.returncode, 0, passed.stderr)
 
+    def add_path(
+        self, report: dict, scope: str, path: str = "rules/required.md"
+    ) -> dict:
+        section = report["profiles"][scope] if scope in report["profiles"] else report[scope]
+        section["resolved_paths"] = [*section["resolved_paths"], path]
+        section["resolved_files"] += 1
+        section["words"] += 2
+        section["characters"] += 12
+        return report
+
+    def test_blocks_removed_path_in_each_scope(self) -> None:
+        for scope in ("first_use", "operational_entry", "docs-local"):
+            with self.subTest(scope=scope):
+                before = self.add_path(self.report(), scope)
+                after = self.report()
+                result = self.run_closure(
+                    before=self.write(f"before-{scope}.json", before),
+                    after=self.write(f"after-{scope}.json", after),
+                )
+                self.assertEqual(result.returncode, 1)
+                payload = json.loads(result.stdout)
+                self.assertIn(
+                    f"{scope} lost rules/required.md" if scope in {"first_use", "operational_entry"}
+                    else f"profile {scope} lost rules/required.md",
+                    " ".join(payload["failures"]),
+                )
+                removed = [
+                    item for item in payload["checks"]
+                    if item["code"] == "COVERAGE_PATH_REMOVED"
+                ]
+                self.assertTrue(removed)
+                self.assertTrue(
+                    any(item.get("path") == "rules/required.md" for item in removed)
+                )
+
+    def test_retained_path_in_another_scope_does_not_mask_loss(self) -> None:
+        before = self.add_path(self.report(), "first_use")
+        self.add_path(before, "docs-local")
+        after = self.add_path(self.report(), "docs-local")
+        result = self.run_closure(
+            before=self.write("before-cross-scope.json", before),
+            after=self.write("after-cross-scope.json", after),
+        )
+        self.assertEqual(result.returncode, 1)
+        failures = " ".join(json.loads(result.stdout)["failures"])
+        self.assertIn("first_use lost rules/required.md", failures)
+        self.assertNotIn("profile docs-local lost", failures)
+
+    def test_omission_allows_removed_path_in_operational_entry(self) -> None:
+        before = self.add_path(self.report(), "operational_entry")
+        after = self.report()
+        omissions = self.write(
+            "operational-omissions.json",
+            {"items": [{"path": "rules/required.md", "reason": "route retired"}]},
+        )
+        passed = self.cli(
+            "--before", str(self.write("before-operational.json", before)),
+            "--after", str(self.write("after-operational.json", after)),
+            "--capability", str(self.capability),
+            "--epoch-file", str(self.epoch),
+            "--ledger-status", str(self.status),
+            "--omissions", str(omissions),
+        )
+        self.assertEqual(passed.returncode, 0, passed.stderr)
+
     def test_blocks_removed_profile(self) -> None:
         report = self.report()
         report["profiles"] = {}

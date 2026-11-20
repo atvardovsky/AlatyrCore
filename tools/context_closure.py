@@ -305,21 +305,38 @@ def main() -> int:
             )
 
         removed_profiles = sorted(set(before["profiles"]) - set(after["profiles"]))
-        removed_paths = sorted(
-            set(before["first_use"]["resolved_paths"])
-            - set(after["first_use"]["resolved_paths"])
-        )
+        scopes = [
+            ("first_use", before["first_use"], after["first_use"]),
+            ("operational_entry", before["operational_entry"], after["operational_entry"]),
+            *[
+                (
+                    f"profile {name}",
+                    before["profiles"][name],
+                    after["profiles"][name],
+                )
+                for name in sorted(set(before["profiles"]) & set(after["profiles"]))
+            ],
+        ]
         for name in removed_profiles:
             key = f"profile:{name}"
             passed = key in omissions
             checks.append(_check("PROFILE_REMOVED", passed, profile=name))
             if not passed:
                 failures.append(f"PROFILE_REMOVED: {name} disappeared")
-        for path in removed_paths:
-            passed = path in omissions
-            checks.append(_check("COVERAGE_PATH_REMOVED", passed, path=path))
-            if not passed:
-                failures.append(f"COVERAGE_PATH_REMOVED: {path} disappeared")
+        for scope, before_scope, after_scope in scopes:
+            removed_paths = sorted(
+                set(before_scope["resolved_paths"])
+                - set(after_scope["resolved_paths"])
+            )
+            for path in removed_paths:
+                passed = path in omissions
+                checks.append(
+                    _check("COVERAGE_PATH_REMOVED", passed, path=path, scope=scope)
+                )
+                if not passed:
+                    failures.append(
+                        f"COVERAGE_PATH_REMOVED: {scope} lost {path}"
+                    )
 
         missing = [
             f"first_use:{path}" for path in after["first_use"]["missing_paths"]
