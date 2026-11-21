@@ -110,6 +110,7 @@ EXPECTED_COMMANDS = {
     "context-slice",
     "context-closure",
     "read-ledger",
+    "point-keeper",
     "clean-artifacts",
 }
 ALLOWED_WRITE_SCOPES = {

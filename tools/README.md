@@ -857,6 +857,9 @@ python3 tools/alatyr.py read-ledger --target . epoch --session SES --epoch 4 --s
 python3 tools/alatyr.py read-ledger --target . observe --session SES --tokens-used 42000 --window 128000 --source host-telemetry
 python3 tools/alatyr.py read-ledger --target . compact --session SES
 python3 tools/alatyr.py context-closure --before tmp/context-costs-before.json --after tmp/context-costs-after.json --capability .ai/assistant/assistant-capabilities.json --surface opencode --epoch-file .ai/.runtime/reads/SESSION/epoch.json --output tmp/context-closure.json --write
+python3 tools/alatyr.py point-keeper --target . status --current-revision SHA
+python3 tools/alatyr.py point-keeper --target . check --point P-17 --role reviewer
+python3 tools/alatyr.py point-keeper --target . preflight --deploy-set D-20261120-A --current-revision SHA
 ```
 
 Windows PowerShell:
@@ -1036,6 +1039,9 @@ The stable command set is:
   mandatory coverage, `context_compaction` capability, and read-ledger epoch or
   explicit TTL fallback after a context-bearing update; blocks regressions and
   never grants acceptance
+- `point-keeper`: read-only role-scoped point view and deploy-set preflight over
+  team task records and change packages; blocks pending, in-review, blocked,
+  missing-evidence, and frozen-drift points without granting state authority
 
 Source validation also includes `tool-complexity`, a no-growth guardrail for
 known oversized Python functions. It does not claim the validator is already

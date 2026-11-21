@@ -403,6 +403,12 @@
       "write_scope": "target-ignored-runtime-with-explicit-write"
     },
     {
+      "name": "point-keeper",
+      "script": "point_keeper.py",
+      "purpose": "return role-scoped point views and block deploy sets with pending, review, frozen-drift or evidence gaps",
+      "write_scope": "none"
+    },
+    {
       "name": "clean-artifacts",
       "script": "clean_local_artifacts.py",
       "purpose": "report or explicitly remove old ignored source-repository artifacts",
