@@ -161,7 +161,10 @@ class ContextInputSnapshot:
 
 def read_context_bytes(path: Path, *, routing_input: bool = True, max_bytes: int | None = None) -> bytes:
     snapshot = _ACTIVE.get()
-    if snapshot is not None and (routing_input or path.absolute() in snapshot.inputs):
+    if snapshot is not None and (
+        routing_input or snapshot.max_input_bytes is not None or snapshot.max_inputs is not None
+        or path.absolute() in snapshot.inputs
+    ):
         return snapshot.read(path, max_bytes=max_bytes)
     return _limited_read(path, max_bytes)
 

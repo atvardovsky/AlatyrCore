@@ -58,6 +58,7 @@ class PublicationPreflightTests(unittest.TestCase):
         self.assertEqual(self.compare(candidate, ["src", "package.lock"])["failures"][0]["path"], "package.lock")
 
     def test_selected_catalog_drift_blocks_without_hydrating_unrelated_leaves(self):
+        from context_input_snapshot import _limited_read
         from tests.test_context_catalog import entry
 
         folder = self.target / "documentation"
@@ -76,7 +77,12 @@ class PublicationPreflightTests(unittest.TestCase):
         checks = {"context_index": "documentation/context-index.json", "context_paths": ["documentation/validation.md"]}
         (folder / "unrelated.md").write_text("unrelated stale projection\n")
         first = self.commit("add catalog")
-        self.assertEqual(self.compare(first, **checks)["failures"], [])
+        with patch("context_input_snapshot._limited_read", wraps=_limited_read) as reads:
+            self.assertEqual(self.compare(first, **checks)["failures"], [])
+        children = [call for call in reads.call_args_list if call.args[0] == child]
+        self.assertEqual(len(children), 2)  # Observation and final freshness check.
+        self.assertTrue(all(call.args[1] == 1024 * 1024 and call.kwargs["regular_only"] for call in children))
+        self.assertFalse(any(call.args[0] == folder / "unrelated.md" for call in reads.call_args_list))
         with self.assertRaisesRegex(ValueError, "exact candidate"):
             self.compare(self.source, **checks)
         self.git("update-index", "--assume-unchanged", "documentation/validation.md")
