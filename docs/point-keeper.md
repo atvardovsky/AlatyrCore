@@ -88,6 +88,8 @@ freeze the successor.
 | tasks directory missing | `unavailable` |
 | malformed point record | reported and preflight blocked |
 | duplicate point ID | reported and preflight blocked |
+| more than 4,096 task records | inventory incomplete; role lookup and deploy preflight blocked |
+| malformed or duplicate package entries | package index unavailable; deploy preflight blocked |
 | review evidence missing | `review-evidence-missing` |
 | validation not current | `validation:<state>` |
 | deploy revision unknown | `revision-unknown` |

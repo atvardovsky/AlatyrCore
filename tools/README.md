@@ -984,7 +984,11 @@ The stable command set is:
   canonical full validation; write failure restores generated files
   where current bytes still match transaction-owned output. `--preflight` is
   mutually exclusive with `--write` and returns selected canonical authoring
-  diagnostics without writes or acceptance; write mode runs those checks early.
+  diagnostics without writes or acceptance. It separates historical approval
+  checks from current scope and previews potentially changed generated paths
+  against explicitly selected approvals. The preview is advisory: dependent
+  renderer passes can change the final diff. Write mode runs selected authoring
+  checks early; canonical full validation still checks the exact diff and archive.
   `--summary` prints compact per-step results and asks the canonical validator
   for its compact summary; failures still retain captured diagnostics. Full
   text remains available without the flag.
@@ -995,7 +999,8 @@ The stable command set is:
 - `suggest-knowledge`: read-only, review-only candidates from verified
   package history, including owner, incident-family, failed-gate, and
   correction recurrence; it never promotes knowledge
-- `status`: compact read-only adapter health and counts; no file output
+- `status`: compact read-only adapter health and counts, with historical approval
+  blockers reported separately from current structural evidence; no file output
 - `doctor`: read-only adapter health with at most three repair operation routes;
   no file output (use `validate-adapter` for an explicit report file)
 - `migration-report`: optional explicit report output only

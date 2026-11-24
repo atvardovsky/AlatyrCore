@@ -126,6 +126,7 @@ def health_payload(
         installation_state=validator.installation_state,
         phase_telemetry=validator.phase_telemetry,
         approval_archive_summary=validator.approval_archive_summary,
+        git_evidence=validator.git,
         validation_scope="changed" if initialization_task is not None else "full",
     )
     advisory = build_capability_advisory(
@@ -233,6 +234,7 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         f"Evidence basis: {display(evidence.get('basis'))}",
         f"Observed revision: {display(evidence.get('observed_revision'))}",
         f"Observed branch: {display(evidence.get('observed_branch'))}",
+        f"Historical approval blockers: {layers.get('approval_archive', {}).get('blocking_findings', 0)} (separate from selected change)",
         (
             "Findings: "
             f"errors={counts.get('errors', 0)} "

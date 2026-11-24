@@ -240,6 +240,31 @@ class PointKeeperTests(unittest.TestCase):
         status = self.cli("status", "--current-revision", REV)
         self.assertEqual(json.loads(status.stdout)["invalid_point_count"], 1)
 
+    def test_preflight_checks_inventory_below_at_and_above_limit(self) -> None:
+        for number in range(8, 4096):
+            self.write_point(f"P{number:04}", "pending")
+        command = ("preflight", "--deploy-set", "D2", "--current-revision", REV)
+        self.assertEqual(self.cli(*command).returncode, 0)  # 4095 records.
+        self.write_point("P4096", "pending")
+        self.assertEqual(self.cli(*command).returncode, 0)  # 4096 records.
+        self.write_point("zz-blocked", "blocked", related=["D2"])
+        overflow = self.cli(*command)
+        self.assertEqual(overflow.returncode, 1)
+        self.assertIn("point-inventory-exceeds-limit:4096", overflow.stdout)
+        self.assertNotEqual(self.cli("check", "--point", "P3", "--role", "deploy").returncode, 0)
+        (self.tasks / "P4096.json").unlink()
+        blocked = self.cli(*command)
+        self.assertEqual(blocked.returncode, 1)
+        self.assertIn("zz-blocked: not-done:blocked", blocked.stdout)
+
+    def test_duplicate_package_id_cannot_override_blocked_package(self) -> None:
+        index = self.target / ".ai/assistant/change-packages/index.json"
+        index.write_text(json.dumps({"records": [{"package_id": "D2", "status": "blocked"},
+            {"package_id": "D2", "status": "complete"}]}), encoding="utf-8")
+        result = self.cli("preflight", "--deploy-set", "D2", "--current-revision", REV)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("package-index-duplicate-id", result.stdout)
+
     def test_digest_is_stable_and_authority_is_none(self) -> None:
         first = self.cli("check", "--point", "P3", "--role", "deploy", "--current-revision", REV)
         second = self.cli("check", "--point", "P3", "--role", "deploy", "--current-revision", REV)

@@ -18,7 +18,7 @@ import json
 import re
 import sys
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -799,6 +799,7 @@ class Finding:
     message: str
     path: str | None = None
     details: dict[str, Any] | None = None
+    evidence_scope: str | None = None
 
     def render(self) -> str:
         prefix = f"{self.level.upper()} {self.code}"
@@ -816,6 +817,8 @@ class Finding:
             payload["path"] = self.path
         if self.details is not None:
             payload["details"] = self.details
+        if self.evidence_scope is not None:
+            payload["evidence_scope"] = self.evidence_scope
         payload["blocking"] = is_blocking_finding(self)
         if self.level in {"error", "warning"}:
             payload["owner_surface"] = self.path or "target adapter"
@@ -4612,7 +4615,12 @@ class Validator:
 
     def check_approval_scope(self) -> None:
         approval_records = self.resolve_approval_records()
-        archive_index_current = self.check_approval_archive_index()
+        self.check_approval_archive(approval_records)
+        self.check_current_approval_scope(approval_records)
+
+    def check_approval_archive(self, approval_records: list[Path], *, check_index: bool = True) -> None:
+        start = len(self.findings)
+        archive_index_current = check_index and self.check_approval_archive_index()
         discovered_records = self.discover_approval_archive_records()
         self.check_approval_archive_pressure(discovered_records)
         archive_records = [
@@ -4672,7 +4680,8 @@ class Validator:
                 f"approval archive mode {self.approval_archive_mode} does not provide "
                 "complete historical acceptance evidence",
             )
-        self.check_current_approval_scope(approval_records)
+        self.findings[start:] = [replace(finding, evidence_scope="approval-archive")
+                                 for finding in self.findings[start:]]
 
     def check_current_approval_scope(self, approval_records: list[Path] | None = None) -> None:
         """Share exact current diff enforcement without historical archive discovery."""
@@ -4751,16 +4760,26 @@ class Validator:
                         f"match --diff-ref {self.diff_ref}",
                         self.rel(record),
                     )
-            for changed in checked_files:
+        self.check_approval_path_coverage(checked_files, scopes)
+        if self.enforce_approval_scope and scopes:
+            self.info(
+                "APPROVAL_SCOPE_ENFORCED",
+                f"checked {len(checked_files)} changed path(s) against "
+                f"{len(scopes)} explicitly selected machine-readable approval record(s)",
+            )
+
+    def check_approval_path_coverage(self, paths: list[str], scopes: list[ApprovalScope]) -> None:
+        for scope in scopes:
+            for changed in paths:
                 if scope_entries_cover(changed, scope.excluded):
                     finding = self.error if self.enforce_approval_scope else self.warn
                     finding(
                         "APPROVAL_SCOPE_EXCLUDED",
                         f"changed file is explicitly excluded: {changed}",
-                        self.rel(record),
+                        self.rel(scope.path),
                     )
 
-        for changed in checked_files:
+        for changed in paths:
             if any(
                 scope_entries_cover(changed, scope.allowed)
                 for scope in scopes
@@ -4770,12 +4789,6 @@ class Validator:
             finding(
                 "APPROVAL_SCOPE_MISMATCH",
                 f"changed file is not covered by an explicit approval scope: {changed}",
-            )
-        if self.enforce_approval_scope and scopes:
-            self.info(
-                "APPROVAL_SCOPE_ENFORCED",
-                f"checked {len(checked_files)} changed path(s) against "
-                f"{len(scopes)} explicitly selected machine-readable approval record(s)",
             )
 
     def resolve_approval_records(self) -> list[Path]:
@@ -7271,7 +7284,7 @@ def layered_health_state(
     change_findings = [
         finding
         for finding in findings
-        if finding.code.startswith(
+        if finding.evidence_scope != "approval-archive" and finding.code.startswith(
             (
                 "APPROVAL_",
                 "DIFF_SCOPE_",
@@ -7300,6 +7313,11 @@ def layered_health_state(
         current_change_layer = "structurally-checked"
 
     return {
+        "approval_archive": {
+            "blocking_findings": sum(is_blocking_finding(finding) for finding in findings
+                                     if finding.evidence_scope == "approval-archive"),
+            "meaning": "Historical approval health; still required for full acceptance, not an evaluation of the selected change.",
+        },
         "installation": {
             "state": installation_layer,
             "declared_state": installation_state,

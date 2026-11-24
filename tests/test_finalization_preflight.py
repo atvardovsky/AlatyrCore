@@ -19,6 +19,38 @@ from finalize_target_support import Step, execute_write_steps
 
 
 class FinalizationPreflightTests(ActiveTaskFixture):
+    def test_cli_separates_archive_blockers_from_generated_scope_preview(self):
+        from tests.test_approval_scope_command import approval_record
+        directory = self.target / ".ai/assistant/approvals"
+        directory.mkdir(parents=True, exist_ok=True)
+        selected, legacy = directory / "selected.json", directory / "legacy.json"
+        record = approval_record(["src/**"])
+        record["scope"]["excluded_files_or_surfaces"] = [".ai/assistant/approvals/archive-index.json"]
+        selected.write_text(json.dumps(record), encoding="utf-8")
+        legacy.write_text("{}", encoding="utf-8")
+        (self.target / ".ai/alatyr.yaml").write_text("modules: {}\n", encoding="utf-8")
+        self.git_commit("Retain legacy approval and current scope")
+        (self.target / "src/example.txt").write_text("covered change", encoding="utf-8")
+        command = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "finalize-support",
+                   "--target", str(self.target), "--preflight", "--require-current-change",
+                   "--diff-ref", "HEAD", "--approval-record", str(selected)]
+        before = self.tree()
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
+        self.assertTrue(result.stdout, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertTrue(any(f["level"] == "error" and f["evidence_scope"] == "approval-archive"
+                            for f in report["findings"] if f.get("evidence_scope")))
+        self.assertFalse(any(f["level"] == "error" and f["code"].startswith("APPROVAL_SCOPE_")
+                             for f in report["findings"]), report["findings"])
+        self.assertEqual(report["approval_archive"]["records_checked"], 1)
+        preview = report["generated_scope"]
+        self.assertIn(".ai/assistant/approvals/archive-index.json", preview["changed_candidates"])
+        self.assertEqual({f["code"] for f in preview["scope_findings"]},
+                         {"APPROVAL_SCOPE_EXCLUDED", "APPROVAL_SCOPE_MISMATCH"})
+        self.assertFalse(report["acceptance_eligible"])
+        self.assertEqual(self.tree(), before)
+
     def test_explicit_approval_hashes_are_checked_for_clean_and_unprotected_diff(self):
         from tests.test_approval_scope_command import approval_record
         approval = self.target / ".ai/assistant/approvals/selected.json"

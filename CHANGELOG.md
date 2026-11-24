@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fail closed on incomplete point-keeper inventory and ambiguous package IDs.
+  Preview generated-path coverage and historical approval failures before
+  finalization. Keep archive blockers separate from the revision-bound
+  current-change view without weakening full acceptance.
+
 - Add optional worktree-routing checks for targets with a configured Alatyr
   development branch. Report detached, stale, missing, reused-invalid or sibling
   worktrees from the read-only preflight and adapter validation; only recommend a

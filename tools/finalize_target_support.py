@@ -283,7 +283,7 @@ def main() -> int:
     target = args.target.resolve()
     try:
         steps = build_steps(
-            target=target, write=args.write, migration_staging=args.migration_staging,
+            target=target, write=args.write or args.preflight, migration_staging=args.migration_staging,
             diff_ref=args.diff_ref, approval_records=args.approval_record,
             change_packages=args.change_package, require_current_change=args.require_current_change,
             task_id=args.task_id, task_class=args.task_class, problem_models=args.problem_model,
@@ -294,14 +294,17 @@ def main() -> int:
         parser.error(str(exc))
     preflight = None
     if args.write or args.preflight:
-        from finalization_preflight import inspect_finalization, preflight_report
+        from finalization_preflight import inspect_finalization, preflight_report, preview_generated_scope
         try:
             preflight = inspect_finalization(target, task_id=args.task_id, task_class=args.task_class,
                 require_task_acceptance=args.require_task_acceptance, diff_ref=args.diff_ref,
                 approval_records=args.approval_record, problem_models=args.problem_model,
                 migration_staging=args.migration_staging, change_packages=args.change_package,
-                enforce_approval_scope=args.require_current_change)
-            report = preflight_report(preflight)
+                enforce_approval_scope=args.require_current_change,
+                historical_evidence_index=args.historical_evidence_index, inspect_archive=args.preflight)
+            preview = (preview_generated_scope(preflight, (step.step_id for step in steps))
+                       if args.preflight else None)
+            report = preflight_report(preflight, generated_scope=preview)
         except (OSError, ValueError, RecursionError) as exc:
             print(f"FAIL: authoring preflight: {exc}", file=sys.stderr)
             return 2

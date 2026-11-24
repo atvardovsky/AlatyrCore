@@ -11,6 +11,7 @@ import re
 import stat
 import subprocess
 import sys
+from itertools import islice
 from pathlib import Path
 from typing import Any
 
@@ -159,8 +160,16 @@ def _load_points(target: Path) -> tuple[list[dict[str, Any]], list[dict[str, str
         return [], [{"path": TASKS_REL, "reason": "tasks-directory-missing"}]
     points: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
-    files = sorted(directory.glob("*.json"))[:MAX_POINTS]
-    for path in files:
+    try:
+        with os.scandir(directory) as scan:
+            files = list(islice((directory / item.name for item in scan
+                                if Path(item.name).match("*.json")), MAX_POINTS + 1))
+    except OSError:
+        return [], [{"path": TASKS_REL, "reason": "point-inventory-unavailable"}]
+    if len(files) > MAX_POINTS:
+        return [], [{"path": TASKS_REL, "reason": f"point-inventory-exceeds-limit:{MAX_POINTS}"}]
+    point_ids = set()
+    for path in sorted(files):
         try:
             raw = _read_json(path, f"point {path.name}")
         except KeeperError as exc:
@@ -170,10 +179,11 @@ def _load_points(target: Path) -> tuple[list[dict[str, Any]], list[dict[str, str
         if view is None:
             errors.append({"path": path.as_posix(), "reason": "point id is missing"})
             continue
-        if any(item["id"] == view["id"] for item in points):
+        if view["id"] in point_ids:
             errors.append({"path": path.as_posix(), "reason": "duplicate point id"})
             continue
         points.append(view)
+        point_ids.add(view["id"])
     return points, errors
 
 
@@ -191,7 +201,9 @@ def _load_packages(target: Path) -> tuple[dict[str, dict[str, Any]], list[str]]:
     packages: dict[str, dict[str, Any]] = {}
     for record in records:
         if not isinstance(record, dict) or not isinstance(record.get("package_id"), str):
-            continue
+            return {}, ["package-index-invalid-record"]
+        if record["package_id"] in packages:
+            return {}, ["package-index-duplicate-id"]
         packages[record["package_id"]] = {
             "status": str(record.get("status") or "unknown"),
             "active_workstream": str(record.get("active_workstream") or "unknown"),
@@ -337,14 +349,14 @@ def check_view(
         return result
     points, errors = _load_points(target)
     point = next((item for item in points if item["id"] == point_id), None)
-    if point is None:
+    if point is None or errors:
         return {
             "schema_version": SCHEMA_VERSION,
             "kind": KIND,
             "view": role,
             "state": "unavailable",
             "point_id": point_id,
-            "reason": "point-missing-or-invalid",
+            "reason": "point-inventory-unavailable" if errors else "point-missing-or-invalid",
             "invalid_points": errors[:MAX_ATTENTION],
             "authority": "none",
             "authority_granted": False,
@@ -402,7 +414,8 @@ def preflight_view(
         )
         blockers.extend(f"{point['id']}: {reason}" for reason in reasons)
     if errors:
-        blockers.extend(f"invalid-point-record: {item['path']}" for item in errors)
+        blockers.extend(f"invalid-point-record: {item['path']}: {item['reason']}" for item in errors)
+    blockers.extend(package_errors)
     return {
         "schema_version": SCHEMA_VERSION,
         "kind": KIND,

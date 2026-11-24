@@ -289,6 +289,32 @@ class AdapterHealthReportTests(unittest.TestCase):
         self.assertFalse(current["semantic_correctness_proven"])
         self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
 
+    def test_historical_approval_does_not_impersonate_current_diff_failure(self) -> None:
+        from tests.test_approval_scope_command import run_git
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            run_git(target, "init", "-q")
+            run_git(target, "config", "user.name", "Fixture")
+            run_git(target, "config", "user.email", "fixture@example.invalid")
+            (target / "source.txt").write_text("base", encoding="utf-8")
+            run_git(target, "add", ".")
+            run_git(target, "commit", "-qm", "baseline")
+            (target / "source.txt").write_text("change", encoding="utf-8")
+            history = Finding("error", "APPROVAL_PLAN_HASH_MISMATCH", "legacy record",
+                              evidence_scope="approval-archive")
+            kwargs = dict(target=target, strict_warnings=False, installation_state="accepted",
+                          diff_ref="HEAD", approval_records_selected=1, approval_scope_enforced=True)
+            payload = findings_payload([history], **kwargs)
+            self.assertEqual(payload["health_layers"]["current_change"]["state"], "structurally-checked")
+            self.assertEqual(payload["health_layers"]["approval_archive"]["blocking_findings"], 1)
+            self.assertEqual(payload["evidence"]["observed_revision"],
+                             payload["health_layers"]["current_change"]["change_set"]["head_revision"])
+            self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
+            self.assertEqual(payload["findings"][0]["evidence_scope"], "approval-archive")
+            current = Finding("error", "APPROVAL_PLAN_HASH_MISMATCH", "selected record")
+            failed = findings_payload([history, current], **kwargs)
+            self.assertEqual(failed["health_layers"]["current_change"]["state"], "blocked")
+
     def test_dirty_change_requires_diff_approval_and_package_enforcement(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
