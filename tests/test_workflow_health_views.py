@@ -56,6 +56,27 @@ class HealthViewTests(unittest.TestCase):
                 self.assertEqual(result["active_task_reader"]["state"], expected)
                 self.assertFalse(result["acceptance_granted"])
 
+    def test_local_point_keeper_copy_is_compared_without_overwriting_it(self):
+        from tooling_identity import tooling_identity
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            source, target = root / "source", root / "target"
+            canonical = source / "tools/point_keeper.py"
+            installed = target / ".ai/assistant/tools/point_keeper.py"
+            canonical.parent.mkdir(parents=True)
+            installed.parent.mkdir(parents=True)
+            canonical.write_bytes(b"canonical")
+            compare = lambda: tooling_identity(TargetRepositoryView(source), TargetRepositoryView(target), None)
+            self.assertNotIn("point_keeper_copy", compare())
+            for content, state in ((b"canonical", "same-bytes"), (b"local tool", "different-bytes"),
+                                   (b"x" * (256 * 1024 + 1), "unverified")):
+                installed.write_bytes(content)
+                result = compare()
+                self.assertEqual(result["point_keeper_copy"]["state"], state)
+                self.assertFalse(result["acceptance_granted"])
+                self.assertEqual(installed.read_bytes(), content)
+
     def test_grouping_preserves_every_raw_finding_and_exposes_other_blockers(self):
         findings = [{"level": "error", "code": "STALE", "path": "current.json", "message": f"stale input {i}"} for i in range(63)]
         findings.append({"level": "error", "code": "OTHER_BLOCKER", "path": "contract.json", "message": "independent blocker"})

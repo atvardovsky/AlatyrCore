@@ -164,11 +164,14 @@ def _validate_selectors(value: Any, label: str) -> dict[str, tuple[str, ...]]:
     return selectors
 
 
-def _resolve_under(root: Path, relpath: str, label: str) -> Path:
-    candidate = (root / relpath).resolve()
+def _resolve_under(root: Path, relpath: str, label: str, *, reject_aliases: bool = False) -> Path:
+    path = root / relpath
+    candidate = path.resolve()
     resolved_root = root.resolve()
     if candidate != resolved_root and resolved_root not in candidate.parents:
         raise ContextCatalogError(f"{label} escapes its catalog root")
+    if reject_aliases and path != candidate:
+        raise ContextCatalogError(f"{label} must not traverse a symlink: {relpath}")
     return candidate
 
 
@@ -183,16 +186,19 @@ def validate_context_catalog(
     return _resolve_context_catalog(root_index, catalog_root=catalog_root, verify_content=verify_content, defer_leaves=False)
 
 
-def discover_context_catalog(root_index: Path, *, catalog_root: Path | None = None) -> CatalogResolution:
+def discover_context_catalog(root_index: Path, *, catalog_root: Path | None = None,
+                             reject_aliases: bool = False) -> CatalogResolution:
     """Validate all index metadata, deferring leaf reads until selection.
 
     Returned leaves are not verified content and cannot form a packet until
     hydrated. Child-index digests remain mandatory, including sibling branches.
     """
-    return _resolve_context_catalog(root_index, catalog_root=catalog_root, verify_content=False, defer_leaves=True)
+    return _resolve_context_catalog(root_index, catalog_root=catalog_root, verify_content=False,
+                                    defer_leaves=True, reject_aliases=reject_aliases)
 
 
-def _resolve_context_catalog(root_index: Path, *, catalog_root: Path | None, verify_content: bool, defer_leaves: bool) -> CatalogResolution:
+def _resolve_context_catalog(root_index: Path, *, catalog_root: Path | None, verify_content: bool,
+                             defer_leaves: bool, reject_aliases: bool = False) -> CatalogResolution:
 
     root_index = root_index.resolve()
     catalog_root = (catalog_root or root_index.parent).resolve()
@@ -299,7 +305,7 @@ def _resolve_context_catalog(root_index: Path, *, catalog_root: Path | None, ver
             if kind not in INDEX_ENTRY_KINDS:
                 raise ContextCatalogError(f"{label}.kind is invalid")
             relpath = _safe_relative(entry.get("path"), f"{label}.path")
-            target = _resolve_under(catalog_root, relpath, f"{label}.path")
+            target = _resolve_under(catalog_root, relpath, f"{label}.path", reject_aliases=reject_aliases)
             summary = entry.get("summary")
             if not isinstance(summary, str) or not summary:
                 raise ContextCatalogError(f"{label}.summary must be non-empty")

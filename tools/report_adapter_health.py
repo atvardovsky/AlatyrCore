@@ -267,6 +267,9 @@ def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
         lines.append("Tracking: " + str(tracking["ref"]) + "; ahead=" + str(tracking["ahead"]) + "; behind=" + str(tracking["behind"]) + " (local refs only; not authority)")
     if isinstance(comparison, dict):
         lines.append("Tooling baseline: " + comparison["state"])
+        copy = comparison.get("producer_identity", {}).get("point_keeper_copy")
+        if copy is not None and copy["state"] != "same-bytes":
+            lines.append("Point-keeper copy: " + copy["state"] + "; review provenance before relying on it.")
         lines.append("Producer versions: " + json.dumps(comparison["producer_versions"], sort_keys=True))
         lines.append("Installed versions: " + json.dumps(comparison["installed_versions"], sort_keys=True))
         if comparison["state"] == "different-tooling-baseline":

@@ -53,11 +53,14 @@ class ContextInputSnapshot:
     """Cache input bytes, not decisions; every successful scope verifies disk bytes."""
 
     def __init__(self, root: Path, *, cache_bytes: int = 4 * 1024 * 1024,
-                 regular_files_only: bool = False):
+                 regular_files_only: bool = False, max_input_bytes: int | None = None,
+                 max_inputs: int | None = None):
         if type(cache_bytes) is not int or cache_bytes < 0:
             raise ValueError("snapshot cache_bytes must be a non-negative integer")
         self.root = root.resolve()
         self.regular_files_only = regular_files_only
+        self.max_input_bytes = max_input_bytes
+        self.max_inputs = max_inputs
         self.limit = cache_bytes
         self.inputs: dict[Path, str] = {}
         self.read_limits: dict[Path, int] = {}
@@ -83,6 +86,10 @@ class ContextInputSnapshot:
 
     def read(self, path: Path, *, max_bytes: int | None = None) -> bytes:
         path = path.absolute()
+        if self.max_inputs is not None and path not in self.inputs and len(self.inputs) >= self.max_inputs:
+            raise ContextInputLimit(path, f"context snapshot exceeds {self.max_inputs} inputs")
+        if self.max_input_bytes is not None:
+            max_bytes = self.max_input_bytes if max_bytes is None else min(max_bytes, self.max_input_bytes)
         if max_bytes is not None:
             if type(max_bytes) is not int or max_bytes < 1:
                 raise ValueError("context input byte limit must be a positive integer")

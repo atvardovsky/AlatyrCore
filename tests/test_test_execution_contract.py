@@ -320,6 +320,44 @@ class RegisteredTestingExecutionTests(unittest.TestCase):
             self.write(root,'tests/a.py','changed test')
             self.assertIn('TDD_EXECUTION_EVIDENCE_STALE', [x.code for x in self.findings(root)])
 
+    def test_publication_cli_requires_exact_candidate_passing_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            _, witness = self.fixture(root)
+            revision = witness["repository_revision"]
+            self.write(root, ".git/info/exclude", "current.json\n")
+            command = [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "publication-preflight",
+                       "--target", str(root), "--source-ref", revision, "--candidate-ref", revision,
+                       "--path", "tests", "--require-test-command", "unit"]
+
+            def run(expected):
+                result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+                return json.loads(result.stdout)
+
+            self.assertEqual(run(0)["failures"], [])
+            self.write(root, "unrelated-release.txt", "changed candidate")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid",
+                            "commit", "-qm", "candidate"], cwd=root, check=True)
+            candidate = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+            command[command.index("--candidate-ref") + 1] = candidate
+            self.assertTrue(run(1)["failures"])
+            witness["repository_revision"] = candidate
+            self.write(root, "current.json", witness)
+            self.assertEqual(run(0)["failures"], [])
+            for changes in ({"claim": "focused"}, {"claim": "suite", "filter": "only one group"}):
+                self.write(root, "current.json", {**witness, **changes})
+                self.assertTrue(any("configured scope" in item["reason"] for item in run(1)["failures"]))
+            skipped = copy.deepcopy(witness)
+            skipped["claim"] = "suite"
+            skipped["counts"]["discovered"] = 2
+            skipped["counts"]["skipped"] = 1
+            self.write(root, "current.json", skipped)
+            self.assertTrue(any("unskipped" in item["reason"] for item in run(1)["failures"]))
+            (root / "current.json").unlink()
+            self.assertTrue(any("TDD_EXECUTION_EVIDENCE_MISSING" in item["reason"] for item in run(1)["failures"]))
+
     def test_explicit_history_keeps_original_bytes_without_current_source_claims(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve(); p, r = self.fixture(root)

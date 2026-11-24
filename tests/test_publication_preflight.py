@@ -38,8 +38,69 @@ class PublicationPreflightTests(unittest.TestCase):
         self.git("commit", "-qm", message)
         return self.git("rev-parse", "HEAD")
 
-    def compare(self, candidate, paths=None):
-        return publication_preflight(self.target, self.source, candidate, ["src"] if paths is None else paths)
+    def compare(self, candidate, paths=None, **checks):
+        return publication_preflight(self.target, self.source, candidate, ["src"] if paths is None else paths, **checks)
+
+    def test_retired_paths_are_checked_on_candidate_even_if_unchanged(self):
+        self.assertEqual(self.compare(self.source, absent_paths=["retired", "src/not-present"])["failures"], [])
+        failures = self.compare(self.source, absent_paths=["outside.txt", "src"])["failures"]
+        self.assertEqual([item["path"] for item in failures], ["outside.txt", "src"])
+        (self.target / "outside.txt").unlink()
+        self.assertEqual(self.compare(self.commit("retire configuration"), absent_paths=["outside.txt"])["failures"], [])
+
+    def test_root_lockfile_must_be_explicit_and_exact(self):
+        lock = self.target / "package.lock"
+        lock.write_text("pinned\n")
+        self.source = self.commit("root dependency lock")
+        lock.write_text("different\n")
+        candidate = self.commit("changed root dependency lock")
+        self.assertFalse(self.compare(candidate)["failures"])
+        self.assertEqual(self.compare(candidate, ["src", "package.lock"])["failures"][0]["path"], "package.lock")
+
+    def test_selected_catalog_drift_blocks_without_hydrating_unrelated_leaves(self):
+        from tests.test_context_catalog import entry
+
+        folder = self.target / "documentation"
+        folder.mkdir()
+        for name in ("validation.md", "unrelated.md"):
+            (folder / name).write_text("use current validation\n")
+        index = {"schema_version": 1, "index_kind": "alatyr-context-index", "index_id": "project",
+                 "title": "Project", "summary": "Project context", "contour": "project", "max_depth": 3}
+        child = folder / "child.json"
+        child.write_text(json.dumps({**index, "index_id": "child", "entries": [
+            entry(folder, "validation", "content", "validation.md"),
+            entry(folder, "unrelated", "content", "unrelated.md"),
+        ]}))
+        top = folder / "context-index.json"
+        top.write_text(json.dumps({**index, "entries": [entry(folder, "child-ref", "index", "child.json")]}))
+        checks = {"context_index": "documentation/context-index.json", "context_paths": ["documentation/validation.md"]}
+        (folder / "unrelated.md").write_text("unrelated stale projection\n")
+        first = self.commit("add catalog")
+        self.assertEqual(self.compare(first, **checks)["failures"], [])
+        with self.assertRaisesRegex(ValueError, "exact candidate"):
+            self.compare(self.source, **checks)
+        self.git("update-index", "--assume-unchanged", "documentation/validation.md")
+        with self.assertRaisesRegex(ValueError, "assume-unchanged"):
+            self.compare(first, **checks)
+        self.git("update-index", "--no-assume-unchanged", "documentation/validation.md")
+        (folder / "validation.md").write_text("use revised validation\n")
+        with self.assertRaisesRegex(ValueError, "clean candidate"):
+            self.compare(first, **checks)
+        failures = self.compare(self.commit("stale validation projection"), **checks)["failures"]
+        self.assertEqual(len(failures), 1)
+        self.assertIn("documentation/child.json", failures[0]["reason"])
+        child.write_text(child.read_text() + "\n")
+        failures = self.compare(self.commit("stale child-index digest"), **checks)["failures"]
+        self.assertIn("content_digest is stale", failures[0]["reason"])
+
+        (self.target / ".git/info/exclude").write_text("documentation/alias.json\n")
+        try:
+            (folder / "alias.json").symlink_to("child.json")
+        except (OSError, NotImplementedError):
+            return
+        top.write_text(json.dumps({**index, "entries": [entry(folder, "alias-ref", "index", "alias.json")]}))
+        failures = self.compare(self.commit("untracked index alias"), **checks)["failures"]
+        self.assertIn("must not traverse a symlink", failures[0]["reason"])
 
     def test_unselected_infrastructure_diff_is_allowed_without_granting_authority(self):
         (self.target / "outside.txt").unlink()

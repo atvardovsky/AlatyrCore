@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Extend pre-publication comparisons with exact retired-path checks, selected
+  catalog freshness, and existing canonical test evidence for the exact
+  candidate revision. Flag divergent local point-keeper copies in tooling
+  diagnostics without replacing them or granting publication authority.
+
 - Fail closed on incomplete point-keeper inventory and ambiguous package IDs.
   Preview generated-path coverage and historical approval failures before
   finalization. Keep archive blockers separate from the revision-bound

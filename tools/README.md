@@ -668,6 +668,30 @@ identity are checked locally without fetching or publishing. Consume that exact
 candidate commit or repeat the check. Selected-tree equality does not replace
 exact-commit closure, approval, remote-observation or post-publication checks.
 
+For branch promotion, include exact root files such as lockfiles and command
+owners when they are part of the parity contract. Repeat `--absent-path` for
+retired configuration or infrastructure paths that must not exist in the
+candidate. These selectors do not infer the complete release surface.
+
+Two optional checks require a clean checkout at the exact candidate commit:
+
+- `--context-index .ai/project/context-index.json --context-path .ai/project/validation.md`
+  checks the selected tracked leaf's catalog words and digest, with child-index
+  validation. Repeat the leaf selector for affected owners. A fresh projection
+  does not establish that prose or unstructured checker text is semantically correct.
+- `--require-test-command <id>` requires passing, unskipped and unfiltered evidence for that
+  canonical testing-policy command on the exact candidate, not one of its
+  parents. Repeat for independently required commands. The existing testing
+  contract validates registered records and artifact bindings; keep current
+  evidence files and results ignored so they can bind to the final commit.
+  The command is not run, and the record's original proof boundary still applies.
+
+In `status` and `doctor`, a local point-keeper copy that differs from the selected
+producer is advisory, not necessarily incorrect. Prefer the pinned source
+checkout's `alatyr.py point-keeper --target <repo> status` when the local copy's
+provenance or contract coverage is unclear. Neither route replaces local
+acceptance or deployment authorization.
+
 Finalization composes canonical renderers in-process under a local writer lock,
 then invokes canonical validation. Rollback restores only known owned postimages
 and reports conflicts without overwriting peer changes. The lock coordinates
