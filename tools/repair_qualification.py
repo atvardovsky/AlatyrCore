@@ -216,6 +216,14 @@ def comparison_failures(record: dict, review: dict, runs: dict, artifacts: dict,
             left, right = (pointer_value(document, pointer) for document in documents)
             if not same_value(left, right):
                 failures.append(f"performance {metric_id} has missing or incompatible measurement conditions at {pointer}")
+            for assertion in review["qualification"]["assertions"]:
+                if assertion["stage"] != "acceptance" or assertion["artifact_pointer"] != pointer:
+                    continue
+                if (not same_value(left, assertion["expected"]) or not same_value(right, assertion["expected"])
+                        or any(run["command_id"] not in assertion["command_ids"] for run in (baseline, candidate))
+                        or not any(attempt["run_ref"] == candidate_ref and attempt["purpose"] == "acceptance"
+                                   for attempt in record["attempts"])):
+                    failures.append(f"performance {metric_id} requires both measured paths to preserve {assertion['id']} on the configured acceptance command")
         values = []
         for document in documents:
             value = pointer_value(document, metric["artifact_pointer"])

@@ -81,6 +81,27 @@ class WorktreeRoutingTests(unittest.TestCase):
 
         self.assertEqual(routing_issues(self.target, self.manifest()), [])
 
+    def test_canonical_identity_does_not_mask_behind_or_diverged_history(self):
+        git(self.target, "switch", "-q", "-c", "preDev-alatyr")
+        manifest = self.manifest()
+        manifest["branch_policy"]["require_canonical_upstream_base"] = True
+        self.assertEqual(routing_issues(self.target, manifest, acceptance=True)[0]["code"], "WORKTREE_UPSTREAM_UNAVAILABLE")
+        git(self.target, "branch", "--set-upstream-to", "main")
+        self.assertEqual(routing_issues(self.target, manifest, acceptance=True), [])
+        git(self.target, "switch", "-q", "main")
+        git(self.target, "commit", "--allow-empty", "-qm", "Advance upstream")
+        git(self.target, "switch", "-q", "preDev-alatyr")
+        issue = routing_issues(self.target, manifest, acceptance=True)[0]
+        self.assertEqual((issue["code"], issue["level"]), ("WORKTREE_UPSTREAM_BEHIND", "error"))
+        git(self.target, "commit", "--allow-empty", "-qm", "Advance checkout independently")
+        issue = routing_issues(self.target, manifest, acceptance=True)[0]
+        self.assertEqual((issue["code"], issue["level"]), ("WORKTREE_UPSTREAM_DIVERGED", "error"))
+        warning = routing_issues(self.target, self.manifest(), acceptance=True)[0]
+        self.assertFalse(warning["blocking"])
+        self.assertEqual(warning["level"], "warning")
+        git(self.target, "merge", "--no-edit", "main")
+        self.assertEqual(routing_issues(self.target, manifest, acceptance=True), [])
+
     def test_missing_canonical_worktree_path_is_reported(self) -> None:
         canonical = self.canonical_worktree()
         shutil.rmtree(canonical)
@@ -109,6 +130,10 @@ class WorktreeRoutingTests(unittest.TestCase):
         self.assertFalse(branch_exists(self.target, "preDev-alatyr"))
         self.assertEqual(routing_issues(self.target, self.manifest()), [])
         self.assertEqual(routing_issues(self.target, {}), [])
+        manifest = self.manifest()
+        manifest["branch_policy"]["require_canonical_upstream_base"] = True
+        issue = routing_issues(self.target, manifest, acceptance=True)[0]
+        self.assertEqual((issue["code"], issue["level"]), ("WORKTREE_UPSTREAM_UNAVAILABLE", "error"))
 
     def test_detached_release_checkout_can_be_explicitly_allowed(self) -> None:
         self.canonical_worktree()

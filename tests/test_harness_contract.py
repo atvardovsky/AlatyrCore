@@ -109,6 +109,47 @@ class HarnessContractTests(unittest.TestCase):
             self.save(root, record, artifact)
             self.assertEqual(self.errors(root), [])
 
+    def test_registered_runtime_receipt_is_bound_to_build_inputs_artifact_and_resources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve(); policy, record, artifact = self.prepare_stability(root)
+            execution = policy["commands"][0]["execution"]
+            for kind in ("service", "port"):
+                execution["resources"].append({"kind": kind, "id": "fixture-" + kind,
+                    "namespace": None, "access": "exclusive", "isolation": "shared"})
+            record["resources"] = copy.deepcopy(execution["resources"])
+            path = ".ai/project/testing/test-first-policy.json"
+            self.write(root, path, policy)
+            sha = lambda p: hashlib.sha256((root / p).read_bytes()).hexdigest()
+            record["policy_sha256"] = sha(path)
+            identity = harness_digest(TargetRepositoryView(root), record, execution, path)
+            record["harness_identity"]["sha256"] = identity
+            self.write(root, ".git/info/exclude", "/build-receipt.json\n/build-manifest.txt\n")
+            self.write(root, "build-manifest.txt", "standalone build output")
+            receipt = {"record_kind": "target-qualified-build", "repository_revision": record["repository_revision"],
+                       "build_id": "build-1", "inputs": {p: record["input_sha256"][p] for p in input_paths(execution)},
+                       "artifact": {"path": "build-manifest.txt", "sha256": sha("build-manifest.txt")}}
+            artifact["harness"] = {"kind": "alatyr-runtime-harness-v1", "harness_sha256": identity,
+                                   "observed_build_id": "build-1", "resources": record["resources"], "build": {}}
+            def save(variant):
+                self.write(root, "build-receipt.json", variant)
+                artifact["harness"]["build"] = {"path": "build-receipt.json", "sha256": sha("build-receipt.json")}
+                self.save(root, record, artifact)
+            save(receipt)
+            self.assertEqual(self.errors(root), [])
+            for variant in ({**receipt, "repository_revision": "0" * 40}, {**receipt, "inputs": {}},
+                            {**receipt, "build_id": "other"}, {**receipt, "artifact": {"path": "harness.css", "sha256": sha("harness.css")}}):
+                save(variant)
+                self.assertTrue(self.errors(root), variant)
+            save(receipt)
+            for key, bad in (("resources", []), ("observed_build_id", "other"), ("build", {"path": "build-receipt.json", "sha256": None})):
+                invalid = copy.deepcopy(artifact)
+                invalid["harness"][key] = bad
+                self.save(root, record, invalid)
+                self.assertTrue(self.errors(root), key)
+            save(receipt)
+            self.write(root, "build-manifest.txt", "changed")
+            self.assertTrue(any("artifact manifest" in finding.message for finding in self.errors(root)))
+
     def test_registered_source_stability_missing_and_malformed_observations(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve(); policy, record, artifact = self.prepare_stability(root)

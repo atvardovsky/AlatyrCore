@@ -17,7 +17,12 @@ from yaml_support import SAFE_LOADER, safe_compose_all
 
 UNIX_LOCAL_PATH_RE = re.compile(r"(?<![A-Za-z0-9_])/(?:home|Users|tmp|var/folders|private/tmp)/[^\s)`>\"']+")
 WINDOWS_LOCAL_PATH_RE = re.compile(r"\b[A-Za-z]:\\(?:Users|Temp|tmp|Projects|projects|[^\\\s`\"']+)(?:\\[^\s`\"']+)*")
-LOCAL_PATH_RE = re.compile(f"(?:{UNIX_LOCAL_PATH_RE.pattern})|(?:{WINDOWS_LOCAL_PATH_RE.pattern})")
+WINDOWS_SLASH_RE = re.compile(r"(?<![\w./\\-])[A-Za-z]:/(?!/)[^\s)\x60>\"']*")
+UNC_PATH_RE = re.compile(r"(?<![\w./\\-])\\\\[A-Za-z0-9][A-Za-z0-9._$-]*\\[^\s)\x60>\"']+")
+FILE_URI_RE = re.compile(r"(?<![\w./\\-])(?i:file)://(?:/|[^/\s)\x60>\"']+/)[^\s)\x60>\"']*")
+LOCAL_PATH_RE = re.compile("|".join(f"(?:{pattern.pattern})" for pattern in
+                                   (FILE_URI_RE, UNC_PATH_RE, WINDOWS_LOCAL_PATH_RE, WINDOWS_SLASH_RE, UNIX_LOCAL_PATH_RE)))
+LEGACY_PATH_RE = re.compile(f"(?:{UNIX_LOCAL_PATH_RE.pattern})|(?:{WINDOWS_LOCAL_PATH_RE.pattern})")
 UNIX_LOCAL_PATH_PREFIXES = ("/home", "/Users", "/tmp", "/var/folders", "/private/tmp")
 MAX_SCAN_BYTES = 8 * 1024 * 1024
 MAX_SCAN_NODES = 200_000
@@ -229,7 +234,7 @@ def _may_contain_local_path(text: str) -> bool:
 
     if any(prefix in text for prefix in UNIX_LOCAL_PATH_PREFIXES):
         return True
-    return "\\" in text and ":" in text
+    return ":/" in text or ":\\" in text or "\\\\" in text
 
 
 def _scan_scalar(result: PathScan, text: str, target: str, *, line: int | None,
@@ -243,6 +248,11 @@ def _scan_scalar(result: PathScan, text: str, target: str, *, line: int | None,
         target_found = False
         for match in LOCAL_PATH_RE.finditer(part):
             value = match.group(0)
+            if FILE_URI_RE.fullmatch(value):
+                # Keep exact immutable exceptions for paths the older scanner already found.
+                legacy = LEGACY_PATH_RE.search(value)
+                if legacy is not None:
+                    value = legacy.group(0)
             target_found = target_found or value == target
             if len(result.matches) >= MAX_SCAN_MATCHES:
                 raise ValueError("local-path findings exceed the bounded scan limit")

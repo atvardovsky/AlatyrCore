@@ -285,6 +285,15 @@ class PerformanceQualificationTests(unittest.TestCase):
             with self.subTest(value=value):
                 self.assertEqual(bool(self.failures()), value > 110)
 
+    def test_shared_acceptance_pointer_rejects_equal_wrong_outcomes(self):
+        self.policy["qualification"]["performance"][0]["comparability_pointers"].append("/observed/original_flow")
+        self.artifacts["current.json"]["metrics"]["cpu"]["samples"] = [5, 5, 5]
+        self.assertEqual(self.failures(), [])
+        for baseline, candidate in ((False, True), (True, False), (False, False)):
+            self.artifacts["baseline.json"]["observed"]["original_flow"] = baseline
+            self.artifacts["current.json"]["observed"]["original_flow"] = candidate
+            self.assertTrue(any("both measured paths to preserve original-flow" in failure for failure in self.failures()))
+
     def test_decimal_boundary_does_not_depend_on_binary_rounding(self):
         self.artifacts["baseline.json"]["metrics"]["cpu"]["samples"] = [100.1] * 3
         for value, rejected in ((110.109, False), (110.11, False), (110.111, True)):

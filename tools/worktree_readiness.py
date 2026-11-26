@@ -107,6 +107,7 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
                 "code": issue["code"],
                 "path": issue["path"],
                 "next_action": issue["message"],
+                "blocking": issue["blocking"],
             }
         )
     if not accepted:
@@ -202,7 +203,7 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
         issues.append({"code": "WORKTREE_INPUT_MUTATED", "path": ".ai/",
                        "next_action": "recheck changed prerequisite inputs before continuing"})
     return {"schema_version": 1, "report_kind": "alatyr-worktree-readiness",
-            "state": "ready-for-context-review" if not issues else "blocked",
+            "state": "blocked" if any(issue.get("blocking", True) for issue in issues) else "ready-for-context-review",
             "source": str(source_path) if source_path is not None else None,
             "baseline": baseline, "task_bindings": bindings, "issues": issues,
             "authorization_granted": False, "acceptance_granted": False,

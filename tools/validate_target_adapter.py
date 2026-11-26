@@ -1148,6 +1148,7 @@ class Validator:
             self.target,
             manifest,
             acceptance=self.validation_phase == "acceptance",
+            tracking=self.git.initial_tracking,
         ):
             if issue["level"] == "error":
                 self.error(issue["code"], issue["message"], issue["path"])
@@ -4444,17 +4445,48 @@ class Validator:
                 "migration-staging records unresolved active placeholders but cannot accept the adapter",
             )
 
-    def check_local_paths(self) -> None:
+    def check_changed_local_paths(self, diff_ref: str) -> None:
+        changes = self.git.changed_files(diff_ref)
+        if changes is None:
+            self.error("LOCAL_PATH_SCAN_INCOMPLETE", "cannot enumerate changed files against the selected base",
+                       ".ai/alatyr.yaml")
+            return
+        paths = [self.target_path(rel) for rel in changes if
+                 rel.startswith(".ai/") or rel in {"AGENT.md", "AGENTS.md", *BRIDGE_FILES}]
+        paths = [path for path in paths if self.is_target_file(path)]
+        if paths:
+            self.check_local_paths(paths)
+
+    def check_local_paths(self, paths: list[Path] | None = None) -> None:
         try:
-            historical = historical_path_bindings(self)
+            needs_history = paths is None or any(
+                self.rel(path).startswith((".ai/assistant/task-evidence/", ".ai/assistant/change-packages/"))
+                or self.rel(path) == ".ai/assistant/validator-config.json" for path in paths
+            )
+            historical = historical_path_bindings(self) if needs_history else {}
         except (OSError, ValueError, UnicodeError, RecursionError, TypeError, AttributeError):
             historical = {}
             self.error("LOCAL_PATH_SCAN_INCOMPLETE", "historical local-path bindings are invalid, stale or unsafe",
                        ".ai/assistant/validator-config.json")
-        scan_paths = self.scan_text_files()
+        scan_paths = self.scan_text_files() if paths is None else paths
         target_string = str(self.target)
         for path in scan_paths:
-            text = self.read_text(path)
+            if paths is None:
+                text = self.read_text(path)
+            else:
+                from target_adapter_validation.local_paths import MAX_SCAN_BYTES
+                result = self.context.read_bytes_result(path, max_bytes=MAX_SCAN_BYTES)
+                declared_text = path.suffix.lower() in {".md", ".json", ".yaml", ".yml", ".txt"}
+                if result.value is None:
+                    if declared_text:
+                        self.error("LOCAL_PATH_SCAN_INCOMPLETE", "changed adapter text cannot be read within the scan budget", self.rel(path))
+                    continue
+                try:
+                    text = result.value.decode("utf-8")
+                except UnicodeError:
+                    if declared_text:
+                        self.error("LOCAL_PATH_SCAN_INCOMPLETE", "changed adapter text is not UTF-8", self.rel(path))
+                    continue
             scan = scan_local_paths(text, path.suffix, target_string)
             for failure in scan.failures:
                 self.error("LOCAL_PATH_SCAN_INCOMPLETE", failure, self.rel(path))

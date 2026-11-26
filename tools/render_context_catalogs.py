@@ -129,11 +129,15 @@ def _title_from_text(text: str, path: Path) -> str:
     return path.stem.replace("-", " ").replace("_", " ").title()
 
 
+class CatalogSourceError(ValueError):
+    """An actual catalog input cannot be rendered."""
+
+
 def _title(path: Path) -> str:
     try:
         text = path.read_text(encoding="utf-8")
     except UnicodeDecodeError as exc:
-        raise ValueError(f"catalog source is not UTF-8 text: {path}") from exc
+        raise CatalogSourceError(f"catalog source is not UTF-8 text: {path}") from exc
     return _title_from_text(text, path)
 
 
@@ -451,6 +455,21 @@ def _is_inert_task_evidence(root: Path, contour: str, path: Path) -> bool:
     return contour == "assistant" and path.relative_to(root).parts[:1] == ("task-evidence",)
 
 
+def _is_report_attachment(root: Path, contour: str, path: Path) -> bool:
+    if contour != "assistant" or path.relative_to(root).parts[:1] != ("reports",):
+        return False
+    signature = {
+        ".png": b"\x89PNG\r\n\x1a\n", ".jpg": b"\xff\xd8\xff",
+        ".jpeg": b"\xff\xd8\xff", ".pdf": b"%PDF-",
+    }.get(path.suffix.lower())
+    if signature is None:
+        return False
+    if path.resolve() != path.absolute() or not path.is_file():
+        raise CatalogSourceError(f"catalog attachment must be a contained regular file: {path}")
+    with path.open("rb") as stream:
+        return stream.read(len(signature)) == signature
+
+
 def generated_directory_catalog_paths(root: Path, contour: str) -> set[Path]:
     return {
         path
@@ -515,7 +534,8 @@ def build_directory_catalog_contents(
                 )
             all_files.append(path)
     # Historical witnesses are selected through the task index, never bootstrap context.
-    all_files = [path for path in all_files if not _is_inert_task_evidence(root, contour, path)]
+    all_files = [path for path in all_files if not _is_inert_task_evidence(root, contour, path)
+                 and not _is_report_attachment(root, contour, path)]
     directories = {root}
     for path in all_files:
         current = path.parent

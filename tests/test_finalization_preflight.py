@@ -19,6 +19,55 @@ from finalize_target_support import Step, execute_write_steps
 
 
 class FinalizationPreflightTests(ActiveTaskFixture):
+    def test_binary_report_is_retained_outside_both_catalog_inventories(self):
+        from render_context_catalogs import CatalogSourceError, build_directory_catalog_contents
+
+        root = self.target / ".ai/assistant"
+        folder = root / "reports/fixture"
+        folder.mkdir(parents=True)
+        attachment = folder / "evidence.png"
+        payload = bytes.fromhex("89504e470d0a1a0aff")
+        attachment.write_bytes(payload)
+        (folder / "report.md").write_text("# Report\n")
+        selected = {"reports/fixture/evidence.png", "reports/fixture/report.md"}
+        for subset in (None, selected):
+            output = build_directory_catalog_contents(root, "assistant", selected_files=subset)
+            self.assertNotIn("evidence.png", output["reports/fixture/context-index.json"])
+            self.assertIn("report.md", output["reports/fixture/context-index.json"])
+            self.assertEqual(attachment.read_bytes(), payload)
+        attachment.write_bytes(b"\xffnot a PNG")
+        with self.assertRaises(CatalogSourceError):
+            build_directory_catalog_contents(root, "assistant", selected_files=selected)
+
+    def test_renderer_input_error_blocks_but_dependency_preview_stays_advisory(self):
+        from finalization_preflight import preview_generated_scope
+        from render_context_catalogs import CatalogSourceError
+
+        validator = inspect_finalization(self.target)
+        for error, status in ((CatalogSourceError("invalid catalog text"), "blocked"),
+                              (ValueError("dependency projection has not been rendered"), "ready-for-finalization")):
+            with patch("target_support_outputs.step_outputs", side_effect=error):
+                preview = preview_generated_scope(validator, ["context-pass-1"])
+                report = preflight_report(validator, generated_scope=preview)
+            self.assertEqual(report["state"], status)
+            self.assertEqual(preview["state"], "partial")
+
+    def test_change_preflight_blocks_new_local_paths_without_rescanning_live_history(self):
+        directory = self.target / ".ai/assistant/reports"
+        directory.mkdir(parents=True, exist_ok=True)
+        old = directory / "old.md"
+        old.write_text("Existing issue: /tmp/host-only/result\n")
+        self.git_commit("Retain existing report")
+        changed = directory / "new.json"
+        paths = ["C:/machine/result", r"\\workstation\share\result", "file:///opt/runner/result", "/tmp/current/result"]
+        changed.write_text(json.dumps({"witness": paths, "not_local": "https://example.invalid/results"}))
+        before = self.tree()
+        report = preflight_report(self.inspect(diff_ref="HEAD"))
+        matches = [row for row in report["findings"] if row["code"] == "LOCAL_PATH_LEAKAGE"]
+        self.assertEqual(len(matches), len(paths), matches)
+        self.assertTrue(all(row["path"].endswith("new.json") for row in matches))
+        self.assertEqual(before, self.tree())
+
     def test_cli_separates_archive_blockers_from_generated_scope_preview(self):
         from tests.test_approval_scope_command import approval_record
         directory = self.target / ".ai/assistant/approvals"

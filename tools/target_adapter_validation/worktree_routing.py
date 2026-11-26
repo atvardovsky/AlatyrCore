@@ -22,6 +22,7 @@ def _git(target: Path, *arguments: str) -> subprocess.CompletedProcess[bytes]:
         cwd=target,
         check=False,
         capture_output=True,
+        env={**os.environ, "GIT_NO_LAZY_FETCH": "1", "GIT_OPTIONAL_LOCKS": "0"},
     )
 
 
@@ -112,12 +113,33 @@ def branch_policy(manifest: dict[str, Any] | None) -> dict[str, Any]:
     return policy if isinstance(policy, dict) else {}
 
 
+def upstream_issue(target: Path, policy: dict, acceptance: bool, tracking=None) -> list[dict[str, Any]]:
+    if tracking is None:
+        counts = (_git_text(target, "rev-list", "--left-right", "--count", "HEAD...@{upstream}") or "").split()
+        ahead, behind = map(int, counts) if len(counts) == 2 and all(n.isascii() and n.isdigit() for n in counts) else (None, None)
+    else:
+        _, ahead, behind = tracking
+    strict = policy.get("require_canonical_upstream_base") is True
+    if behind is None:
+        if not strict:
+            return []
+        code, message = "WORKTREE_UPSTREAM_UNAVAILABLE", "cannot establish the canonical checkout's locally recorded upstream base"
+    elif behind:
+        code = "WORKTREE_UPSTREAM_DIVERGED" if ahead else "WORKTREE_UPSTREAM_BEHIND"
+        message = f"canonical checkout is {ahead or 0} ahead and {behind} behind its locally recorded upstream; reconcile the comparison base"
+    else:
+        return []
+    return [{"level": "error" if acceptance and strict else "warning", "blocking": strict,
+             "code": code, "path": ".ai/alatyr.yaml", "message": message + "; no remote state was queried"}]
+
+
 def routing_issues(
     target: Path,
     manifest: dict[str, Any] | None,
     *,
     acceptance: bool = False,
     allow_detached: bool = False,
+    tracking: tuple[str | None, int | None, int | None] | None = None,
 ) -> list[dict[str, Any]]:
     """Return routing findings for the configured development branch.
 
@@ -131,11 +153,13 @@ def routing_issues(
     if not isinstance(canonical, str) or not canonical:
         return []
     if not branch_exists(target, canonical):
+        if policy.get("require_canonical_upstream_base") is True:
+            return upstream_issue(target, policy, acceptance, (None, None, None))
         return []
 
     current = current_branch(target)
     if current == canonical:
-        return []
+        return upstream_issue(target, policy, acceptance, tracking)
     if not current and allow_detached:
         return []
 

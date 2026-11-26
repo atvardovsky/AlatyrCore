@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import PurePosixPath
 from typing import Any
 
@@ -67,6 +68,56 @@ def accounting_failures(value: Any, record: dict) -> list[str]:
     return []
 
 
+def runtime_build_failures(view: Any, value: dict, record: dict, execution: dict, expected: str) -> list[str]:
+    from test_selection import read_selection_json
+
+    try:
+        if set(value) != {"kind", "harness_sha256", "build", "observed_build_id", "resources"} or value["kind"] != "alatyr-runtime-harness-v1":
+            raise ValueError("unsupported runtime harness observation")
+        if value["harness_sha256"] != expected or execution.get("source_stability") != "required":
+            raise ValueError("runtime evidence needs the current harness digest and adopted source stability")
+        resources = record["resources"]
+        if value["resources"] != resources or not {"service", "port"} <= {r["kind"] for r in resources if r["access"] != "read"}:
+            raise ValueError("observed runtime resources must match declared writable service and port claims")
+        binding = value["build"]
+        if not isinstance(binding, dict) or set(binding) != {"path", "sha256"}:
+            raise ValueError("runtime build binding must contain a path and digest")
+        path, digest = logical_path(binding["path"]), binding["sha256"]
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError("runtime build receipt requires an exact SHA-256")
+        material = set(input_paths(execution))
+        result_path = record["result_artifact"]["path"]
+        if path in material or path == result_path:
+            raise ValueError("build receipt must be distinct from source inputs and the test result")
+        if (view.target / path).resolve() != view.target / path:
+            raise ValueError("build receipt must not traverse a symlink")
+        receipt = read_selection_json(view, path, digest)
+        if (not isinstance(receipt, dict)
+                or set(receipt) != {"record_kind", "repository_revision", "build_id", "inputs", "artifact"}
+                or receipt["record_kind"] != "target-qualified-build"
+                or receipt["repository_revision"] != record["repository_revision"]):
+            raise ValueError("build receipt has no exact matching execution revision")
+        identity = receipt["build_id"]
+        if not isinstance(identity, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", identity) or value["observed_build_id"] != identity:
+            raise ValueError("served build identity differs from the qualified build")
+        artifact = receipt["artifact"]
+        if not isinstance(artifact, dict) or set(artifact) != {"path", "sha256"}:
+            raise ValueError("build artifact needs a digest-bound material manifest")
+        artifact_path = logical_path(artifact["path"])
+        if (artifact_path in material | {path, result_path}
+                or receipt["inputs"] != {p: record["input_sha256"].get(p) for p in material}):
+            raise ValueError("build receipt must bind its distinct artifact manifest and all material harness inputs")
+        candidate = view.target / artifact_path
+        if candidate.resolve() != candidate:
+            raise ValueError("build artifact manifest must not traverse a symlink")
+        read = view.read_bytes_result(candidate, max_bytes=MAX_FILE_BYTES)
+        if read.value is None or read.digest != artifact["sha256"]:
+            raise ValueError("qualified build artifact manifest is missing, oversized or changed")
+    except (KeyError, TypeError, ValueError, OSError, UnicodeError, RuntimeError) as exc:
+        return [str(exc)]
+    return []
+
+
 def observation_failures(view: Any, record: dict, execution: dict, artifact: Any, policy_path: str) -> list[str]:
     failures = []
     try:
@@ -75,7 +126,11 @@ def observation_failures(view: Any, record: dict, execution: dict, artifact: Any
             binding = record["harness_identity"]
             expected = harness_digest(view, record, execution, policy_path)
             observed = pointer_value(artifact, binding["observations_pointer"])
-            if observed != expected or binding["sha256"] != expected:
+            if binding["sha256"] != expected:
+                failures.append("observed harness identity differs from current material inputs")
+            elif isinstance(observed, dict):
+                failures.extend(runtime_build_failures(view, observed, record, execution, expected))
+            elif observed != expected:
                 failures.append("observed harness identity differs from current material inputs")
         if execution.get("behavioral_accounting") == "required" and (executed or "case_accounting" in record):
             binding = record["case_accounting"]

@@ -28,6 +28,8 @@ def inspect_finalization(target: Path, *, task_id=None, task_class=None,
         validator.check_current_approval_scope(selected)
     if task_id is not None:
         validate_active_tasks(validator, selected_only=True, authoring_only=True)
+    if diff_ref is not None:
+        validator.check_changed_local_paths(diff_ref)
     from target_adapter_validation.preflight_packages import validate_package_prerequisites
     validate_package_prerequisites(validator)
     if inspect_archive:
@@ -38,6 +40,7 @@ def inspect_finalization(target: Path, *, task_id=None, task_class=None,
 
 
 def preview_generated_scope(validator, step_ids) -> dict:
+    from render_context_catalogs import CatalogSourceError
     from support_write_transaction import read_output
     from target_support_outputs import step_outputs
 
@@ -50,6 +53,8 @@ def preview_generated_scope(validator, step_ids) -> dict:
             for path, output in step_outputs(step_id, validator.target).items():
                 if read_output(validator.target, path) != output:
                     paths.add(validator.rel(path))
+        except CatalogSourceError as exc:
+            diagnostics.append({"step": step_id, "message": str(exc), "blocking": True})
         except (OSError, ValueError, RecursionError) as exc:
             diagnostics.append({"step": step_id, "message": str(exc)})
     scope_findings = []
@@ -70,6 +75,11 @@ def preflight_report(validator, *, generated_scope=None) -> dict:
     findings = [{"level": item.level, "code": item.code, "message": item.message,
                  "path": item.path, **({"evidence_scope": item.evidence_scope} if item.evidence_scope else {})}
                 for item in validator.findings]
+    findings.extend(
+        {"level": "error", "code": "CATALOG_SOURCE_INVALID", "message": item["message"],
+         "path": None, "evidence_scope": "generated-preview"}
+        for item in (generated_scope or {}).get("diagnostics", ()) if item.get("blocking")
+    )
     return {"schema_version": 1, "report_kind": "alatyr-finalization-preflight",
             "state": "blocked" if any(item["level"] == "error" for item in findings) else "ready-for-finalization",
             "findings": findings, "input_sha256": validator.context.content_bindings(),

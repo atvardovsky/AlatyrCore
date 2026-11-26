@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Keep recognized report attachments out of text catalogs, distinguish invalid
+  catalog inputs from advisory renderer previews, and scan changed adapter
+  records for machine-specific paths before finalization.
+- Report canonical worktree upstream divergence independently of checkout
+  identity. Support optional measured outcome parity and bind browser harness
+  observations to a qualified build receipt using existing evidence paths.
+
 - Extend pre-publication comparisons with exact retired-path checks, selected
   catalog freshness, and existing canonical test evidence for the exact
   candidate revision. Flag divergent local point-keeper copies in tooling

@@ -698,6 +698,39 @@ and reports conflicts without overwriting peer changes. The lock coordinates
 participating local writers; it is not authorization or protection against
 uncooperative filesystem races, external services, or arbitrary editors.
 
+With a selected diff base, preflight scans changed adapter text for local paths
+using the same detector as acceptance. Keep machine logs and local paths out of
+committed reports. Recognized PNG, JPEG and PDF attachments under
+`.ai/assistant/reports/` stay outside generated text catalogs; reference them
+from a concise report and retain their digest in the owning evidence. The
+text renderer still rejects malformed UTF-8 and the preview blocks on such
+inputs. Dependency-order preview failures remain advisory.
+
+Canonical-worktree checks distinguish branch identity from locally recorded
+upstream freshness. For targets requiring an upstream comparison base, set
+`branch_policy.require_canonical_upstream_base: true` in the target manifest.
+Behind/diverged or unavailable upstream evidence then blocks acceptance on the
+canonical branch; an ahead-only checkout is valid. This does not fetch.
+
+To enforce behavioral parity during repair qualification, include the JSON
+pointer of a decisive acceptance assertion among a metric's
+`comparability_pointers`. The baseline and candidate must both observe the
+policy's expected value on an accepted command, not simply have equal values.
+For browser suites, review the spec against the real page and runtime contract
+first; run the repaired batch using a target-owned isolated lane.
+
+An execution-contract-4 harness with required source stability may supply
+`{kind, harness_sha256, build, observed_build_id, resources}` at its existing
+harness observation pointer. Use kind `alatyr-runtime-harness-v1`. The
+`build` path/SHA-256 selects an ignored JSON receipt with
+`{record_kind, repository_revision, build_id, inputs, artifact}`. Use kind
+`target-qualified-build`, the execution revision, all material harness and
+configuration input hashes, and a separate artifact manifest path/SHA-256.
+The target runner reports the served build identity and claimed writable
+service and port resources. Core checks bindings, not live process ownership
+or completeness of a target's build manifest. Existing scalar harness
+observations remain supported.
+
 ## Cross-Platform Entry Point
 
 ### Local Session Presence
