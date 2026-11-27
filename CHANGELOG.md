@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.145 - 2026-11-27
+
+- Advance the framework to 0.1.0-alpha.145 and the target template to 140
+  for generated release provenance. Keep adapter schema 119 unchanged.
+  No rule IDs were added, removed or changed. Installed targets should
+  assess the update, refresh their generated records and run local validation.
 - Keep generated task catalogs out of Point Keeper and enforce team holds
   in cooperating validation and allocation paths. Add selected-worktree
   takeover diagnostics, reviewed task metadata updates and a read-only
@@ -70,6 +78,12 @@
 - Fix context closure to compare removed paths in `first_use`,
   `operational_entry`, and every retained profile. A path retained in another
   scope no longer masks the loss, and an unexplained removal blocks.
+- Add toolchain preflight and compact target validation and finalization
+  reports. Check bridge references and recursive catalog ownership, and treat
+  historical task evidence as inert without weakening live support digests.
+- Reduce source planning and validation overhead through bounded path matching,
+  execution-plan reuse, indexed approval-scope checks and parallel CLI probes.
+  Run evidence status validation locally as well as in full CI.
 
 ## 0.1.0-alpha.144 - 2026-11-16
 
