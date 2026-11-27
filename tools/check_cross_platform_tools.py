@@ -111,6 +111,7 @@ EXPECTED_COMMANDS = {
     "context-closure",
     "read-ledger",
     "point-keeper",
+    "team-task-update",
     "clean-artifacts",
 }
 ALLOWED_WRITE_SCOPES = {

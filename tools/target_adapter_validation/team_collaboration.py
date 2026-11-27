@@ -8,7 +8,7 @@ import re
 import subprocess
 from typing import Any
 
-from context_catalog import CONTEXT_INDEX_NAME
+from team_task_control import is_task_file
 from target_adapter_validation.capability import (
     CapabilityValidationContext,
     FunctionCapabilityModule,
@@ -53,7 +53,7 @@ def _repository_task_records(
         if binding_registry_relpath is not None:
             paths = []
             for path in directory.iterdir():
-                if path.name.endswith(".json") and path.name != CONTEXT_INDEX_NAME:
+                if is_task_file(path.name):
                     paths.append(path)
                     if len(paths) > 128:
                         context.error("TEAM_REGISTRY_METADATA", "evidence_binding: task discovery exceeds 128 records", binding_registry_relpath)
@@ -73,7 +73,7 @@ def _repository_task_records(
     remaining = 8 * 1024 * 1024
     for path in paths:
         # Navigation belongs to catalog validation, never to task discovery.
-        if path == directory / CONTEXT_INDEX_NAME:
+        if not is_task_file(path.name):
             continue
         try:
             if binding_registry_relpath is not None:
@@ -348,7 +348,6 @@ def validate_team_collaboration(
     backend = context.load_json_object(backend_path, "TEAM_BACKEND")
     if policy is None or active_index is None or backend is None:
         return
-
     registry = context.load_json_object(registry_path, "TEAM_REGISTRY")
     if registry is None:
         return
@@ -627,7 +626,6 @@ def validate_team_collaboration(
             tasks_path,
             binding_registry_relpath=registry_relpath if "evidence_binding" in registry else None,
         )
-
     task_statuses = {
         "proposed",
         "ready",

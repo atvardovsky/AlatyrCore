@@ -159,6 +159,17 @@ class WorktreeRoutingTests(unittest.TestCase):
         self.assertEqual(report["state"], "blocked")
         self.assertIn("WORKTREE_ROUTING_REQUIRED", codes)
 
+    def test_takeover_routes_before_reading_old_worktree_task_bytes(self):
+        self.canonical_worktree()
+        path = self.target / ".ai/assistant/team/tasks"
+        path.mkdir(parents=True)
+        (path / "malformed.json").write_text("{")
+        report = readiness(self.target, None, "selected", takeover=True)
+        self.assertEqual(report["state"], "blocked")
+        self.assertEqual(report["takeover"]["state"], "worktree-route-required")
+        self.assertEqual(report["task_bindings"], [])
+        self.assertEqual([row["code"] for row in report["issues"]], ["WORKTREE_ROUTING_REQUIRED"])
+
     def test_validator_warns_or_errors_according_to_policy(self) -> None:
         self.canonical_worktree()
         validator = Validator(

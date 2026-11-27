@@ -409,6 +409,12 @@
       "write_scope": "none"
     },
     {
+      "name": "team-task-update",
+      "script": "team_task_update.py",
+      "purpose": "preview validated team point metadata and optionally apply an exact reviewed draft",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
       "name": "clean-artifacts",
       "script": "clean_local_artifacts.py",
       "purpose": "report or explicitly remove old ignored source-repository artifacts",

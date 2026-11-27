@@ -155,6 +155,17 @@ class PointKeeperTests(unittest.TestCase):
         self.assertNotIn("P2", result.stdout)
         self.assertNotIn("P3", result.stdout)
 
+    def test_generated_catalog_is_not_a_point_and_hold_overrides_role(self):
+        (self.tasks / "context-index.json").write_text('{"entries":[]}', encoding="utf-8")
+        for role in ("test-runner", "implementer", "reviewer", "deploy"):
+            with self.subTest(role=role):
+                report = self.payload(self.cli("check", "--point", "P5", "--role", role))
+                self.assertEqual(report["allowed_actions"], ["read"])
+                self.assertEqual(report["next_decision"], "require-owner-resumption")
+                self.assertFalse(report["authority_granted"])
+        (self.tasks / "bad-record.json").write_text('{}', encoding="utf-8")
+        self.assertEqual(self.cli("check", "--point", "P5", "--role", "test-runner").returncode, 1)
+
     def test_frozen_point_is_read_only_for_implementer(self) -> None:
         result = self.cli("check", "--point", "P3", "--role", "implementer", "--current-revision", REV)
         payload = json.loads(result.stdout)

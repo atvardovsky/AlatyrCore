@@ -919,6 +919,9 @@ python3 tools/alatyr.py point-keeper --target . check --point P-17 --role review
 python3 tools/alatyr.py point-keeper --target . preflight --deploy-set D-20261120-A --current-revision SHA
 ```
 
+See [Point Keeper](../docs/point-keeper.md#handoff-and-review) for selected-task
+takeover, reviewed task metadata updates, and exact staged-commit review.
+
 Windows PowerShell:
 
 ```powershell

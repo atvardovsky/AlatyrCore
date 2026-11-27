@@ -231,6 +231,26 @@ class AdmissionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 inspect_admission(TargetRepositoryView(root), "admission.json")
 
+    def test_current_team_hold_overrides_plan_and_blocks_its_dependents_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / "plan.md").write_bytes(b"owned task graph\n")
+            parent = task("a")
+            parent["state"] = "DONE"
+            child = task("b")
+            child["requires"] = ["a"]
+            value = projection(parent, child, task("c"))
+            value["accepted_ids"] = ["a"]
+            value["plan"]["sha256"] = hashlib.sha256((root / "plan.md").read_bytes()).hexdigest()
+            (root / "admission.json").write_text(json.dumps(value), encoding="utf-8")
+            tasks = root / ".ai/assistant/team/tasks"
+            tasks.mkdir(parents=True)
+            (tasks / "hold.json").write_text('{"id":"a","status":"blocked"}', encoding="utf-8")
+            report = inspect_admission(TargetRepositoryView(root), "admission.json")
+            self.assertEqual(report["selected_ids"], ["c"])
+            self.assertEqual(report["held"]["b"], "team-task-dependency-hold")
+            self.assertFalse(report["execution_authorized"])
+
     def test_cli_unknown_peer_state_suppresses_proposals_without_writes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

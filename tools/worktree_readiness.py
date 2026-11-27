@@ -67,22 +67,34 @@ def bound_bytes(view: TargetRepositoryView, binding: dict, *, limit: int = MAX_P
     return result.value, "bound"
 
 
+def _takeover_view(target, view, task_id, session_uid):
+    from team_task_control import read_team_tasks, takeover_tasks
+    from session_presence_store import operate
+
+    selected = takeover_tasks(read_team_tasks(view), task_id)
+    scopes = ["path:" + row["record"] for row in selected if "record" in row and len(row["record"]) <= 115]
+    peers = operate(target, "status", session_uid=session_uid, scope=scopes if 0 < len(scopes) <= 8 else None)
+    coordination = peers.get("coordination") or {}
+    return {"tasks": selected, "selected_task_id": task_id,
+            "peer_observation": {key: coordination.get(key) for key in
+                                 ("reported_overlaps", "unknown_scope_peers", "same_worktree_uncertain")},
+            "peer_observation_available": peers.get("enabled") is True,
+            "admission_state": "fresh-client-admission-required",
+            "next_action": "review current request and ownership before any launch"}
+
+
 def readiness(target: Path, source: Path | None = None, task_id: str | None = None,
-              *, allow_detached: bool = False) -> dict:
+              *, allow_detached: bool = False, takeover: bool = False,
+              session_uid: str | None = None) -> dict:
     target = target.resolve()
     view = TargetRepositoryView(target)
     issues = []
+    takeover_view = None
+    selected_ids = set()
+    if takeover and not task_id:
+        raise ValueError("takeover requires an explicit task ID")
     manifest_data: dict = {}
     source_path = None
-    try:
-        resolver = runpy.run_path(str(ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py"))["resolve_source"]
-        source_path = resolver(target, source)
-        baseline = tooling_comparison(view, source_path)
-        if baseline["state"] != "same-declared-versions":
-            issues.append({"code": "WORKTREE_BASELINE", "path": ".ai/alatyr.yaml", "next_action": "assess-upgrade; do not use mismatched source tools for target writes"})
-    except (OSError, ValueError, subprocess.SubprocessError) as exc:
-        baseline = {"state": "unknown"}
-        issues.append({"code": "WORKTREE_SOURCE", "path": ".ai/local/framework-source", "next_action": str(exc)})
     state_path = ".ai/assistant/installation-state.json"
     accepted = False
     try:
@@ -110,6 +122,31 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
                 "blocking": issue["blocking"],
             }
         )
+    if takeover and any(issue["blocking"] for issue in issues):
+        if view.finalize():
+            raise ValueError("worktree routing inputs changed during takeover inspection")
+        return {"schema_version": 1, "report_kind": "alatyr-worktree-readiness",
+                "state": "blocked", "source": None, "baseline": {"state": "not-observed"},
+                "task_bindings": [], "issues": issues, "authorization_granted": False,
+                "acceptance_granted": False, "limitation": "Resolve the worktree first; no task evidence or peers were loaded.",
+                "takeover": {"state": "worktree-route-required", "selected_task_id": task_id, "tasks": [],
+                             "admission_state": "fresh-client-admission-required"}}
+    try:
+        resolver = runpy.run_path(str(ROOT / "templates/target/.ai/assistant/tools/alatyr_delegate.py"))["resolve_source"]
+        source_path = resolver(target, source)
+        baseline = tooling_comparison(view, source_path)
+        if baseline["state"] != "same-declared-versions":
+            issues.append({"code": "WORKTREE_BASELINE", "path": ".ai/alatyr.yaml", "next_action": "assess-upgrade; do not use mismatched source tools for target writes"})
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        baseline = {"state": "unknown"}
+        issues.append({"code": "WORKTREE_SOURCE", "path": ".ai/local/framework-source", "next_action": str(exc)})
+    if takeover:
+        takeover_view = _takeover_view(target, view, task_id, session_uid)
+        selected = takeover_view["tasks"]
+        selected_ids = {task_id, *(row["task_id"] for row in selected)}
+        issues.extend({"code": "WORKTREE_TAKEOVER_HOLD", "task_id": row["task_id"],
+                       "path": row.get("record"), "next_action": row["next_action"]}
+                      for row in selected if row["hold"])
     if not accepted:
         issues.append({"code": "WORKTREE_INSTALLATION", "path": state_path, "next_action": "inspect installation state; finish or repair the target update"})
     raw = view.read_bytes_result(target / INDEX, max_bytes=512 * 1024)
@@ -128,6 +165,8 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
         if task_id is not None and not any(task["task_id"] == task_id for task in tasks):
             issues.append({"code": "WORKTREE_TASK_UNREGISTERED", "path": INDEX, "task_id": task_id, "next_action": "register the selected task explicitly"})
         for task in tasks:
+            if takeover and task["task_id"] not in selected_ids:
+                continue
             binding = task["problem_model"]
             if task["state"] == "historical-evidence-missing":
                 from historical_task_evidence import load_loss_disposition
@@ -206,6 +245,7 @@ def readiness(target: Path, source: Path | None = None, task_id: str | None = No
             "state": "blocked" if any(issue.get("blocking", True) for issue in issues) else "ready-for-context-review",
             "source": str(source_path) if source_path is not None else None,
             "baseline": baseline, "task_bindings": bindings, "issues": issues,
+            **({"takeover": takeover_view} if takeover else {}),
             "authorization_granted": False, "acceptance_granted": False,
             "limitation": "Prerequisite identities only, not content integrity, semantic readiness, permission or full adapter validation."}
 
@@ -216,6 +256,8 @@ def main() -> int:
     parser.add_argument("--framework-source", type=Path)
     parser.add_argument("--task-id")
     parser.add_argument("--require-ready", action="store_true")
+    parser.add_argument("--takeover", action="store_true", help="Inspect a selected task handoff without adopting authority.")
+    parser.add_argument("--session-uid")
     parser.add_argument(
         "--allow-detached",
         action="store_true",
@@ -225,7 +267,7 @@ def main() -> int:
     try:
         report = readiness(
             args.target, args.framework_source, args.task_id,
-            allow_detached=args.allow_detached,
+            allow_detached=args.allow_detached, takeover=args.takeover, session_uid=args.session_uid,
         )
         print(json.dumps(report, indent=2))
         return 1 if args.require_ready and report["state"] != "ready-for-context-review" else 0

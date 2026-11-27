@@ -19,7 +19,15 @@ from target_adapter_validation.context import TargetRepositoryView
 def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None = None,
               session_uid: str | None = None, source_contour: bool = False,
               handoff: dict | None = None, handoff_current: dict | None = None,
-              capacity: dict | None = None, admission: dict | None = None) -> dict:
+              capacity: dict | None = None, admission: dict | None = None,
+              task_id: str | None = None) -> dict:
+    parent_holds = {}
+    if task_id is not None:
+        from team_task_control import task_holds
+        team = TargetRepositoryView(target)
+        parent_holds = task_holds(team, [task_id])
+        if team.finalize():
+            raise ValueError("selected team task changed during cooperation inspection")
     resources = resource_plan(target, command_ids) if command_ids else None
     handoff_scopes = []
     intent = handoff_current.get("intent") if isinstance(handoff_current, dict) else None
@@ -85,7 +93,7 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
     recovery.extend(lost_tasks)
     conflicts = (valid and (coordination["reported_overlaps"] > 0 or any(peer["overlap"] == "reported-overlap" for peer in peers))
                  or resources is not None and not resources["concurrent_eligible"]
-                 or bool(lost_tasks))
+                 or bool(lost_tasks) or bool(parent_holds))
     uncertain = (any(scope_reference(scope)[0] == "unknown" for scope in selected)
                  or not valid or not presence.get("enabled") or bool(presence.get("omitted_sessions"))
                  or bool(coordination.get("unknown_scope_peers"))
@@ -109,6 +117,7 @@ def preflight(target: Path, scopes: list[str], *, command_ids: list[str] | None 
             "presence": presence, "recovery": recovery, "task_memory": task_memory,
             "resources": resources,
             "handoff": handoff_view, "capacity": capacity_view,
+            **({"task_holds": parent_holds} if task_id is not None else {}),
             **({"admission": admission} if admission is not None else {}),
             "limitation": "Advisory reported state only, not a reservation, liveness proof, isolation guarantee, authorization or command execution. Independent clones and unreported sessions are not observed."}
 
@@ -123,6 +132,7 @@ def main() -> int:
     parser.add_argument("--handoff", help="Target-relative selected handoff observations; never an approval grant.")
     parser.add_argument("--handoff-current", help="Independent current intent and pin observations.")
     parser.add_argument("--capacity", help="Optional target-relative capacity observations, not a reservation.")
+    parser.add_argument("--task-id", help="Check the parent team's current hold before dispatch.")
     parser.add_argument("--admission", help="Optional bounded projection of the existing task plan; proposes only.")
     parser.add_argument("--require-clear", action="store_true", help="Exit nonzero on reported conflict or uncertainty; does not reserve resources.")
     args = parser.parse_args()
@@ -147,7 +157,8 @@ def main() -> int:
             admission = inspect_admission(view, args.admission)
         report = preflight(args.target, args.scope, command_ids=args.command,
                            session_uid=args.session_uid, source_contour=args.source_contour,
-                           handoff=load(args.handoff), handoff_current=load(args.handoff_current), capacity=load(args.capacity), admission=admission)
+                           handoff=load(args.handoff), handoff_current=load(args.handoff_current), capacity=load(args.capacity), admission=admission,
+                           task_id=args.task_id)
         if admission is not None and admission["schema_version"] == 2 and view.finalize():
             raise ValueError("delivery inputs changed during cooperation inspection")
         print(json.dumps(report, indent=2))

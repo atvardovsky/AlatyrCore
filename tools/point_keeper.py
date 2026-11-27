@@ -15,6 +15,7 @@ from itertools import islice
 from pathlib import Path
 from typing import Any
 
+from team_task_control import execution_hold, is_task_file
 
 SCHEMA_VERSION = 1
 KIND = "alatyr-point-keeper"
@@ -145,6 +146,7 @@ def _point_view(raw: dict[str, Any], source: Path) -> dict[str, Any] | None:
         "reviewed_base_revision": str(raw.get("reviewed_base_revision") or "none"),
         "validation_state": str(raw.get("validation_state") or "not-run").strip().lower(),
         "blockers": _strings(raw.get("blockers")),
+        "execution_hold": execution_hold(raw),
         "related": _strings(raw.get("related_task_ids")),
         "branch": str(raw.get("branch_or_worktree") or "unknown"),
         "priority": str(raw.get("priority") or "normal"),
@@ -163,7 +165,7 @@ def _load_points(target: Path) -> tuple[list[dict[str, Any]], list[dict[str, str
     try:
         with os.scandir(directory) as scan:
             files = list(islice((directory / item.name for item in scan
-                                if Path(item.name).match("*.json")), MAX_POINTS + 1))
+                                if is_task_file(item.name)), MAX_POINTS + 1))
     except OSError:
         return [], [{"path": TASKS_REL, "reason": "point-inventory-unavailable"}]
     if len(files) > MAX_POINTS:
@@ -257,6 +259,8 @@ def _blockers(
         reasons.append(f"validation:{validation}")
     for blocker in point["blockers"]:
         reasons.append(f"blocker:{blocker}")
+    if point["execution_hold"] is not None:
+        reasons.append(point["execution_hold"])
     reviewed = point["reviewed_head_revision"].strip().lower()
     if point["frozen"] and reviewed in {"", "none"}:
         reasons.append("reviewed-revision-missing")
@@ -361,15 +365,19 @@ def check_view(
             "authority": "none",
             "authority_granted": False,
         }
-    allowed, forbidden = _actions(role, point)
+    capabilities, _ = _actions(role, point)
+    hold = point["execution_hold"]
+    allowed = ["read"] if hold else capabilities
     view = {
         "schema_version": SCHEMA_VERSION,
         "kind": KIND,
         "view": role,
         "state": "current",
         "point": point,
+        "role_capabilities": capabilities,
         "allowed_actions": allowed,
-        "forbidden_actions": forbidden,
+        "forbidden_actions": sorted(ACTIONS - set(allowed)),
+        "next_decision": "require-owner-resumption" if hold else "review-current-authority",
         "blockers": _blockers(point, current_revision, require_revision=False),
         "deploy_sets": point["related"],
         "dependencies": point["related"],
@@ -447,6 +455,10 @@ def build_parser() -> argparse.ArgumentParser:
     preflight = actions.add_parser("preflight", allow_abbrev=False)
     preflight.add_argument("--deploy-set", required=True)
     preflight.add_argument("--current-revision", default=argparse.SUPPRESS)
+    commit = actions.add_parser("commit-readiness", allow_abbrev=False)
+    commit.add_argument("--message-file", required=True)
+    commit.add_argument("--previous-packet")
+    commit.add_argument("--validation-report")
     return parser
 
 
@@ -454,7 +466,7 @@ def main() -> int:
     args = build_parser().parse_args()
     try:
         target = _target(str(args.target))
-        current = getattr(args, "current_revision", None) or _revision(target)
+        current = (getattr(args, "current_revision", None) or _revision(target)) if args.action != "commit-readiness" else None
         if args.action == "status":
             if args.role != "coordinator":
                 raise KeeperError("status is coordinator-only; use check --point")
@@ -463,6 +475,9 @@ def main() -> int:
             result = check_view(
                 target, point_id=args.point, role=args.role, current_revision=current
             )
+        elif args.action == "commit-readiness":
+            from commit_admission_packet import packet
+            result = packet(target, args.message_file, args.previous_packet, args.validation_report)
         else:
             result = preflight_view(
                 target, deploy_set=args.deploy_set, current_revision=current
@@ -473,7 +488,7 @@ def main() -> int:
     print(json.dumps(result, indent=2, sort_keys=True))
     if args.action == "preflight":
         return 0 if result["state"] == "ready" else 1
-    return 0 if result["state"] != "unavailable" else 1
+    return 0 if result["state"] not in {"unavailable", "blocked"} else 1
 
 
 if __name__ == "__main__":

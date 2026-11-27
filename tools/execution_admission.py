@@ -171,6 +171,28 @@ def inspect_admission(view, path):
     if report["schema_version"] == 2:
         from rolling_delivery import inspect_delivery
         inspect_delivery(view, value=value, report=report)
+    from team_task_control import task_holds
+    from target_adapter_validation.context import TargetRepositoryView
+    team = TargetRepositoryView(view.target)
+    holds = task_holds(team, (row["id"] for row in value["tasks"]))
+    if team.finalize():
+        raise ValueError("team task state changed during admission inspection")
+    if holds:
+        while True:
+            inherited = {row["id"]: "team-task-dependency-hold" for row in value["tasks"]
+                         if row["id"] not in holds and set(row["requires"]) & holds.keys()}
+            if not inherited:
+                break
+            holds.update(inherited)
+        slots = {row["id"]: row["slots"] for row in value["tasks"]}
+        stopped = set(holds) & set(report["selected_ids"])
+        report["selected_ids"] = [key for key in report["selected_ids"] if key not in stopped]
+        report["allocated_slots"] -= sum(slots[key] for key in stopped)
+        report["held"].update(holds)
+        report["task_holds"] = holds
+        if stopped and "delivery" in report and not report["selected_ids"]:
+            from rolling_delivery import coordination_hold
+            coordination_hold(report, "team-task-hold")
     if view.finalize():
         raise ValueError("admission inputs changed during inspection")
     return report
@@ -244,6 +266,8 @@ def inspect_worker_admission(view, path, allocation_id, expected_sha256, policy,
         raise ValueError("admission exceeds the worker policy parallel limit")
     allocation = next((row for row in value["tasks"] if row["id"] == allocation_id), None)
     continuing = previous is not None and allocation is not None and allocation["state"] == "RUNNING"
+    if allocation_id in report.get("task_holds", {}):
+        raise ValueError("worker allocation has a current team-task hold")
     if allocation_id not in report["selected_ids"] and not continuing:
         raise ValueError("worker allocation is not currently admitted: " + str(report["held"].get(allocation_id, "not selected")))
     if allocation["write_scope"] != []:

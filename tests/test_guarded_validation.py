@@ -100,6 +100,16 @@ class GuardedValidationTests(RequestLifecycleFixture):
         self.assertNotEqual(code, 0)
         self.assertFalse(result["command_started"])
 
+    def test_registered_launch_rechecks_the_current_team_record_after_binding(self):
+        self.put(".ai/assistant/team/tasks/context-index.json", {"entries": []})
+        self.put(".ai/assistant/team/tasks/arbitrary-filename.json",
+                 {"id": "fixture-task", "status": "blocked", "blockers": ["Owner stopped testing"]})
+        code, result = self.launch()
+        self.assertNotEqual(code, 0, result)
+        self.assertFalse(result["command_started"])
+        self.assertEqual(result["reason"], "task-not-runnable")
+        self.assertFalse((self.target / "child-started.txt").exists())
+
     def test_stale_inputs_revision_and_policy_fail_closed(self):
         original = copy.deepcopy(self.record)
         for key, value in (("repository_revision", "0" * 40), ("policy_sha256", "0" * 64)):

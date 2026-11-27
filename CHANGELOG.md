@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Keep generated task catalogs out of Point Keeper and enforce team holds
+  in cooperating validation and allocation paths. Add selected-worktree
+  takeover diagnostics, reviewed task metadata updates and a read-only
+  exact commit packet for independent client admission.
+
 - Keep recognized report attachments out of text catalogs, distinguish invalid
   catalog inputs from advisory renderer previews, and scan changed adapter
   records for machine-specific paths before finalization.

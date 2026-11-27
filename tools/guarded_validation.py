@@ -24,6 +24,8 @@ def run_validation(target: Path, provider: str, payload: dict, argv: list[str], 
     selected = result.get("validation_command")
     if not isinstance(selected, dict) or argv != selected["argv"]:
         raise ValueError("actual argv must exactly equal the target-owned registered argv; no implicit filters or shell parsing")
+    from team_task_control import task_holds
+    from target_adapter_validation.context import TargetRepositoryView
     completed = None
     attempted = False
     try:
@@ -32,6 +34,17 @@ def run_validation(target: Path, provider: str, payload: dict, argv: list[str], 
                 if hashlib.sha256(snapshot.exact(path)).hexdigest() != expected:
                     raise ValueError("validation input changed before launch: " + path)
             snapshot.verify()
+            try:
+                team = TargetRepositoryView(target)
+                holds = task_holds(team, [action["task_id"]])
+                if team.finalize():
+                    raise ValueError("team task state changed before launch")
+            except (OSError, ValueError, RuntimeError) as exc:
+                return {**result, "status": "launch-blocked", "checkpoint_required": True,
+                        "command_started": False, "reason": str(exc)[:300]}
+            if holds:
+                return {**result, "status": "launch-blocked", "checkpoint_required": True,
+                        "command_started": False, "reason": holds[action["task_id"]]}
             state = session_status(target, payload["session_id"])
             if state["status"] != "bound" or state.get("request_id") != action["request_id"]:
                 raise ValueError("request was interrupted, ended or expired before launch")

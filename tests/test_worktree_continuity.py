@@ -54,6 +54,35 @@ class WorktreeContinuityTests(ActiveTaskFixture):
         self.assertNotIn("Traceback", result.stderr)
         return result, result.stdout if text else json.loads(result.stdout)
 
+    def test_takeover_cli_reports_owner_hold_and_does_not_read_unrelated_models(self):
+        self.retained()
+        index = json.loads((self.target / INDEX).read_bytes())
+        other = copy.deepcopy(self.task)
+        other["task_id"] = "unrelated"
+        other.pop("analysis_handoff", None)
+        other["problem_model"]["path"] = ".ai/.runtime/unrelated-model.json"
+        index["tasks"].append(other)
+        (self.target / INDEX).write_text(json.dumps(index))
+        tasks = self.target / ".ai/assistant/team/tasks"
+        tasks.mkdir(parents=True)
+        (tasks / "context-index.json").write_text('{"entries":[]}')
+        (tasks / "owner-hold.json").write_text(json.dumps({"id": "fixture-task", "status": "blocked",
+                                                            "blockers": ["Stopped by owner"],
+                                                            "dependencies": ["missing-dependency"]}))
+        result = subprocess.run(
+            [sys.executable, "-B", str(ROOT / "tools/alatyr.py"), "worktree-preflight",
+             "--target", str(self.target), "--framework-source", str(ROOT), "--takeover",
+             "--task-id", "fixture-task", "--require-ready"],
+            capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 1, result.stderr + result.stdout)
+        report = json.loads(result.stdout)
+        holds = {row["task_id"]: row for row in report["issues"] if row["code"] == "WORKTREE_TAKEOVER_HOLD"}
+        self.assertEqual(set(holds), {"fixture-task", "missing-dependency"})
+        self.assertIn("identify the canonical dependency record", holds["missing-dependency"]["next_action"])
+        self.assertEqual(report["takeover"]["admission_state"], "fresh-client-admission-required")
+        self.assertNotIn("unrelated-model", result.stdout)
+        self.assertFalse(report["authorization_granted"])
+
     def test_public_doctor_selected_runtime_matrix_preserves_foreign_handoffs(self):
         self.retained()
         paths = [self.model_path, self.target / self.model["active_projection"]["path"]]

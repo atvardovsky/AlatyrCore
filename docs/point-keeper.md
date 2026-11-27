@@ -43,9 +43,37 @@ python3 tools/alatyr.py point-keeper --target . check --point P-17 --role review
 python3 tools/alatyr.py point-keeper --target . preflight --deploy-set D-20261120-A --current-revision SHA
 ```
 
+Role capabilities are not a list of actions available now. A current hold
+reduces point guidance to inspection and an explicit owner-resumption decision.
+Generated task catalogs belong to navigation, not to the point inventory.
+
 `status` exits 1 when no point records are available. `check` exits 1 when the
 requested point is missing or invalid. `preflight` exits 1 when any member is
 not deployable.
+
+## Handoff and Review
+
+Use `worktree-preflight --takeover --task-id ID` to check the selected task,
+its bounded dependencies, the worktree and known peers without granting
+authority or claiming that a peer is live. Stopped work stays read-only until
+the owner resumes it. Pass the canonical parent ID to
+`cooperation-preflight --task-id ID` when worker IDs differ. Registered test
+launch and allocation inspection check holds; arbitrary shell commands and
+provider-native dispatch are outside this enforcement boundary.
+
+`team-task-update --target . --point ID --draft <relative-draft.json>
+--expected-sha256 SHA` previews an edit with canonical team diagnostics.
+With modify authority, `--write --draft-sha256 SHA` applies the exact reviewed
+notes, next action or residual risks and their revision projection. It rejects
+held points and changes to lifecycle, authority, ownership or proof. Finalize
+support and refresh registry evidence afterward. This is not acceptance.
+
+`point-keeper --target . commit-readiness --message-file <relative-path>` binds
+the staged patch, Git base, worktree and message bytes. Use
+`--previous-packet <relative-path>` to identify changed bindings. An optional
+`--validation-report <relative-path>` reports prior validation without
+qualifying the staged patch. The packet stays `awaiting-client-admission`:
+it does not contact a hook, grant approval or run Git commit.
 
 ## Point State
 
