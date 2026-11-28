@@ -310,7 +310,7 @@ def review_request(target: Path, brief_path: str, action: object, *,
         from test_execution_contract import review_execution_request
         try:
             validation_command, execution_inputs = review_execution_request(
-                selected["request_contexts"][0], target, brief, selected_action)
+                selected["request_contexts"][0], target, brief, selected_action, selected["request_model"])
             selected["checkpoint_inputs"].update(execution_inputs)
         except (OSError, ValueError, RecursionError) as exc:
             failures.append("validation launch: " + str(exc))

@@ -230,8 +230,8 @@ Permission/timing, freshness and retry-budget failures prevent child launch.
 Declared network, shared/external environments, installs and service startup are
 rejected; use their separately authorized project-owned routes instead.
 Child output goes to stderr; stdout is a gate/result JSON, not test acceptance.
-Target runners keep cleanup/timeouts; this helper adds no retries or history
-receipts. Omitted launch controls leave ordinary commands unchanged.
+Target runners keep cleanup. [Opt-in validation lanes](../docs/validation-lanes.md)
+share attempt budgets and discover exact cases before setup.
 Completion prerequisites may select `phase: complete` with empty effects to
 require a target-owned original-outcome gate in addition to native closure.
 Harness prerequisites may select `phase: validation` plus an exact

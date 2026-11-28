@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Add opt-in validation lanes for expensive registered checks. Share attempt
+  history across worktrees, check exact discovery before setup, preserve
+  case and cleanup outcomes separately, and reuse verified build artifacts
+  without claiming test acceptance.
 
 ## 0.1.0-alpha.145 - 2026-11-27
 

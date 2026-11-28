@@ -17,6 +17,7 @@ import lifecycle_checkpoints as hooks
 from guarded_validation import POLICY, run_validation
 from inspect_session_context import capture
 from lifecycle_policy import enforcement_status
+from validation_lane_policy import POLICY as LANES
 
 
 class GuardedValidationTests(RequestLifecycleFixture):
@@ -78,6 +79,197 @@ class GuardedValidationTests(RequestLifecycleFixture):
                 self.assertFalse(result["acceptance_granted"])
                 self.assertFalse(result["authorization_granted"])
                 self.assertEqual((self.target / "child-started.txt").read_text(), "selected check ran")
+                self.assertFalse((self.target / ".git/alatyr-validation-lanes").exists())
+
+    def opt_in_lane(self, observed=("case-a", "case-b"), cleanup="passed", artifact=False):
+        command = self.testing["commands"][0]
+        command["execution"]["prerequisites"].append("alatyr:validation-lane:proof")
+        preflight = copy.deepcopy(command)
+        preflight["id"] = "discover"
+        preflight["execution"].update(kind="metadata-check", proof_boundary="static-metadata",
+                                      environment="none", effects=[], resources=[], prerequisites=[])
+        preflight["argv"] = [sys.executable, "-c", f"print({json.dumps({'schema_version': 1, 'cases': observed})!r})"]
+        self.testing["commands"].append(preflight)
+        if artifact:
+            self.testing["execution_contract"]["schema_version"] = 4
+            self.record["schema_version"] = 4
+            command["execution"].update(kind="static-analysis", proof_boundary="static-metadata",
+                                        harness_inputs=["test.cfg"])
+            self.record.update(proof_boundary="static-metadata", timing_disposition="not-run")
+            command["argv"] = [sys.executable, "-c",
+                "from pathlib import Path; Path('build-receipt.json').write_text('built'); "
+                "Path('standalone-output.txt').write_text('real artifact')"]
+            expected = []
+            verifier = copy.deepcopy(preflight)
+            verifier["id"] = "verify-artifact"
+            verifier["argv"] = [sys.executable, "-c",
+                "from pathlib import Path; import json; assert Path('build-receipt.json').read_text() == 'built'; "
+                "assert Path('standalone-output.txt').read_text() == 'real artifact'; "
+                "print(json.dumps({'schema_version':1,'cases':[]}))"]
+            self.testing["commands"].append(verifier)
+        else:
+            expected = ["case-a", "case-b"]
+            output = {"schema_version": 1, "cases": {case: "passed" for case in expected}, "cleanup": cleanup}
+            command["argv"] = [sys.executable, "-c",
+                "import os; from pathlib import Path; Path('child-started.txt').write_text('started'); "
+                f"Path(os.environ['ALATYR_VALIDATION_CASE_RESULT']).write_text({json.dumps(output)!r})"]
+        entries = {"unit": {"probe": "discover", "expected_cases": expected, "material_inputs": {"inputs": "test.cfg"},
+                            "artifact": {"receipt": "build-receipt.json", "verifier": "verify-artifact"} if artifact else None}}
+        self.lane_policy = {"schema_version": 1, "objectives": {"proof": {"max_attempts": 2, "max_seconds": 100,
+                                                                          "commands": entries}}}
+        self.put(LANES, self.lane_policy)
+        self.additional_context = [LANES]
+        self.prepare()
+
+    def test_case_discovery_failure_does_not_start_setup_or_child(self):
+        self.opt_in_lane(observed=("case-a",))
+        code, result = self.launch(delegate=True)
+        self.assertNotEqual(code, 0, result)
+        self.assertEqual(result["status"], "discovery-failed")
+        self.assertIn("exact approved case selection", result["reason"])
+        self.assertFalse((self.target / "child-started.txt").exists())
+        code, repeat = self.launch()
+        self.assertNotEqual(code, 0, repeat)
+        self.assertEqual(repeat["previous_attempt"], result["attempt_id"])
+
+    def test_cleanup_failure_retains_passing_cases_without_claiming_success(self):
+        self.opt_in_lane(cleanup="failed")
+        code, result = self.launch()
+        self.assertNotEqual(code, 0, result)
+        self.assertTrue(result["command_started"])
+        self.assertEqual(result["status"], "cleanup-failed")
+        self.assertEqual(result["case_counts"], {"passed": 2, "failed": 0, "not-run": 0})
+        self.assertFalse(result["acceptance_granted"])
+        artifact = self.target / ".git/alatyr-validation-lanes" / (result["attempt_id"] + ".cases.json")
+        self.assertEqual(hashlib.sha256(artifact.read_bytes()).hexdigest(), result["case_sha256"])
+
+    def test_missing_case_result_and_changed_inputs_cannot_pass_with_zero_exit(self):
+        self.opt_in_lane()
+        payload = {"session_id": "request-fixture", "alatyr_action": self.current_action}
+        argv = self.testing["commands"][0]["argv"]
+        def mutate(*args, **options):
+            self.put("tests/a.py", b"changed after the child started")
+            return subprocess.CompletedProcess(argv, 0)
+        result = run_validation(self.target, "procedural", payload, argv, runner=mutate)
+        self.assertTrue(result["command_started"])
+        self.assertTrue(result["checkpoint_required"])
+        self.assertIn(result["status"], {"unverified", "execution-unverified"})
+        self.assertNotIn("case_counts", result)
+
+    def test_build_artifact_reuse_bypasses_only_the_equivalent_build(self):
+        self.opt_in_lane(observed=(), artifact=True)
+        code, before = self.launch()
+        self.assertEqual(code, 0, before)
+        self.assertEqual(before["status"], "command-finished")
+        self.assertEqual(before["artifact"]["path"], "build-receipt.json")
+        code, reused = self.launch(delegate=True)
+        self.assertEqual(code, 0, reused)
+        self.assertEqual(reused["status"], "artifact-available")
+        self.assertEqual(reused["artifact"], before["artifact"])
+        self.assertFalse(reused["command_started"])
+        self.assertFalse(reused["tests_reused"])
+        self.assertFalse(reused["acceptance_granted"])
+        self.assertNotIn("lane", reused["validation_command"])
+        self.put("standalone-output.txt", b"changed without changing its receipt")
+        code, stale = self.launch()
+        self.assertNotEqual(code, 0, stale)
+        self.assertIn("verification failed", stale["reason"])
+        self.assertFalse(stale["command_started"])
+        self.put("build-receipt.json", b"changed")
+        code, stale = self.launch()
+        self.assertNotEqual(code, 0, stale)
+        self.assertFalse(stale["command_started"])
+
+    def test_probe_cannot_use_a_mutating_registered_command(self):
+        self.opt_in_lane()
+        execution = self.testing["commands"][1]["execution"]
+        execution["effects"] = ["temporary-files"]
+        execution["resources"] = self.testing["commands"][0]["execution"]["resources"]
+        self.prepare()
+        code, result = self.launch()
+        self.assertNotEqual(code, 0, result)
+        self.assertIn("read-only metadata", result["reason"])
+        self.assertFalse((self.target / "child-started.txt").exists())
+
+    def test_wrapper_and_worktree_rotation_preserve_the_same_attempt_and_caps(self):
+        from validation_lane import run_lane
+        from lifecycle_checkpoints import review_request
+
+        self.opt_in_lane(observed=("case-a",))
+        code, result = self.launch()
+        self.assertNotEqual(code, 0, result)
+        self.assertEqual(result["status"], "discovery-failed")
+        self.addCleanup(lambda: subprocess.run(["git", "worktree", "remove", str(sibling)],
+                                               cwd=self.target, capture_output=True))
+        sibling = self.target / "linked-worktree"
+        subprocess.run(["git", "worktree", "add", "--detach", str(sibling), "HEAD"],
+                       cwd=self.target, check=True, capture_output=True)
+        selected = review_request(self.target, self.brief_path, self.current_action)["validation_command"]["lane"]
+        def child(*args, **kwargs):
+            self.fail("wrapper rotation must not launch a child")
+        changed = {**selected, "retry": {"previous_attempt": result["attempt_id"], "reason": "changed-input"}}
+        blocked = run_lane(sibling, changed, ["renamed-wrapper"], {}, lambda: None, lambda: None, child)
+        self.assertIn("different material", blocked["reason"])
+        self.assertEqual(blocked["previous_attempt"], result["attempt_id"])
+        self.assertFalse(blocked["command_started"])
+
+    def test_lane_budget_boundary_and_unresolved_child(self):
+        from validation_lane import run_lane
+        from local_file_lock import file_lock
+
+        self.opt_in_lane()
+        from lifecycle_checkpoints import review_request
+        lane = review_request(self.target, self.brief_path, self.current_action)["validation_command"]["lane"]
+        lane.update(limits=(1, 10), estimate=10)
+        seen = []
+        def timeout(argv, **kwargs):
+            seen.append(kwargs["timeout"])
+            raise subprocess.TimeoutExpired(argv, kwargs["timeout"])
+        def launch(plan):
+            return run_lane(self.target, plan, ["exact-child"], {}, lambda: None, lambda: None, timeout)
+        first = launch(lane)
+        self.assertEqual(first["status"], "unverified", first)
+        self.assertTrue(first["command_started"])
+        self.assertTrue(0 < seen[0] <= 10)
+        plan = {**lane, "limits": (32, 86400),
+                "retry": {"previous_attempt": first["attempt_id"], "reason": "execution-repair",
+                          "cleanup_confirmed": False}}
+        self.assertIn("unresolved", launch(plan)["reason"])
+        plan["retry"]["cleanup_confirmed"] = True
+        self.assertIn("budget exhausted", launch(plan)["reason"])
+        hub = self.target / ".git/alatyr-validation-lanes"
+        with file_lock(hub / "heavy.lock"):
+            self.assertIn("lock timed out", launch({**lane, "objective": "other"})["reason"])
+        self.assertEqual(len(seen), 1)
+
+    def test_required_retry_binds_the_real_attempt_and_changed_condition(self):
+        self.opt_in_lane(observed=("case-a",))
+        code, first = self.launch()
+        self.assertNotEqual(code, 0, first)
+        changed_path = ".ai/.runtime/repair-condition.json"
+        retry = ".ai/.runtime/lane-retry.json"
+        self.put(changed_path, {"repair": "use the registered runner that collects both cases"})
+        self.put(retry, {"previous_attempt": first["attempt_id"], "reason": "execution-repair",
+                         "condition": "replaced the broken discovery configuration",
+                         "condition_input": {"path": changed_path,
+                             "sha256": hashlib.sha256((self.target / changed_path).read_bytes()).hexdigest()},
+                         "cleanup_confirmed": True})
+        self.additional_context.extend([retry, changed_path])
+        self.validation.update(lane_retry=retry, diagnosis_proof_id="diagnosis")
+        self.testing["commands"][1]["argv"][-1] = "print('{\"schema_version\":1,\"cases\":[\"case-a\",\"case-b\"]}')"
+        self.model["proof_obligations"].append({"id": "diagnosis", "statement": "Check the repaired discovery runner",
+            "required": True, "status": "passed", "evidence_owner": "primary", "acceptance_owner": "primary",
+            "evidence_refs": [retry, changed_path], "waiver": None})
+        self.write_model()
+        self.write_index()
+        self.prepare()
+        code, result = self.launch(delegate=True)
+        self.assertEqual(code, 0, result)
+        self.assertEqual(result["case_counts"], {"passed": 2, "failed": 0, "not-run": 0})
+        self.assertNotEqual(result["attempt_id"], first["attempt_id"])
+        code, stale = self.launch()
+        self.assertNotEqual(code, 0, stale)
+        self.assertEqual(stale["previous_attempt"], result["attempt_id"])
 
     def test_missing_permission_wrong_timing_and_unavailable_prerequisites_never_launch(self):
         original = copy.deepcopy(self.record)

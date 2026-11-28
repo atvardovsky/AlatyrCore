@@ -80,7 +80,7 @@ def execution_authority_failures(record: dict, execution: dict, contract: dict) 
     return failures
 
 
-def review_execution_request(context, target: Path, brief: dict, action: dict) -> tuple[dict, dict[str, str]]:
+def review_execution_request(context, target: Path, brief: dict, action: dict, model: dict) -> tuple[dict, dict[str, str]]:
     """Use the same policy/evidence invariants as registered target validation."""
     import hashlib
     from cli_inputs import json_object
@@ -141,8 +141,13 @@ def review_execution_request(context, target: Path, brief: dict, action: dict) -
             raise ValueError("pre-run evidence input is stale: " + selected)
     if command["execution"]["suite_scope"] == "full" and run["scope"] != "broad":
         raise ValueError("a full registered suite must consume the broad-run budget")
-    return {"command_id": command["id"], "argv": argv, "kind": command["execution"]["kind"],
-            "input_sha256": bindings, "authorization_provenance": "caller-declared-not-authenticated"}, bindings
+    result = {"command_id": command["id"], "argv": argv, "kind": execution["kind"],
+              "input_sha256": bindings, "authorization_provenance": "caller-declared-not-authenticated"}
+    markers = [item for item in execution["prerequisites"] if item.startswith("alatyr:validation-lane:")]
+    if markers or "lane_retry" in run:
+        from validation_lane_policy import resolve_lane
+        result["lane"] = resolve_lane(markers, read, policy, command, record, run, model, brief)
+    return result, bindings
 
 
 class TestExecutionContract:

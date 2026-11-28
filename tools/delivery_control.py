@@ -37,9 +37,15 @@ def parse_validation(value: object) -> dict:
         required.add("execution_evidence")
     if isinstance(value, dict) and "repeat" in value:
         required.add("repeat")
+    if isinstance(value, dict) and "lane_retry" in value:
+        required.add("lane_retry")
     run = fields(value, required, "validation")
     if "execution_evidence" in run:
         request_path(run["execution_evidence"])
+    if "lane_retry" in run:
+        request_path(run["lane_retry"])
+        if "execution_evidence" not in run:
+            raise ValueError("validation.lane_retry requires registered execution evidence")
     if "repeat" in run:
         repeat = fields(run["repeat"], {"previous_attempt", "reason", "proof_id"}, "validation.repeat")
         for key in ("previous_attempt", "proof_id"):
